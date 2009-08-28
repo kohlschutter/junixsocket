@@ -1,0 +1,225 @@
+<!--
+    junixsocket
+
+    Copyright (c) 2009 NewsClub, Christian Kohlschütter
+
+    The author licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<project name="junixsocket" default="dist" basedir=".">
+
+	<property name="app.name" value="junixsocket" />
+	<property name="app.title" value="junixsocket library" />
+	<property name="app.version" value="1.1-dev" />
+	<property name="app.javaversion" value="1.5" />
+	<property name="app.dir" value="." />
+
+	<property name="compile.debug" value="on" />
+	<property name="compile.deprecation" value="false" />
+	<property name="compile.optimize" value="true" />
+
+	<condition property="isMac">
+		<equals arg1="${os.name}" arg2="Mac OS X" />
+	</condition>
+	<condition property="isLinux">
+		<equals arg1="${os.name}" arg2="Linux" />
+	</condition>
+
+	<target name="describe">
+		<information>
+			<name>${app.name}</name>
+			<description>${app.title}</description>
+			<version>${app.version}</version>
+			<vendor>
+			</vendor>
+			<api>yes</api>
+			<documents>no</documents>
+			<begin>
+			</begin>
+			<end>
+			</end>
+			<author>
+			</author>
+			<state>
+			</state>
+		</information>
+	</target>
+
+	<property name="build.dir" value="${app.dir}/build" />
+
+	<property name="build.main" value="${build.dir}/main" />
+	<property name="build.rmi" value="${build.dir}/rmi" />
+	<property name="build.demo" value="${build.dir}/demo" />
+	<property name="src.main" value="${app.dir}/src/main" />
+	<property name="src.rmi" value="${app.dir}/src/rmi" />
+	<property name="src.demo" value="${app.dir}/src/demo" />
+	<property name="lib.native" value="${app.dir}/lib-native" />
+	<property name="dist.dir" value="${app.dir}/dist" />
+	<property name="jar.main" value="${dist.dir}/${app.name}-${app.version}.jar" />
+	<property name="jar.rmi" value="${dist.dir}/${app.name}-rmi-${app.version}.jar" />
+	<property name="jar.demo" value="${dist.dir}/${app.name}-demo-${app.version}.jar" />
+	<property name="javadoc.dir" value="${app.dir}/doc" />
+	<property name="distBin.tar.bz2" value="${app.dir}/${app.name}-${app.version}-bin.tar.bz2" />
+	<property name="distSrc.tar.bz2" value="${app.dir}/${app.name}-${app.version}-src.tar.bz2" />
+
+	<path id="classpath.main">
+		<dirset dir="${build.dir}">
+			<include name="main" />
+		</dirset>
+	</path>
+	<path id="classpath.mainRmi">
+		<dirset dir="${build.dir}">
+			<include name="main" />
+			<include name="rmi" />
+		</dirset>
+	</path>
+
+	<target name="init">
+		<delete dir="${build.dir}" />
+		<mkdir dir="${build.main}" />
+		<mkdir dir="${build.rmi}" />
+		<mkdir dir="${build.demo}" />
+		<mkdir dir="${lib.native}" />
+	</target>
+
+	<target name="compile">
+		<javac srcdir="${src.main}" destdir="${build.main}" encoding="UTF-8" source="${app.javaversion}" target="${app.javaversion}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" />
+		<javac srcdir="${src.rmi}" destdir="${build.rmi}" encoding="UTF-8" source="${app.javaversion}" target="${app.javaversion}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" classpathref="classpath.main" />
+		<javac srcdir="${src.demo}" destdir="${build.demo}" encoding="UTF-8" source="${app.javaversion}" target="${app.javaversion}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" classpathref="classpath.mainRmi" />
+	</target>
+
+	<target name="javah">
+		<javah classpathref="classpath.main" outputFile="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.h" verbose="yes">
+			<class name="org.newsclub.net.unix.NativeUnixSocket" />
+		</javah>
+	</target>
+
+	<target name="gcc" depends="gcc-mac,gcc-linux" />
+
+	<target name="gcc-mac" if="isMac">
+		<antcall target="gcc-mac.arch">
+			<param name="gccArch" value="i386" />
+		</antcall>
+		<antcall target="gcc-mac.arch">
+			<param name="gccArch" value="x86_64" />
+		</antcall>
+	</target>
+	<target name="gcc-mac.arch">
+		<property name="outLib" value="${lib.native}/libjunixsocket-macosx-${app.javaversion}-${gccArch}.dylib" />
+		<delete file="${outLib}" />
+
+		<echo message="Compiling for architecture ${gccArch} on ${os.name}" />
+		<exec executable="/usr/bin/gcc-4.2">
+			<arg value="-O2" />
+			<arg value="-Wall" />
+			<arg value="-arch" />
+			<arg value="${gccArch}" />
+			<arg value="-shared" />
+			<arg value="-fPIC" />
+			<arg value="-I" />
+			<arg value="/System/Library/Frameworks/JavaVM.framework/Versions/${app.javaversion}/Home/include" />
+			<arg value="-o" />
+			<arg value="${outLib}" />
+			<arg value="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.c" />
+		</exec>
+	</target>
+	<target name="gcc-linux" if="isLinux">
+		<antcall target="gcc-linux.arch">
+			<param name="gccArch" value="i386" />
+			<param name="gccM" value="-m32" />
+		</antcall>
+		<antcall target="gcc-linux.arch">
+			<param name="gccArch" value="amd64" />
+			<param name="gccM" value="-m64" />
+		</antcall>
+	</target>
+	<target name="gcc-linux.arch">
+		<property name="outLib" value="${lib.native}/libjunixsocket-linux-${app.javaversion}-${gccArch}.so" />
+
+		<echo message="Compiling for architecture ${gccArch} on ${os.name}" />
+		<exec executable="gcc">
+			<arg value="${gccM}" />
+			<arg value="-O2" />
+			<arg value="-Wall" />
+			<arg value="-shared" />
+			<arg value="-fPIC" />
+			<arg value="-I" />
+			<arg value="${java.home}/include/" />
+			<arg value="-I" />
+			<arg value="${java.home}/include/linux" />
+			<arg value="-o" />
+			<arg value="${outLib}" />
+			<arg value="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.c" />
+		</exec>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${lib.native}" />
+		<delete file="${dist.dir}" />
+		<delete file="${javadoc.dir}" />
+		<delete file="${distBin.tar.bz2}" />
+		<delete file="${distSrc.tar.bz2}" />
+	</target>
+
+	<target name="javadoc">
+		<javadoc destdir="${javadoc.dir}" version="true" use="true" windowtitle="${app.version} API">
+			<packageset dir="${src.main}" defaultexcludes="yes">
+				<include name="org/newsclub/**" />
+			</packageset>
+			<packageset dir="${src.rmi}" defaultexcludes="yes">
+				<include name="org/newsclub/**" />
+			</packageset>
+		</javadoc>
+	</target>
+
+	<target name="jars" depends="init,compile,javah,gcc" description="Makes a distributable jar">
+
+		<jar destfile="${jar.main}">
+			<fileset dir="${build.main}">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+		<jar destfile="${jar.rmi}">
+			<fileset dir="${build.rmi}">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+		<jar destfile="${jar.demo}">
+			<fileset dir="${build.demo}">
+				<include name="**/*" />
+			</fileset>
+			<fileset dir="${src.demo}">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="dist" depends="javadoc,jars">
+		<tar destfile="${distBin.tar.bz2}" compression="bzip2">
+			<tarfileset dir="." prefix="${app.name}-${app.version}/">
+				<include name="README.txt" />
+				<include name="LICENSE.txt" />
+				<include name="dist/**" />
+				<include name="doc/**" />
+			</tarfileset>
+		</tar>
+		<tar destfile="${distSrc.tar.bz2}" compression="bzip2">
+			<tarfileset dir="." prefix="${app.name}-${app.version}/">
+				<include name="README.txt" />
+				<include name="LICENSE.txt" />
+				<include name="src/**" />
+				<include name="build.xml" />
+			</tarfileset>
+		</tar>
+	</target>
+</project>
