@@ -164,7 +164,6 @@
 
 	<target name="clean">
 		<delete dir="${build.dir}" />
-		<delete dir="${lib.native}" />
 		<delete file="${dist.dir}" />
 		<delete file="${javadoc.dir}" />
 		<delete file="${distBin.tar.bz2}" />
@@ -211,6 +210,7 @@
 				<include name="LICENSE.txt" />
 				<include name="dist/**" />
 				<include name="doc/**" />
+                <include name="lib-native/**" />
 			</tarfileset>
 		</tar>
 		<tar destfile="${distSrc.tar.bz2}" compression="bzip2">
