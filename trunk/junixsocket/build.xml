@@ -16,6 +16,9 @@
     limitations under the License.
 -->
 <project name="junixsocket" default="dist" basedir=".">
+	
+	<property environment="env"/>
+	<property name="jdk.home=" value="${env.JAVA_HOME}" />
 
 	<property name="app.name" value="junixsocket" />
 	<property name="app.title" value="junixsocket library" />
@@ -154,9 +157,9 @@
 			<arg value="-shared" />
 			<arg value="-fPIC" />
 			<arg value="-I" />
-			<arg value="${java.home}/include/" />
+			<arg value="${jdk.home}/include/" />
 			<arg value="-I" />
-			<arg value="${java.home}/include/linux" />
+			<arg value="${jdk.home}/include/linux" />
 			<arg value="-o" />
 			<arg value="${outLib}" />
 			<arg value="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.c" />
