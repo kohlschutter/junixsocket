@@ -1,0 +1,575 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+
+<TITLE>
+AFUNIXRMISocketFactory (1.1 API)
+</TITLE>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;charset=utf-8"
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="AFUNIXRMISocketFactory (1.1 API)";
+    }
+}
+</SCRIPT>
+<NOSCRIPT>
+</NOSCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="white" onload="windowTitle();">
+<HR>
+
+
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_top_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/AFUNIXRMISocketFactory.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXNaming.html" title="class in org.newsclub.net.unix.rmi"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/newsclub/net/unix/rmi/DefaultRMIClientSocketFactory.html" title="class in org.newsclub.net.unix.rmi"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../../../index.html?org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="AFUNIXRMISocketFactory.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+<FONT SIZE="-1">
+org.newsclub.net.unix.rmi</FONT>
+<BR>
+Class AFUNIXRMISocketFactory</H2>
+<PRE>
+java.lang.Object
+  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by ">java.rmi.server.RMISocketFactory
+      <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.newsclub.net.unix.rmi.AFUNIXRMISocketFactory</B>
+</PRE>
+<DL>
+<DT><B>All Implemented Interfaces:</B> <DD>java.io.Externalizable, java.io.Serializable, java.rmi.server.RMIClientSocketFactory, java.rmi.server.RMIServerSocketFactory</DD>
+</DL>
+<HR>
+<DL>
+<DT><PRE>public class <B>AFUNIXRMISocketFactory</B><DT>extends java.rmi.server.RMISocketFactory<DT>implements java.io.Externalizable</DL>
+</PRE>
+
+<P>
+An <CODE>RMISocketFactory</CODE> that supports <A HREF="../../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocket</CODE></A>s.
+<P>
+
+<P>
+<DL>
+<DT><B>Author:</B></DT>
+  <DD>Christian Kohlschütter</DD>
+<DT><B>See Also:</B><DD><A HREF="../../../../../serialized-form.html#org.newsclub.net.unix.rmi.AFUNIXRMISocketFactory">Serialized Form</A></DL>
+<HR>
+
+<P>
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+<A NAME="constructor_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#AFUNIXRMISocketFactory()">AFUNIXRMISocketFactory</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Constructor required per definition.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#AFUNIXRMISocketFactory(org.newsclub.net.unix.rmi.AFUNIXNaming, java.io.File)">AFUNIXRMISocketFactory</A></B>(<A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXNaming.html" title="class in org.newsclub.net.unix.rmi">AFUNIXNaming</A>&nbsp;naming,
+                       java.io.File&nbsp;socketDir)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#AFUNIXRMISocketFactory(org.newsclub.net.unix.rmi.AFUNIXNaming, java.io.File, java.rmi.server.RMIClientSocketFactory, java.rmi.server.RMIServerSocketFactory)">AFUNIXRMISocketFactory</A></B>(<A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXNaming.html" title="class in org.newsclub.net.unix.rmi">AFUNIXNaming</A>&nbsp;naming,
+                       java.io.File&nbsp;socketDir,
+                       java.rmi.server.RMIClientSocketFactory&nbsp;defaultClientFactory,
+                       java.rmi.server.RMIServerSocketFactory&nbsp;defaultServerFactory)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#AFUNIXRMISocketFactory(org.newsclub.net.unix.rmi.AFUNIXNaming, java.io.File, java.rmi.server.RMIClientSocketFactory, java.rmi.server.RMIServerSocketFactory, java.lang.String, java.lang.String)">AFUNIXRMISocketFactory</A></B>(<A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXNaming.html" title="class in org.newsclub.net.unix.rmi">AFUNIXNaming</A>&nbsp;naming,
+                       java.io.File&nbsp;socketDir,
+                       java.rmi.server.RMIClientSocketFactory&nbsp;defaultClientFactory,
+                       java.rmi.server.RMIServerSocketFactory&nbsp;defaultServerFactory,
+                       java.lang.String&nbsp;socketPrefix,
+                       java.lang.String&nbsp;socketSuffix)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;
+<!-- ========== METHOD SUMMARY =========== -->
+
+<A NAME="method_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#close()">close</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.net.ServerSocket</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#createServerSocket(int)">createServerSocket</A></B>(int&nbsp;port)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.net.Socket</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#createSocket(java.lang.String, int)">createSocket</A></B>(java.lang.String&nbsp;host,
+             int&nbsp;port)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#equals(java.lang.Object)">equals</A></B>(java.lang.Object&nbsp;other)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.io.File</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#getSocketDir()">getSocketDir</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#hashCode()">hashCode</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>protected &nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#newPort()">newPort</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#readExternal(java.io.ObjectInput)">readExternal</A></B>(java.io.ObjectInput&nbsp;in)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>protected &nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#returnPort(int)">returnPort</A></B>(int&nbsp;port)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#writeExternal(java.io.ObjectOutput)">writeExternal</A></B>(java.io.ObjectOutput&nbsp;out)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.rmi.server.RMISocketFactory"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.rmi.server.RMISocketFactory</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>getDefaultSocketFactory, getFailureHandler, getSocketFactory, setFailureHandler, setSocketFactory</CODE></TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>clone, finalize, getClass, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
+</TR>
+</TABLE>
+&nbsp;
+<P>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+<A NAME="constructor_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="AFUNIXRMISocketFactory()"><!-- --></A><H3>
+AFUNIXRMISocketFactory</H3>
+<PRE>
+public <B>AFUNIXRMISocketFactory</B>()</PRE>
+<DL>
+<DD>Constructor required per definition.
+<P>
+<DL>
+<DT><B>See Also:</B><DD><CODE>RMISocketFactory</CODE></DL>
+</DL>
+<HR>
+
+<A NAME="AFUNIXRMISocketFactory(org.newsclub.net.unix.rmi.AFUNIXNaming, java.io.File)"><!-- --></A><H3>
+AFUNIXRMISocketFactory</H3>
+<PRE>
+public <B>AFUNIXRMISocketFactory</B>(<A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXNaming.html" title="class in org.newsclub.net.unix.rmi">AFUNIXNaming</A>&nbsp;naming,
+                              java.io.File&nbsp;socketDir)
+                       throws java.io.IOException</PRE>
+<DL>
+<DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DL>
+<HR>
+
+<A NAME="AFUNIXRMISocketFactory(org.newsclub.net.unix.rmi.AFUNIXNaming, java.io.File, java.rmi.server.RMIClientSocketFactory, java.rmi.server.RMIServerSocketFactory)"><!-- --></A><H3>
+AFUNIXRMISocketFactory</H3>
+<PRE>
+public <B>AFUNIXRMISocketFactory</B>(<A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXNaming.html" title="class in org.newsclub.net.unix.rmi">AFUNIXNaming</A>&nbsp;naming,
+                              java.io.File&nbsp;socketDir,
+                              java.rmi.server.RMIClientSocketFactory&nbsp;defaultClientFactory,
+                              java.rmi.server.RMIServerSocketFactory&nbsp;defaultServerFactory)
+                       throws java.io.IOException</PRE>
+<DL>
+<DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DL>
+<HR>
+
+<A NAME="AFUNIXRMISocketFactory(org.newsclub.net.unix.rmi.AFUNIXNaming, java.io.File, java.rmi.server.RMIClientSocketFactory, java.rmi.server.RMIServerSocketFactory, java.lang.String, java.lang.String)"><!-- --></A><H3>
+AFUNIXRMISocketFactory</H3>
+<PRE>
+public <B>AFUNIXRMISocketFactory</B>(<A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXNaming.html" title="class in org.newsclub.net.unix.rmi">AFUNIXNaming</A>&nbsp;naming,
+                              java.io.File&nbsp;socketDir,
+                              java.rmi.server.RMIClientSocketFactory&nbsp;defaultClientFactory,
+                              java.rmi.server.RMIServerSocketFactory&nbsp;defaultServerFactory,
+                              java.lang.String&nbsp;socketPrefix,
+                              java.lang.String&nbsp;socketSuffix)
+                       throws java.io.IOException</PRE>
+<DL>
+<DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DL>
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="hashCode()"><!-- --></A><H3>
+hashCode</H3>
+<PRE>
+public int <B>hashCode</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>hashCode</CODE> in class <CODE>java.lang.Object</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="equals(java.lang.Object)"><!-- --></A><H3>
+equals</H3>
+<PRE>
+public boolean <B>equals</B>(java.lang.Object&nbsp;other)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>equals</CODE> in class <CODE>java.lang.Object</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="createSocket(java.lang.String, int)"><!-- --></A><H3>
+createSocket</H3>
+<PRE>
+public java.net.Socket <B>createSocket</B>(java.lang.String&nbsp;host,
+                                    int&nbsp;port)
+                             throws java.io.IOException</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE>createSocket</CODE> in interface <CODE>java.rmi.server.RMIClientSocketFactory</CODE><DT><B>Specified by:</B><DD><CODE>createSocket</CODE> in class <CODE>java.rmi.server.RMISocketFactory</CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getSocketDir()"><!-- --></A><H3>
+getSocketDir</H3>
+<PRE>
+public java.io.File <B>getSocketDir</B>()</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="close()"><!-- --></A><H3>
+close</H3>
+<PRE>
+public void <B>close</B>()</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="newPort()"><!-- --></A><H3>
+newPort</H3>
+<PRE>
+protected int <B>newPort</B>()
+               throws java.io.IOException</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="returnPort(int)"><!-- --></A><H3>
+returnPort</H3>
+<PRE>
+protected void <B>returnPort</B>(int&nbsp;port)
+                   throws java.io.IOException</PRE>
+<DL>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="createServerSocket(int)"><!-- --></A><H3>
+createServerSocket</H3>
+<PRE>
+public java.net.ServerSocket <B>createServerSocket</B>(int&nbsp;port)
+                                         throws java.io.IOException</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE>createServerSocket</CODE> in interface <CODE>java.rmi.server.RMIServerSocketFactory</CODE><DT><B>Specified by:</B><DD><CODE>createServerSocket</CODE> in class <CODE>java.rmi.server.RMISocketFactory</CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="readExternal(java.io.ObjectInput)"><!-- --></A><H3>
+readExternal</H3>
+<PRE>
+public void <B>readExternal</B>(java.io.ObjectInput&nbsp;in)
+                  throws java.io.IOException,
+                         java.lang.ClassNotFoundException</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE>readExternal</CODE> in interface <CODE>java.io.Externalizable</CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE>
+<DD><CODE>java.lang.ClassNotFoundException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="writeExternal(java.io.ObjectOutput)"><!-- --></A><H3>
+writeExternal</H3>
+<PRE>
+public void <B>writeExternal</B>(java.io.ObjectOutput&nbsp;out)
+                   throws java.io.IOException</PRE>
+<DL>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE>writeExternal</CODE> in interface <CODE>java.io.Externalizable</CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DD>
+</DL>
+<!-- ========= END OF CLASS DATA ========= -->
+<HR>
+
+
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<A NAME="navbar_bottom"><!-- --></A>
+<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_bottom_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/AFUNIXRMISocketFactory.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../../../org/newsclub/net/unix/rmi/AFUNIXNaming.html" title="class in org.newsclub.net.unix.rmi"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../org/newsclub/net/unix/rmi/DefaultRMIClientSocketFactory.html" title="class in org.newsclub.net.unix.rmi"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../../../index.html?org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="AFUNIXRMISocketFactory.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+
+<HR>
+
+</BODY>
+</HTML>
