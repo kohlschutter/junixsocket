@@ -1,0 +1,437 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+
+<TITLE>
+AFUNIXSocket (1.1 API)
+</TITLE>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;charset=utf-8"
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="AFUNIXSocket (1.1 API)";
+    }
+}
+</SCRIPT>
+<NOSCRIPT>
+</NOSCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="white" onload="windowTitle();">
+<HR>
+
+
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_top_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/AFUNIXSocket.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../../org/newsclub/net/unix/AFUNIXServerSocket.html" title="class in org.newsclub.net.unix"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html" title="class in org.newsclub.net.unix"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../../index.html?org/newsclub/net/unix/AFUNIXSocket.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="AFUNIXSocket.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+<FONT SIZE="-1">
+org.newsclub.net.unix</FONT>
+<BR>
+Class AFUNIXSocket</H2>
+<PRE>
+java.lang.Object
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by ">java.net.Socket
+      <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.newsclub.net.unix.AFUNIXSocket</B>
+</PRE>
+<HR>
+<DL>
+<DT><PRE>public class <B>AFUNIXSocket</B><DT>extends java.net.Socket</DL>
+</PRE>
+
+<P>
+Implementation of an AF_UNIX domain socket.
+<P>
+
+<P>
+<DL>
+<DT><B>Author:</B></DT>
+  <DD>Christian Kohlschütter</DD>
+</DL>
+<HR>
+
+<P>
+<!-- =========== FIELD SUMMARY =========== -->
+
+<A NAME="field_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Field Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>protected &nbsp;org.newsclub.net.unix.AFUNIXSocketImpl</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html#impl">impl</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;
+<!-- ========== METHOD SUMMARY =========== -->
+
+<A NAME="method_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html#bind(java.net.SocketAddress)">bind</A></B>(java.net.SocketAddress&nbsp;bindpoint)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Binds this <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocket</CODE></A> to the given bindpoint.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html#connect(java.net.SocketAddress)">connect</A></B>(java.net.SocketAddress&nbsp;endpoint)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html#connect(java.net.SocketAddress, int)">connect</A></B>(java.net.SocketAddress&nbsp;endpoint,
+        int&nbsp;timeout)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;<A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix">AFUNIXSocket</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html#connectTo(org.newsclub.net.unix.AFUNIXSocketAddress)">connectTo</A></B>(<A HREF="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html" title="class in org.newsclub.net.unix">AFUNIXSocketAddress</A>&nbsp;addr)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocket</CODE></A> and connects it to the given
+ <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocketAddress</CODE></A>.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html#isSupported()">isSupported</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns <code>true</code> iff <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocket</CODE></A>s are supported
+ by the current Java VM.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;<A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix">AFUNIXSocket</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html#newInstance()">newInstance</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new, unbound <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocket</CODE></A>.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html#toString()">toString</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.net.Socket"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.net.Socket</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>close, getChannel, getInetAddress, getInputStream, getKeepAlive, getLocalAddress, getLocalPort, getLocalSocketAddress, getOOBInline, getOutputStream, getPort, getReceiveBufferSize, getRemoteSocketAddress, getReuseAddress, getSendBufferSize, getSoLinger, getSoTimeout, getTcpNoDelay, getTrafficClass, isBound, isClosed, isConnected, isInputShutdown, isOutputShutdown, sendUrgentData, setKeepAlive, setOOBInline, setPerformancePreferences, setReceiveBufferSize, setReuseAddress, setSendBufferSize, setSocketImplFactory, setSoLinger, setSoTimeout, setTcpNoDelay, setTrafficClass, shutdownInput, shutdownOutput</CODE></TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>clone, equals, finalize, getClass, hashCode, notify, notifyAll, wait, wait, wait</CODE></TD>
+</TR>
+</TABLE>
+&nbsp;
+<P>
+
+<!-- ============ FIELD DETAIL =========== -->
+
+<A NAME="field_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Field Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="impl"><!-- --></A><H3>
+impl</H3>
+<PRE>
+protected org.newsclub.net.unix.AFUNIXSocketImpl <B>impl</B></PRE>
+<DL>
+<DL>
+</DL>
+</DL>
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="newInstance()"><!-- --></A><H3>
+newInstance</H3>
+<PRE>
+public static <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix">AFUNIXSocket</A> <B>newInstance</B>()
+                                throws java.io.IOException</PRE>
+<DL>
+<DD>Creates a new, unbound <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocket</CODE></A>.
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="connectTo(org.newsclub.net.unix.AFUNIXSocketAddress)"><!-- --></A><H3>
+connectTo</H3>
+<PRE>
+public static <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix">AFUNIXSocket</A> <B>connectTo</B>(<A HREF="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html" title="class in org.newsclub.net.unix">AFUNIXSocketAddress</A>&nbsp;addr)
+                              throws java.io.IOException</PRE>
+<DL>
+<DD>Creates a new <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocket</CODE></A> and connects it to the given
+ <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocketAddress</CODE></A>.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>addr</CODE> - 
+<DT><B>Returns:</B><DD>
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="bind(java.net.SocketAddress)"><!-- --></A><H3>
+bind</H3>
+<PRE>
+public void <B>bind</B>(java.net.SocketAddress&nbsp;bindpoint)
+          throws java.io.IOException</PRE>
+<DL>
+<DD>Binds this <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocket</CODE></A> to the given bindpoint.
+ Only bindpoints of the type <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocketAddress</CODE></A> are supported.
+<P>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>bind</CODE> in class <CODE>java.net.Socket</CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="connect(java.net.SocketAddress)"><!-- --></A><H3>
+connect</H3>
+<PRE>
+public void <B>connect</B>(java.net.SocketAddress&nbsp;endpoint)
+             throws java.io.IOException</PRE>
+<DL>
+<DD>
+<P>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>connect</CODE> in class <CODE>java.net.Socket</CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="connect(java.net.SocketAddress, int)"><!-- --></A><H3>
+connect</H3>
+<PRE>
+public void <B>connect</B>(java.net.SocketAddress&nbsp;endpoint,
+                    int&nbsp;timeout)
+             throws java.io.IOException</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>connect</CODE> in class <CODE>java.net.Socket</CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Throws:</B>
+<DD><CODE>java.io.IOException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="toString()"><!-- --></A><H3>
+toString</H3>
+<PRE>
+public java.lang.String <B>toString</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>toString</CODE> in class <CODE>java.net.Socket</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="isSupported()"><!-- --></A><H3>
+isSupported</H3>
+<PRE>
+public static boolean <B>isSupported</B>()</PRE>
+<DL>
+<DD>Returns <code>true</code> iff <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocket</CODE></A>s are supported
+ by the current Java VM.
+ 
+ To support <A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix"><CODE>AFUNIXSocket</CODE></A>s, a custom JNI library must be loaded
+ that is supplied with junixsocket.
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD></DL>
+</DD>
+</DL>
+<!-- ========= END OF CLASS DATA ========= -->
+<HR>
+
+
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<A NAME="navbar_bottom"><!-- --></A>
+<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_bottom_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/AFUNIXSocket.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../../org/newsclub/net/unix/AFUNIXServerSocket.html" title="class in org.newsclub.net.unix"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html" title="class in org.newsclub.net.unix"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../../index.html?org/newsclub/net/unix/AFUNIXSocket.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="AFUNIXSocket.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+
+<HR>
+
+</BODY>
+</HTML>
