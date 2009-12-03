@@ -19,7 +19,7 @@
 
 	<property name="app.name" value="junixsocket" />
 	<property name="app.title" value="junixsocket library" />
-	<property name="app.version" value="1.1-dev" />
+	<property name="app.version" value="1.0-dev" />
 	<property name="app.javaversion" value="1.5" />
 	<property name="app.dir" value="." />
 
@@ -89,6 +89,7 @@
 		<mkdir dir="${build.rmi}" />
 		<mkdir dir="${build.demo}" />
 		<mkdir dir="${lib.native}" />
+        <mkdir dir="${dist.dir}" />
 	</target>
 
 	<target name="compile">
