@@ -25,7 +25,7 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
  * A simple RMI client. Locates the RMI registry via AF_UNIX sockets and
  * calls {@link HelloWorld#hello()}.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 public class SimpleRMIClient {
     public static void main(String[] args) throws Exception {

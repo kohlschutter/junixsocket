@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 /**
  * JNI connector to native JNI C code.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 final class NativeUnixSocket {
     private static final String PROP_LIBRARY_LOADED = "org.newsclub.net.unix.library.loaded";

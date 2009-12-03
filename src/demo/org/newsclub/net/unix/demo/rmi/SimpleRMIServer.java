@@ -27,7 +27,7 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
  * A very simple RMI server. Provides a registry and the implementation of the
  * {@link HelloWorld} service.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 public class SimpleRMIServer {
     public static void main(String[] args) throws Exception {

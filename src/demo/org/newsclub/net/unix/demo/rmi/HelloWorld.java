@@ -23,7 +23,7 @@ import java.rmi.Remote;
 /**
  * A very simple "hello world" service.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 public interface HelloWorld extends Remote {
     /**

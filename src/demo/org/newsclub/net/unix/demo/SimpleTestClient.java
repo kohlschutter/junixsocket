@@ -29,7 +29,7 @@ import org.newsclub.net.unix.AFUNIXSocketException;
 /**
  * A simple demo client.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  * @see SimpleTestServer
  */
 public class SimpleTestClient {

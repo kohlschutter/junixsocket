@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * The implementation of the very simple {@link HelloWorld} service.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 public class HelloWorldImpl implements HelloWorld {
     public String hello() throws IOException {

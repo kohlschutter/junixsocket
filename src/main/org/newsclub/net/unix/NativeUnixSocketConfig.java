@@ -22,7 +22,7 @@ package org.newsclub.net.unix;
  * 
  * At the moment, only a default library path is specified.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 final class NativeUnixSocketConfig {
     /**

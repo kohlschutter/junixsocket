@@ -29,7 +29,7 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 /**
  * A simple demo server
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  * @see SimpleTestClient
  */
 public class SimpleTestServer {
