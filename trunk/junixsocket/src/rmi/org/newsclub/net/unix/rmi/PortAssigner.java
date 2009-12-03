@@ -24,7 +24,7 @@ import java.rmi.Remote;
  * The {@link PortAssigner} assigns and keeps track of anonymous ports. This
  * feature is to be used by {@link AFUNIXRMISocketFactory} only.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 public interface PortAssigner extends Remote {
     /**

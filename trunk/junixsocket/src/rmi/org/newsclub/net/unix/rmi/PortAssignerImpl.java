@@ -23,7 +23,7 @@ import java.util.BitSet;
 /**
  * A very simple implementation of a {@link PortAssigner}.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 class PortAssignerImpl implements PortAssigner {
     private static final long serialVersionUID = 1L;

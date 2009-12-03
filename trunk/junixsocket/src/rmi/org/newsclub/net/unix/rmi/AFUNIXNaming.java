@@ -20,6 +20,7 @@ package org.newsclub.net.unix.rmi;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -38,10 +39,12 @@ import org.newsclub.net.unix.AFUNIXSocket;
  * class for accessing RMI registries that are reachable by {@link AFUNIXSocket}
  * s.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 public final class AFUNIXNaming {
     private static final String PORT_ASSIGNER_ID = PortAssigner.class.getName();
+
+    private static final File DEFAULT_SOCKET_DIRECTORY = new File("/tmp");
 
     private static final Map<SocketDirAndPort, AFUNIXNaming> instances = new HashMap<SocketDirAndPort, AFUNIXNaming>();
 
@@ -52,8 +55,21 @@ public final class AFUNIXNaming {
      * @return
      */
     public static AFUNIXNaming getInstance() throws IOException {
-        return getInstance(AFUNIXRMISocketFactory.DEFAULT_SOCKET_DIR,
-                AFUNIXRMIPorts.DEFAULT_REGISTRY_PORT);
+        return getInstance(DEFAULT_SOCKET_DIRECTORY, AFUNIXRMIPorts.DEFAULT_REGISTRY_PORT);
+    }
+
+    /**
+     * Returns an {@link AFUNIXNaming} instance which only supports one file.
+     * (Probably only useful when you want/can access the exported
+     * {@link UnicastRemoteObject} directly)
+     * 
+     * @param socketFile
+     * @return
+     * @throws IOException
+     */
+    public static AFUNIXNaming getSingleFileInstance(final File socketFile)
+            throws IOException {
+        return getInstance(socketFile, AFUNIXRMIPorts.PLAIN_FILE_SOCKET);
     }
 
     /**
@@ -67,15 +83,39 @@ public final class AFUNIXNaming {
         return getInstance(socketDir, AFUNIXRMIPorts.DEFAULT_REGISTRY_PORT);
     }
 
-    public static AFUNIXNaming getInstance(final File socketDir,
+    public static AFUNIXNaming getInstance(File socketDir,
             final int registryPort) throws RemoteException {
+
+        String socketPrefix = null;
+        String socketSuffix = null;
+        if (socketDir == null) {
+            socketDir = DEFAULT_SOCKET_DIRECTORY;
+            socketDir.mkdirs();
+            
+            File f;
+            try {
+                f = File.createTempFile("jux", "-", socketDir);
+            } catch (IOException e) {
+                throw new RemoteException("Cannot create temporary file: "+e.getMessage(),e);
+            }
+            f.delete();
+            
+            socketPrefix = f.getName(); 
+        }
         final SocketDirAndPort sap = new SocketDirAndPort(socketDir,
                 registryPort);
         AFUNIXNaming instance;
         synchronized (AFUNIXNaming.class) {
             instance = instances.get(sap);
             if (instance == null) {
-                instance = new AFUNIXNaming(sap.socketDir, registryPort);
+                try {
+                    instance = new AFUNIXNaming(sap.socketDir, registryPort,
+                            socketPrefix, socketSuffix);
+                } catch (RemoteException e) {
+                    throw e;
+                } catch (IOException e) {
+                    throw new RemoteException(e.getMessage(), e);
+                }
                 instances.put(sap, instance);
             }
         }
@@ -88,10 +128,13 @@ public final class AFUNIXNaming {
     private final int registryPort;
     private AFUNIXRMISocketFactory socketFactory;
 
-    public AFUNIXNaming(final File socketDir, final int port) {
+    private AFUNIXNaming(final File socketDir, final int port,
+            final String socketPrefix, final String socketSuffix)
+            throws IOException {
         this.registrySocketDir = socketDir;
         this.registryPort = port;
-        this.socketFactory = new AFUNIXRMISocketFactory(this, socketDir);
+        this.socketFactory = new AFUNIXRMISocketFactory(this, socketDir, null,
+                null, socketPrefix, socketSuffix);
     }
 
     public AFUNIXRMISocketFactory getSocketFactory() {
@@ -161,6 +204,28 @@ public final class AFUNIXNaming {
     public void rebind(String name, Remote obj)
             throws java.net.MalformedURLException, RemoteException {
         getRegistry().rebind(name, obj);
+    }
+
+    /**
+     * Shuts this RMI Registry down. Before calling this method, you have to
+     * unexport all existing bindings, otherwise the "RMI Reaper" thread will
+     * not be closed.
+     * 
+     * @throws AccessException
+     * @throws RemoteException
+     * @throws IOException
+     */
+    public void shutdownRegistry() throws AccessException, RemoteException,
+            IOException {
+        try {
+            getRegistry().unbind(PORT_ASSIGNER_ID);
+            UnicastRemoteObject.unexportObject(portAssigner, true);
+        } catch (NotBoundException e) {
+        }
+        portAssigner = null;
+
+        socketFactory.close();
+        socketFactory = null;
     }
 
     private static final class SocketDirAndPort {
