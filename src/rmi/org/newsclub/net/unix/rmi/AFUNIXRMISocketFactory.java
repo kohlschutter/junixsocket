@@ -36,26 +36,31 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 /**
  * An {@link RMISocketFactory} that supports {@link AFUNIXSocket}s.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 public class AFUNIXRMISocketFactory extends RMISocketFactory implements
         Externalizable {
     private static final long serialVersionUID = 1L;
-    
-    public static final File DEFAULT_SOCKET_DIR = new File(System
-            .getProperty("java.io.tmpdir")); 
 
     private RMIClientSocketFactory defaultClientFactory;
     private RMIServerSocketFactory defaultServerFactory;
 
+    static final String DEFAULT_SOCKET_FILE_PREFIX = "";
+    static final String DEFAULT_SOCKET_FILE_SUFFIX = ".rmi";
+
     private File socketDir;
     private AFUNIXNaming naming;
-    
+
+    private String socketPrefix;
+
+    private String socketSuffix;
+
     public int hashCode() {
         return socketDir.hashCode();
     }
+
     public boolean equals(Object other) {
-        if(!(other instanceof AFUNIXRMISocketFactory)) {
+        if (!(other instanceof AFUNIXRMISocketFactory)) {
             return false;
         }
         AFUNIXRMISocketFactory sf = (AFUNIXRMISocketFactory) other;
@@ -64,14 +69,15 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements
 
     /**
      * Constructor required per definition.
+     * 
      * @see RMISocketFactory
-     *
+     * 
      */
     public AFUNIXRMISocketFactory() {
     }
 
     public AFUNIXRMISocketFactory(final AFUNIXNaming naming,
-            final File socketDir) {
+            final File socketDir) throws IOException {
         this(naming, socketDir, DefaultRMIClientSocketFactory.getInstance(),
                 DefaultRMIServerSocketFactory.getInstance());
     }
@@ -79,17 +85,34 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements
     public AFUNIXRMISocketFactory(final AFUNIXNaming naming,
             final File socketDir,
             final RMIClientSocketFactory defaultClientFactory,
-            final RMIServerSocketFactory defaultServerFactory) {
+            final RMIServerSocketFactory defaultServerFactory)
+            throws IOException {
+        this(naming, socketDir, defaultClientFactory, defaultServerFactory,
+                null, null);
+    }
+
+    public AFUNIXRMISocketFactory(final AFUNIXNaming naming,
+            final File socketDir,
+            final RMIClientSocketFactory defaultClientFactory,
+            final RMIServerSocketFactory defaultServerFactory,
+            final String socketPrefix, final String socketSuffix)
+            throws IOException {
         this.naming = naming;
-        this.socketDir = socketDir == null ? DEFAULT_SOCKET_DIR : socketDir;
+        this.socketDir = socketDir;
         this.defaultClientFactory = defaultClientFactory;
         this.defaultServerFactory = defaultServerFactory;
+        this.socketPrefix = socketPrefix == null ? DEFAULT_SOCKET_FILE_PREFIX
+                : socketPrefix;
+        this.socketSuffix = socketSuffix == null ? DEFAULT_SOCKET_FILE_SUFFIX
+                : socketSuffix;
     }
 
     public Socket createSocket(String host, int port) throws IOException {
-        if (port < AFUNIXRMIPorts.AF_PORT_BASE) {
-            return defaultClientFactory.createSocket(host, port);
+        final RMIClientSocketFactory cf = defaultClientFactory;
+        if (cf != null && port < AFUNIXRMIPorts.AF_PORT_BASE) {
+            return cf.createSocket(host, port);
         }
+        
         final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(getFile(port),
                 port);
         return AFUNIXSocket.connectTo(addr);
@@ -100,7 +123,14 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements
     }
 
     private File getFile(int port) {
-        return new File(socketDir, "junixsocket-rmi-" + port + ".sock");
+        if (naming.getRegistryPort() == AFUNIXRMIPorts.PLAIN_FILE_SOCKET) {
+            return socketDir;
+        } else {
+            return new File(socketDir, socketPrefix + port + socketSuffix);
+        }
+    }
+
+    public void close() {
     }
 
     private PortAssigner generator = null;
@@ -130,8 +160,6 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements
     }
 
     public ServerSocket createServerSocket(int port) throws IOException {
-
-
         if (port == 0) {
             port = newPort();
             final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(
@@ -139,14 +167,17 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements
             final AnonymousServerSocket ass = new AnonymousServerSocket(port);
             ass.bind(addr);
             return ass;
-        } else if (port < AFUNIXRMIPorts.AF_PORT_BASE) {
-            return defaultServerFactory.createServerSocket(port);
-        } else {
-            final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(
-                    getFile(port), port);
-            return AFUNIXServerSocket.bindOn(addr);
+        } 
+        
+        final RMIServerSocketFactory sf = defaultServerFactory;
+        if (sf != null
+                && port < AFUNIXRMIPorts.AF_PORT_BASE) {
+            return sf.createServerSocket(port);
         }
-
+        
+        final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(getFile(port),
+                port);
+        return AFUNIXServerSocket.bindOn(addr);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -157,6 +188,9 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements
 
         defaultClientFactory = (RMIClientSocketFactory) in.readObject();
         defaultServerFactory = (RMIServerSocketFactory) in.readObject();
+
+        socketPrefix = in.readUTF();
+        socketSuffix = in.readUTF();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -165,6 +199,9 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements
 
         out.writeObject(defaultClientFactory);
         out.writeObject(defaultServerFactory);
+
+        out.writeUTF(socketPrefix);
+        out.writeUTF(socketSuffix);
     }
 
     private final class AnonymousServerSocket extends AFUNIXServerSocket {

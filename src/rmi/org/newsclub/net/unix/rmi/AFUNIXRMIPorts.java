@@ -20,7 +20,7 @@ package org.newsclub.net.unix.rmi;
 /**
  * Contains some default ports used by junixsocket for RMI-over-AFUNIX.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  * @see AFUNIXRMISocketFactory
  * @see PortAssigner
  */
@@ -47,4 +47,10 @@ final class AFUNIXRMIPorts {
      * @see PortAssigner
      */
     public static final int ANONYMOUS_PORT_BASE = 110000;
+    
+    /**
+     * This port is used to state that the socket path specified in {@link AFUNIXRMISocketFactory}
+     * points to a socket <em>file</em>, not a directory. 
+     */
+    static final int PLAIN_FILE_SOCKET = Integer.MAX_VALUE;
 }
