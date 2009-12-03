@@ -331,4 +331,16 @@ class AFUNIXSocketImpl extends SocketImpl {
         }
         throw new AFUNIXSocketException("Unsupported option: " + optID);
     }
+
+    protected void shutdownInput() throws IOException {
+        if (!closed && fd.valid()) {
+            NativeUnixSocket.shutdown(fd, SHUT_RD);
+        }
+    }
+
+    protected void shutdownOutput() throws IOException {
+        if (!closed && fd.valid()) {
+            NativeUnixSocket.shutdown(fd, SHUT_WR);
+        }
+    }
 }
