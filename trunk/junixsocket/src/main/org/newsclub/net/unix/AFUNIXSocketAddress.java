@@ -28,7 +28,7 @@ import java.net.InetSocketAddress;
  * The ability to specify a port number is not specified by AF_UNIX sockets, but
  * we need it sometimes, for example for RMI-over-AF_UNIX.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 public class AFUNIXSocketAddress extends InetSocketAddress {
 

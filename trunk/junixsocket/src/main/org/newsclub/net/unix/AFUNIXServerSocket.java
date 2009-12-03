@@ -26,7 +26,7 @@ import java.net.SocketException;
 /**
  * The server part of an AF_UNIX domain socket.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 public class AFUNIXServerSocket extends ServerSocket {
     private final AFUNIXSocketImpl implementation;

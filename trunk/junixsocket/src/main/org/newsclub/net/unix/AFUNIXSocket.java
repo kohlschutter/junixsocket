@@ -24,7 +24,7 @@ import java.net.SocketAddress;
 /**
  * Implementation of an AF_UNIX domain socket. 
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 public class AFUNIXSocket extends Socket {
     protected AFUNIXSocketImpl impl;

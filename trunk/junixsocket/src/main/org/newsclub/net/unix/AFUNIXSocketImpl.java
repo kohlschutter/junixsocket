@@ -30,7 +30,7 @@ import java.net.SocketOptions;
 /**
  * The Java-part of the {@link AFUNIXSocket} implementation.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 class AFUNIXSocketImpl extends SocketImpl {
     private static final int SHUT_RD = 0;

@@ -22,7 +22,7 @@ import java.net.SocketException;
 /**
  * Something went wrong with the communication to a Unix socket.
  * 
- * @author Christian Kohlschuetter
+ * @author Christian Kohlschütter
  */
 public class AFUNIXSocketException extends SocketException {
     private static final long serialVersionUID = 1L;
