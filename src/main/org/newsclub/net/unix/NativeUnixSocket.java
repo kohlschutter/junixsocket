@@ -20,6 +20,8 @@ package org.newsclub.net.unix;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,7 +30,7 @@ import java.util.logging.Logger;
  * 
  * @author Christian Kohlschuetter
  */
-class NativeUnixSocket {
+final class NativeUnixSocket {
     private static final String PROP_LIBRARY_LOADED = "org.newsclub.net.unix.library.loaded";
     private static final String PROP_LIBRARY_DIR = "org.newsclub.net.unix.library.path";
 
@@ -36,7 +38,11 @@ class NativeUnixSocket {
         return "true".equals(System.getProperty(PROP_LIBRARY_LOADED, "false"));
     }
 
-    static {
+    static void checkSupported() {
+        load();
+    }
+
+    static void load() {
         if (!isSupported()) {
             String osName = System.getProperty("os.name");
             final String arch = System.getProperty("os.arch");
@@ -63,6 +69,8 @@ class NativeUnixSocket {
             String[] javaSpecs = "1.5".equals(javaSpec) ? new String[] { javaSpec }
                     : new String[] { javaSpec, "1.5" };
 
+            List<String> paths = new ArrayList<String>();
+
             UnsatisfiedLinkError ule = null;
             findLib: for (String ld : libDirs) {
                 for (String js : javaSpecs) {
@@ -70,11 +78,14 @@ class NativeUnixSocket {
                     String libId = "junixsocket-" + os + "-" + js + "-" + arch;
                     try {
                         if (ld == null) {
+                            paths.add("lib:" + libId);
                             System.loadLibrary(libId);
                         } else {
                             final File libFile = new File(new File(ld), prefix
                                     + libId + suffix);
-                            System.load(libFile.getAbsolutePath());
+                            final String absPath = libFile.getAbsolutePath();
+                            paths.add(absPath);
+                            System.load(absPath);
                         }
                     } catch (UnsatisfiedLinkError e) {
                         ule = e;
@@ -86,10 +97,16 @@ class NativeUnixSocket {
                 }
             }
             if (ule != null) {
-                throw ule;
+                throw (UnsatisfiedLinkError) new UnsatisfiedLinkError(
+                        "Could not load junixsocket library, tried " + paths)
+                        .initCause(ule);
             }
             System.setProperty(PROP_LIBRARY_LOADED, "true");
         }
+    }
+
+    static {
+        load();
     }
 
     native static void bind(final String socketFile, final FileDescriptor fd,
