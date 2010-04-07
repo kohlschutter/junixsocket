@@ -18,7 +18,7 @@
 <project name="junixsocket" default="dist" basedir=".">
 
 	<property environment="env" />
-	<property name="jdk.home=" value="${env.JAVA_HOME}" />
+	<property name="jdk.home" value="${env.JAVA_HOME}" />
 
 	<property name="app.name" value="junixsocket" />
 	<property name="app.title" value="junixsocket library" />
