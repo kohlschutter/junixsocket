@@ -252,10 +252,16 @@ extern "C" {
 		ssize_t count = read(handle, &(buf[offset]), length);
 		(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
 		
-		if(count == -1) {
-			if(errno == EAGAIN || errno == EWOULDBLOCK) {
-				return 0;
-			}
+        if(count == 0) {
+            // read(2) returns 0 on EOF. Java returns -1.
+            return -1;
+        } else if(count == -1) {
+            // read(2) returns -1 on error. Java throws an Exception.
+            
+//          Removed since non-blocking is not yet supported
+//			if(errno == EAGAIN || errno == EWOULDBLOCK) {
+//				return 0;
+//			}
 			org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), NULL);
 			return -1;
 		}
