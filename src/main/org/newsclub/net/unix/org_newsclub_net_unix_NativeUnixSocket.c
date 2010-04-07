@@ -227,6 +227,7 @@ extern "C" {
 		
 		int ret = connect(socketHandle, (struct sockaddr *)&su, suLength);
 		if(ret == -1) {
+            close(socketHandle);
 			org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), file);
 			return;
 		}
