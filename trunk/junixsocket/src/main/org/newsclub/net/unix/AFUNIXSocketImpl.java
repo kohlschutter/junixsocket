@@ -158,10 +158,10 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
 
     private final class AFUNIXInputStream extends InputStream {
-        private boolean closed = false;
+        private boolean streamClosed = false;
 
         public int read(byte[] b, int off, int len) throws IOException {
-            if (closed) {
+            if (streamClosed) {
                 throw new IOException(
                         "This InputStream has already been closed.");
             }
@@ -187,10 +187,10 @@ class AFUNIXSocketImpl extends SocketImpl {
         }
 
         public void close() throws IOException {
-            if (closed) {
+            if (streamClosed) {
                 return;
             }
-            closed = true;
+            streamClosed = true;
             if (fd.valid()) {
                 NativeUnixSocket.shutdown(fd, SHUT_RD);
             }
@@ -201,7 +201,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
 
     private final class AFUNIXOutputStream extends OutputStream {
-        private boolean closed = false;
+        private boolean streamClosed = false;
 
         private byte[] buf1 = new byte[1];
 
@@ -213,7 +213,7 @@ class AFUNIXSocketImpl extends SocketImpl {
         }
 
         public void write(byte b[], int off, int len) throws IOException {
-            if (closed) {
+            if (streamClosed) {
                 throw new AFUNIXSocketException(
                         "This OutputStream has already been closed.");
             }
@@ -233,10 +233,10 @@ class AFUNIXSocketImpl extends SocketImpl {
         }
 
         public void close() throws IOException {
-            if (closed) {
+            if (streamClosed) {
                 return;
             }
-            closed = true;
+            streamClosed = true;
             if (fd.valid()) {
                 NativeUnixSocket.shutdown(fd, SHUT_WR);
             }
