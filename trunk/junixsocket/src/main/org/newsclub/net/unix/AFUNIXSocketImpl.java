@@ -165,6 +165,9 @@ class AFUNIXSocketImpl extends SocketImpl {
                 throw new IOException(
                         "This InputStream has already been closed.");
             }
+            if (len == 0) {
+                return 0;
+            }
             try {
                 return NativeUnixSocket.read(fd, b, off, len);
             } catch (IOException e) {
@@ -178,7 +181,7 @@ class AFUNIXSocketImpl extends SocketImpl {
         public int read() throws IOException {
             synchronized (buf1) {
                 int numRead = read(buf1, 0, 1);
-                if (numRead == 0) {
+                if (numRead <= 0) {
                     return -1;
                 } else {
                     return buf1[0] & 0xFF;
