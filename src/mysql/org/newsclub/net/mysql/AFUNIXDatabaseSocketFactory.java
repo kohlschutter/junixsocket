@@ -28,31 +28,34 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 
 import com.mysql.jdbc.SocketFactory;
 
-public class MysqlAFUNIXSocketFactory implements SocketFactory {
+/**
+ * Connect to mysql databases (and compatibles) using UNIX domain sockets.
+ */
+public class AFUNIXDatabaseSocketFactory implements SocketFactory {
 
-    public MysqlAFUNIXSocketFactory() {
-    }
+	public AFUNIXDatabaseSocketFactory() {
+	}
 
-    private Socket socket = null;
+	private Socket socket = null;
 
-    public Socket afterHandshake() throws SocketException, IOException {
-        return socket;
-    }
+	public Socket afterHandshake() throws SocketException, IOException {
+		return socket;
+	}
 
-    public Socket beforeHandshake() throws SocketException, IOException {
-        return socket;
-    }
+	public Socket beforeHandshake() throws SocketException, IOException {
+		return socket;
+	}
 
-    public Socket connect(String host, int portNumber, Properties props)
-            throws SocketException, IOException {
-        // Adjust the path to your MySQL socket by setting the "junixsocket.file" property
-        // If no socket path is given, use the default: /tmp/mysql.sock
-        final File socketFile = new File(props.getProperty("junixsocket.file",
-                "/tmp/mysql.sock"));
+	public Socket connect(String host, int portNumber, Properties props)
+			throws SocketException, IOException {
+		// Adjust the path to your MySQL socket by setting the
+		// "junixsocket.file" property
+		// If no socket path is given, use the default: /tmp/mysql.sock
+		final File socketFile = new File(props.getProperty("junixsocket.file",
+				"/tmp/mysql.sock"));
 
-        socket = AFUNIXSocket.connectTo(new AFUNIXSocketAddress(
-                socketFile));
-        return socket;
-    }
+		socket = AFUNIXSocket.connectTo(new AFUNIXSocketAddress(socketFile));
+		return socket;
+	}
 
 }
