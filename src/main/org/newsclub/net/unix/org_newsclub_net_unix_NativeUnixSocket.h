@@ -7,7 +7,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    bind
