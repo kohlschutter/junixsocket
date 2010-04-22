@@ -34,6 +34,27 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+    
+#define junixsocket_have_sun_len
+        
+// Linux
+#ifdef __linux__
+#undef junixsocket_have_sun_len
+#endif
+    
+// Tru64
+#ifdef __osf__
+    
+#undef junixsocket_have_sun_len    
+#undef  recv
+#undef  send
+#define recv(a,b,c,d)   recvfrom(a,b,c,d,0,0)
+#define send(a,b,c,d)   sendto(a,b,c,d,0,0)
+    typedef int socklen_t;
+    
+#endif
+    
+    
 /**
  * The native C part of the AFUnixSocket implementation.
  *
