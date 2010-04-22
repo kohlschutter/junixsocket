@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <string.h>
 #include <errno.h>
 #include <fcntl.h>
 
@@ -89,14 +90,14 @@ extern "C" {
 		
 		struct sockaddr_un su;
 		su.sun_family = AF_UNIX;
-#ifndef __linux__
+#ifdef junixsocket_have_sun_len
 		su.sun_len = (sizeof(su) - sizeof(su.sun_path) + strlen(su.sun_path));
 #endif
 		strcpy(su.sun_path, socketFile);
 		(*env)->ReleaseStringUTFChars(env, file, socketFile);
 		
 		socklen_t suLength = strlen(su.sun_path) + sizeof(su.sun_family)
-#ifndef __linux__
+#ifdef junixsocket_have_sun_len
 		+ sizeof(su.sun_len)
 #endif
 		;
@@ -145,7 +146,7 @@ extern "C" {
 		
 		struct sockaddr_un su;
 		su.sun_family = AF_UNIX;
-		#ifndef __linux__
+		#ifdef junixsocket_have_sun_len
 		  su.sun_len = (sizeof(su) - sizeof(su.sun_path) + strlen(su.sun_path));
 		#endif
 		
@@ -153,10 +154,10 @@ extern "C" {
 		(*env)->ReleaseStringUTFChars(env, file, socketFile);
 		
 		socklen_t suLength = strlen(su.sun_path) + sizeof(su.sun_family)
-		#ifndef __linux__
+		#ifdef junixsocket_have_sun_len
 		 + sizeof(su.sun_len)
-		 #endif
-		 ;
+        #endif
+        ;
 		
 		int bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
 		
@@ -258,7 +259,7 @@ extern "C" {
 
 		struct sockaddr_un su;
 		su.sun_family = AF_UNIX;
-		#ifndef __linux__
+		#ifdef junixsocket_have_sun_len
 		su.sun_len = (sizeof(su) - sizeof(su.sun_path) + strlen(su.sun_path));
 		#endif
 
@@ -266,7 +267,7 @@ extern "C" {
 		(*env)->ReleaseStringUTFChars(env, file, socketFile);
 		
 		socklen_t suLength = strlen(su.sun_path) + sizeof(su.sun_family)
-		#ifndef __linux
+		#ifdef junixsocket_have_sun_len
 		 + sizeof(su.sun_len)
 		#endif
 		;
