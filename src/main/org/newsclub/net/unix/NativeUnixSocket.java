@@ -53,7 +53,7 @@ final class NativeUnixSocket {
             String os = osName.replaceAll("[^A-Za-z0-9]", "").toLowerCase();
             if ("macosx".equals(os)) {
                 suffix = ".dylib";
-            } else if ("linux".equals(os)) {
+            } else if ("linux".equals(os) || "freebsd".equals(os)) {
                 suffix = ".so";
             } else {
                 Logger.getLogger(NativeUnixSocket.class.getName()).log(
