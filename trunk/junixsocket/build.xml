@@ -131,7 +131,7 @@
 		<delete file="${outLib}" />
 
 		<echo message="Compiling for architecture ${gccArch} on ${os.name}" />
-		<exec executable="/usr/bin/gcc-4.2">
+		<exec executable="/usr/bin/gcc-4.2" failonerror="true">
 			<arg value="-O2" />
 			<arg value="-Wall" />
 			<arg value="-arch" />
@@ -159,7 +159,7 @@
 		<property name="outLib" value="${lib.native}/libjunixsocket-linux-${app.javaversion}-${gccArch}.so" />
 
 		<echo message="Compiling for architecture ${gccArch} on ${os.name}" />
-		<exec executable="gcc">
+		<exec executable="gcc" failonerror="true">
 			<arg value="${gccM}" />
 			<arg value="-O2" />
 			<arg value="-Wall" />
@@ -200,7 +200,7 @@
 	<target name="gcc-freebsd.arch">
 	  <property name="outLib" value="${lib.native}/libjunixsocket-freebsd-${app.javaversion}-${gccArch}.so" />
 	  <echo message="Compiling for architecture ${gccArch} on ${os.name}" />
-	  <exec executable="gcc">
+	  <exec executable="gcc" failonerror="true">
 	    <arg value="-O2" />
 	    <arg value="-Wall" />
 	    <arg value="-shared" />
