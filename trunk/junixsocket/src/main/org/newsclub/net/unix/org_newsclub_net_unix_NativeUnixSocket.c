@@ -50,7 +50,7 @@ extern "C" {
 #undef  send
 #define recv(a,b,c,d)   recvfrom(a,b,c,d,0,0)
 #define send(a,b,c,d)   sendto(a,b,c,d,0,0)
-    typedef int socklen_t;
+typedef unsigned long socklen_t; /* 64-bits */ 
     
 #endif
     
