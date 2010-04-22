@@ -4,7 +4,7 @@
 <HEAD>
 
 <TITLE>
-org.newsclub.net.unix (1.1 API)
+org.newsclub.net.mysql (1.1 API)
 </TITLE>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;charset=utf-8"
@@ -15,7 +15,7 @@ org.newsclub.net.unix (1.1 API)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="org.newsclub.net.unix (1.1 API)";
+        parent.document.title="org.newsclub.net.mysql (1.1 API)";
     }
 }
 </SCRIPT>
@@ -55,10 +55,10 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/newsclub/net/mysql/package-summary.html"><B>PREV PACKAGE</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/newsclub/net/unix/rmi/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
+&nbsp;PREV PACKAGE&nbsp;
+&nbsp;<A HREF="../../../../org/newsclub/net/unix/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/newsclub/net/unix/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/newsclub/net/mysql/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="package-summary.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
@@ -80,9 +80,9 @@ function windowTitle()
 
 <HR>
 <H2>
-Package org.newsclub.net.unix
+Package org.newsclub.net.mysql
 </H2>
-The actual AF_UNIX Socket implementation.
+Provides code that allows interaction with MySQL databases over AF_UNIX sockets
 <P>
 <B>See:</B>
 <BR>
@@ -95,42 +95,19 @@ The actual AF_UNIX Socket implementation.
 <B>Class Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/newsclub/net/unix/AFUNIXServerSocket.html" title="class in org.newsclub.net.unix">AFUNIXServerSocket</A></B></TD>
-<TD>The server part of an AF_UNIX domain socket.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/newsclub/net/unix/AFUNIXSocket.html" title="class in org.newsclub.net.unix">AFUNIXSocket</A></B></TD>
-<TD>Implementation of an AF_UNIX domain socket.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html" title="class in org.newsclub.net.unix">AFUNIXSocketAddress</A></B></TD>
-<TD>Describes an <CODE>InetSocketAddress</CODE> that actually uses AF_UNIX sockets
- instead of AF_INET.</TD>
-</TR>
-</TABLE>
-&nbsp;
-
-<P>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Exception Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD WIDTH="15%"><B><A HREF="../../../../org/newsclub/net/unix/AFUNIXSocketException.html" title="class in org.newsclub.net.unix">AFUNIXSocketException</A></B></TD>
-<TD>Something went wrong with the communication to a Unix socket.</TD>
+<TD WIDTH="15%"><B><A HREF="../../../../org/newsclub/net/mysql/AFUNIXDatabaseSocketFactory.html" title="class in org.newsclub.net.mysql">AFUNIXDatabaseSocketFactory</A></B></TD>
+<TD>Connect to mysql databases (and compatibles) using UNIX domain sockets.</TD>
 </TR>
 </TABLE>
 &nbsp;
 
 <P>
 <A NAME="package_description"><!-- --></A><H2>
-Package org.newsclub.net.unix Description
+Package org.newsclub.net.mysql Description
 </H2>
 
 <P>
-<h2>The actual AF_UNIX Socket implementation.</h2>
+<h2>Provides code that allows interaction with MySQL databases over AF_UNIX sockets</h2>
 <P>
 
 <P>
@@ -166,10 +143,10 @@ Package org.newsclub.net.unix Description
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../org/newsclub/net/mysql/package-summary.html"><B>PREV PACKAGE</B></A>&nbsp;
-&nbsp;<A HREF="../../../../org/newsclub/net/unix/rmi/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
+&nbsp;PREV PACKAGE&nbsp;
+&nbsp;<A HREF="../../../../org/newsclub/net/unix/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../index.html?org/newsclub/net/unix/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+  <A HREF="../../../../index.html?org/newsclub/net/mysql/package-summary.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="package-summary.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
 &nbsp;<SCRIPT type="text/javascript">
   <!--
