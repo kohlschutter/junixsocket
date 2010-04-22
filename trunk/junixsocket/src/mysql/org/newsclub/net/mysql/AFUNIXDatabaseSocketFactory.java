@@ -30,6 +30,8 @@ import com.mysql.jdbc.SocketFactory;
 
 /**
  * Connect to mysql databases (and compatibles) using UNIX domain sockets.
+ * 
+ * @author Christian Kohlschütter
  */
 public class AFUNIXDatabaseSocketFactory implements SocketFactory {
 
