@@ -22,8 +22,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory;
-
 /**
  * Demonstrates how to connect to a local MySQL server
  * 
