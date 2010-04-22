@@ -8,12 +8,6 @@
 extern "C" {
 #endif
     
-#define junixsocket_have_sun_len
-#ifdef __linux__
-#undef junixsocket_have_sun_len
-#endif
-    
-    
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    bind
