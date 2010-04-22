@@ -134,6 +134,14 @@ extern "C" {
 			org_newsclub_net_unix_NativeUnixSocket_throwException(env,strerror(errno), file);
 			return;
 		}
+        
+
+        // This block is only prophylactic, as SO_REUSEADDR seems not to work with AF_UNIX
+        int optVal = 1;
+		int ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(optVal));
+		if(ret == -1) {
+			org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), NULL);
+		}        
 		
 		struct sockaddr_un su;
 		su.sun_family = AF_UNIX;
@@ -153,8 +161,46 @@ extern "C" {
 		int bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
 		
 		if(bindRes == -1) {
-			org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), file);
-			return;
+            int myErr = errno;
+            if(errno == EADDRINUSE) {
+                // Let's check whether the address *really* is in use.
+                // Maybe it's just a dead reference
+                
+                // if the given file exists, but is not a socket, ENOTSOCK is returned
+                // if access is denied, EACCESS is returned
+                ret = connect(serverHandle, (struct sockaddr *)&su, suLength);
+                
+                if(ret == -1 && errno == ECONNREFUSED) {
+                    // assume non-connected socket
+                    
+                    close(serverHandle);
+                    if(unlink(socketFile) == -1) {
+                        org_newsclub_net_unix_NativeUnixSocket_throwException(env,strerror(errno), file);
+                        return;
+                    }
+                    
+                    serverHandle = socket(AF_UNIX, SOCK_STREAM, 0);
+                    if(serverHandle == -1) {
+                        org_newsclub_net_unix_NativeUnixSocket_throwException(env,strerror(errno), file);
+                        return;
+                    }
+                    
+                    bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
+                    if(bindRes == -1) {
+                        close(serverHandle);
+                        org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(myErr), file);
+                        return;
+                    }
+                } else {
+                    close(serverHandle);
+                    org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(myErr), file);
+                    return;
+                }
+            } else {
+                close(serverHandle);
+                org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(myErr), file);
+                return;
+            }
 		}
 		
 		int chmodRes = chmod(su.sun_path, 0666);
