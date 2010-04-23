@@ -53,12 +53,13 @@ final class NativeUnixSocket {
             String os = osName.replaceAll("[^A-Za-z0-9]", "").toLowerCase();
             if ("macosx".equals(os)) {
                 suffix = ".dylib";
-            } else if ("linux".equals(os) || "freebsd".equals(os)) {
+            } else if ("linux".equals(os) || "freebsd".equals(os)
+                    || "sunos".equals(os)) {
                 suffix = ".so";
             } else {
                 Logger.getLogger(NativeUnixSocket.class.getName()).log(
                         Level.WARNING,
-                        "Unsupported Operating System: " + osName);
+                        "Operating System not officially supported by junixsocket: " + osName);
             }
 
             final String libDir = System.getProperty(PROP_LIBRARY_DIR,
@@ -98,8 +99,9 @@ final class NativeUnixSocket {
             }
             if (ule != null) {
                 throw (UnsatisfiedLinkError) new UnsatisfiedLinkError(
-                        "Could not load junixsocket library, tried " + paths)
-                        .initCause(ule);
+                        "Could not load junixsocket library, tried " + paths
+                                + "; please define system property "
+                                + PROP_LIBRARY_DIR).initCause(ule);
             }
             System.setProperty(PROP_LIBRARY_LOADED, "true");
         }
