@@ -201,6 +201,11 @@ class AFUNIXSocketImpl extends SocketImpl {
             closedInputStream = true;
             checkClose();
         }
+
+        public int available() throws IOException {
+            int av = NativeUnixSocket.available(fd);
+            return av;
+        }
     }
 
     private final class AFUNIXOutputStream extends OutputStream {
