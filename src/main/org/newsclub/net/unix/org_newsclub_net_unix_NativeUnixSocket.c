@@ -46,16 +46,19 @@ extern "C" {
 #undef junixsocket_have_sun_len
 #endif
     
-// Tru64
-#ifdef __osf__
+// Solaris
+#if defined(__sun)
+#undef junixsocket_have_sun_len
+#endif
     
+// Tru64
+#ifdef __osf__    
 #undef junixsocket_have_sun_len    
 #undef  recv
 #undef  send
 #define recv(a,b,c,d)   recvfrom(a,b,c,d,0,0)
 #define send(a,b,c,d)   sendto(a,b,c,d,0,0)
-typedef unsigned long socklen_t; /* 64-bits */ 
-    
+typedef unsigned long socklen_t; /* 64-bits */     
 #endif
     
     
