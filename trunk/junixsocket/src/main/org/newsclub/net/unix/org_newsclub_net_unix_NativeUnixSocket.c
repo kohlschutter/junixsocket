@@ -31,6 +31,10 @@
 #include <errno.h>
 #include <fcntl.h>
 
+#include <sys/ioctl.h>
+#ifndef FIONREAD
+  #include <sys/filio.h>
+#endif 
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -514,11 +518,17 @@ typedef unsigned long socklen_t; /* 64-bits */
 	 */
 	JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available
 	(JNIEnv * env, jclass clazz, jobject fd) {
-		jbyte buf = '\0';
-		
 		int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 		
-		ssize_t count = recv(handle, &buf, 1, MSG_PEEK);
+        // the following would actually block and keep the peek'ed byte in the buffer
+		//ssize_t count = recv(handle, &buf, 1, MSG_PEEK);
+        
+        int count;
+        ioctl(handle, FIONREAD, &count);
+		if(count == -1) {
+			org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), NULL);
+			return -1;
+		}
 		
 		return count;
 	}
