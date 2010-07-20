@@ -406,6 +406,25 @@ typedef unsigned long socklen_t; /* 64-bits */
 			org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), NULL);
 		}
 	}
+    
+    jint convertSocketOptionToNative(jint optID) {
+        switch(optID) {
+            case 0x0008:
+                return SO_KEEPALIVE;
+            case 0x0080:
+                return SO_LINGER;
+            case 0x1005:
+                return SO_SNDTIMEO;
+            case 0x1006:
+                return SO_RCVTIMEO;
+            case 0x1002:
+                return SO_RCVBUF;
+            case 0x1001:
+                return SO_SNDBUF;
+            default:
+                return -1;
+        }
+    }
 
 	
 	/*
@@ -416,8 +435,14 @@ typedef unsigned long socklen_t; /* 64-bits */
 	JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOptionInt
 	(JNIEnv * env, jclass clazz, jobject fd, jint optID) {
 		int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
+        
+        optID = convertSocketOptionToNative(optID);
+        if(optID == -1) {
+            org_newsclub_net_unix_NativeUnixSocket_throwException(env, "Unsupported socket option", NULL);
+            return -1;
+        }
 		
-		if(optID == SO_SNDTIMEO || optID == SO_RCVTIMEO) {
+        if(optID == SO_SNDTIMEO || optID == SO_RCVTIMEO) {
 			struct timeval optVal;
 			socklen_t optLen = sizeof(optVal);
 			int ret = getsockopt(handle, SOL_SOCKET, optID, &optVal, &optLen);
@@ -463,11 +488,18 @@ typedef unsigned long socklen_t; /* 64-bits */
 	(JNIEnv * env, jclass clazz, jobject fd, jint optID, jint value) {
 		int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 		
+        optID = convertSocketOptionToNative(optID);
+        if(optID == -1) {
+            org_newsclub_net_unix_NativeUnixSocket_throwException(env, "Unsupported socket option", NULL);
+            return;
+        }
+        
 		if(optID == SO_SNDTIMEO || optID == SO_RCVTIMEO) {
 			struct timeval optVal;
 			optVal.tv_sec = value / 1000;
 			optVal.tv_usec = (value % 1000) * 1000;
 			int ret = setsockopt(handle, SOL_SOCKET, optID, &optVal, sizeof(optVal));
+            
 			if(ret == -1) {
 				org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), NULL);
 			}
