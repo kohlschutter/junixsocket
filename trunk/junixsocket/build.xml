@@ -17,337 +17,395 @@
 -->
 <project name="junixsocket" default="dist" basedir=".">
 
-    <property environment="env" />
-    <property name="jdk.home" value="${env.JAVA_HOME}" />
+	<property environment="env" />
+	<property name="jdk.home" value="${env.JAVA_HOME}" />
 
-    <property name="app.name" value="junixsocket" />
-    <property name="app.title" value="junixsocket library" />
-    <property name="app.version" value="1.2" />
-    <property name="app.javaversion" value="1.5" />
-    <property name="app.dir" value="." />
+	<property name="app.name" value="junixsocket" />
+	<property name="app.title" value="junixsocket library" />
+	<property name="app.version" value="1.2-dev" />
+	<property name="app.javaversion" value="1.5" />
+	<property name="app.dir" value="." />
 
-    <property name="compile.debug" value="on" />
-    <property name="compile.deprecation" value="false" />
-    <property name="compile.optimize" value="true" />
+	<property name="compile.debug" value="on" />
+	<property name="compile.deprecation" value="false" />
+	<property name="compile.optimize" value="true" />
 
-    <condition property="isMac">
-        <equals arg1="${os.name}" arg2="Mac OS X" />
-    </condition>
-    <condition property="isLinux">
-        <equals arg1="${os.name}" arg2="Linux" />
-    </condition>
-    <condition property="isFreeBSD">
-        <equals arg1="${os.name}" arg2="FreeBSD" />
-    </condition>
-    <condition property="isSunOS">
-        <equals arg1="${os.name}" arg2="SunOS" />
-    </condition>
+	<property name="junit4.jar" value="/usr/share/java/junit4.jar" />
 
-    <target name="describe">
-        <information>
-            <name>${app.name}</name>
-            <description>${app.title}</description>
-            <version>${app.version}</version>
-            <vendor>
-            </vendor>
-            <api>yes</api>
-            <documents>no</documents>
-            <begin>
-            </begin>
-            <end>
-            </end>
-            <author>
-            </author>
-            <state>
-            </state>
-        </information>
-    </target>
+	<condition property="isMac">
+		<equals arg1="${os.name}" arg2="Mac OS X" />
+	</condition>
+	<condition property="isLinux">
+		<equals arg1="${os.name}" arg2="Linux" />
+	</condition>
+	<condition property="isFreeBSD">
+		<equals arg1="${os.name}" arg2="FreeBSD" />
+	</condition>
+	<condition property="isSunOS">
+		<equals arg1="${os.name}" arg2="SunOS" />
+	</condition>
 
-    <property name="build.dir" value="${app.dir}/build" />
+	<target name="describe">
+		<information>
+			<name>${app.name}</name>
+			<description>${app.title}</description>
+			<version>${app.version}</version>
+			<vendor>
+			</vendor>
+			<api>yes</api>
+			<documents>no</documents>
+			<begin>
+			</begin>
+			<end>
+			</end>
+			<author>
+			</author>
+			<state>
+			</state>
+		</information>
+	</target>
 
-    <property name="build.main" value="${build.dir}/main" />
-    <property name="build.rmi" value="${build.dir}/rmi" />
-    <property name="build.demo" value="${build.dir}/demo" />
-    <property name="build.mysql" value="${build.dir}/mysql" />
-    <property name="src.main" value="${app.dir}/src/main" />
-    <property name="src.rmi" value="${app.dir}/src/rmi" />
-    <property name="src.mysql" value="${app.dir}/src/mysql" />
-    <property name="src.demo" value="${app.dir}/src/demo" />
-    <property name="lib.native" value="${app.dir}/lib-native" />
-    <property name="dist.dir" value="${app.dir}/dist" />
-    <property name="jar.main" value="${dist.dir}/${app.name}-${app.version}.jar" />
-    <property name="jar.rmi" value="${dist.dir}/${app.name}-rmi-${app.version}.jar" />
-    <property name="jar.mysql" value="${dist.dir}/${app.name}-mysql-${app.version}.jar" />
-    <property name="jar.demo" value="${dist.dir}/${app.name}-demo-${app.version}.jar" />
-    <property name="javadoc.dir" value="${app.dir}/javadoc" />
-    <property name="distBin.tar.bz2" value="${dist.dir}/${app.name}-${app.version}-bin.tar.bz2" />
-    <property name="distSrc.tar.bz2" value="${dist.dir}/${app.name}-${app.version}-src.tar.bz2" />
+	<property name="build.dir" value="${app.dir}/build" />
 
-    <path id="classpath.main">
-        <dirset dir="${build.dir}">
-            <include name="main" />
-        </dirset>
-    </path>
-    <path id="classpath.mainRmi">
-        <dirset dir="${build.dir}">
-            <include name="main" />
-            <include name="rmi" />
-            <include name="mysql" />
-        </dirset>
-    </path>
+	<property name="build.main" value="${build.dir}/main" />
+	<property name="build.rmi" value="${build.dir}/rmi" />
+	<property name="build.demo" value="${build.dir}/demo" />
+	<property name="build.mysql" value="${build.dir}/mysql" />
+	<property name="build.test" value="${build.dir}/test" />
+	<property name="src.main" value="${app.dir}/src/main" />
+	<property name="src.rmi" value="${app.dir}/src/rmi" />
+	<property name="src.mysql" value="${app.dir}/src/mysql" />
+	<property name="src.demo" value="${app.dir}/src/demo" />
+	<property name="src.test" value="${app.dir}/src/test" />
+	<property name="lib.native" value="${app.dir}/lib-native" />
+	<property name="dist.dir" value="${app.dir}/dist" />
+	<property name="jar.main" value="${dist.dir}/${app.name}-${app.version}.jar" />
+	<property name="jar.rmi" value="${dist.dir}/${app.name}-rmi-${app.version}.jar" />
+	<property name="jar.mysql" value="${dist.dir}/${app.name}-mysql-${app.version}.jar" />
+	<property name="jar.demo" value="${dist.dir}/${app.name}-demo-${app.version}.jar" />
+	<property name="javadoc.dir" value="${app.dir}/javadoc" />
+	<property name="distBin.tar.bz2" value="${dist.dir}/${app.name}-${app.version}-bin.tar.bz2" />
+	<property name="distSrc.tar.bz2" value="${dist.dir}/${app.name}-${app.version}-src.tar.bz2" />
 
-    <target name="init">
-        <delete dir="${build.dir}" />
-        <mkdir dir="${build.main}" />
-        <mkdir dir="${build.rmi}" />
-        <mkdir dir="${build.mysql}" />
-        <mkdir dir="${build.demo}" />
-        <mkdir dir="${lib.native}" />
-        <mkdir dir="${dist.dir}" />
-    </target>
+	<path id="classpath.main">
+		<dirset dir="${build.dir}">
+			<include name="main" />
+		</dirset>
+	</path>
+	<path id="classpath.mainRmi">
+		<dirset dir="${build.dir}">
+			<include name="main" />
+			<include name="rmi" />
+			<include name="mysql" />
+		</dirset>
+	</path>
+	<path id="classpath.test">
+		<path refid="classpath.mainRmi" />
+		<pathelement path="${junit4.jar}" />
+	</path>
+	<target name="init">
+		<delete dir="${build.dir}" />
+		<mkdir dir="${build.main}" />
+		<mkdir dir="${build.rmi}" />
+		<mkdir dir="${build.mysql}" />
+		<mkdir dir="${build.demo}" />
+		<mkdir dir="${build.test}" />
+		<mkdir dir="${lib.native}" />
+		<mkdir dir="${dist.dir}" />
+	</target>
 
-    <target name="compile">
-        <javac srcdir="${src.main}" destdir="${build.main}" encoding="UTF-8" source="${app.javaversion}" target="${app.javaversion}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" />
-        <javac srcdir="${src.rmi}" destdir="${build.rmi}" encoding="UTF-8" source="${app.javaversion}" target="${app.javaversion}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" classpathref="classpath.main" />
-        <javac srcdir="${src.mysql}" destdir="${build.mysql}" encoding="UTF-8" source="${app.javaversion}" target="${app.javaversion}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" classpathref="classpath.main" />
-        <javac srcdir="${src.demo}" destdir="${build.demo}" encoding="UTF-8" source="${app.javaversion}" target="${app.javaversion}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" classpathref="classpath.mainRmi" />
-    </target>
+	<target name="compile" depends="init">
+		<javac srcdir="${src.main}" destdir="${build.main}" encoding="UTF-8" source="${app.javaversion}" target="${app.javaversion}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" />
+		<javac srcdir="${src.rmi}" destdir="${build.rmi}" encoding="UTF-8" source="${app.javaversion}" target="${app.javaversion}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" classpathref="classpath.main" />
+		<javac srcdir="${src.mysql}" destdir="${build.mysql}" encoding="UTF-8" source="${app.javaversion}" target="${app.javaversion}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" classpathref="classpath.main" />
+		<javac srcdir="${src.demo}" destdir="${build.demo}" encoding="UTF-8" source="${app.javaversion}" target="${app.javaversion}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" classpathref="classpath.mainRmi" />
+		<javac srcdir="${src.test}" destdir="${build.test}" encoding="UTF-8" source="${app.javaversion}" target="${app.javaversion}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" classpathref="classpath.test" />
+	</target>
 
-    <target name="javah">
-        <javah classpathref="classpath.main" outputFile="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.h" verbose="yes">
-            <class name="org.newsclub.net.unix.NativeUnixSocket" />
-        </javah>
-    </target>
+	<target name="javah">
+		<javah classpathref="classpath.main" outputFile="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.h" verbose="yes">
+			<class name="org.newsclub.net.unix.NativeUnixSocket" />
+		</javah>
+	</target>
 
-    <target name="gcc" depends="gcc-mac,gcc-linux,gcc-freebsd" />
+	<target name="gcc" depends="gcc-mac,gcc-linux,gcc-freebsd" />
 
-    <target name="gcc-mac" if="isMac">
-        <property name="gcc" value="/usr/bin/gcc-4.2" />
+	<target name="gcc-mac" if="isMac">
+		<property name="gcc" value="/usr/bin/gcc-4.2" />
 
-        <echo message="jdk.home is ${jdk.home}" />
+		<echo message="jdk.home is ${jdk.home}" />
 
-        <antcall target="gcc-mac.arch">
-            <param name="gccArch" value="i386" />
-        </antcall>
-        <antcall target="gcc-mac.arch">
-            <param name="gccArch" value="x86_64" />
-        </antcall>
-    </target>
-    <target name="gcc-mac.arch">
-        <property name="outLib" value="${lib.native}/libjunixsocket-macosx-${app.javaversion}-${gccArch}.dylib" />
-        <delete file="${outLib}" />
+		<antcall target="gcc-mac.32" />
+		<antcall target="gcc-mac.64" />
+	</target>
 
-        <echo message="Compiling for architecture ${gccArch} on ${os.name}" />
-        <exec executable="${gcc}" failonerror="true">
-            <arg value="-O2" />
-            <arg value="-Wall" />
-            <arg value="-arch" />
-            <arg value="${gccArch}" />
-            <arg value="-shared" />
-            <arg value="-fPIC" />
-            <arg value="-I" />
-            <arg value="/System/Library/Frameworks/JavaVM.framework/Versions/${app.javaversion}/Home/include" />
-            <arg value="-o" />
-            <arg value="${outLib}" />
-            <arg value="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.c" />
-        </exec>
-    </target>
-    <target name="gcc-linux" if="isLinux">
-        <property name="gcc" value="/usr/bin/gcc" />
+	<target name="gcc-mac.32" unless="skip32">
+		<antcall target="gcc-mac.arch">
+			<param name="gccArch" value="i386" />
+		</antcall>
+	</target>
+	<target name="gcc-mac.64" unless="skip64">
+		<antcall target="gcc-mac.arch">
+			<param name="gccArch" value="x86_64" />
+		</antcall>
+	</target>
 
-        <echo message="jdk.home is ${jdk.home}" />
+	<target name="gcc-mac.arch">
+		<property name="outLib" value="${lib.native}/libjunixsocket-macosx-${app.javaversion}-${gccArch}.dylib" />
+		<delete file="${outLib}" />
 
-        <antcall target="gcc-linux.arch">
-            <param name="gccArch" value="i386" />
-            <param name="gccM" value="-m32" />
-        </antcall>
-        <antcall target="gcc-linux.arch">
-            <param name="gccArch" value="amd64" />
-            <param name="gccM" value="-m64" />
-        </antcall>
-    </target>
-    <target name="gcc-linux.arch">
-        <property name="outLib" value="${lib.native}/libjunixsocket-linux-${app.javaversion}-${gccArch}.so" />
+		<echo message="Compiling for architecture ${gccArch} on ${os.name}" />
+		<exec executable="${gcc}" failonerror="true">
+			<arg value="-O2" />
+			<arg value="-Wall" />
+			<arg value="-arch" />
+			<arg value="${gccArch}" />
+			<arg value="-shared" />
+			<arg value="-fPIC" />
+			<arg value="-I" />
+			<arg value="/System/Library/Frameworks/JavaVM.framework/Versions/${app.javaversion}/Home/include" />
+			<arg value="-o" />
+			<arg value="${outLib}" />
+			<arg value="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.c" />
+		</exec>
+	</target>
+	<target name="gcc-linux" if="isLinux">
+		<property name="gcc" value="/usr/bin/gcc" />
 
-        <echo message="Compiling for architecture ${gccArch} on ${os.name}" />
-        <exec executable="${gcc}" failonerror="true">
-            <arg value="${gccM}" />
-            <arg value="-O2" />
-            <arg value="-Wall" />
-            <arg value="-shared" />
-            <arg value="-fPIC" />
-            <arg value="-I" />
-            <arg value="${jdk.home}/include/" />
-            <arg value="-I" />
-            <arg value="${jdk.home}/include/linux" />
-            <arg value="-o" />
-            <arg value="${outLib}" />
-            <arg value="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.c" />
-        </exec>
-    </target>
+		<echo message="jdk.home is ${jdk.home}" />
 
-    <target name="gcc-sunos" if="isSunOS">
-        <property name="gcc" value="/usr/bin/gcc-4.3.2" />
-        <property name="jdk.home" value="/usr/jdk/latest" />
-        
-    	<echo message="jdk.home is ${jdk.home}" />
+		<antcall target="gcc-linux.32" />
+		<antcall target="gcc-linux.64" />
+	</target>
 
-        <antcall target="gcc-sunos.arch">
-            <param name="gccArch" value="x86" />
-            <param name="gccM" value="-m32" />
-        </antcall>
-        <antcall target="gcc-sunos.arch">
-            <param name="gccArch" value="amd64" />
-            <param name="gccM" value="-m64" />
-        </antcall>
-    </target>
+	<target name="gcc-linux.32" unless="skip32">
+		<antcall target="gcc-linux.arch">
+			<param name="gccArch" value="i386" />
+			<param name="gccM" value="-m32" />
+		</antcall>
+	</target>
+	<target name="gcc-linux.64" unless="skip64">
+		<antcall target="gcc-linux.arch">
+			<param name="gccArch" value="amd64" />
+			<param name="gccM" value="-m64" />
+		</antcall>
+	</target>
 
-    <target name="gcc-sunos.arch">
-        <property name="outLib" value="${lib.native}/libjunixsocket-sunos-${app.javaversion}-${gccArch}.so" />
+	<target name="gcc-linux.arch">
+		<property name="outLib" value="${lib.native}/libjunixsocket-linux-${app.javaversion}-${gccArch}.so" />
 
-        <echo message="Compiling for architecture ${gccArch} on ${os.name}" />
-        <exec executable="${gcc}" failonerror="true">
-            <arg value="${gccM}" />
-            <arg value="-O2" />
-            <arg value="-Wall" />
-            <arg value="-shared" />
-            <arg value="-fPIC" />
-            <arg value="-I" />
-            <arg value="${jdk.home}/include/" />
-            <arg value="-I" />
-            <arg value="${jdk.home}/include/solaris" />
-            <arg value="-o" />
-            <arg value="${outLib}" />
-            <arg value="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.c" />
-        </exec>
-    </target>
+		<echo message="Compiling for architecture ${gccArch} on ${os.name}" />
+		<exec executable="${gcc}" failonerror="true">
+			<arg value="${gccM}" />
+			<arg value="-O2" />
+			<arg value="-Wall" />
+			<arg value="-shared" />
+			<arg value="-fPIC" />
+			<arg value="-I" />
+			<arg value="${jdk.home}/include/" />
+			<arg value="-I" />
+			<arg value="${jdk.home}/include/linux" />
+			<arg value="-o" />
+			<arg value="${outLib}" />
+			<arg value="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.c" />
+		</exec>
+	</target>
 
-    <target name="clean">
-        <delete dir="${build.dir}" />
-        <delete dir="${dist.dir}" />
-        <mkdir dir="${javadoc.dir}" />
-        <delete>
-            <fileset dir="${javadoc.dir}">
-                <include name="**/*.html" />
-                <include name="**/*.gif" />
-                <include name="**/*.css" />
-                <include name="**/*.png" />
-                <exclude name="**/.svn/**" />
-            </fileset>
-        </delete>
-    </target>
-    <target name="gcc-freebsd" if="isFreeBSD">
-        <property name="gcc" value="/usr/bin/gcc" />
+	<target name="gcc-sunos" if="isSunOS">
+		<property name="gcc" value="/usr/bin/gcc-4.3.2" />
+		<property name="jdk.home" value="/usr/jdk/latest" />
 
-        <echo message="jdk.home is ${jdk.home}" />
+		<echo message="jdk.home is ${jdk.home}" />
 
-        <antcall target="gcc-freebsd.arch">
-            <param name="gccArch" value="i386" />
-        </antcall>
-        <antcall target="gcc-freebsd.arch">
-            <param name="gccArch" value="amd64" />
-        </antcall>
-    </target>
-    <target name="gcc-freebsd.arch">
-        <property name="outLib" value="${lib.native}/libjunixsocket-freebsd-${app.javaversion}-${gccArch}.so" />
+		<antcall target="gcc-sunos.arch">
+			<param name="gccArch" value="x86" />
+			<param name="gccM" value="-m32" />
+		</antcall>
+		<antcall target="gcc-sunos.arch">
+			<param name="gccArch" value="amd64" />
+			<param name="gccM" value="-m64" />
+		</antcall>
+	</target>
 
-        <echo message="Compiling for architecture ${gccArch} on ${os.name}" />
-        <exec executable="${gcc}" failonerror="true">
-            <arg value="-O2" />
-            <arg value="-Wall" />
-            <arg value="-arch" />
-            <arg value="${gccArch}" />
-            <arg value="-shared" />
-            <arg value="-fPIC" />
-            <arg value="-I" />
-            <arg value="${jdk.home}/include/" />
-            <arg value="-I" />
-            <arg value="${jdk.home}/include/freebsd" />
-            <arg value="-o" />
-            <arg value="${outLib}" />
-            <arg value="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.c" />
-        </exec>
-    </target>
+	<target name="gcc-sunos.arch">
+		<property name="outLib" value="${lib.native}/libjunixsocket-sunos-${app.javaversion}-${gccArch}.so" />
 
-    <target name="javadoc">
-        <javadoc destdir="${javadoc.dir}" version="true" use="true" windowtitle="${app.version} API" classpathref="classpath.mainRmi">
-            <packageset dir="${src.main}" defaultexcludes="yes">
-                <include name="org/newsclub/**" />
-            </packageset>
-            <packageset dir="${src.rmi}" defaultexcludes="yes">
-                <include name="org/newsclub/**" />
-            </packageset>
-            <packageset dir="${src.mysql}" defaultexcludes="yes">
-                <include name="org/newsclub/**" />
-            </packageset>
-        </javadoc>
+		<echo message="Compiling for architecture ${gccArch} on ${os.name}" />
+		<exec executable="${gcc}" failonerror="true">
+			<arg value="${gccM}" />
+			<arg value="-O2" />
+			<arg value="-Wall" />
+			<arg value="-shared" />
+			<arg value="-fPIC" />
+			<arg value="-I" />
+			<arg value="${jdk.home}/include/" />
+			<arg value="-I" />
+			<arg value="${jdk.home}/include/solaris" />
+			<arg value="-o" />
+			<arg value="${outLib}" />
+			<arg value="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.c" />
+		</exec>
+	</target>
 
-        <!-- Remove some boilerplate that would otherwise clutter up the SVN repository -->
-        <replaceregexp>
-            <regexp pattern="&lt;!-- Generated by javadoc .*?--&gt;" />
-            <substitution expression="" />
-            <fileset dir="${javadoc.dir}">
-                <include name="**/*.html" />
-            </fileset>
-        </replaceregexp>
-        <replaceregexp>
-            <regexp pattern="&lt;META NAME=&quot;date&quot;.*?&gt;" />
-            <substitution expression="&lt;META HTTP-EQUIV=&quot;Content-Type&quot; CONTENT=&quot;text/html;charset=utf-8&quot;" />
-            <fileset dir="${javadoc.dir}">
-                <include name="**/*.html" />
-            </fileset>
-        </replaceregexp>
-    </target>
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+		<mkdir dir="${javadoc.dir}" />
+		<delete>
+			<fileset dir="${javadoc.dir}">
+				<include name="**/*.html" />
+				<include name="**/*.gif" />
+				<include name="**/*.css" />
+				<include name="**/*.png" />
+				<exclude name="**/.svn/**" />
+			</fileset>
+		</delete>
+	</target>
+	<target name="gcc-freebsd" if="isFreeBSD">
+		<property name="gcc" value="/usr/bin/gcc" />
 
-    <target name="jars" depends="init,compile,javah,gcc" description="Makes a distributable jar">
+		<echo message="jdk.home is ${jdk.home}" />
 
-        <jar destfile="${jar.main}">
-            <fileset dir="${build.main}">
-                <include name="**/*" />
-            </fileset>
-        </jar>
-        <jar destfile="${jar.rmi}">
-            <fileset dir="${build.rmi}">
-                <include name="**/*" />
-            </fileset>
-        </jar>
-        <jar destfile="${jar.mysql}">
-            <fileset dir="${build.mysql}">
-                <include name="**/*" />
-                <exclude name="com/mysql/**/*" />
-            </fileset>
-        </jar>
-        <jar destfile="${jar.demo}">
-            <fileset dir="${build.demo}">
-                <include name="**/*" />
-            </fileset>
-            <fileset dir="${src.demo}">
-                <include name="**/*" />
-            </fileset>
-        </jar>
-    </target>
+		<antcall target="gcc-freebsd.arch">
+			<param name="gccArch" value="i386" />
+		</antcall>
+		<antcall target="gcc-freebsd.arch">
+			<param name="gccArch" value="amd64" />
+		</antcall>
+	</target>
+	<target name="gcc-freebsd.arch">
+		<property name="outLib" value="${lib.native}/libjunixsocket-freebsd-${app.javaversion}-${gccArch}.so" />
 
-    <target name="dist" depends="clean,init,javadoc,jars">
-        <tar destfile="${distBin.tar.bz2}" compression="bzip2">
-            <tarfileset dir="." prefix="${app.name}-${app.version}/">
-                <include name="README.txt" />
-                <include name="NOTICE.txt" />
-                <include name="LICENSE.txt" />
-                <include name="dist/**" />
-                <include name="doc/**" />
-                <include name="lib-native/**" />
-            </tarfileset>
-        </tar>
-        <tar destfile="${distSrc.tar.bz2}" compression="bzip2">
-            <tarfileset dir="." prefix="${app.name}-${app.version}/">
-                <include name="README.txt" />
-                <include name="NOTICE.txt" />
-                <include name="LICENSE.txt" />
-                <include name=".project" />
-                <include name=".classpath" />
-                <include name="src/**" />
-                <include name="build.xml" />
-            </tarfileset>
-        </tar>
-    </target>
+		<echo message="Compiling for architecture ${gccArch} on ${os.name}" />
+		<exec executable="${gcc}" failonerror="true">
+			<arg value="-O2" />
+			<arg value="-Wall" />
+			<arg value="-arch" />
+			<arg value="${gccArch}" />
+			<arg value="-shared" />
+			<arg value="-fPIC" />
+			<arg value="-I" />
+			<arg value="${jdk.home}/include/" />
+			<arg value="-I" />
+			<arg value="${jdk.home}/include/freebsd" />
+			<arg value="-o" />
+			<arg value="${outLib}" />
+			<arg value="${src.main}/org/newsclub/net/unix/org_newsclub_net_unix_NativeUnixSocket.c" />
+		</exec>
+	</target>
+
+	<target name="javadoc">
+		<javadoc destdir="${javadoc.dir}" version="true" use="true" windowtitle="${app.version} API" classpathref="classpath.mainRmi">
+			<packageset dir="${src.main}" defaultexcludes="yes">
+				<include name="org/newsclub/**" />
+			</packageset>
+			<packageset dir="${src.rmi}" defaultexcludes="yes">
+				<include name="org/newsclub/**" />
+			</packageset>
+			<packageset dir="${src.mysql}" defaultexcludes="yes">
+				<include name="org/newsclub/**" />
+			</packageset>
+		</javadoc>
+
+		<!-- Remove some boilerplate that would otherwise clutter up the SVN repository -->
+		<replaceregexp>
+			<regexp pattern="&lt;!-- Generated by javadoc .*?--&gt;" />
+			<substitution expression="" />
+			<fileset dir="${javadoc.dir}">
+				<include name="**/*.html" />
+			</fileset>
+		</replaceregexp>
+		<replaceregexp>
+			<regexp pattern="&lt;META NAME=&quot;date&quot;.*?&gt;" />
+			<substitution expression="&lt;META HTTP-EQUIV=&quot;Content-Type&quot; CONTENT=&quot;text/html;charset=utf-8&quot;" />
+			<fileset dir="${javadoc.dir}">
+				<include name="**/*.html" />
+			</fileset>
+		</replaceregexp>
+	</target>
+
+	<target name="jars" depends="test" description="Makes a distributable jar">
+
+		<jar destfile="${jar.main}">
+			<fileset dir="${build.main}">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+		<jar destfile="${jar.rmi}">
+			<fileset dir="${build.rmi}">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+		<jar destfile="${jar.mysql}">
+			<fileset dir="${build.mysql}">
+				<include name="**/*" />
+				<exclude name="com/mysql/**/*" />
+			</fileset>
+		</jar>
+		<jar destfile="${jar.demo}">
+			<fileset dir="${build.demo}">
+				<include name="**/*" />
+			</fileset>
+			<fileset dir="${src.demo}">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="dist" depends="clean,init,javadoc,jars">
+		<tar destfile="${distBin.tar.bz2}" compression="bzip2">
+			<tarfileset dir="." prefix="${app.name}-${app.version}/">
+				<include name="README.txt" />
+				<include name="NOTICE.txt" />
+				<include name="LICENSE.txt" />
+				<include name="dist/**" />
+				<include name="doc/**" />
+				<include name="lib-native/**" />
+			</tarfileset>
+		</tar>
+		<tar destfile="${distSrc.tar.bz2}" compression="bzip2">
+			<tarfileset dir="." prefix="${app.name}-${app.version}/">
+				<include name="README.txt" />
+				<include name="NOTICE.txt" />
+				<include name="LICENSE.txt" />
+				<include name=".project" />
+				<include name=".classpath" />
+				<include name="src/**" />
+				<include name="build.xml" />
+			</tarfileset>
+		</tar>
+	</target>
+
+	<target name="test" depends="init,compile,javah,gcc" unless="skipTest">
+		<echo message="JUnit reports can be found in ${build.test}" />
+
+		<junit printsummary="yes" haltonfailure="yes" fork="true">
+			<jvmarg value="-Dorg.newsclub.net.unix.library.path=${lib.native}" />
+			<classpath>
+				<path refid="classpath.mainRmi" />
+				<pathelement path="${junit4.jar}" />
+				<pathelement path="${build.dir}/test" />
+			</classpath>
+			<formatter type="plain" usefile="false" />
+
+			<test name="org.newsclub.net.unix.BuildInfo" todir="${build.test}">
+			</test>
+		</junit>
+		
+		<junit printsummary="yes" haltonfailure="yes" fork="true">
+			<jvmarg value="-Dorg.newsclub.net.unix.library.path=${lib.native}" />
+			<classpath>
+				<path refid="classpath.mainRmi" />
+				<pathelement path="${junit4.jar}" />
+				<pathelement path="${build.dir}/test" />
+			</classpath>
+			<formatter type="plain" />
+
+			<batchtest fork="yes" todir="${build.test}">
+				<fileset dir="${src.test}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
 </project>
