@@ -217,16 +217,24 @@
 
 		<echo message="jdk.home is ${jdk.home}" />
 
+		<antcall target="gcc-sunos.32" />
+		<antcall target="gcc-sunos.64" />
+	</target>
+
+	<target name="gcc-sunos.32" unless="skip32">
 		<antcall target="gcc-sunos.arch">
 			<param name="gccArch" value="x86" />
 			<param name="gccM" value="-m32" />
 		</antcall>
+	</target>
+	<target name="gcc-sunos.64" unless="skip64">
 		<antcall target="gcc-sunos.arch">
 			<param name="gccArch" value="amd64" />
 			<param name="gccM" value="-m64" />
 		</antcall>
 	</target>
-
+	
+	
 	<target name="gcc-sunos.arch">
 		<property name="outLib" value="${lib.native}/libjunixsocket-sunos-${app.javaversion}-${gccArch}.so" />
 
@@ -266,13 +274,22 @@
 
 		<echo message="jdk.home is ${jdk.home}" />
 
+		<antcall target="gcc-freebsd.32" />
+		<antcall target="gcc-freebsd.64" />
+	</target>
+	
+	<target name="gcc-freebsd.32" unless="skip32">
 		<antcall target="gcc-freebsd.arch">
 			<param name="gccArch" value="i386" />
 		</antcall>
+	</target>
+	<target name="gcc-freebsd.64" unless="skip64">
 		<antcall target="gcc-freebsd.arch">
 			<param name="gccArch" value="amd64" />
 		</antcall>
 	</target>
+	
+	
 	<target name="gcc-freebsd.arch">
 		<property name="outLib" value="${lib.native}/libjunixsocket-freebsd-${app.javaversion}-${gccArch}.so" />
 
