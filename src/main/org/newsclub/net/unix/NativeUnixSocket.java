@@ -34,14 +34,6 @@ final class NativeUnixSocket {
     private static final String PROP_LIBRARY_LOADED = "org.newsclub.net.unix.library.loaded";
     private static final String PROP_LIBRARY_DIR = "org.newsclub.net.unix.library.path";
 
-    static boolean isSupported() {
-        return "true".equals(System.getProperty(PROP_LIBRARY_LOADED, "false"));
-    }
-
-    static void checkSupported() {
-        load();
-    }
-
     static void load() {
         if (!isSupported()) {
             String osName = System.getProperty("os.name");
@@ -72,6 +64,8 @@ final class NativeUnixSocket {
 
             List<String> paths = new ArrayList<String>();
 
+            String absPath = null;
+            
             UnsatisfiedLinkError ule = null;
             findLib: for (String ld : libDirs) {
                 for (String js : javaSpecs) {
@@ -84,7 +78,7 @@ final class NativeUnixSocket {
                         } else {
                             final File libFile = new File(new File(ld), prefix
                                     + libId + suffix);
-                            final String absPath = libFile.getAbsolutePath();
+                            absPath = libFile.getAbsolutePath();
                             paths.add(absPath);
                             System.load(absPath);
                         }
@@ -103,7 +97,7 @@ final class NativeUnixSocket {
                                 + "; please define system property "
                                 + PROP_LIBRARY_DIR).initCause(ule);
             }
-            System.setProperty(PROP_LIBRARY_LOADED, "true");
+            System.setProperty(PROP_LIBRARY_LOADED, absPath);
         }
     }
 
@@ -111,6 +105,14 @@ final class NativeUnixSocket {
         load();
     }
 
+    static boolean isSupported() {
+        return !"".equals(System.getProperty(PROP_LIBRARY_LOADED, ""));
+    }
+    
+    static void checkSupported() {
+        load();
+    }
+    
     native static void bind(final String socketFile, final FileDescriptor fd,
             final int backlog) throws IOException;
 
