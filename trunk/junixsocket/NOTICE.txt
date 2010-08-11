@@ -1,4 +1,4 @@
-junixsocket 1.0
+junixsocket 1.3
 Unix Domain Sockets for Java + RMI-over-AF_UNIX. 
 
 Copyright (c) 2009, 2010 NewsClub, Christian Kohlschütter
