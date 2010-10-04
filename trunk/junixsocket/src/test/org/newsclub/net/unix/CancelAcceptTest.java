@@ -43,10 +43,11 @@ public class CancelAcceptTest extends SocketTestBase {
 			}
 		};
 
-		AFUNIXSocket sock = connectToServer();
-		System.out.println("sock="+sock);
+		AFUNIXSocket sock;
 		sock = connectToServer();
-		System.out.println("sock="+sock);
+		sock.close();
+		sock = connectToServer();
+		sock.close();
 		
 		final ServerSocket servSock = st.getServerSocket();
 
