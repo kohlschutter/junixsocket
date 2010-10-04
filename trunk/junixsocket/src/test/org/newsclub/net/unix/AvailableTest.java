@@ -77,11 +77,13 @@ public class AvailableTest extends SocketTestBase {
         ServerThread serverThread = new ServerThread() {
 
             @Override
-            protected void handleConnection(final Socket sock)
+            protected boolean handleConnection(final Socket sock)
                     throws IOException {
                 sendBytes(sock);
                 sleepFor(timeToSleep);
                 receiveBytes(sock, bytesSent);
+                
+                return false;
             }
         };
 
@@ -108,11 +110,13 @@ public class AvailableTest extends SocketTestBase {
         ServerThread serverThread = new ServerThread() {
 
             @Override
-            protected void handleConnection(final Socket sock)
+            protected boolean handleConnection(final Socket sock)
                     throws IOException {
                 sleepFor(timeToSleep);
                 receiveBytes(sock, bytesSent);
                 sendBytes(sock);
+                
+                return false;
             }
         };
 
