@@ -21,9 +21,6 @@ public class CancelAcceptTest extends SocketTestBase {
 
 	private boolean serverSocketClosed = false;
 	
-	/**
-	 * Triggers a case where {@link Socket#setSoTimeout(int)} fails on some platforms: when the socket is closed.
-	 */
 	@Test
 	public void issue6test1() throws Exception {
 		serverSocketClosed = false;
