@@ -320,14 +320,14 @@ class AFUNIXSocketImpl extends SocketImpl {
                 NativeUnixSocket.setSocketOptionInt(fd, optID,
                         expectInteger(value));
                 return;
+            case SocketOptions.SO_RCVBUF:
+            case SocketOptions.SO_SNDBUF:
             case SocketOptions.SO_TIMEOUT:
                 NativeUnixSocket.setSocketOptionInt(fd, optID,
                         expectInteger(value));
                 return;
             case SocketOptions.SO_KEEPALIVE:
             case SocketOptions.TCP_NODELAY:
-            case SocketOptions.SO_RCVBUF:
-            case SocketOptions.SO_SNDBUF:
                 NativeUnixSocket.setSocketOptionInt(fd, optID,
                         expectBoolean(value));
                 return;
