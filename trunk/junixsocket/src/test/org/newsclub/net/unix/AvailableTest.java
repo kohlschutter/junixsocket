@@ -20,42 +20,42 @@ public class AvailableTest extends SocketTestBase {
 
     private void receiveBytes(final Socket sock, final int expected)
             throws IOException {
-        InputStream in = sock.getInputStream();
+        final InputStream in = sock.getInputStream();
 
         int toExpect = expected;
-        
+
         char firstChar = 'A';
-        
+
         int available = in.available();
         if (available == 0 && expected != 0) {
             // this may happen, and it's ok.
-            int r = in.read();
+            final int r = in.read();
             assertEquals(
                     "Available returned 0, so we tried to read the first byte (which should be 65=='A')",
                     'A', r);
-            
+
             // as we have already read one byte, we now expect one byte less
             toExpect--;
-            
+
             available = in.available();
-            
+
             firstChar = 'B';
         }
         assertEquals(toExpect, available);
-        byte[] buf = new byte[expected];
-        int numRead = in.read(buf);
+        final byte[] buf = new byte[expected];
+        final int numRead = in.read(buf);
         assertEquals(toExpect, numRead);
-        
-        for(int i=0;i<numRead;i++) {
-            assertEquals(firstChar+i, buf[i] & 0xFF);
+
+        for (int i = 0; i < numRead; i++) {
+            assertEquals(firstChar + i, buf[i] & 0xFF);
         }
 
         assertEquals(0, in.available());
     }
 
     private void sendBytes(final Socket sock) throws IOException {
-        OutputStream out = sock.getOutputStream();
-        byte[] buf = new byte[bytesSent];
+        final OutputStream out = sock.getOutputStream();
+        final byte[] buf = new byte[bytesSent];
         for (int i = 0; i < bytesSent; i++) {
             buf[i] = (byte) (i + 'A');
         }
@@ -74,7 +74,7 @@ public class AvailableTest extends SocketTestBase {
     @Test(timeout = 2000)
     public void testAvailableAtClient() throws Exception {
 
-        ServerThread serverThread = new ServerThread() {
+        final ServerThread serverThread = new ServerThread() {
 
             @Override
             protected boolean handleConnection(final Socket sock)
@@ -82,17 +82,18 @@ public class AvailableTest extends SocketTestBase {
                 sendBytes(sock);
                 sleepFor(timeToSleep);
                 receiveBytes(sock, bytesSent);
-                
+
                 return false;
             }
         };
 
-        AFUNIXSocket sock = connectToServer();
+        final AFUNIXSocket sock = connectToServer();
         sleepFor(timeToSleep);
         receiveBytes(sock, bytesSent);
         sendBytes(sock);
         sock.close();
 
+        serverThread.getServerSocket().close();
         serverThread.checkException();
     }
 
@@ -107,7 +108,7 @@ public class AvailableTest extends SocketTestBase {
     @Test(timeout = 2000)
     public void testAvailableAtServer() throws Exception {
 
-        ServerThread serverThread = new ServerThread() {
+        final ServerThread serverThread = new ServerThread() {
 
             @Override
             protected boolean handleConnection(final Socket sock)
@@ -115,18 +116,19 @@ public class AvailableTest extends SocketTestBase {
                 sleepFor(timeToSleep);
                 receiveBytes(sock, bytesSent);
                 sendBytes(sock);
-                
+
                 return false;
             }
         };
 
-        AFUNIXSocket sock = connectToServer();
+        final AFUNIXSocket sock = connectToServer();
         sendBytes(sock);
         sleepFor(timeToSleep);
 
         receiveBytes(sock, bytesSent);
         sock.close();
 
+        serverThread.getServerSocket().close();
         serverThread.checkException();
     }
 }
