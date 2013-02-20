@@ -131,7 +131,7 @@ typedef unsigned long socklen_t; /* 64-bits */
 		;
 		
 		int socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
-		if(socketHandle == -1) {
+		if(socketHandle < 0) {
 			org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), file);
 			return;
 		}
