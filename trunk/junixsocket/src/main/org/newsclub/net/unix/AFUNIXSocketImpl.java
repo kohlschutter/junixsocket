@@ -1,19 +1,19 @@
 /**
  * junixsocket
- *
+ * 
  * Copyright (c) 2009 NewsClub, Christian Kohlschütter
- *
+ * 
  * The author licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.newsclub.net.unix;
 
@@ -35,6 +35,7 @@ import java.net.SocketOptions;
 class AFUNIXSocketImpl extends SocketImpl {
     private static final int SHUT_RD = 0;
     private static final int SHUT_WR = 1;
+    private static final int SHUT_RD_WR = 2;
 
     private String socketFile;
     private boolean closed = false;
@@ -53,13 +54,15 @@ class AFUNIXSocketImpl extends SocketImpl {
         return fd;
     }
 
+    @Override
     protected void accept(SocketImpl s) throws IOException {
-        AFUNIXSocketImpl si = (AFUNIXSocketImpl) s;
+        final AFUNIXSocketImpl si = (AFUNIXSocketImpl) s;
         NativeUnixSocket.accept(socketFile, fd, si.fd);
         si.socketFile = socketFile;
         si.connected = true;
     }
 
+    @Override
     protected int available() throws IOException {
         return NativeUnixSocket.available(fd);
     }
@@ -73,13 +76,14 @@ class AFUNIXSocketImpl extends SocketImpl {
             throw new SocketException("Cannot bind to this type of address: "
                     + addr.getClass());
         }
-        AFUNIXSocketAddress address = (AFUNIXSocketAddress) addr;
+        final AFUNIXSocketAddress address = (AFUNIXSocketAddress) addr;
         socketFile = address.getSocketFile();
         NativeUnixSocket.bind(socketFile, fd, backlog);
         bound = true;
         this.localport = address.getPort();
     }
 
+    @Override
     protected void bind(InetAddress host, int port) throws IOException {
         throw new SocketException("Cannot bind to this type of address: "
                 + InetAddress.class);
@@ -91,12 +95,14 @@ class AFUNIXSocketImpl extends SocketImpl {
         }
     }
 
+    @Override
     protected synchronized void close() throws IOException {
         if (closed) {
             return;
         }
         closed = true;
         if (fd.valid()) {
+            NativeUnixSocket.shutdown(fd, SHUT_RD_WR);
             NativeUnixSocket.close(fd);
         }
         if (bound) {
@@ -105,22 +111,25 @@ class AFUNIXSocketImpl extends SocketImpl {
         connected = false;
     }
 
+    @Override
     protected void connect(String host, int port) throws IOException {
         throw new SocketException("Cannot bind to this type of address: "
                 + InetAddress.class);
     }
 
+    @Override
     protected void connect(InetAddress address, int port) throws IOException {
         throw new SocketException("Cannot bind to this type of address: "
                 + InetAddress.class);
     }
 
+    @Override
     protected void connect(SocketAddress addr, int timeout) throws IOException {
         if (!(addr instanceof AFUNIXSocketAddress)) {
             throw new SocketException("Cannot bind to this type of address: "
                     + addr.getClass());
         }
-        AFUNIXSocketAddress address = (AFUNIXSocketAddress) addr;
+        final AFUNIXSocketAddress address = (AFUNIXSocketAddress) addr;
         socketFile = address.getSocketFile();
         NativeUnixSocket.connect(socketFile, fd);
         this.address = address.getAddress();
@@ -129,12 +138,14 @@ class AFUNIXSocketImpl extends SocketImpl {
         this.connected = true;
     }
 
+    @Override
     protected void create(boolean stream) throws IOException {
     }
 
     private final AFUNIXInputStream in = new AFUNIXInputStream();
     private final AFUNIXOutputStream out = new AFUNIXOutputStream();
 
+    @Override
     protected InputStream getInputStream() throws IOException {
         if (!connected && !bound) {
             throw new IOException("Not connected/not bound");
@@ -142,6 +153,7 @@ class AFUNIXSocketImpl extends SocketImpl {
         return in;
     }
 
+    @Override
     protected OutputStream getOutputStream() throws IOException {
         if (!connected && !bound) {
             throw new IOException("Not connected/not bound");
@@ -149,10 +161,12 @@ class AFUNIXSocketImpl extends SocketImpl {
         return out;
     }
 
+    @Override
     protected void listen(int backlog) throws IOException {
         NativeUnixSocket.listen(fd, backlog);
     }
 
+    @Override
     protected void sendUrgentData(int data) throws IOException {
         NativeUnixSocket.write(fd, new byte[] { (byte) (data & 0xFF) }, 0, 1);
     }
@@ -160,6 +174,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     private final class AFUNIXInputStream extends InputStream {
         private boolean streamClosed = false;
 
+        @Override
         public int read(byte[] b, int off, int len) throws IOException {
             if (streamClosed) {
                 throw new IOException(
@@ -170,7 +185,7 @@ class AFUNIXSocketImpl extends SocketImpl {
             }
             try {
                 return NativeUnixSocket.read(fd, b, off, len);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw (IOException) new IOException(e.getMessage() + " at "
                         + AFUNIXSocketImpl.this.toString()).initCause(e);
             }
@@ -178,9 +193,10 @@ class AFUNIXSocketImpl extends SocketImpl {
 
         private byte[] buf1 = new byte[1];
 
+        @Override
         public int read() throws IOException {
             synchronized (buf1) {
-                int numRead = read(buf1, 0, 1);
+                final int numRead = read(buf1, 0, 1);
                 if (numRead <= 0) {
                     return -1;
                 } else {
@@ -189,6 +205,7 @@ class AFUNIXSocketImpl extends SocketImpl {
             }
         }
 
+        @Override
         public void close() throws IOException {
             if (streamClosed) {
                 return;
@@ -202,8 +219,9 @@ class AFUNIXSocketImpl extends SocketImpl {
             checkClose();
         }
 
+        @Override
         public int available() throws IOException {
-            int av = NativeUnixSocket.available(fd);
+            final int av = NativeUnixSocket.available(fd);
             return av;
         }
     }
@@ -213,6 +231,7 @@ class AFUNIXSocketImpl extends SocketImpl {
 
         private byte[] buf1 = new byte[1];
 
+        @Override
         public void write(int b) throws IOException {
             synchronized (buf1) {
                 buf1[0] = (byte) b;
@@ -220,6 +239,7 @@ class AFUNIXSocketImpl extends SocketImpl {
             }
         }
 
+        @Override
         public void write(byte b[], int off, int len) throws IOException {
             if (streamClosed) {
                 throw new AFUNIXSocketException(
@@ -227,19 +247,20 @@ class AFUNIXSocketImpl extends SocketImpl {
             }
             try {
                 while (len > 0 && !Thread.interrupted()) {
-                    int written = NativeUnixSocket.write(fd, b, off, len);
+                    final int written = NativeUnixSocket.write(fd, b, off, len);
                     if (written == -1) {
                         throw new IOException("Unspecific error while writing");
                     }
                     len -= written;
                     off += written;
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw (IOException) new IOException(e.getMessage() + " at "
                         + AFUNIXSocketImpl.this.toString()).initCause(e);
             }
         }
 
+        @Override
         public void close() throws IOException {
             if (streamClosed) {
                 return;
@@ -253,6 +274,7 @@ class AFUNIXSocketImpl extends SocketImpl {
         }
     }
 
+    @Override
     public String toString() {
         return super.toString() + "[fd=" + fd + "; file=" + this.socketFile
                 + "; connected=" + connected + "; bound=" + bound + "]";
@@ -262,9 +284,9 @@ class AFUNIXSocketImpl extends SocketImpl {
         int v;
         try {
             v = (Integer) value;
-        } catch (ClassCastException e) {
+        } catch (final ClassCastException e) {
             throw new AFUNIXSocketException("Unsupport value: " + value, e);
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             throw new AFUNIXSocketException("Value must not be null", e);
         }
         return v;
@@ -274,14 +296,15 @@ class AFUNIXSocketImpl extends SocketImpl {
         int v;
         try {
             v = ((Boolean) value).booleanValue() ? 1 : 0;
-        } catch (ClassCastException e) {
+        } catch (final ClassCastException e) {
             throw new AFUNIXSocketException("Unsupport value: " + value, e);
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             throw new AFUNIXSocketException("Value must not be null", e);
         }
         return v;
     }
 
+    @Override
     public Object getOption(int optID) throws SocketException {
         try {
             switch (optID) {
@@ -295,21 +318,22 @@ class AFUNIXSocketImpl extends SocketImpl {
             case SocketOptions.SO_SNDBUF:
                 return NativeUnixSocket.getSocketOptionInt(fd, optID);
             }
-        } catch (AFUNIXSocketException e) {
+        } catch (final AFUNIXSocketException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new AFUNIXSocketException("Error while getting option", e);
         }
         throw new AFUNIXSocketException("Unsupported option: " + optID);
     }
 
+    @Override
     public void setOption(int optID, Object value) throws SocketException {
         try {
             switch (optID) {
             case SocketOptions.SO_LINGER:
 
                 if (value instanceof Boolean) {
-                    boolean b = (Boolean) value;
+                    final boolean b = (Boolean) value;
                     if (b) {
                         throw new SocketException(
                                 "Only accepting Boolean.FALSE here");
@@ -332,20 +356,22 @@ class AFUNIXSocketImpl extends SocketImpl {
                         expectBoolean(value));
                 return;
             }
-        } catch (AFUNIXSocketException e) {
+        } catch (final AFUNIXSocketException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new AFUNIXSocketException("Error while setting option", e);
         }
         throw new AFUNIXSocketException("Unsupported option: " + optID);
     }
 
+    @Override
     protected void shutdownInput() throws IOException {
         if (!closed && fd.valid()) {
             NativeUnixSocket.shutdown(fd, SHUT_RD);
         }
     }
 
+    @Override
     protected void shutdownOutput() throws IOException {
         if (!closed && fd.valid()) {
             NativeUnixSocket.shutdown(fd, SHUT_WR);
