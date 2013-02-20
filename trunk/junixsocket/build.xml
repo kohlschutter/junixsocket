@@ -217,6 +217,7 @@
 			<arg value="${gccM}" />
 			<arg value="-O2" />
 			<arg value="-Wall" />
+            <arg value="-Wl,--hash-style=both" />			
 			<arg value="-shared" />
 			<arg value="-fPIC" />
 			<arg value="-I" />
