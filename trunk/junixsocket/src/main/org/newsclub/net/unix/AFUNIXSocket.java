@@ -117,6 +117,6 @@ public class AFUNIXSocket extends Socket {
      * @return
      */
     public static boolean isSupported() {
-        return NativeUnixSocket.isSupported();
+        return NativeUnixSocket.isLoaded();
     }
 }
