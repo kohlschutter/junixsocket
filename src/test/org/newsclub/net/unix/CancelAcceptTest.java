@@ -50,8 +50,14 @@ public class CancelAcceptTest extends SocketTestBase {
 
 		assertFalse("ServerSocket should not be closed now", serverSocketClosed);
 		servSock.close();
+		try {
+			sock = connectToServer();
+		} catch(SocketException e) {
+			// as expected
+		}
 		assertTrue("ServerSocket should be closed now", serverSocketClosed);
-		
+
+
 		try {
 			sock = connectToServer();
 			fail("ServerSocket should have been closed already");

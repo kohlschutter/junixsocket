@@ -130,6 +130,6 @@ public class AFUNIXServerSocket extends ServerSocket {
     }
 
     public static boolean isSupported() {
-        return NativeUnixSocket.isSupported();
+        return NativeUnixSocket.isLoaded();
     }
 }

@@ -26,8 +26,6 @@ import java.util.BitSet;
  * @author Christian Kohlschütter
  */
 class PortAssignerImpl implements PortAssigner {
-    private static final long serialVersionUID = 1L;
-
     public PortAssignerImpl() {
     }
 
