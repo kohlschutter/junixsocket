@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -100,8 +99,6 @@ final class NativeUnixSocket {
                         "Could not create temporary file for library")
                         .initCause(e);
             }
-
-            // System.out.println("tmpFile: "+tmpLib);
 
             System.load(tmpLib.getAbsolutePath());
 
@@ -189,9 +186,6 @@ final class NativeUnixSocket {
 
                 final Object holder = holderField.get(addr);
                 if (holder != null) {
-                    System.out.println(Arrays.toString(holder.getClass()
-                            .getDeclaredFields()));
-
                     final Field portField = holder.getClass().getDeclaredField(
                             "port");
                     if (portField != null) {
