@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>junixsocket-native</artifactId>
+  <packaging>nar</packaging>
+  <parent>
+    <groupId>com.kohlschutter.junixsocket</groupId>
+    <artifactId>junixsocket-parent</artifactId>
+    <version>2.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <name>junixsocket-native</name>
+  <properties>
+    <junixsocket.parent.base.directory>${project.parent.basedir}</junixsocket.parent.base.directory>
+  </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.github.maven-nar</groupId>
+        <artifactId>nar-maven-plugin</artifactId>
+        <version>3.2.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <libraries>
+            <library>
+              <type>jni</type>
+              <narSystemPackage>org.newsclub.net.unix</narSystemPackage>
+            </library>
+          </libraries>
+          <properties>
+            <aolProperties>WAAT</aolProperties>
+            <nar.aolProperties>WAAT</nar.aolProperties>
+          </properties>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>fix-jnilib</id>
+            <phase>prepare-package</phase>
+            <configuration>
+              <!-- nar-maven-plugin hardcodes jnilib extension, but we need 
+                dylib -->
+              <target>
+                <copy todir="${project.build.directory}/nar"
+                  verbose="true">
+                  <fileset dir="${project.build.directory}/nar" />
+                  <globmapper from="*.jnilib" to="*.dylib" />
+                </copy>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.scijava</groupId>
+      <artifactId>native-lib-loader</artifactId>
+      <version>2.0.2</version>
+    </dependency>
+  </dependencies>
+</project>

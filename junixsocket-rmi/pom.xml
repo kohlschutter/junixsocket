@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>junixsocket-rmi</artifactId>
+  <packaging>jar</packaging>
+  <parent>
+    <groupId>com.kohlschutter.junixsocket</groupId>
+    <artifactId>junixsocket-parent</artifactId>
+    <version>2.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <name>junixsocket-rmi</name>
+  <properties>
+    <junixsocket.parent.base.directory>${project.parent.basedir}</junixsocket.parent.base.directory>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+</project>
