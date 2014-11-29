@@ -145,9 +145,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 
 	socklen_t suLength = (socklen_t)(strlen(su.sun_path) + sizeof(su.sun_family)
 #ifdef junixsocket_have_sun_len
-	+ (unsigned char)sizeof(su.sun_len))
+	+ (unsigned char)sizeof(su.sun_len)
 #endif
-	;
+	);
 
 	int socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
 	if(socketHandle < 0) {
