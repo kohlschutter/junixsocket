@@ -181,6 +181,10 @@ class AFUNIXSocketImpl extends SocketImpl {
       if (len == 0) {
         return 0;
       }
+      int maxRead = buf.length - off;
+      if (len > maxRead) {
+        len = maxRead;
+      }
       try {
         return NativeUnixSocket.read(fd, buf, off, len);
       } catch (final IOException e) {
@@ -239,6 +243,9 @@ class AFUNIXSocketImpl extends SocketImpl {
     public void write(byte[] buf, int off, int len) throws IOException {
       if (streamClosed) {
         throw new AFUNIXSocketException("This OutputStream has already been closed.");
+      }
+      if (len > buf.length - off) {
+        throw new IndexOutOfBoundsException();
       }
       try {
         while (len > 0 && !Thread.interrupted()) {
