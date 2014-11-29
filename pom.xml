@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.kohlschutter.junixsocket</groupId>
   <artifactId>junixsocket-parent</artifactId>
@@ -52,7 +53,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <maven.compiler.target>1.7</maven.compiler.target>
     <eclipse.jdt.core.prefs>${junixsocket.parent.base.directory}/eclipse/java7-strict-org.eclipse.jdt.core.prefs</eclipse.jdt.core.prefs>
     <junixsocket.parent.base.directory>${project.basedir}</junixsocket.parent.base.directory>
-    <junixsocket.jni.version>2.0</junixsocket.jni.version>
+    <junixsocket.jni.version>2.0.1</junixsocket.jni.version>
   </properties>
 
   <modules>
