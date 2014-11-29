@@ -99,5 +99,24 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>release-native</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native</artifactId>
+          <version>${project.version}</version>
+          <type>nar</type>
+          <classifier>x86_64-MacOSX-gpp-jni</classifier>
+        </dependency>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native</artifactId>
+          <version>${project.version}</version>
+          <type>nar</type>
+          <classifier>amd64-Linux-gpp-jni</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 </project>

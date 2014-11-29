@@ -47,15 +47,26 @@
 
   <modules>
     <module>junixsocket-common</module>
-    <module>junixsocket-native</module>
-    <!-- Don't build junixsocket-native-common by default -->
-    <!-- <module>junixsocket-native-common</module> -->
     <module>junixsocket-rmi</module>
     <module>junixsocket-mysql</module>
     <module>junixsocket-demo</module>
   </modules>
 
   <profiles>
+    <profile>
+      <id>with-native</id>
+      <modules>
+        <module>junixsocket-native</module>
+        <module>junixsocket-native-common</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>release-native</id>
+      <modules>
+        <module>junixsocket-native-common</module>
+      </modules>
+    </profile>
+
     <profile>
       <id>eclipse-compiler-checks</id>
       <!-- run as: mvn clean integration-test -Peclipse-compiler-checks -->
