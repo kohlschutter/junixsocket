@@ -171,7 +171,6 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   private final class AFUNIXInputStream extends InputStream {
     private boolean streamClosed = false;
-    private byte[] buf1 = new byte[1];
 
     @Override
     public int read(byte[] buf, int off, int len) throws IOException {
@@ -195,13 +194,12 @@ class AFUNIXSocketImpl extends SocketImpl {
 
     @Override
     public int read() throws IOException {
-      synchronized (buf1) {
-        final int numRead = read(buf1, 0, 1);
-        if (numRead <= 0) {
-          return -1;
-        } else {
-          return buf1[0] & 0xFF;
-        }
+      final byte[] buf1 = new byte[1];
+      final int numRead = read(buf1, 0, 1);
+      if (numRead <= 0) {
+        return -1;
+      } else {
+        return buf1[0] & 0xFF;
       }
     }
 
@@ -229,14 +227,10 @@ class AFUNIXSocketImpl extends SocketImpl {
   private final class AFUNIXOutputStream extends OutputStream {
     private boolean streamClosed = false;
 
-    private byte[] buf1 = new byte[1];
-
     @Override
     public void write(int oneByte) throws IOException {
-      synchronized (buf1) {
-        buf1[0] = (byte) oneByte;
-        write(buf1, 0, 1);
-      }
+      final byte[] buf1 = new byte[] {(byte) oneByte};
+      write(buf1, 0, 1);
     }
 
     @Override

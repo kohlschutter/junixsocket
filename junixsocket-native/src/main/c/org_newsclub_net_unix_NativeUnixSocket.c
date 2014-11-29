@@ -138,16 +138,16 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 	struct sockaddr_un su;
 	su.sun_family = AF_UNIX;
 #ifdef junixsocket_have_sun_len
-	su.sun_len = (sizeof(su) - sizeof(su.sun_path) + strlen(su.sun_path));
+	su.sun_len = (unsigned char)(sizeof(su) - sizeof(su.sun_path) + strlen(su.sun_path));
 #endif
 	strcpy(su.sun_path, socketFile);
 	(*env)->ReleaseStringUTFChars(env, file, socketFile);
 
-	socklen_t suLength = strlen(su.sun_path) + sizeof(su.sun_family)
+	socklen_t suLength = (socklen_t)(strlen(su.sun_path) + sizeof(su.sun_family)
 #ifdef junixsocket_have_sun_len
-	+ sizeof(su.sun_len)
+	+ (unsigned char)sizeof(su.sun_len)
 #endif
-	;
+	);
 
 	int socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
 	if(socketHandle < 0) {
@@ -193,17 +193,17 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 	struct sockaddr_un su;
 	su.sun_family = AF_UNIX;
 #ifdef junixsocket_have_sun_len
-	su.sun_len = (sizeof(su) - sizeof(su.sun_path) + strlen(su.sun_path));
+	su.sun_len = (unsigned char)(sizeof(su) - sizeof(su.sun_path) + strlen(su.sun_path));
 #endif
 
 	strcpy(su.sun_path, socketFile);
 	(*env)->ReleaseStringUTFChars(env, file, socketFile);
 
-	socklen_t suLength = strlen(su.sun_path) + sizeof(su.sun_family)
+	socklen_t suLength = (socklen_t)(strlen(su.sun_path) + sizeof(su.sun_family)
 #ifdef junixsocket_have_sun_len
 	+ sizeof(su.sun_len)
 #endif
-	;
+	);
 
 	int bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
 
@@ -307,17 +307,17 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 	struct sockaddr_un su;
 	su.sun_family = AF_UNIX;
 #ifdef junixsocket_have_sun_len
-	su.sun_len = (sizeof(su) - sizeof(su.sun_path) + strlen(su.sun_path));
+	su.sun_len = (unsigned char)(sizeof(su) - sizeof(su.sun_path) + strlen(su.sun_path));
 #endif
 
 	strcpy(su.sun_path, socketFile);
 	(*env)->ReleaseStringUTFChars(env, file, socketFile);
 
-	socklen_t suLength = strlen(su.sun_path) + sizeof(su.sun_family)
+	socklen_t suLength = (socklen_t)(strlen(su.sun_path) + sizeof(su.sun_family)
 #ifdef junixsocket_have_sun_len
-	+ sizeof(su.sun_len)
+			+ sizeof(su.sun_len)
 #endif
-	;
+	);
 
 	int ret = connect(socketHandle, (struct sockaddr *)&su, suLength);
 	if(ret == -1) {
@@ -355,7 +355,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
-	ssize_t count = read(handle, &(buf[offset]), length);
+	ssize_t count = read(handle, &(buf[offset]), (size_t)length);
 	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
 
 	if(count == 0) {
@@ -373,7 +373,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 		return -1;
 	}
 
-	return count;
+	return (jint)count;
 }
 
 /*
@@ -404,7 +404,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
-	ssize_t count = write(handle, &buf[offset], length);
+	ssize_t count = write(handle, &buf[offset], (size_t)length);
 	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
 
 	if(count == -1) {
@@ -416,7 +416,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 		return -1;
 	}
 
-	return count;
+	return (jint)count;
 }
 
 /*
@@ -497,7 +497,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
 					strerror(errno), NULL);
 			return -1;
 		}
-		return optVal.tv_sec * 1000 + optVal.tv_usec / 1000;
+		return (jint)(optVal.tv_sec * 1000 + optVal.tv_usec / 1000);
 	} else if(optID == SO_LINGER) {
 		struct linger optVal;
 		socklen_t optLen = sizeof(optVal);
