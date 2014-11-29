@@ -78,6 +78,15 @@ void org_newsclub_net_unix_NativeUnixSocket_throwException(JNIEnv* env,
 	(*env)->Throw(env, t);
 }
 
+void org_newsclub_net_unix_NativeUnixSocket_throwIndexOutOfBoundsException(
+		JNIEnv* env)
+{
+	jclass exc = (*env)->FindClass(env, "java/lang/IndexOutOfBoundsException");
+	jmethodID constr = (*env)->GetMethodID(env, exc, "<init>", "()V");
+	jthrowable t = (jthrowable)(*env)->NewObject(env, exc, constr);
+	(*env)->Throw(env, t);
+}
+
 int org_newsclub_net_unix_NativeUnixSocket_getFD(JNIEnv * env, jobject fd)
 {
 	jclass fileDescriptorClass = (*env)->GetObjectClass(env, fd);
@@ -333,6 +342,16 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 	if(buf == NULL) {
 		return -1; // OOME
 	}
+	jsize bufLen = (*env)->GetArrayLength(env, jbuf);
+	if(offset < 0 || length < 0) {
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				"Illegal offset or length", NULL);
+		return -1;
+	}
+	jint maxRead = bufLen - offset;
+	if(length > maxRead) {
+		length = maxRead;
+	}
 
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
@@ -370,6 +389,19 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 	if(buf == NULL) {
 		return -1; // OOME
 	}
+	jsize bufLen = (*env)->GetArrayLength(env, jbuf);
+	if(offset < 0 || length < 0) {
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				"Illegal offset or length", NULL);
+		return -1;
+	}
+
+	if(length > bufLen - offset) {
+		org_newsclub_net_unix_NativeUnixSocket_throwIndexOutOfBoundsException(
+				env);
+		return -1;
+	}
+
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
 	ssize_t count = write(handle, &buf[offset], length);
