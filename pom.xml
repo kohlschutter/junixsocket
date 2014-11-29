@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.kohlschutter.junixsocket</groupId>
   <artifactId>junixsocket-parent</artifactId>
-  <version>2.0.0</version>
+  <version>2.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>junixsocket-parent</name>
   <inceptionYear>2009</inceptionYear>
@@ -31,7 +31,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
   <scm>
     <url>scm:git:https://github.com/kohlschuetter/junixsocket</url>
     <developerConnection>scm:git:https://github.com/kohlschuetter/junixsocket</developerConnection>
-    <tag>junixsocket-parent-2.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
   <distributionManagement>
     <snapshotRepository>
