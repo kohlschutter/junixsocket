@@ -8,10 +8,20 @@
   <packaging>pom</packaging>
   <name>junixsocket-parent</name>
   <inceptionYear>2009</inceptionYear>
+  <description>junixsocket is a Java/JNI library that allows the use of Unix Domain Sockets (AF_UNIX sockets) from Java.
+
+In contrast to other implementations, junixsocket extends the Java Sockets API (java.net.Socket, java.net.SocketAddress etc.) and even supports RMI over AF_UNIX. It is also possible to use it in conjunction with Connector/J to connect to a local MySQL server via Unix domain sockets.</description>
+  <url>https://github.com/kohlschuetter/junixsocket</url>
   <organization>
     <name>Christian Kohlschütter</name>
     <url>https://www.kohlschutter.com/</url>
   </organization>
+  <developers>
+    <developer>
+      <name>Christian Kohlschütter</name>
+      <email>christian@kohlschutter.com</email>
+    </developer>
+  </developers>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
