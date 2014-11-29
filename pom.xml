@@ -42,12 +42,14 @@
     <maven.compiler.target>1.7</maven.compiler.target>
     <eclipse.jdt.core.prefs>${junixsocket.parent.base.directory}/eclipse/java7-strict-org.eclipse.jdt.core.prefs</eclipse.jdt.core.prefs>
     <junixsocket.parent.base.directory>${project.basedir}</junixsocket.parent.base.directory>
+    <junixsocket.jni.version>2.0</junixsocket.jni.version>
   </properties>
 
   <modules>
     <module>junixsocket-common</module>
     <module>junixsocket-native</module>
-    <module>junixsocket-native-common</module>
+    <!-- Don't build junixsocket-native-common by default -->
+    <!-- <module>junixsocket-native-common</module> -->
     <module>junixsocket-rmi</module>
     <module>junixsocket-mysql</module>
     <module>junixsocket-demo</module>

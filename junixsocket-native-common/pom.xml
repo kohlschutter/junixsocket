@@ -10,6 +10,8 @@
     <version>2.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
+  <!-- JNI bindings are expected to remain stable for 2.0.x releases -->
+  <version>${junixsocket.jni.version}</version>
   <name>junixsocket-native-common</name>
   <properties>
     <junixsocket.parent.base.directory>${project.parent.basedir}</junixsocket.parent.base.directory>
@@ -49,7 +51,7 @@
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-common</artifactId>
-      <version>${project.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
@@ -81,6 +83,12 @@
     </profile>
     <profile>
       <id>amd64-Linux-gpp-jni</id>
+      <activation>
+        <os>
+          <arch>amd64</arch>
+          <name>Linux</name>
+        </os>
+      </activation>
       <dependencies>
         <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>

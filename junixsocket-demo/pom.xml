@@ -18,9 +18,9 @@
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-native-common</artifactId>
-      <version>${project.version}</version>
+      <!-- JNI bindings are expected to remain stable for 2.0.x releases -->
+      <version>${junixsocket.jni.version}</version>
     </dependency>
-
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-common</artifactId>
