@@ -48,6 +48,20 @@ public final class AFUNIXNaming {
   private static final Map<SocketDirAndPort, AFUNIXNaming> instances =
       new HashMap<SocketDirAndPort, AFUNIXNaming>();
 
+  private Registry registry = null;
+  private PortAssigner portAssigner = null;
+  private final File registrySocketDir;
+  private final int registryPort;
+  private AFUNIXRMISocketFactory socketFactory;
+
+  private AFUNIXNaming(final File socketDir, final int port, final String socketPrefix,
+      final String socketSuffix) throws IOException {
+    this.registrySocketDir = socketDir;
+    this.registryPort = port;
+    this.socketFactory =
+        new AFUNIXRMISocketFactory(this, socketDir, null, null, socketPrefix, socketSuffix);
+  }
+
   /**
    * Returns the default instance of {@link AFUNIXNaming}. Sockets are stored in
    * <code>java.io.tmpdir</code>.
@@ -56,18 +70,6 @@ public final class AFUNIXNaming {
    */
   public static AFUNIXNaming getInstance() throws IOException {
     return getInstance(DEFAULT_SOCKET_DIRECTORY, AFUNIXRMIPorts.DEFAULT_REGISTRY_PORT);
-  }
-
-  /**
-   * Returns an {@link AFUNIXNaming} instance which only supports one file. (Probably only useful
-   * when you want/can access the exported {@link UnicastRemoteObject} directly)
-   * 
-   * @param socketFile
-   * @return The instance.
-   * @throws IOException
-   */
-  public static AFUNIXNaming getSingleFileInstance(final File socketFile) throws IOException {
-    return getInstance(socketFile, AFUNIXRMIPorts.PLAIN_FILE_SOCKET);
   }
 
   /**
@@ -91,7 +93,7 @@ public final class AFUNIXNaming {
    * @param socketDir The directory to store sockets in.
    * @param registryPort The registry port. Should be above {@code 100000}.
    * @return The instance.
-   * @throws RemoteException
+   * @throws RemoteException When there was a problem setting up the instance.
    */
   public static AFUNIXNaming getInstance(File socketDir, final int registryPort)
       throws RemoteException {
@@ -102,15 +104,15 @@ public final class AFUNIXNaming {
       socketDir = DEFAULT_SOCKET_DIRECTORY;
       socketDir.mkdirs();
 
-      File f;
+      File tempFile;
       try {
-        f = File.createTempFile("jux", "-", socketDir);
+        tempFile = File.createTempFile("jux", "-", socketDir);
       } catch (IOException e) {
         throw new RemoteException("Cannot create temporary file: " + e.getMessage(), e);
       }
-      f.delete();
+      tempFile.delete();
 
-      socketPrefix = f.getName();
+      socketPrefix = tempFile.getName();
     }
     final SocketDirAndPort sap = new SocketDirAndPort(socketDir, registryPort);
     AFUNIXNaming instance;
@@ -130,18 +132,15 @@ public final class AFUNIXNaming {
     return instance;
   }
 
-  private Registry registry = null;
-  private PortAssigner portAssigner = null;
-  private final File registrySocketDir;
-  private final int registryPort;
-  private AFUNIXRMISocketFactory socketFactory;
-
-  private AFUNIXNaming(final File socketDir, final int port, final String socketPrefix,
-      final String socketSuffix) throws IOException {
-    this.registrySocketDir = socketDir;
-    this.registryPort = port;
-    this.socketFactory =
-        new AFUNIXRMISocketFactory(this, socketDir, null, null, socketPrefix, socketSuffix);
+  /**
+   * Returns an {@link AFUNIXNaming} instance which only supports one file. (Probably only useful
+   * when you want/can access the exported {@link UnicastRemoteObject} directly)
+   * 
+   * @param socketFile The socket file.
+   * @return The instance.
+   */
+  public static AFUNIXNaming getSingleFileInstance(final File socketFile) throws IOException {
+    return getInstance(socketFile, AFUNIXRMIPorts.PLAIN_FILE_SOCKET);
   }
 
   public AFUNIXRMISocketFactory getSocketFactory() {
@@ -211,16 +210,13 @@ public final class AFUNIXNaming {
   /**
    * Shuts this RMI Registry down. Before calling this method, you have to unexport all existing
    * bindings, otherwise the "RMI Reaper" thread will not be closed.
-   * 
-   * @throws AccessException
-   * @throws RemoteException
-   * @throws IOException
    */
   public void shutdownRegistry() throws AccessException, RemoteException, IOException {
     try {
       getRegistry().unbind(PORT_ASSIGNER_ID);
       UnicastRemoteObject.unexportObject(portAssigner, true);
     } catch (NotBoundException e) {
+      // ignore
     }
     portAssigner = null;
 
@@ -247,9 +243,9 @@ public final class AFUNIXNaming {
     }
 
     @Override
-    public boolean equals(Object o) {
-      if (o instanceof SocketDirAndPort) {
-        SocketDirAndPort other = (SocketDirAndPort) o;
+    public boolean equals(Object obj) {
+      if (obj instanceof SocketDirAndPort) {
+        SocketDirAndPort other = (SocketDirAndPort) obj;
         if (port != other.port) {
           return false;
         }

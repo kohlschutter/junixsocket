@@ -32,11 +32,10 @@ import com.mysql.jdbc.SocketFactory;
  * Connect to mysql databases (and compatibles) using UNIX domain sockets.
  */
 public class AFUNIXDatabaseSocketFactory implements SocketFactory {
+  private Socket socket = null;
 
   public AFUNIXDatabaseSocketFactory() {
   }
-
-  private Socket socket = null;
 
   @Override
   public Socket afterHandshake() throws SocketException, IOException {

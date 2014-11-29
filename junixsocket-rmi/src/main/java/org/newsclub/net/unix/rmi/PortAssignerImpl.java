@@ -26,17 +26,16 @@ import java.util.BitSet;
  * @author Christian Kohlschütter
  */
 class PortAssignerImpl implements PortAssigner {
+  private BitSet ports = new BitSet(1000);
+
   public PortAssignerImpl() {
   }
-
-  private BitSet ports = new BitSet(1000);
 
   private/* synchronized */int randomPort() {
     int maxRandom = ports.size();
 
     int port;
-    int i = 0;
-    do {
+    for (int i = 0; i < 3; i++) {
       port = ports.nextClearBit((int) (Math.random() * maxRandom));
       if (port < maxRandom) {
         return port;
@@ -46,7 +45,7 @@ class PortAssignerImpl implements PortAssigner {
           break;
         }
       }
-    } while (i++ < 3);
+    }
     return ports.nextClearBit(0);
   }
 

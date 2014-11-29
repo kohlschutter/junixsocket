@@ -32,7 +32,6 @@ public interface PortAssigner extends Remote {
    * be returned via {@link #returnPort(int)}.
    * 
    * @return The new port.
-   * @throws IOException
    */
   int newPort() throws IOException;
 
@@ -40,8 +39,7 @@ public interface PortAssigner extends Remote {
    * Returns a previously registered port. No error is thrown if the given port has not been
    * assigned before.
    * 
-   * @param port
-   * @throws IOException
+   * @param port The port.
    */
   void returnPort(int port) throws IOException;
 }

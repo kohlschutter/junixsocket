@@ -27,13 +27,12 @@ import java.net.Socket;
 import org.junit.Test;
 
 public class AvailableTest extends SocketTestBase {
+  private final int bytesSent = 23;
+  private final int timeToSleep = 100;
 
   public AvailableTest() throws IOException {
     super();
   }
-
-  private final int bytesSent = 23;
-  private final int timeToSleep = 100;
 
   private void receiveBytes(final Socket sock, final int expected) throws IOException {
     @SuppressWarnings("resource")
@@ -85,8 +84,6 @@ public class AvailableTest extends SocketTestBase {
    * Tests if {@link InputStream#available()} works as expected. The server sends 23 bytes. The
    * client waits for 100ms. After that, the client should be able to read exactly 23 bytes without
    * blocking. Then, we try the opposite direction.
-   * 
-   * @throws Exception
    */
   @Test(timeout = 2000)
   public void testAvailableAtClient() throws Exception {
@@ -117,8 +114,6 @@ public class AvailableTest extends SocketTestBase {
    * Tests if {@link InputStream#available()} works as expected. The client sends 23 bytes. The
    * server waits for 100ms. After that, the server should be able to read exactly 23 bytes without
    * blocking. Then, we try the opposite direction.
-   * 
-   * @throws Exception
    */
   @Test(timeout = 2000)
   public void testAvailableAtServer() throws Exception {

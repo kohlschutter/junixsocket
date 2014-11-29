@@ -30,7 +30,6 @@ public interface HelloWorld extends Remote {
    * Returns "Hello world".
    * 
    * @return "Hello world"
-   * @throws IOException
    */
   String hello() throws IOException;
 }

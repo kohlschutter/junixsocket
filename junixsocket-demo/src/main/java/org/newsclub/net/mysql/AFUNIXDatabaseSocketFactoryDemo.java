@@ -23,7 +23,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /**
- * Demonstrates how to connect to a local MySQL server
+ * Demonstrates how to connect to a local MySQL server.
  * 
  * @author Christian Kohlschuetter
  */

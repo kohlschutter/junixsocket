@@ -51,47 +51,47 @@ final class NativeUnixSocket {
   static void checkSupported() {
   }
 
-  native static void bind(final String socketFile, final FileDescriptor fd, final int backlog)
+  static native void bind(final String socketFile, final FileDescriptor fd, final int backlog)
       throws IOException;
 
-  native static void listen(final FileDescriptor fd, final int backlog) throws IOException;
+  static native void listen(final FileDescriptor fd, final int backlog) throws IOException;
 
-  native static void accept(final String socketFile, final FileDescriptor fdServer,
+  static native void accept(final String socketFile, final FileDescriptor fdServer,
       final FileDescriptor fd) throws IOException;
 
-  native static void connect(final String socketFile, final FileDescriptor fd) throws IOException;
+  static native void connect(final String socketFile, final FileDescriptor fd) throws IOException;
 
-  native static int read(final FileDescriptor fd, byte[] b, int off, int len) throws IOException;
+  static native int read(final FileDescriptor fd, byte[] buf, int off, int len) throws IOException;
 
-  native static int write(final FileDescriptor fd, byte[] b, int off, int len) throws IOException;
+  static native int write(final FileDescriptor fd, byte[] buf, int off, int len) throws IOException;
 
-  native static void close(final FileDescriptor fd) throws IOException;
+  static native void close(final FileDescriptor fd) throws IOException;
 
-  native static void shutdown(final FileDescriptor fd, int mode) throws IOException;
+  static native void shutdown(final FileDescriptor fd, int mode) throws IOException;
 
-  native static int getSocketOptionInt(final FileDescriptor fd, int optionId) throws IOException;
+  static native int getSocketOptionInt(final FileDescriptor fd, int optionId) throws IOException;
 
-  native static void setSocketOptionInt(final FileDescriptor fd, int optionId, int value)
+  static native void setSocketOptionInt(final FileDescriptor fd, int optionId, int value)
       throws IOException;
 
-  native static void unlink(final String socketFile) throws IOException;
+  static native void unlink(final String socketFile) throws IOException;
 
-  native static int available(final FileDescriptor fd) throws IOException;
+  static native int available(final FileDescriptor fd) throws IOException;
 
-  native static void initServerImpl(final AFUNIXServerSocket serverSocket,
+  static native void initServerImpl(final AFUNIXServerSocket serverSocket,
       final AFUNIXSocketImpl impl);
 
-  native static void setCreated(final AFUNIXSocket socket);
+  static native void setCreated(final AFUNIXSocket socket);
 
-  native static void setConnected(final AFUNIXSocket socket);
+  static native void setConnected(final AFUNIXSocket socket);
 
-  native static void setBound(final AFUNIXSocket socket);
+  static native void setBound(final AFUNIXSocket socket);
 
-  native static void setCreatedServer(final AFUNIXServerSocket socket);
+  static native void setCreatedServer(final AFUNIXServerSocket socket);
 
-  native static void setBoundServer(final AFUNIXServerSocket socket);
+  static native void setBoundServer(final AFUNIXServerSocket socket);
 
-  native static void setPort(final AFUNIXSocketAddress addr, int port);
+  static native void setPort(final AFUNIXSocketAddress addr, int port);
 
   static void setPort1(AFUNIXSocketAddress addr, int port) throws AFUNIXSocketException {
     if (port < 0) {

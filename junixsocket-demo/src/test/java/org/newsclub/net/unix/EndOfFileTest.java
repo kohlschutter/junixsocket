@@ -66,13 +66,16 @@ public class EndOfFileTest {
   @After
   public void teardown() {
     try {
-      if (server != null)
+      if (server != null) {
         server.close();
+      }
     } catch (IOException ignore) {
+      // ignore
     }
 
-    if (executor != null)
+    if (executor != null) {
       executor.shutdown();
+    }
   }
 
   @SuppressWarnings("resource")
@@ -98,7 +101,8 @@ public class EndOfFileTest {
   @Test(timeout = 2000)
   public void bidirectionalSanity() throws Exception {
     Socket[] sockets = connectToServer();
-    try (Socket serverSocket = sockets[0]; Socket clientSocket = sockets[1]) {
+    try (Socket serverSocket = sockets[0]; //
+        Socket clientSocket = sockets[1]) {
       String input = null;
       String output = null;
 
@@ -145,6 +149,7 @@ public class EndOfFileTest {
     try {
       serverSocket.close();
     } catch (IOException ignore) {
+      // ignore
     }
   }
 
@@ -170,6 +175,7 @@ public class EndOfFileTest {
     try {
       clientSocket.close();
     } catch (IOException ignore) {
+      // ignore
     }
   }
 
@@ -197,6 +203,7 @@ public class EndOfFileTest {
     try {
       clientSocket.close();
     } catch (IOException ignore) {
+      // ignore
     }
   }
 
@@ -237,6 +244,7 @@ public class EndOfFileTest {
     try {
       serverSocket.close();
     } catch (IOException ignore) {
+      // ignore
     }
   }
 
@@ -264,6 +272,7 @@ public class EndOfFileTest {
     try {
       serverSocket.close();
     } catch (IOException ignore) {
+      // ignore
     }
   }
 
@@ -295,6 +304,7 @@ public class EndOfFileTest {
     try {
       clientSocket.close();
     } catch (IOException ignore) {
+      // ignore
     }
   }
 }

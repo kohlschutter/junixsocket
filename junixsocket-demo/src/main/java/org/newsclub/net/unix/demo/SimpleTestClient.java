@@ -47,7 +47,8 @@ public class SimpleTestClient {
       }
       System.out.println("Connected");
 
-      try (InputStream is = sock.getInputStream(); OutputStream os = sock.getOutputStream();) {
+      try (InputStream is = sock.getInputStream(); //
+          OutputStream os = sock.getOutputStream();) {
 
         byte[] buf = new byte[128];
 

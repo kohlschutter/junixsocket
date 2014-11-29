@@ -38,8 +38,7 @@ public class AFUNIXSocketAddress extends InetSocketAddress {
    * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
    * given file.
    * 
-   * @param socketFile
-   * @throws IOException
+   * @param socketFile The socket to connect to.
    */
   public AFUNIXSocketAddress(final File socketFile) throws IOException {
     this(socketFile, 0);
@@ -49,9 +48,8 @@ public class AFUNIXSocketAddress extends InetSocketAddress {
    * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
    * given file, assigning the given port to it.
    * 
-   * @param socketFile
-   * @param port
-   * @throws IOException
+   * @param socketFile The socket to connect to.
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
    */
   public AFUNIXSocketAddress(final File socketFile, int port) throws IOException {
     super(0);

@@ -43,7 +43,6 @@ public class AFUNIXSocket extends Socket {
    * Creates a new, unbound {@link AFUNIXSocket}.
    * 
    * @return A new, unbound socket.
-   * @throws IOException
    */
   public static AFUNIXSocket newInstance() throws IOException {
     final AFUNIXSocketImpl impl = new AFUNIXSocketImpl();
@@ -55,9 +54,8 @@ public class AFUNIXSocket extends Socket {
   /**
    * Creates a new {@link AFUNIXSocket} and connects it to the given {@link AFUNIXSocketAddress}.
    * 
-   * @param addr
+   * @param addr The address to connect to.
    * @return A new, connected socket.
-   * @throws IOException
    */
   public static AFUNIXSocket connectTo(AFUNIXSocketAddress addr) throws IOException {
     AFUNIXSocket socket = newInstance();

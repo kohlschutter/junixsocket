@@ -35,7 +35,7 @@ final class AFUNIXRMIPorts {
    */
   public static final int DEFAULT_REGISTRY_PORT = 100001;
   /**
-   * This is the port reserved for the port assigner
+   * This is the port reserved for the port assigner.
    * 
    * @see PortAssigner
    */

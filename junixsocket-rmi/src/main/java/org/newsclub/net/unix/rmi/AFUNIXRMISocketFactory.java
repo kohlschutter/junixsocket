@@ -39,13 +39,13 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
  * @author Christian Kohlschütter
  */
 public class AFUNIXRMISocketFactory extends RMISocketFactory implements Externalizable {
+  static final String DEFAULT_SOCKET_FILE_PREFIX = "";
+  static final String DEFAULT_SOCKET_FILE_SUFFIX = ".rmi";
+
   private static final long serialVersionUID = 1L;
 
   private RMIClientSocketFactory defaultClientFactory;
   private RMIServerSocketFactory defaultServerFactory;
-
-  static final String DEFAULT_SOCKET_FILE_PREFIX = "";
-  static final String DEFAULT_SOCKET_FILE_SUFFIX = ".rmi";
 
   private File socketDir;
   private AFUNIXNaming naming;
@@ -54,19 +54,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
 
   private String socketSuffix;
 
-  @Override
-  public int hashCode() {
-    return socketDir.hashCode();
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (!(other instanceof AFUNIXRMISocketFactory)) {
-      return false;
-    }
-    AFUNIXRMISocketFactory sf = (AFUNIXRMISocketFactory) other;
-    return sf.socketDir.equals(socketDir);
-  }
+  private PortAssigner generator = null;
 
   /**
    * Constructor required per definition.
@@ -101,6 +89,20 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
   }
 
   @Override
+  public int hashCode() {
+    return socketDir.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (!(other instanceof AFUNIXRMISocketFactory)) {
+      return false;
+    }
+    AFUNIXRMISocketFactory sf = (AFUNIXRMISocketFactory) other;
+    return sf.socketDir.equals(socketDir);
+  }
+
+  @Override
   public Socket createSocket(String host, int port) throws IOException {
     final RMIClientSocketFactory cf = defaultClientFactory;
     if (cf != null && port < AFUNIXRMIPorts.AF_PORT_BASE) {
@@ -125,8 +127,6 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
 
   public void close() {
   }
-
-  private PortAssigner generator = null;
 
   protected int newPort() throws IOException {
     if (generator == null) {

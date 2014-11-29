@@ -27,7 +27,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This test ensures that the test cases written for the junixsocket also pass for the standard Java
@@ -46,10 +48,11 @@ public class EndOfFileJavaTest extends EndOfFileTest {
   @Before
   public void setup() throws IOException {
     String explicitPort = System.getProperty("org.newsclub.net.unix.testport");
-    if (explicitPort != null)
+    if (explicitPort != null) {
       port = new Integer(explicitPort);
-    else
+    } else {
       port = 14842;
+    }
 
     server = new ServerSocket(port, 1, InetAddress.getByName("127.0.0.1"));
     executor = Executors.newFixedThreadPool(2);

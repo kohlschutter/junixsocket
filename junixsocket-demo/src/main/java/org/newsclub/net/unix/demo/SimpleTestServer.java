@@ -27,7 +27,7 @@ import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
 /**
- * A simple demo server
+ * A simple demo server.
  * 
  * @author Christian Kohlschütter
  * @see SimpleTestClient
@@ -46,7 +46,8 @@ public class SimpleTestServer {
         try (Socket sock = server.accept()) {
           System.out.println("Connected: " + sock);
 
-          try (InputStream is = sock.getInputStream(); OutputStream os = sock.getOutputStream()) {
+          try (InputStream is = sock.getInputStream(); //
+              OutputStream os = sock.getOutputStream()) {
             System.out.println("Saying hello to client " + os);
             os.write("Hello, dear Client".getBytes());
             os.flush();

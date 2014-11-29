@@ -34,11 +34,11 @@ import org.junit.Test;
  * @see <a href="http://code.google.com/p/junixsocket/issues/detail?id=6">Issue 6</a>
  */
 public class CancelAcceptTest extends SocketTestBase {
+  private boolean serverSocketClosed = false;
+
   public CancelAcceptTest() throws IOException {
     super();
   }
-
-  private boolean serverSocketClosed = false;
 
   @Test
   public void issue6test1() throws Exception {
@@ -59,8 +59,10 @@ public class CancelAcceptTest extends SocketTestBase {
     };
 
     try (AFUNIXSocket sock = connectToServer()) {
+      // open and close
     }
     try (AFUNIXSocket sock = connectToServer()) {
+      // open and close
     }
 
     @SuppressWarnings("resource")
@@ -69,6 +71,7 @@ public class CancelAcceptTest extends SocketTestBase {
     assertFalse("ServerSocket should not be closed now", serverSocketClosed && !servSock.isClosed());
     servSock.close();
     try (AFUNIXSocket sock = connectToServer()) {
+      // open and close
     } catch (SocketException e) {
       // as expected
     }

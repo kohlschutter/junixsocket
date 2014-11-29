@@ -63,6 +63,12 @@
     <!-- Example: mvn clean install -Px86_64-MacOSX-gpp-jni,amd64-Linux-gpp-jni -->
     <profile>
       <id>x86_64-MacOSX-gpp-jni</id>
+      <activation>
+        <os>
+          <arch>x86_64</arch>
+          <family>mac</family>
+        </os>
+      </activation>
       <dependencies>
         <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>

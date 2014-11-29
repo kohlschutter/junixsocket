@@ -40,6 +40,7 @@ public class AFUNIXServerSocket extends ServerSocket {
           NativeUnixSocket.unlink(boundEndpoint.getSocketFile());
         }
       } catch (IOException e) {
+        // ignore
       }
     }
   };
@@ -57,7 +58,6 @@ public class AFUNIXServerSocket extends ServerSocket {
    * Returns a new, unbound AF_UNIX {@link ServerSocket}.
    * 
    * @return The new, unbound {@link AFUNIXServerSocket}.
-   * @throws IOException
    */
   public static AFUNIXServerSocket newInstance() throws IOException {
     AFUNIXServerSocket instance = new AFUNIXServerSocket();
@@ -69,7 +69,6 @@ public class AFUNIXServerSocket extends ServerSocket {
    * {@link AFUNIXSocketAddress}.
    * 
    * @return The new, unbound {@link AFUNIXServerSocket}.
-   * @throws IOException
    */
   public static AFUNIXServerSocket bindOn(final AFUNIXSocketAddress addr) throws IOException {
     AFUNIXServerSocket socket = newInstance();
@@ -79,10 +78,12 @@ public class AFUNIXServerSocket extends ServerSocket {
 
   @Override
   public void bind(SocketAddress endpoint, int backlog) throws IOException {
-    if (isClosed())
+    if (isClosed()) {
       throw new SocketException("Socket is closed");
-    if (isBound())
+    }
+    if (isBound()) {
       throw new SocketException("Already bound");
+    }
     if (!(endpoint instanceof AFUNIXSocketAddress)) {
       throw new IOException("Can only bind to endpoints of type "
           + AFUNIXSocketAddress.class.getName());
@@ -98,8 +99,9 @@ public class AFUNIXServerSocket extends ServerSocket {
 
   @Override
   public Socket accept() throws IOException {
-    if (isClosed())
+    if (isClosed()) {
       throw new SocketException("Socket is closed");
+    }
     AFUNIXSocket as = AFUNIXSocket.newInstance();
     implementation.accept(as.impl);
     as.addr = boundEndpoint;
@@ -109,8 +111,9 @@ public class AFUNIXServerSocket extends ServerSocket {
 
   @Override
   public String toString() {
-    if (!isBound())
+    if (!isBound()) {
       return "AFUNIXServerSocket[unbound]";
+    }
     return "AFUNIXServerSocket[" + boundEndpoint.getSocketFile() + "]";
   }
 
@@ -128,6 +131,7 @@ public class AFUNIXServerSocket extends ServerSocket {
     try {
       Runtime.getRuntime().removeShutdownHook(shutdownThread);
     } catch (IllegalStateException e) {
+      // ignore
     }
   }
 
