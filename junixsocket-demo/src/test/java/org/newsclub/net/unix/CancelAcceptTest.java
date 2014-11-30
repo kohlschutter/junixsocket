@@ -48,7 +48,6 @@ public class CancelAcceptTest extends SocketTestBase {
 
       @Override
       protected boolean handleConnection(final Socket sock) throws IOException {
-
         return true;
       }
 
@@ -70,19 +69,23 @@ public class CancelAcceptTest extends SocketTestBase {
 
     assertFalse("ServerSocket should not be closed now", serverSocketClosed && !servSock.isClosed());
     servSock.close();
-    try (AFUNIXSocket sock = connectToServer()) {
-      // open and close
+    try {
+      try (AFUNIXSocket sock = connectToServer()) {
+        // open and close
+      }
+      fail("Did not throw SocketException");
     } catch (SocketException e) {
       // as expected
     }
     assertTrue("ServerSocket should be closed now", serverSocketClosed || servSock.isClosed());
 
-    try (AFUNIXSocket sock = connectToServer()) {
-      fail("ServerSocket should have been closed already");
+    try {
+      try (AFUNIXSocket sock = connectToServer()) {
+        fail("ServerSocket should have been closed already");
+      }
+      fail("Did not throw SocketException");
     } catch (SocketException e) {
       // as expected
     }
-
   }
-
 }
