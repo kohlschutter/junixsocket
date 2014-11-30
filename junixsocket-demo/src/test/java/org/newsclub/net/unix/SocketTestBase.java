@@ -34,7 +34,7 @@ abstract class SocketTestBase {
     this.serverAddress = new AFUNIXSocketAddress(getSocketFile());
   }
 
-  private File getSocketFile() {
+  protected File getSocketFile() throws IOException {
     String explicitFile = System.getProperty("org.newsclub.net.unix.testsocket");
     if (explicitFile != null) {
       return new File(explicitFile);

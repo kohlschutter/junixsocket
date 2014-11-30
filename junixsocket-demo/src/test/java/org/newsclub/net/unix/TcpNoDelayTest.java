@@ -62,6 +62,8 @@ public class TcpNoDelayTest extends SocketTestBase {
         assertTrue(sock.getTcpNoDelay());
       }
     }
+
+    getSocketFile().delete();
   }
 
   @Test
@@ -82,5 +84,7 @@ public class TcpNoDelayTest extends SocketTestBase {
       sock.setTcpNoDelay(true);
       // No exception
     }
+    
+    getSocketFile().delete();
   }
 }
