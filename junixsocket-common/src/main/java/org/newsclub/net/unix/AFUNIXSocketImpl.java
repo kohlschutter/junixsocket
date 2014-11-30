@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketImpl;
@@ -48,7 +49,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   private final AFUNIXInputStream in = new AFUNIXInputStream();
   private final AFUNIXOutputStream out = new AFUNIXOutputStream();
 
-  public AFUNIXSocketImpl() {
+  AFUNIXSocketImpl() {
     super();
     this.fd = new FileDescriptor();
   }
@@ -280,7 +281,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     try {
       return (Integer) value;
     } catch (final ClassCastException e) {
-      throw new AFUNIXSocketException("Unsupport value: " + value, e);
+      throw new AFUNIXSocketException("Unsupported value: " + value, e);
     } catch (final NullPointerException e) {
       throw new AFUNIXSocketException("Value must not be null", e);
     }
@@ -290,7 +291,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     try {
       return ((Boolean) value).booleanValue() ? 1 : 0;
     } catch (final ClassCastException e) {
-      throw new AFUNIXSocketException("Unsupport value: " + value, e);
+      throw new AFUNIXSocketException("Unsupported value: " + value, e);
     } catch (final NullPointerException e) {
       throw new AFUNIXSocketException("Value must not be null", e);
     }
@@ -364,6 +365,47 @@ class AFUNIXSocketImpl extends SocketImpl {
   protected void shutdownOutput() throws IOException {
     if (!closed && fd.valid()) {
       NativeUnixSocket.shutdown(fd, SHUT_WR);
+    }
+  }
+
+  /**
+   * Changes the behavior to be somewhat lenient with respect to the specification.
+   * 
+   * In particular, we ignore calls to {@link Socket#getTcpNoDelay()} and
+   * {@link Socket#setTcpNoDelay(boolean)}.
+   */
+  static class Lenient extends AFUNIXSocketImpl {
+    Lenient() {
+      super();
+    }
+
+    @Override
+    public void setOption(int optID, Object value) throws SocketException {
+      try {
+        super.setOption(optID, value);
+      } catch (SocketException e) {
+        switch (optID) {
+          case SocketOptions.TCP_NODELAY:
+            return;
+          default:
+            throw e;
+        }
+      }
+    }
+
+    @Override
+    public Object getOption(int optID) throws SocketException {
+      try {
+        return super.getOption(optID);
+      } catch (SocketException e) {
+        switch (optID) {
+          case SocketOptions.TCP_NODELAY:
+          case SocketOptions.SO_KEEPALIVE:
+            return false;
+          default:
+            throw e;
+        }
+      }
     }
   }
 }

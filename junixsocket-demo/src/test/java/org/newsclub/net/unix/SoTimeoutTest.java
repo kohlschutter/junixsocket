@@ -41,10 +41,8 @@ public class SoTimeoutTest extends SocketTestBase {
     final ServerThread serverThread = new ServerThread() {
 
       @Override
-      protected boolean handleConnection(final Socket sock) throws IOException {
-        // terminates connection
-
-        return false;
+      protected void handleConnection(final Socket sock) throws IOException {
+        stopAcceptingConnections();
       }
     };
 
@@ -71,12 +69,12 @@ public class SoTimeoutTest extends SocketTestBase {
     final ServerThread serverThread = new ServerThread() {
 
       @Override
-      protected boolean handleConnection(final Socket sock) throws IOException {
+      protected void handleConnection(final Socket sock) throws IOException {
         // Let's wait some time for a byte that never gets sent by the
         // client
         sock.getInputStream().read();
 
-        return false;
+        stopAcceptingConnections();
       }
     };
 

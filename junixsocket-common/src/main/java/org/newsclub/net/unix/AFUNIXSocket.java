@@ -42,9 +42,29 @@ public class AFUNIXSocket extends Socket {
   /**
    * Creates a new, unbound {@link AFUNIXSocket}.
    * 
+   * This "default" implementation is a bit "lenient" with respect to the specification.
+   * 
+   * In particular, we ignore calls to {@link Socket#getTcpNoDelay()} and
+   * {@link Socket#setTcpNoDelay(boolean)}.
+   * 
    * @return A new, unbound socket.
    */
   public static AFUNIXSocket newInstance() throws IOException {
+    final AFUNIXSocketImpl impl = new AFUNIXSocketImpl.Lenient();
+    AFUNIXSocket instance = new AFUNIXSocket(impl);
+    instance.impl = impl;
+    return instance;
+  }
+
+  /**
+   * Creates a new, unbound, "strict" {@link AFUNIXSocket}.
+   * 
+   * This call uses an implementation that tries to be closer to the specification than
+   * {@link #newInstance()}, at least for some cases.
+   * 
+   * @return A new, unbound socket.
+   */
+  public static AFUNIXSocket newStrictInstance() throws IOException {
     final AFUNIXSocketImpl impl = new AFUNIXSocketImpl();
     AFUNIXSocket instance = new AFUNIXSocket(impl);
     instance.impl = impl;
@@ -101,7 +121,7 @@ public class AFUNIXSocket extends Socket {
    * Returns <code>true</code> iff {@link AFUNIXSocket}s are supported by the current Java VM.
    * 
    * To support {@link AFUNIXSocket}s, a custom JNI library must be loaded that is supplied with
-   * junixsocket.
+   * <em>junixsocket</em>.
    * 
    * @return {@code true} iff supported.
    */

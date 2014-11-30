@@ -53,9 +53,15 @@ abstract class SocketTestBase {
     return AFUNIXSocket.connectTo(serverAddress);
   }
 
+  protected AFUNIXSocket connectToServer(AFUNIXSocket socket) throws IOException {
+    socket.connect(serverAddress);
+    return socket;
+  }
+
   protected abstract class ServerThread extends Thread {
     private final AFUNIXServerSocket serverSocket;
     private Exception exception = null;
+    private volatile boolean loop = true;
 
     protected ServerThread() throws IOException {
       serverSocket = startServer();
@@ -63,7 +69,22 @@ abstract class SocketTestBase {
       start();
     }
 
-    protected abstract boolean handleConnection(final Socket sock) throws IOException;
+    /**
+     * Callback used to handle a connection call.
+     * 
+     * Use {@link #stopAcceptingConnections()} to stop accepting new calls.
+     * 
+     * @param sock The socket to handle.
+     */
+    protected abstract void handleConnection(final Socket sock) throws IOException;
+
+    /**
+     * Called from within {@link #handleConnection(Socket)} to tell the server to no longer accept
+     * new calls and to terminate the server thread.
+     */
+    protected void stopAcceptingConnections() {
+      loop = false;
+    }
 
     protected void onServerSocketClose() {
     }
@@ -75,11 +96,11 @@ abstract class SocketTestBase {
     @Override
     public final void run() {
       try {
-        boolean loop = true;
+        loop = true;
         try {
           while (loop) {
             try (Socket sock = serverSocket.accept()) {
-              loop = handleConnection(sock);
+              handleConnection(sock);
             }
           }
         } finally {
@@ -102,7 +123,7 @@ abstract class SocketTestBase {
     try {
       Thread.sleep(ms);
     } catch (InterruptedException e) {
-      throw (IOException) new IOException(e.getMessage()).initCause(e);
+      throw new IOException(e);
     }
   }
 }

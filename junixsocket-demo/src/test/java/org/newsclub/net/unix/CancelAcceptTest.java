@@ -47,8 +47,7 @@ public class CancelAcceptTest extends SocketTestBase {
     final ServerThread st = new ServerThread() {
 
       @Override
-      protected boolean handleConnection(final Socket sock) throws IOException {
-        return true;
+      protected void handleConnection(final Socket sock) throws IOException {
       }
 
       @Override
