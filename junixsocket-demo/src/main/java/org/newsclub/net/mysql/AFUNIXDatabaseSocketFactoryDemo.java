@@ -29,7 +29,7 @@ import java.util.Properties;
  */
 public class AFUNIXDatabaseSocketFactoryDemo {
   public static void main(String[] args) throws Exception {
-    Class.forName("com.mysql.jdbc.Driver").newInstance();
+    Class.forName("com.mysql.jdbc.Driver");
     Properties props = new Properties();
     props.put("socketFactory", AFUNIXDatabaseSocketFactory.class.getName());
 
