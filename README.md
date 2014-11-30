@@ -37,7 +37,7 @@ For 1.x releases, please see [https://code.google.com/p/junixsocket](https://cod
 
 ## Documentation
 
-For nwo, please refer to the [Wiki on Google Code](http://code.google.com/p/junixsocket/w/list). 
+For now, please refer to the [Wiki on Google Code](http://code.google.com/p/junixsocket/w/list). 
 
 Quick links:
  * [Getting Started](http://code.google.com/p/junixsocket/wiki/GettingStarted)
