@@ -11,7 +11,7 @@
   </parent>
   <name>junixsocket-common</name>
   <properties>
-    <junixsocket.parent.base.directory>${project.parent.basedir}</junixsocket.parent.base.directory>
+    <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
   </properties>
   <build>
     <plugins>
@@ -28,7 +28,7 @@
             </library>
           </libraries>
           <javah>
-            <jniDirectory>${junixsocket.parent.base.directory}/junixsocket-native/src/main/c</jniDirectory>
+            <jniDirectory>${kohlschutter.project.base.directory}/junixsocket-native/src/main/c</jniDirectory>
           </javah>
         </configuration>
       </plugin>

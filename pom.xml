@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.kohlschutter.junixsocket</groupId>
   <artifactId>junixsocket-parent</artifactId>
   <version>2.0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <parent>
+    <groupId>com.kohlschutter</groupId>
+    <artifactId>kohlschutter-parent</artifactId>
+    <version>1.0</version>
+    <relativePath>../kohlschutter-parent/pom.xml</relativePath>
+  </parent>
   <name>junixsocket-parent</name>
   <inceptionYear>2009</inceptionYear>
   <description>junixsocket is a Java/JNI library that allows the use of Unix Domain Sockets (AF_UNIX sockets) from Java.
@@ -12,7 +19,7 @@
 In contrast to other implementations, junixsocket extends the Java Sockets API (java.net.Socket, java.net.SocketAddress etc.) and even supports RMI over AF_UNIX. It is also possible to use it in conjunction with Connector/J to connect to a local MySQL server via Unix domain sockets.</description>
   <url>https://github.com/kohlschutter/junixsocket</url>
   <organization>
-    <name>Christian Kohlschütter</name>
+    <name>Kohlschütter Search Intelligence</name>
     <url>https://www.kohlschutter.com/</url>
   </organization>
   <developers>
@@ -44,14 +51,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <url>https://github.com/kohlschutter/junixsocket/issues</url>
   </issueManagement>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
-    <file.encoding>UTF-8</file.encoding>
-    <maven.compile.encoding>UTF-8</maven.compile.encoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <eclipse.jdt.core.prefs>${junixsocket.parent.base.directory}/eclipse/java7-strict-org.eclipse.jdt.core.prefs</eclipse.jdt.core.prefs>
-    <junixsocket.parent.base.directory>${project.basedir}</junixsocket.parent.base.directory>
+    <kohlschutter.project.base.directory>${project.basedir}</kohlschutter.project.base.directory>
     <junixsocket.jni.version>2.0.3</junixsocket.jni.version>
   </properties>
 
@@ -76,260 +76,12 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <module>junixsocket-native-common</module>
       </modules>
     </profile>
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>eclipse-compiler-checks</id>
-      <!-- run as: mvn clean integration-test -Peclipse-compiler-checks -->
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <!-- won't work with 3.2 -->
-            <version>3.1</version>
-            <configuration>
-              <compilerId>eclipse</compilerId>
-              <compilerArguments>
-                <!-- prefs should contain "org.eclipse.jdt.core.compiler.doc.comment.support=enabled" -->
-                <properties>${eclipse.jdt.core.prefs}</properties>
-              </compilerArguments>
-              <fork>true</fork>
-            </configuration>
-            <dependencies>
-              <dependency>
-                <groupId>org.codehaus.plexus</groupId>
-                <artifactId>plexus-compiler-eclipse</artifactId>
-                <version>2.4</version>
-                <exclusions>
-                  <exclusion>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>org.eclipse.jdt.core</artifactId>
-                  </exclusion>
-                </exclusions>
-              </dependency>
-              <dependency>
-                <groupId>org.eclipse.jdt.core.compiler</groupId>
-                <artifactId>ecj</artifactId>
-                <version>4.4</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>enforce</id>
-                <!-- Prevents installation of ECJ-compiled classes -->
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <phase>install</phase>
-                <configuration>
-                  <rules>
-                    <AlwaysFail />
-                  </rules>
-                  <fail>true</fail>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 
   <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-        <inherited>true</inherited>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <!-- invoke with mvn java-formatter:format -->
-        <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-        <artifactId>maven-java-formatter-plugin</artifactId>
-        <version>0.4</version>
-        <configuration>
-          <compilerCompliance>${maven.compiler.target}</compilerCompliance>
-          <compilerSource>${maven.compiler.source}</compilerSource>
-          <compilerTargetPlatform>${maven.compiler.target}</compilerTargetPlatform>
-          <lineEnding>LF</lineEnding>
-          <configFile>${junixsocket.parent.base.directory}/eclipse/eclipse-formatter-config.xml</configFile>
-          <overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>
-          <includes>
-            <include>org/newsclub/**/*.java</include>
-          </includes>
-        </configuration>
-      </plugin>
-      <plugin>
-        <!-- invoke with mvn license:format -->
-        <groupId>com.mycila</groupId>
-        <artifactId>license-maven-plugin</artifactId>
-        <version>2.6</version>
-        <configuration>
-          <header>${junixsocket.parent.base.directory}/LICENSE</header>
-          <includes>
-            <include>src/main/java/org/newsclub/**/*.java</include>
-            <include>src/test/java/org/newsclub/**/*.java</include>
-          </includes>
-          <excludes>
-            <exclude>**/package-info.java</exclude>
-          </excludes>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>2.5.1</version>
-        <configuration>
-          <autoVersionSubmodules>true</autoVersionSubmodules>
-          <useReleaseProfile>false</useReleaseProfile>
-          <releaseProfiles>release</releaseProfiles>
-          <goals>deploy</goals>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.5</version>
-        <extensions>true</extensions>
-        <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>false</autoReleaseAfterClose>
-        </configuration>
-      </plugin>
-    </plugins>
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>2.9</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>2.4</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.10.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.2</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.18</version>
-          <configuration>
-            <argLine>-Dfile.encoding=UTF-8</argLine>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>2.6.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-antrun-plugin</artifactId>
-          <version>1.7</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.5</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>2.7</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.13</version>
-          <configuration>
-            <configLocation>${junixsocket.parent.base.directory}/eclipse/checkstyle-configuration.xml</configLocation>
-          </configuration>
-          <dependencies>
-            <dependency>
-              <!-- Use the same checkstyle version as in eclipse-cs -->
-              <groupId>com.puppycrawl.tools</groupId>
-              <artifactId>checkstyle</artifactId>
-              <version>6.1.1</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-gpg-plugin</artifactId>
-          <version>1.5</version>
-        </plugin>
+
       </plugins>
     </pluginManagement>
   </build>

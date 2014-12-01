@@ -11,7 +11,7 @@
   </parent>
   <name>junixsocket-demo</name>
   <properties>
-    <junixsocket.parent.base.directory>${project.parent.basedir}</junixsocket.parent.base.directory>
+    <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
   </properties>
   <dependencies>
     <dependency>
