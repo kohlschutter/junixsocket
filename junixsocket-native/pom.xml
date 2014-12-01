@@ -7,12 +7,9 @@
   <parent>
     <groupId>com.kohlschutter.junixsocket</groupId>
     <artifactId>junixsocket-parent</artifactId>
-    <!-- Update this manually after maven-release -->
-    <version>2.0.3-SNAPSHOT</version>
+    <version>2.0.4-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <!-- JNI bindings are expected to remain stable for 2.0.x releases -->
-  <version>${junixsocket.jni.version}</version>
   <name>junixsocket-native</name>
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
