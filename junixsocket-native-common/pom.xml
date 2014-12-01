@@ -16,7 +16,6 @@
   <name>junixsocket-native-common</name>
   <properties>
     <junixsocket.parent.base.directory>${project.parent.basedir}</junixsocket.parent.base.directory>
-    <nar>${com.kohlschuetter.junixsocket:junixsocket-native:nar}</nar>
   </properties>
   <build>
     <plugins>
