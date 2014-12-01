@@ -10,7 +10,7 @@
   <description>junixsocket is a Java/JNI library that allows the use of Unix Domain Sockets (AF_UNIX sockets) from Java.
 
 In contrast to other implementations, junixsocket extends the Java Sockets API (java.net.Socket, java.net.SocketAddress etc.) and even supports RMI over AF_UNIX. It is also possible to use it in conjunction with Connector/J to connect to a local MySQL server via Unix domain sockets.</description>
-  <url>https://github.com/kohlschuetter/junixsocket</url>
+  <url>https://github.com/kohlschutter/junixsocket</url>
   <organization>
     <name>Christian Kohlschütter</name>
     <url>https://www.kohlschutter.com/</url>
@@ -29,8 +29,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     </license>
   </licenses>
   <scm>
-    <url>scm:git:https://github.com/kohlschuetter/junixsocket</url>
-    <developerConnection>scm:git:https://github.com/kohlschuetter/junixsocket</developerConnection>
+    <url>scm:git:https://github.com/kohlschutter/junixsocket</url>
+    <developerConnection>scm:git:https://github.com/kohlschutter/junixsocket</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <distributionManagement>
@@ -41,7 +41,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
   </distributionManagement>
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/kohlschuetter/junixsocket/issues</url>
+    <url>https://github.com/kohlschutter/junixsocket/issues</url>
   </issueManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
