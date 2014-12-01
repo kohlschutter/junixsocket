@@ -15,7 +15,7 @@
   <version>${junixsocket.jni.version}</version>
   <name>junixsocket-native-common</name>
   <properties>
-    <junixsocket.parent.base.directory>${project.parent.basedir}</junixsocket.parent.base.directory>
+    <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
   </properties>
   <build>
     <plugins>
@@ -100,7 +100,7 @@
       </dependencies>
     </profile>
     <profile>
-      <id>release-native</id>
+      <id>release</id>
       <dependencies>
         <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>
