@@ -103,62 +103,6 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_unlink
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available
   (JNIEnv *, jclass, jobject);
 
-/*
- * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    initServerImpl
- * Signature: (Lorg/newsclub/net/unix/AFUNIXServerSocket;Lorg/newsclub/net/unix/AFUNIXSocketImpl;)V
- */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImpl
-  (JNIEnv *, jclass, jobject, jobject);
-
-/*
- * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    setCreated
- * Signature: (Lorg/newsclub/net/unix/AFUNIXSocket;)V
- */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreated
-  (JNIEnv *, jclass, jobject);
-
-/*
- * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    setConnected
- * Signature: (Lorg/newsclub/net/unix/AFUNIXSocket;)V
- */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setConnected
-  (JNIEnv *, jclass, jobject);
-
-/*
- * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    setBound
- * Signature: (Lorg/newsclub/net/unix/AFUNIXSocket;)V
- */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBound
-  (JNIEnv *, jclass, jobject);
-
-/*
- * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    setCreatedServer
- * Signature: (Lorg/newsclub/net/unix/AFUNIXServerSocket;)V
- */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreatedServer
-  (JNIEnv *, jclass, jobject);
-
-/*
- * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    setBoundServer
- * Signature: (Lorg/newsclub/net/unix/AFUNIXServerSocket;)V
- */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBoundServer
-  (JNIEnv *, jclass, jobject);
-
-/*
- * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    setPort
- * Signature: (Lorg/newsclub/net/unix/AFUNIXSocketAddress;I)V
- */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setPort
-  (JNIEnv *, jclass, jobject, jint);
-
 #ifdef __cplusplus
 }
 #endif

@@ -54,7 +54,7 @@ public class AFUNIXSocketAddress extends InetSocketAddress {
   public AFUNIXSocketAddress(final File socketFile, int port) throws IOException {
     super(0);
     if (port != 0) {
-      NativeUnixSocket.setPort1(this, port);
+      NativeUnixSocket.setPort(this, port);
     }
     this.socketFile = socketFile.getCanonicalPath();
   }

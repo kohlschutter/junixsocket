@@ -9,3 +9,6 @@ dependency-reduced-pom.xml
 pom.xml.releaseBackup
 /release.properties
 /eclipse
+/bin/
+\?/
+.m2/

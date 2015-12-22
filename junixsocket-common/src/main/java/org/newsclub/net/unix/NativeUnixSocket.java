@@ -20,25 +20,61 @@ package org.newsclub.net.unix;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
-
+import java.net.Socket;
+import java.net.ServerSocket;
 /**
  * JNI connector to native JNI C code.
  * 
  * @author Christian Kohlschütter
  */
 final class NativeUnixSocket {
+  private static native void registerNatives();
   private static boolean loaded = false;
+  private static Method getMethod(Class<?> klass, String name, Class<?>...parameterTypes) {
+    Method method = null;
+    try {
+      method = klass.getDeclaredMethod(name, parameterTypes);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    if (method == null) {
+      throw new RuntimeException("Cannot find method \"" + name + "\" in "
+          + klass.getName() + "\". Unsupported JVM?");
+    }
+    method.setAccessible(true);
+    return method;
+  }
+
+  private static Field getField(Class<?> klass, String name) {
+    Field field = null;
+    try {
+      field = klass.getDeclaredField(name);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    if (field == null) {
+      throw new RuntimeException("Cannot find field \"" + name + "\" in "
+          + klass.getName() + "\". Unsupported JVM?");
+    }
+    field.setAccessible(true);
+	  return field;
+  }
 
   static {
     try {
       Class.forName("org.newsclub.net.unix.NarSystem").getMethod("loadLibrary").invoke(null);
+      registerNatives();
     } catch (ClassNotFoundException e) {
+      e.printStackTrace();
       throw new IllegalStateException(
           "Could not find NarSystem class.\n\n*** ECLIPSE USERS ***\nIf you're running from "
               + "within Eclipse, please try closing the \"junixsocket-native-common\" "
               + "project\n", e);
     } catch (Exception e) {
+      e.printStackTrace();
       throw new IllegalStateException(e);
     }
     loaded = true;
@@ -63,7 +99,7 @@ final class NativeUnixSocket {
 
   static native int read(final FileDescriptor fd, byte[] buf, int off, int len) throws IOException;
 
-  static native int write(final FileDescriptor fd, byte[] buf, int off, int len) throws IOException;
+  static native int write(final FileDescriptor fd, final byte[] buf, final int off, final int len) throws IOException;
 
   static native void close(final FileDescriptor fd) throws IOException;
 
@@ -78,44 +114,92 @@ final class NativeUnixSocket {
 
   static native int available(final FileDescriptor fd) throws IOException;
 
-  static native void initServerImpl(final AFUNIXServerSocket serverSocket,
-      final AFUNIXSocketImpl impl);
+  private static final Field socketImpl = getField(ServerSocket.class, "impl");
+  static void initServerImpl(final AFUNIXServerSocket addr, final AFUNIXSocketImpl impl) {
+    try {
+      socketImpl.set(addr, impl);
+    } catch (final IllegalAccessException e) {
+      throw new AssertionError(e);
+    }
+  }
+ 
+  private static final Method setCreated = getMethod(Socket.class, "setCreated");
+  static void setCreated(final AFUNIXSocket socket) {
+    try {
+      setCreated.invoke(socket);
+    } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+      throw new AssertionError(e);
+    }
+  }
 
-  static native void setCreated(final AFUNIXSocket socket);
+  private static final Method setConnected = getMethod(Socket.class, "setConnected");
+  static void setConnected(final AFUNIXSocket socket) {
+    try {
+      setConnected.invoke(socket);
+    } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+      throw new AssertionError(e);
+    }
+  }
 
-  static native void setConnected(final AFUNIXSocket socket);
+  private static final Method setBound = getMethod(Socket.class, "setBound");
+  static void setBound(final AFUNIXSocket socket) {
+    try {
+      setBound.invoke(socket);
+    } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+      throw new AssertionError(e);
+    }
+  }
 
-  static native void setBound(final AFUNIXSocket socket);
+  private static final Method setCreatedServer = getMethod(ServerSocket.class, "setCreated");
+  static void setCreatedServer(final AFUNIXServerSocket socket) {
+    try {
+      setCreatedServer.invoke(socket);
+    } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+      throw new AssertionError(e);
+    }
+  }
 
-  static native void setCreatedServer(final AFUNIXServerSocket socket);
+  private static final Method setBoundServer = getMethod(ServerSocket.class, "setBound");
+  static void setBoundServer(final AFUNIXServerSocket socket) {
+    try {
+      setBoundServer.invoke(socket);
+    } catch (final IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+      throw new AssertionError(e);
+    }
+  }
 
-  static native void setBoundServer(final AFUNIXServerSocket socket);
-
-  static native void setPort(final AFUNIXSocketAddress addr, int port);
-
-  static void setPort1(AFUNIXSocketAddress addr, int port) throws AFUNIXSocketException {
+  @Deprecated
+  static void setPortBad(final AFUNIXSocketAddress addr, final int port) {
+    try {
+      portField.setInt(addr, port);
+    } catch (final IllegalAccessException e) {
+      throw new AssertionError(e);
+    }
+  }
+  private static Field getHolderField() {
+    Field field;
+    try {
+      field = InetSocketAddress.class.getDeclaredField("holder");
+      field.setAccessible(true);
+      return field;
+    } catch (NoSuchFieldException e) {
+      return null;
+    }
+  }
+  private static Field getPortField() {
+    Field holderField = getHolderField();
+    Class<?> portClass = holderField != null ? holderField.getType() : InetSocketAddress.class;
+    return getField(portClass, "port");
+  }
+  private static final Field holderField = getHolderField();
+  private static final Field portField = getPortField();
+  static void setPort(final AFUNIXSocketAddress addr, final int port) throws AFUNIXSocketException {
     if (port < 0) {
       throw new IllegalArgumentException("port out of range:" + port);
     }
 
-    boolean setOk = false;
     try {
-      final Field holderField = InetSocketAddress.class.getDeclaredField("holder");
-      if (holderField != null) {
-        holderField.setAccessible(true);
-
-        final Object holder = holderField.get(addr);
-        if (holder != null) {
-          final Field portField = holder.getClass().getDeclaredField("port");
-          if (portField != null) {
-            portField.setAccessible(true);
-            portField.set(holder, port);
-            setOk = true;
-          }
-        }
-      } else {
-        setPort(addr, port);
-      }
+      portField.set(holderField != null ? holderField.get(addr) : addr, port);
     } catch (final RuntimeException e) {
       throw e;
     } catch (final Exception e) {
@@ -123,9 +207,6 @@ final class NativeUnixSocket {
         throw (AFUNIXSocketException) e;
       }
       throw new AFUNIXSocketException("Could not set port", e);
-    }
-    if (!setOk) {
-      throw new AFUNIXSocketException("Could not set port");
     }
   }
 }
