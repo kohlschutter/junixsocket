@@ -31,6 +31,7 @@
 #include <sys/uio.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <netinet/tcp.h>
 
 #ifndef FIONREAD
 #include <sys/filio.h>
@@ -454,6 +455,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shutdown
 jint convertSocketOptionToNative(jint optID)
 {
 	switch(optID) {
+	case 0x0001:
+		return TCP_NODELAY;
 	case 0x0008:
 		return SO_KEEPALIVE;
 	case 0x0080:
