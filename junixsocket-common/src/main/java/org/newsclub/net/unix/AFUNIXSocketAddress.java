@@ -33,6 +33,7 @@ public class AFUNIXSocketAddress extends InetSocketAddress {
 
   private static final long serialVersionUID = 1L;
   private final String socketFile;
+  private final int fileMode;
 
   /**
    * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
@@ -52,11 +53,24 @@ public class AFUNIXSocketAddress extends InetSocketAddress {
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
    */
   public AFUNIXSocketAddress(final File socketFile, int port) throws IOException {
+    this(socketFile, port, 0666);
+  }
+
+  /**
+   * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
+   * given file, assigning the given port to it.
+   *
+   * @param socketFile The socket to connect to.
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @param fileMode The socket file access mode.
+   */
+  public AFUNIXSocketAddress(final File socketFile, int port, int fileMode) throws IOException {
     super(0);
     if (port != 0) {
       NativeUnixSocket.setPort1(this, port);
     }
     this.socketFile = socketFile.getCanonicalPath();
+    this.fileMode = fileMode;
   }
 
   /**
@@ -66,6 +80,14 @@ public class AFUNIXSocketAddress extends InetSocketAddress {
    */
   public String getSocketFile() {
     return socketFile;
+  }
+
+  /**
+   * Return the socket file access mode.
+   * @return Socket file access mode.
+   */
+  public int getFileMode() {
+    return fileMode;
   }
 
   @Override

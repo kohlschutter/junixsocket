@@ -81,7 +81,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
     final AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
     socketFile = socketAddress.getSocketFile();
-    NativeUnixSocket.bind(socketFile, fd, backlog);
+    NativeUnixSocket.bind(socketFile, fd, socketAddress.getFileMode(), backlog);
     bound = true;
     this.localport = socketAddress.getPort();
   }

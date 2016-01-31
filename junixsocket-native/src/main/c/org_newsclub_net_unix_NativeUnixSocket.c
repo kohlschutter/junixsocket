@@ -162,10 +162,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    bind
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;I)V
+ * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;II)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
-(JNIEnv * env, jclass clazz, jstring file, jobject fd, jint backlog) {
+(JNIEnv * env, jclass clazz, jstring file, jobject fd, jint filemode, jint backlog) {
 	const char* socketFile = (*env)->GetStringUTFChars(env, file, NULL);
 	if(socketFile == NULL) {
 		return; // OOME
@@ -250,7 +250,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 		}
 	}
 
-	int chmodRes = chmod(su.sun_path, 0666);
+	int chmodRes = chmod(su.sun_path, (__mode_t)filemode);
 	if(chmodRes == -1) {
 		org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), file);
 	}

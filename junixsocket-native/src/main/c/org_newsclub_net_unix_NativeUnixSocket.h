@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    bind
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;I)V
+ * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;II)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
-  (JNIEnv *, jclass, jstring, jobject, jint);
+  (JNIEnv *, jclass, jstring, jobject, jint, jint);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
