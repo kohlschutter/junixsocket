@@ -18,6 +18,7 @@
 
 #include "org_newsclub_net_unix_NativeUnixSocket.h"
 
+#include <alloca.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -60,6 +61,9 @@ extern "C" {
 #define send(a,b,c,d)   sendto(a,b,c,d,0,0)
 typedef unsigned long socklen_t; /* 64-bits */
 #endif
+
+// Max size of stack allocated/alloca buffers
+static const jsize MAX_STACK_ALLOC = 64 * 1024;
 
 /**
  * The native C part of the AFUnixSocket implementation.
@@ -338,40 +342,31 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 		JNIEnv * env, jclass clazz, jobject fd, jbyteArray jbuf, jint offset,
 		jint length)
 {
-	jbyte *buf = (*env)->GetByteArrayElements(env, jbuf, NULL);
-	if(buf == NULL) {
-		return -1; // OOME
-	}
-	jsize bufLen = (*env)->GetArrayLength(env, jbuf);
 	if(offset < 0 || length < 0) {
 		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
 				"Illegal offset or length", NULL);
 		return -1;
 	}
-	jint maxRead = bufLen - offset;
-	if(length > maxRead) {
-		length = maxRead;
-	}
+
+	jsize jbufLen = (*env)->GetArrayLength(env, jbuf);
+	jsize want = jbufLen - offset;
+	jsize bufLen = want > MAX_STACK_ALLOC ? MAX_STACK_ALLOC : want;
+	// The cast to size_t is safe because bufLen has to be greater than 0 and thus can't be sign extended
+	jbyte *buf = alloca((size_t)bufLen);
 
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
-	ssize_t count = read(handle, &(buf[offset]), (size_t)length);
-	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
+	ssize_t count = read(handle, buf, (size_t)bufLen);
 
 	if(count == 0) {
-		// read(2) returns 0 on EOF. Java returns -1.
 		return -1;
 	} else if(count == -1) {
-		// read(2) returns -1 on error. Java throws an Exception.
-
-//          Removed since non-blocking is not yet supported
-//			if(errno == EAGAIN || errno == EWOULDBLOCK) {
-//				return 0;
-//			}
 		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
 				strerror(errno), NULL);
 		return -1;
 	}
+
+	(*env)->SetByteArrayRegion(env, jbuf, offset, (jsize)count, buf);
 
 	return (jint)count;
 }
@@ -385,27 +380,31 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 		JNIEnv * env, jclass clazz, jobject fd, jbyteArray jbuf, jint offset,
 		jint length)
 {
-	jbyte *buf = (*env)->GetByteArrayElements(env, jbuf, NULL);
-	if(buf == NULL) {
-		return -1; // OOME
-	}
-	jsize bufLen = (*env)->GetArrayLength(env, jbuf);
 	if(offset < 0 || length < 0) {
 		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
 				"Illegal offset or length", NULL);
 		return -1;
 	}
 
-	if(length > bufLen - offset) {
+	jsize jbufLen = (*env)->GetArrayLength(env, jbuf);
+	fprintf(stderr, "jbufLen: %d\n", jbufLen);
+
+	if(length > jbufLen - offset) {
 		org_newsclub_net_unix_NativeUnixSocket_throwIndexOutOfBoundsException(
 				env);
 		return -1;
 	}
 
+	jsize bufLen = length > MAX_STACK_ALLOC ? MAX_STACK_ALLOC : length;
+
+	// The cast to size_t is safe because bufLen has to be greater than 0 and thus can't be sign extended
+	jbyte *buf = alloca((size_t)bufLen);
+
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
-	ssize_t count = write(handle, &buf[offset], (size_t)length);
-	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
+	(*env)->GetByteArrayRegion(env, jbuf, offset, bufLen, buf);
+
+	ssize_t count = write(handle, buf, (size_t)bufLen);
 
 	if(count == -1) {
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
