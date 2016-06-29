@@ -7,6 +7,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getInfFd
+  (JNIEnv * env, jclass clazz, jobject fd);
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    bind
@@ -42,18 +46,34 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    read
- * Signature: (Ljava/io/FileDescriptor;[BII)I
+ * Signature: (I;[BII)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read
-  (JNIEnv *, jclass, jobject, jbyteArray, jint, jint);
+  (JNIEnv *, jclass, jint, jbyteArray, jint, jint);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    write
- * Signature: (Ljava/io/FileDescriptor;[BII)I
+ * Signature: (I;[BII)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write
-  (JNIEnv *, jclass, jobject, jbyteArray, jint, jint);
+  (JNIEnv *, jclass, jint, jbyteArray, jint, jint);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    read
+ * Signature: (I;[BII)I
+ */
+JNIEXPORT jint JNICALL JavaCritical_org_newsclub_net_unix_NativeUnixSocket_read
+  (jint, jint, jbyte*, jint, jint);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    write
+ * Signature: (I;[BII)I
+ */
+JNIEXPORT jint JNICALL JavaCritical_org_newsclub_net_unix_NativeUnixSocket_write
+  (jint, jint, jbyte*, jint, jint);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket

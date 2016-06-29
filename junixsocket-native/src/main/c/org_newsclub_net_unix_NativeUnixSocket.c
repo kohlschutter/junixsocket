@@ -114,6 +114,13 @@ void org_newsclub_net_unix_NativeUnixSocket_initFD(JNIEnv * env, jobject fd,
 	(*env)->SetIntField(env, fd, fdField, handle);
 }
 
+
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getInfFd
+(JNIEnv * env, jclass clazz, jobject fd) {
+	return (jint) org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
+}
+
+
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    accept
@@ -332,10 +339,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    read
- * Signature: (Ljava/io/FileDescriptor;[BII)I
+ * Signature: (I;[BII)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
-		JNIEnv * env, jclass clazz, jobject fd, jbyteArray jbuf, jint offset,
+		JNIEnv * env, jclass clazz, jint fd, jbyteArray jbuf, jint offset,
 		jint length)
 {
 	jbyte *buf = (*env)->GetByteArrayElements(env, jbuf, NULL);
@@ -343,20 +350,32 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 		return -1; // OOME
 	}
 	jsize bufLen = (*env)->GetArrayLength(env, jbuf);
+
+	jint count = JavaCritical_org_newsclub_net_unix_NativeUnixSocket_read(fd, bufLen, buf, offset, length);
+
+	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
+
+	return count;
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    read
+ * Signature: (I;[BII)I
+ */
+JNIEXPORT jint JNICALL JavaCritical_org_newsclub_net_unix_NativeUnixSocket_read(
+		jint fd, jint bufLen, jbyte* buf, jint offset,
+		jint length)
+{
 	if(offset < 0 || length < 0) {
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-				"Illegal offset or length", NULL);
-		return -1;
+		return -2;
 	}
 	jint maxRead = bufLen - offset;
 	if(length > maxRead) {
 		length = maxRead;
 	}
 
-	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
-
-	ssize_t count = read(handle, &(buf[offset]), (size_t)length);
-	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
+	ssize_t count = read((int) fd, &(buf[offset]), (size_t)length);
 
 	if(count == 0) {
 		// read(2) returns 0 on EOF. Java returns -1.
@@ -368,9 +387,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 //			if(errno == EAGAIN || errno == EWOULDBLOCK) {
 //				return 0;
 //			}
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-				strerror(errno), NULL);
-		return -1;
+		return -2;
 	}
 
 	return (jint)count;
@@ -379,10 +396,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    write
- * Signature: (Ljava/io/FileDescriptor;[BII)I
+ * Signature: (I;[BII)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
-		JNIEnv * env, jclass clazz, jobject fd, jbyteArray jbuf, jint offset,
+		JNIEnv * env, jclass clazz, jint fd, jbyteArray jbuf, jint offset,
 		jint length)
 {
 	jbyte *buf = (*env)->GetByteArrayElements(env, jbuf, NULL);
@@ -390,29 +407,37 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 		return -1; // OOME
 	}
 	jsize bufLen = (*env)->GetArrayLength(env, jbuf);
+	
+	jint count = JavaCritical_org_newsclub_net_unix_NativeUnixSocket_write(fd, bufLen, buf, offset, length);
+	
+	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
+
+	return (jint)count;
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    write
+ * Signature: (I;[BII)I
+ */
+JNIEXPORT jint JNICALL JavaCritical_org_newsclub_net_unix_NativeUnixSocket_write(
+		jint fd, jint bufLen, jbyte* buf, jint offset,
+		jint length)
+{
 	if(offset < 0 || length < 0) {
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-				"Illegal offset or length", NULL);
 		return -1;
 	}
 
 	if(length > bufLen - offset) {
-		org_newsclub_net_unix_NativeUnixSocket_throwIndexOutOfBoundsException(
-				env);
 		return -1;
 	}
 
-	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
-
-	ssize_t count = write(handle, &buf[offset], (size_t)length);
-	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
+	ssize_t count = write((int) fd, &buf[offset], (size_t)length);
 
 	if(count == -1) {
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
 			return 0;
 		}
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-				strerror(errno), NULL);
 		return -1;
 	}
 
