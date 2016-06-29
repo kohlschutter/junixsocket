@@ -39,6 +39,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   private static final int SHUT_RD_WR = 2;
 
   private String socketFile;
+  private int intFd;
   private boolean closed = false;
   private boolean bound = false;
   private boolean connected = false;
@@ -63,9 +64,10 @@ class AFUNIXSocketImpl extends SocketImpl {
     final AFUNIXSocketImpl si = (AFUNIXSocketImpl) socket;
     NativeUnixSocket.accept(socketFile, fd, si.fd);
     si.socketFile = socketFile;
+    si.intFd = NativeUnixSocket.getInfFd(si.fd);
     si.connected = true;
   }
-
+  
   @Override
   protected int available() throws IOException {
     return NativeUnixSocket.available(fd);
@@ -82,6 +84,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     final AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
     socketFile = socketAddress.getSocketFile();
     NativeUnixSocket.bind(socketFile, fd, backlog);
+    intFd =  NativeUnixSocket.getInfFd(fd);
     bound = true;
     this.localport = socketAddress.getPort();
   }
@@ -134,6 +137,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     final AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
     socketFile = socketAddress.getSocketFile();
     NativeUnixSocket.connect(socketFile, fd);
+    this.intFd =  NativeUnixSocket.getInfFd(fd);
     this.address = socketAddress.getAddress();
     this.port = socketAddress.getPort();
     this.localport = 0;
@@ -167,7 +171,7 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   @Override
   protected void sendUrgentData(int data) throws IOException {
-    NativeUnixSocket.write(fd, new byte[] {(byte) (data & 0xFF)}, 0, 1);
+    NativeUnixSocket.write(intFd, new byte[] {(byte) (data & 0xFF)}, 0, 1);
   }
 
   private final class AFUNIXInputStream extends InputStream {
@@ -185,12 +189,17 @@ class AFUNIXSocketImpl extends SocketImpl {
       if (len > maxRead) {
         len = maxRead;
       }
-      try {
-        return NativeUnixSocket.read(fd, buf, off, len);
-      } catch (final IOException e) {
-        throw (IOException) new IOException(e.getMessage() + " at "
-            + AFUNIXSocketImpl.this.toString()).initCause(e);
+      if (off < 0) {
+        throw new IOException("Illegal offset " + off);
       }
+      if (len < 0) {
+        throw new IOException("Illegal length " + len);
+      }
+      int result = NativeUnixSocket.read(intFd, buf, off, len);
+      if (result < -1) {
+        throw new IOException("Unspecific error while reading at " + AFUNIXSocketImpl.this.toString());
+      }
+      return result;
     }
 
     @Override
@@ -239,14 +248,17 @@ class AFUNIXSocketImpl extends SocketImpl {
       if (streamClosed) {
         throw new AFUNIXSocketException("This OutputStream has already been closed.");
       }
+      if (off < 0) {
+        throw new IOException("Illegal offset " + off);
+      }
       if (len > buf.length - off) {
         throw new IndexOutOfBoundsException();
       }
       try {
         while (len > 0 && !Thread.interrupted()) {
-          final int written = NativeUnixSocket.write(fd, buf, off, len);
+          final int written = NativeUnixSocket.write(intFd, buf, off, len);
           if (written == -1) {
-            throw new IOException("Unspecific error while writing");
+            throw new IOException("Unspecific error while writing at " + AFUNIXSocketImpl.this.toString());
           }
           len -= written;
           off += written;

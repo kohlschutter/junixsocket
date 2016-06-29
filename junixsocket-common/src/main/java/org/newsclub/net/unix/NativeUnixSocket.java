@@ -51,6 +51,8 @@ final class NativeUnixSocket {
   static void checkSupported() {
   }
 
+  static native int getInfFd(final FileDescriptor fd) throws IOException;
+  
   static native void bind(final String socketFile, final FileDescriptor fd, final int backlog)
       throws IOException;
 
@@ -61,9 +63,9 @@ final class NativeUnixSocket {
 
   static native void connect(final String socketFile, final FileDescriptor fd) throws IOException;
 
-  static native int read(final FileDescriptor fd, byte[] buf, int off, int len) throws IOException;
+  static native int read(int intFd, byte[] buf, int off, int len);
 
-  static native int write(final FileDescriptor fd, byte[] buf, int off, int len) throws IOException;
+  static native int write(int intFd, byte[] buf, int off, int len);
 
   static native void close(final FileDescriptor fd) throws IOException;
 
