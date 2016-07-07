@@ -52,15 +52,12 @@ final class NativeUnixSocket {
     Field field = null;
     try {
       field = klass.getDeclaredField(name);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    if (field == null) {
-      throw new RuntimeException("Cannot find field \"" + name + "\" in "
-          + klass.getName() + "\". Unsupported JVM?");
+    } catch (NoSuchFieldException e) {
+      throw new NoSuchFieldError("Cannot find field \"" + name + "\" in "
+          + klass.getName() + "\". Unsupported JVM?", e);
     }
     field.setAccessible(true);
-	  return field;
+    return field;
   }
 
   static {
@@ -68,14 +65,9 @@ final class NativeUnixSocket {
       Class.forName("org.newsclub.net.unix.NarSystem").getMethod("loadLibrary").invoke(null);
       registerNatives();
     } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-      throw new IllegalStateException(
+      throw new NoClassDefFoundError(
           "Could not find NarSystem class.\n\n*** ECLIPSE USERS ***\nIf you're running from "
               + "within Eclipse, please try closing the \"junixsocket-native-common\" "
-              + "project\n", e);
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new IllegalStateException(e);
     }
     loaded = true;
   }

@@ -32,11 +32,7 @@ public class AFUNIXSocket extends Socket {
 
   private AFUNIXSocket(final AFUNIXSocketImpl impl) throws IOException {
     super(impl);
-    try {
-      NativeUnixSocket.setCreated(this);
-    } catch (UnsatisfiedLinkError e) {
-      e.printStackTrace();
-    }
+    NativeUnixSocket.setCreated(this);
   }
 
   /**
