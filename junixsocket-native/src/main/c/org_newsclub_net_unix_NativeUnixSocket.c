@@ -387,7 +387,6 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 	}
 
 	jsize jbufLen = (*env)->GetArrayLength(env, jbuf);
-	fprintf(stderr, "jbufLen: %d\n", jbufLen);
 
 	if(length > jbufLen - offset) {
 		org_newsclub_net_unix_NativeUnixSocket_throwIndexOutOfBoundsException(
