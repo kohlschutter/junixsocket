@@ -4,10 +4,9 @@
   <artifactId>junixsocket-mysql</artifactId>
   <packaging>jar</packaging>
   <parent>
-    <groupId>com.kohlschutter.junixsocket</groupId>
+    <groupId>no.fiken.oss.junixsocket</groupId>
     <artifactId>junixsocket-parent</artifactId>
-    <version>2.0.5-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
   <name>junixsocket-mysql</name>
   <properties>
@@ -15,7 +14,7 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>com.kohlschutter.junixsocket</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>junixsocket-common</artifactId>
       <version>${project.version}</version>
     </dependency>

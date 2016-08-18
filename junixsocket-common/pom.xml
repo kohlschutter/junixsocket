@@ -4,10 +4,9 @@
   <artifactId>junixsocket-common</artifactId>
   <packaging>jar</packaging>
   <parent>
-    <groupId>com.kohlschutter.junixsocket</groupId>
+    <groupId>no.fiken.oss.junixsocket</groupId>
     <artifactId>junixsocket-parent</artifactId>
-    <version>2.0.5-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
   <name>junixsocket-common</name>
   <properties>
