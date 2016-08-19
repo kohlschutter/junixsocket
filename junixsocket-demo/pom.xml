@@ -6,7 +6,7 @@
   <parent>
     <groupId>no.fiken.oss.junixsocket</groupId>
     <artifactId>junixsocket-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
   <name>junixsocket-demo</name>
   <properties>
