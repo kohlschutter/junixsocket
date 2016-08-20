@@ -133,7 +133,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
       try {
         generator = naming.getPortAssigner();
       } catch (NotBoundException e) {
-        throw (IOException) new IOException(e.getMessage()).initCause(e);
+        throw new IOException(e.getMessage(), e);
       }
     }
     return generator.newPort();
@@ -144,7 +144,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
       try {
         generator = naming.getPortAssigner();
       } catch (NotBoundException e) {
-        throw (IOException) new IOException(e.getMessage()).initCause(e);
+        throw new IOException(e.getMessage(), e);
       }
     }
     generator.returnPort(port);

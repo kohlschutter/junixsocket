@@ -169,7 +169,7 @@ public final class AFUNIXNaming {
       try {
         assigner = (PortAssigner) lookup(PORT_ASSIGNER_ID);
       } catch (MalformedURLException e) {
-        throw (RemoteException) new RemoteException(e.getMessage()).initCause(e);
+        throw new RemoteException(e.getMessage(), e);
       }
       return assigner;
     }
@@ -211,7 +211,7 @@ public final class AFUNIXNaming {
    * Shuts this RMI Registry down. Before calling this method, you have to unexport all existing
    * bindings, otherwise the "RMI Reaper" thread will not be closed.
    */
-  public void shutdownRegistry() throws AccessException, RemoteException, IOException {
+  public void shutdownRegistry() throws IOException {
     try {
       getRegistry().unbind(PORT_ASSIGNER_ID);
       UnicastRemoteObject.unexportObject(portAssigner, true);
@@ -232,7 +232,7 @@ public final class AFUNIXNaming {
       try {
         this.socketDir = socketDir.getCanonicalFile();
       } catch (IOException e) {
-        throw (RemoteException) new RemoteException(e.getMessage()).initCause(e);
+        throw new RemoteException(e.getMessage(), e);
       }
       this.port = port;
     }

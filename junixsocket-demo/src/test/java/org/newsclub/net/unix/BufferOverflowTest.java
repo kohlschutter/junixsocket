@@ -100,7 +100,7 @@ public class BufferOverflowTest {
   public void readOverflow() throws Exception {
     Socket[] sockets = connectToServer();
     try (Socket serverSocket = sockets[0];//
-        Socket clientSocket = sockets[1];) {
+        Socket clientSocket = sockets[1]) {
 
       byte[] input = new byte[16];
       byte[] output = new byte[15];
@@ -118,7 +118,7 @@ public class BufferOverflowTest {
   public void writeOverflow() throws Exception {
     Socket[] sockets = connectToServer();
     try (Socket serverSocket = sockets[0]; //
-        Socket clientSocket = sockets[1];) {
+        Socket clientSocket = sockets[1]) {
 
       byte[] input = new byte[15];
       byte[] output = new byte[16];
