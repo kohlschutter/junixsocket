@@ -41,7 +41,7 @@ It is released under the Apache 2.0 License.
   * _(2016-08-18)_ *junixsocket 1.0.0*
     * Increased performance when reading data to large byte-array (prevent array-copy)
     * Added workaround so it's possible to use this library with pgjdbc (PostgreSQL)
-    * Temporarily removed Mac and 32bit-support (we'll hopefully fix this in a later release)
+    * Temporarily removed Mac  (we'll hopefully fix this in a later release)
 
 See the commit log for details.
 
