@@ -92,12 +92,6 @@ class AFUNIXSocketImpl extends SocketImpl {
     throw new SocketException("Cannot bind to this type of address: " + InetAddress.class);
   }
 
-  private void checkClose() throws IOException {
-    if (closedInputStream && closedOutputStream) {
-      // close();
-    }
-  }
-
   @Override
   protected synchronized void close() throws IOException {
     if (closed) {
@@ -188,8 +182,8 @@ class AFUNIXSocketImpl extends SocketImpl {
       try {
         return NativeUnixSocket.read(fd, buf, off, len);
       } catch (final IOException e) {
-        throw (IOException) new IOException(e.getMessage() + " at "
-            + AFUNIXSocketImpl.this.toString()).initCause(e);
+        throw new IOException(e.getMessage() + " at "
+            + AFUNIXSocketImpl.this.toString(), e);
       }
     }
 
@@ -215,13 +209,11 @@ class AFUNIXSocketImpl extends SocketImpl {
       }
 
       closedInputStream = true;
-      checkClose();
     }
 
     @Override
     public int available() throws IOException {
-      final int av = NativeUnixSocket.available(fd);
-      return av;
+      return NativeUnixSocket.available(fd);
     }
   }
 
@@ -252,8 +244,8 @@ class AFUNIXSocketImpl extends SocketImpl {
           off += written;
         }
       } catch (final IOException e) {
-        throw (IOException) new IOException(e.getMessage() + " at "
-            + AFUNIXSocketImpl.this.toString()).initCause(e);
+        throw new IOException(e.getMessage() + " at "
+            + AFUNIXSocketImpl.this.toString(), e);
       }
     }
 
@@ -267,7 +259,6 @@ class AFUNIXSocketImpl extends SocketImpl {
         NativeUnixSocket.shutdown(fd, SHUT_WR);
       }
       closedOutputStream = true;
-      checkClose();
     }
   }
 
@@ -289,7 +280,7 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   private static int expectBoolean(Object value) throws SocketException {
     try {
-      return ((Boolean) value).booleanValue() ? 1 : 0;
+      return (Boolean) value ? 1 : 0;
     } catch (final ClassCastException e) {
       throw new AFUNIXSocketException("Unsupported value: " + value, e);
     } catch (final NullPointerException e) {
@@ -303,7 +294,7 @@ class AFUNIXSocketImpl extends SocketImpl {
       switch (optID) {
         case SocketOptions.SO_KEEPALIVE:
         case SocketOptions.TCP_NODELAY:
-          return NativeUnixSocket.getSocketOptionInt(fd, optID) != 0 ? true : false;
+          return NativeUnixSocket.getSocketOptionInt(fd, optID) != 0;
         case SocketOptions.SO_LINGER:
         case SocketOptions.SO_TIMEOUT:
         case SocketOptions.SO_RCVBUF:

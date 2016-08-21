@@ -4,10 +4,9 @@
   <artifactId>junixsocket-demo</artifactId>
   <packaging>jar</packaging>
   <parent>
-    <groupId>com.kohlschutter.junixsocket</groupId>
+    <groupId>no.fiken.oss.junixsocket</groupId>
     <artifactId>junixsocket-parent</artifactId>
-    <version>2.0.5-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
   <name>junixsocket-demo</name>
   <properties>
@@ -15,23 +14,23 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>com.kohlschutter.junixsocket</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>junixsocket-native-common</artifactId>
       <!-- JNI bindings are expected to remain stable for 2.0.x releases -->
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.kohlschutter.junixsocket</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>junixsocket-common</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.kohlschutter.junixsocket</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>junixsocket-mysql</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.kohlschutter.junixsocket</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>junixsocket-rmi</artifactId>
       <version>${project.version}</version>
     </dependency>

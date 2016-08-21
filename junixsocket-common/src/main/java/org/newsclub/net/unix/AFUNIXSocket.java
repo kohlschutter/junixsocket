@@ -101,6 +101,11 @@ public class AFUNIXSocket extends Socket {
   @Override
   public void connect(SocketAddress endpoint, int timeout) throws IOException {
     if (!(endpoint instanceof AFUNIXSocketAddress)) {
+      // This is a hack to get this to work with the postgresql jdbc driver.
+      if (isConnected()) {
+        return;
+      }
+
       throw new IOException("Can only connect to endpoints of type "
           + AFUNIXSocketAddress.class.getName());
     }

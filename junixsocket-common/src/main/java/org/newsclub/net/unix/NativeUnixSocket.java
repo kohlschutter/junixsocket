@@ -119,9 +119,6 @@ final class NativeUnixSocket {
     } catch (final RuntimeException e) {
       throw e;
     } catch (final Exception e) {
-      if (e instanceof AFUNIXSocketException) {
-        throw (AFUNIXSocketException) e;
-      }
       throw new AFUNIXSocketException("Could not set port", e);
     }
     if (!setOk) {

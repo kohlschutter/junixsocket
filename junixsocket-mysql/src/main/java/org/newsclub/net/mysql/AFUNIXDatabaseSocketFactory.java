@@ -38,18 +38,18 @@ public class AFUNIXDatabaseSocketFactory implements SocketFactory {
   }
 
   @Override
-  public Socket afterHandshake() throws SocketException, IOException {
+  public Socket afterHandshake() throws IOException {
     return socket;
   }
 
   @Override
-  public Socket beforeHandshake() throws SocketException, IOException {
+  public Socket beforeHandshake() throws IOException {
     return socket;
   }
 
   @Override
-  public Socket connect(String host, int portNumber, Properties props) throws SocketException,
-      IOException {
+  public Socket connect(String host, int portNumber, Properties props) throws
+          IOException {
     // Adjust the path to your MySQL socket by setting the
     // "junixsocket.file" property
     // If no socket path is given, use the default: /tmp/mysql.sock
