@@ -407,5 +407,10 @@ class AFUNIXSocketImpl extends SocketImpl {
         }
       }
     }
+
+    @Override
+    protected void finalize() throws IOException {
+        close();
+    }
   }
 }
