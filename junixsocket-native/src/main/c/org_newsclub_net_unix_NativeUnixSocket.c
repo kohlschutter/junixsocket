@@ -78,6 +78,17 @@ void org_newsclub_net_unix_NativeUnixSocket_throwException(JNIEnv* env,
 	(*env)->Throw(env, t);
 }
 
+void org_newsclub_net_unix_NativeUnixSocket_throwSocketTimeoutException(
+		JNIEnv* env, char* message)
+{
+	jclass exc = (*env)->FindClass(env, "java/net/SocketTimeoutException");
+	jmethodID constr = (*env)->GetMethodID(env, exc, "<init>",
+			"(Ljava/lang/String;)V");
+	jstring str = (*env)->NewStringUTF(env, message);
+	jthrowable t = (jthrowable)(*env)->NewObject(env, exc, constr, str);
+	(*env)->Throw(env, t);
+}
+
 void org_newsclub_net_unix_NativeUnixSocket_throwIndexOutOfBoundsException(
 		JNIEnv* env)
 {
@@ -151,7 +162,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 
 	int socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
 	if(socketHandle < 0) {
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), file);
+		if (errno == ETIMEDOUT) 
+			org_newsclub_net_unix_NativeUnixSocket_throwSocketTimeoutException(env, strerror(errno));
+		else
+			org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), file);
 		return;
 	}
 
