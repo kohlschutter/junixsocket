@@ -150,6 +150,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 	);
 
 	int socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
+	while(socketHandle < 0 && errno == EINTR) {
+		socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
+	}
 	if(socketHandle < 0) {
 		org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), file);
 		return;
@@ -320,6 +323,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 	);
 
 	int ret = connect(socketHandle, (struct sockaddr *)&su, suLength);
+	while(ret == -1 && errno == EINTR) {
+		ret = connect(socketHandle, (struct sockaddr *)&su, suLength);
+	}
 	if(ret == -1) {
 		close(socketHandle);
 		org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), file);
@@ -356,6 +362,9 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
 	ssize_t count = read(handle, &(buf[offset]), (size_t)length);
+	while(count == -1 && errno == EINTR) {
+		count = read(handle, &(buf[offset]), (size_t)length);
+	}
 	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
 
 	if(count == 0) {
@@ -405,6 +414,9 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
 	ssize_t count = write(handle, &buf[offset], (size_t)length);
+	while(count == -1 && errno == EINTR) {
+		count = write(handle, &buf[offset], (size_t)length);
+	}
 	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
 
 	if(count == -1) {
@@ -428,6 +440,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close
 (JNIEnv * env, jclass clazz, jobject fd) {
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 	int ret = close(handle);
+	while(ret == -1 && errno == EINTR) {
+		ret = close(handle);
+	}
 	if(ret == -1) {
 		org_newsclub_net_unix_NativeUnixSocket_throwException(env, strerror(errno), NULL);
 	}
