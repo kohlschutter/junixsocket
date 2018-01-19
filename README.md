@@ -48,6 +48,7 @@ Quick links:
 
 ## Related Work
 
+ * [Netty](http://netty.io/) (Apache License) supports UNIX domain sockets
  * [JUDS](http://code.google.com/p/juds/) (LGPL, no RMI, not using Java Sockets API)
  * J-BUDS (LGPL, no RMI, not using Java Sockets API, orphaned)
  * gnu.net.local (GPL with Classpath exception, no RMI, not using Java Sockets API, orphaned) -- [Archive mirror](http://web.archive.org/web/20060702213439/http://www.nfrese.net/software/gnu_net_local/overview.html).
