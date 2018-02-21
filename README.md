@@ -9,6 +9,12 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
 * Can connect to local MySQL server via Unix domain sockets (provides a *AFUNIXDatabaseSocketFactory* for Connector/J).
 * Apache 2.0 licensed.
 
+## Compilation (tested Ubuntu 16.04)
+
+    pushd  junixsocket-native            ; mvn clean install ; popd
+    pushd  junixsocket-native-common     ; mvn clean install ; popd
+    mvn clean install
+    
 ## Licensing
 
 junixsocket has been written by Christian Kohlschütter. It is released under the Apache 2.0 License.
