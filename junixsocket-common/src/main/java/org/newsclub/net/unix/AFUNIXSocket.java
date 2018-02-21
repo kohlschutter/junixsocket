@@ -126,6 +126,10 @@ public class AFUNIXSocket extends Socket {
    * @return {@code true} iff supported.
    */
   public static boolean isSupported() {
-    return NativeUnixSocket.isLoaded();
+    try {
+      return NativeUnixSocket.isLoaded();
+    } catch (LinkageError e) {
+      return false;
+    }
   }
 }

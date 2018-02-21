@@ -136,6 +136,10 @@ public class AFUNIXServerSocket extends ServerSocket {
   }
 
   public static boolean isSupported() {
-    return NativeUnixSocket.isLoaded();
+    try {
+      return NativeUnixSocket.isLoaded();
+    } catch (LinkageError e) {
+      return false;
+    }
   }
 }
