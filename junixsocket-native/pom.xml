@@ -25,7 +25,7 @@
           <libraries>
             <library>
               <type>jni</type>
-              <narSystemPackage>org.newsclub.net.unix</narSystemPackage>
+              <narSystemPackage>org.newsclub.net.nativ.unix</narSystemPackage>
             </library>
           </libraries>
           <properties>

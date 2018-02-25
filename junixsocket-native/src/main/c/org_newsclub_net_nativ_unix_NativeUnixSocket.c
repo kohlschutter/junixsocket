@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-#include "org_newsclub_net_unix_NativeUnixSocket.h"
+#include "org_newsclub_net_nativ_unix_NativeUnixSocket.h"
 
 #include <errno.h>
 #include <fcntl.h>

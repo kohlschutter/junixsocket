@@ -32,7 +32,7 @@ final class NativeUnixSocket {
 
   static {
     try {
-      Class.forName("org.newsclub.net.unix.NarSystem").getMethod("loadLibrary").invoke(null);
+      Class.forName("org.newsclub.net.nativ.unix.NarSystem").getMethod("loadLibrary").invoke(null);
     } catch (ClassNotFoundException e) {
       throw new IllegalStateException(
           "Could not find NarSystem class.\n\n*** ECLIPSE USERS ***\nIf you're running from "
