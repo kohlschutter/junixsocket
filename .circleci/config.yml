@@ -3,6 +3,12 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2
+dependencies:
+  cache_directories:
+    paths:
+      - ~/.m2
+  pre:
+    - apt-get install build-essential
 jobs:
   build:
     docker:
@@ -22,6 +28,19 @@ jobs:
 
     steps:
       - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "pom.xml" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: mvn dependency:go-offline
+
+      - save_cache:
+
+          key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # build native core lib
       - run: pushd junixsocket-native ; mvn clean install ; popd
