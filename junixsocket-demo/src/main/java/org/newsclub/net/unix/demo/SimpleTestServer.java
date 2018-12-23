@@ -1,7 +1,7 @@
 /**
  * junixsocket
  *
- * Copyright (c) 2009,2014 Christian Kohlschütter
+ * Copyright (c) 2009-2018 Christian Kohlschütter
  *
  * The author licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -34,8 +34,8 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
  */
 public class SimpleTestServer {
   public static void main(String[] args) throws IOException {
-    final File socketFile =
-        new File(new File(System.getProperty("java.io.tmpdir")), "junixsocket-test.sock");
+    final File socketFile = new File(new File(System.getProperty("java.io.tmpdir")),
+        "junixsocket-test.sock");
 
     try (AFUNIXServerSocket server = AFUNIXServerSocket.newInstance()) {
       server.bind(new AFUNIXSocketAddress(socketFile));
@@ -49,12 +49,12 @@ public class SimpleTestServer {
           try (InputStream is = sock.getInputStream(); //
               OutputStream os = sock.getOutputStream()) {
             System.out.println("Saying hello to client " + os);
-            os.write("Hello, dear Client".getBytes());
+            os.write("Hello, dear Client".getBytes("UTF-8"));
             os.flush();
 
             byte[] buf = new byte[128];
             int read = is.read(buf);
-            System.out.println("Client's response: " + new String(buf, 0, read));
+            System.out.println("Client's response: " + new String(buf, 0, read, "UTF-8"));
           }
         }
       }

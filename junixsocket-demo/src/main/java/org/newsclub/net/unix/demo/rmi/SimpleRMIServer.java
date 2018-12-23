@@ -1,7 +1,7 @@
 /**
  * junixsocket
  *
- * Copyright (c) 2009,2014 Christian Kohlschütter
+ * Copyright (c) 2009-2018 Christian Kohlschütter
  *
  * The author licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -20,7 +20,9 @@ package org.newsclub.net.unix.demo.rmi;
 import java.rmi.Remote;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.Semaphore;
 
+import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
 import org.newsclub.net.unix.rmi.AFUNIXNaming;
 
 /**
@@ -42,16 +44,12 @@ public class SimpleRMIServer {
     HelloWorldImpl obj = new HelloWorldImpl();
 
     System.out.println("Binding " + obj.toString() + " to \"helloWorld\"...");
-    final Remote remote =
-        UnicastRemoteObject.exportObject(obj, 0, naming.getSocketFactory(), naming
-            .getSocketFactory());
+    final Remote remote = UnicastRemoteObject.exportObject(obj, 0, naming.getSocketFactory(), naming
+        .getSocketFactory());
     registry.bind("helloWorld", remote);
 
     System.out.println("Ready to accept connections!");
 
-    while (!Thread.interrupted()) {
-      Thread.sleep(1000);
-    }
+    new Semaphore(0).acquire(); // keep running
   }
-
 }

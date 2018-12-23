@@ -1,7 +1,7 @@
 /**
  * junixsocket
  *
- * Copyright (c) 2009,2014 Christian Kohlschütter
+ * Copyright (c) 2009-2018 Christian Kohlschütter
  *
  * The author licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -19,8 +19,6 @@ package org.newsclub.net.unix;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.net.InetSocketAddress;
 
 /**
  * JNI connector to native JNI C code.
@@ -30,16 +28,13 @@ import java.net.InetSocketAddress;
 final class NativeUnixSocket {
   private static boolean loaded = false;
 
+  private NativeUnixSocket() {
+    throw new UnsupportedOperationException("No instances");
+  }
+
   static {
-    try {
-      Class.forName("org.newsclub.net.unix.NarSystem").getMethod("loadLibrary").invoke(null);
-    } catch (ClassNotFoundException e) {
-      throw new IllegalStateException(
-          "Could not find NarSystem class.\n\n*** ECLIPSE USERS ***\nIf you're running from "
-              + "within Eclipse, please try closing the \"junixsocket-native-common\" "
-              + "project\n", e);
-    } catch (Exception e) {
-      throw new IllegalStateException(e);
+    try (NativeLibraryLoader nll = new NativeLibraryLoader()) {
+      nll.loadLibrary();
     }
     loaded = true;
   }
@@ -98,34 +93,12 @@ final class NativeUnixSocket {
       throw new IllegalArgumentException("port out of range:" + port);
     }
 
-    boolean setOk = false;
     try {
-      final Field holderField = InetSocketAddress.class.getDeclaredField("holder");
-      if (holderField != null) {
-        holderField.setAccessible(true);
-
-        final Object holder = holderField.get(addr);
-        if (holder != null) {
-          final Field portField = holder.getClass().getDeclaredField("port");
-          if (portField != null) {
-            portField.setAccessible(true);
-            portField.set(holder, port);
-            setOk = true;
-          }
-        }
-      } else {
-        setPort(addr, port);
-      }
-    } catch (final RuntimeException e) {
+      setPort(addr, port);
+    } catch (RuntimeException e) {
       throw e;
-    } catch (final Exception e) {
-      if (e instanceof AFUNIXSocketException) {
-        throw (AFUNIXSocketException) e;
-      }
+    } catch (Exception e) {
       throw new AFUNIXSocketException("Could not set port", e);
-    }
-    if (!setOk) {
-      throw new AFUNIXSocketException("Could not set port");
     }
   }
 }

@@ -1,7 +1,7 @@
 /**
  * junixsocket
  *
- * Copyright (c) 2009,2014 Christian Kohlschütter
+ * Copyright (c) 2009-2018 Christian Kohlschütter
  *
  * The author licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -60,12 +60,12 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
    * Constructor required per definition.
    * 
    * @see RMISocketFactory
-   * 
    */
   public AFUNIXRMISocketFactory() {
   }
 
-  public AFUNIXRMISocketFactory(final AFUNIXNaming naming, final File socketDir) throws IOException {
+  public AFUNIXRMISocketFactory(final AFUNIXNaming naming, final File socketDir)
+      throws IOException {
     this(naming, socketDir, DefaultRMIClientSocketFactory.getInstance(),
         DefaultRMIServerSocketFactory.getInstance());
   }
@@ -90,7 +90,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
 
   @Override
   public int hashCode() {
-    return socketDir.hashCode();
+    return socketDir == null ? super.hashCode() : socketDir.hashCode();
   }
 
   @Override
@@ -208,5 +208,4 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
       returnPort(returnPort);
     }
   }
-
 }

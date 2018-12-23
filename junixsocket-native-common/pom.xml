@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>junixsocket-native-common</artifactId>
@@ -8,18 +9,33 @@
     <groupId>com.kohlschutter.junixsocket</groupId>
     <artifactId>junixsocket-parent</artifactId>
     <!-- Update this manually after maven-release -->
-    <version>2.0.5-SNAPSHOT</version>
+    <version>2.1.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <name>junixsocket-native-common</name>
+
+  <description>Binaries of the native JNI library for common platforms</description>
+
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
   </properties>
+
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>org.newsclub.lib.junixsocket.common</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.3</version>
+        <version>3.2.1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -32,32 +48,32 @@
                   <include>com.kohlschutter.junixsocket:junixsocket-native</include>
                 </includes>
               </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>com.kohlschutter.junixsocket:junixsocket-native</artifact>
+                  <includes>
+                    <include>**/*.dylib</include>
+                    <include>**/*.so</include>
+                    <include>META-INF/**/pom.properties</include>
+                  </includes>
+                </filter>
+              </filters>
               <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+              <transformers>
+                <!-- maven-shade-plugin actively prevents inclusion of module-info, 
+                  so let's force it back in -->
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                  <file>${project.build.outputDirectory}/META-INF/versions/9/module-info.class</file>
+                  <resource>module-info.class</resource>
+                </transformer>
+              </transformers>
             </configuration>
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>com.github.maven-nar</groupId>
-        <artifactId>nar-maven-plugin</artifactId>
-        <version>3.2.0</version>
-        <extensions>true</extensions>
-      </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>com.kohlschutter.junixsocket</groupId>
-      <artifactId>junixsocket-common</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.kohlschutter.junixsocket</groupId>
-      <artifactId>junixsocket-native</artifactId>
-      <version>${project.version}</version>
-      <type>nar</type>
-    </dependency>
-  </dependencies>
   <profiles>
     <!-- Specify profiles to add particular nars -->
     <!-- Example: mvn clean install -Px86_64-MacOSX-gpp-jni,amd64-Linux-gpp-jni -->
@@ -76,6 +92,8 @@
           <version>${project.version}</version>
           <type>nar</type>
           <classifier>x86_64-MacOSX-gpp-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
         </dependency>
       </dependencies>
     </profile>
@@ -94,6 +112,8 @@
           <version>${project.version}</version>
           <type>nar</type>
           <classifier>amd64-Linux-gpp-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
         </dependency>
       </dependencies>
     </profile>
@@ -106,6 +126,8 @@
           <version>${project.version}</version>
           <type>nar</type>
           <classifier>x86_64-MacOSX-gpp-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
         </dependency>
         <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>
@@ -113,8 +135,50 @@
           <version>${project.version}</version>
           <type>nar</type>
           <classifier>amd64-Linux-gpp-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
         </dependency>
       </dependencies>
+    </profile>
+    <profile>
+      <id>eclipse-m2e</id>
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <!--This plugin's configuration is used to store Eclipse m2e 
+                settings only. It has no influence on the Maven build itself. -->
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>com.github.maven-nar</groupId>
+                        <artifactId>nar-maven-plugin</artifactId>
+                        <versionRange>[3.6.0,)</versionRange>
+                        <goals>
+                          <goal>nar-system-generate</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore></ignore>
+                      </action>
+                    </pluginExecution>
+                  </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
   </profiles>
 </project>

@@ -1,7 +1,7 @@
 /**
  * junixsocket
  *
- * Copyright (c) 2009,2014 Christian Kohlschütter
+ * Copyright (c) 2009-2018 Christian Kohlschütter
  *
  * The author licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -17,9 +17,11 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -133,11 +135,18 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
     final AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
     socketFile = socketAddress.getSocketFile();
-    NativeUnixSocket.connect(socketFile, fd);
+    NativeUnixSocket.connect(validateSocketFile(socketFile), fd);
     this.address = socketAddress.getAddress();
     this.port = socketAddress.getPort();
     this.localport = 0;
     this.connected = true;
+  }
+
+  private String validateSocketFile(String file) throws AFUNIXSocketException {
+    if (!new File(file).exists()) {
+      throw new AFUNIXSocketException("Socket file not found: " + socketFile);
+    }
+    return file;
   }
 
   @Override
@@ -188,8 +197,8 @@ class AFUNIXSocketImpl extends SocketImpl {
       try {
         return NativeUnixSocket.read(fd, buf, off, len);
       } catch (final IOException e) {
-        throw (IOException) new IOException(e.getMessage() + " at "
-            + AFUNIXSocketImpl.this.toString()).initCause(e);
+        throw (IOException) new IOException(e.getMessage() + " at " + AFUNIXSocketImpl.this
+            .toString()).initCause(e);
       }
     }
 
@@ -239,26 +248,35 @@ class AFUNIXSocketImpl extends SocketImpl {
       if (streamClosed) {
         throw new AFUNIXSocketException("This OutputStream has already been closed.");
       }
-      if (len > buf.length - off) {
+      if (len < 0 || off < 0 || len > buf.length - off) {
         throw new IndexOutOfBoundsException();
       }
+      int writtenTotal = 0;
       try {
-        while (len > 0 && !Thread.interrupted()) {
+        while (len > 0) {
+          if (Thread.interrupted()) {
+            InterruptedIOException ex = new InterruptedIOException(
+                "Thread interrupted during write");
+            ex.bytesTransferred = writtenTotal;
+            Thread.currentThread().interrupt();
+            throw ex;
+          }
           final int written = NativeUnixSocket.write(fd, buf, off, len);
-          if (written == -1) {
+          if (written < 0) {
             throw new IOException("Unspecific error while writing");
           }
           len -= written;
           off += written;
+          writtenTotal += written;
         }
       } catch (final IOException e) {
-        throw (IOException) new IOException(e.getMessage() + " at "
-            + AFUNIXSocketImpl.this.toString()).initCause(e);
+        throw (IOException) new IOException(e.getMessage() + " at " + AFUNIXSocketImpl.this
+            .toString()).initCause(e);
       }
     }
 
     @Override
-    public void close() throws IOException {
+    public synchronized void close() throws IOException {
       if (streamClosed) {
         return;
       }
@@ -273,8 +291,8 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   @Override
   public String toString() {
-    return super.toString() + "[fd=" + fd + "; file=" + this.socketFile + "; connected="
-        + connected + "; bound=" + bound + "]";
+    return super.toString() + "[fd=" + fd + "; file=" + this.socketFile + "; connected=" + connected
+        + "; bound=" + bound + "]";
   }
 
   private static int expectInteger(Object value) throws SocketException {

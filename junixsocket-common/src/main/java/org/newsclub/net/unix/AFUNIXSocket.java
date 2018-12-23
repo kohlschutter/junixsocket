@@ -1,7 +1,7 @@
 /**
  * junixsocket
  *
- * Copyright (c) 2009,2014 Christian Kohlschütter
+ * Copyright (c) 2009-2018 Christian Kohlschütter
  *
  * The author licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -48,6 +48,7 @@ public class AFUNIXSocket extends Socket {
    * {@link Socket#setTcpNoDelay(boolean)}.
    * 
    * @return A new, unbound socket.
+   * @throws IOException if the operation fails.
    */
   public static AFUNIXSocket newInstance() throws IOException {
     final AFUNIXSocketImpl impl = new AFUNIXSocketImpl.Lenient();
@@ -63,6 +64,7 @@ public class AFUNIXSocket extends Socket {
    * {@link #newInstance()}, at least for some cases.
    * 
    * @return A new, unbound socket.
+   * @throws IOException if the operation fails.
    */
   public static AFUNIXSocket newStrictInstance() throws IOException {
     final AFUNIXSocketImpl impl = new AFUNIXSocketImpl();
@@ -76,6 +78,7 @@ public class AFUNIXSocket extends Socket {
    * 
    * @param addr The address to connect to.
    * @return A new, connected socket.
+   * @throws IOException if the operation fails.
    */
   public static AFUNIXSocket connectTo(AFUNIXSocketAddress addr) throws IOException {
     AFUNIXSocket socket = newInstance();
@@ -101,8 +104,8 @@ public class AFUNIXSocket extends Socket {
   @Override
   public void connect(SocketAddress endpoint, int timeout) throws IOException {
     if (!(endpoint instanceof AFUNIXSocketAddress)) {
-      throw new IOException("Can only connect to endpoints of type "
-          + AFUNIXSocketAddress.class.getName());
+      throw new IOException("Can only connect to endpoints of type " + AFUNIXSocketAddress.class
+          .getName());
     }
     impl.connect(endpoint, timeout);
     this.addr = (AFUNIXSocketAddress) endpoint;

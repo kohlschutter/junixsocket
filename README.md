@@ -4,50 +4,38 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
 
 ## Why it's cool
 
-* In contrast to other implementations, *junixsocket* extends the Java Sockets API (`java.net.Socket, java.net.SocketAddress`, etc.)
-* Supports *RMI over AF_UNIX*
+* In contrast to other implementations, *junixsocket* extends the Java Sockets API (`java.net.Socket`, `java.net.SocketAddress`, etc.)
+* Supports *RMI over AF_UNIX*.
 * Can connect to local MySQL server via Unix domain sockets (provides a *AFUNIXDatabaseSocketFactory* for Connector/J).
+* Supports Java 8, 9, 10, 11.
+* Comes with pre-built native libraries for macOS and Linux; custom libraries can be built using Maven.
+* Supports Jigsaw modules.
 * Apache 2.0 licensed.
 
 ## Licensing
 
-junixsocket has been written by Christian Kohlschütter. It is released under the Apache 2.0 License.
+junixsocket is released under the Apache 2.0 License.
 
-Commercial support is available through [http://www.kohlschutter.com/ Kohlschütter Search Intelligence].
+Commercial support is available through [Kohlschütter Search Intelligence](http://www.kohlschutter.com/).
 
-## Changelog
+## Quick links
 
-### Noteworthy changes
+ * [Project website](https://kohlschutter.github.io/junixsocket/)
+ * [Changelog](https://kohlschutter.github.io/junixsocket/changelog.html)
+ * [Getting started](https://kohlschutter.github.io/junixsocket/quickstart.html)
+ * [Demo code:](https://kohlschutter.github.io/junixsocket/junixsocket-demo/xref/index.html)
+    - Sockets (`org.newsclub.net.unix.demo`)
+    - RMI over Unix Sockets (`org.newsclub.net.unix.demo.rmi` and `org.newsclub.net.unix.demo.rmi.services`)
+    - MySQL over Unix Sockets  (`org.newsclub.net.mysql.demo`)
+  * API Javadocs
+    - [The core (common) API](https://kohlschutter.github.io/junixsocket/junixsocket-common/apidocs/org.newsclub.net.unix/org/newsclub/net/unix/package-summary.html)
+    - [The RMI-over-Unix-Socket API](https://kohlschutter.github.io/junixsocket/junixsocket-rmi/apidocs/org.newsclub.net.unix.rmi/org/newsclub/net/unix/rmi/package-summary.html)
 
-  * _(2014-09-29)_ *junixsocket 2.0.1*
+## Feature Comparison Matrix
 
-   * **Bugfix:** Added byte array bounds checking to read/write methods.
-   * Fix C compiler warnings
-   * Remove synchronized byte[] array for single-byte reads/writes.
-
-  * _(2014-09-28)_ *junixsocket 2.0.0*
-   * Moved from *Google Code* to *GitHub*.
-   * Now uses Maven as the build system, code is distributed to the *Maven Central* repository.
-   * C code is built using *nar-maven-plugin*
-   * JNI libraries are loaded using *native-lib-loader*
-
-See the commit log for details.
-
-For 1.x releases, please see [https://code.google.com/p/junixsocket](https://code.google.com/p/junixsocket).
-
-## Documentation
-
-For now, please refer to the [Wiki on Google Code](http://code.google.com/p/junixsocket/w/list). 
-
-Quick links:
- * [Getting Started](http://code.google.com/p/junixsocket/wiki/GettingStarted)
- * [Socket Demo](http://code.google.com/p/junixsocket/source/browse/#svn/trunk/junixsocket/src/demo/org/newsclub/net/unix/demo)
- * [RMI Demo](http://code.google.com/p/junixsocket/source/browse/#svn/trunk/junixsocket/src/demo/org/newsclub/net/unix/demo/rmi)
- * [MySQL Socket Demo](http://code.google.com/p/junixsocket/wiki/ConnectingToMySQL)
- * [API Javadocs](http://junixsocket.googlecode.com/svn/trunk/junixsocket/javadoc/index.html)
-
-## Related Work
-
- * [JUDS](http://code.google.com/p/juds/) (LGPL, no RMI, not using Java Sockets API)
- * J-BUDS (LGPL, no RMI, not using Java Sockets API, orphaned)
- * gnu.net.local (GPL with Classpath exception, no RMI, not using Java Sockets API, orphaned) -- [Archive mirror](http://web.archive.org/web/20060702213439/http://www.nfrese.net/software/gnu_net_local/overview.html).
+| Project  | License | Java Sockets API | Supports RMI | Comments |
+| ------------- | --------- | ------------- | ------------- | ------------- |
+| junixsocket | Apache 2.0 | ✅ Yes | ✅ Yes | This project |
+| [JUDS](http://code.google.com/p/juds/)  | LGPL | ❌ No | ❌ No | |
+| J-BUDS  | LGPL | ❌ No | ❌ No | orphaned |
+| [gnu.net.local](http://web.archive.org/web/20060702213439/http://www.nfrese.net/software/gnu_net_local/overview.html) | GPL with Classpath exception | ❌ No | ❌ No | orphaned |

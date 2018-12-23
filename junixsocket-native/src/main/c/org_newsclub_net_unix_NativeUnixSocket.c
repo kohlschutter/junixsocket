@@ -726,13 +726,24 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBoundServe
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setPort
 (JNIEnv * env, jclass clazz, jobject addr, jint port) {
 	jclass fileDescriptorClass = (*env)->GetObjectClass(env, addr);
-	jfieldID portField = (*env)->GetFieldID(env, fileDescriptorClass, "port", "I");
+
+	jobject fieldObject = addr;
+
+	jfieldID portField;
+	jfieldID holderField = (*env)->GetFieldID(env, fileDescriptorClass, "holder", "Ljava/net/InetSocketAddress$InetSocketAddressHolder;");
+    if(holderField != NULL) {
+    	fieldObject = (*env)->GetObjectField(env, addr, holderField);
+    	jclass holderClass = (*env)->GetObjectClass(env, fieldObject);
+    	portField = (*env)->GetFieldID(env, holderClass, "port", "I");
+    } else {
+    	portField = (*env)->GetFieldID(env, fileDescriptorClass, "port", "I");
+    }
 	if(portField == NULL) {
 		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
 				"Cannot find field \"port\" in java.net.InetSocketAddress. Unsupported JVM?", NULL);
 		return;
 	}
-	(*env)->SetIntField(env, addr, portField, port);
+	(*env)->SetIntField(env, fieldObject, portField, port);
 }
 
 #ifdef __cplusplus

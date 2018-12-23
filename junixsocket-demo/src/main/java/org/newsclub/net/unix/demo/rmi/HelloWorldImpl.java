@@ -1,7 +1,7 @@
 /**
  * junixsocket
  *
- * Copyright (c) 2009,2014 Christian Kohlschütter
+ * Copyright (c) 2009-2018 Christian Kohlschütter
  *
  * The author licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -18,6 +18,8 @@
 package org.newsclub.net.unix.demo.rmi;
 
 import java.io.IOException;
+
+import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
 
 /**
  * The implementation of the very simple {@link HelloWorld} service.
