@@ -1,0 +1,24 @@
+--class-path
+'/Users/ck/.m2/repository/org/slf4j/slf4j-log4j12/1.7.25/slf4j-log4j12-1.7.25.jar:/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-native-common/target/classes:/Users/ck/.m2/repository/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar:/Users/ck/.m2/repository/org/opentest4j/opentest4j/1.0.0/opentest4j-1.0.0.jar:/Users/ck/.m2/repository/org/junit/platform/junit-platform-commons/1.1.0/junit-platform-commons-1.1.0.jar:/Users/ck/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.1.0/junit-jupiter-engine-5.1.0.jar:/Users/ck/.m2/repository/com/github/spotbugs/spotbugs-annotations/3.1.10/spotbugs-annotations-3.1.10.jar:/Users/ck/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar:/Users/ck/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.1.0/junit-jupiter-api-5.1.0.jar:/Users/ck/.m2/repository/log4j/log4j/1.2.17/log4j-1.2.17.jar:/Users/ck/.m2/repository/org/junit/platform/junit-platform-engine/1.1.0/junit-platform-engine-1.1.0.jar:/Users/ck/.m2/repository/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar:/Users/ck/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-common/src/main/java:/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-common/target/generated-sources/annotations'
+-author
+-bottom
+'Copyright &#169; 2009&#x2013;2018 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-common/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'junixsocket-common 2.1.0-SNAPSHOT API'
+-linkoffline
+'https://docs.oracle.com/javase/9/docs/api' '/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-common/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'junixsocket-common 2.1.0-SNAPSHOT API'

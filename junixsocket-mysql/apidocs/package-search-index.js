@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"m":"org.newsclub.net.mysql","l":"com.mysql.jdbc"},{"m":"org.newsclub.net.mysql","l":"org.newsclub.net.mysql"}]

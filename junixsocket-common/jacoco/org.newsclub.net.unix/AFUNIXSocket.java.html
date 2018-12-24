@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXSocket.java</span></div><h1>AFUNIXSocket.java</h1><pre class="source lang-java linenums">/**
+ * junixsocket
+ *
+ * Copyright (c) 2009-2018 Christian Kohlschütter
+ *
+ * The author licenses this file to You under the Apache License, Version 2.0
+ * (the &quot;License&quot;); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketAddress;
+
+/**
+ * Implementation of an AF_UNIX domain socket.
+ * 
+ * @author Christian Kohlschütter
+ */
+public class AFUNIXSocket extends Socket {
+  protected AFUNIXSocketImpl impl;
+  AFUNIXSocketAddress addr;
+
+  private AFUNIXSocket(final AFUNIXSocketImpl impl) throws IOException {
+<span class="fc" id="L34">    super(impl);</span>
+    try {
+<span class="fc" id="L36">      NativeUnixSocket.setCreated(this);</span>
+<span class="nc" id="L37">    } catch (UnsatisfiedLinkError e) {</span>
+<span class="nc" id="L38">      e.printStackTrace();</span>
+<span class="fc" id="L39">    }</span>
+<span class="fc" id="L40">  }</span>
+
+  /**
+   * Creates a new, unbound {@link AFUNIXSocket}.
+   * 
+   * This &quot;default&quot; implementation is a bit &quot;lenient&quot; with respect to the specification.
+   * 
+   * In particular, we ignore calls to {@link Socket#getTcpNoDelay()} and
+   * {@link Socket#setTcpNoDelay(boolean)}.
+   * 
+   * @return A new, unbound socket.
+   * @throws IOException if the operation fails.
+   */
+  public static AFUNIXSocket newInstance() throws IOException {
+<span class="fc" id="L54">    final AFUNIXSocketImpl impl = new AFUNIXSocketImpl.Lenient();</span>
+<span class="fc" id="L55">    AFUNIXSocket instance = new AFUNIXSocket(impl);</span>
+<span class="fc" id="L56">    instance.impl = impl;</span>
+<span class="fc" id="L57">    return instance;</span>
+  }
+
+  /**
+   * Creates a new, unbound, &quot;strict&quot; {@link AFUNIXSocket}.
+   * 
+   * This call uses an implementation that tries to be closer to the specification than
+   * {@link #newInstance()}, at least for some cases.
+   * 
+   * @return A new, unbound socket.
+   * @throws IOException if the operation fails.
+   */
+  public static AFUNIXSocket newStrictInstance() throws IOException {
+<span class="fc" id="L70">    final AFUNIXSocketImpl impl = new AFUNIXSocketImpl();</span>
+<span class="fc" id="L71">    AFUNIXSocket instance = new AFUNIXSocket(impl);</span>
+<span class="fc" id="L72">    instance.impl = impl;</span>
+<span class="fc" id="L73">    return instance;</span>
+  }
+
+  /**
+   * Creates a new {@link AFUNIXSocket} and connects it to the given {@link AFUNIXSocketAddress}.
+   * 
+   * @param addr The address to connect to.
+   * @return A new, connected socket.
+   * @throws IOException if the operation fails.
+   */
+  public static AFUNIXSocket connectTo(AFUNIXSocketAddress addr) throws IOException {
+<span class="fc" id="L84">    AFUNIXSocket socket = newInstance();</span>
+<span class="fc" id="L85">    socket.connect(addr);</span>
+<span class="fc" id="L86">    return socket;</span>
+  }
+
+  /**
+   * Binds this {@link AFUNIXSocket} to the given bindpoint. Only bindpoints of the type
+   * {@link AFUNIXSocketAddress} are supported.
+   */
+  @Override
+  public void bind(SocketAddress bindpoint) throws IOException {
+<span class="nc" id="L95">    super.bind(bindpoint);</span>
+<span class="nc" id="L96">    this.addr = (AFUNIXSocketAddress) bindpoint;</span>
+<span class="nc" id="L97">  }</span>
+
+  @Override
+  public void connect(SocketAddress endpoint) throws IOException {
+<span class="fc" id="L101">    connect(endpoint, 0);</span>
+<span class="fc" id="L102">  }</span>
+
+  @Override
+  public void connect(SocketAddress endpoint, int timeout) throws IOException {
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">    if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
+<span class="nc" id="L107">      throw new IOException(&quot;Can only connect to endpoints of type &quot; + AFUNIXSocketAddress.class</span>
+<span class="nc" id="L108">          .getName());</span>
+    }
+<span class="fc" id="L110">    impl.connect(endpoint, timeout);</span>
+<span class="fc" id="L111">    this.addr = (AFUNIXSocketAddress) endpoint;</span>
+<span class="fc" id="L112">    NativeUnixSocket.setConnected(this);</span>
+<span class="fc" id="L113">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc bnc" id="L117" title="All 2 branches missed.">    if (isConnected()) {</span>
+<span class="nc" id="L118">      return &quot;AFUNIXSocket[fd=&quot; + impl.getFD() + &quot;;path=&quot; + addr.getSocketFile() + &quot;]&quot;;</span>
+    }
+<span class="nc" id="L120">    return &quot;AFUNIXSocket[unconnected]&quot;;</span>
+  }
+
+  /**
+   * Returns &lt;code&gt;true&lt;/code&gt; iff {@link AFUNIXSocket}s are supported by the current Java VM.
+   * 
+   * To support {@link AFUNIXSocket}s, a custom JNI library must be loaded that is supplied with
+   * &lt;em&gt;junixsocket&lt;/em&gt;.
+   * 
+   * @return {@code true} iff supported.
+   */
+  public static boolean isSupported() {
+<span class="nc" id="L132">    return NativeUnixSocket.isLoaded();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
