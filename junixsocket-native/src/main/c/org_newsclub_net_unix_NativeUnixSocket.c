@@ -69,11 +69,11 @@ void org_newsclub_net_unix_NativeUnixSocket_throwException(JNIEnv* env,
 		char* message, jstring file)
 {
 	jclass exc = (*env)->FindClass(env,
-			"org/newsclub/net/unix/AFUNIXSocketException");
+			"java/net/SocketException");
 	jmethodID constr = (*env)->GetMethodID(env, exc, "<init>",
-			"(Ljava/lang/String;Ljava/lang/String;)V");
+			"(Ljava/lang/String;)V");
 	jstring str = (*env)->NewStringUTF(env, message);
-	jthrowable t = (jthrowable)(*env)->NewObject(env, exc, constr, str, file);
+	jthrowable t = (jthrowable)(*env)->NewObject(env, exc, constr, str);
 	(*env)->Throw(env, t);
 }
 

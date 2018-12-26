@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 import org.junit.jupiter.api.Test;
 
@@ -54,7 +55,7 @@ public class SoTimeoutTest extends SocketTestBase {
         sock.setSoTimeout(12000);
         System.err.println(
             "NOTE: Socket#setSoTimeout(int) did not throw an AFUNIXSocketException. This is OK.");
-      } catch (final AFUNIXSocketException e) {
+      } catch (final SocketException e) {
         // expected, as the socket is actually closed
       }
     }

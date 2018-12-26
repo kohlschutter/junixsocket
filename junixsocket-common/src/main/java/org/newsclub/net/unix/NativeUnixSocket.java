@@ -88,7 +88,7 @@ final class NativeUnixSocket {
 
   static native void setPort(final AFUNIXSocketAddress addr, int port);
 
-  static void setPort1(AFUNIXSocketAddress addr, int port) throws AFUNIXSocketException {
+  static void setPort1(AFUNIXSocketAddress addr, int port) throws IOException {
     if (port < 0) {
       throw new IllegalArgumentException("port out of range:" + port);
     }
@@ -98,7 +98,7 @@ final class NativeUnixSocket {
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
-      throw new AFUNIXSocketException("Could not set port", e);
+      throw new IOException("Could not set port", e);
     }
   }
 }

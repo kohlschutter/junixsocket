@@ -142,9 +142,9 @@ class AFUNIXSocketImpl extends SocketImpl {
     this.connected = true;
   }
 
-  private String validateSocketFile(String file) throws AFUNIXSocketException {
+  private String validateSocketFile(String file) throws SocketException {
     if (!new File(file).exists()) {
-      throw new AFUNIXSocketException("Socket file not found: " + socketFile);
+      throw new SocketException("Socket file not found: " + socketFile);
     }
     return file;
   }
@@ -197,6 +197,7 @@ class AFUNIXSocketImpl extends SocketImpl {
       if (len > maxRead) {
         len = maxRead;
       }
+      
       try {
         return NativeUnixSocket.read(fd, buf, off, len);
       } catch (final IOException e) {
@@ -249,7 +250,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     @Override
     public void write(byte[] buf, int off, int len) throws IOException {
       if (streamClosed) {
-        throw new AFUNIXSocketException("This OutputStream has already been closed.");
+        throw new SocketException("This OutputStream has already been closed.");
       }
       if (len < 0 || off < 0 || len > buf.length - off) {
         throw new IndexOutOfBoundsException();
@@ -302,9 +303,9 @@ class AFUNIXSocketImpl extends SocketImpl {
     try {
       return (Integer) value;
     } catch (final ClassCastException e) {
-      throw new AFUNIXSocketException("Unsupported value: " + value, e);
+      throw (SocketException) new SocketException("Unsupported value: " + value).initCause(e);
     } catch (final NullPointerException e) {
-      throw new AFUNIXSocketException("Value must not be null", e);
+      throw (SocketException) new SocketException("Value must not be null").initCause(e);
     }
   }
 
@@ -312,9 +313,9 @@ class AFUNIXSocketImpl extends SocketImpl {
     try {
       return ((Boolean) value).booleanValue() ? 1 : 0;
     } catch (final ClassCastException e) {
-      throw new AFUNIXSocketException("Unsupported value: " + value, e);
+      throw (SocketException) new SocketException("Unsupported value: " + value).initCause(e);
     } catch (final NullPointerException e) {
-      throw new AFUNIXSocketException("Value must not be null", e);
+      throw (SocketException) new SocketException("Value must not be null").initCause(e);
     }
   }
 
@@ -331,12 +332,12 @@ class AFUNIXSocketImpl extends SocketImpl {
         case SocketOptions.SO_SNDBUF:
           return NativeUnixSocket.getSocketOptionInt(fd, optID);
         default:
-          throw new AFUNIXSocketException("Unsupported option: " + optID);
+          throw new SocketException("Unsupported option: " + optID);
       }
-    } catch (final AFUNIXSocketException e) {
+    } catch (final SocketException e) {
       throw e;
     } catch (final Exception e) {
-      throw new AFUNIXSocketException("Error while getting option", e);
+      throw (SocketException) new SocketException("Error while getting option").initCause(e);
     }
   }
 
@@ -366,12 +367,12 @@ class AFUNIXSocketImpl extends SocketImpl {
           NativeUnixSocket.setSocketOptionInt(fd, optID, expectBoolean(value));
           return;
         default:
-          throw new AFUNIXSocketException("Unsupported option: " + optID);
+          throw new SocketException("Unsupported option: " + optID);
       }
-    } catch (final AFUNIXSocketException e) {
+    } catch (final SocketException e) {
       throw e;
     } catch (final Exception e) {
-      throw new AFUNIXSocketException("Error while setting option", e);
+      throw (SocketException) new SocketException("Error while setting option").initCause(e);
     }
   }
 

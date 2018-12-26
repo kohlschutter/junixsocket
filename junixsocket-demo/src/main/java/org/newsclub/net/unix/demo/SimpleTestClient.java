@@ -21,10 +21,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.SocketException;
 
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
-import org.newsclub.net.unix.AFUNIXSocketException;
 
 /**
  * A simple demo client.
@@ -40,7 +40,7 @@ public class SimpleTestClient {
     try (AFUNIXSocket sock = AFUNIXSocket.newInstance()) {
       try {
         sock.connect(new AFUNIXSocketAddress(socketFile));
-      } catch (AFUNIXSocketException e) {
+      } catch (SocketException e) {
         System.out.println("Cannot connect to server. Have you started it?");
         System.out.println();
         throw e;
