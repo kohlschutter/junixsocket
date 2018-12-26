@@ -192,12 +192,7 @@ class AFUNIXSocketImpl extends SocketImpl {
       } else if (off < 0 || len < 0 || (len > buf.length - off)) {
         throw new IndexOutOfBoundsException();
       }
-      
-      int maxRead = buf.length - off;
-      if (len > maxRead) {
-        len = maxRead;
-      }
-      
+
       try {
         return NativeUnixSocket.read(fd, buf, off, len);
       } catch (final IOException e) {

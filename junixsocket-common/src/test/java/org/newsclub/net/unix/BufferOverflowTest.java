@@ -99,7 +99,7 @@ public class BufferOverflowTest {
   }
 
   @Test
-  public void readOverflow() throws Exception {
+  public void readOutOfBounds() throws Exception {
     assertTimeout(Duration.ofSeconds(2), () -> {
       Socket[] sockets = connectToServer();
       try (Socket serverSocket = sockets[0]; //
@@ -111,8 +111,31 @@ public class BufferOverflowTest {
         try (OutputStream clientOutStream = clientSocket.getOutputStream(); //
             InputStream serverInStream = serverSocket.getInputStream()) {
           clientOutStream.write(input, 0, 16);
-          int numRead = serverInStream.read(output, 0, 16);
-          assertTrue(numRead <= 15, "Buffer Overflow not detected");
+          serverInStream.read(output, 0, 16); // we can't read up to 16 bytes on an array that is
+                                              // only 15.
+          fail("The call to read should have thrown an IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException ex) {
+          // expected
+        }
+      }
+    });
+  }
+
+  @Test
+  public void readUpTo() throws Exception {
+    assertTimeout(Duration.ofSeconds(2), () -> {
+      Socket[] sockets = connectToServer();
+      try (Socket serverSocket = sockets[0]; //
+          Socket clientSocket = sockets[1];) {
+
+        byte[] input = new byte[16];
+        byte[] output = new byte[256];
+
+        try (OutputStream clientOutStream = clientSocket.getOutputStream(); //
+            InputStream serverInStream = serverSocket.getInputStream()) {
+          clientOutStream.write(input, 0, 16);
+          int numRead = serverInStream.read(output, 0, 256);
+          assertEquals(16, numRead, "Number of bytes read mismatch");
         }
       }
     });
