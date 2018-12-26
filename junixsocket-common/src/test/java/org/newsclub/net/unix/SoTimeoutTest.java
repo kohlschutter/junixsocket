@@ -54,7 +54,7 @@ public class SoTimeoutTest extends SocketTestBase {
       try {
         sock.setSoTimeout(12000);
         System.err.println(
-            "NOTE: Socket#setSoTimeout(int) did not throw an AFUNIXSocketException. This is OK.");
+            "NOTE: Socket#setSoTimeout(int) did not throw a SocketException. This is OK.");
       } catch (final SocketException e) {
         // expected, as the socket is actually closed
       }
