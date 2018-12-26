@@ -68,7 +68,9 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <module>junixsocket-common</module>
     <module>junixsocket-rmi</module>
     <module>junixsocket-mysql</module>
+    <module>junixsocket-core</module>
     <module>junixsocket-demo</module>
+    <module>junixsocket-dist</module>
   </modules>
 
   <build>

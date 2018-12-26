@@ -1,6 +1,10 @@
 ### Basic Usage
 
-junixsocket supports the [Java Socket API](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html). `AFUNIXSocket` and `AFUNIXServerSocket` work just like their AF_INET (TCP/IP) Socket counterparts — they extend `java.net.Socket` and `java.net.ServerSocket` respectively.
+junixsocket supports the [Java Socket API](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
+
+`AFUNIXSocket` and `AFUNIXServerSocket` work just like their AF_INET (TCP/IP) Socket counterparts — they extend `java.net.Socket` and `java.net.ServerSocket` respectively.
+
+[See here](dependency.html) how to add junixsocket to your project.
 
 ## Connecting to an existing AF_UNIX Socket
 
@@ -16,11 +20,11 @@ junixsocket supports the [Java Socket API](https://docs.oracle.com/javase/8/docs
 
 ### Complete Examples
 
-junixsocket provides working demos for:
+junixsocket provides [working demos](junixsocket-demo/xref/index.html) for:
 
-  * plain Unix Domain Socket client/server communication
-  * RMI-over-Unix-Socket.
-  * MySQL-over-Unix-Socket.
+  * Sockets (package `org.newsclub.net.unix.demo`)
+  * RMI over Unix Sockets (packages `org.newsclub.net.unix.demo.rmi` and `org.newsclub.net.unix.demo.rmi.services`)
+  * MySQL over Unix Sockets  (package `org.newsclub.net.mysql.demo`)
 
 ### Caveats
 

@@ -23,8 +23,9 @@
       <version>${project.version}</version> </dependency> -->
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
-      <artifactId>junixsocket-common</artifactId>
+      <artifactId>junixsocket-core</artifactId>
       <version>${project.version}</version>
+      <!-- <type>pom</type> --> <!-- Blocked by MCOMPILER-360 -->
     </dependency>
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
@@ -37,15 +38,9 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.kohlschutter.junixsocket</groupId>
-      <artifactId>junixsocket-native-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>8.0.13</version>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

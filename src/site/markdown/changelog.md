@@ -1,12 +1,21 @@
 ### Noteworthy changes
 
-  * _(????-??-??)_ *junixsocket 2.1.0*
+  * _(2018-12-26)_ **junixsocket 2.1.0**
   
-    - TBD.
+    - Support for Java 8, 9, 10 and 11
+    - Building junixsocket requires Java 9 or later
+    - Jigsaw module support
+    - New Native library loading mechanism
+    - Validate that socket exists before trying to connect
+    - Throw InterruptedIOException upon interrupt during write
+    - Additional range checks for array offsets
+    - Code cleanup
+    - Script to run the demos from the command-line
+    - Documentation updates
+    - Updated Maven dependencies
 
 
-
-  * _(2014-09-29)_ *junixsocket 2.0.1*
+  * _(2014-09-29)_ **junixsocket 2.0.1**
 
     - **Bugfix:** Add byte array bounds checking to read/write methods.
     - Fix C compiler warnings
@@ -14,10 +23,12 @@
 
 
 
-  * _(2014-09-28)_ *junixsocket 2.0.0*
+  * _(2014-09-28)_ **junixsocket 2.0.0**
+  
     - Move from *Google Code* to *GitHub*.
     - Use Maven as the build system, code is distributed to the *Maven Central* repository.
     - Build native C code using *nar-maven-plugin*, and load JNI libraries *native-lib-loader*
+
 
 See the commit log for details.
 

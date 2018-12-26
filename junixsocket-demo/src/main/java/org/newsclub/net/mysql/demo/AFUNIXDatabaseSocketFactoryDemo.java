@@ -31,31 +31,49 @@ import org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory;
  * @author Christian Kohlschuetter
  */
 public class AFUNIXDatabaseSocketFactoryDemo {
+  @SuppressWarnings("resource")
   public static void main(String[] args) throws Exception {
-    Class.forName("com.mysql.jdbc.Driver");
+    // specify -DdriverClass=com.mysql.jdbc.Driver to use the old JDBC driver
+    String driverClass = System.getProperty("mysqlDriver", "");
+    if (driverClass.isEmpty()) {
+      System.out.println(
+          "Using JDBC driver provided by SPI; override with -DmysqlDriver=com.mysql.jdbc.Driver");
+    } else {
+      System.out.println("Using JDBC driver provided by -DmysqlDriver=" + driverClass);
+      Class.forName(driverClass);
+    }
+    System.out.println();
+
+    // try -DmysqlUser=test -DmysqlPassword=test -DmysqlSocket=/var/lib/mysql.sock
     Properties props = new Properties();
-    props.put("socketFactory", AFUNIXDatabaseSocketFactory.class.getName());
+    addProperty(props, "socketFactory", AFUNIXDatabaseSocketFactory.class.getName(), null);
+    addProperty(props, "junixsocket.file", "/tmp/mysql.sock", "mysqlSocket");
+    addProperty(props, "user", "root", "mysqlUser");
+    addProperty(props, "password", "", "mysqlPassword");
 
-    // props.put("user", "test");
-    // props.put("password", "test");
-    // props.put("junixsocket.file", "/var/lib/mysql.sock");
-    props.put("user", "root");
-    props.put("password", "");
-    props.put("junixsocket.file", "/tmp/mysql.sock");
+    System.out.println();
 
-    // SHOW DATABASES three times
-    for (int i = 0; i < 3; i++) {
-      try (Connection conn = DriverManager.getConnection("jdbc:mysql://", props)) {
-        System.out.println("Connection: " + conn);
+    // SHOW DATABASES
+    Connection conn = DriverManager.getConnection("jdbc:mysql://", props);
+    System.out.println("Connection: " + conn);
 
-        System.out.println("SHOW DATABASES:");
-        try (Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SHOW DATABASES")) {
-          while (rs.next()) {
-            System.out.println("\t" + rs.getString(1));
-          }
-        }
+    String sql = "SHOW DATABASES";
+    System.out.println(sql);
+    try (Statement stmt = conn.createStatement(); //
+        ResultSet rs = stmt.executeQuery(sql)) {
+      while (rs.next()) {
+        System.out.println("* " + rs.getString(1));
       }
     }
+  }
+
+  private static void addProperty(Properties props, String key, String value, String property) {
+    if (property == null) {
+      System.out.println(key + "=" + value);
+    } else {
+      value = System.getProperty(property, value);
+      System.out.println(key + "=" + value + "; override with -D" + property);
+    }
+    props.setProperty(key, value);
   }
 }

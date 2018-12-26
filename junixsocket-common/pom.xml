@@ -14,8 +14,9 @@
   <name>junixsocket-common</name>
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+    <junixsocket.custom.arch></junixsocket.custom.arch>
   </properties>
-  
+
   <description>The public, core API</description>
 
   <build>
@@ -45,6 +46,14 @@
       <artifactId>junixsocket-native-common</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-native-custom</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+      <classifier>${junixsocket.custom.arch}</classifier>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 </project>
