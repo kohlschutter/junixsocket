@@ -189,7 +189,10 @@ class AFUNIXSocketImpl extends SocketImpl {
       }
       if (len == 0) {
         return 0;
+      } else if (off < 0 || len < 0 || (len > buf.length - off)) {
+        throw new IndexOutOfBoundsException();
       }
+      
       int maxRead = buf.length - off;
       if (len > maxRead) {
         len = maxRead;

@@ -1,11 +1,9 @@
 /**
- * junixsocket
+ * Copyright 2009-2018 Christian Kohlschütter
  *
- * Copyright (c) 2009, 2010 NewsClub, Christian Kohlschütter
- *
- * The author licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -15,6 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+///
+/// The native C part of the AFUnixSocket implementation.
+///
+/// @author Christian Kohlschuetter
+///
 
 #include "org_newsclub_net_unix_NativeUnixSocket.h"
 
@@ -61,11 +65,6 @@ extern "C" {
 typedef unsigned long socklen_t; /* 64-bits */
 #endif
 
-/**
- * The native C part of the AFUnixSocket implementation.
- *
- * @author Christian Kohlschuetter
- */
 void org_newsclub_net_unix_NativeUnixSocket_throwException(JNIEnv* env,
 		char* message, jstring file)
 {

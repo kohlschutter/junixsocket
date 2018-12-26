@@ -45,7 +45,7 @@ install Java, Maven and junixosocket, and you should be good to go.
 
     cd junixsocket
     # review LICENSE file and verify that it's up-to-date
-    mvn java-formatter:format
+    mvn formatter:format
     mvn license:format
     # git add / commit here...
 

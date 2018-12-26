@@ -84,3 +84,18 @@ A better way is to directly add the junixsocket-native-custom jar to the classpa
 invoke the Java VM (e.g., your web server, etc.), for example:
 
     java -cp junixsocket-native-custom-2.1.0-amd64-Linux-gpp-jni.jar:*(...)* *YourMainClass*
+
+## If that doesn't work...
+
+There may be reasons why all this doesn't work, and you simply want to specify the location of
+the native library yourself.
+
+Simply set the system property `org.newsclub.net.unix.library.override` to the location of the native
+library. For example:
+
+    java -Dorg.newsclub.net.unix.library.override=/opt/lib/ibjunixsocket-native-2.1.0.so (...)
+
+**Important:** Make sure you use a compatible version of the native library.
+
+junixsocket 2.1.x is compatible with all 2.1.x native library binaries,
+but not with 2.0.x native libraries.
