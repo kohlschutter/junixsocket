@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2009 - 2018 Kohlschütter Search Intelligence</copyright>
     <item>
-      <title>File: 5,
+      <title>File: 4,
              Errors: 0,
              Warnings: 0,
              Infos: 0
@@ -61,20 +61,6 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://github.com/kohlschutter/junixsocket/junixsocket-common/checkstyle.html#org.newsclub.net.unix.AFUNIXSocket.java">org/newsclub/net/unix/AFUNIXSocket.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-common/checkstyle.html#org.newsclub.net.unix.AFUNIXSocketException.java">org/newsclub/net/unix/AFUNIXSocketException.java</a>
                 </td>
                 <td>
                   0

@@ -1,1 +1,1 @@
-typeSearchIndex = [{"p":"org.newsclub.net.mysql","l":"AFUNIXDatabaseSocketFactory"},{"l":"All Classes","url":"allclasses-index.html"},{"p":"com.mysql.jdbc","l":"SocketFactory"}]
+typeSearchIndex = [{"p":"org.newsclub.net.mysql","l":"AFUNIXDatabaseSocketFactory"},{"l":"All Classes","url":"allclasses-index.html"}]

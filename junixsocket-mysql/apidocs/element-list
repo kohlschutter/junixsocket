@@ -1,3 +1,2 @@
 module:org.newsclub.net.mysql
-com.mysql.jdbc
 org.newsclub.net.mysql

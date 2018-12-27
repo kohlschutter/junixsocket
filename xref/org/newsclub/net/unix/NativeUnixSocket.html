@@ -9,11 +9,11 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright (c) 2009-2018 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2018 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> * The author licenses this file to You under the Apache License, Version 2.0</em>
-<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> * (the "License"); you may not use this file except in compliance with</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> * the License.  You may obtain a copy of the License at</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> * you may not use this file except in compliance with the License.</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> * You may obtain a copy of the License at</em>
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment"> *     <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> *</em>
@@ -96,7 +96,7 @@
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>    <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">native</strong> <strong class="jxr_keyword">void</strong> setPort(<strong class="jxr_keyword">final</strong> <a name="AFUNIXSocketAddress" href="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr, <strong class="jxr_keyword">int</strong> port);
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>    <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> setPort1(<a name="AFUNIXSocketAddress" href="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr, <strong class="jxr_keyword">int</strong> port) <strong class="jxr_keyword">throws</strong> <a name="AFUNIXSocketException" href="../../../../org/newsclub/net/unix/AFUNIXSocketException.html#AFUNIXSocketException">AFUNIXSocketException</a> {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>    <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> setPort1(<a name="AFUNIXSocketAddress" href="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr, <strong class="jxr_keyword">int</strong> port) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">if</strong> (port &lt; 0) {
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"port out of range:"</span> + port);
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>      }
@@ -106,7 +106,7 @@
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>      } <strong class="jxr_keyword">catch</strong> (RuntimeException e) {
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>        <strong class="jxr_keyword">throw</strong> e;
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>     } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a name="AFUNIXSocketException" href="../../../../org/newsclub/net/unix/AFUNIXSocketException.html#AFUNIXSocketException">AFUNIXSocketException</a>(<span class="jxr_string">"Could not set port"</span>, e);
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IOException(<span class="jxr_string">"Could not set port"</span>, e);
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>     }
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>   }
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> }

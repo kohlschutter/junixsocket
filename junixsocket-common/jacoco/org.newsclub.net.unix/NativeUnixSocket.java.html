@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NativeUnixSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">NativeUnixSocket.java</span></div><h1>NativeUnixSocket.java</h1><pre class="source lang-java linenums">/**
  * junixsocket
  *
- * Copyright (c) 2009-2018 Christian Kohlschütter
+ * Copyright 2009-2018 Christian Kohlschütter
  *
- * The author licenses this file to You under the Apache License, Version 2.0
- * (the &quot;License&quot;); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -88,7 +88,7 @@ final class NativeUnixSocket {
 
   static native void setPort(final AFUNIXSocketAddress addr, int port);
 
-  static void setPort1(AFUNIXSocketAddress addr, int port) throws AFUNIXSocketException {
+  static void setPort1(AFUNIXSocketAddress addr, int port) throws IOException {
 <span class="fc bfc" id="L92" title="All 2 branches covered.">    if (port &lt; 0) {</span>
 <span class="fc" id="L93">      throw new IllegalArgumentException(&quot;port out of range:&quot; + port);</span>
     }
@@ -98,7 +98,7 @@ final class NativeUnixSocket {
 <span class="nc" id="L98">    } catch (RuntimeException e) {</span>
 <span class="nc" id="L99">      throw e;</span>
 <span class="nc" id="L100">    } catch (Exception e) {</span>
-<span class="nc" id="L101">      throw new AFUNIXSocketException(&quot;Could not set port&quot;, e);</span>
+<span class="nc" id="L101">      throw new IOException(&quot;Could not set port&quot;, e);</span>
 <span class="fc" id="L102">    }</span>
 <span class="fc" id="L103">  }</span>
 }
