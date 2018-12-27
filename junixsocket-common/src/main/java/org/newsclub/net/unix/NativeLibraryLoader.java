@@ -27,8 +27,13 @@ import java.util.Properties;
 
 final class NativeLibraryLoader implements Closeable {
   private static final String PROP_LIBRARY_OVERRIDE = "org.newsclub.net.unix.library.override";
+  private static final String PROP_LIBRARY_LOADED = "org.newsclub.net.unix.library.loaded";
+  private static final String PROP_LIBRARY_TMPDIR = "org.newsclub.net.unix.library.tmpdir";
 
+  private static final File tempDir;
   private static final String architectureAndOS = architectureAndOS();
+
+  private static boolean loaded = false;
 
   private String libraryName = "junixsocket-native";
   private String version;
@@ -37,6 +42,11 @@ final class NativeLibraryLoader implements Closeable {
   private String artifactName;
 
   private InputStream libraryIn;
+
+  static {
+    String dir = System.getProperty(PROP_LIBRARY_TMPDIR, null);
+    tempDir = (dir == null) ? null : new File(dir);
+  }
 
   public NativeLibraryLoader() {
   }
@@ -96,41 +106,55 @@ final class NativeLibraryLoader implements Closeable {
     }
   }
 
-  public void loadLibrary() {
-    String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, "");
-    if (!libraryOverride.isEmpty()) {
-      System.loadLibrary(libraryOverride);
-      return;
-    }
+  private synchronized void setLoaded(String library) {
+    loaded = true;
+    System.setProperty(PROP_LIBRARY_LOADED, library);
+  }
 
-    findLibraryArtifact();
-    try {
-      System.loadLibrary(libraryNameAndVersion);
-      return;
-    } catch (Exception | UnsatisfiedLinkError e) {
-      if (libraryIn == null) {
-        throw e;
-      } else {
-        // ignore
+  public synchronized void loadLibrary() {
+    synchronized (Object.class) {
+      if (loaded || System.getProperty(PROP_LIBRARY_LOADED) != null) {
+        // Already loaded
+        return;
       }
-    }
+      String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, "");
+      if (!libraryOverride.isEmpty()) {
+        System.loadLibrary(libraryOverride);
+        setLoaded(libraryOverride);
+        return;
+      }
 
-    try {
-      File libFile = File.createTempFile("libtmp", System.mapLibraryName(libraryNameAndVersion));
-      try (OutputStream out = new FileOutputStream(libFile)) {
-        byte[] buf = new byte[4096];
-        int read;
-        while ((read = libraryIn.read(buf)) >= 0) {
-          out.write(buf, 0, read);
+      findLibraryArtifact();
+      try {
+        System.loadLibrary(libraryNameAndVersion);
+        setLoaded(artifactName + "/" + libraryNameAndVersion);
+        return;
+      } catch (Exception | UnsatisfiedLinkError e) {
+        if (libraryIn == null) {
+          throw e;
+        } else {
+          // ignore
         }
       }
-      System.load(libFile.getAbsolutePath());
-      if (!libFile.delete()) {
-        libFile.deleteOnExit();
+
+      try {
+        File libFile = createTempFile("libtmp", System.mapLibraryName(libraryNameAndVersion));
+        try (OutputStream out = new FileOutputStream(libFile)) {
+          byte[] buf = new byte[4096];
+          int read;
+          while ((read = libraryIn.read(buf)) >= 0) {
+            out.write(buf, 0, read);
+          }
+        }
+        System.load(libFile.getAbsolutePath());
+        setLoaded(artifactName + "/" + libraryNameAndVersion);
+        if (!libFile.delete()) {
+          libFile.deleteOnExit();
+        }
+        close();
+      } catch (IOException e) {
+        e.printStackTrace();
       }
-      close();
-    } catch (IOException e) {
-      e.printStackTrace();
     }
   }
 
@@ -164,5 +188,9 @@ final class NativeLibraryLoader implements Closeable {
       }
       libraryIn = null;
     }
+  }
+
+  private static File createTempFile(String prefix, String suffix) throws IOException {
+    return File.createTempFile(prefix, suffix, tempDir);
   }
 }

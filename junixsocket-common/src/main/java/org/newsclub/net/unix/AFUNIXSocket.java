@@ -27,6 +27,7 @@ import java.net.SocketAddress;
  * @author Christian Kohlschütter
  */
 public class AFUNIXSocket extends Socket {
+  private static final String PROP_LIBRARY_LOADED = "org.newsclub.net.unix.library.loaded";
   protected AFUNIXSocketImpl impl;
   AFUNIXSocketAddress addr;
 
@@ -130,5 +131,17 @@ public class AFUNIXSocket extends Socket {
    */
   public static boolean isSupported() {
     return NativeUnixSocket.isLoaded();
+  }
+
+  /**
+   * Returns an identifier of the loaded native library, or {@code null} if the library hasn't been
+   * loaded yet.
+   * 
+   * The identifier is useful mainly for debugging purposes.
+   * 
+   * @return The identifier of the loaded junixsocket-native library, or {@code null}.
+   */
+  public static String getLoadedLibrary() {
+    return System.getProperty(PROP_LIBRARY_LOADED);
   }
 }
