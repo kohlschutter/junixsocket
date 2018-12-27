@@ -102,7 +102,7 @@ The files can be found in
   
     cd junixsocket
     mvn clean install -Pstrict -Prelease
-    mvn deploy -Psigned
+    mvn deploy -Pstrict -Prelease -Psigned
     
 ##### Notes
 
@@ -128,14 +128,28 @@ For example:
     The URL of the staging repository is `https://oss.sonatype.org/content/groups/staging`.
     The artifacts can be found [here](https://oss.sonatype.org/content/groups/staging/com/kohlschutter/junixsocket/).
 
+**IMPORTANT** Double-check that the staged junixsocket-native-common artifact contains both macOS
+and Linux 64-bit libraries. 
+
 #### 3. Release artifact to Maven Central
+  
+**IMPORTANT** Once released, it cannot be undone! Make sure you verify the staged artifact first!
   
     mvn nexus-staging:release     
 
 ### Tag the release, push to upstream (i.e., GitHub)
 
     mvn scm:tag
-    git push
+
+### Release on GitHub
+    
+1. Log in to GitHub, go to Releases -> Draft a new release.
+
+2. Select the newly created tag (= search for the version).
+
+3. Release title = "junixsocket" + version>, e.g., "junixsocket 2.1.0"
+
+4. Hit "Publish release"    
 
 ### Publish website 
 
