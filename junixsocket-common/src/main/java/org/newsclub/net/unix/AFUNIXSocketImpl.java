@@ -45,8 +45,8 @@ class AFUNIXSocketImpl extends SocketImpl {
   private boolean bound = false;
   private boolean connected = false;
 
-  private boolean closedInputStream = false;
-  private boolean closedOutputStream = false;
+  private volatile boolean closedInputStream = false;
+  private volatile boolean closedOutputStream = false;
 
   private final AFUNIXInputStream in = new AFUNIXInputStream();
   private final AFUNIXOutputStream out = new AFUNIXOutputStream();
@@ -180,7 +180,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   }
 
   private final class AFUNIXInputStream extends InputStream {
-    private boolean streamClosed = false;
+    private volatile boolean streamClosed = false;
 
     @Override
     public int read(byte[] buf, int off, int len) throws IOException {
@@ -213,7 +213,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
 
     @Override
-    public void close() throws IOException {
+    public synchronized void close() throws IOException {
       if (streamClosed) {
         return;
       }
@@ -234,7 +234,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   }
 
   private final class AFUNIXOutputStream extends OutputStream {
-    private boolean streamClosed = false;
+    private volatile boolean streamClosed = false;
 
     @Override
     public void write(int oneByte) throws IOException {
