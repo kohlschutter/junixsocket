@@ -2,10 +2,6 @@
 
   * _(2018-12-26)_ **junixsocket 2.1.1**
   
-    - Add missing library for Linux 64-bit to junixsocket-native-common (Maven only)
-
-  * _(2018-12-26)_ **junixsocket 2.1.0**
-  
     - Support for Java 8, 9, 10 and 11
     - Building junixsocket requires Java 9 or later
     - Jigsaw module support
