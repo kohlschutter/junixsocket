@@ -65,13 +65,16 @@ typedef unsigned long socklen_t; /* 64-bits */
 #endif
 
 #if defined(__APPLE__) && defined(__MACH__)
-	#define junixsocket_use_poll
+#define junixsocket_use_poll
 #endif
 
 #if defined(junixsocket_use_poll)
-	#include <limits.h>
-	#include <poll.h>
-	#include <time.h>
+#include <limits.h>
+#include <poll.h>
+#include <time.h>
+#if !defined(uint64_t)
+typedef unsigned long long uint64_t;
+#endif
 #endif
 
 typedef enum {
@@ -103,7 +106,7 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwException(JNIEnv* env,
 			"(Ljava/lang/String;)V");
 
 	jstring str;
-	if (message == NULL) {
+	if(message == NULL) {
 		message = "Unknown error";
 	}
 	str = (*env)->NewStringUTF(env, message);
@@ -211,13 +214,13 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 		struct timeval optVal;
 		socklen_t optLen = sizeof(optVal);
 		int ret = getsockopt(serverHandle, SOL_SOCKET, SO_RCVTIMEO, &optVal, &optLen);
-		if (optLen >= sizeof(optVal) && ret == 0 && (optVal.tv_sec > 0 || optVal.tv_usec > 0)) {
+		if(optLen >= sizeof(optVal) && ret == 0 && (optVal.tv_sec > 0 || optVal.tv_usec > 0)) {
 			struct pollfd pfd;
 			pfd.fd = serverHandle;
 			pfd.events = (POLLIN | POLLERR);
 
 			uint64_t millis = ((uint64_t)optVal.tv_sec * 1000) + (uint64_t)(optVal.tv_usec / 1000);
-			if (millis > INT_MAX) {
+			if(millis > INT_MAX) {
 				millis = INT_MAX;
 			}
 			int millisRemaining = (int)millis;
@@ -227,7 +230,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 			struct timespec timeStart;
 			struct timespec timeEnd;
 
-			if (clock_gettime(CLOCK_MONOTONIC, &timeEnd) == -1) {
+			if(clock_gettime(CLOCK_MONOTONIC, &timeEnd) == -1) {
 				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
 				return;
 			}
@@ -238,26 +241,26 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 				timeStart = timeEnd;
 
 				ret = poll(fds, 1, millisRemaining);
-				if (ret == 1 && (pfd.revents & POLLERR) == 0) {
+				if(ret == 1 && (pfd.revents & POLLERR) == 0) {
 					break;
 				}
 				int errnum = errno;
-				if (clock_gettime(CLOCK_MONOTONIC, &timeEnd) == -1) {
+				if(clock_gettime(CLOCK_MONOTONIC, &timeEnd) == -1) {
 					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, file);
 					return;
 				}
-				unsigned int elapsed = (unsigned int)(timespecToMillis(&timeEnd) - timespecToMillis(&timeStart));
-				if (elapsed == 0) {
+				int elapsed = (int)(timespecToMillis(&timeEnd) - timespecToMillis(&timeStart));
+				if(elapsed <= 0) {
 					elapsed = 1;
 				}
 				millisRemaining -= elapsed;
-				if (millisRemaining <= 0) {
+				if(millisRemaining <= 0) {
 					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, ETIMEDOUT, file);
 					return;
 				}
 
 				if(ret == -1) {
-					if (errnum == EAGAIN) {
+					if(errnum == EAGAIN) {
 						// try again
 						continue;
 					}
@@ -272,7 +275,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 
 	int socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
 	if(socketHandle < 0) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+		int errnum = errno;
+		if(errnum == EAGAIN) errnum = ETIMEDOUT;
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, file);
 		return;
 	}
 
