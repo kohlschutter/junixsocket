@@ -273,7 +273,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 	}
 #endif
 
-	int socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
+	int socketHandle;
+	do {
+		socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
+	}while (socketHandle == -1 && errno == EINTR);
 	if(socketHandle < 0) {
 		int errnum = errno;
 		if(errnum == EAGAIN) errnum = ETIMEDOUT;
@@ -335,13 +338,15 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 
 	if(bindRes == -1) {
 		int myErr = errno;
-		if(errno == EADDRINUSE) {
+		if(myErr == EADDRINUSE) {
 			// Let's check whether the address *really* is in use.
 			// Maybe it's just a dead reference
 
 			// if the given file exists, but is not a socket, ENOTSOCK is returned
 			// if access is denied, EACCESS is returned
-			ret = connect(serverHandle, (struct sockaddr *)&su, suLength);
+			do {
+				ret = connect(serverHandle, (struct sockaddr *)&su, suLength);
+			}while (ret == -1 && errno == EINTR);
 
 			if(ret == -1 && errno == ECONNREFUSED) {
 				// assume non-connected socket
@@ -445,7 +450,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 #endif
 	);
 
-	int ret = connect(socketHandle, (struct sockaddr *)&su, suLength);
+	int ret;
+	do {
+		ret = connect(socketHandle, (struct sockaddr *)&su, suLength);
+	}while(ret == -1 && errno == EINTR);
+
 	if(ret == -1) {
 		close(socketHandle);
 		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
@@ -481,7 +490,11 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
-	ssize_t count = read(handle, &(buf[offset]), (size_t)length);
+	ssize_t count;
+	do {
+		count = read(handle, &(buf[offset]), (size_t)length);
+	} while(count == -1 && errno == EINTR);
+
 	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
 
 	if(count == 0) {
@@ -525,7 +538,11 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
-	ssize_t count = write(handle, &buf[offset], (size_t)length);
+	ssize_t count;
+	do {
+		count = write(handle, &buf[offset], (size_t)length);
+	} while(count == -1 && errno == EINTR);
+
 	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
 
 	if(count == -1) {
