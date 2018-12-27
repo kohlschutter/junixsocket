@@ -1,11 +1,11 @@
 /**
  * junixsocket
  *
- * Copyright (c) 2009,2014 Christian Kohlschütter
+ * Copyright 2009-2018 Christian Kohlschütter
  *
- * The author licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -39,6 +39,7 @@ public class AFUNIXSocketAddress extends InetSocketAddress {
    * given file.
    * 
    * @param socketFile The socket to connect to.
+   * @throws IOException if the operation fails.
    */
   public AFUNIXSocketAddress(final File socketFile) throws IOException {
     this(socketFile, 0);
@@ -50,6 +51,7 @@ public class AFUNIXSocketAddress extends InetSocketAddress {
    * 
    * @param socketFile The socket to connect to.
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @throws IOException if the operation fails.
    */
   public AFUNIXSocketAddress(final File socketFile, int port) throws IOException {
     super(0);

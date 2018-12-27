@@ -1,11 +1,11 @@
 /**
  * junixsocket
  *
- * Copyright (c) 2009,2014 Christian Kohlschütter
+ * Copyright 2009-2018 Christian Kohlschütter
  *
- * The author licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -20,7 +20,6 @@ package org.newsclub.net.unix.rmi;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -42,8 +41,10 @@ import org.newsclub.net.unix.AFUNIXSocket;
  */
 public final class AFUNIXNaming {
   private static final String PORT_ASSIGNER_ID = PortAssigner.class.getName();
+  private static final String PROP_RMI_SOCKET_DIR = "org.newsclub.net.unix.rmi.socketdir";
 
-  private static final File DEFAULT_SOCKET_DIRECTORY = new File("/tmp");
+  private static final File DEFAULT_SOCKET_DIRECTORY = new File(System.getProperty(
+      PROP_RMI_SOCKET_DIR, "/tmp"));
 
   private static final Map<SocketDirAndPort, AFUNIXNaming> instances =
       new HashMap<SocketDirAndPort, AFUNIXNaming>();
@@ -58,8 +59,8 @@ public final class AFUNIXNaming {
       final String socketSuffix) throws IOException {
     this.registrySocketDir = socketDir;
     this.registryPort = port;
-    this.socketFactory =
-        new AFUNIXRMISocketFactory(this, socketDir, null, null, socketPrefix, socketSuffix);
+    this.socketFactory = new AFUNIXRMISocketFactory(this, socketDir, null, null, socketPrefix,
+        socketSuffix);
   }
 
   /**
@@ -67,6 +68,7 @@ public final class AFUNIXNaming {
    * <code>java.io.tmpdir</code>.
    * 
    * @return The default instance.
+   * @throws IOException if the operation fails.
    */
   public static AFUNIXNaming getInstance() throws IOException {
     return getInstance(DEFAULT_SOCKET_DIRECTORY, AFUNIXRMIPorts.DEFAULT_REGISTRY_PORT);
@@ -78,6 +80,7 @@ public final class AFUNIXNaming {
    * 
    * @param socketDir The directory to store sockets in.
    * @return The instance.
+   * @throws RemoteException if the operation fails.
    */
   public static AFUNIXNaming getInstance(final File socketDir) throws RemoteException {
     return getInstance(socketDir, AFUNIXRMIPorts.DEFAULT_REGISTRY_PORT);
@@ -93,7 +96,7 @@ public final class AFUNIXNaming {
    * @param socketDir The directory to store sockets in.
    * @param registryPort The registry port. Should be above {@code 100000}.
    * @return The instance.
-   * @throws RemoteException When there was a problem setting up the instance.
+   * @throws RemoteException if the operation fails.
    */
   public static AFUNIXNaming getInstance(File socketDir, final int registryPort)
       throws RemoteException {
@@ -102,7 +105,11 @@ public final class AFUNIXNaming {
     String socketSuffix = null;
     if (socketDir == null) {
       socketDir = DEFAULT_SOCKET_DIRECTORY;
-      socketDir.mkdirs();
+      if (!socketDir.mkdirs()) {
+        if (!socketDir.isDirectory()) {
+          throw new RemoteException("Cannot create directory for temporary file: " + socketDir);
+        }
+      }
 
       File tempFile;
       try {
@@ -110,7 +117,9 @@ public final class AFUNIXNaming {
       } catch (IOException e) {
         throw new RemoteException("Cannot create temporary file: " + e.getMessage(), e);
       }
-      tempFile.delete();
+      if (!tempFile.delete()) {
+        tempFile.deleteOnExit();
+      }
 
       socketPrefix = tempFile.getName();
     }
@@ -138,6 +147,7 @@ public final class AFUNIXNaming {
    * 
    * @param socketFile The socket file.
    * @return The instance.
+   * @throws IOException if the operation fails.
    */
   public static AFUNIXNaming getSingleFileInstance(final File socketFile) throws IOException {
     return getInstance(socketFile, AFUNIXRMIPorts.PLAIN_FILE_SOCKET);
@@ -210,8 +220,10 @@ public final class AFUNIXNaming {
   /**
    * Shuts this RMI Registry down. Before calling this method, you have to unexport all existing
    * bindings, otherwise the "RMI Reaper" thread will not be closed.
+   * 
+   * @throws IOException if the operation fails.
    */
-  public void shutdownRegistry() throws AccessException, RemoteException, IOException {
+  public void shutdownRegistry() throws IOException {
     try {
       getRegistry().unbind(PORT_ASSIGNER_ID);
       UnicastRemoteObject.unexportObject(portAssigner, true);
@@ -260,6 +272,12 @@ public final class AFUNIXNaming {
     }
   }
 
+  /**
+   * Creates a new RMI {@link Registry}.
+   * 
+   * @return The registry
+   * @throws RemoteException if the operation fails.
+   */
   public Registry createRegistry() throws RemoteException {
     if (registry != null) {
       throw new RemoteException("The Registry is already created: " + registry);

@@ -1,11 +1,11 @@
 /**
  * junixsocket
  *
- * Copyright (c) 2009,2014 Christian Kohlschütter
+ * Copyright 2009-2018 Christian Kohlschütter
  *
- * The author licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -19,6 +19,7 @@ package org.newsclub.net.unix.rmi;
 
 import java.io.IOException;
 import java.util.BitSet;
+import java.util.Random;
 
 /**
  * A very simple implementation of a {@link PortAssigner}.
@@ -32,11 +33,12 @@ class PortAssignerImpl implements PortAssigner {
   }
 
   private/* synchronized */int randomPort() {
+    final Random random = new Random();
     int maxRandom = ports.size();
 
     int port;
     for (int i = 0; i < 3; i++) {
-      port = ports.nextClearBit((int) (Math.random() * maxRandom));
+      port = ports.nextClearBit(random.nextInt(maxRandom));
       if (port < maxRandom) {
         return port;
       } else {

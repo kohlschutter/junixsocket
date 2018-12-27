@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/FML/1.0"
+  xsi:schemaLocation="http://maven.apache.org/FML/1.0 http://maven.apache.org/xsd/fml-1.0.xsd"
+  title="Frequently Asked Questions">
+  <part id="faq">
+  <!-- 
+    <faq id="some-question">
+      <question>Question 1</question>
+      <answer>
+        <p>
+          text
+        </p>
+        <p>
+          more text
+        </p>
+      </answer>
+    </faq>
+    <faq id="another-question">
+      <question>Question 2</question>
+      <answer>
+        <p>
+          text
+        </p>
+        <p>
+          more text
+        </p>
+      </answer>
+    </faq>
+    -->
+  </part>
+</faqs>

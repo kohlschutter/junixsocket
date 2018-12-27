@@ -2,10 +2,11 @@
 .settings
 .classpath
 target
+target-eclipse
 .DS_Store
 dependency-reduced-pom.xml
 *~
 *~~
 pom.xml.releaseBackup
 /release.properties
-/eclipse
+/coding-style
