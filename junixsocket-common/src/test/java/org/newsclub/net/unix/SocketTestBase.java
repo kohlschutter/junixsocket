@@ -32,22 +32,30 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 abstract class SocketTestBase {
   private final AFUNIXSocketAddress serverAddress;
+  private final File socketFile = initSocketFile();
 
   public SocketTestBase() throws IOException {
-    this.serverAddress = new AFUNIXSocketAddress(getSocketFile());
+    this.serverAddress = new AFUNIXSocketAddress(socketFile);
   }
-  
+
   protected AFUNIXSocketAddress getServerAddress() {
     return serverAddress;
   }
 
-  protected File getSocketFile() throws IOException {
+  private File initSocketFile() throws IOException {
     String explicitFile = System.getProperty("org.newsclub.net.unix.testsocket");
     if (explicitFile != null) {
       return new File(explicitFile);
     } else {
-      return new File(new File(System.getProperty("java.io.tmpdir")), "junixsocket-test.sock");
+      File f = File.createTempFile("jutest", ".sock");
+      f.deleteOnExit();
+      f.delete();
+      return f;
     }
+  }
+
+  protected File getSocketFile() {
+    return socketFile;
   }
 
   protected AFUNIXServerSocket startServer() throws IOException {
