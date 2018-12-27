@@ -84,7 +84,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     if (!(addr instanceof AFUNIXSocketAddress)) {
       throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
     }
-    
+
     final AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
     socketFile = socketAddress.getSocketFile();
     NativeUnixSocket.bind(socketFile, fd, backlog);

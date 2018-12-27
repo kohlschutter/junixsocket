@@ -1,4 +1,5 @@
 package com.kohlschutter.junixsocket.core;
+
 /**
  * Just a placeholder class to keep Maven happy.
  * 
