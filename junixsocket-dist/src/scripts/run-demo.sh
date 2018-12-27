@@ -91,10 +91,8 @@ EOT
   exit 1
 fi
 libDir="$(dirname $0)/lib"
-java -cp "$libDir"/"*" $@
 
 path="$libDir"$(for f in ${extraJars[@]} $(ls "$libDir"/*.jar); do echo -n ":$f"; done)
-echo $path
 if [ $useModulePath -eq 1 ]; then
   java --module-path="$path" -Djdk.module.main=org.newsclub.net.unix.demo $@
 else
