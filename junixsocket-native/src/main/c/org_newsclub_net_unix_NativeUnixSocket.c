@@ -542,7 +542,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close
 	int ret = close(handle);
 	if(ret == -1) {
 		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL);
+		return;
 	}
+
+	org_newsclub_net_unix_NativeUnixSocket_initFD(env, fd, -1);
 }
 
 /*
