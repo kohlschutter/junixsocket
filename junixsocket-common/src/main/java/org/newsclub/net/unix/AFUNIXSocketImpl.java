@@ -61,6 +61,12 @@ class AFUNIXSocketImpl extends SocketImpl {
   }
 
   @Override
+  protected void finalize() throws IOException {
+    // prevent file descriptor leakage
+    close();
+  }
+
+  @Override
   protected void accept(SocketImpl socket) throws IOException {
     FileDescriptor fdesc = validFdOrException();
 
