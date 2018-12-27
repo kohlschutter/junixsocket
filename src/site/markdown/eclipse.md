@@ -58,3 +58,15 @@ I don't know why this isn't on by default.
 
 Make sure Java 9 or later is installed and available in Eclipse. If you have the choice, simply skip
 Java 9 and 10, and go straight to 11.
+
+## Working with the native C JNI library
+
+Whenever you want to recompile the library, make sure to rebuild from the command line, using the
+following commands:
+
+    cd junixsocket 
+    mvn clean install -DskipTests=true
+    mvn install
+
+This is necessary unfortunately, as otherwise the unit tests may work on an outdated version of
+the native library, i.e., fail or succeed when they shouldn't.
