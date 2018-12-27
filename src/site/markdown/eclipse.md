@@ -66,7 +66,11 @@ following commands:
 
     cd junixsocket 
     mvn clean install -DskipTests=true
-    mvn install
+    
+The `-DskipTests=true` makes sure we can actually install the new code, even if it may not pass all
+unit tests.
 
-This is necessary unfortunately, as otherwise the unit tests may work on an outdated version of
-the native library, i.e., fail or succeed when they shouldn't.
+If you just want to see if the code compiles, use this instead:
+
+    cd junixsocket 
+    ( cd junixsocket-native ; mvn clean install -DskipTests=true )

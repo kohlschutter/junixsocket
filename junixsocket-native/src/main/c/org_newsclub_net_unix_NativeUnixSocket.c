@@ -163,9 +163,13 @@ void org_newsclub_net_unix_NativeUnixSocket_initFD(JNIEnv * env, jobject fd,
 	(*env)->SetIntField(env, fd, fdField, handle);
 }
 
+#if defined(junixsocket_use_poll)
+
 static uint64_t timespecToMillis(struct timespec* ts) {
 	return (uint64_t)ts->tv_sec * 1000 + (uint64_t)ts->tv_nsec / 1000000;
 }
+
+#endif
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket

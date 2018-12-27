@@ -51,8 +51,15 @@
               <type>jni</type>
             </library>
           </libraries>
-          <properties>
-          </properties>
+          <c>
+            <defines>
+              <!-- Add the following define to work-around an issue on custom 
+                platforms that do not respect socket timeout -->
+              <!--
+                <define>junixsocket_use_poll</define>
+              -->
+            </defines>
+          </c>
           <java>
             <include>true</include>
           </java>
@@ -80,7 +87,7 @@
             <id>fix-jnilib</id>
             <phase>prepare-package</phase>
             <configuration>
-              <!-- nar-maven-plugin may hardcode jnilib extension, but we 
+              <!-- nar-maven-plugin may hardcode jnilib extension, but we
                 need dylib -->
               <target>
                 <move todir="${project.build.directory}/nar"

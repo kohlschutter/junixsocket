@@ -17,7 +17,7 @@
  */
 package org.newsclub.net.unix;
 
-import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -42,7 +42,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
   @Test
   void testCatchTimeout() throws Exception {
     final int timeoutMillis = 100;
-    assertTimeout(Duration.ofMillis(2 * timeoutMillis), () -> {
+    assertTimeoutPreemptively(Duration.ofMillis(2 * timeoutMillis), () -> {
       try (AFUNIXServerSocket sock = startServer()) {
         long time = System.currentTimeMillis();
         sock.setSoTimeout(timeoutMillis);
@@ -64,7 +64,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
   @Test
   void testTimeoutAfterDelay() throws Exception {
     final int timeoutMillis = 250;
-    assertTimeout(Duration.ofMillis(2 * timeoutMillis), () -> {
+    assertTimeoutPreemptively(Duration.ofMillis(2 * timeoutMillis), () -> {
       try (final AFUNIXServerSocket sock = startServer()) {
         final int connectDelayMillis = 50;
         sock.setSoTimeout(timeoutMillis);
