@@ -34,7 +34,7 @@
         <ul class="breadcrumb">
         <li id="publishDate">Last Published: 2018-12-26<span class="divider">|</span>
 </li>
-          <li id="projectVersion">Version: 2.1.0</li>
+          <li id="projectVersion">Version: 2.1.1</li>
         </ul>
       </div>
       <div class="row-fluid">
@@ -187,7 +187,7 @@ junixsocket-native-prebuilt/bin/install-to-m2repo.sh junixsocket-native-prebuilt
 <div>
 <pre class="source">cd junixsocket
 mvn clean install -Pstrict -Prelease
-( cd junixsocket-dist ; mvn assembly:single )
+( cd junixsocket-dist ; mvn assembly:single -Prelease -Pstrict )
 </pre></div></div>
 
 <p>The files can be found in</p>
@@ -206,7 +206,7 @@ mvn clean install -Pstrict -Prelease
 <div>
 <pre class="source">cd junixsocket
 mvn clean install -Pstrict -Prelease
-mvn deploy -Psigned
+mvn deploy -Pstrict -Prelease -Psigned
 </pre></div></div>
 
 <div class="section">
@@ -232,9 +232,11 @@ mvn deploy -Psigned
 <pre class="source">The URL of the staging repository is `https://oss.sonatype.org/content/groups/staging`.
 The artifacts can be found [here](https://oss.sonatype.org/content/groups/staging/com/kohlschutter/junixsocket/).
 </pre></div></div>
-</div>
+
+<p><b>IMPORTANT</b> Double-check that the staged junixsocket-native-common artifact contains both macOS and Linux 64-bit libraries.</p></div>
 <div class="section">
 <h4><a name="a3._Release_artifact_to_Maven_Central"></a>3. Release artifact to Maven Central</h4>
+<p><b>IMPORTANT</b> Once released, it cannot be undone! Make sure you verify the staged artifact first!</p>
 
 <div>
 <div>
