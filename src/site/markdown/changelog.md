@@ -7,12 +7,16 @@
     - Jigsaw module support
     - New Native library loading mechanism
     - Validate that socket exists before trying to connect
+    - Replaced AFUNIXSocketException with SocketException
     - Throw InterruptedIOException upon interrupt during write
+    - Properly discard reference to file descriptor upon close
+    - Add system property to override the default directory for RMI sockets
+    - Properly handle timeout during ServerSocket#accept
     - Additional range checks for array offsets
-    - Code cleanup
     - Script to run the demos from the command-line
     - Documentation updates
     - Updated Maven dependencies
+    - Code cleanup and other bug fixes
 
 
   * _(2014-09-29)_ **junixsocket 2.0.1**
