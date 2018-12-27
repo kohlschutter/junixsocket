@@ -41,8 +41,10 @@ import org.newsclub.net.unix.AFUNIXSocket;
  */
 public final class AFUNIXNaming {
   private static final String PORT_ASSIGNER_ID = PortAssigner.class.getName();
+  private static final String PROP_RMI_SOCKET_DIR = "org.newsclub.net.unix.rmi.socketdir";
 
-  private static final File DEFAULT_SOCKET_DIRECTORY = new File("/tmp");
+  private static final File DEFAULT_SOCKET_DIRECTORY = new File(System.getProperty(
+      PROP_RMI_SOCKET_DIR, "/tmp"));
 
   private static final Map<SocketDirAndPort, AFUNIXNaming> instances =
       new HashMap<SocketDirAndPort, AFUNIXNaming>();
