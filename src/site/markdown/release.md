@@ -88,7 +88,7 @@ a script to run the demo classes from the command-line.
 
     cd junixsocket
     mvn clean install -Pstrict -Prelease
-    ( cd junixsocket-dist ; mvn assembly:single )
+    ( cd junixsocket-dist ; mvn assembly:single -Prelease -Pstrict )
 
 The files can be found in
 
