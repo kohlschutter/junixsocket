@@ -40,7 +40,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
   }
 
   @Test
-  void testCatchTimeout() throws Exception {
+  public void testCatchTimeout() throws Exception {
     final int timeoutMillis = 100;
     assertTimeoutPreemptively(Duration.ofMillis(2 * timeoutMillis), () -> {
       try (AFUNIXServerSocket sock = startServer()) {
@@ -62,7 +62,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
   }
 
   @Test
-  void testTimeoutAfterDelay() throws Exception {
+  public void testTimeoutAfterDelay() throws Exception {
     final int timeoutMillis = 250;
     assertTimeoutPreemptively(Duration.ofMillis(2 * timeoutMillis), () -> {
       try (final AFUNIXServerSocket sock = startServer()) {
