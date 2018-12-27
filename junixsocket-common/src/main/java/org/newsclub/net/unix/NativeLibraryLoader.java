@@ -129,16 +129,16 @@ final class NativeLibraryLoader implements Closeable {
         System.loadLibrary(libraryNameAndVersion);
         setLoaded(artifactName + "/" + libraryNameAndVersion);
         return;
-      } catch (Exception | UnsatisfiedLinkError e) {
+      } catch (LinkageError e) {
         if (libraryIn == null) {
           throw e;
         } else {
           // ignore
         }
       }
-
+      File libFile;
       try {
-        File libFile = createTempFile("libtmp", System.mapLibraryName(libraryNameAndVersion));
+        libFile = createTempFile("libtmp", System.mapLibraryName(libraryNameAndVersion));
         try (OutputStream out = new FileOutputStream(libFile)) {
           byte[] buf = new byte[4096];
           int read;
@@ -146,16 +146,18 @@ final class NativeLibraryLoader implements Closeable {
             out.write(buf, 0, read);
           }
         }
-        System.load(libFile.getAbsolutePath());
-        setLoaded(artifactName + "/" + libraryNameAndVersion);
-        if (!libFile.delete()) {
-          libFile.deleteOnExit();
-        }
-        close();
       } catch (IOException e) {
-        e.printStackTrace();
+        throw (UnsatisfiedLinkError) new UnsatisfiedLinkError("Couldn't load native library")
+            .initCause(e);
       }
+      System.load(libFile.getAbsolutePath());
+      setLoaded(artifactName + "/" + libraryNameAndVersion);
+      if (!libFile.delete()) {
+        libFile.deleteOnExit();
+      }
+      close();
     }
+
   }
 
   private static String architectureAndOS() {

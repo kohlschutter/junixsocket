@@ -35,8 +35,8 @@ public class AFUNIXSocket extends Socket {
     super(impl);
     try {
       NativeUnixSocket.setCreated(this);
-    } catch (UnsatisfiedLinkError e) {
-      e.printStackTrace();
+    } catch (LinkageError e) {
+      throw new IOException("Couldn't load native library", e);
     }
   }
 
