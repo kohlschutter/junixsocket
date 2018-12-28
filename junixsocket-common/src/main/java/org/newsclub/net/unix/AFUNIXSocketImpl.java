@@ -63,7 +63,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   // NOTE: This prevents a file descriptor leak
   // see conversation in https://github.com/kohlschutter/junixsocket/pull/29
   // FIXME: Use JavaIOFileDescriptorAccess#registerCleanup when available
-  // CHECKSTYLE:OFF
+  @SuppressWarnings("all")
   @Override
   protected final void finalize() {
     try {
@@ -73,7 +73,6 @@ class AFUNIXSocketImpl extends SocketImpl {
       // nothing that can be done here
     }
   }
-  // CHECKSTYLE:ON
 
   @Override
   protected void accept(SocketImpl socket) throws IOException {
