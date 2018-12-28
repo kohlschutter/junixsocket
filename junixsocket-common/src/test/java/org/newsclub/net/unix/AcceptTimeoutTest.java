@@ -90,7 +90,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
               e.printStackTrace();
             }
 
-          };
+          }
         }.start();
 
         long time = System.currentTimeMillis();

@@ -31,6 +31,7 @@ import com.mysql.jdbc.SocketFactory;
 /**
  * Connect to mysql databases (and compatibles) using UNIX domain sockets.
  */
+@SuppressWarnings("deprecation")
 public class AFUNIXDatabaseSocketFactory implements SocketFactory {
   private Socket socket = null;
 

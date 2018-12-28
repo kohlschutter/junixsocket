@@ -51,7 +51,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   private final AFUNIXInputStream in = new AFUNIXInputStream();
   private final AFUNIXOutputStream out = new AFUNIXOutputStream();
 
-  AFUNIXSocketImpl() {
+  protected AFUNIXSocketImpl() {
     super();
     this.fd = new FileDescriptor();
   }
@@ -60,11 +60,20 @@ class AFUNIXSocketImpl extends SocketImpl {
     return fd;
   }
 
+  // NOTE: This prevents a file descriptor leak
+  // see conversation in https://github.com/kohlschutter/junixsocket/pull/29
+  // FIXME: Use JavaIOFileDescriptorAccess#registerCleanup when available
+  // CHECKSTYLE:OFF
   @Override
-  protected void finalize() throws IOException {
-    // prevent file descriptor leakage
-    close();
+  protected final void finalize() {
+    try {
+      // prevent file descriptor leakage
+      close();
+    } catch (Throwable t) {
+      // nothing that can be done here
+    }
   }
+  // CHECKSTYLE:ON
 
   @Override
   protected void accept(SocketImpl socket) throws IOException {
@@ -112,7 +121,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   }
 
   @Override
-  protected synchronized void close() throws IOException {
+  protected final synchronized void close() throws IOException {
     FileDescriptor fdesc = validFd();
     if (fdesc != null) {
       NativeUnixSocket.shutdown(fdesc, SHUT_RD_WR);
@@ -435,7 +444,7 @@ class AFUNIXSocketImpl extends SocketImpl {
    * In particular, we ignore calls to {@link Socket#getTcpNoDelay()} and
    * {@link Socket#setTcpNoDelay(boolean)}.
    */
-  static class Lenient extends AFUNIXSocketImpl {
+  static final class Lenient extends AFUNIXSocketImpl {
     Lenient() {
       super();
     }
