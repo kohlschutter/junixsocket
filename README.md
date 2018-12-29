@@ -34,7 +34,7 @@ Commercial support is available through [Kohlschütter Search Intelligence](http
 ## Feature Comparison Matrix
 
 | Project  | License | Java Sockets API | Supports MySQL | Supports RMI | Comments |
-| ------------- | --------- | ------------- | ------------- | ------------- |
+| ------------- | --------- | ------------- | ------------- | ------------- | ------------- |
 | junixsocket | Apache 2.0 | ✅ Yes | ✅ Yes | ✅ Yes | This project |
 | [netty](https://github.com/netty/netty) | Apache 2.0 | ✅ Yes | ❌ No | ❌ No |  |
 | [JUDS](http://code.google.com/p/juds/)  | LGPL | ❌ No | ❌ No | ❌ No | |
