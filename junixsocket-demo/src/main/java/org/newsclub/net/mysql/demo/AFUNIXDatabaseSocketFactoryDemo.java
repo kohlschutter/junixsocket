@@ -17,13 +17,13 @@
  */
 package org.newsclub.net.mysql.demo;
 
+import static org.newsclub.net.mysql.demo.DemoHelper.addProperty;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Properties;
-
-import org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory;
 
 /**
  * Demonstrates how to connect to a local MySQL server.
@@ -31,7 +31,6 @@ import org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory;
  * @author Christian Kohlschuetter
  */
 public class AFUNIXDatabaseSocketFactoryDemo {
-  @SuppressWarnings("resource")
   public static void main(String[] args) throws Exception {
     // specify -DdriverClass=com.mysql.jdbc.Driver to use the old JDBC driver
     String driverClass = System.getProperty("mysqlDriver", "");
@@ -44,17 +43,32 @@ public class AFUNIXDatabaseSocketFactoryDemo {
     }
     System.out.println();
 
+    // Override these properties by specifying JVM properties on the command line.
     // try -DmysqlUser=test -DmysqlPassword=test -DmysqlSocket=/var/lib/mysql.sock
     Properties props = new Properties();
-    addProperty(props, "socketFactory", AFUNIXDatabaseSocketFactory.class.getName(), null);
-    addProperty(props, "junixsocket.file", "/tmp/mysql.sock", "mysqlSocket");
-    addProperty(props, "user", "root", "mysqlUser");
-    addProperty(props, "password", "", "mysqlPassword");
+    addProperty(props, "socketFactory", "org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory", //
+        "mysqlSocketFactory", "org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryCJ");
+    addProperty(props, "junixsocket.file", "/tmp/mysql.sock", //
+        "mysqlSocket", "/var/lib/mysql.sock");
+    addProperty(props, "user", "root", //
+        "mysqlUser", "test");
+    addProperty(props, "password", "", //
+        "mysqlPassword", "test");
+
+    // Disable SSL with -DsslMode=DISABLED
+    // This could make things faster, or break everything.
+    // It should be fine, however, since we're not leaving the machine.
+    addProperty(props, "sslMode", "PREFERRED", "mysqlSslMode", "DISABLED");
+    // NOTE: in older versions of MySQL Connector/J, you need to set "useSSL" instead of "sslMode"
+    // addProperty(props, "useSSL", "true", "mysqlUseSSL", "false");
 
     System.out.println();
 
-    // SHOW DATABASES
+    // with SSL enabled, closing the Connection will throw a stupid exception
+    // see https://bugs.mysql.com/bug.php?id=93590
+    @SuppressWarnings("resource")
     Connection conn = DriverManager.getConnection("jdbc:mysql://", props);
+
     System.out.println("Connection: " + conn);
 
     String sql = "SHOW DATABASES";
@@ -65,15 +79,5 @@ public class AFUNIXDatabaseSocketFactoryDemo {
         System.out.println("* " + rs.getString(1));
       }
     }
-  }
-
-  private static void addProperty(Properties props, String key, String value, String property) {
-    if (property == null) {
-      System.out.println(key + "=" + value);
-    } else {
-      value = System.getProperty(property, value);
-      System.out.println(key + "=" + value + "; override with -D" + property);
-    }
-    props.setProperty(key, value);
   }
 }

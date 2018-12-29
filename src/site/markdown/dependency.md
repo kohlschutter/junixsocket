@@ -1,4 +1,6 @@
-# Maven dependencies
+# Add junixsocket to your project
+
+## Maven dependencies
 
 Add the following dependency to your Maven project
 
@@ -26,7 +28,7 @@ If you're going to use the mySQL Connector for Unix sockets, add the following d
       <version>2.1.2</version>
     </dependency>
  
-# Gradle
+## Gradle
  
  Minimum requirement:
  
@@ -39,6 +41,49 @@ If you're going to use the mySQL Connector for Unix sockets, add the following d
  For MySQL support, add:
  
     compile 'com.kohlschutter.junixsocket:junixsocket-mysql:2.1.2'
+
+## jars only
+
+If you don't use Maven or Gradle, etc., simply download the binary distribution from the
+[junixsocket releases page](https://github.com/kohlschutter/junixsocket/releases).
+
+junixsocket-dist comes either as a `.tar.gz` or `.zip` archive. Get either one of them. The jars
+are in the `lib` directory.
+
+## JDBC
+
+### MySQL
+
+Make sure that the following jars are on your classpath:
+
+ * junixsocket-core-2.1.2.jar
+ * junixsocket-common-2.1.2.jar
+ * junixsocket-native-common-2.1.2.jar
+ * junixsocket-mysql-2.1.2.jar
+ * mysql-connector-java-8.0.13.jar (earlier versions should work, too)
+ * (optionally, if you have a custom architecture) junixsocket-native-custom-2.1.2.jar
+
+Use the following connection properties (along with `user`, `password`, and other properties you may have).
+
+| property name | value | remarks |
+| ------------- | ----- | ------- |
+| `socketFactory` | `org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory` | (1) |
+| `junixsocket.file` | `/tmp/mysql.sock` | (2) |
+| `sslMode` | `DISABLED` | (3)(4) |
+
+(1) This SocketFactory currently implements the "old" Connector/J SocketFactory interface.
+This may change in the future. For the time being, you can use a value of
+`org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryCJ`
+to forcibly use the new "CJ"-style SocketFactory.
+
+(2) This is the full path to the MySQL socket. The location on your system may be different. Try `/var/lib/mysql.sock`
+if you can't find it in /tmp.
+
+(3) This is optional, and forcibly disables the use of SSL. Since the connection is local, there's
+no point in encrypting the communication. Disabling SSL may improve performance.
+
+(4) `sslMode` is only available with mysql-connector-java 8.0.13 or newer. Try `useSSL` with a value of `false`
+to disable SSL with older versions of Connector/J.
  
 # Compatibility of future versions
  

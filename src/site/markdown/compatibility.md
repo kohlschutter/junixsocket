@@ -22,7 +22,7 @@ The minimum set of supported platforms and processor architectures currently is 
 The native-common binaries are built on recent release versions of either platform.  
 
 Support for [custom architectures](customarch.html) can be added by compiling a custom native binary
-on the target machine. 
+on the target machine.
 
 ## Future versions
 

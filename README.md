@@ -4,12 +4,13 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
 
 ## Why it's cool
 
+* junixsocket is a small, modular library. Install only what you need.
 * In contrast to other implementations, *junixsocket* extends the Java Sockets API (`java.net.Socket`, `java.net.SocketAddress`, etc.)
 * Supports *RMI over AF_UNIX*.
 * Can connect to local MySQL server via Unix domain sockets (provides a *AFUNIXDatabaseSocketFactory* for Connector/J).
 * Supports Java 8, 9, 10, 11.
 * Comes with pre-built native libraries for macOS and Linux; custom libraries can be built using Maven.
-* Supports Jigsaw modules.
+* Supports JPMS/Jigsaw modules.
 * Apache 2.0 licensed.
 
 ## Licensing
@@ -21,12 +22,16 @@ Commercial support is available through [Kohlschütter Search Intelligence](http
 ## Quick links
 
  * [Project website](https://kohlschutter.github.io/junixsocket/)
+
  * [Changelog](https://kohlschutter.github.io/junixsocket/changelog.html)
+
  * [Getting started](https://kohlschutter.github.io/junixsocket/quickstart.html)
+
  * [Demo code](https://kohlschutter.github.io/junixsocket/demo.html) ([Java source](https://kohlschutter.github.io/junixsocket/junixsocket-demo/xref/index.html))
     - Sockets (`org.newsclub.net.unix.demo`)
     - RMI over Unix Sockets (`org.newsclub.net.unix.demo.rmi` and `org.newsclub.net.unix.demo.rmi.services`)
     - MySQL over Unix Sockets  (`org.newsclub.net.mysql.demo`)
+
   * API Javadocs
     - [The core (common) API](https://kohlschutter.github.io/junixsocket/junixsocket-common/apidocs/org.newsclub.net.unix/org/newsclub/net/unix/package-summary.html)
     - [The RMI-over-Unix-Socket API](https://kohlschutter.github.io/junixsocket/junixsocket-rmi/apidocs/org.newsclub.net.unix.rmi/org/newsclub/net/unix/rmi/package-summary.html)
