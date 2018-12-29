@@ -23,7 +23,7 @@ Commercial support is available through [Kohlschütter Search Intelligence](http
  * [Project website](https://kohlschutter.github.io/junixsocket/)
  * [Changelog](https://kohlschutter.github.io/junixsocket/changelog.html)
  * [Getting started](https://kohlschutter.github.io/junixsocket/quickstart.html)
- * [Demo code:](https://kohlschutter.github.io/junixsocket/junixsocket-demo/xref/index.html)
+ * [Demo code](https://kohlschutter.github.io/junixsocket/demo.html) ([Java source](https://kohlschutter.github.io/junixsocket/junixsocket-demo/xref/index.html))
     - Sockets (`org.newsclub.net.unix.demo`)
     - RMI over Unix Sockets (`org.newsclub.net.unix.demo.rmi` and `org.newsclub.net.unix.demo.rmi.services`)
     - MySQL over Unix Sockets  (`org.newsclub.net.mysql.demo`)

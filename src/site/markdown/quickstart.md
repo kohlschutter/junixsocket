@@ -26,6 +26,8 @@ junixsocket provides [working demos](junixsocket-demo/xref/index.html) for:
   * RMI over Unix Sockets (packages `org.newsclub.net.unix.demo.rmi` and `org.newsclub.net.unix.demo.rmi.services`)
   * MySQL over Unix Sockets  (package `org.newsclub.net.mysql.demo`)
 
+You can even [run the demos from the command line](demo.html) without having to compile anything.
+
 ### Caveats
 
 ## Maximum path length

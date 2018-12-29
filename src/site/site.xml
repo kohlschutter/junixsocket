@@ -33,11 +33,13 @@
       <item name="Welcome" href="index.html" />
       <item name="New &amp; Noteworthy" href="changelog.html" />
       <item name="Quick Start" href="quickstart.html" />
+      <item name="Compatibility" href="compatibility.html" />
       <item name="Add junixsocket to your project" href="dependency.html" />
       <item name="FAQ" href="faq.html" />
     </menu>
 
     <menu name="Demo Code">
+      <item name="Command line demos" href="demo.html" />
       <item name="Source reference" href="junixsocket-demo/xref/index.html" />
     </menu>
 
