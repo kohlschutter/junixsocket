@@ -33,9 +33,10 @@ Commercial support is available through [Kohlschütter Search Intelligence](http
 
 ## Feature Comparison Matrix
 
-| Project  | License | Java Sockets API | Supports RMI | Comments |
+| Project  | License | Java Sockets API | Supports MySQL | Supports RMI | Comments |
 | ------------- | --------- | ------------- | ------------- | ------------- |
-| junixsocket | Apache 2.0 | ✅ Yes | ✅ Yes | This project |
-| [JUDS](http://code.google.com/p/juds/)  | LGPL | ❌ No | ❌ No | |
-| J-BUDS  | LGPL | ❌ No | ❌ No | orphaned |
-| [gnu.net.local](http://web.archive.org/web/20060702213439/http://www.nfrese.net/software/gnu_net_local/overview.html) | GPL with Classpath exception | ❌ No | ❌ No | orphaned |
+| junixsocket | Apache 2.0 | ✅ Yes | ✅ Yes | ✅ Yes | This project |
+| [netty](https://github.com/netty/netty) | Apache 2.0 | ✅ Yes | ❌ No | ❌ No |  |
+| [JUDS](http://code.google.com/p/juds/)  | LGPL | ❌ No | ❌ No | ❌ No | |
+| J-BUDS  | LGPL | ❌ No | ❌ No | ❌ No | orphaned |
+| [gnu.net.local](http://web.archive.org/web/20060702213439/http://www.nfrese.net/software/gnu_net_local/overview.html) | GPL with Classpath exception | ❌ No | ❌ No | ❌ No | orphaned |
