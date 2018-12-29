@@ -7,17 +7,13 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
 * junixsocket is a small, modular library. Install only what you need.
 * In contrast to other implementations, *junixsocket* extends the Java Sockets API (`java.net.Socket`, `java.net.SocketAddress`, etc.)
 * Supports *RMI over AF_UNIX*.
-* Can connect to local MySQL server via Unix domain sockets (provides a *AFUNIXDatabaseSocketFactory* for Connector/J).
+* Database support (connect to a local database server via Unix sockets and JDBC)
+    * MySQL (provides a custom *AFUNIXDatabaseSocketFactory* for Connector/J).
+    * PostgreSQL and others (provides a generic *AFUNIXSocketFactory* with a variety of configuration options).
 * Supports Java 8, 9, 10, 11.
 * Comes with pre-built native libraries for macOS and Linux; custom libraries can be built using Maven.
 * Supports JPMS/Jigsaw modules.
 * Apache 2.0 licensed.
-
-## Licensing
-
-junixsocket is released under the Apache 2.0 License.
-
-Commercial support is available through [Kohlschütter Search Intelligence](http://www.kohlschutter.com/).
 
 ## Quick links
 
@@ -45,3 +41,9 @@ Commercial support is available through [Kohlschütter Search Intelligence](http
 | [JUDS](http://code.google.com/p/juds/)  | LGPL | ❌ No | ❌ No | ❌ No | |
 | J-BUDS  | LGPL | ❌ No | ❌ No | ❌ No | orphaned |
 | [gnu.net.local](http://web.archive.org/web/20060702213439/http://www.nfrese.net/software/gnu_net_local/overview.html) | GPL with Classpath exception | ❌ No | ❌ No | ❌ No | orphaned |
+
+## Licensing
+
+junixsocket is released under the Apache 2.0 License.
+
+Commercial support is available through [Kohlschütter Search Intelligence](http://www.kohlschutter.com/).

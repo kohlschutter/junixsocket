@@ -19,7 +19,7 @@
   <description>Some example code to demo junixsocket's features</description>
 
   <dependencies>
-    <!-- <dependency> <groupId>com.kohlschutter.junixsocket</groupId> <artifactId>junixsocket-native-common</artifactId> 
+    <!-- <dependency> <groupId>com.kohlschutter.junixsocket</groupId> <artifactId>junixsocket-native-common</artifactId>
       <version>${project.version}</version> </dependency> -->
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
@@ -56,6 +56,11 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.5</version>
     </dependency>
   </dependencies>
 

@@ -18,6 +18,7 @@
 package org.newsclub.net.unix;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 
@@ -31,8 +32,18 @@ public class AFUNIXSocket extends Socket {
   protected AFUNIXSocketImpl impl;
   AFUNIXSocketAddress addr;
 
-  private AFUNIXSocket(final AFUNIXSocketImpl impl) throws IOException {
+  private final AFUNIXSocketFactory socketFactory;
+
+  private AFUNIXSocket(final AFUNIXSocketImpl impl, AFUNIXSocketFactory factory)
+      throws IOException {
     super(impl);
+    this.socketFactory = factory;
+    if (factory == null) {
+      setIsCreated();
+    }
+  }
+
+  private void setIsCreated() throws IOException {
     try {
       NativeUnixSocket.setCreated(this);
     } catch (LinkageError e) {
@@ -52,8 +63,12 @@ public class AFUNIXSocket extends Socket {
    * @throws IOException if the operation fails.
    */
   public static AFUNIXSocket newInstance() throws IOException {
+    return newInstance(null);
+  }
+
+  static AFUNIXSocket newInstance(AFUNIXSocketFactory factory) throws IOException {
     final AFUNIXSocketImpl impl = new AFUNIXSocketImpl.Lenient();
-    AFUNIXSocket instance = new AFUNIXSocket(impl);
+    AFUNIXSocket instance = new AFUNIXSocket(impl, factory);
     instance.impl = impl;
     return instance;
   }
@@ -69,7 +84,7 @@ public class AFUNIXSocket extends Socket {
    */
   public static AFUNIXSocket newStrictInstance() throws IOException {
     final AFUNIXSocketImpl impl = new AFUNIXSocketImpl();
-    AFUNIXSocket instance = new AFUNIXSocket(impl);
+    AFUNIXSocket instance = new AFUNIXSocket(impl, null);
     instance.impl = impl;
     return instance;
   }
@@ -105,8 +120,20 @@ public class AFUNIXSocket extends Socket {
   @Override
   public void connect(SocketAddress endpoint, int timeout) throws IOException {
     if (!(endpoint instanceof AFUNIXSocketAddress)) {
-      throw new IOException("Can only connect to endpoints of type " + AFUNIXSocketAddress.class
-          .getName());
+      if (socketFactory != null) {
+        if (endpoint instanceof InetSocketAddress) {
+          InetSocketAddress isa = (InetSocketAddress) endpoint;
+
+          String hostname = isa.getHostString();
+          if (socketFactory.isHostnameSupported(hostname)) {
+            endpoint = socketFactory.addressFromHost(hostname, isa.getPort());
+          }
+        }
+      }
+      if (!(endpoint instanceof AFUNIXSocketAddress)) {
+        throw new IllegalArgumentException("Can only connect to endpoints of type " + AFUNIXSocketAddress.class
+            .getName() + ", got: " + endpoint);
+      }
     }
     impl.connect(endpoint, timeout);
     this.addr = (AFUNIXSocketAddress) endpoint;

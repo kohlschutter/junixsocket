@@ -30,7 +30,6 @@ import java.net.InetSocketAddress;
  * @author Christian Kohlschütter
  */
 public class AFUNIXSocketAddress extends InetSocketAddress {
-
   private static final long serialVersionUID = 1L;
   private final String socketFile;
 

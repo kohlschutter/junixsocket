@@ -2,7 +2,7 @@
 
 junixsocket supports the [Java Socket API](https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html).
 
-`AFUNIXSocket` and `AFUNIXServerSocket` work just like their AF_INET (TCP/IP) Socket counterparts — they extend `java.net.Socket` and `java.net.ServerSocket` respectively.
+`AFUNIXSocket` and `AFUNIXServerSocket` work just like their AF_INET (TCP/IP) Socket counterparts — they extend `java.net.Socket` and `java.net.ServerSocket` respectively. Also check out `AFUNIXSocketFactory`.
 
 [See here](dependency.html) how to add junixsocket to your project.
 

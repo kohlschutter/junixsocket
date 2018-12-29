@@ -17,13 +17,16 @@
  */
 package org.newsclub.net.mysql.demo;
 
-import static org.newsclub.net.mysql.demo.DemoHelper.addProperty;
+import static org.newsclub.net.unix.demo.DemoHelper.addProperty;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Properties;
+
+import org.newsclub.net.unix.demo.DemoHelper;
 
 /**
  * Demonstrates how to connect to a local MySQL server.
@@ -32,16 +35,11 @@ import java.util.Properties;
  */
 public class AFUNIXDatabaseSocketFactoryDemo {
   public static void main(String[] args) throws Exception {
-    // specify -DdriverClass=com.mysql.jdbc.Driver to use the old JDBC driver
-    String driverClass = System.getProperty("mysqlDriver", "");
-    if (driverClass.isEmpty()) {
-      System.out.println(
-          "Using JDBC driver provided by SPI; override with -DmysqlDriver=com.mysql.jdbc.Driver");
-    } else {
-      System.out.println("Using JDBC driver provided by -DmysqlDriver=" + driverClass);
-      Class.forName(driverClass);
-    }
+    DemoHelper.initJDBCDriverClass("mysqlDriver", "", "com.mysql.jdbc.Driver");
     System.out.println();
+
+    final String connectionUrl = "jdbc:mysql://";
+    System.out.println("Connection URL=" + connectionUrl);
 
     // Override these properties by specifying JVM properties on the command line.
     // try -DmysqlUser=test -DmysqlPassword=test -DmysqlSocket=/var/lib/mysql.sock
@@ -67,9 +65,13 @@ public class AFUNIXDatabaseSocketFactoryDemo {
     // with SSL enabled, closing the Connection will throw a stupid exception
     // see https://bugs.mysql.com/bug.php?id=93590
     @SuppressWarnings("resource")
-    Connection conn = DriverManager.getConnection("jdbc:mysql://", props);
+    Connection conn = DriverManager.getConnection(connectionUrl, props);
 
     System.out.println("Connection: " + conn);
+
+    DatabaseMetaData metadata = conn.getMetaData();
+    System.out.println("Database version: " + metadata.getDatabaseProductName() + " " + metadata
+        .getDatabaseProductVersion());
 
     String sql = "SHOW DATABASES";
     System.out.println(sql);
