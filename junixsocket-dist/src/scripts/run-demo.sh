@@ -62,7 +62,7 @@ fi
 
 mysqlJar="$HOME/.m2/repository/mysql/mysql-connector-java/8.0.13/mysql-connector-java-8.0.13.jar"
 if [ ! -f "$mysqlJar" ]; then
-  mysqlJar="<path-to-mysql-conncetor-jar>"
+  mysqlJar="<path-to-mysql-connector-jar>"
 fi
 
 if [[ $# -eq 0 || $printHelp -eq 1 ]]; then
