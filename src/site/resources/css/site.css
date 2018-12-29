@@ -1,0 +1,9 @@
+a.externalLink[href^=https] {
+    background: url('../images/internet-web-browser.png') right center no-repeat;
+    padding-right: 18px
+}
+
+a.externalLink[href^="https://kohlschutter.github.io/junixsocket/"] {
+    background: none !important;
+    padding-right: 0px
+}
