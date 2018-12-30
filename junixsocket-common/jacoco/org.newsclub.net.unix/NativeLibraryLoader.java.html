@@ -129,16 +129,16 @@ final class NativeLibraryLoader implements Closeable {
 <span class="nc" id="L129">        System.loadLibrary(libraryNameAndVersion);</span>
 <span class="nc" id="L130">        setLoaded(artifactName + &quot;/&quot; + libraryNameAndVersion);</span>
 <span class="nc" id="L131">        return;</span>
-<span class="fc" id="L132">      } catch (Exception | UnsatisfiedLinkError e) {</span>
+<span class="fc" id="L132">      } catch (LinkageError e) {</span>
 <span class="pc bpc" id="L133" title="1 of 2 branches missed.">        if (libraryIn == null) {</span>
 <span class="nc" id="L134">          throw e;</span>
         } else {
           // ignore
         }
       }
-
+      File libFile;
       try {
-<span class="fc" id="L141">        File libFile = createTempFile(&quot;libtmp&quot;, System.mapLibraryName(libraryNameAndVersion));</span>
+<span class="fc" id="L141">        libFile = createTempFile(&quot;libtmp&quot;, System.mapLibraryName(libraryNameAndVersion));</span>
 <span class="fc" id="L142">        try (OutputStream out = new FileOutputStream(libFile)) {</span>
 <span class="fc" id="L143">          byte[] buf = new byte[4096];</span>
           int read;
@@ -146,52 +146,54 @@ final class NativeLibraryLoader implements Closeable {
 <span class="fc" id="L146">            out.write(buf, 0, read);</span>
           }
         }
-<span class="fc" id="L149">        System.load(libFile.getAbsolutePath());</span>
-<span class="fc" id="L150">        setLoaded(artifactName + &quot;/&quot; + libraryNameAndVersion);</span>
-<span class="pc bpc" id="L151" title="1 of 2 branches missed.">        if (!libFile.delete()) {</span>
-<span class="nc" id="L152">          libFile.deleteOnExit();</span>
-        }
-<span class="fc" id="L154">        close();</span>
-<span class="nc" id="L155">      } catch (IOException e) {</span>
-<span class="nc" id="L156">        e.printStackTrace();</span>
-<span class="fc" id="L157">      }</span>
-<span class="fc" id="L158">    }</span>
-<span class="fc" id="L159">  }</span>
+<span class="nc" id="L149">      } catch (IOException e) {</span>
+<span class="nc" id="L150">        throw (UnsatisfiedLinkError) new UnsatisfiedLinkError(&quot;Couldn't load native library&quot;)</span>
+<span class="nc" id="L151">            .initCause(e);</span>
+<span class="fc" id="L152">      }</span>
+<span class="fc" id="L153">      System.load(libFile.getAbsolutePath());</span>
+<span class="fc" id="L154">      setLoaded(artifactName + &quot;/&quot; + libraryNameAndVersion);</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">      if (!libFile.delete()) {</span>
+<span class="nc" id="L156">        libFile.deleteOnExit();</span>
+      }
+<span class="fc" id="L158">      close();</span>
+<span class="fc" id="L159">    }</span>
+
+<span class="fc" id="L161">  }</span>
 
   private static String architectureAndOS() {
-<span class="fc" id="L162">    return System.getProperty(&quot;os.arch&quot;) + &quot;-&quot; + System.getProperty(&quot;os.name&quot;).replaceAll(&quot; &quot;, &quot;&quot;);</span>
+<span class="fc" id="L164">    return System.getProperty(&quot;os.arch&quot;) + &quot;-&quot; + System.getProperty(&quot;os.name&quot;).replaceAll(&quot; &quot;, &quot;&quot;);</span>
   }
 
   private InputStream findLibrary() {
-<span class="fc" id="L166">    String mappedName = System.mapLibraryName(libraryNameAndVersion);</span>
+<span class="fc" id="L168">    String mappedName = System.mapLibraryName(libraryNameAndVersion);</span>
 
-<span class="pc bpc" id="L168" title="1 of 2 branches missed.">    for (String compiler : new String[] {</span>
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">    for (String compiler : new String[] {</span>
         &quot;gpp&quot;, &quot;g++&quot;, &quot;linker&quot;, &quot;gcc&quot;, &quot;cc&quot;, &quot;CC&quot;, &quot;icpc&quot;, &quot;icc&quot;, &quot;xlC&quot;, &quot;xlC_r&quot;, &quot;msvc&quot;, &quot;icl&quot;,
         &quot;ecpc&quot;, &quot;ecc&quot;}) {
-<span class="fc" id="L171">      String path = &quot;/lib/&quot; + architectureAndOS + &quot;-&quot; + compiler + &quot;/jni/&quot; + mappedName;</span>
+<span class="fc" id="L173">      String path = &quot;/lib/&quot; + architectureAndOS + &quot;-&quot; + compiler + &quot;/jni/&quot; + mappedName;</span>
 
-<span class="fc" id="L173">      InputStream in = providerClass.getResourceAsStream(path);</span>
-<span class="pc bpc" id="L174" title="1 of 2 branches missed.">      if (in != null) {</span>
-<span class="fc" id="L175">        return in;</span>
+<span class="fc" id="L175">      InputStream in = providerClass.getResourceAsStream(path);</span>
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">      if (in != null) {</span>
+<span class="fc" id="L177">        return in;</span>
       }
     }
-<span class="nc" id="L178">    return null;</span>
+<span class="nc" id="L180">    return null;</span>
   }
 
   @Override
   public synchronized void close() {
-<span class="fc bfc" id="L183" title="All 2 branches covered.">    if (libraryIn != null) {</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">    if (libraryIn != null) {</span>
       try {
-<span class="fc" id="L185">        libraryIn.close();</span>
-<span class="nc" id="L186">      } catch (IOException e) {</span>
+<span class="fc" id="L187">        libraryIn.close();</span>
+<span class="nc" id="L188">      } catch (IOException e) {</span>
         // ignore
-<span class="fc" id="L188">      }</span>
-<span class="fc" id="L189">      libraryIn = null;</span>
+<span class="fc" id="L190">      }</span>
+<span class="fc" id="L191">      libraryIn = null;</span>
     }
-<span class="fc" id="L191">  }</span>
+<span class="fc" id="L193">  }</span>
 
   private static File createTempFile(String prefix, String suffix) throws IOException {
-<span class="fc" id="L194">    return File.createTempFile(prefix, suffix, tempDir);</span>
+<span class="fc" id="L196">    return File.createTempFile(prefix, suffix, tempDir);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

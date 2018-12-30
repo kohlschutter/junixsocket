@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXSocketFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXSocketFactory.java</span></div><h1>AFUNIXSocketFactory.java</h1><pre class="source lang-java linenums">/**
+ * junixsocket
+ *
+ * Copyright 2009-2018 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.URLDecoder;
+import java.net.UnknownHostException;
+
+import javax.net.SocketFactory;
+
+/**
+ * The base for a SocketFactory that connects to UNIX sockets.
+ * 
+ * Typically, the &quot;hostname&quot; is used as a reference to a socketFile on the file system. The actual
+ * mapping is left to the implementor.
+ * 
+ * Three default implementations are provided.
+ * 
+ * @see AFUNIXSocketFactory.FactoryArg
+ * @see AFUNIXSocketFactory.SystemProperty
+ * @see AFUNIXSocketFactory.URIScheme
+ */
+<span class="nc" id="L41">public abstract class AFUNIXSocketFactory extends SocketFactory {</span>
+  /**
+   * Translates a &quot;host&quot; string (and port) to an {@link AFUNIXSocketAddress}.
+   * 
+   * @param host The hostname
+   * @param port The port, or 0.
+   * @return The {@link AFUNIXSocketAddress}
+   * @throws IOException If there was a problem converting the hostname
+   * @throws NullPointerException If host was {@code null}.
+   */
+  protected abstract AFUNIXSocketAddress addressFromHost(String host, int port) throws IOException;
+
+  /**
+   * Checks whether the given hostname is supported by this socket factory. If not, calls to
+   * createSocket will cause an UnknownHostException.
+   * 
+   * @param host The host to check.
+   * @return {@code true} if supported.
+   */
+  protected boolean isHostnameSupported(String host) {
+<span class="nc bnc" id="L61" title="All 2 branches missed.">    return host != null;</span>
+  }
+
+  /**
+   * Checks whether the given {@link InetAddress} is supported by this socket factory. If not, calls
+   * to createSocket will cause an UnknownHostException.
+   * 
+   * By default, this only checks the hostname part of the address via
+   * {@link #isHostnameSupported(String)}.
+   * 
+   * @param address The address to check.
+   * @return {@code true} if supported.
+   */
+  protected boolean isInetAddressSupported(InetAddress address) {
+<span class="nc bnc" id="L75" title="All 4 branches missed.">    return address != null &amp;&amp; isHostnameSupported(address.getHostName());</span>
+  }
+
+  @Override
+  public Socket createSocket() throws IOException {
+<span class="nc" id="L80">    return AFUNIXSocket.newInstance(this);</span>
+  }
+
+  @Override
+  public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (!isHostnameSupported(host)) {</span>
+<span class="nc" id="L86">      throw new UnknownHostException();</span>
+    }
+<span class="nc bnc" id="L88" title="All 2 branches missed.">    if (port &lt; 0) {</span>
+<span class="nc" id="L89">      throw new IllegalArgumentException(&quot;Illegal port&quot;);</span>
+    }
+
+<span class="nc" id="L92">    AFUNIXSocketAddress socketAddress = addressFromHost(host, port);</span>
+<span class="nc" id="L93">    String socketFile = socketAddress.getSocketFile();</span>
+<span class="nc bnc" id="L94" title="All 4 branches missed.">    if (socketFile == null || socketFile.isEmpty()) {</span>
+<span class="nc" id="L95">      throw new UnknownHostException(&quot;Illegal socketFile&quot;);</span>
+    }
+<span class="nc" id="L97">    File file = new File(socketFile);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">    if (!file.exists()) {</span>
+<span class="nc" id="L99">      throw new UnknownHostException(&quot;Socketfile does not exist&quot;);</span>
+    }
+<span class="nc" id="L101">    return AFUNIXSocket.connectTo(socketAddress);</span>
+  }
+
+  @Override
+  public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
+      throws IOException, UnknownHostException {
+<span class="nc bnc" id="L107" title="All 2 branches missed.">    if (!isHostnameSupported(host)) {</span>
+<span class="nc" id="L108">      throw new UnknownHostException();</span>
+    }
+<span class="nc bnc" id="L110" title="All 2 branches missed.">    if (localPort &lt; 0) {</span>
+<span class="nc" id="L111">      throw new IllegalArgumentException(&quot;Illegal local port&quot;);</span>
+    }
+    // NOTE: we simply ignore localHost and localPort
+<span class="nc" id="L114">    return createSocket(host, port);</span>
+  }
+
+  @Override
+  public Socket createSocket(InetAddress address, int port) throws IOException {
+<span class="nc bnc" id="L119" title="All 2 branches missed.">    if (!isInetAddressSupported(address)) {</span>
+<span class="nc" id="L120">      throw new UnknownHostException();</span>
+    }
+<span class="nc" id="L122">    String hostname = address.getHostName();</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">    if (!isHostnameSupported(hostname)) {</span>
+<span class="nc" id="L124">      throw new UnknownHostException();</span>
+    }
+<span class="nc" id="L126">    return createSocket(hostname, port);</span>
+  }
+
+  @Override
+  public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
+      throws IOException {
+<span class="nc bnc" id="L132" title="All 2 branches missed.">    if (!isInetAddressSupported(address)) {</span>
+<span class="nc" id="L133">      throw new UnknownHostException();</span>
+    }
+<span class="nc bnc" id="L135" title="All 2 branches missed.">    if (localAddress == null) {</span>
+<span class="nc" id="L136">      throw new NullPointerException();</span>
+    }
+<span class="nc bnc" id="L138" title="All 2 branches missed.">    if (localPort &lt; 0) {</span>
+<span class="nc" id="L139">      throw new IllegalArgumentException(&quot;Illegal local port&quot;);</span>
+    }
+    // NOTE: we simply ignore localAddress and localPort
+<span class="nc" id="L142">    return createSocket(address, port);</span>
+  }
+
+  /**
+   * A socket factory that handles a custom hostname (&quot;localhost&quot;, by default, and configured by the
+   * system property &amp;quot;org.newsclub.net.unix.socket.hostname&amp;quot;), forwarding all other
+   * requests to the fallback {@link SocketFactory}.
+   */
+  private abstract static class DefaultSocketHostnameSocketFactory extends AFUNIXSocketFactory {
+    private static final String PROP_SOCKET_HOSTNAME = &quot;org.newsclub.net.unix.socket.hostname&quot;;
+
+    @Override
+    protected final boolean isHostnameSupported(String host) {
+<span class="nc" id="L155">      return getDefaultSocketHostname().equals(host);</span>
+    }
+
+    private static String getDefaultSocketHostname() {
+<span class="nc" id="L159">      return System.getProperty(PROP_SOCKET_HOSTNAME, &quot;localhost&quot;);</span>
+    }
+  }
+
+  /**
+   * A socket factory that handles a custom hostname (&quot;junixsocket.localhost&quot;, by default, and
+   * configured by the system property &amp;quot;org.newsclub.net.unix.socket.hostname&amp;quot;),
+   * forwarding all other requests to the fallback {@link SocketFactory}.
+   * 
+   * The socket path is configured through an argument passed by to the constructor.
+   * 
+   * This is particularly useful for JDBC drivers that take a &quot;socketFactory&quot; and a
+   * &quot;socketFactoryArg&quot;. The latter will be passed as a constructor argument.
+   */
+  public static final class FactoryArg extends DefaultSocketHostnameSocketFactory {
+    private final File socketFile;
+
+<span class="nc" id="L176">    public FactoryArg(String socketPath) {</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">      if (socketPath == null) {</span>
+<span class="nc" id="L178">        throw new NullPointerException(&quot;Constructor argument was null&quot;);</span>
+      }
+<span class="nc" id="L180">      this.socketFile = new File(socketPath);</span>
+<span class="nc" id="L181">    }</span>
+
+<span class="nc" id="L183">    public FactoryArg(File file) {</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">      if (file == null) {</span>
+<span class="nc" id="L185">        throw new NullPointerException(&quot;Constructor argument was null&quot;);</span>
+      }
+<span class="nc" id="L187">      this.socketFile = file;</span>
+<span class="nc" id="L188">    }</span>
+
+    @Override
+    protected AFUNIXSocketAddress addressFromHost(String host, int port) throws IOException {
+<span class="nc" id="L192">      return new AFUNIXSocketAddress(socketFile, port);</span>
+    }
+  }
+
+  /**
+   * A socket factory that handles a custom hostname (&quot;junixsocket.localhost&quot;, by default, and
+   * configured by the system property &amp;quot;org.newsclub.net.unix.socket.hostname&amp;quot;),
+   * forwarding all other requests to the fallback {@link SocketFactory}.
+   * 
+   * The socket path is configured through a system property,
+   * &amp;quot;org.newsclub.net.unix.socket.default&amp;quot;.
+   * 
+   * NOTE: While it is technically possible, it is highly discouraged to programmatically change the
+   * value of the property as it can lead to concurrency issues and undefined behavior.
+   */
+<span class="nc" id="L207">  public static final class SystemProperty extends DefaultSocketHostnameSocketFactory {</span>
+    private static final String PROP_SOCKET_DEFAULT = &quot;org.newsclub.net.unix.socket.default&quot;;
+
+    @Override
+    protected AFUNIXSocketAddress addressFromHost(String host, int port) throws IOException {
+<span class="nc" id="L212">      String path = System.getProperty(PROP_SOCKET_DEFAULT);</span>
+<span class="nc bnc" id="L213" title="All 4 branches missed.">      if (path == null || path.isEmpty()) {</span>
+<span class="nc" id="L214">        throw new IllegalStateException(&quot;Property not configured: &quot; + PROP_SOCKET_DEFAULT);</span>
+      }
+<span class="nc" id="L216">      File socketFile = new File(path);</span>
+
+<span class="nc" id="L218">      return new AFUNIXSocketAddress(socketFile, port);</span>
+    }
+  }
+
+  /**
+   * A socket factory that handles special host names formatted as file:// URIs.
+   * 
+   * The file:// URI may also be specified in URL-encoded format, i.e., file:%3A%2F%2F etc.
+   * 
+   * You may also surround the URL with square brackets (&quot;[&quot; and &quot;]&quot;), whereas the closing bracket
+   * may be omitted.
+   * 
+   * NOTE: In some circumstances it is recommended to use &quot;&lt;code&gt;[file:%3A%2F%2F&lt;/code&gt;(...)&quot;, i.e.
+   * encoded and without the closing bracket. Since this is an invalid hostname, it will not trigger
+   * a DNS lookup, but can still be used within a JDBC Connection URL.
+   */
+<span class="nc" id="L234">  public static final class URIScheme extends AFUNIXSocketFactory {</span>
+    private static final String FILE_SCHEME_PREFIX = &quot;file://&quot;;
+    private static final String FILE_SCHEME_PREFIX_ENCODED = &quot;file%&quot;;
+    private static final String FILE_SCHEME_LOCALHOST = &quot;localhost&quot;;
+
+    private static String stripBrackets(String host) {
+<span class="nc bnc" id="L240" title="All 2 branches missed.">      if (host.startsWith(&quot;[&quot;)) {</span>
+<span class="nc bnc" id="L241" title="All 2 branches missed.">        if (host.endsWith(&quot;]&quot;)) {</span>
+<span class="nc" id="L242">          host = host.substring(1, host.length() - 1);</span>
+        } else {
+<span class="nc" id="L244">          host = host.substring(1);</span>
+        }
+      }
+<span class="nc" id="L247">      return host;</span>
+    }
+
+    @Override
+    protected boolean isHostnameSupported(String host) {
+<span class="nc" id="L252">      host = stripBrackets(host);</span>
+<span class="nc bnc" id="L253" title="All 4 branches missed.">      return host.startsWith(FILE_SCHEME_PREFIX) || host.startsWith(FILE_SCHEME_PREFIX_ENCODED);</span>
+    }
+
+    @Override
+    protected AFUNIXSocketAddress addressFromHost(String host, int port) throws IOException {
+<span class="nc" id="L258">      host = stripBrackets(host);</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">      if (host.startsWith(FILE_SCHEME_PREFIX_ENCODED)) {</span>
+        try {
+<span class="nc" id="L261">          host = URLDecoder.decode(host, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L262">        } catch (Exception e) {</span>
+<span class="nc" id="L263">          throw (UnknownHostException) new UnknownHostException().initCause(e);</span>
+<span class="nc" id="L264">        }</span>
+      }
+<span class="nc bnc" id="L266" title="All 2 branches missed.">      if (!host.startsWith(FILE_SCHEME_PREFIX)) {</span>
+<span class="nc" id="L267">        throw new UnknownHostException();</span>
+      }
+
+<span class="nc" id="L270">      String path = host.substring(FILE_SCHEME_PREFIX.length());</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">      if (path.isEmpty()) {</span>
+<span class="nc" id="L272">        throw new UnknownHostException();</span>
+      }
+<span class="nc bnc" id="L274" title="All 2 branches missed.">      if (path.startsWith(FILE_SCHEME_LOCALHOST)) {</span>
+<span class="nc" id="L275">        path = path.substring(FILE_SCHEME_LOCALHOST.length());</span>
+      }
+<span class="nc bnc" id="L277" title="All 2 branches missed.">      if (!path.startsWith(&quot;/&quot;)) {</span>
+<span class="nc" id="L278">        throw new UnknownHostException();</span>
+      }
+
+<span class="nc" id="L281">      File socketFile = new File(path);</span>
+<span class="nc" id="L282">      return new AFUNIXSocketAddress(socketFile, port);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

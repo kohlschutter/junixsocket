@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"m":"com.kohlschutter.junixsocket.core","l":"com.kohlschutter.junixsocket.core"}]

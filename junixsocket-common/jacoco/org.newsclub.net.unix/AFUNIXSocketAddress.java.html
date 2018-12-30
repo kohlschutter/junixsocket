@@ -30,7 +30,6 @@ import java.net.InetSocketAddress;
  * @author Christian Kohlschütter
  */
 public class AFUNIXSocketAddress extends InetSocketAddress {
-
   private static final long serialVersionUID = 1L;
   private final String socketFile;
 
@@ -42,8 +41,8 @@ public class AFUNIXSocketAddress extends InetSocketAddress {
    * @throws IOException if the operation fails.
    */
   public AFUNIXSocketAddress(final File socketFile) throws IOException {
-<span class="fc" id="L45">    this(socketFile, 0);</span>
-<span class="fc" id="L46">  }</span>
+<span class="fc" id="L44">    this(socketFile, 0);</span>
+<span class="fc" id="L45">  }</span>
 
   /**
    * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
@@ -54,12 +53,12 @@ public class AFUNIXSocketAddress extends InetSocketAddress {
    * @throws IOException if the operation fails.
    */
   public AFUNIXSocketAddress(final File socketFile, int port) throws IOException {
-<span class="fc" id="L57">    super(0);</span>
-<span class="fc bfc" id="L58" title="All 2 branches covered.">    if (port != 0) {</span>
-<span class="fc" id="L59">      NativeUnixSocket.setPort1(this, port);</span>
+<span class="fc" id="L56">    super(0);</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">    if (port != 0) {</span>
+<span class="fc" id="L58">      NativeUnixSocket.setPort1(this, port);</span>
     }
-<span class="fc" id="L61">    this.socketFile = socketFile.getCanonicalPath();</span>
-<span class="fc" id="L62">  }</span>
+<span class="fc" id="L60">    this.socketFile = socketFile.getCanonicalPath();</span>
+<span class="fc" id="L61">  }</span>
 
   /**
    * Returns the (canonical) file path for this {@link AFUNIXSocketAddress}.
@@ -67,12 +66,12 @@ public class AFUNIXSocketAddress extends InetSocketAddress {
    * @return The file path.
    */
   public String getSocketFile() {
-<span class="fc" id="L70">    return socketFile;</span>
+<span class="fc" id="L69">    return socketFile;</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L75">    return getClass().getName() + &quot;[host=&quot; + getHostName() + &quot;;port=&quot; + getPort() + &quot;;file=&quot;</span>
+<span class="nc" id="L74">    return getClass().getName() + &quot;[host=&quot; + getHostName() + &quot;;port=&quot; + getPort() + &quot;;file=&quot;</span>
         + socketFile + &quot;]&quot;;
   }
 }

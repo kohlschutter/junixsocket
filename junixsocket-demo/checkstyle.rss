@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2009 - 2018 Kohlschütter Search Intelligence</copyright>
     <item>
-      <title>File: 6,
+      <title>File: 8,
              Errors: 0,
              Warnings: 0,
              Infos: 0
@@ -44,6 +44,20 @@ under the License.
             </tr>
           </thead>
           <tbody>
+                          <tr>
+                <td>
+                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.jdbc.PostgresDemo.java">org/newsclub/net/unix/demo/jdbc/PostgresDemo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
                           <tr>
                 <td>
                   <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.rmi.HelloWorldImpl.java">org/newsclub/net/unix/demo/rmi/HelloWorldImpl.java</a>
@@ -103,6 +117,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.SimpleTestServer.java">org/newsclub/net/unix/demo/SimpleTestServer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.DemoHelper.java">org/newsclub/net/unix/demo/DemoHelper.java</a>
                 </td>
                 <td>
                   0
