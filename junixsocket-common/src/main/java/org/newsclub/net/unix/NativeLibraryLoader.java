@@ -53,10 +53,10 @@ final class NativeLibraryLoader implements Closeable {
 
   private void findLibraryArtifact() {
     try {
-      if (!tryProviderClass("org.newsclub.lib.junixsocket.common.NarMetadata",
-          "junixsocket-native-common") && //
-          !tryProviderClass("org.newsclub.lib.junixsocket.custom.NarMetadata",
-              "junixsocket-native-custom") //
+      if (!tryProviderClass("org.newsclub.lib.junixsocket.custom.NarMetadata",
+          "junixsocket-native-custom") && //
+          !tryProviderClass("org.newsclub.lib.junixsocket.common.NarMetadata",
+              "junixsocket-native-common") //
       ) {
 
         String cp = System.getProperty("java.class.path", "");
