@@ -64,6 +64,10 @@ mysqlJar="$HOME/.m2/repository/mysql/mysql-connector-java/8.0.13/mysql-connector
 if [ ! -f "$mysqlJar" ]; then
   mysqlJar="<path-to-mysql-connector-jar>"
 fi
+postgresqlJar="$HOME/.m2/repository/org/postgresql/postgresql/42.2.5/postgresql-42.2.5.jar"
+if [ ! -f "$postgresqlJar" ]; then
+  postgresqlJar="<path-to-postgresql-jar>"
+fi
 
 if [[ $# -eq 0 || $printHelp -eq 1 ]]; then
   cat >&2 <<EOT
@@ -82,6 +86,9 @@ $0 org.newsclub.net.unix.demo.rmi.SimpleRMIClient
 
 # Runs the MySQL demo
 $0 -j "$mysqlJar" -- -DmysqlSocket=/tmp/mysql.sock org.newsclub.net.mysql.demo.AFUNIXDatabaseSocketFactoryDemo
+
+# Runs the PostgreSQL demo
+$0 -j "$postgresqlJar" -- -DsocketPath=/tmp/.s.PGSQL.5432 org.newsclub.net.unix.demo.jdbc.PostgresDemo
 
 Other flags:
  -m Use the Java module-path instead of the classpath (Java 9 or higher)

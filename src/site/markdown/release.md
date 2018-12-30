@@ -28,9 +28,13 @@ Instructions for macOS
     
  * Generate GPG key
  
+ 
     gpg2 --generate-key 
-    # Follow on-screen instructions. Use a long, memorable passphrase.
-    # Remember the GPG key ID. Publish the corresponding GPG public key on the GPG keyservers:
+   
+   Follow on-screen instructions. Use a long, memorable passphrase.
+   
+   Remember the GPG key ID. Publish the corresponding GPG public key on the GPG keyservers:
+   
     gpg2 --send-keys THEKEYID
     
 ### Build environment for other platforms
