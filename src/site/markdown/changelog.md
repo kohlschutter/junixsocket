@@ -1,5 +1,12 @@
 ### Noteworthy changes
 
+  * _(2018-12-29)_ **junixsocket 2.1.2**
+    
+    - Add AFUNIXSocketFactory, support for PostgreSQL
+    - Add support for new MySQL Connector/J SocketFactory
+    - Prevent a case of file descriptor leakage
+    - Handle EINTR errors from system calls
+
   * _(2018-12-26)_ **junixsocket 2.1.1**
   
     - Support for Java 8, 9, 10 and 11
