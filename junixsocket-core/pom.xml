@@ -21,7 +21,7 @@
     <!-- Work-around the fact that this artifact doesn't have a public class -->
     <!-- maven-javadoc-plugin currently fails to handle this properly -->
     <!-- https://issues.apache.org/jira/browse/MJAVADOC-274 -->
-    <maven.javadoc.skip>true</maven.javadoc.skip>
+    <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
   </properties>
 
   <description>The core system dependency; the one you want to add to your project</description>
