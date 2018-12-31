@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix.demo;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +60,24 @@ public class SimpleTestClient {
         System.out.println("Replying to server...");
         os.write("Hello Server".getBytes("UTF-8"));
         os.flush();
+
+        System.out.println("Now reading numbers from the server...");
+        DataInputStream din = new DataInputStream(is);
+        DataOutputStream dout = new DataOutputStream(os);
+        while (!Thread.interrupted()) {
+          int number = din.readInt();
+          if (number == -123) {
+            // by convention of this demo, if the number is -123, we stop.
+            // If we don't do this, we'll get an EOFException upon the next unsuccessful read.
+            break;
+          }
+          System.out.println(number);
+
+          int ourNumber = number * 2;
+
+          System.out.println("Sending back " + ourNumber);
+          dout.writeInt(ourNumber);
+        }
       }
     }
 

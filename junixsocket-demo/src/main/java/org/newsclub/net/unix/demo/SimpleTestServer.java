@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix.demo;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +57,35 @@ public class SimpleTestServer {
             byte[] buf = new byte[128];
             int read = is.read(buf);
             System.out.println("Client's response: " + new String(buf, 0, read, "UTF-8"));
+
+            System.out.println("Now counting to 5...");
+            DataOutputStream dout = new DataOutputStream(os);
+            DataInputStream din = new DataInputStream(is);
+            int number = 0;
+            while (!Thread.interrupted()) {
+              number++;
+              System.out.println("write " + number);
+              dout.writeInt(number);
+              try {
+                Thread.sleep(1000);
+              } catch (InterruptedException e) {
+                e.printStackTrace();
+                break;
+              }
+              if (number > 5) {
+                System.out.println("write -123 (end of numbers)");
+                dout.writeInt(-123); // in this demo, -123 is our magic number to indicate the end
+                break;
+              }
+
+              // verify the number from the client
+              // in the demo, the client just sends 2 * our number
+              int theirNumber = din.readInt();
+              System.out.println("received " + theirNumber);
+              if (theirNumber != (number * 2)) {
+                throw new IllegalStateException("Received the wrong number: " + theirNumber);
+              }
+            }
           }
         }
       }
