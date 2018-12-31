@@ -317,7 +317,16 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 	int ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(optVal));
 	if(ret == -1) {
 		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+		return;
 	}
+#if defined(SO_NOSIGPIPE)
+	// prevent raising SIGPIPE
+	ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(optVal));
+	if(ret == -1) {
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+		return;
+	}
+#endif
 
 	struct sockaddr_un su;
 	su.sun_family = AF_UNIX;
@@ -384,6 +393,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 	int chmodRes = chmod(su.sun_path, 0666);
 	if(chmodRes == -1) {
 		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+		return;
 	}
 
 	int listenRes = listen(serverHandle, backlog);
@@ -589,6 +599,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shutdown
 			return;
 		}
 		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL);
+		return;
 	}
 }
 
@@ -694,6 +705,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 
 		if(ret == -1) {
 			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL);
+			return;
 		}
 		return;
 	} else if(optID == SO_LINGER) {
@@ -705,6 +717,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 		int ret = setsockopt(handle, SOL_SOCKET, optID, &optVal, sizeof(optVal));
 		if(ret == -1) {
 			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL);
+			return;
 		}
 		return;
 	}
@@ -714,6 +727,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 	int ret = setsockopt(handle, SOL_SOCKET, optID, &optVal, sizeof(optVal));
 	if(ret == -1) {
 		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL);
+		return;
 	}
 }
 
@@ -734,6 +748,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_unlink
 	if(ret == -1) {
 		// ignore
 		// org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL);
+		// return;
 	}
 }
 
