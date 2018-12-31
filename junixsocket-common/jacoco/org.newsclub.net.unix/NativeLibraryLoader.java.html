@@ -31,11 +31,11 @@ final class NativeLibraryLoader implements Closeable {
   private static final String PROP_LIBRARY_TMPDIR = &quot;org.newsclub.net.unix.library.tmpdir&quot;;
 
   private static final File tempDir;
-<span class="fc" id="L34">  private static final String architectureAndOS = architectureAndOS();</span>
+<span class="nc" id="L34">  private static final String architectureAndOS = architectureAndOS();</span>
 
-<span class="fc" id="L36">  private static boolean loaded = false;</span>
+<span class="nc" id="L36">  private static boolean loaded = false;</span>
 
-<span class="fc" id="L38">  private String libraryName = &quot;junixsocket-native&quot;;</span>
+<span class="nc" id="L38">  private String libraryName = &quot;junixsocket-native&quot;;</span>
   private String version;
   private String libraryNameAndVersion;
   private Class&lt;?&gt; providerClass;
@@ -44,19 +44,19 @@ final class NativeLibraryLoader implements Closeable {
   private InputStream libraryIn;
 
   static {
-<span class="fc" id="L47">    String dir = System.getProperty(PROP_LIBRARY_TMPDIR, null);</span>
-<span class="pc bpc" id="L48" title="1 of 2 branches missed.">    tempDir = (dir == null) ? null : new File(dir);</span>
-<span class="fc" id="L49">  }</span>
+<span class="nc" id="L47">    String dir = System.getProperty(PROP_LIBRARY_TMPDIR, null);</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">    tempDir = (dir == null) ? null : new File(dir);</span>
+<span class="nc" id="L49">  }</span>
 
-<span class="fc" id="L51">  public NativeLibraryLoader() {</span>
-<span class="fc" id="L52">  }</span>
+<span class="nc" id="L51">  public NativeLibraryLoader() {</span>
+<span class="nc" id="L52">  }</span>
 
   private void findLibraryArtifact() {
     try {
-<span class="pc bpc" id="L56" title="1 of 2 branches missed.">      if (!tryProviderClass(&quot;org.newsclub.lib.junixsocket.common.NarMetadata&quot;,</span>
-          &quot;junixsocket-native-common&quot;) &amp;&amp; //
-<span class="nc bnc" id="L58" title="All 2 branches missed.">          !tryProviderClass(&quot;org.newsclub.lib.junixsocket.custom.NarMetadata&quot;,</span>
-              &quot;junixsocket-native-custom&quot;) //
+<span class="nc bnc" id="L56" title="All 2 branches missed.">      if (!tryProviderClass(&quot;org.newsclub.lib.junixsocket.custom.NarMetadata&quot;,</span>
+          &quot;junixsocket-native-custom&quot;) &amp;&amp; //
+<span class="nc bnc" id="L58" title="All 2 branches missed.">          !tryProviderClass(&quot;org.newsclub.lib.junixsocket.common.NarMetadata&quot;,</span>
+              &quot;junixsocket-native-common&quot;) //
       ) {
 
 <span class="nc" id="L62">        String cp = System.getProperty(&quot;java.class.path&quot;, &quot;&quot;);</span>
@@ -76,61 +76,61 @@ final class NativeLibraryLoader implements Closeable {
       }
 <span class="nc" id="L77">    } catch (Exception e) {</span>
 <span class="nc" id="L78">      throw new RuntimeException(e);</span>
-<span class="fc" id="L79">    }</span>
-<span class="fc" id="L80">  }</span>
+<span class="nc" id="L79">    }</span>
+<span class="nc" id="L80">  }</span>
 
   private boolean tryProviderClass(String providerClassname, String artifactCandidate)
       throws IOException {
     try {
-<span class="fc" id="L85">      this.providerClass = Class.forName(providerClassname);</span>
+<span class="nc" id="L85">      this.providerClass = Class.forName(providerClassname);</span>
 <span class="nc" id="L86">    } catch (ClassNotFoundException e) {</span>
 <span class="nc" id="L87">      return false;</span>
-<span class="fc" id="L88">    }</span>
-<span class="fc" id="L89">    this.artifactName = artifactCandidate;</span>
-<span class="fc" id="L90">    Properties p = new Properties();</span>
-<span class="fc" id="L91">    try (InputStream in = providerClass.getResourceAsStream(</span>
+<span class="nc" id="L88">    }</span>
+<span class="nc" id="L89">    this.artifactName = artifactCandidate;</span>
+<span class="nc" id="L90">    Properties p = new Properties();</span>
+<span class="nc" id="L91">    try (InputStream in = providerClass.getResourceAsStream(</span>
         &quot;/META-INF/maven/com.kohlschutter.junixsocket/&quot; + artifactCandidate + &quot;/pom.properties&quot;)) {
-<span class="fc" id="L93">      p.load(in);</span>
-<span class="fc" id="L94">      this.version = p.getProperty(&quot;version&quot;);</span>
-<span class="pc bpc" id="L95" title="1 of 2 branches missed.">      if (version == null) {</span>
+<span class="nc" id="L93">      p.load(in);</span>
+<span class="nc" id="L94">      this.version = p.getProperty(&quot;version&quot;);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">      if (version == null) {</span>
 <span class="nc" id="L96">        throw new NullPointerException(&quot;Could not read version from pom.properties&quot;);</span>
       }
-<span class="fc" id="L98">      this.libraryNameAndVersion = libraryName + &quot;-&quot; + version;</span>
+<span class="nc" id="L98">      this.libraryNameAndVersion = libraryName + &quot;-&quot; + version;</span>
     }
 
-<span class="fc" id="L101">    this.libraryIn = findLibrary();</span>
-<span class="pc bpc" id="L102" title="1 of 2 branches missed.">    if (libraryIn != null) {</span>
-<span class="fc" id="L103">      return true;</span>
+<span class="nc" id="L101">    this.libraryIn = findLibrary();</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">    if (libraryIn != null) {</span>
+<span class="nc" id="L103">      return true;</span>
     } else {
 <span class="nc" id="L105">      return false;</span>
     }
   }
 
   private synchronized void setLoaded(String library) {
-<span class="fc" id="L110">    loaded = true;</span>
-<span class="fc" id="L111">    System.setProperty(PROP_LIBRARY_LOADED, library);</span>
-<span class="fc" id="L112">  }</span>
+<span class="nc" id="L110">    loaded = true;</span>
+<span class="nc" id="L111">    System.setProperty(PROP_LIBRARY_LOADED, library);</span>
+<span class="nc" id="L112">  }</span>
 
   public synchronized void loadLibrary() {
-<span class="fc" id="L115">    synchronized (Object.class) {</span>
-<span class="pc bpc" id="L116" title="2 of 4 branches missed.">      if (loaded || System.getProperty(PROP_LIBRARY_LOADED) != null) {</span>
+<span class="nc" id="L115">    synchronized (Object.class) {</span>
+<span class="nc bnc" id="L116" title="All 4 branches missed.">      if (loaded || System.getProperty(PROP_LIBRARY_LOADED) != null) {</span>
         // Already loaded
 <span class="nc" id="L118">        return;</span>
       }
-<span class="fc" id="L120">      String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, &quot;&quot;);</span>
-<span class="pc bpc" id="L121" title="1 of 2 branches missed.">      if (!libraryOverride.isEmpty()) {</span>
+<span class="nc" id="L120">      String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, &quot;&quot;);</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">      if (!libraryOverride.isEmpty()) {</span>
 <span class="nc" id="L122">        System.loadLibrary(libraryOverride);</span>
 <span class="nc" id="L123">        setLoaded(libraryOverride);</span>
 <span class="nc" id="L124">        return;</span>
       }
 
-<span class="fc" id="L127">      findLibraryArtifact();</span>
+<span class="nc" id="L127">      findLibraryArtifact();</span>
       try {
 <span class="nc" id="L129">        System.loadLibrary(libraryNameAndVersion);</span>
 <span class="nc" id="L130">        setLoaded(artifactName + &quot;/&quot; + libraryNameAndVersion);</span>
 <span class="nc" id="L131">        return;</span>
-<span class="fc" id="L132">      } catch (LinkageError e) {</span>
-<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        if (libraryIn == null) {</span>
+<span class="nc" id="L132">      } catch (LinkageError e) {</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (libraryIn == null) {</span>
 <span class="nc" id="L134">          throw e;</span>
         } else {
           // ignore
@@ -138,43 +138,43 @@ final class NativeLibraryLoader implements Closeable {
       }
       File libFile;
       try {
-<span class="fc" id="L141">        libFile = createTempFile(&quot;libtmp&quot;, System.mapLibraryName(libraryNameAndVersion));</span>
-<span class="fc" id="L142">        try (OutputStream out = new FileOutputStream(libFile)) {</span>
-<span class="fc" id="L143">          byte[] buf = new byte[4096];</span>
+<span class="nc" id="L141">        libFile = createTempFile(&quot;libtmp&quot;, System.mapLibraryName(libraryNameAndVersion));</span>
+<span class="nc" id="L142">        try (OutputStream out = new FileOutputStream(libFile)) {</span>
+<span class="nc" id="L143">          byte[] buf = new byte[4096];</span>
           int read;
-<span class="fc bfc" id="L145" title="All 2 branches covered.">          while ((read = libraryIn.read(buf)) &gt;= 0) {</span>
-<span class="fc" id="L146">            out.write(buf, 0, read);</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">          while ((read = libraryIn.read(buf)) &gt;= 0) {</span>
+<span class="nc" id="L146">            out.write(buf, 0, read);</span>
           }
         }
 <span class="nc" id="L149">      } catch (IOException e) {</span>
 <span class="nc" id="L150">        throw (UnsatisfiedLinkError) new UnsatisfiedLinkError(&quot;Couldn't load native library&quot;)</span>
 <span class="nc" id="L151">            .initCause(e);</span>
-<span class="fc" id="L152">      }</span>
-<span class="fc" id="L153">      System.load(libFile.getAbsolutePath());</span>
-<span class="fc" id="L154">      setLoaded(artifactName + &quot;/&quot; + libraryNameAndVersion);</span>
-<span class="pc bpc" id="L155" title="1 of 2 branches missed.">      if (!libFile.delete()) {</span>
+<span class="nc" id="L152">      }</span>
+<span class="nc" id="L153">      System.load(libFile.getAbsolutePath());</span>
+<span class="nc" id="L154">      setLoaded(artifactName + &quot;/&quot; + libraryNameAndVersion);</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">      if (!libFile.delete()) {</span>
 <span class="nc" id="L156">        libFile.deleteOnExit();</span>
       }
-<span class="fc" id="L158">      close();</span>
-<span class="fc" id="L159">    }</span>
+<span class="nc" id="L158">      close();</span>
+<span class="nc" id="L159">    }</span>
 
-<span class="fc" id="L161">  }</span>
+<span class="nc" id="L161">  }</span>
 
   private static String architectureAndOS() {
-<span class="fc" id="L164">    return System.getProperty(&quot;os.arch&quot;) + &quot;-&quot; + System.getProperty(&quot;os.name&quot;).replaceAll(&quot; &quot;, &quot;&quot;);</span>
+<span class="nc" id="L164">    return System.getProperty(&quot;os.arch&quot;) + &quot;-&quot; + System.getProperty(&quot;os.name&quot;).replaceAll(&quot; &quot;, &quot;&quot;);</span>
   }
 
   private InputStream findLibrary() {
-<span class="fc" id="L168">    String mappedName = System.mapLibraryName(libraryNameAndVersion);</span>
+<span class="nc" id="L168">    String mappedName = System.mapLibraryName(libraryNameAndVersion);</span>
 
-<span class="pc bpc" id="L170" title="1 of 2 branches missed.">    for (String compiler : new String[] {</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">    for (String compiler : new String[] {</span>
         &quot;gpp&quot;, &quot;g++&quot;, &quot;linker&quot;, &quot;gcc&quot;, &quot;cc&quot;, &quot;CC&quot;, &quot;icpc&quot;, &quot;icc&quot;, &quot;xlC&quot;, &quot;xlC_r&quot;, &quot;msvc&quot;, &quot;icl&quot;,
         &quot;ecpc&quot;, &quot;ecc&quot;}) {
-<span class="fc" id="L173">      String path = &quot;/lib/&quot; + architectureAndOS + &quot;-&quot; + compiler + &quot;/jni/&quot; + mappedName;</span>
+<span class="nc" id="L173">      String path = &quot;/lib/&quot; + architectureAndOS + &quot;-&quot; + compiler + &quot;/jni/&quot; + mappedName;</span>
 
-<span class="fc" id="L175">      InputStream in = providerClass.getResourceAsStream(path);</span>
-<span class="pc bpc" id="L176" title="1 of 2 branches missed.">      if (in != null) {</span>
-<span class="fc" id="L177">        return in;</span>
+<span class="nc" id="L175">      InputStream in = providerClass.getResourceAsStream(path);</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">      if (in != null) {</span>
+<span class="nc" id="L177">        return in;</span>
       }
     }
 <span class="nc" id="L180">    return null;</span>
@@ -182,18 +182,18 @@ final class NativeLibraryLoader implements Closeable {
 
   @Override
   public synchronized void close() {
-<span class="fc bfc" id="L185" title="All 2 branches covered.">    if (libraryIn != null) {</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">    if (libraryIn != null) {</span>
       try {
-<span class="fc" id="L187">        libraryIn.close();</span>
+<span class="nc" id="L187">        libraryIn.close();</span>
 <span class="nc" id="L188">      } catch (IOException e) {</span>
         // ignore
-<span class="fc" id="L190">      }</span>
-<span class="fc" id="L191">      libraryIn = null;</span>
+<span class="nc" id="L190">      }</span>
+<span class="nc" id="L191">      libraryIn = null;</span>
     }
-<span class="fc" id="L193">  }</span>
+<span class="nc" id="L193">  }</span>
 
   private static File createTempFile(String prefix, String suffix) throws IOException {
-<span class="fc" id="L196">    return File.createTempFile(prefix, suffix, tempDir);</span>
+<span class="nc" id="L196">    return File.createTempFile(prefix, suffix, tempDir);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
