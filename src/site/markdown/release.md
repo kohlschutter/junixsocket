@@ -168,6 +168,6 @@ Hit refresh to expedite.
 
 ### Prepare next version
 
-    mvn versions:set -DnewVersion=2.1.1-SNAPSHOT
-    # git add / commit here...
+    mvn versions:set -DnewVersion=X.Y.Z-SNAPSHOT
+    mvn clean install
     
