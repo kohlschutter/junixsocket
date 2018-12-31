@@ -131,8 +131,8 @@ public class AFUNIXSocket extends Socket {
         }
       }
       if (!(endpoint instanceof AFUNIXSocketAddress)) {
-        throw new IllegalArgumentException("Can only connect to endpoints of type " + AFUNIXSocketAddress.class
-            .getName() + ", got: " + endpoint);
+        throw new IllegalArgumentException("Can only connect to endpoints of type "
+            + AFUNIXSocketAddress.class.getName() + ", got: " + endpoint);
       }
     }
     impl.connect(endpoint, timeout);
