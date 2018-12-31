@@ -31,6 +31,8 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
   * API Javadocs
     - [The core (common) API](https://kohlschutter.github.io/junixsocket/junixsocket-common/apidocs/org.newsclub.net.unix/org/newsclub/net/unix/package-summary.html)
     - [The RMI-over-Unix-Socket API](https://kohlschutter.github.io/junixsocket/junixsocket-rmi/apidocs/org.newsclub.net.unix.rmi/org/newsclub/net/unix/rmi/package-summary.html)
+    
+  * [Unix Domain Socket Reference](https://kohlschutter.github.io/junixsocket/unixsocket.html)
 
 ## Feature Comparison Matrix
 

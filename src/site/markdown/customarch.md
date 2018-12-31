@@ -15,7 +15,8 @@ Here's how you build your custom artifacts.
 
 Make sure we can build junixsocket's JNI library.
 
-If this step fails, you're mostly on your own for now; closely inspect the error log and consider filing a bug report against junixsocket. 
+If this step fails, you're mostly on your own for now; closely inspect the error log and consider filing a bug report against junixsocket. Also check the [Unix socket reference](unixsockets.html), which may reveal some
+hints how to get it compile on your platform.
 
     cd junixsocket
     ( cd junixsocket-native ; mvn clean install )

@@ -45,6 +45,7 @@
 
     <menu name="For Developers">
       <item name="Developing junixsocket" href="development.html" />
+      <item name="Unix Sockets Reference" href="unixsockets.html" />
       <item name="Custom architectures" href="customarch.html" />
       <item name="Developing with Eclipse" href="eclipse.html" />
       <item name="Release Instructions" href="release.html" />
