@@ -215,12 +215,7 @@ class AFUNIXSocketImpl extends SocketImpl {
         throw new IndexOutOfBoundsException();
       }
 
-      try {
-        return NativeUnixSocket.read(fdesc, buf, off, len);
-      } catch (final IOException e) {
-        throw (IOException) new IOException(e.getMessage() + " at " + AFUNIXSocketImpl.this
-            .toString()).initCause(e);
-      }
+      return NativeUnixSocket.read(fdesc, buf, off, len);
     }
 
     @Override
@@ -276,26 +271,20 @@ class AFUNIXSocketImpl extends SocketImpl {
       }
       FileDescriptor fdesc = validFdOrException();
       int writtenTotal = 0;
-      try {
-        while (len > 0) {
-          if (Thread.interrupted()) {
-            InterruptedIOException ex = new InterruptedIOException(
-                "Thread interrupted during write");
-            ex.bytesTransferred = writtenTotal;
-            Thread.currentThread().interrupt();
-            throw ex;
-          }
-          final int written = NativeUnixSocket.write(fdesc, buf, off, len);
-          if (written < 0) {
-            throw new IOException("Unspecific error while writing");
-          }
-          len -= written;
-          off += written;
-          writtenTotal += written;
+      while (len > 0) {
+        if (Thread.interrupted()) {
+          InterruptedIOException ex = new InterruptedIOException("Thread interrupted during write");
+          ex.bytesTransferred = writtenTotal;
+          Thread.currentThread().interrupt();
+          throw ex;
         }
-      } catch (final IOException e) {
-        throw (IOException) new IOException(e.getMessage() + " at " + AFUNIXSocketImpl.this
-            .toString()).initCause(e);
+        final int written = NativeUnixSocket.write(fdesc, buf, off, len);
+        if (written < 0) {
+          throw new IOException("Unspecific error while writing");
+        }
+        len -= written;
+        off += written;
+        writtenTotal += written;
       }
     }
 
