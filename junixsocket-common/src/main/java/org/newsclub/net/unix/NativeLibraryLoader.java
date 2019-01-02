@@ -168,8 +168,8 @@ final class NativeLibraryLoader implements Closeable {
     String mappedName = System.mapLibraryName(libraryNameAndVersion);
 
     for (String compiler : new String[] {
-        "gpp", "g++", "linker", "gcc", "cc", "CC", "icpc", "icc", "xlC", "xlC_r", "msvc", "icl",
-        "ecpc", "ecc"}) {
+        "gpp", "g++", "linker", "clang", "gcc", "cc", "CC", "icpc", "icc", "xlC", "xlC_r", "msvc",
+        "icl", "ecpc", "ecc"}) {
       String path = "/lib/" + architectureAndOS + "-" + compiler + "/jni/" + mappedName;
 
       InputStream in = providerClass.getResourceAsStream(path);

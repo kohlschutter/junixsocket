@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>junixsocket-native-cross</artifactId>
+  <packaging>jar</packaging>
+  <parent>
+    <groupId>com.kohlschutter.junixsocket</groupId>
+    <artifactId>junixsocket-parent</artifactId>
+    <!-- Update this manually after maven-release -->
+    <version>2.1.3-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <name>junixsocket-native-cross</name>
+
+  <description>Builds multiple junixsocket native libraries using different profiles</description>
+
+  <properties>
+    <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+    <junixsocket.cross.repo>${project.build.directory}/crossrepo</junixsocket.cross.repo>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>crosscompile-x86_64-MacOSX-clang</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skipInvocation>${junixsocket.cross.disabled}</skipInvocation>
+              <noLog>true</noLog>
+              <streamLogs>true</streamLogs>
+              <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+              </goals>
+              <projectsDirectory>${project.basedir}/../</projectsDirectory>
+              <pomIncludes>
+                <pomInclude>junixsocket-native</pomInclude>
+              </pomIncludes>
+              <profiles>
+                <profile>llvm</profile>
+              </profiles>
+              <properties>
+                <junixsocket.native.aol.llvm>x86_64-MacOSX-clang</junixsocket.native.aol.llvm>
+                <junixsocket.install.skip>true</junixsocket.install.skip>
+                <junixsocket.build.directory>${project.build.directory}/junixsocket-native-x86_64-MacOSX-clang-llvm</junixsocket.build.directory>
+              </properties>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-install-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <id>install-x86_64-MacOSX-clang</id>
+            <phase>install</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <skip>false</skip>
+              <file>${project.build.directory}/junixsocket-native-x86_64-MacOSX-clang-llvm/junixsocket-native-${project.version}-x86_64-MacOSX-clang-jni.nar</file>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>junixsocket-native</artifactId>
+              <version>${project.version}</version>
+              <packaging>nar</packaging>
+              <classifier>x86_64-MacOSX-clang-llvm-jni</classifier>
+              <generatePom>false</generatePom>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

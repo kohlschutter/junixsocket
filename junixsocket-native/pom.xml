@@ -17,6 +17,29 @@
 
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+    <nar.aolProperties>${project.build.outputDirectory}/aol.properties</nar.aolProperties>
+    <!-- <nar.aolProperties>${project.basedir}/aol.properties</nar.aolProperties> -->
+
+    <!-- Path to a local llvm installation to support cross-compilation -->
+    <!-- IMPORTANT: nar-maven-plugin currently hardcodes a reference to "gcc",
+      so you need to add a symlink to "clang" in that directory -->
+    <junixsocket.native.llvm.toolPath>/usr/local/Cellar/llvm/7.0.0_1/bin</junixsocket.native.llvm.toolPath>
+
+    <!-- IMPORTANT: junixsocket.native properties that end up in aol.properties:
+      Use CDATA to prevent line breaks when formatting —
+      line breaks will break nar-maven-plugin, and may not trigger an error
+    -->
+    <junixsocket.native.default.options><![CDATA[-Werror -Wall -Wextra -pedantic -Wno-unused-parameter -fno-strict-overflow]]></junixsocket.native.default.options>
+    <junixsocket.native.default.c.options>${junixsocket.native.default.options}<![CDATA[ -std=c11]]></junixsocket.native.default.c.options>
+    <junixsocket.native.default.cpp.options>${junixsocket.native.default.options}<![CDATA[ -std=c++11]]></junixsocket.native.default.cpp.options>
+    <junixsocket.native.default.c.includes><![CDATA[**/*.c **/*.m]]></junixsocket.native.default.c.includes>
+    <junixsocket.native.default.cpp.includes><![CDATA[**/*.cc **/*.cpp **/*.cxx **/*.mm]]></junixsocket.native.default.cpp.includes>
+    <!-- NOTE: if some of these options above turn out to be non-portable,
+      move them to the clang-specific property below -->
+    <junixsocket.native.clang.c.options>${junixsocket.native.default.c.options}</junixsocket.native.clang.c.options>
+    <junixsocket.native.clang.cpp.options>${junixsocket.native.default.cpp.options}</junixsocket.native.clang.cpp.options>
+
+    <junixsocket.install.skip></junixsocket.install.skip>
   </properties>
   <profiles>
     <profile>
@@ -24,8 +47,6 @@
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
-      <properties>
-      </properties>
       <build>
         <plugins>
           <plugin>
@@ -37,29 +58,91 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>llvm</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.maven-nar</groupId>
+            <artifactId>nar-maven-plugin</artifactId>
+            <configuration>
+              <aol>${junixsocket.native.aol.llvm}</aol>
+              <c>
+                <toolPath>${junixsocket.native.llvm.toolPath}</toolPath>
+                <systemIncludePaths>
+                  <systemIncludePath>/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include</systemIncludePath>
+                </systemIncludePaths>
+                <defines>
+                  <!-- Add the following define to work-around an issue
+                    on
+                    custom
+                    platforms that do not respect socket timeout -->
+                  <!--
+                    <define>junixsocket_use_poll</define>
+                  -->
+                </defines>
+              </c>
+              <linker>
+                <name>clang</name>
+                <toolPath>${junixsocket.native.llvm.toolPath}</toolPath>
+                <prefix>/</prefix>
+              </linker>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>custom-build-directory</id>
+      <activation>
+        <property>
+          <name>junixsocket.build.directory</name>
+        </property>
+      </activation>
+      <build>
+        <directory>${junixsocket.build.directory}</directory>
+      </build>
+    </profile>
   </profiles>
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>prepare-aol</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>src/main/nar</directory>
+                  <includes>
+                    <include>aol.properties</include>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>com.github.maven-nar</groupId>
         <artifactId>nar-maven-plugin</artifactId>
-        <version>3.6.0</version>
         <extensions>true</extensions>
         <configuration>
+          <aol>${junixsocket.native.aol}</aol>
           <libraries>
             <library>
               <type>jni</type>
+              <linkCPP>false</linkCPP>
             </library>
           </libraries>
-          <c>
-            <defines>
-              <!-- Add the following define to work-around an issue on custom 
-                platforms that do not respect socket timeout -->
-              <!--
-                <define>junixsocket_use_poll</define>
-              -->
-            </defines>
-          </c>
           <java>
             <include>true</include>
           </java>
@@ -104,21 +187,11 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-invoker-plugin</artifactId>
-        <version>3.1.0</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
         <configuration>
+          <skip>${junixsocket.install.skip}</skip>
         </configuration>
-        <executions>
-          <execution>
-            <id>build-custom</id>
-            <goals>
-              <goal>install</goal>
-            </goals>
-            <configuration>
-
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

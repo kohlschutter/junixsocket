@@ -18,6 +18,7 @@
 
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+    <junixsocket.native.cross>false</junixsocket.native.cross>
   </properties>
 
   <build>
@@ -60,7 +61,7 @@
               </filters>
               <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
               <transformers>
-                <!-- maven-shade-plugin actively prevents inclusion of module-info, 
+                <!-- maven-shade-plugin actively prevents inclusion of module-info,
                   so let's force it back in -->
                 <transformer
                   implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
@@ -84,6 +85,11 @@
           <arch>x86_64</arch>
           <family>mac</family>
         </os>
+        <property>
+          <!-- NOTE: if the "cross" profile is enabled, we'll use another dependency, see below -->
+          <name>junixsocket.native.cross</name>
+          <value>false</value>
+        </property>
       </activation>
       <dependencies>
         <dependency>
@@ -118,8 +124,35 @@
       </dependencies>
     </profile>
     <profile>
+      <id>cross</id>
+      <properties>
+        <junixsocket.native.cross>true</junixsocket.native.cross>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native-cross</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native</artifactId>
+          <version>${project.version}</version>
+          <type>nar</type>
+          <classifier>x86_64-MacOSX-clang-llvm-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>release</id>
       <dependencies>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native-cross</artifactId>
+          <version>${project.version}</version>
+        </dependency>
         <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>
           <artifactId>junixsocket-native</artifactId>
@@ -151,7 +184,7 @@
         <pluginManagement>
           <plugins>
             <plugin>
-              <!--This plugin's configuration is used to store Eclipse m2e 
+              <!--This plugin's configuration is used to store Eclipse m2e
                 settings only. It has no influence on the Maven build itself. -->
               <groupId>org.eclipse.m2e</groupId>
               <artifactId>lifecycle-mapping</artifactId>

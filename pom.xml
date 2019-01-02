@@ -62,6 +62,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <slf4j.version>1.7.25</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
+    <junixsocket.native.aol></junixsocket.native.aol>
   </properties>
 
   <modules>
@@ -74,6 +75,15 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
   </modules>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.github.maven-nar</groupId>
+          <artifactId>nar-maven-plugin</artifactId>
+          <version>3.6.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -94,6 +104,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
       <id>release</id>
       <modules>
         <module>junixsocket-native</module>
+        <module>junixsocket-native-cross</module>
         <module>junixsocket-native-custom</module>
         <module>junixsocket-native-common</module>
       </modules>
@@ -112,12 +123,39 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
       </modules>
     </profile>
     <profile>
+      <id>cross</id>
+      <modules>
+        <module>junixsocket-native-cross</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>not-cross</id>
+      <properties>
+        <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
+      </properties>
+    </profile>
+    <profile>
       <id>release-native</id>
       <modules>
         <module>junixsocket-native</module>
+        <module>junixsocket-native-cross</module>
         <module>junixsocket-native-custom</module>
         <module>junixsocket-native-common</module>
       </modules>
+    </profile>
+    <profile>
+      <id>arch-x86_64-MacOSX</id>
+      <activation>
+        <os>
+          <arch>x86_64</arch>
+          <name>Mac OS X</name>
+        </os>
+      </activation>
+      <properties>
+        <!-- Specify "junixsocket.native.aol" to override the architecture
+          AOL for this environment; see nar-maven-plugin for details -->
+        <!-- <junixsocket.native.aol>x86_64-MacOSX-clang</junixsocket.native.aol> -->
+      </properties>
     </profile>
 
     <profile>
