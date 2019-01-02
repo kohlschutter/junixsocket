@@ -24,6 +24,7 @@
     <!-- IMPORTANT: nar-maven-plugin currently hardcodes a reference to "gcc",
       so you need to add a symlink to "clang" in that directory -->
     <junixsocket.native.llvm.toolPath>/usr/local/Cellar/llvm/7.0.0_1/bin</junixsocket.native.llvm.toolPath>
+    <junixsocket.native.llvm.systemIncludePath>/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include</junixsocket.native.llvm.systemIncludePath>
 
     <!-- IMPORTANT: junixsocket.native properties that end up in aol.properties:
       Use CDATA to prevent line breaks when formatting —
@@ -70,22 +71,20 @@
               <c>
                 <toolPath>${junixsocket.native.llvm.toolPath}</toolPath>
                 <systemIncludePaths>
-                  <systemIncludePath>/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include</systemIncludePath>
+                  <systemIncludePath>${junixsocket.native.llvm.systemIncludePath}</systemIncludePath>
                 </systemIncludePaths>
                 <defines>
                   <!-- Add the following define to work-around an issue
-                    on
-                    custom
-                    platforms that do not respect socket timeout -->
+                    on custom platforms that do not respect socket timeout -->
                   <!--
                     <define>junixsocket_use_poll</define>
                   -->
                 </defines>
               </c>
               <linker>
+                <prefix>${junixsocket.native.llvm.toolPath}/</prefix>
+                <toolPath></toolPath>
                 <name>clang</name>
-                <toolPath>${junixsocket.native.llvm.toolPath}</toolPath>
-                <prefix>/</prefix>
               </linker>
             </configuration>
           </plugin>
