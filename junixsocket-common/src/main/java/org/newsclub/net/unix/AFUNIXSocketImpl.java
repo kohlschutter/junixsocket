@@ -32,7 +32,7 @@ import java.net.SocketOptions;
 
 /**
  * The Java-part of the {@link AFUNIXSocket} implementation.
- * 
+ *
  * @author Christian Kohlschütter
  */
 class AFUNIXSocketImpl extends SocketImpl {
@@ -211,6 +211,8 @@ class AFUNIXSocketImpl extends SocketImpl {
       FileDescriptor fdesc = validFdOrException();
       if (len == 0) {
         return 0;
+      } else if (closed) {
+        return -1;
       } else if (off < 0 || len < 0 || (len > buf.length - off)) {
         throw new IndexOutOfBoundsException();
       }
@@ -427,7 +429,7 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   /**
    * Changes the behavior to be somewhat lenient with respect to the specification.
-   * 
+   *
    * In particular, we ignore calls to {@link Socket#getTcpNoDelay()} and
    * {@link Socket#setTcpNoDelay(boolean)}.
    */
