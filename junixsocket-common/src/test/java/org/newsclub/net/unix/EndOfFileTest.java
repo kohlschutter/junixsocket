@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * See http://code.google.com/p/junixsocket/issues/detail?id=9
- * 
+ *
  * @author Derrick Rice (April, 2010)
  */
 public class EndOfFileTest {
@@ -197,6 +197,64 @@ public class EndOfFileTest {
 
   @Test
   @SuppressWarnings("resource")
+  public void readFromClosedClientSocket() throws Exception {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
+
+      Socket[] sockets = connectToServer();
+      Socket serverSocket = sockets[0];
+      Socket clientSocket = sockets[1];
+
+      clientSocket.close();
+      // wait for close to propagate
+      Thread.sleep(100);
+
+      int read = clientSocket.getInputStream().read();
+
+      assertEquals(-1, read, "Client should see EOF indicated by -1 from read()");
+
+      read = clientSocket.getInputStream().read(new byte[3]);
+
+      assertEquals(-1, read, "Client should continue to see EOF indicated by -1 from read(...)");
+
+      try {
+        serverSocket.close();
+      } catch (IOException ignore) {
+        // ignore
+      }
+    });
+  }
+
+  @Test
+  @SuppressWarnings("resource")
+  public void readFromClosedServerSocket() throws Exception {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
+
+      Socket[] sockets = connectToServer();
+      Socket serverSocket = sockets[0];
+      Socket clientSocket = sockets[1];
+
+      serverSocket.close();
+      // wait for close to propagate
+      Thread.sleep(100);
+
+      int read = serverSocket.getInputStream().read();
+
+      assertEquals(-1, read, "Server should see EOF indicated by -1 from read()");
+
+      read = serverSocket.getInputStream().read(new byte[3]);
+
+      assertEquals(-1, read, "Server should continue to see EOF indicated by -1 from read(...)");
+
+      try {
+        clientSocket.close();
+      } catch (IOException ignore) {
+        // ignore
+      }
+    });
+  }
+
+  @Test
+  @SuppressWarnings("resource")
   public void serverWriteToSocketClosedByServer() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       Socket[] sockets = connectToServer();
@@ -241,11 +299,11 @@ public class EndOfFileTest {
       try {
         /*
          * http://www.unixguide.net/network/socketfaq/2.1.shtml http://www.faqs.org/rfcs/rfc793.html
-         * 
+         *
          * The TCP RFC allows the open side to continue sending data. In most (all?)
          * implementations, the closed side will respond with a RST. For this reason, it takes two
          * writes to cause an IOException with TCP sockets. (or more, if there is latency)
-         * 
+         *
          * However, it is expected that the write give an IOException as soon as possible - which
          * means it is OK for our socket implementation to give an IOException on the first write.
          */
