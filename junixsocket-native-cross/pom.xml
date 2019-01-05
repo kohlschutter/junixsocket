@@ -19,8 +19,18 @@
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
     <junixsocket.cross.repo>${project.build.directory}/crossrepo</junixsocket.cross.repo>
+    <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
   </properties>
 
+  <profiles>
+    <profile>
+      <id>cross</id>
+      <properties>
+        <junixsocket.cross.disabled>false</junixsocket.cross.disabled>
+        <junixsocket.cross>true</junixsocket.cross>
+      </properties>
+    </profile>
+  </profiles>
   <build>
     <plugins>
       <plugin>
@@ -51,6 +61,37 @@
                 <junixsocket.native.aol.llvm>x86_64-MacOSX-clang</junixsocket.native.aol.llvm>
                 <junixsocket.install.skip>true</junixsocket.install.skip>
                 <junixsocket.build.directory>${project.build.directory}/junixsocket-native-x86_64-MacOSX-clang-llvm</junixsocket.build.directory>
+                <junixsocket.native.llvm.target>x86_64-apple-darwin18.2.0</junixsocket.native.llvm.target>
+                <junixsocket.native.jnilib.extension>dylib</junixsocket.native.jnilib.extension>
+              </properties>
+            </configuration>
+          </execution>
+          <execution>
+            <id>crosscompile-amd64-Linux-clang</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skipInvocation>${junixsocket.cross.disabled}</skipInvocation>
+              <noLog>true</noLog>
+              <streamLogs>true</streamLogs>
+              <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+              </goals>
+              <projectsDirectory>${project.basedir}/../</projectsDirectory>
+              <pomIncludes>
+                <pomInclude>junixsocket-native</pomInclude>
+              </pomIncludes>
+              <profiles>
+                <profile>llvm</profile>
+              </profiles>
+              <properties>
+                <junixsocket.native.aol.llvm>amd64-Linux-clang</junixsocket.native.aol.llvm>
+                <junixsocket.install.skip>true</junixsocket.install.skip>
+                <junixsocket.build.directory>${project.build.directory}/junixsocket-native-amd64-Linux-clang-llvm</junixsocket.build.directory>
+                <junixsocket.native.llvm.target>x86_64-pc-linux-gnu</junixsocket.native.llvm.target>
+                <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
               </properties>
             </configuration>
           </execution>
@@ -59,9 +100,6 @@
 
       <plugin>
         <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
         <executions>
           <execution>
             <id>install-x86_64-MacOSX-clang</id>
@@ -70,13 +108,28 @@
               <goal>install-file</goal>
             </goals>
             <configuration>
-              <skip>false</skip>
               <file>${project.build.directory}/junixsocket-native-x86_64-MacOSX-clang-llvm/junixsocket-native-${project.version}-x86_64-MacOSX-clang-jni.nar</file>
               <groupId>${project.groupId}</groupId>
               <artifactId>junixsocket-native</artifactId>
               <version>${project.version}</version>
               <packaging>nar</packaging>
               <classifier>x86_64-MacOSX-clang-llvm-jni</classifier>
+              <generatePom>false</generatePom>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-amd64-Linux-clang</id>
+            <phase>install</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/junixsocket-native-amd64-Linux-clang-llvm/junixsocket-native-${project.version}-amd64-Linux-clang-jni.nar</file>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>junixsocket-native</artifactId>
+              <version>${project.version}</version>
+              <packaging>nar</packaging>
+              <classifier>amd64-Linux-clang-llvm-jni</classifier>
               <generatePom>false</generatePom>
             </configuration>
           </execution>

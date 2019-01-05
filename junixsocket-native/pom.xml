@@ -23,8 +23,7 @@
     <!-- Path to a local llvm installation to support cross-compilation -->
     <!-- IMPORTANT: nar-maven-plugin currently hardcodes a reference to "gcc",
       so you need to add a symlink to "clang" in that directory -->
-    <junixsocket.native.llvm.toolPath>/usr/local/Cellar/llvm/7.0.0_1/bin</junixsocket.native.llvm.toolPath>
-    <junixsocket.native.llvm.systemIncludePath>/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include</junixsocket.native.llvm.systemIncludePath>
+    <junixsocket.native.llvm.toolPath>${project.basedir}/crossclang/bin</junixsocket.native.llvm.toolPath>
 
     <!-- IMPORTANT: junixsocket.native properties that end up in aol.properties:
       Use CDATA to prevent line breaks when formatting —
@@ -60,6 +59,28 @@
       </build>
     </profile>
     <profile>
+      <id>cross</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.maven-nar</groupId>
+            <artifactId>nar-maven-plugin</artifactId>
+            <configuration>
+              <aol>${junixsocket.native.aol.llvm}</aol>
+              <c>
+                <toolPath>${junixsocket.native.llvm.toolPath}</toolPath>
+              </c>
+              <linker>
+                <prefix>${junixsocket.native.llvm.toolPath}/</prefix>
+                <toolPath></toolPath>
+                <name>clang</name>
+              </linker>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
       <id>llvm</id>
       <build>
         <plugins>
@@ -70,9 +91,6 @@
               <aol>${junixsocket.native.aol.llvm}</aol>
               <c>
                 <toolPath>${junixsocket.native.llvm.toolPath}</toolPath>
-                <systemIncludePaths>
-                  <systemIncludePath>${junixsocket.native.llvm.systemIncludePath}</systemIncludePath>
-                </systemIncludePaths>
                 <defines>
                   <!-- Add the following define to work-around an issue
                     on custom platforms that do not respect socket timeout -->
@@ -172,10 +190,15 @@
               <!-- nar-maven-plugin may hardcode jnilib extension, but we
                 need dylib -->
               <target>
-                <move todir="${project.build.directory}/nar"
-                  verbose="true">
+                <move todir="${project.build.directory}/nar">
                   <fileset dir="${project.build.directory}/nar" />
-                  <globmapper from="*.jnilib" to="*.dylib" />
+                  <globmapper from="*.so"
+                    to="*.${junixsocket.native.jnilib.extension}" />
+                </move>
+                <move todir="${project.build.directory}/nar">
+                  <fileset dir="${project.build.directory}/nar" />
+                  <globmapper from="*.jnilib"
+                    to="*.${junixsocket.native.jnilib.extension}" />
                 </move>
               </target>
             </configuration>

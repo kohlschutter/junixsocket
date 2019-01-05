@@ -18,7 +18,6 @@
 
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
-    <junixsocket.native.cross>false</junixsocket.native.cross>
   </properties>
 
   <build>
@@ -76,63 +75,25 @@
     </plugins>
   </build>
   <profiles>
-    <!-- Specify profiles to add particular nars -->
-    <!-- Example: mvn clean install -Px86_64-MacOSX-gpp-jni,amd64-Linux-gpp-jni -->
-    <profile>
-      <id>x86_64-MacOSX-gpp-jni</id>
-      <activation>
-        <os>
-          <arch>x86_64</arch>
-          <family>mac</family>
-        </os>
-        <property>
-          <!-- NOTE: if the "cross" profile is enabled, we'll use another dependency, see below -->
-          <name>junixsocket.native.cross</name>
-          <value>false</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.kohlschutter.junixsocket</groupId>
-          <artifactId>junixsocket-native</artifactId>
-          <version>${project.version}</version>
-          <type>nar</type>
-          <classifier>x86_64-MacOSX-gpp-jni</classifier>
-          <scope>runtime</scope>
-          <optional>true</optional>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>amd64-Linux-gpp-jni</id>
-      <activation>
-        <os>
-          <arch>amd64</arch>
-          <name>Linux</name>
-        </os>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.kohlschutter.junixsocket</groupId>
-          <artifactId>junixsocket-native</artifactId>
-          <version>${project.version}</version>
-          <type>nar</type>
-          <classifier>amd64-Linux-gpp-jni</classifier>
-          <scope>runtime</scope>
-          <optional>true</optional>
-        </dependency>
-      </dependencies>
-    </profile>
     <profile>
       <id>cross</id>
+      <activation>
+        <property>
+          <name>junixsocket.cross</name>
+          <value>true</value>
+        </property>
+      </activation>
       <properties>
-        <junixsocket.native.cross>true</junixsocket.native.cross>
+        <junixsocket.cross.disabled>false</junixsocket.cross.disabled>
+        <junixsocket.cross>true</junixsocket.cross>
       </properties>
       <dependencies>
         <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>
           <artifactId>junixsocket-native-cross</artifactId>
           <version>${project.version}</version>
+          <scope>provided</scope>
+          <optional>true</optional>
         </dependency>
         <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>
@@ -143,8 +104,66 @@
           <scope>runtime</scope>
           <optional>true</optional>
         </dependency>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native</artifactId>
+          <version>${project.version}</version>
+          <type>nar</type>
+          <classifier>amd64-Linux-clang-llvm-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
+        </dependency>
       </dependencies>
     </profile>
+    <!-- Specify profiles to add particular nars -->
+    <!-- Example: mvn clean install -Px86_64-MacOSX-clang-jni,amd64-Linux-clang-jni -->
+    <profile>
+      <id>x86_64-MacOSX-clang-jni</id>
+      <activation>
+        <os>
+          <arch>x86_64</arch>
+          <family>mac</family>
+        </os>
+        <property>
+          <name>!junixsocket.cross</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native</artifactId>
+          <version>${project.version}</version>
+          <type>nar</type>
+          <classifier>x86_64-MacOSX-clang-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>amd64-Linux-clang-jni</id>
+      <activation>
+        <os>
+          <arch>amd64</arch>
+          <name>Linux</name>
+        </os>
+        <property>
+          <name>!junixsocket.cross</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native</artifactId>
+          <version>${project.version}</version>
+          <type>nar</type>
+          <classifier>amd64-Linux-clang-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
+        </dependency>
+      </dependencies>
+    </profile>
+
     <profile>
       <id>release</id>
       <dependencies>
@@ -158,7 +177,7 @@
           <artifactId>junixsocket-native</artifactId>
           <version>${project.version}</version>
           <type>nar</type>
-          <classifier>x86_64-MacOSX-gpp-jni</classifier>
+          <classifier>x86_64-MacOSX-clang-jni</classifier>
           <scope>runtime</scope>
           <optional>true</optional>
         </dependency>
@@ -167,7 +186,7 @@
           <artifactId>junixsocket-native</artifactId>
           <version>${project.version}</version>
           <type>nar</type>
-          <classifier>amd64-Linux-gpp-jni</classifier>
+          <classifier>amd64-Linux-clang-jni</classifier>
           <scope>runtime</scope>
           <optional>true</optional>
         </dependency>

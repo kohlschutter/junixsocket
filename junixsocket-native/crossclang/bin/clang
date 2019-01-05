@@ -1,0 +1,233 @@
+#!/bin/bash
+#
+# crossclang
+# A helper script to simplify cross-compilation
+#
+# Copyright 2019 Christian Kohlschütter
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# if you don't specify a -target, or specify -target default, the default clang compiler will be used
+# if you specify -target current, we infer the name of the current target, and look up for our configuration
+# if you specify -target and some other value, we check the available targets in target-platforms
+#   and add custom options to clang to simplify cross-compilation
+# if you specify an invalid value to -target, the set of available targets is shown as an error message
+
+currentDir=$(cd "$(dirname $0)"; pwd)
+clangDir=$(cd "$(dirname $(which clang))"; pwd)
+findOtherClang=0
+if [ "$currentDir" == "$clangDir" ]; then
+    # looks like we're in the PATH
+    findOtherClang=1
+fi
+
+if [[ -z "$(which llvm-ar)" || $findOtherClang -gt 0 ]]; then
+  # let's add the latest LLVM to the path
+  latestLLVM=$(for f in /usr/local/Cellar/llvm/*/bin; do echo $f; done | sort -r -n | head -n 1)
+  if [[ -n "$latestLLVM" && -d "$latestLLVM" ]]; then
+      export PATH="$latestLLVM:$PATH"
+  fi
+fi
+
+clangDir=$(cd "$(dirname $(which clang))"; pwd)
+if [ "$currentDir" == "$clangDir" ]; then
+    echo "ARGH"
+    export PATH="/usr/bin:/usr/local/bin:$PATH"
+    clangDir=$(cd "$(dirname $(which clang))"; pwd)
+    if [ "$currentDir" == "$clangDir" ]; then
+        echo "crossclang detected in PATH. Can't find real clang, giving up" >&2
+        exit 1
+    fi
+fi
+
+clangArgs=()
+target=""
+sdkroot_base=""
+
+needLinker=1
+isShared=0
+nostdlib=0
+
+hasBundle=0
+hasShared=0
+targetIndex=
+defaultFallback=1
+
+# parse arguments
+previous=""
+
+hasArgs=$#
+
+while [ $# -gt 0 ]; do
+  v="$1"
+  shift
+
+  case "$previous" in
+    -target )     if [ "$v" == "default" ]; then
+                    target=""
+                else
+                    target="$v"
+                fi
+                targetIndex=${#clangArgs[@]}
+                ;;
+    -isdkroot ) sdkroot="$v" ;;
+  esac
+  
+  case "$v" in 
+    -E ) needLinker=0 ;;
+    -fsyntax-only ) needLinker=0 ;;
+    -c ) needLinker=0 ;;
+    -S ) needLinker=0 ;;
+    -bundle ) isShared=1; hasBundle=1 ;;
+    -shared ) isShared=1; hasShared=1 ;;
+    -nostdlib ) nostdlib=1 ;;
+  esac  
+
+  clangArgs+=("$v")
+  previous="$v"
+done
+
+if [ "$target" == "current" ]; then
+    defaultFallback=0
+    target=""
+fi
+
+if [[ -z "$target" ]]; then
+    if [ $defaultFallback -gt 0 ]; then
+        PATH=/usr/bin:$PATH
+    fi
+
+    target=$(clang --version | grep "^Target: " | head -n 1)
+    target=${target##* }
+    if [ -z "$target" ]; then
+        echo "Could not determine target" >&2
+        exit 1
+    fi
+
+    if [ $defaultFallback -gt 0 ]; then
+        if [ -n "$targetIndex" ]; then
+            clangArgs[$targetIndex]="$target"
+        fi
+        exec clang ${clangArgs[@]}
+    fi
+fi
+
+if [ -z "$sdkroot_base" ]; then
+    sdkroot_base="$(dirname $0)/../target-platforms/"
+fi
+
+if [[ "$target" == *"/"* ]]; then
+    sdkroot="$target"
+fi 
+
+if [ -z "$sdkroot" ]; then
+    if [[ -n "$sdkroot_base" && -n "$target" ]]; then
+        sdkroot="$sdkroot_base/$target"
+    fi
+fi
+
+sdkroot=$(cd "$sdkroot" 2>/dev/null && pwd)
+targetConf="$sdkroot/target.conf"
+if [[ $? -ne 0 || -z "$sdkroot" || ! -f "$targetConf" ]]; then
+    echo "Could not find SDK root for target: $target" >&2
+    echo "Available targets:$(for f in $(find "$sdkroot_base" -mindepth 1 -maxdepth 1); do if [ -f "$f/target.conf" ]; then echo -n $'\n'"- $(basename $f)"; fi done)" >&2
+    echo "- current (use current target)"
+    echo "- default (use default clang)"
+    exit 1
+fi
+
+clangLinkerArgs=()
+
+target_include_path=()
+target_library_path=()
+target_framework_path=()
+source "$targetConf"
+
+target=$(cd "$sdkroot"; basename "$(pwd)" )
+sdkroot=$(cd "$sdkroot"; pwd )
+
+triple="$target"
+if [ -n "$target_triple" ]; then
+    triple="$target_triple"
+    if [ -n "$targetIndex" ]; then
+        clangArgs[$targetIndex]="$target_triple"
+    else
+        clangArgs+=("-target" "$target_triple")
+    fi
+fi
+
+if [ $hasArgs -eq 0 ]; then
+    needLinker=0
+fi
+
+if [ $needLinker -gt 0 ]; then
+    ldPath=""
+    case "$target_linker" in
+      ld)
+        ldPath=$(which ld.lld)
+        if [ $nostdlib -gt 0 ]; then
+          clangLinkerArgs+=("-fPIC")
+        fi
+        clangLinkerArgs+=("-Wl,-sysroot=$sdkroot")
+
+        if [ $isShared -gt 0 ]; then
+          if [[ $hasBundle -gt 0 && $hasShared -eq 0 ]]; then
+            clangLinkerArgs+=("-Wl,-shared")
+          fi
+        fi
+        ;;
+      ld64)
+        ldPath=$(which ld64.lld)
+        if [ $isShared -gt 0 ]; then
+          clangLinkerArgs+=("-Wl,-sdk_version,10.7")
+        fi
+        #if [ $nostdlib -gt 0 ]; then
+        #  clangLinkerArgs+=("-Wl,-undefined,dynamic_lookup")
+        #fi
+        clangLinkerArgs+=("-Wl,-Z,-syslibroot,$sdkroot")
+        
+        for path in ${target_library_path[@]}; do
+            if [ -d "$sdkroot/$path" ]; then
+                clangLinkerArgs+=("-Wl,-L$path")
+            fi
+        done
+        for path in ${target_framework_path[@]}; do
+            if [ -d "$sdkroot/$path" ]; then
+                clangLinkerArgs+=("-Wl,-F$path")
+            fi
+        done
+        ;;
+      *)
+        echo "Warning: Unknown target linker: $target_linker" >&2
+        ;; 
+    esac
+    
+    if [[ -n "$ldPath" && -f "$ldPath" ]]; then
+      clangLinkerArgs+=("-fuse-ld=$ldPath")
+    fi
+fi
+
+isystem_decls=()
+for include in ${target_include_path[@]}; do
+    isystem_decls+=("-iwithsysroot" "$include")
+done
+
+for path in ${target_framework_path[@]}; do
+    isystem_decls+=("-iframeworkwithsysroot" "$path")
+done 
+
+# for c++ support add something like this:
+#  -cxx-isystem "$sdkroot/usr/include/c++/$gnuVer" -cxx-isystem "$sdkroot//usr/include/c++/$gnuVer/x86_64-pc-linux-gnu"
+
+exec clang -isysroot "$sdkroot" ${isystem_decls[@]} -imacros "$sdkroot/target.h" ${clangLinkerArgs[@]} ${clangArgs[@]}

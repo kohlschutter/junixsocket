@@ -63,6 +63,9 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <slf4j.version>1.7.25</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
     <junixsocket.native.aol></junixsocket.native.aol>
+    <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
+    <junixsocket.native.llvm.target></junixsocket.native.llvm.target>
+    <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
   </properties>
 
   <modules>
@@ -124,15 +127,13 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     </profile>
     <profile>
       <id>cross</id>
+      <properties>
+        <junixsocket.cross.disabled>false</junixsocket.cross.disabled>
+        <junixsocket.cross>true</junixsocket.cross>
+      </properties>
       <modules>
         <module>junixsocket-native-cross</module>
       </modules>
-    </profile>
-    <profile>
-      <id>not-cross</id>
-      <properties>
-        <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
-      </properties>
     </profile>
     <profile>
       <id>release-native</id>
@@ -154,7 +155,26 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
       <properties>
         <!-- Specify "junixsocket.native.aol" to override the architecture
           AOL for this environment; see nar-maven-plugin for details -->
-        <!-- <junixsocket.native.aol>x86_64-MacOSX-clang</junixsocket.native.aol> -->
+        <junixsocket.native.aol>x86_64-MacOSX-clang</junixsocket.native.aol>
+        <junixsocket.native.llvm.target>default</junixsocket.native.llvm.target>
+        <junixsocket.native.jnilib.extension>dylib</junixsocket.native.jnilib.extension>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>arch-amd64-Linux</id>
+      <activation>
+        <os>
+          <arch>amd64</arch>
+          <name>Linux</name>
+        </os>
+      </activation>
+      <properties>
+        <!-- Specify "junixsocket.native.aol" to override the architecture
+          AOL for this environment; see nar-maven-plugin for details -->
+        <junixsocket.native.aol>amd64-Linux-clang</junixsocket.native.aol>
+        <junixsocket.native.llvm.target>default</junixsocket.native.llvm.target>
+        <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
       </properties>
     </profile>
 
