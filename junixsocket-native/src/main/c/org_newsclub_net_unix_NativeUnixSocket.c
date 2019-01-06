@@ -120,6 +120,7 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
 {
 	ExceptionType exceptionType;
 	switch(errnum) {
+	case EAGAIN:
 	case ETIMEDOUT:
 		exceptionType = kExceptionSocketTimeoutException;
 		break;
@@ -130,6 +131,7 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
 	size_t buflen = 256;
 	char *message = calloc(1, buflen);
 	strerror_r(errnum, message, buflen);
+//	snprintf(message, buflen, "errno=%i", errnum);
 
 	org_newsclub_net_unix_NativeUnixSocket_throwException(env, exceptionType,
 			message, file);
@@ -279,7 +281,6 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 	}while (socketHandle == -1 && errno == EINTR);
 	if(socketHandle < 0) {
 		int errnum = errno;
-		if(errnum == EAGAIN) errnum = ETIMEDOUT;
 		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, file);
 		return;
 	}
