@@ -41,17 +41,22 @@ abstract class SocketTestBase {
   protected AFUNIXSocketAddress getServerAddress() {
     return serverAddress;
   }
-
-  private File initSocketFile() throws IOException {
+  
+  static File initSocketFile() {
+    File f;
     String explicitFile = System.getProperty("org.newsclub.net.unix.testsocket");
     if (explicitFile != null) {
-      return new File(explicitFile);
+      f = new File(explicitFile);
     } else {
-      File f = File.createTempFile("jutest", ".sock");
-      f.deleteOnExit();
-      f.delete();
-      return f;
+      try {
+        f = File.createTempFile("jutest", ".sock");
+      } catch (IOException e) {
+        throw new IllegalStateException("Can't create temporary file", e);
+      }
     }
+    f.deleteOnExit();
+    f.delete();
+    return f;
   }
 
   protected File getSocketFile() {

@@ -48,13 +48,7 @@ public class BufferOverflowTest {
 
   @BeforeEach
   public void setup() throws IOException {
-    String explicitFile = System.getProperty("org.newsclub.net.unix.testsocket");
-    if (explicitFile != null) {
-      socketFile = new File(explicitFile);
-    } else {
-      socketFile = new File(new File(System.getProperty("java.io.tmpdir")),
-          "junixsocket-test.sock");
-    }
+    this.socketFile = SocketTestBase.initSocketFile();
 
     server = AFUNIXServerSocket.newInstance();
     server.bind(new AFUNIXSocketAddress(socketFile));

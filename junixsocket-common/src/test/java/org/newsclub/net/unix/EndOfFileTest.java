@@ -46,21 +46,10 @@ import org.junit.jupiter.api.Test;
  * @author Derrick Rice (April, 2010)
  */
 public class EndOfFileTest {
-  static File socketFile;
+  static File socketFile = SocketTestBase.initSocketFile();
 
   ServerSocket server;
   ExecutorService executor;
-
-  @BeforeAll
-  public static void setupClass() {
-    String explicitFile = System.getProperty("org.newsclub.net.unix.testsocket");
-    if (explicitFile != null) {
-      socketFile = new File(explicitFile);
-    } else {
-      socketFile = new File(new File(System.getProperty("java.io.tmpdir")),
-          "junixsocket-test.sock");
-    }
-  }
 
   @BeforeEach
   public void setup() throws IOException {
