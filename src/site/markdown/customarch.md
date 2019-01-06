@@ -7,9 +7,12 @@ Here's how you build your custom artifacts.
 
 ## Prerequisites
  
- 1. Make sure you have a machine running your target platform.
+ 1. Make sure you have a machine running your target platform. 
  2. Install the Java JDK 9 or newer (preferably Java 11), Maven 3 or newer (tested: 3.6.0) and junixsocket.
  3. Install a development environment so you can compile C code (e.g., gcc, clang, etc.)
+ 
+> **NOTE** You may also be able to cross-compile code for your target platform, on your development
+machine. See [Cross-compiling junixsocket](crosscomp.html) for details. 
  
 ## Step 1: Build the native library for the current architecture
 
@@ -94,9 +97,10 @@ the native library yourself.
 Simply set the system property `org.newsclub.net.unix.library.override` to the location of the native
 library. For example:
 
-    java -Dorg.newsclub.net.unix.library.override=/opt/lib/ibjunixsocket-native-2.1.0.so (...)
+    java -Dorg.newsclub.net.unix.library.override=junixsocket-native-2.1.0 (...)
 
-**Important:** Make sure you use a compatible version of the native library.
+**Important:** Make sure you put a compatible version of the native library in the Java library
+path.
 
 junixsocket 2.1.x is compatible with all 2.1.x native library binaries,
 but not with 2.0.x native libraries.

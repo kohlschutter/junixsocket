@@ -18,10 +18,11 @@
 # limitations under the License.
 #
 
-# if you don't specify a -target, or specify -target default, the default clang compiler will be used
-# if you specify -target current, we infer the name of the current target, and look up for our configuration
-# if you specify -target and some other value, we check the available targets in target-platforms
-#   and add custom options to clang to simplify cross-compilation
+# if you don't specify a -target, or specify -target current, we infer the name of the current target,
+#     and look up for our configuration
+# if you specify -target default, the default clang compiler will be used 
+# if you specify -target and some other value, we check the available targets in target-sdks
+#     and add custom options to clang to simplify cross-compilation
 # if you specify an invalid value to -target, the set of available targets is shown as an error message
 
 currentDir=$(cd "$(dirname $0)"; pwd)
@@ -62,45 +63,62 @@ nostdlib=0
 hasBundle=0
 hasShared=0
 targetIndex=
-defaultFallback=1
+defaultFallback=0
+looksLikeCPP=0
 
 # parse arguments
 previous=""
 
 hasArgs=$#
+hasFiles=0
 
 while [ $# -gt 0 ]; do
   v="$1"
   shift
 
   case "$previous" in
-    -target )     if [ "$v" == "default" ]; then
-                    target=""
-                else
-                    target="$v"
-                fi
-                targetIndex=${#clangArgs[@]}
-                ;;
-    -isdkroot ) sdkroot="$v" ;;
+      -target )   target="$v"
+                  targetIndex=${#clangArgs[@]}
+                  ;;
+      -isdkroot ) sdkroot="$v" ;;
   esac
   
   case "$v" in 
-    -E ) needLinker=0 ;;
-    -fsyntax-only ) needLinker=0 ;;
-    -c ) needLinker=0 ;;
-    -S ) needLinker=0 ;;
-    -bundle ) isShared=1; hasBundle=1 ;;
-    -shared ) isShared=1; hasShared=1 ;;
-    -nostdlib ) nostdlib=1 ;;
-  esac  
+      -E ) needLinker=0 ;;
+      -fsyntax-only ) needLinker=0 ;;
+      -c ) needLinker=0 ;;
+      -S ) needLinker=0 ;;
+      -bundle ) isShared=1; hasBundle=1 ;;
+      -shared ) isShared=1; hasShared=1 ;;
+      -nostdlib ) nostdlib=1 ;;
+      *.cc ) looksLikeCPP=1 ;;
+      *.cpp ) looksLikeCPP=1 ;;
+      *.cxx ) looksLikeCPP=1 ;;
+      *.c++ ) looksLikeCPP=1 ;;
+      *.hh ) looksLikeCPP=1 ;;
+      *.hpp ) looksLikeCPP=1 ;;
+      *.mm ) looksLikeCPP=1 ;;
+      c++ ) if [ "$previous" == "-x" ]; then looksLikeCPP=1; fi ;;
+      - ) hasFiles=1 ;;
+  esac
+  
+  if [[ $hasFiles -eq 0 && -n "$v" && "${v:0:1}" != "-" && -e "$v" ]]; then
+      hasFiles=1
+  fi
 
   clangArgs+=("$v")
   previous="$v"
 done
 
-if [ "$target" == "current" ]; then
-    defaultFallback=0
+if [ $hasFiles -eq 0 ]; then
+    needLinker=0
+fi
+
+if [ "$target" == "default" ]; then
+    defaultFallback=1
     target=""
+elif [ "$target" == "current" ]; then
+    target=
 fi
 
 if [[ -z "$target" ]]; then
@@ -123,12 +141,25 @@ if [[ -z "$target" ]]; then
     fi
 fi
 
-if [ -z "$sdkroot_base" ]; then
-    sdkroot_base="$(dirname $0)/../target-platforms/"
+sdkroot_bases=()
+if [ -n "$sdkroot_base" ]; then
+    sdkroot_bases+=("$sdkroot_base")
 fi
+sdkroot_bases+=(
+    "$(dirname $0)/../target-sdks"
+    "$HOME/.crossclang/target-sdks"
+    "/opt/crossclang/target-sdks"
+)
 
-if [[ "$target" == *"/"* ]]; then
+if [[ "$target" == "/"* ]]; then
     sdkroot="$target"
+else
+    for base in ${sdkroot_bases[@]}; do
+        if [[ -n "$base" && -f "$base/$target/target.conf" ]]; then
+            sdkroot_base="$base"
+            break
+        fi
+    done
 fi 
 
 if [ -z "$sdkroot" ]; then
@@ -137,11 +168,13 @@ if [ -z "$sdkroot" ]; then
     fi
 fi
 
+sdkrootOrig="$sdkroot"
 sdkroot=$(cd "$sdkroot" 2>/dev/null && pwd)
 targetConf="$sdkroot/target.conf"
-if [[ $? -ne 0 || -z "$sdkroot" || ! -f "$targetConf" ]]; then
+
+if [[ $? -ne 0 || -z "$sdkrootOrig" || ! -f "$targetConf" ]]; then
     echo "Could not find SDK root for target: $target" >&2
-    echo "Available targets:$(for f in $(find "$sdkroot_base" -mindepth 1 -maxdepth 1); do if [ -f "$f/target.conf" ]; then echo -n $'\n'"- $(basename $f)"; fi done)" >&2
+    echo "Available targets:$(for f in $(find "${sdkroot_bases[@]}" -mindepth 1 -maxdepth 1 2>/dev/null); do if [ -f "$f/target.conf" ]; then echo -n $'\n'"- $(basename $f)"; fi done)" >&2
     echo "- current (use current target)"
     echo "- default (use default clang)"
     exit 1
@@ -179,19 +212,24 @@ if [ $needLinker -gt 0 ]; then
         if [ $nostdlib -gt 0 ]; then
           clangLinkerArgs+=("-fPIC")
         fi
-        clangLinkerArgs+=("-Wl,-sysroot=$sdkroot")
 
         if [ $isShared -gt 0 ]; then
           if [[ $hasBundle -gt 0 && $hasShared -eq 0 ]]; then
             clangLinkerArgs+=("-Wl,-shared")
           fi
         fi
+        
+        clangLinkerArgs+=("-Wl,--sysroot=$sdkroot")
+        for path in ${target_library_path[@]}; do
+            if [ -d "$sdkroot/$path" ]; then
+                clangLinkerArgs+=("-Wl,-L=$path")
+            fi
+        done
+        
         ;;
       ld64)
         ldPath=$(which ld64.lld)
-        if [ $isShared -gt 0 ]; then
-          clangLinkerArgs+=("-Wl,-sdk_version,10.7")
-        fi
+        clangLinkerArgs+=("-Wl,-sdk_version,10.7")
         #if [ $nostdlib -gt 0 ]; then
         #  clangLinkerArgs+=("-Wl,-undefined,dynamic_lookup")
         #fi
@@ -219,15 +257,28 @@ if [ $needLinker -gt 0 ]; then
 fi
 
 isystem_decls=()
+isystem_decls+=("-isysroot" "$sdkroot")
+
+for include in ${target_include_cpp_path[@]}; do
+    isystem_decls+=("-cxx-isystem$sdkroot/$include")
+    if [ $looksLikeCPP -gt 0 ]; then
+        # NOTE: working around an issue where -cxx-isystem is ignored
+        isystem_decls+=("-iwithsysroot" "$include")
+    fi
+done
 for include in ${target_include_path[@]}; do
     isystem_decls+=("-iwithsysroot" "$include")
 done
 
 for path in ${target_framework_path[@]}; do
     isystem_decls+=("-iframeworkwithsysroot" "$path")
-done 
+done
 
-# for c++ support add something like this:
-#  -cxx-isystem "$sdkroot/usr/include/c++/$gnuVer" -cxx-isystem "$sdkroot//usr/include/c++/$gnuVer/x86_64-pc-linux-gnu"
+isystem_decls+=("-imacros" "$sdkroot/target.h")
 
-exec clang -isysroot "$sdkroot" ${isystem_decls[@]} -imacros "$sdkroot/target.h" ${clangLinkerArgs[@]} ${clangArgs[@]}
+if [ $hasFiles -eq 0 ]; then
+    isystem_decls=()
+fi
+
+#echo clang --sysroot "$sdkroot" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${clangArgs[@]}
+exec clang --sysroot "$sdkroot" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${clangArgs[@]}
