@@ -19,7 +19,6 @@ package org.newsclub.net.unix;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 

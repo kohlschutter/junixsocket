@@ -29,6 +29,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketImpl;
 import java.net.SocketOptions;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The Java-part of the {@link AFUNIXSocket} implementation.
@@ -41,8 +42,8 @@ class AFUNIXSocketImpl extends SocketImpl {
   private static final int SHUT_RD_WR = 2;
 
   private String socketFile;
-  private boolean closed = false;
-  private boolean bound = false;
+  private volatile boolean closed = false;
+  private volatile boolean bound = false;
   private boolean connected = false;
 
   private volatile boolean closedInputStream = false;
@@ -50,6 +51,8 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   private final AFUNIXInputStream in = new AFUNIXInputStream();
   private final AFUNIXOutputStream out = new AFUNIXOutputStream();
+
+  private final AtomicInteger pendingAccepts = new AtomicInteger(0);
 
   protected AFUNIXSocketImpl() {
     super();
@@ -78,7 +81,32 @@ class AFUNIXSocketImpl extends SocketImpl {
     FileDescriptor fdesc = validFdOrException();
 
     final AFUNIXSocketImpl si = (AFUNIXSocketImpl) socket;
-    NativeUnixSocket.accept(socketFile, fdesc, si.fd);
+    try {
+      if (pendingAccepts.incrementAndGet() >= Integer.MAX_VALUE) {
+        throw new SocketException("Too many pending accepts");
+      } else {
+        if (!bound || closed) {
+          throw new SocketException("Socket is closed");
+        }
+
+        NativeUnixSocket.accept(socketFile, fdesc, si.fd);
+        if (!bound || closed) {
+          try {
+            NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
+          } catch (Exception e) {
+            // ignore
+          }
+          try {
+            NativeUnixSocket.close(si.fd);
+          } catch (Exception e) {
+            // ignore
+          }
+          throw new SocketException("Socket is closed");
+        }
+      }
+    } finally {
+      pendingAccepts.decrementAndGet();
+    }
     si.socketFile = socketFile;
     si.connected = true;
   }
@@ -118,17 +146,50 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
   }
 
+  /**
+   * Unblock other threads that are currently waiting on accept, simply by connecting to the socket.
+   */
+  private void unblockAccepts() {
+    while (pendingAccepts.get() > 0) {
+      try {
+        FileDescriptor tmpFd = new FileDescriptor();
+
+        NativeUnixSocket.connect(socketFile, tmpFd);
+        try {
+          NativeUnixSocket.shutdown(tmpFd, SHUT_RD_WR);
+        } catch (Exception e) {
+          // ignore
+        }
+        try {
+          NativeUnixSocket.close(tmpFd);
+        } catch (Exception e) {
+          // ignore
+        }
+      } catch (Exception e) {
+        // ignore
+      }
+    }
+  }
+
   @Override
   protected final synchronized void close() throws IOException {
+    boolean wasBound = bound;
+    bound = false;
+
     FileDescriptor fdesc = validFd();
     if (fdesc != null) {
       NativeUnixSocket.shutdown(fdesc, SHUT_RD_WR);
+
+      closed = true;
+      if (wasBound && socketFile != null) {
+        unblockAccepts();
+      }
+
       NativeUnixSocket.close(fdesc);
     }
-    if (bound) {
+    if (wasBound) {
       NativeUnixSocket.unlink(socketFile);
     }
-    connected = false;
     closed = true;
   }
 
@@ -160,7 +221,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   }
 
   private String validateSocketFile(String file) throws SocketException {
-    if (!new File(file).exists()) {
+    if (file.isEmpty() || !new File(file).exists()) {
       throw new SocketException("Socket file not found: " + socketFile);
     }
     return file;
