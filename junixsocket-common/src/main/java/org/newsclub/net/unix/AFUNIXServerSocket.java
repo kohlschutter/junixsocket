@@ -106,7 +106,7 @@ public class AFUNIXServerSocket extends ServerSocket {
   }
 
   @Override
-  public Socket accept() throws IOException {
+  public AFUNIXSocket accept() throws IOException {
     if (isClosed()) {
       throw new SocketException("Socket is closed");
     }
