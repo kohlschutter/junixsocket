@@ -18,6 +18,8 @@
 
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+    <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-jni</junixsocket.common.classifier.mac.x86_64>
+    <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-jni</junixsocket.common.classifier.linux.x86_64>
   </properties>
 
   <build>
@@ -86,6 +88,8 @@
       <properties>
         <junixsocket.cross.disabled>false</junixsocket.cross.disabled>
         <junixsocket.cross>true</junixsocket.cross>
+        <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-llvm-jni</junixsocket.common.classifier.mac.x86_64>
+        <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.x86_64>
       </properties>
       <dependencies>
         <dependency>
@@ -93,24 +97,6 @@
           <artifactId>junixsocket-native-cross</artifactId>
           <version>${project.version}</version>
           <scope>provided</scope>
-          <optional>true</optional>
-        </dependency>
-        <dependency>
-          <groupId>com.kohlschutter.junixsocket</groupId>
-          <artifactId>junixsocket-native</artifactId>
-          <version>${project.version}</version>
-          <type>nar</type>
-          <classifier>x86_64-MacOSX-clang-llvm-jni</classifier>
-          <scope>runtime</scope>
-          <optional>true</optional>
-        </dependency>
-        <dependency>
-          <groupId>com.kohlschutter.junixsocket</groupId>
-          <artifactId>junixsocket-native</artifactId>
-          <version>${project.version}</version>
-          <type>nar</type>
-          <classifier>amd64-Linux-clang-llvm-jni</classifier>
-          <scope>runtime</scope>
           <optional>true</optional>
         </dependency>
       </dependencies>
@@ -177,7 +163,7 @@
           <artifactId>junixsocket-native</artifactId>
           <version>${project.version}</version>
           <type>nar</type>
-          <classifier>x86_64-MacOSX-clang-jni</classifier>
+          <classifier>${junixsocket.common.classifier.mac.x86_64}</classifier>
           <scope>runtime</scope>
           <optional>true</optional>
         </dependency>
@@ -186,7 +172,7 @@
           <artifactId>junixsocket-native</artifactId>
           <version>${project.version}</version>
           <type>nar</type>
-          <classifier>amd64-Linux-clang-jni</classifier>
+          <classifier>${junixsocket.common.classifier.linux.x86_64}</classifier>
           <scope>runtime</scope>
           <optional>true</optional>
         </dependency>

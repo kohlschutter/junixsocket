@@ -64,7 +64,11 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <log4j.version>1.2.17</log4j.version>
     <junixsocket.native.aol></junixsocket.native.aol>
     <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
+    <junixsocket.native.crossclang.toolPath>${project.basedir}/crossclang/bin/</junixsocket.native.crossclang.toolPath>
     <junixsocket.native.llvm.target></junixsocket.native.llvm.target>
+    <junixsocket.native.llvm.toolPath>${junixsocket.native.crossclang.toolPath}</junixsocket.native.llvm.toolPath>
+    <junixsocket.native.default.toolPath></junixsocket.native.default.toolPath>
+    <junixsocket.native.default.linkerName></junixsocket.native.default.linkerName>
     <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
   </properties>
 
@@ -159,6 +163,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <junixsocket.native.aol>x86_64-MacOSX-clang</junixsocket.native.aol>
         <junixsocket.native.llvm.target>default</junixsocket.native.llvm.target>
         <junixsocket.native.jnilib.extension>dylib</junixsocket.native.jnilib.extension>
+        <junixsocket.native.default.toolPath>${junixsocket.native.crossclang.toolPath}</junixsocket.native.default.toolPath>
+        <junixsocket.native.default.linkerName>clang</junixsocket.native.default.linkerName>
       </properties>
     </profile>
 
@@ -176,6 +182,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <junixsocket.native.aol>amd64-Linux-clang</junixsocket.native.aol>
         <junixsocket.native.llvm.target>default</junixsocket.native.llvm.target>
         <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
+        <junixsocket.native.default.toolPath>${junixsocket.native.crossclang.toolPath}</junixsocket.native.default.toolPath>
+        <junixsocket.native.default.linkerName>clang</junixsocket.native.default.linkerName>
       </properties>
     </profile>
 

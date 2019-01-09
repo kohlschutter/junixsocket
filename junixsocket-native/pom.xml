@@ -20,11 +20,6 @@
     <nar.aolProperties>${project.build.outputDirectory}/aol.properties</nar.aolProperties>
     <!-- <nar.aolProperties>${project.basedir}/aol.properties</nar.aolProperties> -->
 
-    <!-- Path to a local llvm installation to support cross-compilation -->
-    <!-- IMPORTANT: nar-maven-plugin currently hardcodes a reference to "gcc",
-      so you need to add a symlink to "clang" in that directory -->
-    <junixsocket.native.llvm.toolPath>${project.basedir}/crossclang/bin</junixsocket.native.llvm.toolPath>
-
     <!-- IMPORTANT: junixsocket.native properties that end up in aol.properties:
       Use CDATA to prevent line breaks when formatting —
       line breaks will break nar-maven-plugin, and may not trigger an error
@@ -53,6 +48,14 @@
             <groupId>com.github.maven-nar</groupId>
             <artifactId>nar-maven-plugin</artifactId>
             <configuration>
+              <c>
+                <toolPath>${junixsocket.native.default.toolPath}</toolPath>
+              </c>
+              <linker>
+                <prefix>${junixsocket.native.default.toolPath}</prefix>
+                <toolPath></toolPath>
+                <name>${junixsocket.native.default.linkerName}</name>
+              </linker>
             </configuration>
           </plugin>
         </plugins>

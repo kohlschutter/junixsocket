@@ -36,6 +36,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
+        <version>3.1.0</version>
         <executions>
           <execution>
             <id>crosscompile-x86_64-MacOSX-clang</id>
@@ -63,6 +64,7 @@
                 <junixsocket.build.directory>${project.build.directory}/junixsocket-native-x86_64-MacOSX-clang-llvm</junixsocket.build.directory>
                 <junixsocket.native.llvm.target>x86_64-apple-darwin18.2.0</junixsocket.native.llvm.target>
                 <junixsocket.native.jnilib.extension>dylib</junixsocket.native.jnilib.extension>
+                <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-llvm-jni</junixsocket.common.classifier.mac.x86_64>
               </properties>
             </configuration>
           </execution>
@@ -92,6 +94,7 @@
                 <junixsocket.build.directory>${project.build.directory}/junixsocket-native-amd64-Linux-clang-llvm</junixsocket.build.directory>
                 <junixsocket.native.llvm.target>x86_64-pc-linux-gnu</junixsocket.native.llvm.target>
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
+                <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.x86_64>
               </properties>
             </configuration>
           </execution>
