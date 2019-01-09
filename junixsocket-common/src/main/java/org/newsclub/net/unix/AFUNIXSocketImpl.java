@@ -332,6 +332,7 @@ class AFUNIXSocketImpl extends SocketImpl {
       }
       FileDescriptor fdesc = validFdOrException();
       int writtenTotal = 0;
+
       while (len > 0) {
         if (Thread.interrupted()) {
           InterruptedIOException ex = new InterruptedIOException("Thread interrupted during write");
