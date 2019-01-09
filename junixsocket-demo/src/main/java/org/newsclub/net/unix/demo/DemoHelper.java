@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix.demo;
 
+import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Function;
 
@@ -50,7 +51,11 @@ public class DemoHelper {
       if (exampleValue == null) {
         example = "";
       } else {
-        example = "=" + exampleValue + " (for example)";
+        if (exampleValue.endsWith(")")) {
+          example = "=" + exampleValue;
+        } else {
+          example = "=" + exampleValue + " (for example)";
+        }
       }
       System.out.println(key + "=" + value + " -- override with -D" + property + example);
     }
@@ -63,7 +68,9 @@ public class DemoHelper {
     if (exampleValue == null) {
       exampleValue = "(...)";
     } else {
-      exampleValue += " (for example)";
+      if (!exampleValue.endsWith(")")) {
+        exampleValue += " (for example)";
+      }
     }
 
     String driverClass = System.getProperty(property, defaultValue);
@@ -85,13 +92,14 @@ public class DemoHelper {
     return getPropertyValue(property, property, defaultValue, exampleValue, null);
   }
 
-  public static String getPropertyValue(String property, String defaultValue, String exampleValue,
-      Function<String, String> valueConverter) {
+  public static <R> R getPropertyValue(String property, String defaultValue, String exampleValue,
+      Function<String, R> valueConverter) {
     return getPropertyValue(property, property, defaultValue, exampleValue, valueConverter);
   }
 
-  public static String getPropertyValue(String variable, String property, String defaultValue,
-      String exampleValue, Function<String, String> valueConverter) {
+  @SuppressWarnings("unchecked")
+  public static <R> R getPropertyValue(String variable, String property, String defaultValue,
+      String exampleValue, Function<String, R> valueConverter) {
     boolean print = true;
     if (exampleValue == null) {
       print = false;
@@ -101,24 +109,40 @@ public class DemoHelper {
       if (exampleValue.contains("$")) {
         exampleValue = "'" + exampleValue + "'";
       }
-      exampleValue += " (for example)";
-    }
-
-    String value = System.getProperty(property, defaultValue);
-    if (valueConverter != null) {
-      value = valueConverter.apply(value);
-    }
-
-    if (print) {
-      if (defaultValue.equals(exampleValue)) {
-        System.out.println(variable + "=" + value + " -- override with -D" + property + "="
-            + "(...)");
-      } else {
-        System.out.println(variable + "=" + value + " -- override with -D" + property + "="
-            + exampleValue);
+      if (!exampleValue.endsWith(")")) {
+        exampleValue += " (for example)";
       }
     }
 
-    return value;
+    String value = System.getProperty(property, defaultValue);
+
+    if (print) {
+      final String overrideOrSet;
+      final String valueString;
+      if (value == null) {
+        valueString = "(not set)";
+        overrideOrSet = "set";
+      } else {
+        valueString = value;
+        overrideOrSet = "override";
+      }
+
+      if (Objects.equals(defaultValue, exampleValue)) {
+        System.out.println(variable + "=" + valueString + " -- " + overrideOrSet + " with -D"
+            + property + "=" + "(...)");
+      } else {
+        System.out.println(variable + "=" + valueString + " -- " + overrideOrSet + " with -D"
+            + property + "=" + exampleValue);
+      }
+    }
+
+    R returnValue;
+    if (valueConverter != null) {
+      returnValue = valueConverter.apply(value);
+    } else {
+      returnValue = (R) value;
+    }
+
+    return returnValue;
   }
 }
