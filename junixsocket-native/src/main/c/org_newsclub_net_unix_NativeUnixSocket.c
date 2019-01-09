@@ -65,13 +65,13 @@ typedef unsigned long socklen_t; /* 64-bits */
 #endif
 
 #if defined(__MACH__)
-#define junixsocket_use_poll
+#define junixsocket_use_poll_for_accept
 //#define junixsocket_use_poll_interval_millis	1000
 #endif
 
-#if defined(junixsocket_use_poll)
-#include <limits.h>
+#if defined(junixsocket_use_poll_for_accept)
 #include <poll.h>
+#include <limits.h>
 #include <time.h>
 
 #if !defined(uint64_t)
@@ -97,6 +97,8 @@ static const char *kExceptionClasses[kExceptionMaxExcl] = {
 		"java/lang/NullPointerException" // kExceptionNullPointerException
 		};
 
+static int _closeFd(JNIEnv * env, jobject fd, int handle);
+
 static void org_newsclub_net_unix_NativeUnixSocket_throwException(JNIEnv* env,
 		ExceptionType exceptionType, char* message, jstring file)
 {
@@ -120,7 +122,7 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwException(JNIEnv* env,
 }
 
 static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
-		JNIEnv* env, int errnum, jstring file)
+		JNIEnv* env, int errnum, jobject fdToClose, jstring file)
 {
 	ExceptionType exceptionType;
 	switch(errnum) {
@@ -128,6 +130,15 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
 	case ETIMEDOUT:
 		exceptionType = kExceptionSocketTimeoutException;
 		break;
+	case EPIPE:
+	case EBADF:
+	case ECONNRESET:
+		// broken pipe, etc. -> close socket fd, so Socket#isClosed returns true
+		if (fdToClose != NULL) {
+			_closeFd(env, fdToClose, -1);
+		}
+
+		// fall-through
 	default:
 		exceptionType = kExceptionSocketException;
 	}
@@ -135,7 +146,13 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
 	size_t buflen = 256;
 	char *message = calloc(1, buflen);
 	strerror_r(errnum, message, buflen);
-//	snprintf(message, buflen, "errno=%i", errnum);
+
+#if DEBUG
+	char *message1 = calloc(1, buflen);
+	snprintf(message1, buflen, "%s; errno=%i", message, errnum);
+	free(message);
+	message = message1;
+#endif
 
 	org_newsclub_net_unix_NativeUnixSocket_throwException(env, exceptionType,
 			message, file);
@@ -144,7 +161,7 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
 }
 
 static void org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(
-		JNIEnv* env, int errnum, jstring file)
+		JNIEnv* env, int errnum, jobject fd, jstring file)
 {
 	// when setsockopt returns an error with EINVAL, it means the socket was shut down already
 	if (errnum == EINVAL) {
@@ -153,7 +170,7 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(
 		return;
 	}
 
-	org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, file);
+	org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, fd, file);
 }
 
 int org_newsclub_net_unix_NativeUnixSocket_getFD(JNIEnv * env, jobject fd)
@@ -185,7 +202,7 @@ void org_newsclub_net_unix_NativeUnixSocket_initFD(JNIEnv * env, jobject fd,
 	(*env)->SetIntField(env, fd, fdField, handle);
 }
 
-#if defined(junixsocket_use_poll)
+#if defined(junixsocket_use_poll_for_accept)
 
 static uint64_t timespecToMillis(struct timespec* ts) {
 	return (uint64_t)ts->tv_sec * 1000 + (uint64_t)ts->tv_nsec / 1000000;
@@ -228,7 +245,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 #endif
 	);
 
-#if defined(junixsocket_use_poll)
+#if defined(junixsocket_use_poll_for_accept)
 
 	{
 		struct timeval optVal;
@@ -251,7 +268,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 			struct timespec timeEnd;
 
 			if(clock_gettime(CLOCK_MONOTONIC, &timeEnd) == -1) {
-				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, file);
 				return;
 			}
 
@@ -275,13 +292,13 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 						break;
 					} else {
 						// FIXME better error handling
-						org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, ETIMEDOUT, file);
+						org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, ETIMEDOUT, fdServer, file);
 						return;
 					}
 				}
 				int errnum = errno;
 				if(clock_gettime(CLOCK_MONOTONIC, &timeEnd) == -1) {
-					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, file);
+					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, NULL, file);
 					return;
 				}
 				int elapsed = (int)(timespecToMillis(&timeEnd) - timespecToMillis(&timeStart));
@@ -290,7 +307,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 				}
 				millisRemaining -= elapsed;
 				if(millisRemaining <= 0) {
-					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, ETIMEDOUT, file);
+					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, ETIMEDOUT, fdServer, file);
 					return;
 				}
 
@@ -300,7 +317,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 						continue;
 					}
 
-					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, fdServer, file);
 					return;
 				}
 			}
@@ -314,7 +331,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 	}while (socketHandle == -1 && errno == EINTR);
 	if(socketHandle < 0) {
 		int errnum = errno;
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, fdServer, file);
 		return;
 	}
 
@@ -342,7 +359,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 
 	int serverHandle = socket(AF_UNIX, SOCK_STREAM, 0);
 	if(serverHandle == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, file);
 		return;
 	}
 
@@ -350,14 +367,14 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 	int optVal = 1;
 	int ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(optVal));
 	if(ret == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, file);
 		return;
 	}
 #if defined(SO_NOSIGPIPE)
 	// prevent raising SIGPIPE
 	ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(optVal));
 	if(ret == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, file);
 		return;
 	}
 #endif
@@ -394,45 +411,45 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 			if(ret == -1 && errno == ECONNREFUSED) {
 				// assume non-connected socket
 
-				close(serverHandle);
+				_closeFd(env, fd, serverHandle);
 				if(unlink(socketFile) == -1) {
-					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, file);
 					return;
 				}
 
 				serverHandle = socket(AF_UNIX, SOCK_STREAM, 0);
 				if(serverHandle == -1) {
-					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, file);
 					return;
 				}
 
 				bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
 				if(bindRes == -1) {
-					close(serverHandle);
-					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, file);
+					_closeFd(env, fd, serverHandle);
+					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
 					return;
 				}
 			} else {
-				close(serverHandle);
-				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, file);
+				_closeFd(env, fd, serverHandle);
+				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
 				return;
 			}
 		} else {
-			close(serverHandle);
-			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, file);
+			_closeFd(env, fd, serverHandle);
+			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
 			return;
 		}
 	}
 
 	int chmodRes = chmod(su.sun_path, 0666);
 	if(chmodRes == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, file);
 		return;
 	}
 
 	int listenRes = listen(serverHandle, backlog);
 	if(listenRes == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, file);
 		return;
 	}
 
@@ -450,7 +467,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen
 
 	int listenRes = listen(serverHandle, backlog);
 	if(listenRes == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, NULL);
 		return;
 	}
 }
@@ -475,7 +492,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 
 	int socketHandle = socket(AF_UNIX, SOCK_STREAM, 0);
 	if(socketHandle == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, file);
 		return;
 	}
 
@@ -500,8 +517,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 	}while(ret == -1 && errno == EINTR);
 
 	if(ret == -1) {
-		close(socketHandle);
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, file);
+		_closeFd(env, fd, socketHandle);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, file);
 		return;
 	}
 
@@ -551,7 +568,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 //			if(errno == EAGAIN || errno == EWOULDBLOCK) {
 //				return 0;
 //			}
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno,
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd,
 				NULL);
 		return -1;
 	}
@@ -593,7 +610,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 		if(errno == EAGAIN || errno == EWOULDBLOCK) {
 			return 0;
 		}
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno,
+
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd,
 				NULL);
 		return -1;
 	}
@@ -618,12 +636,40 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close
 	org_newsclub_net_unix_NativeUnixSocket_initFD(env, fd, -1);
 	(*env)->MonitorExit(env, fd);
 
-	int ret = close(handle);
+	int ret = _closeFd(env, fd, handle);
 
 	if(ret == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, NULL);
 		return;
 	}
+}
+
+// Close a file descriptor. fd object and numeric handle must either be identical,
+// or only one of them be valid.
+//
+// fd objects are marked closed by setting their fd value to -1.
+static int _closeFd(JNIEnv * env, jobject fd, int handle) {
+	int ret = 0;
+	if (handle > 0) {
+		ret = close(handle);
+	}
+	if (fd == NULL) {
+		return ret;
+	}
+	(*env)->MonitorEnter(env, fd);
+	int fdHandle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
+	org_newsclub_net_unix_NativeUnixSocket_initFD(env, fd, -1);
+	(*env)->MonitorExit(env, fd);
+
+	if (handle > 0) {
+		if (fdHandle > 0 && handle != fdHandle) {
+//				fprintf(stderr, "Inconsistency: %i vs %i\n", handle, fdHandle);
+		}
+	} else if (fdHandle > 0) {
+		ret = close(fdHandle);
+	}
+
+	return ret;
 }
 
 /*
@@ -640,7 +686,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shutdown
 			// ignore
 			return;
 		}
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, NULL);
 		return;
 	}
 }
@@ -688,7 +734,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
 		int ret = getsockopt(handle, SOL_SOCKET, optID, &optVal, &optLen);
 		if(ret == -1) {
 			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env,
-					errno, NULL);
+					errno, fd, NULL);
 			return -1;
 		}
 		return (jint)(optVal.tv_sec * 1000 + optVal.tv_usec / 1000);
@@ -699,7 +745,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
 		int ret = getsockopt(handle, SOL_SOCKET, optID, &optVal, &optLen);
 		if(ret == -1) {
 			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env,
-					errno, NULL);
+					errno, fd, NULL);
 			return -1;
 		}
 		if(optVal.l_onoff == 0) {
@@ -715,7 +761,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
 	int ret = getsockopt(handle, SOL_SOCKET, optID, &optVal, &optLen);
 	if(ret == -1) {
 		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno,
-				NULL);
+				fd, NULL);
 		return -1;
 	}
 
@@ -746,7 +792,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 		int ret = setsockopt(handle, SOL_SOCKET, optID, &optVal, sizeof(optVal));
 
 		if(ret == -1) {
-			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, NULL);
+			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, NULL);
 			return;
 		}
 		return;
@@ -758,7 +804,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 
 		int ret = setsockopt(handle, SOL_SOCKET, optID, &optVal, sizeof(optVal));
 		if(ret == -1) {
-			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, NULL);
+			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, NULL);
 			return;
 		}
 		return;
@@ -768,7 +814,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 
 	int ret = setsockopt(handle, SOL_SOCKET, optID, &optVal, sizeof(optVal));
 	if(ret == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, NULL);
 		return;
 	}
 }
@@ -789,7 +835,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_unlink
 
 	if(ret == -1) {
 		// ignore
-		// org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL);
+		// org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, NULL);
 		// return;
 	}
 }
@@ -810,7 +856,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available(
 	int count;
 	ioctl(handle, FIONREAD, &count);
 	if(count == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno,
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd,
 				NULL);
 		return -1;
 	}

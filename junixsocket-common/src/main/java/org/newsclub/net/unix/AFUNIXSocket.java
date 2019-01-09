@@ -137,6 +137,7 @@ public class AFUNIXSocket extends Socket {
     }
     impl.connect(endpoint, timeout);
     this.addr = (AFUNIXSocketAddress) endpoint;
+    NativeUnixSocket.setBound(this);
     NativeUnixSocket.setConnected(this);
   }
 
@@ -170,5 +171,10 @@ public class AFUNIXSocket extends Socket {
    */
   public static String getLoadedLibrary() {
     return System.getProperty(PROP_LIBRARY_LOADED);
+  }
+
+  @Override
+  public boolean isClosed() {
+    return super.isClosed() || (isConnected() && !impl.getFD().valid());
   }
 }
