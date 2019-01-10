@@ -60,7 +60,6 @@ needLinker=1
 isShared=0
 nostdlib=0
 
-hasBundle=0
 hasShared=0
 targetIndex=
 defaultFallback=0
@@ -88,7 +87,9 @@ while [ $# -gt 0 ]; do
       -fsyntax-only ) needLinker=0 ;;
       -c ) needLinker=0 ;;
       -S ) needLinker=0 ;;
-      -bundle ) isShared=1; hasBundle=1 ;;
+      -bundle ) isShared=1 ;;
+      -dynamic ) isShared=1 ;;
+      -dynamiclib ) isShared=1 ;;
       -shared ) isShared=1; hasShared=1 ;;
       -nostdlib ) nostdlib=1 ;;
       *.cc ) looksLikeCPP=1 ;;
@@ -214,7 +215,7 @@ if [ $needLinker -gt 0 ]; then
         fi
 
         if [ $isShared -gt 0 ]; then
-          if [[ $hasBundle -gt 0 && $hasShared -eq 0 ]]; then
+          if [[ $hasShared -eq 0 ]]; then
             clangLinkerArgs+=("-Wl,-shared")
           fi
         fi
