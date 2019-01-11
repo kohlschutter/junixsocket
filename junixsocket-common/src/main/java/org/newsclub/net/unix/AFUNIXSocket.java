@@ -28,7 +28,8 @@ import java.net.SocketAddress;
  * @author Christian Kohlschütter
  */
 public class AFUNIXSocket extends Socket {
-  private static final String PROP_LIBRARY_LOADED = "org.newsclub.net.unix.library.loaded";
+  static String loadedLibrary; // set by NativeLibraryLoader
+
   protected AFUNIXSocketImpl impl;
   AFUNIXSocketAddress addr;
 
@@ -170,7 +171,7 @@ public class AFUNIXSocket extends Socket {
    * @return The identifier of the loaded junixsocket-native library, or {@code null}.
    */
   public static String getLoadedLibrary() {
-    return System.getProperty(PROP_LIBRARY_LOADED);
+    return loadedLibrary;
   }
 
   @Override

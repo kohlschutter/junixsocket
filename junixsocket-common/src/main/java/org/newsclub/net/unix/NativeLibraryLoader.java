@@ -19,122 +19,125 @@ package org.newsclub.net.unix;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 final class NativeLibraryLoader implements Closeable {
   private static final String PROP_LIBRARY_OVERRIDE = "org.newsclub.net.unix.library.override";
-  private static final String PROP_LIBRARY_LOADED = "org.newsclub.net.unix.library.loaded";
   private static final String PROP_LIBRARY_TMPDIR = "org.newsclub.net.unix.library.tmpdir";
 
   private static final File tempDir;
   private static final String architectureAndOS = architectureAndOS();
+  private static final String libraryName = "junixsocket-native";
 
   private static boolean loaded = false;
-
-  private String libraryName = "junixsocket-native";
-  private String version;
-  private String libraryNameAndVersion;
-  private Class<?> providerClass;
-  private String artifactName;
-
-  private InputStream libraryIn;
 
   static {
     String dir = System.getProperty(PROP_LIBRARY_TMPDIR, null);
     tempDir = (dir == null) ? null : new File(dir);
   }
 
-  public NativeLibraryLoader() {
+  NativeLibraryLoader() {
   }
 
-  private void findLibraryArtifact() {
-    try {
-      if (!tryProviderClass("org.newsclub.lib.junixsocket.custom.NarMetadata",
-          "junixsocket-native-custom") && //
-          !tryProviderClass("org.newsclub.lib.junixsocket.common.NarMetadata",
-              "junixsocket-native-common") //
-      ) {
+  private List<LibraryCandidate> tryProviderClass(String providerClassname, String artifactName)
+      throws IOException, ClassNotFoundException {
+    Class<?> providerClass = Class.forName(providerClassname);
 
-        String cp = System.getProperty("java.class.path", "");
-        if (cp.contains("junixsocket-native-custom/target-eclipse") || cp.contains(
-            "junixsocket-native-common/target-eclipse")) {
-          throw new UnsatisfiedLinkError("Could not load native library.\n\n*** ECLIPSE USERS ***\n"
-              + "If you're running from within Eclipse, please close the \"junixsocket-native-*\" projects\n");
-        }
+    String version = getArtifactVersion(providerClass, artifactName);
+    String libraryNameAndVersion = libraryName + "-" + version;
 
-        if (artifactName != null) {
-          throw new UnsatisfiedLinkError("Artifact " + artifactName
-              + " does not contain library for " + architectureAndOS);
-        } else {
-          throw new ClassNotFoundException(
-              "You need to add a dependency to either junixsocket-native-common or junixsocket-native-custom");
-        }
-      }
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    return findLibraryCandidates(artifactName, libraryNameAndVersion, providerClass);
   }
 
-  private boolean tryProviderClass(String providerClassname, String artifactCandidate)
+  private String getArtifactVersion(Class<?> providerClass, String... artifactNames)
       throws IOException {
-    try {
-      this.providerClass = Class.forName(providerClassname);
-    } catch (ClassNotFoundException e) {
-      return false;
-    }
-    this.artifactName = artifactCandidate;
-    Properties p = new Properties();
-    try (InputStream in = providerClass.getResourceAsStream(
-        "/META-INF/maven/com.kohlschutter.junixsocket/" + artifactCandidate + "/pom.properties")) {
-      p.load(in);
-      this.version = p.getProperty("version");
-      if (version == null) {
-        throw new NullPointerException("Could not read version from pom.properties");
-      }
-      this.libraryNameAndVersion = libraryName + "-" + version;
-    }
-
-    this.libraryIn = findLibrary();
-    if (libraryIn != null) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  private synchronized void setLoaded(String library) {
-    loaded = true;
-    System.setProperty(PROP_LIBRARY_LOADED, library);
-  }
-
-  public synchronized void loadLibrary() {
-    synchronized (Object.class) {
-      if (loaded || System.getProperty(PROP_LIBRARY_LOADED) != null) {
-        // Already loaded
-        return;
-      }
-      String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, "");
-      if (!libraryOverride.isEmpty()) {
-        System.loadLibrary(libraryOverride);
-        setLoaded(libraryOverride);
-        return;
-      }
-
-      findLibraryArtifact();
-      try {
-        System.loadLibrary(libraryNameAndVersion);
-        setLoaded(artifactName + "/" + libraryNameAndVersion);
-        return;
-      } catch (LinkageError e) {
-        if (libraryIn == null) {
-          throw e;
-        } else {
-          // ignore
+    for (String artifactName : artifactNames) {
+      Properties p = new Properties();
+      String resource = "/META-INF/maven/com.kohlschutter.junixsocket/" + artifactName
+          + "/pom.properties";
+      try (InputStream in = providerClass.getResourceAsStream(resource)) {
+        if (in == null) {
+          throw new FileNotFoundException("Could not find resource " + resource + " relative to "
+              + providerClass);
         }
+        p.load(in);
+        String version = p.getProperty("version");
+        if (version == null) {
+          throw new NullPointerException("Could not read version from pom.properties");
+        }
+        return version;
+      }
+    }
+    throw new IllegalStateException("No artifact names specified");
+  }
+
+  private abstract static class LibraryCandidate implements Closeable {
+    protected final String libraryNameAndVersion;
+
+    protected LibraryCandidate(String libraryNameAndVersion) {
+      this.libraryNameAndVersion = libraryNameAndVersion;
+    }
+
+    abstract String load() throws Exception;
+
+    @Override
+    public abstract void close();
+
+    @Override
+    public String toString() {
+      return super.toString() + "[" + libraryNameAndVersion + "]";
+    }
+  }
+
+  private static final class StandardLibraryCandidate extends LibraryCandidate {
+    StandardLibraryCandidate(String version) {
+      super(version == null ? null : libraryName + "-" + version);
+    }
+
+    @Override
+    String load() throws Exception, LinkageError {
+      if (libraryNameAndVersion != null) {
+        System.loadLibrary(libraryNameAndVersion);
+        return libraryNameAndVersion;
+      }
+      return null;
+    }
+
+    @Override
+    public void close() {
+    }
+
+    @Override
+    public String toString() {
+      return super.toString() + "(standard library path)";
+    }
+
+  }
+
+  private static final class ClasspathLibraryCandidate extends LibraryCandidate {
+    private final String artifactName;
+    private final InputStream libraryIn;
+    private final String path;
+
+    ClasspathLibraryCandidate(String artifactName, String libraryNameAndVersion, String path,
+        InputStream libraryIn) {
+      super(libraryNameAndVersion);
+      this.artifactName = artifactName;
+      this.path = path;
+      this.libraryIn = libraryIn;
+    }
+
+    @Override
+    synchronized String load() throws IOException, LinkageError {
+      if (libraryNameAndVersion == null) {
+        return null;
       }
       File libFile;
       try {
@@ -145,28 +148,122 @@ final class NativeLibraryLoader implements Closeable {
           while ((read = libraryIn.read(buf)) >= 0) {
             out.write(buf, 0, read);
           }
+        } finally {
+          libraryIn.close();
         }
       } catch (IOException e) {
-        throw (UnsatisfiedLinkError) new UnsatisfiedLinkError("Couldn't load native library")
-            .initCause(e);
+        throw e;
       }
       System.load(libFile.getAbsolutePath());
-      setLoaded(artifactName + "/" + libraryNameAndVersion);
       if (!libFile.delete()) {
         libFile.deleteOnExit();
       }
-      close();
+      return artifactName + "/" + libraryNameAndVersion;
     }
 
+    @Override
+    public void close() {
+      try {
+        libraryIn.close();
+      } catch (IOException e) {
+        // ignore
+      }
+    }
+
+    @Override
+    public String toString() {
+      return super.toString() + "(" + artifactName + ":" + path + ")";
+    }
+  }
+
+  private synchronized void setLoaded(String library) {
+    loaded = true;
+    AFUNIXSocket.loadedLibrary = library;
+  }
+
+  @SuppressWarnings("resource")
+  public synchronized void loadLibrary() {
+    synchronized (getClass().getClassLoader()) {
+      if (loaded) {
+        // Already loaded
+        return;
+      }
+      String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, "");
+      if (!libraryOverride.isEmpty()) {
+        System.loadLibrary(libraryOverride);
+        setLoaded(libraryOverride);
+        return;
+      }
+
+      List<LibraryCandidate> candidates = new ArrayList<>();
+      List<Throwable> suppressedThrowables = new ArrayList<>();
+
+      try {
+        candidates.add(new StandardLibraryCandidate(getArtifactVersion(getClass(),
+            "junixsocket-common", "junixsocket-core")));
+      } catch (Exception e) {
+        suppressedThrowables.add(e);
+      }
+      try {
+        candidates.addAll(tryProviderClass("org.newsclub.lib.junixsocket.custom.NarMetadata",
+            "junixsocket-native-custom"));
+      } catch (Exception e) {
+        suppressedThrowables.add(e);
+      }
+      try {
+        candidates.addAll(tryProviderClass("org.newsclub.lib.junixsocket.common.NarMetadata",
+            "junixsocket-native-common"));
+      } catch (Exception e) {
+        suppressedThrowables.add(e);
+      }
+
+      String loadedLibraryId = null;
+
+      for (LibraryCandidate candidate : candidates) {
+        try {
+          if ((loadedLibraryId = candidate.load()) != null) {
+            break;
+          }
+        } catch (Exception | LinkageError e) {
+          suppressedThrowables.add(e);
+        }
+      }
+      for (LibraryCandidate candidate : candidates) {
+        candidate.close();
+      }
+
+      if (loadedLibraryId != null) {
+        setLoaded(loadedLibraryId);
+      } else {
+        String message = "Could not load native library " + libraryName + " for architecture "
+            + architectureAndOS;
+
+        String cp = System.getProperty("java.class.path", "");
+        if (cp.contains("junixsocket-native-custom/target-eclipse") || cp.contains(
+            "junixsocket-native-common/target-eclipse")) {
+          message += "\n\n*** ECLIPSE USERS ***\nIf you're running from within Eclipse, "
+              + "please close the projects \"junixsocket-native-common\" and \"junixsocket-native-custom\"\n";
+        }
+
+        UnsatisfiedLinkError e = new UnsatisfiedLinkError(message);
+        for (Throwable suppressed : suppressedThrowables) {
+          e.addSuppressed(suppressed);
+        }
+        throw e;
+      }
+    }
   }
 
   private static String architectureAndOS() {
     return System.getProperty("os.arch") + "-" + System.getProperty("os.name").replaceAll(" ", "");
   }
 
-  private InputStream findLibrary() {
+  @SuppressWarnings("resource")
+  private List<LibraryCandidate> findLibraryCandidates(String artifactName,
+      String libraryNameAndVersion, Class<?> providerClass) {
     String mappedName = System.mapLibraryName(libraryNameAndVersion);
 
+    List<LibraryCandidate> list = new ArrayList<>();
     for (String compiler : new String[] {
         "gpp", "g++", "linker", "clang", "gcc", "cc", "CC", "icpc", "icc", "xlC", "xlC_r", "msvc",
         "icl", "ecpc", "ecc"}) {
@@ -174,25 +271,17 @@ final class NativeLibraryLoader implements Closeable {
 
       InputStream in = providerClass.getResourceAsStream(path);
       if (in != null) {
-        return in;
+        list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion, path, in));
       }
     }
-    return null;
-  }
-
-  @Override
-  public synchronized void close() {
-    if (libraryIn != null) {
-      try {
-        libraryIn.close();
-      } catch (IOException e) {
-        // ignore
-      }
-      libraryIn = null;
-    }
+    return list;
   }
 
   private static File createTempFile(String prefix, String suffix) throws IOException {
     return File.createTempFile(prefix, suffix, tempDir);
+  }
+
+  @Override
+  public void close() {
   }
 }
