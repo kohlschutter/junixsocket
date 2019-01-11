@@ -69,8 +69,6 @@ final class NativeUnixSocket {
   static native void setSocketOptionInt(final FileDescriptor fd, int optionId, int value)
       throws IOException;
 
-  static native void unlink(final String socketFile) throws IOException;
-
   static native int available(final FileDescriptor fd) throws IOException;
 
   static native void initServerImpl(final AFUNIXServerSocket serverSocket,

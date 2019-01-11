@@ -187,9 +187,6 @@ class AFUNIXSocketImpl extends SocketImpl {
 
       NativeUnixSocket.close(fdesc);
     }
-    if (wasBound) {
-      NativeUnixSocket.unlink(socketFile);
-    }
     closed = true;
   }
 

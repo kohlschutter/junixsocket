@@ -31,19 +31,6 @@ public class AFUNIXServerSocket extends ServerSocket {
   private final AFUNIXSocketImpl implementation;
   private AFUNIXSocketAddress boundEndpoint = null;
 
-  private final Thread shutdownThread = new Thread() {
-    @Override
-    public void run() {
-      try {
-        if (boundEndpoint != null) {
-          NativeUnixSocket.unlink(boundEndpoint.getSocketFile());
-        }
-      } catch (IOException e) {
-        // ignore
-      }
-    }
-  };
-
   /**
    * Constructs a new, unconnected instance.
    * 
@@ -54,7 +41,6 @@ public class AFUNIXServerSocket extends ServerSocket {
     this.implementation = new AFUNIXSocketImpl();
     NativeUnixSocket.initServerImpl(this, implementation);
 
-    Runtime.getRuntime().addShutdownHook(shutdownThread);
     NativeUnixSocket.setCreatedServer(this);
   }
 
@@ -132,14 +118,6 @@ public class AFUNIXServerSocket extends ServerSocket {
 
     super.close();
     implementation.close();
-    if (boundEndpoint != null) {
-      NativeUnixSocket.unlink(boundEndpoint.getSocketFile());
-    }
-    try {
-      Runtime.getRuntime().removeShutdownHook(shutdownThread);
-    } catch (IllegalStateException e) {
-      // ignore
-    }
   }
 
   /**

@@ -1,5 +1,5 @@
 /**
- * Copyright 2009-2018 Christian Kohlschütter
+ * Copyright 2009-2019 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -238,6 +238,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 #endif
 	strcpy(su.sun_path, socketFile);
 	(*env)->ReleaseStringUTFChars(env, file, socketFile);
+	socketFile = NULL;
 
 	socklen_t suLength = (socklen_t)(strlen(su.sun_path) + sizeof(su.sun_family)
 #ifdef junixsocket_have_sun_len
@@ -357,28 +358,6 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 		return;
 	}
 
-	int serverHandle = socket(AF_UNIX, SOCK_STREAM, 0);
-	if(serverHandle == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, file);
-		return;
-	}
-
-	// This block is only prophylactic, as SO_REUSEADDR seems not to work with AF_UNIX
-	int optVal = 1;
-	int ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(optVal));
-	if(ret == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, file);
-		return;
-	}
-#if defined(SO_NOSIGPIPE)
-	// prevent raising SIGPIPE
-	ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(optVal));
-	if(ret == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, file);
-		return;
-	}
-#endif
-
 	struct sockaddr_un su;
 	su.sun_family = AF_UNIX;
 #ifdef junixsocket_have_sun_len
@@ -387,6 +366,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 
 	strcpy(su.sun_path, socketFile);
 	(*env)->ReleaseStringUTFChars(env, file, socketFile);
+	socketFile = NULL;
 
 	socklen_t suLength = (socklen_t)(strlen(su.sun_path) + sizeof(su.sun_family)
 #ifdef junixsocket_have_sun_len
@@ -394,52 +374,62 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 #endif
 	);
 
-	int bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
+	int serverHandle;
+	for(int attempt=0;attempt<2;attempt++) {
+		serverHandle = socket(AF_UNIX, SOCK_STREAM, 0);
+		if(serverHandle == -1) {
+			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, file);
+			return;
+		}
 
-	if(bindRes == -1) {
+		// This block is only prophylactic, as SO_REUSEADDR seems not to work with AF_UNIX
+		int optVal = 1;
+		int ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(optVal));
+		if(ret == -1) {
+			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, file);
+			return;
+		}
+
+	#if defined(SO_NOSIGPIPE)
+		// prevent raising SIGPIPE
+		ret = setsockopt(serverHandle, SOL_SOCKET, SO_NOSIGPIPE, &optVal, sizeof(optVal));
+		if(ret == -1) {
+			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, file);
+			return;
+		}
+	#endif
+
+		int bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
 		int myErr = errno;
-		if(myErr == EADDRINUSE) {
-			// Let's check whether the address *really* is in use.
-			// Maybe it's just a dead reference
-
+		if (bindRes == 0) {
+			break;
+		} else if(attempt == 0 && myErr == EADDRINUSE) {
 			// if the given file exists, but is not a socket, ENOTSOCK is returned
 			// if access is denied, EACCESS is returned
 			do {
 				ret = connect(serverHandle, (struct sockaddr *)&su, suLength);
 			}while (ret == -1 && errno == EINTR);
 
-			if(ret == -1 && errno == ECONNREFUSED) {
-				// assume non-connected socket
+			if(ret == 0 || (ret == -1 && (errno == ECONNREFUSED || errno == EADDRINUSE))) {
+				// assume socket
 
 				_closeFd(env, fd, serverHandle);
-				if(unlink(socketFile) == -1) {
-					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, file);
-					return;
-				}
+				if(unlink(su.sun_path) == -1) {
+					if (errno == ENOENT) {
+						continue;
+					}
 
-				serverHandle = socket(AF_UNIX, SOCK_STREAM, 0);
-				if(serverHandle == -1) {
-					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, file);
-					return;
+					myErr = errno;
+				} else {
+					continue;
 				}
-
-				bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
-				if(bindRes == -1) {
-					_closeFd(env, fd, serverHandle);
-					org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
-					return;
-				}
-			} else {
-				_closeFd(env, fd, serverHandle);
-				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
-				return;
 			}
-		} else {
-			_closeFd(env, fd, serverHandle);
-			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
-			return;
 		}
+		_closeFd(env, fd, serverHandle);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
+		return;
 	}
+
 
 	int chmodRes = chmod(su.sun_path, 0666);
 	if(chmodRes == -1) {
@@ -504,6 +494,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 
 	strcpy(su.sun_path, socketFile);
 	(*env)->ReleaseStringUTFChars(env, file, socketFile);
+	socketFile = NULL;
 
 	socklen_t suLength = (socklen_t)(strlen(su.sun_path) + sizeof(su.sun_family)
 #ifdef junixsocket_have_sun_len
@@ -816,27 +807,6 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 	if(ret == -1) {
 		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, NULL);
 		return;
-	}
-}
-
-/*
- * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    unlink
- * Signature: (Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_unlink
-(JNIEnv * env, jclass clazz, jstring file) {
-	const char* socketFile = (*env)->GetStringUTFChars(env, file, NULL);
-	if(socketFile == NULL) {
-		return; // OOME
-	}
-	int ret = unlink(socketFile);
-	(*env)->ReleaseStringUTFChars(env, file, socketFile);
-
-	if(ret == -1) {
-		// ignore
-		// org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, NULL);
-		// return;
 	}
 }
 
