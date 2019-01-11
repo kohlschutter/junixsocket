@@ -54,6 +54,8 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   private final AtomicInteger pendingAccepts = new AtomicInteger(0);
 
+  private boolean reuseAddr = true;
+
   protected AFUNIXSocketImpl() {
     super();
     this.fd = new FileDescriptor();
@@ -118,17 +120,18 @@ class AFUNIXSocketImpl extends SocketImpl {
   }
 
   protected void bind(SocketAddress addr) throws IOException {
-    bind(0, addr);
+    bind(addr, -1);
   }
 
-  protected void bind(int backlog, SocketAddress addr) throws IOException {
+  protected void bind(SocketAddress addr, int options) throws IOException {
     if (!(addr instanceof AFUNIXSocketAddress)) {
       throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
     }
 
     final AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
     socketFile = socketAddress.getSocketFile();
-    NativeUnixSocket.bind(socketFile, fd, backlog);
+
+    NativeUnixSocket.bind(socketFile, fd, options);
     validFdOrException();
     bound = true;
     this.localport = socketAddress.getPort();
@@ -411,6 +414,10 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   @Override
   public Object getOption(int optID) throws SocketException {
+    if (optID == SocketOptions.SO_REUSEADDR) {
+      return reuseAddr;
+    }
+
     FileDescriptor fdesc = validFdOrException();
     try {
       switch (optID) {
@@ -434,6 +441,11 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   @Override
   public void setOption(int optID, Object value) throws SocketException {
+    if (optID == SocketOptions.SO_REUSEADDR) {
+      reuseAddr = expectBoolean(value) == 0 ? false : true;
+      return;
+    }
+
     FileDescriptor fdesc = validFdOrException();
     try {
       switch (optID) {

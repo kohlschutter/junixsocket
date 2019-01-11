@@ -346,7 +346,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
  * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;I)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
-(JNIEnv * env, jclass clazz, jstring file, jobject fd, jint backlog) {
+(JNIEnv * env, jclass clazz, jstring file, jobject fd, jint options) {
 	const char* socketFile = (*env)->GetStringUTFChars(env, file, NULL);
 	if(socketFile == NULL) {
 		return; // OOME
@@ -382,12 +382,18 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 			return;
 		}
 
-		// This block is only prophylactic, as SO_REUSEADDR seems not to work with AF_UNIX
+		int ret;
 		int optVal = 1;
-		int ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(optVal));
-		if(ret == -1) {
-			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, file);
-			return;
+
+		if (options == -1) {
+			// reuse address
+
+			// This block is only prophylactic, as SO_REUSEADDR seems not to work with AF_UNIX
+			ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(optVal));
+			if(ret == -1) {
+				org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, file);
+				return;
+			}
 		}
 
 	#if defined(SO_NOSIGPIPE)
@@ -400,6 +406,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 	#endif
 
 		int bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
+
 		int myErr = errno;
 		if (bindRes == 0) {
 			break;
@@ -411,17 +418,19 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 			}while (ret == -1 && errno == EINTR);
 
 			if(ret == 0 || (ret == -1 && (errno == ECONNREFUSED || errno == EADDRINUSE))) {
-				// assume socket
+				// assume existing socket file
+				if (options == -1 || errno == ECONNREFUSED) {
+					// either reuse existing socket, or take over a no longer working socket
+					_closeFd(env, fd, serverHandle);
+					if(unlink(su.sun_path) == -1) {
+						if (errno == ENOENT) {
+							continue;
+						}
 
-				_closeFd(env, fd, serverHandle);
-				if(unlink(su.sun_path) == -1) {
-					if (errno == ENOENT) {
+						myErr = errno;
+					} else {
 						continue;
 					}
-
-					myErr = errno;
-				} else {
-					continue;
 				}
 			}
 		}
@@ -430,16 +439,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 		return;
 	}
 
-
 	int chmodRes = chmod(su.sun_path, 0666);
 	if(chmodRes == -1) {
+		_closeFd(env, fd, serverHandle);
 		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, file);
-		return;
-	}
-
-	int listenRes = listen(serverHandle, backlog);
-	if(listenRes == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, file);
 		return;
 	}
 

@@ -46,7 +46,7 @@ final class NativeUnixSocket {
   static void checkSupported() {
   }
 
-  static native void bind(final String socketFile, final FileDescriptor fd, final int backlog)
+  static native void bind(final String socketFile, final FileDescriptor fd, final int options)
       throws IOException;
 
   static native void listen(final FileDescriptor fd, final int backlog) throws IOException;
