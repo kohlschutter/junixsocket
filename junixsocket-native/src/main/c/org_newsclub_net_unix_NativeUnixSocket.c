@@ -469,11 +469,11 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 				int renameRet = rename(su.sun_path, suTmp.sun_path);
 				if(renameRet == -1) {
 					if (errno != ENOENT) {
-						org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
-						return -1;
+						// ignore failure
 					}
+				} else {
+					useSuTmp = true;
 				}
-				useSuTmp = true;
 			}
 
 			if (useSuTmp) {
