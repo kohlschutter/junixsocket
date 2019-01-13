@@ -17,12 +17,9 @@
  */
 package org.newsclub.net.unix.demo.server;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
-import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.demo.DemoHelper;
 import org.newsclub.net.unix.server.AFUNIXSocketServer;
 
@@ -43,17 +40,7 @@ public class AFUNIXSocketServerDemo {
       String socketName = DemoHelper.getPropertyValue("socket", "/tmp/junixsocket-" + demo
           + ".sock", "/tmp/test.sock or localhost:1234");
 
-      final SocketAddress listenAddress;
-      if (socketName.contains(":") && !socketName.startsWith("/")) {
-        // assume TCP socket
-        int colon = socketName.indexOf(':');
-        String hostname = socketName.substring(0, colon);
-        int port = Integer.parseInt(socketName.substring(colon + 1));
-        listenAddress = new InetSocketAddress(hostname, port);
-      } else {
-        // assume unix socket file name
-        listenAddress = new AFUNIXSocketAddress(new File(socketName));
-      }
+      final SocketAddress listenAddress = DemoHelper.socketAddress(socketName);
 
       switch (demo) {
         case "echo":

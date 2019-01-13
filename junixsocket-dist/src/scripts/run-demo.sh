@@ -84,6 +84,12 @@ $0 org.newsclub.net.unix.demo.rmi.SimpleRMIServer
 # Runs the demo RMI client
 $0 org.newsclub.net.unix.demo.rmi.SimpleRMIClient
 
+# Runs the demo AFUNIXSocketServer. Replace "(demo)" with the desired demo.
+$0 -- -Ddemo=(demo) org.newsclub.net.unix.demo.server.AFUNIXSocketServerDemo
+
+# Runs the demo client. Replace "(socket)" with the socket to connect to.
+$0 -- -Dsocket=(socket) org.newsclub.net.unix.demo.DemoClient
+
 # Runs the MySQL demo
 $0 -j "$mysqlJar" -- -DmysqlSocket=/tmp/mysql.sock org.newsclub.net.mysql.demo.AFUNIXDatabaseSocketFactoryDemo
 

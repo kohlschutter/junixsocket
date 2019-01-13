@@ -17,9 +17,17 @@
  */
 package org.newsclub.net.unix.demo;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Function;
+
+import org.newsclub.net.unix.AFUNIXSocket;
+import org.newsclub.net.unix.AFUNIXSocketAddress;
 
 /**
  * Just a helper class to simplify controlling the demo from the command line.
@@ -144,5 +152,28 @@ public class DemoHelper {
     }
 
     return returnValue;
+  }
+
+  public static SocketAddress socketAddress(String socketName) throws IOException {
+    if (socketName.contains(":") && !socketName.startsWith("/")) {
+      // assume TCP socket
+      int colon = socketName.indexOf(':');
+      String hostname = socketName.substring(0, colon);
+      int port = Integer.parseInt(socketName.substring(colon + 1));
+      return new InetSocketAddress(hostname, port);
+    } else {
+      // assume unix socket file name
+      return new AFUNIXSocketAddress(new File(socketName));
+    }
+  }
+
+  public static Socket connectSocket(SocketAddress socketAddress) throws IOException {
+    if (socketAddress instanceof AFUNIXSocketAddress) {
+      return AFUNIXSocket.connectTo((AFUNIXSocketAddress) socketAddress);
+    } else {
+      Socket socket = new Socket();
+      socket.connect(socketAddress);
+      return socket;
+    }
   }
 }
