@@ -42,6 +42,11 @@ class AFUNIXSocketImpl extends SocketImpl {
   private static final int SHUT_RD_WR = 2;
 
   private String socketFile;
+
+  /**
+   * We keep track of the server's inode to detect when another server connects to our address.
+   */
+  private long inode = -1;
   private volatile boolean closed = false;
   private volatile boolean bound = false;
   private boolean connected = false;
@@ -91,7 +96,7 @@ class AFUNIXSocketImpl extends SocketImpl {
           throw new SocketException("Socket is closed");
         }
 
-        NativeUnixSocket.accept(socketFile, fdesc, si.fd);
+        NativeUnixSocket.accept(socketFile, fdesc, si.fd, inode);
         if (!bound || closed) {
           try {
             NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
@@ -131,7 +136,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     final AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
     socketFile = socketAddress.getSocketFile();
 
-    NativeUnixSocket.bind(socketFile, fd, options);
+    this.inode = NativeUnixSocket.bind(socketFile, fd, options);
     validFdOrException();
     bound = true;
     this.localport = socketAddress.getPort();
@@ -157,7 +162,12 @@ class AFUNIXSocketImpl extends SocketImpl {
       try {
         FileDescriptor tmpFd = new FileDescriptor();
 
-        NativeUnixSocket.connect(socketFile, tmpFd);
+        try {
+          NativeUnixSocket.connect(socketFile, tmpFd, inode);
+        } catch (IOException e) {
+          // there's nothing we can do to unlock these accepts
+          return;
+        }
         try {
           NativeUnixSocket.shutdown(tmpFd, SHUT_RD_WR);
         } catch (Exception e) {
@@ -184,7 +194,7 @@ class AFUNIXSocketImpl extends SocketImpl {
       NativeUnixSocket.shutdown(fdesc, SHUT_RD_WR);
 
       closed = true;
-      if (wasBound && socketFile != null) {
+      if (wasBound && socketFile != null && inode >= 0) {
         unblockAccepts();
       }
 
@@ -212,7 +222,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
     final AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
     socketFile = socketAddress.getSocketFile();
-    NativeUnixSocket.connect(validateSocketFile(socketFile), fd);
+    NativeUnixSocket.connect(validateSocketFile(socketFile), fd, -1);
     validFdOrException();
     this.address = socketAddress.getAddress();
     this.port = socketAddress.getPort();
@@ -252,6 +262,9 @@ class AFUNIXSocketImpl extends SocketImpl {
   @Override
   protected void listen(int backlog) throws IOException {
     FileDescriptor fdesc = validFdOrException();
+    if (backlog < 1) {
+      backlog = 50;
+    }
     NativeUnixSocket.listen(fdesc, backlog);
   }
 

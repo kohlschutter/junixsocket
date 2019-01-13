@@ -83,7 +83,7 @@ public class AFUNIXServerSocket extends ServerSocket {
       throw new IOException("Can only bind to endpoints of type " + AFUNIXSocketAddress.class
           .getName());
     }
-    
+
     implementation.bind(endpoint, getReuseAddress() ? -1 : 0);
     boundEndpoint = (AFUNIXSocketAddress) endpoint;
     implementation.listen(backlog);
@@ -92,6 +92,11 @@ public class AFUNIXServerSocket extends ServerSocket {
   @Override
   public boolean isBound() {
     return boundEndpoint != null;
+  }
+
+  @Override
+  public boolean isClosed() {
+    return super.isClosed() || (isBound() && !implementation.getFD().valid());
   }
 
   @Override

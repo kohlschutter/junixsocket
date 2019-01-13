@@ -38,8 +38,10 @@ public class SimpleTestServer {
   public static void main(String[] args) throws IOException {
     final File socketFile = new File(new File(System.getProperty("java.io.tmpdir")),
         "junixsocket-test.sock");
+    System.out.println(socketFile);
 
     try (AFUNIXServerSocket server = AFUNIXServerSocket.newInstance()) {
+      // server.setReuseAddress(false);
       server.bind(new AFUNIXSocketAddress(socketFile));
       System.out.println("server: " + server);
 
@@ -86,6 +88,12 @@ public class SimpleTestServer {
                 throw new IllegalStateException("Received the wrong number: " + theirNumber);
               }
             }
+          }
+        } catch (IOException e) {
+          if (server.isClosed()) {
+            throw e;
+          } else {
+            e.printStackTrace();
           }
         }
       }

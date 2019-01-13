@@ -46,15 +46,15 @@ final class NativeUnixSocket {
   static void checkSupported() {
   }
 
-  static native void bind(final String socketFile, final FileDescriptor fd, final int options)
+  static native long bind(final String socketFile, final FileDescriptor fd, final int options)
       throws IOException;
 
   static native void listen(final FileDescriptor fd, final int backlog) throws IOException;
 
   static native void accept(final String socketFile, final FileDescriptor fdServer,
-      final FileDescriptor fd) throws IOException;
+      final FileDescriptor fd, long inode) throws IOException;
 
-  static native void connect(final String socketFile, final FileDescriptor fd) throws IOException;
+  static native void connect(final String socketFile, final FileDescriptor fd, long inode) throws IOException;
 
   static native int read(final FileDescriptor fd, byte[] buf, int off, int len) throws IOException;
 

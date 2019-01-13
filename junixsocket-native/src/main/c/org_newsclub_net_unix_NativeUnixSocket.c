@@ -22,6 +22,7 @@
 #include "org_newsclub_net_unix_NativeUnixSocket.h"
 
 #include <errno.h>
+#include <sys/param.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,6 +35,7 @@
 #include <sys/uio.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 #ifndef FIONREAD
 #include <sys/filio.h>
@@ -213,10 +215,10 @@ static uint64_t timespecToMillis(struct timespec* ts) {
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    accept
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;)V
+ * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;L)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
-(JNIEnv * env, jclass clazz, jstring file, jobject fdServer, jobject fd) {
+(JNIEnv * env, jclass clazz, jstring file, jobject fdServer, jobject fd, jlong expectedInode) {
 
 	const char* socketFile = (*env)->GetStringUTFChars(env, file, NULL);
 	if(socketFile == NULL) {
@@ -245,6 +247,23 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 			+ (unsigned char)sizeof(su.sun_len)
 #endif
 	);
+
+	if (expectedInode > 0) {
+		struct stat fdStat;
+
+		// It's OK when the file's gone, but not OK if it refers to another inode.
+		int statRes = stat(su.sun_path, &fdStat);
+		if (statRes == 0) {
+			long statInode = fdStat.st_ino;
+
+			if (expectedInode != statInode) {
+				// inode mismatch -> someone else took over this socket address
+				_closeFd(env, fdServer, serverHandle);
+				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, ECONNABORTED, NULL, file);
+				return;
+			}
+		}
+	}
 
 #if defined(junixsocket_use_poll_for_accept)
 
@@ -343,19 +362,21 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    bind
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;I)V
+ * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;I)L
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
+JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 (JNIEnv * env, jclass clazz, jstring file, jobject fd, jint options) {
+	bool reuse = (options == -1);
+
 	const char* socketFile = (*env)->GetStringUTFChars(env, file, NULL);
 	if(socketFile == NULL) {
-		return; // OOME
+		return -1; // OOME
 	}
 	if(strlen(socketFile) >= 104) {
 		(*env)->ReleaseStringUTFChars(env, file, socketFile);
 		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
 				"Pathname too long for socket", file);
-		return;
+		return -1;
 	}
 
 	struct sockaddr_un su;
@@ -374,25 +395,41 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 #endif
 	);
 
-	int serverHandle;
+	bool useSuTmp = false;
+	struct sockaddr_un suTmp;
+	if(reuse) {
+		suTmp.sun_family = AF_UNIX;
+		suTmp.sun_path[0] = 0;
+	#ifdef junixsocket_have_sun_len
+		suTmp.sun_len = (unsigned char)(sizeof(suTmp) - sizeof(suTmp.sun_path) + strlen(suTmp.sun_path));
+	#endif
+	}
+
+	int myErr;
+
+	int serverHandle = 0;
 	for(int attempt=0;attempt<2;attempt++) {
+		myErr = 0;
+		if (serverHandle != 0) {
+			close(serverHandle);
+		}
 		serverHandle = socket(AF_UNIX, SOCK_STREAM, 0);
 		if(serverHandle == -1) {
 			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, file);
-			return;
+			return -1;
 		}
 
 		int ret;
 		int optVal = 1;
 
-		if (options == -1) {
+		if (reuse) {
 			// reuse address
 
-			// This block is only prophylactic, as SO_REUSEADDR seems not to work with AF_UNIX
+			// This block is only prophylactic, as SO_REUSEADDR seems not to affect AF_UNIX sockets
 			ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(optVal));
 			if(ret == -1) {
 				org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, file);
-				return;
+				return -1;
 			}
 		}
 
@@ -401,27 +438,72 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 		ret = setsockopt(serverHandle, SOL_SOCKET, SO_NOSIGPIPE, &optVal, sizeof(optVal));
 		if(ret == -1) {
 			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, file);
-			return;
+			return -1;
 		}
 	#endif
 
-		int bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
+		int bindRes;
+		if (attempt == 0 && !reuse) {
+			// if we're not going to reuse the socket, let's try to connect first.
+			// This avoids changing file metadata (e.g. ctime!)
+			bindRes = -1;
+			errno = 0;
+		} else {
+			bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
+		}
 
-		int myErr = errno;
+		myErr = errno;
 		if (bindRes == 0) {
 			break;
-		} else if(attempt == 0 && myErr == EADDRINUSE) {
+		} else if(attempt == 0 && (!reuse || myErr == EADDRINUSE)) {
+			if (reuse) {
+				close(serverHandle);
+
+				// if we're reusing the socket, it's better to move away the existing
+				// socket, bind ours to the correct address, and then connect to
+				// the temporary file (to unblock the accept), and finally delete
+				// the temporary file
+				strcpy(suTmp.sun_path, "/tmp/junixsocket.XXXXXX");
+				mkstemp(suTmp.sun_path);
+
+				int renameRet = rename(su.sun_path, suTmp.sun_path);
+				if(renameRet == -1) {
+					if (errno != ENOENT) {
+						org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
+						return -1;
+					}
+				}
+				useSuTmp = true;
+			}
+
+			if (useSuTmp) {
+				// we've moved the existing socket, let's first bind and then let the old server know!
+				_closeFd(env, fd, serverHandle);
+				continue;
+			}
+
 			// if the given file exists, but is not a socket, ENOTSOCK is returned
 			// if access is denied, EACCESS is returned
 			do {
 				ret = connect(serverHandle, (struct sockaddr *)&su, suLength);
 			}while (ret == -1 && errno == EINTR);
 
+			if(ret == 0) {
+				// if we can successfully connect, the address is in use
+				errno = EADDRINUSE;
+				if (!reuse) {
+					myErr = EADDRINUSE;
+				}
+			} else if(errno == ENOENT) {
+				continue;
+			}
+
 			if(ret == 0 || (ret == -1 && (errno == ECONNREFUSED || errno == EADDRINUSE))) {
 				// assume existing socket file
-				if (options == -1 || errno == ECONNREFUSED) {
+				_closeFd(env, fd, serverHandle);
+
+				if (reuse || errno == ECONNREFUSED) {
 					// either reuse existing socket, or take over a no longer working socket
-					_closeFd(env, fd, serverHandle);
 					if(unlink(su.sun_path) == -1) {
 						if (errno == ENOENT) {
 							continue;
@@ -434,19 +516,64 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 				}
 			}
 		}
+
 		_closeFd(env, fd, serverHandle);
 		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
-		return;
+		return -1;
 	}
 
 	int chmodRes = chmod(su.sun_path, 0666);
 	if(chmodRes == -1) {
+		myErr = errno;
 		_closeFd(env, fd, serverHandle);
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, file);
-		return;
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
+		return -1;
 	}
 
 	org_newsclub_net_unix_NativeUnixSocket_initFD(env, fd, serverHandle);
+
+	struct stat fdStat;
+
+	int statRes = stat(su.sun_path, &fdStat);
+	if (statRes == -1) {
+		myErr = errno;
+		_closeFd(env, fd, serverHandle);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
+		return -1;
+	}
+
+	jlong inode = fdStat.st_ino;
+
+	if (useSuTmp) {
+		// now that we've bound our socket, let the previously listening server know.
+		// We've moved their socket to a safe place, which we'll have to unlink, too!
+
+		socklen_t suTmpLength = (socklen_t)(strlen(suTmp.sun_path) + sizeof(suTmp.sun_family)
+#ifdef junixsocket_have_sun_len
+				+ (unsigned char)sizeof(suTmp.sun_len)
+#endif
+		);
+
+		int tmpHandle = socket(AF_UNIX, SOCK_STREAM, 0);
+		if (tmpHandle != -1) {
+			int ret;
+			do {
+				ret = connect(tmpHandle, (struct sockaddr *)&suTmp, suTmpLength);
+			}while (ret == -1 && errno == EINTR);
+
+			ret = shutdown(tmpHandle, SHUT_RDWR);
+			ret = close(tmpHandle);
+		}
+
+		if(unlink(suTmp.sun_path) == -1) {
+			if (errno != ENOENT) {
+				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, file);
+				return -1;
+			}
+		}
+	}
+
+	return inode;
 }
 
 /*
@@ -468,10 +595,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    connect
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;)V
+ * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;L)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
-(JNIEnv * env, jclass clazz, jstring file, jobject fd) {
+(JNIEnv * env, jclass clazz, jstring file, jobject fd, jlong expectedInode) {
 	const char* socketFile = (*env)->GetStringUTFChars(env, file, NULL);
 	if(socketFile == NULL) {
 		return; // OOME
@@ -505,14 +632,32 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 #endif
 	);
 
+	if (expectedInode > 0) {
+		struct stat fdStat;
+
+		// It's OK when the file's gone, but not OK if it refers to another inode.
+		int statRes = stat(su.sun_path, &fdStat);
+		if (statRes == 0) {
+			long statInode = fdStat.st_ino;
+
+			if (expectedInode != statInode) {
+				// inode mismatch -> someone else took over this socket address
+				_closeFd(env, fd, socketHandle);
+				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, ECONNABORTED, NULL, file);
+				return;
+			}
+		}
+	}
+
 	int ret;
 	do {
 		ret = connect(socketHandle, (struct sockaddr *)&su, suLength);
 	}while(ret == -1 && errno == EINTR);
 
 	if(ret == -1) {
+		int myErr = errno;
 		_closeFd(env, fd, socketHandle);
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
 		return;
 	}
 
@@ -631,7 +776,6 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close
 	(*env)->MonitorExit(env, fd);
 
 	int ret = _closeFd(env, fd, handle);
-
 	if(ret == -1) {
 		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, NULL);
 		return;
@@ -645,6 +789,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close
 static int _closeFd(JNIEnv * env, jobject fd, int handle) {
 	int ret = 0;
 	if (handle > 0) {
+		shutdown(handle, SHUT_RDWR);
 		ret = close(handle);
 	}
 	if (fd == NULL) {
@@ -660,6 +805,7 @@ static int _closeFd(JNIEnv * env, jobject fd, int handle) {
 //				fprintf(stderr, "Inconsistency: %i vs %i\n", handle, fdHandle);
 		}
 	} else if (fdHandle > 0) {
+		shutdown(fdHandle, SHUT_RDWR);
 		ret = close(fdHandle);
 	}
 
