@@ -18,16 +18,20 @@
 
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
-    <junixsocket.cross.repo>${project.build.directory}/crossrepo</junixsocket.cross.repo>
     <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
   </properties>
 
   <profiles>
     <profile>
       <id>cross</id>
+      <activation>
+        <property>
+          <name>cross</name>
+          <value>true</value>
+        </property>
+      </activation>
       <properties>
         <junixsocket.cross.disabled>false</junixsocket.cross.disabled>
-        <junixsocket.cross>true</junixsocket.cross>
       </properties>
     </profile>
   </profiles>
@@ -65,6 +69,7 @@
                 <junixsocket.native.llvm.target>x86_64-apple-darwin18.2.0</junixsocket.native.llvm.target>
                 <junixsocket.native.jnilib.extension>dylib</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-llvm-jni</junixsocket.common.classifier.mac.x86_64>
+                <ignorant>${ignorant}</ignorant>
               </properties>
             </configuration>
           </execution>
@@ -95,6 +100,7 @@
                 <junixsocket.native.llvm.target>x86_64-pc-linux-gnu</junixsocket.native.llvm.target>
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.x86_64>
+                <ignorant>${ignorant}</ignorant>
               </properties>
             </configuration>
           </execution>

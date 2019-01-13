@@ -132,9 +132,14 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     </profile>
     <profile>
       <id>cross</id>
+      <activation>
+        <property>
+          <name>cross</name>
+          <value>true</value>
+        </property>
+      </activation>
       <properties>
         <junixsocket.cross.disabled>false</junixsocket.cross.disabled>
-        <junixsocket.cross>true</junixsocket.cross>
       </properties>
       <modules>
         <module>junixsocket-native-cross</module>

@@ -81,13 +81,12 @@
       <id>cross</id>
       <activation>
         <property>
-          <name>junixsocket.cross</name>
+          <name>cross</name>
           <value>true</value>
         </property>
       </activation>
       <properties>
         <junixsocket.cross.disabled>false</junixsocket.cross.disabled>
-        <junixsocket.cross>true</junixsocket.cross>
         <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-llvm-jni</junixsocket.common.classifier.mac.x86_64>
         <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.x86_64>
       </properties>
@@ -111,7 +110,8 @@
           <family>mac</family>
         </os>
         <property>
-          <name>!junixsocket.cross</name>
+          <name>cross</name>
+          <value>!true</value>
         </property>
       </activation>
       <dependencies>
@@ -134,7 +134,8 @@
           <name>Linux</name>
         </os>
         <property>
-          <name>!junixsocket.cross</name>
+          <name>cross</name>
+          <value>!true</value>
         </property>
       </activation>
       <dependencies>
@@ -152,6 +153,12 @@
 
     <profile>
       <id>release</id>
+      <activation>
+        <property>
+          <name>cross</name>
+          <value>true</value>
+        </property>
+      </activation>
       <dependencies>
         <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>
