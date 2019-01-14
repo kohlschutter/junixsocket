@@ -41,7 +41,7 @@ abstract class SocketTestBase {
   protected AFUNIXSocketAddress getServerAddress() {
     return serverAddress;
   }
-  
+
   static File initSocketFile() {
     File f;
     String explicitFile = System.getProperty("org.newsclub.net.unix.testsocket");

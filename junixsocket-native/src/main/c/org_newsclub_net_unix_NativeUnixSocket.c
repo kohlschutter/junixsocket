@@ -102,7 +102,7 @@ static const char *kExceptionClasses[kExceptionMaxExcl] = {
 		"java/net/SocketTimeoutException", // kExceptionSocketTimeoutException
 		"java/lang/IndexOutOfBoundsException", // kExceptionIndexOutOfBoundsException
 		"java/lang/IllegalStateException" // kExceptionIllegalStateException
-		"java/lang/NullPointerException" // kExceptionNullPointerException
+				"java/lang/NullPointerException" // kExceptionNullPointerException
 		};
 
 static int _closeFd(JNIEnv * env, jobject fd, int handle);
@@ -142,7 +142,7 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
 	case EBADF:
 	case ECONNRESET:
 		// broken pipe, etc. -> close socket fd, so Socket#isClosed returns true
-		if (fdToClose != NULL) {
+		if(fdToClose != NULL) {
 			_closeFd(env, fdToClose, -1);
 		}
 
@@ -172,24 +172,32 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(
 		JNIEnv* env, int errnum, jobject fd, jstring file)
 {
 	// when setsockopt returns an error with EINVAL, it means the socket was shut down already
-	if (errnum == EINVAL) {
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-					"Socket closed", file);
+	if(errnum == EINVAL) {
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				kExceptionSocketException, "Socket closed", file);
 		return;
 	}
 
-	org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, fd, file);
+	org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, fd,
+			file);
 }
 
-static void handleFieldNotFound(JNIEnv *env, jobject instance, char *fieldName) {
+static void handleFieldNotFound(JNIEnv *env, jobject instance, char *fieldName)
+{
 
-	jmethodID classMethodId = (*env)->GetMethodID(env, (*env)->GetObjectClass(env, instance), "getClass", "()Ljava/lang/Class;");
-	jobject classObject = (*env)->CallObjectMethod(env, instance, classMethodId);
+	jmethodID classMethodId = (*env)->GetMethodID(env,
+			(*env)->GetObjectClass(env, instance), "getClass",
+			"()Ljava/lang/Class;");
+	jobject classObject = (*env)->CallObjectMethod(env, instance,
+			classMethodId);
 
-	jmethodID methodId = (*env)->GetMethodID(env, (*env)->GetObjectClass(env, classObject), "getSimpleName", "()Ljava/lang/String;");
-	jstring className = (jstring) (*env)->CallObjectMethod(env, classObject, methodId);
+	jmethodID methodId = (*env)->GetMethodID(env,
+			(*env)->GetObjectClass(env, classObject), "getSimpleName",
+			"()Ljava/lang/String;");
+	jstring className = (jstring)(*env)->CallObjectMethod(env, classObject,
+			methodId);
 	const char* classNameStr = (*env)->GetStringUTFChars(env, className, NULL);
-	if (classNameStr == NULL) {
+	if(classNameStr == NULL) {
 		return; // OOME
 	}
 
@@ -199,41 +207,49 @@ static void handleFieldNotFound(JNIEnv *env, jobject instance, char *fieldName) 
 	snprintf(message, buflen, template, fieldName, classNameStr);
 	(*env)->ReleaseStringUTFChars(env, className, classNameStr);
 
-	org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-			message, NULL);
+	org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+			kExceptionSocketException, message, NULL);
 	free(message);
 }
 
 __attribute__((unused))
-static void callObjectSetter(JNIEnv *env, jobject instance, char *methodName, char *methodSignature, jobject value) {
+static void callObjectSetter(JNIEnv *env, jobject instance, char *methodName,
+		char *methodSignature, jobject value)
+{
 	jclass instanceClass = (*env)->GetObjectClass(env, instance);
-	if (instanceClass == NULL) {
+	if(instanceClass == NULL) {
 		return;
 	}
 
-	jmethodID methodId = (*env)->GetMethodID(env, instanceClass, methodName, methodSignature);
-	if (methodId == NULL) {
+	jmethodID methodId = (*env)->GetMethodID(env, instanceClass, methodName,
+			methodSignature);
+	if(methodId == NULL) {
 		handleFieldNotFound(env, instance, methodName);
 		return;
 	}
 
-	jobject array[] = { value };
+	jobject array[] = {value};
 	(*env)->CallObjectMethodA(env, instance, methodId, (jvalue*)array);
 }
 
-static void setObjectFieldValue(JNIEnv *env, jobject instance, char *fieldName, char *fieldType, jobject value) {
+static void setObjectFieldValue(JNIEnv *env, jobject instance, char *fieldName,
+		char *fieldType, jobject value)
+{
 	jclass instanceClass = (*env)->GetObjectClass(env, instance);
-	if (instanceClass == NULL) {
+	if(instanceClass == NULL) {
 		return;
 	}
-	jfieldID fieldID = (*env)->GetFieldID(env, instanceClass, fieldName, fieldType);
+	jfieldID fieldID = (*env)->GetFieldID(env, instanceClass, fieldName,
+			fieldType);
 	if(fieldID == NULL) {
 		handleFieldNotFound(env, instance, fieldName);
 		return;
 	}
 	(*env)->SetObjectField(env, instance, fieldID, value);
 }
-static void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName, jlong value) {
+static void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
+		jlong value)
+{
 	jclass instanceClass = (*env)->GetObjectClass(env, instance);
 	jfieldID fieldID = (*env)->GetFieldID(env, instanceClass, fieldName, "J");
 	if(fieldID == NULL) {
@@ -285,8 +301,10 @@ static uint64_t timespecToMillis(struct timespec* ts) {
  * Method:    accept
  * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;J)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
-(JNIEnv * env, jclass clazz, jstring file, jobject fdServer, jobject fd, jlong expectedInode) {
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
+		JNIEnv * env, jclass clazz, jstring file, jobject fdServer, jobject fd,
+		jlong expectedInode)
+{
 
 	const char* socketFile = (*env)->GetStringUTFChars(env, file, NULL);
 	if(socketFile == NULL) {
@@ -294,17 +312,20 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 	}
 	if(strlen(socketFile) >= 104) {
 		(*env)->ReleaseStringUTFChars(env, file, socketFile);
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-				"Pathname too long for socket", file);
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				kExceptionSocketException, "Pathname too long for socket",
+				file);
 		return;
 	}
 
-	int serverHandle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fdServer);
+	int serverHandle = org_newsclub_net_unix_NativeUnixSocket_getFD(env,
+			fdServer);
 
 	struct sockaddr_un su;
 	su.sun_family = AF_UNIX;
 #ifdef junixsocket_have_sun_len
-	su.sun_len = (unsigned char)(sizeof(su) - sizeof(su.sun_path) + strlen(su.sun_path));
+	su.sun_len = (unsigned char)(sizeof(su) - sizeof(su.sun_path)
+			+ strlen(su.sun_path));
 #endif
 	strcpy(su.sun_path, socketFile);
 	(*env)->ReleaseStringUTFChars(env, file, socketFile);
@@ -314,20 +335,21 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 #ifdef junixsocket_have_sun_len
 			+ (unsigned char)sizeof(su.sun_len)
 #endif
-	);
+			);
 
-	if (expectedInode > 0) {
+	if(expectedInode > 0) {
 		struct stat fdStat;
 
 		// It's OK when the file's gone, but not OK if it refers to another inode.
 		int statRes = stat(su.sun_path, &fdStat);
-		if (statRes == 0) {
+		if(statRes == 0) {
 			long statInode = fdStat.st_ino;
 
-			if (expectedInode != statInode) {
+			if(expectedInode != statInode) {
 				// inode mismatch -> someone else took over this socket address
 				_closeFd(env, fdServer, serverHandle);
-				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, ECONNABORTED, NULL, file);
+				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env,
+						ECONNABORTED, NULL, file);
 				return;
 			}
 		}
@@ -416,10 +438,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 	int socketHandle;
 	do {
 		socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
-	}while (socketHandle == -1 && errno == EINTR);
+	} while(socketHandle == -1 && errno == EINTR);
 	if(socketHandle < 0) {
 		int errnum = errno;
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, fdServer, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum,
+				fdServer, file);
 		return;
 	}
 
@@ -432,8 +455,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
  * Method:    bind
  * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;I)J
  */
-JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
-(JNIEnv * env, jclass clazz, jstring file, jobject fd, jint options) {
+JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
+		JNIEnv * env, jclass clazz, jstring file, jobject fd, jint options)
+{
 	bool reuse = (options == -1);
 
 	const char* socketFile = (*env)->GetStringUTFChars(env, file, NULL);
@@ -442,15 +466,17 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 	}
 	if(strlen(socketFile) >= 104) {
 		(*env)->ReleaseStringUTFChars(env, file, socketFile);
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-				"Pathname too long for socket", file);
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				kExceptionSocketException, "Pathname too long for socket",
+				file);
 		return -1;
 	}
 
 	struct sockaddr_un su;
 	su.sun_family = AF_UNIX;
 #ifdef junixsocket_have_sun_len
-	su.sun_len = (unsigned char)(sizeof(su) - sizeof(su.sun_path) + strlen(su.sun_path));
+	su.sun_len = (unsigned char)(sizeof(su) - sizeof(su.sun_path)
+			+ strlen(su.sun_path));
 #endif
 
 	strcpy(su.sun_path, socketFile);
@@ -461,57 +487,61 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 #ifdef junixsocket_have_sun_len
 			+ sizeof(su.sun_len)
 #endif
-	);
+			);
 
 	bool useSuTmp = false;
 	struct sockaddr_un suTmp;
 	if(reuse) {
 		suTmp.sun_family = AF_UNIX;
 		suTmp.sun_path[0] = 0;
-	#ifdef junixsocket_have_sun_len
-		suTmp.sun_len = (unsigned char)(sizeof(suTmp) - sizeof(suTmp.sun_path) + strlen(suTmp.sun_path));
-	#endif
+#ifdef junixsocket_have_sun_len
+		suTmp.sun_len = (unsigned char)(sizeof(suTmp) - sizeof(suTmp.sun_path)
+				+ strlen(suTmp.sun_path));
+#endif
 	}
 
 	int myErr;
 
 	int serverHandle = 0;
-	for(int attempt=0;attempt<2;attempt++) {
+	for(int attempt = 0; attempt < 2; attempt++) {
 		myErr = 0;
-		if (serverHandle != 0) {
+		if(serverHandle != 0) {
 			close(serverHandle);
 		}
 		serverHandle = socket(AF_UNIX, SOCK_STREAM, 0);
 		if(serverHandle == -1) {
-			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, file);
+			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env,
+					errno, fd, file);
 			return -1;
 		}
 
 		int ret;
 		int optVal = 1;
 
-		if (reuse) {
+		if(reuse) {
 			// reuse address
 
 			// This block is only prophylactic, as SO_REUSEADDR seems not to affect AF_UNIX sockets
-			ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal, sizeof(optVal));
+			ret = setsockopt(serverHandle, SOL_SOCKET, SO_REUSEADDR, &optVal,
+					sizeof(optVal));
 			if(ret == -1) {
-				org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, file);
+				org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(
+						env, errno, fd, file);
 				return -1;
 			}
 		}
 
-	#if defined(SO_NOSIGPIPE)
+#if defined(SO_NOSIGPIPE)
 		// prevent raising SIGPIPE
 		ret = setsockopt(serverHandle, SOL_SOCKET, SO_NOSIGPIPE, &optVal, sizeof(optVal));
 		if(ret == -1) {
 			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, file);
 			return -1;
 		}
-	#endif
+#endif
 
 		int bindRes;
-		if (attempt == 0 && !reuse) {
+		if(attempt == 0 && !reuse) {
 			// if we're not going to reuse the socket, let's try to connect first.
 			// This avoids changing file metadata (e.g. ctime!)
 			bindRes = -1;
@@ -521,10 +551,10 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 		}
 
 		myErr = errno;
-		if (bindRes == 0) {
+		if(bindRes == 0) {
 			break;
 		} else if(attempt == 0 && (!reuse || myErr == EADDRINUSE)) {
-			if (reuse) {
+			if(reuse) {
 				close(serverHandle);
 
 				// if we're reusing the socket, it's better to move away the existing
@@ -536,7 +566,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 
 				int renameRet = rename(su.sun_path, suTmp.sun_path);
 				if(renameRet == -1) {
-					if (errno != ENOENT) {
+					if(errno != ENOENT) {
 						// ignore failure
 					}
 				} else {
@@ -544,7 +574,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 				}
 			}
 
-			if (useSuTmp) {
+			if(useSuTmp) {
 				// we've moved the existing socket, let's first bind and then let the old server know!
 				_closeFd(env, fd, serverHandle);
 				continue;
@@ -554,26 +584,28 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 			// if access is denied, EACCESS is returned
 			do {
 				ret = connect(serverHandle, (struct sockaddr *)&su, suLength);
-			}while (ret == -1 && errno == EINTR);
+			} while(ret == -1 && errno == EINTR);
 
 			if(ret == 0) {
 				// if we can successfully connect, the address is in use
 				errno = EADDRINUSE;
-				if (!reuse) {
+				if(!reuse) {
 					myErr = EADDRINUSE;
 				}
 			} else if(errno == ENOENT) {
 				continue;
 			}
 
-			if(ret == 0 || (ret == -1 && (errno == ECONNREFUSED || errno == EADDRINUSE))) {
+			if(ret == 0
+					|| (ret == -1
+							&& (errno == ECONNREFUSED || errno == EADDRINUSE))) {
 				// assume existing socket file
 				_closeFd(env, fd, serverHandle);
 
-				if (reuse || errno == ECONNREFUSED) {
+				if(reuse || errno == ECONNREFUSED) {
 					// either reuse existing socket, or take over a no longer working socket
 					if(unlink(su.sun_path) == -1) {
-						if (errno == ENOENT) {
+						if(errno == ENOENT) {
 							continue;
 						}
 
@@ -586,7 +618,8 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 		}
 
 		_closeFd(env, fd, serverHandle);
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr,
+				NULL, file);
 		return -1;
 	}
 
@@ -594,7 +627,8 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 	if(chmodRes == -1) {
 		myErr = errno;
 		_closeFd(env, fd, serverHandle);
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr,
+				NULL, file);
 		return -1;
 	}
 
@@ -603,39 +637,43 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 	struct stat fdStat;
 
 	int statRes = stat(su.sun_path, &fdStat);
-	if (statRes == -1) {
+	if(statRes == -1) {
 		myErr = errno;
 		_closeFd(env, fd, serverHandle);
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr,
+				NULL, file);
 		return -1;
 	}
 
 	jlong inode = fdStat.st_ino;
 
-	if (useSuTmp) {
+	if(useSuTmp) {
 		// now that we've bound our socket, let the previously listening server know.
 		// We've moved their socket to a safe place, which we'll have to unlink, too!
 
-		socklen_t suTmpLength = (socklen_t)(strlen(suTmp.sun_path) + sizeof(suTmp.sun_family)
+		socklen_t suTmpLength = (socklen_t)(
+				strlen(suTmp.sun_path) + sizeof(suTmp.sun_family)
 #ifdef junixsocket_have_sun_len
-				+ (unsigned char)sizeof(suTmp.sun_len)
+						+ (unsigned char)sizeof(suTmp.sun_len)
 #endif
-		);
+						);
 
 		int tmpHandle = socket(AF_UNIX, SOCK_STREAM, 0);
-		if (tmpHandle != -1) {
+		if(tmpHandle != -1) {
 			int ret;
 			do {
-				ret = connect(tmpHandle, (struct sockaddr *)&suTmp, suTmpLength);
-			}while (ret == -1 && errno == EINTR);
+				ret = connect(tmpHandle, (struct sockaddr *)&suTmp,
+						suTmpLength);
+			} while(ret == -1 && errno == EINTR);
 
 			ret = shutdown(tmpHandle, SHUT_RDWR);
 			ret = close(tmpHandle);
 		}
 
 		if(unlink(suTmp.sun_path) == -1) {
-			if (errno != ENOENT) {
-				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, file);
+			if(errno != ENOENT) {
+				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env,
+						errno, NULL, file);
 				return -1;
 			}
 		}
@@ -649,13 +687,15 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
  * Method:    listen
  * Signature: (Ljava/io/FileDescriptor;I)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen
-(JNIEnv * env, jclass clazz, jobject fd, jint backlog) {
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen(
+		JNIEnv * env, jclass clazz, jobject fd, jint backlog)
+{
 	int serverHandle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
 	int listenRes = listen(serverHandle, backlog);
 	if(listenRes == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno,
+				fd, NULL);
 		return;
 	}
 }
@@ -665,29 +705,34 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen
  * Method:    connect
  * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;J)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
-(JNIEnv * env, jclass clazz, jstring file, jobject fd, jlong expectedInode) {
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
+		JNIEnv * env, jclass clazz, jstring file, jobject fd,
+		jlong expectedInode)
+{
 	const char* socketFile = (*env)->GetStringUTFChars(env, file, NULL);
 	if(socketFile == NULL) {
 		return; // OOME
 	}
 	if(strlen(socketFile) >= 104) {
 		(*env)->ReleaseStringUTFChars(env, file, socketFile);
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-				"Pathname too long for socket", file);
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				kExceptionSocketException, "Pathname too long for socket",
+				file);
 		return;
 	}
 
 	int socketHandle = socket(AF_UNIX, SOCK_STREAM, 0);
 	if(socketHandle == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno,
+				fd, file);
 		return;
 	}
 
 	struct sockaddr_un su;
 	su.sun_family = AF_UNIX;
 #ifdef junixsocket_have_sun_len
-	su.sun_len = (unsigned char)(sizeof(su) - sizeof(su.sun_path) + strlen(su.sun_path));
+	su.sun_len = (unsigned char)(sizeof(su) - sizeof(su.sun_path)
+			+ strlen(su.sun_path));
 #endif
 
 	strcpy(su.sun_path, socketFile);
@@ -698,20 +743,21 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 #ifdef junixsocket_have_sun_len
 			+ sizeof(su.sun_len)
 #endif
-	);
+			);
 
-	if (expectedInode > 0) {
+	if(expectedInode > 0) {
 		struct stat fdStat;
 
 		// It's OK when the file's gone, but not OK if it refers to another inode.
 		int statRes = stat(su.sun_path, &fdStat);
-		if (statRes == 0) {
+		if(statRes == 0) {
 			long statInode = fdStat.st_ino;
 
-			if (expectedInode != statInode) {
+			if(expectedInode != statInode) {
 				// inode mismatch -> someone else took over this socket address
 				_closeFd(env, fd, socketHandle);
-				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, ECONNABORTED, NULL, file);
+				org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env,
+						ECONNABORTED, NULL, file);
 				return;
 			}
 		}
@@ -720,12 +766,13 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 	int ret;
 	do {
 		ret = connect(socketHandle, (struct sockaddr *)&su, suLength);
-	}while(ret == -1 && errno == EINTR);
+	} while(ret == -1 && errno == EINTR);
 
 	if(ret == -1) {
 		int myErr = errno;
 		_closeFd(env, fd, socketHandle);
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr, NULL, file);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr,
+				NULL, file);
 		return;
 	}
 
@@ -775,8 +822,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 //			if(errno == EAGAIN || errno == EWOULDBLOCK) {
 //				return 0;
 //			}
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd,
-				NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno,
+				fd, NULL);
 		return -1;
 	}
 
@@ -818,8 +865,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 			return 0;
 		}
 
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd,
-				NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno,
+				fd, NULL);
 		return -1;
 	}
 
@@ -831,9 +878,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
  * Method:    close
  * Signature: (Ljava/io/FileDescriptor;)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close
-(JNIEnv * env, jclass clazz, jobject fd) {
-	if (fd == NULL) {
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close(
+		JNIEnv * env, jclass clazz, jobject fd)
+{
+	if(fd == NULL) {
 		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
 				kExceptionNullPointerException, "fd", NULL);
 		return;
@@ -845,7 +893,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close
 
 	int ret = _closeFd(env, fd, handle);
 	if(ret == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL, NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno,
+				NULL, NULL);
 		return;
 	}
 }
@@ -854,13 +903,14 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close
 // or only one of them be valid.
 //
 // fd objects are marked closed by setting their fd value to -1.
-static int _closeFd(JNIEnv * env, jobject fd, int handle) {
+static int _closeFd(JNIEnv * env, jobject fd, int handle)
+{
 	int ret = 0;
-	if (handle > 0) {
+	if(handle > 0) {
 		shutdown(handle, SHUT_RDWR);
 		ret = close(handle);
 	}
-	if (fd == NULL) {
+	if(fd == NULL) {
 		return ret;
 	}
 	(*env)->MonitorEnter(env, fd);
@@ -868,11 +918,11 @@ static int _closeFd(JNIEnv * env, jobject fd, int handle) {
 	org_newsclub_net_unix_NativeUnixSocket_initFD(env, fd, -1);
 	(*env)->MonitorExit(env, fd);
 
-	if (handle > 0) {
-		if (fdHandle > 0 && handle != fdHandle) {
+	if(handle > 0) {
+		if(fdHandle > 0 && handle != fdHandle) {
 //				fprintf(stderr, "Inconsistency: %i vs %i\n", handle, fdHandle);
 		}
-	} else if (fdHandle > 0) {
+	} else if(fdHandle > 0) {
 		shutdown(fdHandle, SHUT_RDWR);
 		ret = close(fdHandle);
 	}
@@ -885,8 +935,9 @@ static int _closeFd(JNIEnv * env, jobject fd, int handle) {
  * Method:    shutdown
  * Signature: (Ljava/io/FileDescriptor;I)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shutdown
-(JNIEnv * env, jclass clazz, jobject fd, jint mode) {
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shutdown(
+		JNIEnv * env, jclass clazz, jobject fd, jint mode)
+{
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 	int ret = shutdown(handle, mode);
 	if(ret == -1) {
@@ -894,7 +945,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shutdown
 			// ignore
 			return;
 		}
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd, NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno,
+				fd, NULL);
 		return;
 	}
 }
@@ -941,8 +993,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
 		socklen_t optLen = sizeof(optVal);
 		int ret = getsockopt(handle, SOL_SOCKET, optID, &optVal, &optLen);
 		if(ret == -1) {
-			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env,
-					errno, fd, NULL);
+			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(
+					env, errno, fd, NULL);
 			return -1;
 		}
 		return (jint)(optVal.tv_sec * 1000 + optVal.tv_usec / 1000);
@@ -952,8 +1004,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
 
 		int ret = getsockopt(handle, SOL_SOCKET, optID, &optVal, &optLen);
 		if(ret == -1) {
-			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env,
-					errno, fd, NULL);
+			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(
+					env, errno, fd, NULL);
 			return -1;
 		}
 		if(optVal.l_onoff == 0) {
@@ -968,8 +1020,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
 
 	int ret = getsockopt(handle, SOL_SOCKET, optID, &optVal, &optLen);
 	if(ret == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno,
-				fd, NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env,
+				errno, fd, NULL);
 		return -1;
 	}
 
@@ -981,14 +1033,15 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
  * Method:    setSocketOptionInt
  * Signature: (Ljava/io/FileDescriptor;II)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOptionInt
-(JNIEnv * env, jclass clazz, jobject fd, jint optID, jint value) {
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOptionInt(
+		JNIEnv * env, jclass clazz, jobject fd, jint optID, jint value)
+{
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
 	optID = convertSocketOptionToNative(optID);
 	if(optID == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-				"Unsupported socket option", NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				kExceptionSocketException, "Unsupported socket option", NULL);
 		return;
 	}
 
@@ -997,10 +1050,12 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 		struct timeval optVal;
 		optVal.tv_sec = value / 1000;
 		optVal.tv_usec = (value % 1000) * 1000;
-		int ret = setsockopt(handle, SOL_SOCKET, optID, &optVal, sizeof(optVal));
+		int ret = setsockopt(handle, SOL_SOCKET, optID, &optVal,
+				sizeof(optVal));
 
 		if(ret == -1) {
-			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, NULL);
+			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(
+					env, errno, fd, NULL);
 			return;
 		}
 		return;
@@ -1010,9 +1065,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 		optVal.l_onoff = value >= 0;
 		optVal.l_linger = value >= 0 ? value : 0;
 
-		int ret = setsockopt(handle, SOL_SOCKET, optID, &optVal, sizeof(optVal));
+		int ret = setsockopt(handle, SOL_SOCKET, optID, &optVal,
+				sizeof(optVal));
 		if(ret == -1) {
-			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, NULL);
+			org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(
+					env, errno, fd, NULL);
 			return;
 		}
 		return;
@@ -1022,7 +1079,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 
 	int ret = setsockopt(handle, SOL_SOCKET, optID, &optVal, sizeof(optVal));
 	if(ret == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env, errno, fd, NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(env,
+				errno, fd, NULL);
 		return;
 	}
 }
@@ -1043,8 +1101,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available(
 	int count;
 	ioctl(handle, FIONREAD, &count);
 	if(count == -1) {
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, fd,
-				NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno,
+				fd, NULL);
 		return -1;
 	}
 
@@ -1056,8 +1114,9 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available(
  * Method:    peerCredentials
  * Signature: (Ljava/io/FileDescriptor;Lorg/newsclub/net/unix/AFUNIXSocketCredentials;)Lorg/newsclub/net/unix/AFUNIXSocketCredentials;
  */
-JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCredentials
-  (JNIEnv *env, jclass clazz, jobject fdesc, jobject creds) {
+JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCredentials(
+		JNIEnv *env, jclass clazz, jobject fdesc, jobject creds)
+{
 	int fd = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fdesc);
 
 #if defined(LOCAL_PEERCRED)
@@ -1070,11 +1129,11 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
 			return NULL;
 		} else {
 			jlongArray gidArray = (*env)->NewLongArray(env, cr.cr_ngroups);
-		    jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);
-		    for (int i=0,n=cr.cr_ngroups;i<n;i++) {
-		    	gids[i] = (jlong)cr.cr_groups[i];
-		    }
-		    (*env)->ReleaseLongArrayElements(env, gidArray, gids, 0);
+			jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);
+			for (int i=0,n=cr.cr_ngroups;i<n;i++) {
+				gids[i] = (jlong)cr.cr_groups[i];
+			}
+			(*env)->ReleaseLongArrayElements(env, gidArray, gids, 0);
 
 			setLongFieldValue(env, creds, "uid", cr.cr_uid);
 			setObjectFieldValue(env, creds, "gids", "[J", gidArray);
@@ -1120,9 +1179,9 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
 			return NULL;
 		} else {
 			jlongArray gidArray = (*env)->NewLongArray(env, 1);
-		    jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);
-		    gids[0] = cr.gid;
-		    (*env)->ReleaseLongArrayElements(env, gidArray, gids, 0);
+			jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);
+			gids[0] = cr.gid;
+			(*env)->ReleaseLongArrayElements(env, gidArray, gids, 0);
 
 			setLongFieldValue(env, creds, "uid", cr.uid);
 			setLongFieldValue(env, creds, "pid", cr.pid);
@@ -1139,9 +1198,11 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
  * Method:    initServerImpl
  * Signature: (Lcom/newsclub/net/unix/AFUNIXServerSocket;Lcom/newsclub/net/unix/AFUNIXSocketImpl;)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImpl
-(JNIEnv * env, jclass clazz, jobject serverSocket, jobject impl) {
-	setObjectFieldValue(env, serverSocket, "impl", "Ljava/net/SocketImpl;", impl);
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImpl(
+		JNIEnv * env, jclass clazz, jobject serverSocket, jobject impl)
+{
+	setObjectFieldValue(env, serverSocket, "impl", "Ljava/net/SocketImpl;",
+			impl);
 }
 
 /*
@@ -1149,13 +1210,17 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImp
  * Method:    setCreated
  * Signature: (Lcom/newsclub/net/unix/AFUNIXSocket;)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreated
-(JNIEnv * env, jclass clazz, jobject socket) {
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreated(
+		JNIEnv * env, jclass clazz, jobject socket)
+{
 	jclass socketClass = (*env)->GetObjectClass(env, socket);
-	jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setCreated", "()V");
+	jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setCreated",
+			"()V");
 	if(methodID == NULL) {
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-				"Cannot find method \"setCreated\" in java.net.Socket. Unsupported JVM?", NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				kExceptionSocketException,
+				"Cannot find method \"setCreated\" in java.net.Socket. Unsupported JVM?",
+				NULL);
 		return;
 	}
 	(*env)->CallVoidMethod(env, socket, methodID);
@@ -1166,13 +1231,17 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreated
  * Method:    setConnected
  * Signature: (Lcom/newsclub/net/unix/AFUNIXSocket;)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setConnected
-(JNIEnv * env, jclass clazz, jobject socket) {
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setConnected(
+		JNIEnv * env, jclass clazz, jobject socket)
+{
 	jclass socketClass = (*env)->GetObjectClass(env, socket);
-	jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setConnected", "()V");
+	jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setConnected",
+			"()V");
 	if(methodID == NULL) {
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-				"Cannot find method \"setConnected\" in java.net.Socket. Unsupported JVM?", NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				kExceptionSocketException,
+				"Cannot find method \"setConnected\" in java.net.Socket. Unsupported JVM?",
+				NULL);
 		return;
 	}
 	(*env)->CallVoidMethod(env, socket, methodID);
@@ -1183,13 +1252,17 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setConnected
  * Method:    setBound
  * Signature: (Lcom/newsclub/net/unix/AFUNIXSocket;)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBound
-(JNIEnv * env, jclass clazz, jobject socket) {
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBound(
+		JNIEnv * env, jclass clazz, jobject socket)
+{
 	jclass socketClass = (*env)->GetObjectClass(env, socket);
-	jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setBound", "()V");
+	jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setBound",
+			"()V");
 	if(methodID == NULL) {
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-				"Cannot find method \"setBound\" in java.net.Socket. Unsupported JVM?", NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				kExceptionSocketException,
+				"Cannot find method \"setBound\" in java.net.Socket. Unsupported JVM?",
+				NULL);
 		return;
 	}
 	(*env)->CallVoidMethod(env, socket, methodID);
@@ -1200,13 +1273,17 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBound
  * Method:    setCreatedServer
  * Signature: (Lorg/newsclub/net/unix/AFUNIXServerSocket;)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreatedServer
-(JNIEnv * env, jclass clazz, jobject socket) {
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreatedServer(
+		JNIEnv * env, jclass clazz, jobject socket)
+{
 	jclass socketClass = (*env)->GetObjectClass(env, socket);
-	jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setCreated", "()V");
+	jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setCreated",
+			"()V");
 	if(methodID == NULL) {
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-				"Cannot find method \"setCreated\" in java.net.ServerSocket. Unsupported JVM?", NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				kExceptionSocketException,
+				"Cannot find method \"setCreated\" in java.net.ServerSocket. Unsupported JVM?",
+				NULL);
 		return;
 	}
 	(*env)->CallVoidMethod(env, socket, methodID);
@@ -1217,13 +1294,17 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreatedSer
  * Method:    setBoundServer
  * Signature: (Lorg/newsclub/net/unix/AFUNIXServerSocket;)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBoundServer
-(JNIEnv * env, jclass clazz, jobject socket) {
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBoundServer(
+		JNIEnv * env, jclass clazz, jobject socket)
+{
 	jclass socketClass = (*env)->GetObjectClass(env, socket);
-	jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setBound", "()V");
+	jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setBound",
+			"()V");
 	if(methodID == NULL) {
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-				"Cannot find method \"setBound\" in java.net.ServerSocket. Unsupported JVM?", NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				kExceptionSocketException,
+				"Cannot find method \"setBound\" in java.net.ServerSocket. Unsupported JVM?",
+				NULL);
 		return;
 	}
 	(*env)->CallVoidMethod(env, socket, methodID);
@@ -1234,14 +1315,16 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBoundServe
  * Method:    setPort
  * Signature: (Lorg/newsclub/net/unix/AFUNIXSocketAddress;I)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setPort
-(JNIEnv * env, jclass clazz, jobject addr, jint port) {
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setPort(
+		JNIEnv * env, jclass clazz, jobject addr, jint port)
+{
 	jclass fileDescriptorClass = (*env)->GetObjectClass(env, addr);
 
 	jobject fieldObject = addr;
 
 	jfieldID portField;
-	jfieldID holderField = (*env)->GetFieldID(env, fileDescriptorClass, "holder", "Ljava/net/InetSocketAddress$InetSocketAddressHolder;");
+	jfieldID holderField = (*env)->GetFieldID(env, fileDescriptorClass,
+			"holder", "Ljava/net/InetSocketAddress$InetSocketAddressHolder;");
 	if(holderField != NULL) {
 		fieldObject = (*env)->GetObjectField(env, addr, holderField);
 		jclass holderClass = (*env)->GetObjectClass(env, fieldObject);
@@ -1250,8 +1333,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setPort
 		portField = (*env)->GetFieldID(env, fileDescriptorClass, "port", "I");
 	}
 	if(portField == NULL) {
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-				"Cannot find field \"port\" in java.net.InetSocketAddress. Unsupported JVM?", NULL);
+		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+				kExceptionSocketException,
+				"Cannot find field \"port\" in java.net.InetSocketAddress. Unsupported JVM?",
+				NULL);
 		return;
 	}
 	(*env)->SetIntField(env, fieldObject, portField, port);
