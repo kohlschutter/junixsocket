@@ -167,13 +167,6 @@
             <include>true</include>
           </java>
         </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.bcel</groupId>
-            <artifactId>bcel</artifactId>
-            <version>6.2</version>
-          </dependency>
-        </dependencies>
         <executions>
           <execution>
             <!-- disabled to allow building with Java 10+ -->

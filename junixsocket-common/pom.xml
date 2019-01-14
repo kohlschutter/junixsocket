@@ -22,19 +22,13 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>com.github.maven-nar</groupId>
-        <artifactId>nar-maven-plugin</artifactId>
-        <extensions>true</extensions>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <!-- Build JNI headers automatically -->
         <configuration>
-          <libraries>
-            <library>
-              <type>jni</type>
-              <narSystemPackage>org.newsclub.net.unix</narSystemPackage>
-            </library>
-          </libraries>
-          <javah>
-            <jniDirectory>${kohlschutter.project.base.directory}/junixsocket-native/src/main/c</jniDirectory>
-          </javah>
+          <compilerArgs>
+            <arg>-h</arg>
+            <arg>${kohlschutter.project.base.directory}/junixsocket-native/src/main/c</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
     </plugins>
