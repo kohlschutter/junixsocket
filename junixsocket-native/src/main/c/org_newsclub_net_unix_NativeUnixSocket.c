@@ -19,8 +19,9 @@
 ///
 /// @author Christian Kohlschuetter
 ///
-#include "org_newsclub_net_unix_NativeUnixSocket.h"
+#define _GNU_SOURCE 1
 
+#include "org_newsclub_net_unix_NativeUnixSocket.h"
 #include <errno.h>
 #include <sys/param.h>
 #include <fcntl.h>
@@ -69,6 +70,7 @@ typedef unsigned long socklen_t; /* 64-bits */
 #if defined(__MACH__)
 #define junixsocket_use_poll_for_accept
 //#define junixsocket_use_poll_interval_millis	1000
+#include <sys/ucred.h>
 #endif
 
 #if defined(junixsocket_use_poll_for_accept)
@@ -79,6 +81,10 @@ typedef unsigned long socklen_t; /* 64-bits */
 #if !defined(uint64_t)
 typedef unsigned long long uint64_t;
 #endif
+#endif
+
+#if defined(LOCAL_PEEREUUID)
+#include <uuid/uuid.h>
 #endif
 
 typedef enum {
@@ -175,6 +181,68 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwSockoptErrnumException(
 	org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errnum, fd, file);
 }
 
+static void handleFieldNotFound(JNIEnv *env, jobject instance, char *fieldName) {
+
+	jmethodID classMethodId = (*env)->GetMethodID(env, (*env)->GetObjectClass(env, instance), "getClass", "()Ljava/lang/Class;");
+	jobject classObject = (*env)->CallObjectMethod(env, instance, classMethodId);
+
+	jmethodID methodId = (*env)->GetMethodID(env, (*env)->GetObjectClass(env, classObject), "getSimpleName", "()Ljava/lang/String;");
+	jstring className = (jstring) (*env)->CallObjectMethod(env, classObject, methodId);
+	const char* classNameStr = (*env)->GetStringUTFChars(env, className, NULL);
+	if (classNameStr == NULL) {
+		return; // OOME
+	}
+
+	char *template = "Cannot find '%s' in class %s";
+	int buflen = strlen(template) + strlen(fieldName) + strlen(classNameStr);
+	char *message = calloc(1, buflen);
+	snprintf(message, buflen, template, fieldName, classNameStr);
+	(*env)->ReleaseStringUTFChars(env, className, classNameStr);
+
+	org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
+			message, NULL);
+	free(message);
+}
+
+__attribute__((unused))
+static void callObjectSetter(JNIEnv *env, jobject instance, char *methodName, char *methodSignature, jobject value) {
+	jclass instanceClass = (*env)->GetObjectClass(env, instance);
+	if (instanceClass == NULL) {
+		return;
+	}
+
+	jmethodID methodId = (*env)->GetMethodID(env, instanceClass, methodName, methodSignature);
+	if (methodId == NULL) {
+		handleFieldNotFound(env, instance, methodName);
+		return;
+	}
+
+	jobject array[] = { value };
+	(*env)->CallObjectMethodA(env, instance, methodId, (jvalue*)array);
+}
+
+static void setObjectFieldValue(JNIEnv *env, jobject instance, char *fieldName, char *fieldType, jobject value) {
+	jclass instanceClass = (*env)->GetObjectClass(env, instance);
+	if (instanceClass == NULL) {
+		return;
+	}
+	jfieldID fieldID = (*env)->GetFieldID(env, instanceClass, fieldName, fieldType);
+	if(fieldID == NULL) {
+		handleFieldNotFound(env, instance, fieldName);
+		return;
+	}
+	(*env)->SetObjectField(env, instance, fieldID, value);
+}
+static void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName, jlong value) {
+	jclass instanceClass = (*env)->GetObjectClass(env, instance);
+	jfieldID fieldID = (*env)->GetFieldID(env, instanceClass, fieldName, "J");
+	if(fieldID == NULL) {
+		handleFieldNotFound(env, instance, fieldName);
+		return;
+	}
+	(*env)->SetLongField(env, instance, fieldID, value);
+}
+
 int org_newsclub_net_unix_NativeUnixSocket_getFD(JNIEnv * env, jobject fd)
 {
 	jclass fileDescriptorClass = (*env)->GetObjectClass(env, fd);
@@ -215,7 +283,7 @@ static uint64_t timespecToMillis(struct timespec* ts) {
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    accept
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;L)V
+ * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;J)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 (JNIEnv * env, jclass clazz, jstring file, jobject fdServer, jobject fd, jlong expectedInode) {
@@ -362,7 +430,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    bind
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;I)L
+ * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;I)J
  */
 JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 (JNIEnv * env, jclass clazz, jstring file, jobject fd, jint options) {
@@ -595,7 +663,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    connect
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;L)V
+ * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;J)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 (JNIEnv * env, jclass clazz, jstring file, jobject fd, jlong expectedInode) {
@@ -985,19 +1053,95 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available(
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    peerCredentials
+ * Signature: (Ljava/io/FileDescriptor;Lorg/newsclub/net/unix/AFUNIXSocketCredentials;)Lorg/newsclub/net/unix/AFUNIXSocketCredentials;
+ */
+JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCredentials
+  (JNIEnv *env, jclass clazz, jobject fdesc, jobject creds) {
+	int fd = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fdesc);
+
+#if defined(LOCAL_PEERCRED)
+	{
+		struct xucred cr;
+		socklen_t len = sizeof(cr);
+		if(getsockopt(fd, SOL_LOCAL, LOCAL_PEERCRED, &cr, &len) < 0) {
+			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL,
+					NULL);
+			return NULL;
+		} else {
+			jlongArray gidArray = (*env)->NewLongArray(env, cr.cr_ngroups);
+		    jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);
+		    for (int i=0,n=cr.cr_ngroups;i<n;i++) {
+		    	gids[i] = (jlong)cr.cr_groups[i];
+		    }
+		    (*env)->ReleaseLongArrayElements(env, gidArray, gids, 0);
+
+			setLongFieldValue(env, creds, "uid", cr.cr_uid);
+			setObjectFieldValue(env, creds, "gids", "[J", gidArray);
+		}
+	}
+#endif
+#if defined(LOCAL_PEEREPID)
+	{
+		pid_t pid = (pid_t) -1;
+		socklen_t len = sizeof(pid);
+		if(getsockopt(fd, SOL_LOCAL, LOCAL_PEEREPID, &pid, &len) < 0) {
+			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL,
+					NULL);
+			return NULL;
+		}
+		setLongFieldValue(env, creds, "pid", (jlong)pid);
+	}
+#endif
+#if defined(LOCAL_PEEREUUID)
+	{
+		uuid_t uuid;
+		socklen_t len = sizeof(uuid);
+		if(getsockopt(fd, SOL_LOCAL, LOCAL_PEEREUUID, &uuid, &len) < 0) {
+			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL,
+					NULL);
+			return NULL;
+		} else {
+			uuid_string_t uuidStr;
+			uuid_unparse(uuid, uuidStr);
+
+			jobject uuidString = (*env)->NewStringUTF(env, uuidStr);
+			callObjectSetter(env, creds, "setUUID", "(Ljava/lang/String;)V", uuidString);
+		}
+	}
+#endif
+#if defined(SO_PEERCRED)
+	{
+		struct ucred cr;
+		socklen_t len = sizeof(cr);
+		if(getsockopt(fd, SOL_SOCKET, SO_PEERCRED, &cr, &len) < 0) {
+			org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno, NULL,
+					NULL);
+			return NULL;
+		} else {
+			jlongArray gidArray = (*env)->NewLongArray(env, 1);
+		    jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);
+		    gids[0] = cr.gid;
+		    (*env)->ReleaseLongArrayElements(env, gidArray, gids, 0);
+
+			setLongFieldValue(env, creds, "uid", cr.uid);
+			setLongFieldValue(env, creds, "pid", cr.pid);
+			setObjectFieldValue(env, creds, "gids", "[J", gidArray);
+		}
+	}
+#endif
+
+	return creds;
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    initServerImpl
  * Signature: (Lcom/newsclub/net/unix/AFUNIXServerSocket;Lcom/newsclub/net/unix/AFUNIXSocketImpl;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImpl
 (JNIEnv * env, jclass clazz, jobject serverSocket, jobject impl) {
-	jclass serverSocketClass = (*env)->GetObjectClass(env, serverSocket);
-	jfieldID fieldID = (*env)->GetFieldID(env, serverSocketClass, "impl", "Ljava/net/SocketImpl;");
-	if(fieldID == NULL) {
-		org_newsclub_net_unix_NativeUnixSocket_throwException(env, kExceptionSocketException,
-				"Cannot find field \"impl\" in java.net.SocketImpl. Unsupported JVM?", NULL);
-		return;
-	}
-	(*env)->SetObjectField(env, serverSocket, fieldID, impl);
+	setObjectFieldValue(env, serverSocket, "impl", "Ljava/net/SocketImpl;", impl);
 }
 
 /*

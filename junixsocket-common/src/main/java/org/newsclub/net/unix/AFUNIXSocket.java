@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketException;
 
 /**
  * Implementation of an AF_UNIX domain socket.
@@ -172,6 +173,21 @@ public class AFUNIXSocket extends Socket {
    */
   public static String getLoadedLibrary() {
     return loadedLibrary;
+  }
+
+  /**
+   * Retrieves the "peer credentials" for this connection.
+   *
+   * These credentials may be useful to authenticate the other end of the socket (client or server).
+   *
+   * @return The peer's credentials.
+   * @throws IOException If there was an error returning these credentials.
+   */
+  public AFUNIXSocketCredentials getPeerCredentials() throws IOException {
+    if (isClosed() || !isConnected()) {
+      throw new SocketException("Not connected");
+    }
+    return impl.getPeerCredentials();
   }
 
   @Override

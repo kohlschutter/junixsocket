@@ -17,12 +17,14 @@
  */
 package org.newsclub.net.unix.demo.server;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.concurrent.Future;
 
+import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.server.AFUNIXSocketServer;
 
@@ -95,6 +97,13 @@ abstract class DemoServerBase extends AFUNIXSocketServer {
   @Override
   protected void onBeforeServingSocket(Socket socket) {
     System.out.println("Serving socket: " + socket);
+    if (socket instanceof AFUNIXSocket) {
+      try {
+        System.out.println("Client's credentials: " + ((AFUNIXSocket) socket).getPeerCredentials());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   @Override

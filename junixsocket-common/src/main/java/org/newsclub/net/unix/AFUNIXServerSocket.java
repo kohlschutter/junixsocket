@@ -86,6 +86,7 @@ public class AFUNIXServerSocket extends ServerSocket {
 
     implementation.bind(endpoint, getReuseAddress() ? -1 : 0);
     boundEndpoint = (AFUNIXSocketAddress) endpoint;
+
     implementation.listen(backlog);
   }
 

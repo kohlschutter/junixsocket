@@ -10,7 +10,7 @@ extern "C" {
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    bind
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;I)L
+ * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;I)J
  */
 JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
   (JNIEnv *, jclass, jstring, jobject, jint);
@@ -26,7 +26,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    accept
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;L)V
+ * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;J)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
   (JNIEnv *, jclass, jstring, jobject, jobject, jlong);
@@ -34,7 +34,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    connect
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;)V
+ * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;J)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
   (JNIEnv *, jclass, jstring, jobject, jlong);
@@ -89,19 +89,19 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    unlink
- * Signature: (Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_unlink
-  (JNIEnv *, jclass, jstring);
-
-/*
- * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    available
  * Signature: (Ljava/io/FileDescriptor;)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available
   (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    peerCredentials
+ * Signature: (Ljava/io/FileDescriptor;Lorg/newsclub/net/unix/AFUNIXSocketCredentials;)Lorg/newsclub/net/unix/AFUNIXSocketCredentials;
+ */
+JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCredentials
+  (JNIEnv *, jclass, jobject, jobject);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket

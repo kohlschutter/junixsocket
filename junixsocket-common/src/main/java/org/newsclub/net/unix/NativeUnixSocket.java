@@ -54,7 +54,8 @@ final class NativeUnixSocket {
   static native void accept(final String socketFile, final FileDescriptor fdServer,
       final FileDescriptor fd, long inode) throws IOException;
 
-  static native void connect(final String socketFile, final FileDescriptor fd, long inode) throws IOException;
+  static native void connect(final String socketFile, final FileDescriptor fd, long inode)
+      throws IOException;
 
   static native int read(final FileDescriptor fd, byte[] buf, int off, int len) throws IOException;
 
@@ -71,8 +72,11 @@ final class NativeUnixSocket {
 
   static native int available(final FileDescriptor fd) throws IOException;
 
+  static native AFUNIXSocketCredentials peerCredentials(FileDescriptor fd,
+      AFUNIXSocketCredentials creds) throws IOException;
+
   static native void initServerImpl(final AFUNIXServerSocket serverSocket,
-      final AFUNIXSocketImpl impl);
+      final AFUNIXSocketImpl impl) throws IOException;
 
   static native void setCreated(final AFUNIXSocket socket);
 

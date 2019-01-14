@@ -549,4 +549,8 @@ class AFUNIXSocketImpl extends SocketImpl {
       }
     }
   }
+
+  AFUNIXSocketCredentials getPeerCredentials() throws IOException {
+    return NativeUnixSocket.peerCredentials(fd, new AFUNIXSocketCredentials());
+  }
 }
