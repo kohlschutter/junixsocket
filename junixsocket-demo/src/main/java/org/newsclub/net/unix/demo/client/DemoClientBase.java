@@ -15,33 +15,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.newsclub.net.unix.demo.server;
+package org.newsclub.net.unix.demo.client;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
 
+import org.newsclub.net.unix.AFUNIXSocket;
+import org.newsclub.net.unix.AFUNIXSocketAddress;
+
 /**
- * A multi-threaded unix socket server that simply writes null-bytes, and does not attempt to read
- * anything.
+ * An {@link AFUNIXSocket} client that's just good for demo purposes.
  * 
  * @author Christian Kohlschütter
  */
-public final class ZeroServer extends DemoServerBase {
-  public ZeroServer(SocketAddress listenAddress) {
-    super(listenAddress);
-  }
+abstract class DemoClientBase {
+  private Socket socket;
 
-  @Override
-  protected void doServeSocket(Socket socket) throws IOException {
-    int bufferSize = socket.getSendBufferSize();
-    byte[] buffer = new byte[bufferSize];
-
-    try (OutputStream os = socket.getOutputStream()) {
-      while (true) {
-        os.write(buffer);
-      }
+  public void close() throws IOException {
+    if (socket != null) {
+      socket.close();
     }
   }
+
+  public void connect(SocketAddress endpoint) throws IOException {
+    if (endpoint instanceof AFUNIXSocketAddress) {
+      socket = AFUNIXSocket.newInstance();
+    } else {
+      socket = new Socket();
+    }
+    socket.connect(endpoint);
+
+    handleSocket(socket);
+  }
+
+  @SuppressWarnings("hiding")
+  protected abstract void handleSocket(Socket socket) throws IOException;
 }

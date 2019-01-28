@@ -15,32 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.newsclub.net.unix.demo.server;
+package org.newsclub.net.unix.demo.client;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.net.Socket;
-import java.net.SocketAddress;
 
 /**
- * A multi-threaded unix socket server that simply writes null-bytes, and does not attempt to read
- * anything.
- * 
- * @author Christian Kohlschütter
+ * A client that just reads and echoes the data to stdout.
  */
-public final class ZeroServer extends DemoServerBase {
-  public ZeroServer(SocketAddress listenAddress) {
-    super(listenAddress);
-  }
-
+public class ReadClient extends DemoClientBase {
   @Override
-  protected void doServeSocket(Socket socket) throws IOException {
-    int bufferSize = socket.getSendBufferSize();
-    byte[] buffer = new byte[bufferSize];
+  protected void handleSocket(Socket socket) throws IOException {
+    try (InputStream in = socket.getInputStream()) {
+      byte[] buf = new byte[socket.getReceiveBufferSize()];
+      int read;
 
-    try (OutputStream os = socket.getOutputStream()) {
-      while (true) {
-        os.write(buffer);
+      while ((read = in.read(buf)) != -1) {
+        System.out.write(buf, 0, read);
       }
     }
   }

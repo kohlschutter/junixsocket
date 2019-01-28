@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -29,6 +30,13 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketImpl;
 import java.net.SocketOptions;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -61,6 +69,14 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   private boolean reuseAddr = true;
 
+  private ByteBuffer ancillaryReceiveBuffer = ByteBuffer.allocateDirect(0);
+  private final List<FileDescriptor[]> receivedFileDescriptors = Collections.synchronizedList(
+      new LinkedList<>());
+  private int[] pendingFileDescriptors = null;
+
+  private final Map<FileDescriptor, Integer> closeableFileDescriptors = Collections.synchronizedMap(
+      new HashMap<>());
+
   protected AFUNIXSocketImpl() {
     super();
     this.fd = new FileDescriptor();
@@ -76,8 +92,19 @@ class AFUNIXSocketImpl extends SocketImpl {
   @Override
   protected final void finalize() {
     try {
-      // prevent file descriptor leakage
+      // prevent socket file descriptor leakage
       close();
+    } catch (Throwable t) {
+      // nothing that can be done here
+    }
+
+    // Also close all file descriptors that we've received over the wire
+    try {
+      synchronized (closeableFileDescriptors) {
+        for (FileDescriptor fd : closeableFileDescriptors.keySet()) {
+          NativeUnixSocket.close(fd);
+        }
+      }
     } catch (Throwable t) {
       // nothing that can be done here
     }
@@ -271,7 +298,8 @@ class AFUNIXSocketImpl extends SocketImpl {
   @Override
   protected void sendUrgentData(int data) throws IOException {
     FileDescriptor fdesc = validFdOrException();
-    NativeUnixSocket.write(fdesc, new byte[] {(byte) (data & 0xFF)}, 0, 1);
+    NativeUnixSocket.write(AFUNIXSocketImpl.this, fdesc, new byte[] {(byte) (data & 0xFF)}, 0, 1,
+        pendingFileDescriptors);
   }
 
   private final class AFUNIXInputStream extends InputStream {
@@ -289,7 +317,8 @@ class AFUNIXSocketImpl extends SocketImpl {
         throw new IndexOutOfBoundsException();
       }
 
-      return NativeUnixSocket.read(fdesc, buf, off, len);
+      return NativeUnixSocket.read(AFUNIXSocketImpl.this, fdesc, buf, off, len,
+          ancillaryReceiveBuffer);
     }
 
     @Override
@@ -353,7 +382,9 @@ class AFUNIXSocketImpl extends SocketImpl {
           Thread.currentThread().interrupt();
           throw ex;
         }
-        final int written = NativeUnixSocket.write(fdesc, buf, off, len);
+
+        final int written = NativeUnixSocket.write(AFUNIXSocketImpl.this, fdesc, buf, off, len,
+            pendingFileDescriptors);
         if (written < 0) {
           throw new IOException("Unspecific error while writing");
         }
@@ -552,5 +583,77 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   AFUNIXSocketCredentials getPeerCredentials() throws IOException {
     return NativeUnixSocket.peerCredentials(fd, new AFUNIXSocketCredentials());
+  }
+
+  int getAncillaryReceiveBufferSize() {
+    return ancillaryReceiveBuffer.capacity();
+  }
+
+  void setAncillaryReceiveBufferSize(int size) {
+    this.ancillaryReceiveBuffer = ByteBuffer.allocateDirect(size);
+  }
+
+  FileDescriptor[] getReceivedFileDescriptors() {
+    if (receivedFileDescriptors.isEmpty()) {
+      return null;
+    }
+    List<FileDescriptor[]> copy = new ArrayList<>(receivedFileDescriptors);
+    if (copy.isEmpty()) {
+      return null;
+    }
+    receivedFileDescriptors.removeAll(copy);
+    int count = 0;
+    for (FileDescriptor[] fds : copy) {
+      count += fds.length;
+    }
+    if (count == 0) {
+      return null;
+    }
+    FileDescriptor[] oneArray = new FileDescriptor[count];
+    int offset = 0;
+    for (FileDescriptor[] fds : copy) {
+      System.arraycopy(fds, 0, oneArray, offset, fds.length);
+      offset += fds.length;
+    }
+    return oneArray;
+  }
+
+  void clearReceivedFileDescriptors() {
+    receivedFileDescriptors.clear();
+  }
+
+  // called from native code
+  void receiveFileDescriptors(int[] fds) throws IOException {
+    if (fds == null || fds.length == 0) {
+      return;
+    }
+    FileDescriptor[] descriptors = new FileDescriptor[fds.length];
+    for (int i = 0, n = fds.length; i < n; i++) {
+      FileDescriptor fdesc = new FileDescriptor();
+      NativeUnixSocket.initFD(fdesc, fds[i]);
+      descriptors[i] = fdesc;
+
+      closeableFileDescriptors.put(fdesc, fds[i]);
+
+      @SuppressWarnings("resource")
+      final Closeable cleanup = new Closeable() {
+
+        @Override
+        public void close() throws IOException {
+          closeableFileDescriptors.remove(fdesc);
+        }
+      };
+      NativeUnixSocket.attachCloseable(fdesc, cleanup);
+    }
+
+    this.receivedFileDescriptors.add(descriptors);
+  }
+
+  // called from native code, too (but only with null)
+  void setOutboundFileDescriptors(int[] fds) {
+    if (fds == null || fds.length == 0) {
+      fds = null;
+    }
+    this.pendingFileDescriptors = fds;
   }
 }

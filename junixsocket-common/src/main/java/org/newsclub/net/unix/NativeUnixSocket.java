@@ -17,8 +17,10 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * JNI connector to native JNI C code.
@@ -57,9 +59,11 @@ final class NativeUnixSocket {
   static native void connect(final String socketFile, final FileDescriptor fd, long inode)
       throws IOException;
 
-  static native int read(final FileDescriptor fd, byte[] buf, int off, int len) throws IOException;
+  static native int read(AFUNIXSocketImpl afunixSocketImpl, final FileDescriptor fd, byte[] buf,
+      int off, int len, ByteBuffer ancillaryReceiveBuffer) throws IOException;
 
-  static native int write(final FileDescriptor fd, byte[] buf, int off, int len) throws IOException;
+  static native int write(AFUNIXSocketImpl afunixSocketImpl, final FileDescriptor fd, byte[] buf,
+      int off, int len, int[] fileDescriptors) throws IOException;
 
   static native void close(final FileDescriptor fd) throws IOException;
 
@@ -89,6 +93,12 @@ final class NativeUnixSocket {
   static native void setBoundServer(final AFUNIXServerSocket socket);
 
   static native void setPort(final AFUNIXSocketAddress addr, int port);
+
+  static native void initFD(FileDescriptor fdesc, int fd) throws IOException;
+
+  static native int getFD(FileDescriptor fdesc) throws IOException;
+
+  static native void attachCloseable(FileDescriptor fdsec, Closeable closeable);
 
   static void setPort1(AFUNIXSocketAddress addr, int port) throws IOException {
     if (port < 0) {

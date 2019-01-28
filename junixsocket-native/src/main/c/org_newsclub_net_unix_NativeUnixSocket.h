@@ -42,18 +42,18 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    read
- * Signature: (Ljava/io/FileDescriptor;[BII)I
+ * Signature: (Lorg/newsclub/net/unix/AFUNIXSocketImpl;Ljava/io/FileDescriptor;[BIILjava/nio/ByteBuffer;)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read
-  (JNIEnv *, jclass, jobject, jbyteArray, jint, jint);
+  (JNIEnv *, jclass, jobject, jobject, jbyteArray, jint, jint, jobject);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    write
- * Signature: (Ljava/io/FileDescriptor;[BII)I
+ * Signature: (Lorg/newsclub/net/unix/AFUNIXSocketImpl;Ljava/io/FileDescriptor;[BII[I)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write
-  (JNIEnv *, jclass, jobject, jbyteArray, jint, jint);
+  (JNIEnv *, jclass, jobject, jobject, jbyteArray, jint, jint, jintArray);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -158,6 +158,30 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBoundServe
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setPort
   (JNIEnv *, jclass, jobject, jint);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    initFD
+ * Signature: (Ljava/io/FileDescriptor;I)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initFD
+  (JNIEnv *, jclass, jobject, jint);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    getFD
+ * Signature: (Ljava/io/FileDescriptor;)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getFD
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    attachCloseable
+ * Signature: (Ljava/io/FileDescriptor;Ljava/io/Closeable;)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_attachCloseable
+  (JNIEnv *, jclass, jobject, jobject);
 
 #ifdef __cplusplus
 }

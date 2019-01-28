@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.Semaphore;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -80,8 +81,9 @@ abstract class SocketTestBase {
 
   protected abstract class ServerThread extends Thread {
     private final AFUNIXServerSocket serverSocket;
-    private Exception exception = null;
+    private volatile Exception exception = null;
     private volatile boolean loop = true;
+    private final Semaphore sema = new Semaphore(0);
 
     @SuppressFBWarnings("SC_START_IN_CTOR")
     protected ServerThread() throws IOException {
@@ -130,11 +132,19 @@ abstract class SocketTestBase {
           serverSocket.close();
         }
       } catch (IOException e) {
+        e.printStackTrace();
         exception = e;
       }
+      sema.release();
     }
 
+    /**
+     * Checks if there were any exceptions thrown during the lifetime of this ServerThread.
+     * 
+     * NOTE: This call blogs until the Thread actually terminates.
+     */
     public void checkException() throws Exception {
+      sema.acquire();
       if (exception != null) {
         throw exception;
       }

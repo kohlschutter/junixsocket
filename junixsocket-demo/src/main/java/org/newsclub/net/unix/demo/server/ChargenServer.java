@@ -26,7 +26,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 
 /**
- * A multi-threaded unix socket server that simply echoes all input, byte per byte.
+ * A multi-threaded unix socket server that implements a TCP-style character generator compliant with RFC864.
  * 
  * @author Christian Kohlschütter
  */

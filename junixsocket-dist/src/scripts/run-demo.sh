@@ -84,11 +84,10 @@ $0 org.newsclub.net.unix.demo.rmi.SimpleRMIServer
 # Runs the demo RMI client
 $0 org.newsclub.net.unix.demo.rmi.SimpleRMIClient
 
-# Runs the demo AFUNIXSocketServer. Replace "(demo)" with the desired demo.
+# Runs the demo server. Replace "(demo)" with the desired demo.
 $0 -- -Ddemo=(demo) org.newsclub.net.unix.demo.server.AFUNIXSocketServerDemo
-
-# Runs the demo client. Replace "(socket)" with the socket to connect to.
-$0 -- -Dsocket=(socket) org.newsclub.net.unix.demo.DemoClient
+# Runs the demo client. Replace "(demo)" with the desired demo, and "(socket)" with the socket to connect to.
+$0 -- -Ddemo=(demo) -Dsocket=(socket) org.newsclub.net.unix.demo.client.DemoClient
 
 # Runs the MySQL demo
 $0 -j "$mysqlJar" -- -DmysqlSocket=/tmp/mysql.sock org.newsclub.net.mysql.demo.AFUNIXDatabaseSocketFactoryDemo
@@ -100,6 +99,9 @@ Other flags:
  -m Use the Java module-path instead of the classpath (Java 9 or higher)
  -j <jar> Add the given jar to the beginning of the classpath/modulepath
  -- Separate the run-demo flags from the Java JVM flags
+
+See also:
+https://kohlschutter.github.io/junixsocket/demo.html
 EOT
   exit 1
 fi

@@ -212,7 +212,6 @@ static void handleFieldNotFound(JNIEnv *env, jobject instance, char *fieldName)
 	free(message);
 }
 
-__attribute__((unused))
 static void callObjectSetter(JNIEnv *env, jobject instance, char *methodName,
 		char *methodSignature, jobject value)
 {
@@ -259,7 +258,7 @@ static void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
 	(*env)->SetLongField(env, instance, fieldID, value);
 }
 
-int org_newsclub_net_unix_NativeUnixSocket_getFD(JNIEnv * env, jobject fd)
+static int org_newsclub_net_unix_NativeUnixSocket_getFD(JNIEnv * env, jobject fd)
 {
 	jclass fileDescriptorClass = (*env)->GetObjectClass(env, fd);
 	jfieldID fdField = (*env)->GetFieldID(env, fileDescriptorClass, "fd", "I");
@@ -273,9 +272,18 @@ int org_newsclub_net_unix_NativeUnixSocket_getFD(JNIEnv * env, jobject fd)
 	return (*env)->GetIntField(env, fd, fdField);
 }
 
-void org_newsclub_net_unix_NativeUnixSocket_initFD(JNIEnv * env, jobject fd,
-		int handle)
-{
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    getFD
+ * Signature: (Ljava/io/FileDescriptor;)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getFD
+  (JNIEnv *env, jclass clazz, jobject fd) {
+	return org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
+}
+
+static void org_newsclub_net_unix_NativeUnixSocket_initFD(JNIEnv * env, jobject fd,
+		int handle) {
 	jclass fileDescriptorClass = (*env)->GetObjectClass(env, fd);
 	jfieldID fdField = (*env)->GetFieldID(env, fileDescriptorClass, "fd", "I");
 	if(fdField == NULL) {
@@ -286,6 +294,17 @@ void org_newsclub_net_unix_NativeUnixSocket_initFD(JNIEnv * env, jobject fd,
 		return;
 	}
 	(*env)->SetIntField(env, fd, fdField, handle);
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    initFD
+ * Signature: (Ljava/io/FileDescriptor;I)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initFD
+  (JNIEnv * env, jclass clazz, jobject fd, jint handle)
+{
+	org_newsclub_net_unix_NativeUnixSocket_initFD(env, fd, handle);
 }
 
 #if defined(junixsocket_use_poll_for_accept)
@@ -782,22 +801,21 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    read
- * Signature: (Ljava/io/FileDescriptor;[BII)I
+ * Signature: (Lorg/newsclub/net/unix/AFUNIXSocketImpl;Ljava/io/FileDescriptor;[BIILjava/nio/ByteBuffer;)I
  */
-JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
-		JNIEnv * env, jclass clazz, jobject fd, jbyteArray jbuf, jint offset,
-		jint length)
-{
-	jbyte *buf = (*env)->GetByteArrayElements(env, jbuf, NULL);
-	if(buf == NULL) {
-		return -1; // OOME
-	}
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read
+  (JNIEnv * env, jclass clazz, jobject impl, jobject fd, jbyteArray jbuf, jint offset, jint length, jobject ancBuf) {
 	jsize bufLen = (*env)->GetArrayLength(env, jbuf);
 	if(offset < 0 || length < 0) {
 		org_newsclub_net_unix_NativeUnixSocket_throwException(env,
 				kExceptionSocketException, "Illegal offset or length", NULL);
 		return -1;
 	}
+	jbyte *buf = (*env)->GetByteArrayElements(env, jbuf, NULL);
+	if(buf == NULL) {
+		return -1; // OOME
+	}
+
 	jint maxRead = bufLen - offset;
 	if(length > maxRead) {
 		length = maxRead;
@@ -805,11 +823,72 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
+	struct iovec iov = {
+			.iov_base = &(buf[offset]),
+			.iov_len = length
+	};
+
+	jbyte *control = (*env)->GetDirectBufferAddress(env, ancBuf);
+	jsize controlLen = (*env)->GetDirectBufferCapacity(env, ancBuf);
+
+	struct sockaddr_un sender;
+	struct msghdr msg = {
+			.msg_name = (struct sockaddr*)&sender,
+			.msg_namelen = sizeof(sender),
+			.msg_iov = &iov,
+			.msg_iovlen = 1,
+			.msg_control = control,
+			.msg_controllen = controlLen,
+	};
+
 	ssize_t count;
 	do {
-		count = read(handle, &(buf[offset]), (size_t)length);
+		count = recvmsg(handle, &msg, 0);
 	} while(count == -1 && errno == EINTR);
 
+	if((msg.msg_flags & MSG_CTRUNC) != 0) {
+		if (count >= 0) {
+			count = -1;
+			errno = ENOBUFS;
+		}
+		goto readEnd;
+	}
+
+	if(msg.msg_controllen > 0) {
+		for (struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg); cmsg != NULL;
+		        cmsg = CMSG_NXTHDR(&msg,cmsg)) {
+		    if (cmsg->cmsg_level == SOL_SOCKET && cmsg->cmsg_type == SCM_RIGHTS) {
+		    	char *endBytes = (char*)cmsg + cmsg->cmsg_len;
+		    	char *controlEnd = (char*)control + controlLen;
+		    	if (controlEnd < endBytes) {
+		    		endBytes = controlEnd;
+		    	}
+
+		    	int *data = (int*)CMSG_DATA(cmsg);
+		    	int *end = (int*)endBytes;
+		    	int numFds = (int)(end-data);
+
+		    	if(numFds > 0) {
+					jintArray fdArray = (*env)->NewIntArray(env, numFds);
+					jint *fdBuf = (*env)->GetIntArrayElements(env, fdArray, NULL);
+
+					for (int i=0;i<numFds;i++) {
+						fdBuf[i] = data[i];
+					}
+
+					(*env)->ReleaseIntArrayElements(env, fdArray, fdBuf, 0);
+
+					callObjectSetter(env, impl, "receiveFileDescriptors", "([I)V", fdArray);
+		    	}
+		    } else {
+#if DEBUG
+		    	fprintf(stderr, "NativeUnixSocket_read: Unexpected cmsg level:%i type:%i\n", cmsg->cmsg_level, cmsg->cmsg_type);
+#endif
+		    }
+		}
+	}
+
+readEnd:
 	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
 
 	if(count == 0) {
@@ -833,12 +912,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    write
- * Signature: (Ljava/io/FileDescriptor;[BII)I
+ * Signature: (Lorg/newsclub/net/unix/AFUNIXSocketImpl;Ljava/io/FileDescriptor;[BII[I)I
  */
-JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
-		JNIEnv * env, jclass clazz, jobject fd, jbyteArray jbuf, jint offset,
-		jint length)
-{
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write
+  (JNIEnv * env, jclass clazz, jobject impl, jobject fd, jbyteArray jbuf, jint offset, jint length, jintArray ancFds) {
 	jbyte *buf = (*env)->GetByteArrayElements(env, jbuf, NULL);
 	if(buf == NULL) {
 		return -1; // OOME
@@ -853,10 +930,62 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 
 	int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
+	struct iovec iov = {
+			.iov_base = &buf[offset],
+			.iov_len = (size_t)length
+	};
+	struct msghdr msg = {
+			.msg_name = NULL,
+			.msg_namelen = 0,
+			.msg_iov = &iov,
+			.msg_iovlen = 1,
+	};
+
+	char *control = NULL;
+	if(ancFds != NULL) {
+		jsize ancFdsLen = (*env)->GetArrayLength(env, ancFds);
+		msg.msg_controllen = CMSG_SPACE(ancFdsLen * sizeof(int));
+		control = msg.msg_control = malloc(msg.msg_controllen);
+
+		int controlLen = 0;
+		struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
+		cmsg->cmsg_level = SOL_SOCKET;
+		cmsg->cmsg_type = SCM_RIGHTS;
+		controlLen += (cmsg->cmsg_len = CMSG_LEN(ancFdsLen * sizeof(int)));
+		int *data = (int*)CMSG_DATA(cmsg);
+
+		jint *ancBuf = (*env)->GetIntArrayElements(env, ancFds, NULL);
+		for (int i=0;i<ancFdsLen;i++) {
+			data[i] = ancBuf[i];
+		}
+		cmsg = CMSG_NXTHDR(&msg, cmsg);
+		if (cmsg == NULL) {
+			// FIXME: not enough space in header?
+		}
+
+		msg.msg_controllen = controlLen;
+
+		(*env)->ReleaseIntArrayElements(env, ancFds, ancBuf, 0);
+
+		callObjectSetter(env, impl, "setOutboundFileDescriptors", "([I)V", NULL);
+	}
+
+	errno = 0;
 	ssize_t count;
 	do {
-		count = write(handle, &buf[offset], (size_t)length);
+		count = sendmsg(handle, &msg, 0);
 	} while(count == -1 && errno == EINTR);
+	int myErr = errno;
+
+	if(control) {
+		free(control);
+	}
+
+//  NOTE: This is the old way of sending data (which doesn't support ancillary messages)
+//	ssize_t count;
+//	do {
+//		count = write(handle, &buf[offset], (size_t)length);
+//	} while(count == -1 && errno == EINTR);
 
 	(*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
 
@@ -865,7 +994,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 			return 0;
 		}
 
-		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno,
+		org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, myErr,
 				fd, NULL);
 		return -1;
 	}
@@ -920,7 +1049,9 @@ static int _closeFd(JNIEnv * env, jobject fd, int handle)
 
 	if(handle > 0) {
 		if(fdHandle > 0 && handle != fdHandle) {
-//				fprintf(stderr, "Inconsistency: %i vs %i\n", handle, fdHandle);
+#if DEBUG
+			fprintf(stderr, "NativeUnixSocket_closeFd inconsistency: handle %i vs fdHandle %i\n", handle, fdHandle);
+#endif
 		}
 	} else if(fdHandle > 0) {
 		shutdown(fdHandle, SHUT_RDWR);
@@ -1340,6 +1471,16 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setPort(
 		return;
 	}
 	(*env)->SetIntField(env, fieldObject, portField, port);
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    attachCloseable
+ * Signature: (Ljava/io/FileDescriptor;Ljava/io/Closeable;)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_attachCloseable
+  (JNIEnv * env, jclass clazz, jobject fdesc, jobject closeable) {
+    callObjectSetter(env, fdesc, "attach", "(Ljava/io/Closeable;)V", closeable);
 }
 
 #ifdef __cplusplus

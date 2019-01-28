@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix.demo.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.SocketAddress;
 
@@ -33,7 +34,7 @@ public class AFUNIXSocketServerDemo {
   public static void main(String[] args) throws IOException, InterruptedException {
     final DemoServerBase demoServer;
 
-    String demo = DemoHelper.getPropertyValue("demo", null, "echo, null, zero, chargen");
+    String demo = DemoHelper.getPropertyValue("demo", null, "echo, null, zero, chargen, send-fd");
     if (demo == null) {
       demoServer = null;
     } else {
@@ -53,11 +54,15 @@ public class AFUNIXSocketServerDemo {
           demoServer = new ZeroServer(listenAddress);
           break;
         case "chargen":
-
           boolean fast = DemoHelper.getPropertyValue("fast", "true", "true/false",
               Boolean::valueOf);
 
           demoServer = new ChargenServer(listenAddress, fast);
+          break;
+        case "send-fd":
+          File file = DemoHelper.getPropertyValue("file", null, "path to file", File::new);
+
+          demoServer = new SendFileHandleServer(listenAddress, file);
           break;
         default:
           demoServer = null;
@@ -65,6 +70,7 @@ public class AFUNIXSocketServerDemo {
     }
 
     if (demoServer == null) {
+      System.out.flush();
       System.err.println("You need to specify a valid demo to run.");
       return;
     }

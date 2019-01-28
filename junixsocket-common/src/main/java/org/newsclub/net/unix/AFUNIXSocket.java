@@ -17,7 +17,9 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -193,5 +195,68 @@ public class AFUNIXSocket extends Socket {
   @Override
   public boolean isClosed() {
     return super.isClosed() || (isConnected() && !impl.getFD().valid());
+  }
+
+  /**
+   * Returns the size of the receive buffer for ancillary messages (in bytes).
+   * 
+   * @return The size.
+   */
+  public int getAncillaryReceiveBufferSize() {
+    return impl.getAncillaryReceiveBufferSize();
+  }
+
+  /**
+   * Sets the size of the receive buffer for ancillary messages (in bytes).
+   * 
+   * To disable handling ancillary messages, set it to 0 (default).
+   * 
+   * @param size The size.
+   */
+  public void setAncillaryReceiveBufferSize(int size) {
+    impl.setAncillaryReceiveBufferSize(size);
+  }
+
+  /**
+   * Retrieves an array of incoming {@link FileDescriptor}s that were sent as ancillary messages,
+   * along with a call to {@link InputStream#read()}, etc.
+   * 
+   * NOTE: Another call to this method will not return the same file descriptors again (most likely,
+   * {@code null} will be returned).
+   * 
+   * @return The file decriptors, or {@code null} if none were available.
+   * @throws IOException if the operation fails.
+   */
+  public FileDescriptor[] getReceivedFileDescriptors() throws IOException {
+    return impl.getReceivedFileDescriptors();
+  }
+
+  /**
+   * Clears the queue of incoming {@link FileDescriptor}s that were sent as ancillary messages.
+   */
+  public void clearReceivedFileDescriptors() {
+    impl.clearReceivedFileDescriptors();
+  }
+
+  /**
+   * Sets a list of {@link FileDescriptor}s that should be sent as an ancillary message along with
+   * the next write.
+   * 
+   * NOTE: There can only be one set of file descriptors active until the write completes.
+   * 
+   * @param fdescs The file descriptors, or {@code null} if none.
+   * @throws IOException if the operation fails.
+   */
+  public void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
+    if (fdescs == null || fdescs.length == 0) {
+      impl.setOutboundFileDescriptors(null);
+    } else {
+      int[] fds = new int[fdescs.length];
+      for (int i = 0, n = fdescs.length; i < n; i++) {
+        FileDescriptor fdesc = fdescs[i];
+        fds[i] = NativeUnixSocket.getFD(fdesc);
+      }
+      impl.setOutboundFileDescriptors(fds);
+    }
   }
 }

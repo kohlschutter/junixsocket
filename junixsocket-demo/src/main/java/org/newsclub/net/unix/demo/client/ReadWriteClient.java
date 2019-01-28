@@ -15,30 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.newsclub.net.unix.demo;
+package org.newsclub.net.unix.demo.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.concurrent.CountDownLatch;
 
 /**
  * A simple bidirectional Unix socket client that reads from/writes to stdin/stdout.
  */
-public class DemoClient {
-  public static void main(String[] args) throws IOException, InterruptedException {
-    String socketName = DemoHelper.getPropertyValue("socket", null,
-        "/tmp/test.sock or localhost:1234");
-    if (socketName == null) {
-      System.err.println("You need to specify a valid socket.");
-      return;
-    }
-
-    SocketAddress socketAddress = DemoHelper.socketAddress(socketName);
-    try (Socket socket = DemoHelper.connectSocket(socketAddress);
-        final InputStream in = socket.getInputStream();
+public class ReadWriteClient extends DemoClientBase {
+  @Override
+  protected void handleSocket(Socket socket) throws IOException {
+    try (final InputStream in = socket.getInputStream();
         final OutputStream out = socket.getOutputStream()) {
       final byte[] readBuf = new byte[socket.getReceiveBufferSize()];
       final byte[] writeBuf = new byte[socket.getSendBufferSize()];
@@ -78,6 +70,8 @@ public class DemoClient {
       }.start();
 
       cdl.await();
+    } catch (InterruptedException e) {
+      throw (InterruptedIOException) new InterruptedIOException().initCause(e);
     }
   }
 }

@@ -43,7 +43,7 @@ abstract class DemoServerBase extends AFUNIXSocketServer {
       return "0 [ms] (" + zeroValue + ")";
     } else {
       float secs = millis / 1000f;
-      if (secs == (int) secs) {
+      if ((secs - (int) secs) == 0) {
         return millis + " [ms] == " + (int) (secs) + "s";
       } else {
         return millis + " [ms] == " + secs + "s";
