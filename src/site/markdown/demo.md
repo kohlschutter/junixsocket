@@ -30,17 +30,16 @@ You will see a couple of examples on how to invoke the individual demos.
     # Runs the demo RMI client
     ./run-demo.sh org.newsclub.net.unix.demo.rmi.SimpleRMIClient
     
-    # Runs the demo AFUNIXSocketServer. Replace "(demo)" with the desired demo.
+    # Runs the demo server. Replace "(demo)" with the desired demo.
     ./run-demo.sh -- -Ddemo=(demo) org.newsclub.net.unix.demo.server.AFUNIXSocketServerDemo
-    
-    # Runs the demo client. Replace "(socket)" with the socket to connect to.
-    ./run-demo.sh -- -Dsocket=(socket) org.newsclub.net.unix.demo.DemoClient
+    # Runs the demo client. Replace "(demo)" with the desired demo, and "(socket)" with the socket to connect to.
+    ./run-demo.sh -- -Ddemo=(demo) -Dsocket=(socket) org.newsclub.net.unix.demo.client.DemoClient
     
     # Runs the MySQL demo
-    ./run-demo.sh -j "$HOME/.m2/repository/mysql/mysql-connector-java/8.0.13/mysql-connector-java-8.0.13.jar" -- -DmysqlSocket=/tmp/mysql.sock org.newsclub.net.mysql.demo.AFUNIXDatabaseSocketFactoryDemo
+    ./run-demo.sh -j (path-to-mysql-connector-jar) -- -DmysqlSocket=/tmp/mysql.sock org.newsclub.net.mysql.demo.AFUNIXDatabaseSocketFactoryDemo
     
     # Runs the PostgreSQL demo
-    ./run-demo.sh -j "$HOME/.m2/repository/org/postgresql/postgresql/42.2.5/postgresql-42.2.5.jar" -- -DsocketPath=/tmp/.s.PGSQL.5432 org.newsclub.net.unix.demo.jdbc.PostgresDemo
+    ./run-demo.sh -j (path-to-postgresql-jar) -- -DsocketPath=/tmp/.s.PGSQL.5432 org.newsclub.net.unix.demo.jdbc.PostgresDemo
     
     Other flags:
      -m Use the Java module-path instead of the classpath (Java 9 or higher)
