@@ -19,9 +19,17 @@
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
     <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
+    <spotbugs.skip>true</spotbugs.skip>
   </properties>
 
   <profiles>
+    <profile>
+      <id>release</id>
+      <properties>
+        <junixsocket.cross.disabled>false</junixsocket.cross.disabled>
+      </properties>
+    </profile>
     <profile>
       <id>cross</id>
       <activation>

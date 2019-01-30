@@ -78,7 +78,7 @@
   </build>
   <profiles>
     <profile>
-      <id>cross</id>
+      <id>release</id>
       <activation>
         <property>
           <name>cross</name>
@@ -152,13 +152,18 @@
     </profile>
 
     <profile>
-      <id>release</id>
+      <id>release-not-cross</id>
       <activation>
         <property>
           <name>cross</name>
-          <value>true</value>
+          <value>false</value>
         </property>
       </activation>
+      <properties>
+        <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
+        <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-jni</junixsocket.common.classifier.mac.x86_64>
+        <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-jni</junixsocket.common.classifier.linux.x86_64>
+      </properties>
       <dependencies>
         <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>
