@@ -6,7 +6,7 @@ communicate.
 A call to `AFUNIXSocket#getPeerCredentials()` returns an object with information about the peer (the other
 end).
 
-> **NOTE:** Depending on your operating system, not all properties are available (and therefore `null`)  
+> **NOTE:** Depending on your operating system, not all properties are available (and therefore `null` or `-1`).
 
     AFUNIXSocket socket = ...
     

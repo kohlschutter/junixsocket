@@ -63,6 +63,9 @@ All you need to do is to specify a flag when building the _junixsocket_ parent p
     cd junixsocket
     mvn clean install -Dcross=true
 
+Cross-compilation is also enabled when building with the "release profile" (`-Prelease`), unlesss
+it's explicitly disabled with `-Dcross=false`.
+
 If you want to extend support beyond these platforms, check the `pom.xml` files in _junixsocket_,
 _junixsocket-native_, junixsocket-native-cross, and junixsocket-native-common.
 

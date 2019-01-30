@@ -12,17 +12,19 @@ Add the following dependency to your Maven project
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-core</artifactId>
-      <version>2.1.2</version>
+      <version>2.2.0</version>
     </dependency>
 
-([See here](customarch.html) how to add support for custom architectures that aren't supported out of the box).
+For older 2.1.x versions, also add junixsocket-common.
+
+[See here](customarch.html) how to add support for custom architectures that aren't supported out of the box.
     
 If you're going to use RMI over Unix sockets, add the following dependency:
     
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-rmi</artifactId>
-      <version>2.1.2</version>
+      <version>2.2.0</version>
     </dependency>
 
 If you're going to use the mySQL Connector for Unix sockets, add the following dependency:
@@ -30,22 +32,22 @@ If you're going to use the mySQL Connector for Unix sockets, add the following d
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-mysql</artifactId>
-      <version>2.1.2</version>
+      <version>2.2.0</version>
     </dependency>
  
 ## Gradle
  
  Minimum requirement:
  
-    compile 'com.kohlschutter.junixsocket:junixsocket-core:2.1.2'
+    compile 'com.kohlschutter.junixsocket:junixsocket-core:2.2.0'
  
  For RMI support, add:
  
-    compile 'com.kohlschutter.junixsocket:junixsocket-rmi:2.1.2'
+    compile 'com.kohlschutter.junixsocket:junixsocket-rmi:2.2.0'
  
  For MySQL support, add:
  
-    compile 'com.kohlschutter.junixsocket:junixsocket-mysql:2.1.2'
+    compile 'com.kohlschutter.junixsocket:junixsocket-mysql:2.2.0'
 
 ## jars only
 
@@ -66,12 +68,12 @@ databases such as PostgreSQL.
 
 Make sure that the following jars are on your classpath:
 
- * junixsocket-core-2.1.2.jar
- * junixsocket-common-2.1.2.jar
- * junixsocket-mysql-2.1.2.jar
- * mysql-connector-java-8.0.13.jar (earlier versions should work, too)
- * (typically, omit if you use the custom library below) junixsocket-native-common-2.1.2.jar
- * (optionally, if you have a custom architecture) junixsocket-native-custom-2.1.2.jar
+ * junixsocket-core-2.2.0.jar
+ * junixsocket-common-2.2.0.jar
+ * junixsocket-mysql-2.2.0.jar
+ * mysql-connector-java-8.0.14.jar (earlier versions should work, too)
+ * (typically, omit if you use the custom library below) junixsocket-native-common-2.2.0.jar
+ * (optionally, if you have a custom architecture) junixsocket-native-custom-2.2.0.jar
 
 Use the following connection properties (along with `user`, `password`, and other properties you may have).
 
@@ -99,11 +101,11 @@ to disable SSL with older versions of Connector/J.
 
 Make sure that the following jars are on your classpath:
 
- * junixsocket-core-2.1.2.jar
- * junixsocket-common-2.1.2.jar
+ * junixsocket-core-2.2.0.jar
+ * junixsocket-common-2.2.0.jar
  * postgresql-42.2.5.jar (earlier versions should work, too)
- * (typically, omit if you use the custom library below) junixsocket-native-common-2.1.2.jar
- * (optionally, if you have a custom architecture) junixsocket-native-custom-2.1.2.jar
+ * (typically, omit if you use the custom library below) junixsocket-native-common-2.2.0.jar
+ * (optionally, if you have a custom architecture) junixsocket-native-custom-2.2.0.jar
 
 Use the following connection properties (along with `user`, `password`, and other properties you may have).
 

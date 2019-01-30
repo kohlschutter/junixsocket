@@ -43,7 +43,7 @@ It is recommended to use short pathnames whenever possible.
 
 ### Security
 
-Unix domain server sockets are created with read-write privileges for everybody on the sytem, just like TCP/IP sockets are accessible for local users.
+Unix domain server sockets are created with read-write privileges for everybody on the system, just like TCP/IP sockets are accessible for local users.
 
 If you want to restrict access to a particular user or group, simply create the socket in a directory that has proper access restrictions.
 

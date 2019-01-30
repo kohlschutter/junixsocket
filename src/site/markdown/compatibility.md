@@ -6,14 +6,11 @@ junixsocket versions consist of three parts: major, minor and patch (for example
 
 `-SNAPSHOT` builds are not considered releases, but merely previews of a future release.
 
-The native JNI library is expected to remain binary compatible for at least the current minor
-version.
+### junixsocket 2.2
 
-### junixsocket 2.1
+junixsocket 2.2 is compatible with Java 8 and newer (tested up to Java 12).
 
-junixsocket 2.1 is compatible with Java 8 and newer (tested up to Java 11).
-
-It has been tested with Oracle's Java 8 JDK and OpenJDK for newer versions.
+It has been tested with Oracle's Java 8 JDK, and OpenJDK for newer versions.
 
 ## Supported Architectures
 
@@ -32,4 +29,4 @@ aligned with the Java LTS (Long Term Support) releases.
 A future junixsocket 3.x branch will support Java 11 or newer.
 
 Critical bug fixes will be incorporated at least in every previous major release
-(e.g., into 2.x when 3.0 comes out).
+(e.g., into 2.x when 3.0 is released).

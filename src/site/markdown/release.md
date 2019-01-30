@@ -41,7 +41,7 @@ Instructions for macOS
 
 Currently, the easiest way to build for other platforms is to have a working Java 9 (or later)
 environment, Maven 3+ and the junixsocket project ready. Just spin up a virtual machine (or emulator),
-install Java, Maven and junixosocket, and you should be good to go.
+install Java, Maven and junixsocket, and you should be good to go.
     
 ## Common tasks
 
@@ -151,7 +151,7 @@ and Linux 64-bit libraries.
 
 2. Select the newly created tag (= search for the version).
 
-3. Release title = "junixsocket" + version>, e.g., "junixsocket 2.1.0"
+3. Release title = "junixsocket" + version>, e.g., "junixsocket 2.2.0"
 
 4. Hit "Publish release"    
 
