@@ -17,8 +17,10 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * JNI connector to native JNI C code.
@@ -26,39 +28,42 @@ import java.io.IOException;
  * @author Christian Kohlschütter
  */
 final class NativeUnixSocket {
-<span class="fc" id="L29">  private static boolean loaded = false;</span>
+<span class="fc" id="L31">  private static boolean loaded = false;</span>
 
-<span class="nc" id="L31">  private NativeUnixSocket() {</span>
-<span class="nc" id="L32">    throw new UnsupportedOperationException(&quot;No instances&quot;);</span>
+<span class="nc" id="L33">  private NativeUnixSocket() {</span>
+<span class="nc" id="L34">    throw new UnsupportedOperationException(&quot;No instances&quot;);</span>
   }
 
   static {
-<span class="fc" id="L36">    try (NativeLibraryLoader nll = new NativeLibraryLoader()) {</span>
-<span class="fc" id="L37">      nll.loadLibrary();</span>
+<span class="fc" id="L38">    try (NativeLibraryLoader nll = new NativeLibraryLoader()) {</span>
+<span class="fc" id="L39">      nll.loadLibrary();</span>
     }
-<span class="fc" id="L39">    loaded = true;</span>
-<span class="fc" id="L40">  }</span>
+<span class="fc" id="L41">    loaded = true;</span>
+<span class="fc" id="L42">  }</span>
 
   static boolean isLoaded() {
-<span class="nc" id="L43">    return loaded;</span>
+<span class="nc" id="L45">    return loaded;</span>
   }
 
   static void checkSupported() {
-<span class="nc" id="L47">  }</span>
+<span class="nc" id="L49">  }</span>
 
-  static native void bind(final String socketFile, final FileDescriptor fd, final int backlog)
+  static native long bind(final String socketFile, final FileDescriptor fd, final int options)
       throws IOException;
 
   static native void listen(final FileDescriptor fd, final int backlog) throws IOException;
 
   static native void accept(final String socketFile, final FileDescriptor fdServer,
-      final FileDescriptor fd) throws IOException;
+      final FileDescriptor fd, long inode) throws IOException;
 
-  static native void connect(final String socketFile, final FileDescriptor fd) throws IOException;
+  static native void connect(final String socketFile, final FileDescriptor fd, long inode)
+      throws IOException;
 
-  static native int read(final FileDescriptor fd, byte[] buf, int off, int len) throws IOException;
+  static native int read(AFUNIXSocketImpl afunixSocketImpl, final FileDescriptor fd, byte[] buf,
+      int off, int len, ByteBuffer ancillaryReceiveBuffer) throws IOException;
 
-  static native int write(final FileDescriptor fd, byte[] buf, int off, int len) throws IOException;
+  static native int write(AFUNIXSocketImpl afunixSocketImpl, final FileDescriptor fd, byte[] buf,
+      int off, int len, int[] fileDescriptors) throws IOException;
 
   static native void close(final FileDescriptor fd) throws IOException;
 
@@ -69,12 +74,13 @@ final class NativeUnixSocket {
   static native void setSocketOptionInt(final FileDescriptor fd, int optionId, int value)
       throws IOException;
 
-  static native void unlink(final String socketFile) throws IOException;
-
   static native int available(final FileDescriptor fd) throws IOException;
 
+  static native AFUNIXSocketCredentials peerCredentials(FileDescriptor fd,
+      AFUNIXSocketCredentials creds) throws IOException;
+
   static native void initServerImpl(final AFUNIXServerSocket serverSocket,
-      final AFUNIXSocketImpl impl);
+      final AFUNIXSocketImpl impl) throws IOException;
 
   static native void setCreated(final AFUNIXSocket socket);
 
@@ -88,18 +94,24 @@ final class NativeUnixSocket {
 
   static native void setPort(final AFUNIXSocketAddress addr, int port);
 
+  static native void initFD(FileDescriptor fdesc, int fd) throws IOException;
+
+  static native int getFD(FileDescriptor fdesc) throws IOException;
+
+  static native void attachCloseable(FileDescriptor fdsec, Closeable closeable);
+
   static void setPort1(AFUNIXSocketAddress addr, int port) throws IOException {
-<span class="fc bfc" id="L92" title="All 2 branches covered.">    if (port &lt; 0) {</span>
-<span class="fc" id="L93">      throw new IllegalArgumentException(&quot;port out of range:&quot; + port);</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">    if (port &lt; 0) {</span>
+<span class="fc" id="L105">      throw new IllegalArgumentException(&quot;port out of range:&quot; + port);</span>
     }
 
     try {
-<span class="fc" id="L97">      setPort(addr, port);</span>
-<span class="nc" id="L98">    } catch (RuntimeException e) {</span>
-<span class="nc" id="L99">      throw e;</span>
-<span class="nc" id="L100">    } catch (Exception e) {</span>
-<span class="nc" id="L101">      throw new IOException(&quot;Could not set port&quot;, e);</span>
-<span class="fc" id="L102">    }</span>
-<span class="fc" id="L103">  }</span>
+<span class="fc" id="L109">      setPort(addr, port);</span>
+<span class="nc" id="L110">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L111">      throw e;</span>
+<span class="nc" id="L112">    } catch (Exception e) {</span>
+<span class="nc" id="L113">      throw new IOException(&quot;Could not set port&quot;, e);</span>
+<span class="fc" id="L114">    }</span>
+<span class="fc" id="L115">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

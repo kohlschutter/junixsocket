@@ -19,181 +19,271 @@ package org.newsclub.net.unix;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
+@SuppressFBWarnings(&quot;RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE&quot;)
 final class NativeLibraryLoader implements Closeable {
   private static final String PROP_LIBRARY_OVERRIDE = &quot;org.newsclub.net.unix.library.override&quot;;
-  private static final String PROP_LIBRARY_LOADED = &quot;org.newsclub.net.unix.library.loaded&quot;;
   private static final String PROP_LIBRARY_TMPDIR = &quot;org.newsclub.net.unix.library.tmpdir&quot;;
 
   private static final File tempDir;
-<span class="nc" id="L34">  private static final String architectureAndOS = architectureAndOS();</span>
+<span class="fc" id="L37">  private static final String architectureAndOS = architectureAndOS();</span>
+  private static final String libraryName = &quot;junixsocket-native&quot;;
 
-<span class="nc" id="L36">  private static boolean loaded = false;</span>
-
-<span class="nc" id="L38">  private String libraryName = &quot;junixsocket-native&quot;;</span>
-  private String version;
-  private String libraryNameAndVersion;
-  private Class&lt;?&gt; providerClass;
-  private String artifactName;
-
-  private InputStream libraryIn;
+<span class="fc" id="L40">  private static boolean loaded = false;</span>
 
   static {
-<span class="nc" id="L47">    String dir = System.getProperty(PROP_LIBRARY_TMPDIR, null);</span>
-<span class="nc bnc" id="L48" title="All 2 branches missed.">    tempDir = (dir == null) ? null : new File(dir);</span>
-<span class="nc" id="L49">  }</span>
+<span class="fc" id="L43">    String dir = System.getProperty(PROP_LIBRARY_TMPDIR, null);</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">    tempDir = (dir == null) ? null : new File(dir);</span>
+<span class="fc" id="L45">  }</span>
 
-<span class="nc" id="L51">  public NativeLibraryLoader() {</span>
-<span class="nc" id="L52">  }</span>
+<span class="fc" id="L47">  NativeLibraryLoader() {</span>
+<span class="fc" id="L48">  }</span>
 
-  private void findLibraryArtifact() {
-    try {
-<span class="nc bnc" id="L56" title="All 2 branches missed.">      if (!tryProviderClass(&quot;org.newsclub.lib.junixsocket.custom.NarMetadata&quot;,</span>
-          &quot;junixsocket-native-custom&quot;) &amp;&amp; //
-<span class="nc bnc" id="L58" title="All 2 branches missed.">          !tryProviderClass(&quot;org.newsclub.lib.junixsocket.common.NarMetadata&quot;,</span>
-              &quot;junixsocket-native-common&quot;) //
-      ) {
+  private List&lt;LibraryCandidate&gt; tryProviderClass(String providerClassname, String artifactName)
+      throws IOException, ClassNotFoundException {
+<span class="fc" id="L52">    Class&lt;?&gt; providerClass = Class.forName(providerClassname);</span>
 
-<span class="nc" id="L62">        String cp = System.getProperty(&quot;java.class.path&quot;, &quot;&quot;);</span>
-<span class="nc bnc" id="L63" title="All 4 branches missed.">        if (cp.contains(&quot;junixsocket-native-custom/target-eclipse&quot;) || cp.contains(</span>
-            &quot;junixsocket-native-common/target-eclipse&quot;)) {
-<span class="nc" id="L65">          throw new UnsatisfiedLinkError(&quot;Could not load native library.\n\n*** ECLIPSE USERS ***\n&quot;</span>
-              + &quot;If you're running from within Eclipse, please close the \&quot;junixsocket-native-*\&quot; projects\n&quot;);
-        }
+<span class="fc" id="L54">    String version = getArtifactVersion(providerClass, artifactName);</span>
+<span class="fc" id="L55">    String libraryNameAndVersion = libraryName + &quot;-&quot; + version;</span>
 
-<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (artifactName != null) {</span>
-<span class="nc" id="L70">          throw new UnsatisfiedLinkError(&quot;Artifact &quot; + artifactName</span>
-              + &quot; does not contain library for &quot; + architectureAndOS);
-        } else {
-<span class="nc" id="L73">          throw new ClassNotFoundException(</span>
-              &quot;You need to add a dependency to either junixsocket-native-common or junixsocket-native-custom&quot;);
-        }
-      }
-<span class="nc" id="L77">    } catch (Exception e) {</span>
-<span class="nc" id="L78">      throw new RuntimeException(e);</span>
-<span class="nc" id="L79">    }</span>
-<span class="nc" id="L80">  }</span>
+<span class="fc" id="L57">    return findLibraryCandidates(artifactName, libraryNameAndVersion, providerClass);</span>
+  }
 
-  private boolean tryProviderClass(String providerClassname, String artifactCandidate)
+  private String getArtifactVersion(Class&lt;?&gt; providerClass, String... artifactNames)
       throws IOException {
-    try {
-<span class="nc" id="L85">      this.providerClass = Class.forName(providerClassname);</span>
-<span class="nc" id="L86">    } catch (ClassNotFoundException e) {</span>
-<span class="nc" id="L87">      return false;</span>
-<span class="nc" id="L88">    }</span>
-<span class="nc" id="L89">    this.artifactName = artifactCandidate;</span>
-<span class="nc" id="L90">    Properties p = new Properties();</span>
-<span class="nc" id="L91">    try (InputStream in = providerClass.getResourceAsStream(</span>
-        &quot;/META-INF/maven/com.kohlschutter.junixsocket/&quot; + artifactCandidate + &quot;/pom.properties&quot;)) {
-<span class="nc" id="L93">      p.load(in);</span>
-<span class="nc" id="L94">      this.version = p.getProperty(&quot;version&quot;);</span>
-<span class="nc bnc" id="L95" title="All 2 branches missed.">      if (version == null) {</span>
-<span class="nc" id="L96">        throw new NullPointerException(&quot;Could not read version from pom.properties&quot;);</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">    for (String artifactName : artifactNames) {</span>
+<span class="fc" id="L63">      Properties p = new Properties();</span>
+<span class="fc" id="L64">      String resource = &quot;/META-INF/maven/com.kohlschutter.junixsocket/&quot; + artifactName</span>
+          + &quot;/pom.properties&quot;;
+<span class="fc" id="L66">      try (InputStream in = providerClass.getResourceAsStream(resource)) {</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (in == null) {</span>
+<span class="fc" id="L68">          throw new FileNotFoundException(&quot;Could not find resource &quot; + resource + &quot; relative to &quot;</span>
+              + providerClass);
+        }
+<span class="fc" id="L71">        p.load(in);</span>
+<span class="fc" id="L72">        String version = p.getProperty(&quot;version&quot;);</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (version == null) {</span>
+<span class="nc" id="L74">          throw new NullPointerException(&quot;Could not read version from pom.properties&quot;);</span>
+        }
+<span class="fc" id="L76">        return version;</span>
       }
-<span class="nc" id="L98">      this.libraryNameAndVersion = libraryName + &quot;-&quot; + version;</span>
+    }
+<span class="nc" id="L79">    throw new IllegalStateException(&quot;No artifact names specified&quot;);</span>
+  }
+
+  private abstract static class LibraryCandidate implements Closeable {
+    protected final String libraryNameAndVersion;
+
+<span class="fc" id="L85">    protected LibraryCandidate(String libraryNameAndVersion) {</span>
+<span class="fc" id="L86">      this.libraryNameAndVersion = libraryNameAndVersion;</span>
+<span class="fc" id="L87">    }</span>
+
+    abstract String load() throws Exception;
+
+    @Override
+    public abstract void close();
+
+    @Override
+    public String toString() {
+<span class="nc" id="L96">      return super.toString() + &quot;[&quot; + libraryNameAndVersion + &quot;]&quot;;</span>
+    }
+  }
+
+  private static final class StandardLibraryCandidate extends LibraryCandidate {
+    StandardLibraryCandidate(String version) {
+<span class="nc bnc" id="L102" title="All 2 branches missed.">      super(version == null ? null : libraryName + &quot;-&quot; + version);</span>
+<span class="nc" id="L103">    }</span>
+
+    @Override
+    String load() throws Exception, LinkageError {
+<span class="nc bnc" id="L107" title="All 2 branches missed.">      if (libraryNameAndVersion != null) {</span>
+<span class="nc" id="L108">        System.loadLibrary(libraryNameAndVersion);</span>
+<span class="nc" id="L109">        return libraryNameAndVersion;</span>
+      }
+<span class="nc" id="L111">      return null;</span>
     }
 
-<span class="nc" id="L101">    this.libraryIn = findLibrary();</span>
-<span class="nc bnc" id="L102" title="All 2 branches missed.">    if (libraryIn != null) {</span>
-<span class="nc" id="L103">      return true;</span>
-    } else {
-<span class="nc" id="L105">      return false;</span>
+    @Override
+    public void close() {
+<span class="nc" id="L116">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L120">      return super.toString() + &quot;(standard library path)&quot;;</span>
+    }
+
+  }
+
+  private static final class ClasspathLibraryCandidate extends LibraryCandidate {
+    private final String artifactName;
+    private final InputStream libraryIn;
+    private final String path;
+
+    ClasspathLibraryCandidate(String artifactName, String libraryNameAndVersion, String path,
+        InputStream libraryIn) {
+<span class="fc" id="L132">      super(libraryNameAndVersion);</span>
+<span class="fc" id="L133">      this.artifactName = artifactName;</span>
+<span class="fc" id="L134">      this.path = path;</span>
+<span class="fc" id="L135">      this.libraryIn = libraryIn;</span>
+<span class="fc" id="L136">    }</span>
+
+    @Override
+    synchronized String load() throws IOException, LinkageError {
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">      if (libraryNameAndVersion == null) {</span>
+<span class="nc" id="L141">        return null;</span>
+      }
+      File libFile;
+      try {
+<span class="fc" id="L145">        libFile = createTempFile(&quot;libtmp&quot;, System.mapLibraryName(libraryNameAndVersion));</span>
+<span class="fc" id="L146">        try (OutputStream out = new FileOutputStream(libFile)) {</span>
+<span class="fc" id="L147">          byte[] buf = new byte[4096];</span>
+          int read;
+<span class="fc bfc" id="L149" title="All 2 branches covered.">          while ((read = libraryIn.read(buf)) &gt;= 0) {</span>
+<span class="fc" id="L150">            out.write(buf, 0, read);</span>
+          }
+        } finally {
+<span class="fc" id="L153">          libraryIn.close();</span>
+        }
+<span class="nc" id="L155">      } catch (IOException e) {</span>
+<span class="nc" id="L156">        throw e;</span>
+<span class="fc" id="L157">      }</span>
+<span class="fc" id="L158">      System.load(libFile.getAbsolutePath());</span>
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">      if (!libFile.delete()) {</span>
+<span class="nc" id="L160">        libFile.deleteOnExit();</span>
+      }
+<span class="fc" id="L162">      return artifactName + &quot;/&quot; + libraryNameAndVersion;</span>
+    }
+
+    @Override
+    public void close() {
+      try {
+<span class="fc" id="L168">        libraryIn.close();</span>
+<span class="nc" id="L169">      } catch (IOException e) {</span>
+        // ignore
+<span class="fc" id="L171">      }</span>
+<span class="fc" id="L172">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L176">      return super.toString() + &quot;(&quot; + artifactName + &quot;:&quot; + path + &quot;)&quot;;</span>
     }
   }
 
   private synchronized void setLoaded(String library) {
-<span class="nc" id="L110">    loaded = true;</span>
-<span class="nc" id="L111">    System.setProperty(PROP_LIBRARY_LOADED, library);</span>
-<span class="nc" id="L112">  }</span>
+<span class="fc" id="L181">    loaded = true;</span>
+<span class="fc" id="L182">    AFUNIXSocket.loadedLibrary = library;</span>
+<span class="fc" id="L183">  }</span>
 
+  @SuppressWarnings(&quot;resource&quot;)
   public synchronized void loadLibrary() {
-<span class="nc" id="L115">    synchronized (Object.class) {</span>
-<span class="nc bnc" id="L116" title="All 4 branches missed.">      if (loaded || System.getProperty(PROP_LIBRARY_LOADED) != null) {</span>
+<span class="fc" id="L187">    synchronized (getClass().getClassLoader()) {</span>
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">      if (loaded) {</span>
         // Already loaded
-<span class="nc" id="L118">        return;</span>
+<span class="nc" id="L190">        return;</span>
       }
-<span class="nc" id="L120">      String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, &quot;&quot;);</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">      if (!libraryOverride.isEmpty()) {</span>
-<span class="nc" id="L122">        System.loadLibrary(libraryOverride);</span>
-<span class="nc" id="L123">        setLoaded(libraryOverride);</span>
-<span class="nc" id="L124">        return;</span>
+<span class="fc" id="L192">      String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, &quot;&quot;);</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">      if (!libraryOverride.isEmpty()) {</span>
+<span class="nc" id="L194">        System.loadLibrary(libraryOverride);</span>
+<span class="nc" id="L195">        setLoaded(libraryOverride);</span>
+<span class="nc" id="L196">        return;</span>
       }
 
-<span class="nc" id="L127">      findLibraryArtifact();</span>
+<span class="fc" id="L199">      List&lt;LibraryCandidate&gt; candidates = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L200">      List&lt;Throwable&gt; suppressedThrowables = new ArrayList&lt;&gt;();</span>
+
       try {
-<span class="nc" id="L129">        System.loadLibrary(libraryNameAndVersion);</span>
-<span class="nc" id="L130">        setLoaded(artifactName + &quot;/&quot; + libraryNameAndVersion);</span>
-<span class="nc" id="L131">        return;</span>
-<span class="nc" id="L132">      } catch (LinkageError e) {</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (libraryIn == null) {</span>
-<span class="nc" id="L134">          throw e;</span>
-        } else {
-          // ignore
-        }
-      }
-      File libFile;
+<span class="nc" id="L203">        candidates.add(new StandardLibraryCandidate(getArtifactVersion(getClass(),</span>
+            &quot;junixsocket-common&quot;, &quot;junixsocket-core&quot;)));
+<span class="fc" id="L205">      } catch (Exception e) {</span>
+<span class="fc" id="L206">        suppressedThrowables.add(e);</span>
+<span class="nc" id="L207">      }</span>
       try {
-<span class="nc" id="L141">        libFile = createTempFile(&quot;libtmp&quot;, System.mapLibraryName(libraryNameAndVersion));</span>
-<span class="nc" id="L142">        try (OutputStream out = new FileOutputStream(libFile)) {</span>
-<span class="nc" id="L143">          byte[] buf = new byte[4096];</span>
-          int read;
-<span class="nc bnc" id="L145" title="All 2 branches missed.">          while ((read = libraryIn.read(buf)) &gt;= 0) {</span>
-<span class="nc" id="L146">            out.write(buf, 0, read);</span>
+<span class="fc" id="L209">        candidates.addAll(tryProviderClass(&quot;org.newsclub.lib.junixsocket.custom.NarMetadata&quot;,</span>
+            &quot;junixsocket-native-custom&quot;));
+<span class="nc" id="L211">      } catch (Exception e) {</span>
+<span class="nc" id="L212">        suppressedThrowables.add(e);</span>
+<span class="fc" id="L213">      }</span>
+      try {
+<span class="fc" id="L215">        candidates.addAll(tryProviderClass(&quot;org.newsclub.lib.junixsocket.common.NarMetadata&quot;,</span>
+            &quot;junixsocket-native-common&quot;));
+<span class="nc" id="L217">      } catch (Exception e) {</span>
+<span class="nc" id="L218">        suppressedThrowables.add(e);</span>
+<span class="fc" id="L219">      }</span>
+
+<span class="fc" id="L221">      String loadedLibraryId = null;</span>
+
+<span class="pc bpc" id="L223" title="1 of 2 branches missed.">      for (LibraryCandidate candidate : candidates) {</span>
+        try {
+<span class="pc bpc" id="L225" title="1 of 2 branches missed.">          if ((loadedLibraryId = candidate.load()) != null) {</span>
+<span class="fc" id="L226">            break;</span>
           }
-        }
-<span class="nc" id="L149">      } catch (IOException e) {</span>
-<span class="nc" id="L150">        throw (UnsatisfiedLinkError) new UnsatisfiedLinkError(&quot;Couldn't load native library&quot;)</span>
-<span class="nc" id="L151">            .initCause(e);</span>
-<span class="nc" id="L152">      }</span>
-<span class="nc" id="L153">      System.load(libFile.getAbsolutePath());</span>
-<span class="nc" id="L154">      setLoaded(artifactName + &quot;/&quot; + libraryNameAndVersion);</span>
-<span class="nc bnc" id="L155" title="All 2 branches missed.">      if (!libFile.delete()) {</span>
-<span class="nc" id="L156">        libFile.deleteOnExit();</span>
-      }
-<span class="nc" id="L158">      close();</span>
-<span class="nc" id="L159">    }</span>
+<span class="nc" id="L228">        } catch (Exception | LinkageError e) {</span>
+<span class="nc" id="L229">          suppressedThrowables.add(e);</span>
+<span class="nc" id="L230">        }</span>
+<span class="nc" id="L231">      }</span>
+<span class="fc bfc" id="L232" title="All 2 branches covered.">      for (LibraryCandidate candidate : candidates) {</span>
+<span class="fc" id="L233">        candidate.close();</span>
+<span class="fc" id="L234">      }</span>
 
-<span class="nc" id="L161">  }</span>
+<span class="pc bpc" id="L236" title="1 of 2 branches missed.">      if (loadedLibraryId != null) {</span>
+<span class="fc" id="L237">        setLoaded(loadedLibraryId);</span>
+      } else {
+<span class="nc" id="L239">        String message = &quot;Could not load native library &quot; + libraryName + &quot; for architecture &quot;</span>
+            + architectureAndOS;
+
+<span class="nc" id="L242">        String cp = System.getProperty(&quot;java.class.path&quot;, &quot;&quot;);</span>
+<span class="nc bnc" id="L243" title="All 4 branches missed.">        if (cp.contains(&quot;junixsocket-native-custom/target-eclipse&quot;) || cp.contains(</span>
+            &quot;junixsocket-native-common/target-eclipse&quot;)) {
+<span class="nc" id="L245">          message += &quot;\n\n*** ECLIPSE USERS ***\nIf you're running from within Eclipse, &quot;</span>
+              + &quot;please close the projects \&quot;junixsocket-native-common\&quot; and \&quot;junixsocket-native-custom\&quot;\n&quot;;
+        }
+
+<span class="nc" id="L249">        UnsatisfiedLinkError e = new UnsatisfiedLinkError(message);</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">        for (Throwable suppressed : suppressedThrowables) {</span>
+<span class="nc" id="L251">          e.addSuppressed(suppressed);</span>
+<span class="nc" id="L252">        }</span>
+<span class="nc" id="L253">        throw e;</span>
+      }
+<span class="fc" id="L255">    }</span>
+<span class="fc" id="L256">  }</span>
 
   private static String architectureAndOS() {
-<span class="nc" id="L164">    return System.getProperty(&quot;os.arch&quot;) + &quot;-&quot; + System.getProperty(&quot;os.name&quot;).replaceAll(&quot; &quot;, &quot;&quot;);</span>
+<span class="fc" id="L259">    return System.getProperty(&quot;os.arch&quot;) + &quot;-&quot; + System.getProperty(&quot;os.name&quot;).replaceAll(&quot; &quot;, &quot;&quot;);</span>
   }
 
-  private InputStream findLibrary() {
-<span class="nc" id="L168">    String mappedName = System.mapLibraryName(libraryNameAndVersion);</span>
+  @SuppressWarnings(&quot;resource&quot;)
+  private List&lt;LibraryCandidate&gt; findLibraryCandidates(String artifactName,
+      String libraryNameAndVersion, Class&lt;?&gt; providerClass) {
+<span class="fc" id="L265">    String mappedName = System.mapLibraryName(libraryNameAndVersion);</span>
 
-<span class="nc bnc" id="L170" title="All 2 branches missed.">    for (String compiler : new String[] {</span>
-        &quot;gpp&quot;, &quot;g++&quot;, &quot;linker&quot;, &quot;gcc&quot;, &quot;cc&quot;, &quot;CC&quot;, &quot;icpc&quot;, &quot;icc&quot;, &quot;xlC&quot;, &quot;xlC_r&quot;, &quot;msvc&quot;, &quot;icl&quot;,
-        &quot;ecpc&quot;, &quot;ecc&quot;}) {
-<span class="nc" id="L173">      String path = &quot;/lib/&quot; + architectureAndOS + &quot;-&quot; + compiler + &quot;/jni/&quot; + mappedName;</span>
+<span class="fc" id="L267">    List&lt;LibraryCandidate&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L268" title="All 2 branches covered.">    for (String compiler : new String[] {</span>
+        &quot;gpp&quot;, &quot;g++&quot;, &quot;linker&quot;, &quot;clang&quot;, &quot;gcc&quot;, &quot;cc&quot;, &quot;CC&quot;, &quot;icpc&quot;, &quot;icc&quot;, &quot;xlC&quot;, &quot;xlC_r&quot;, &quot;msvc&quot;,
+        &quot;icl&quot;, &quot;ecpc&quot;, &quot;ecc&quot;}) {
+<span class="fc" id="L271">      String path = &quot;/lib/&quot; + architectureAndOS + &quot;-&quot; + compiler + &quot;/jni/&quot; + mappedName;</span>
 
-<span class="nc" id="L175">      InputStream in = providerClass.getResourceAsStream(path);</span>
-<span class="nc bnc" id="L176" title="All 2 branches missed.">      if (in != null) {</span>
-<span class="nc" id="L177">        return in;</span>
+<span class="fc" id="L273">      InputStream in = providerClass.getResourceAsStream(path);</span>
+<span class="fc bfc" id="L274" title="All 2 branches covered.">      if (in != null) {</span>
+<span class="fc" id="L275">        list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion, path, in));</span>
       }
     }
-<span class="nc" id="L180">    return null;</span>
+<span class="fc" id="L278">    return list;</span>
+  }
+
+  private static File createTempFile(String prefix, String suffix) throws IOException {
+<span class="fc" id="L282">    return File.createTempFile(prefix, suffix, tempDir);</span>
   }
 
   @Override
-  public synchronized void close() {
-<span class="nc bnc" id="L185" title="All 2 branches missed.">    if (libraryIn != null) {</span>
-      try {
-<span class="nc" id="L187">        libraryIn.close();</span>
-<span class="nc" id="L188">      } catch (IOException e) {</span>
-        // ignore
-<span class="nc" id="L190">      }</span>
-<span class="nc" id="L191">      libraryIn = null;</span>
-    }
-<span class="nc" id="L193">  }</span>
-
-  private static File createTempFile(String prefix, String suffix) throws IOException {
-<span class="nc" id="L196">    return File.createTempFile(prefix, suffix, tempDir);</span>
-  }
+  public void close() {
+<span class="fc" id="L287">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

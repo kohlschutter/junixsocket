@@ -1,6 +1,8 @@
 module:org.newsclub.net.unix.demo
 org.newsclub.net.mysql.demo
 org.newsclub.net.unix.demo
+org.newsclub.net.unix.demo.client
 org.newsclub.net.unix.demo.jdbc
 org.newsclub.net.unix.demo.rmi
 org.newsclub.net.unix.demo.rmi.services
+org.newsclub.net.unix.demo.server

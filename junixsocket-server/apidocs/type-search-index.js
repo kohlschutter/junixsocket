@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"org.newsclub.net.unix.server","l":"AFUNIXSocketServer"},{"l":"All Classes","url":"allclasses-index.html"}]

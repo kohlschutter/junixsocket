@@ -17,10 +17,13 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketException;
 
 /**
  * Implementation of an AF_UNIX domain socket.
@@ -28,7 +31,8 @@ import java.net.SocketAddress;
  * @author Christian Kohlschütter
  */
 public class AFUNIXSocket extends Socket {
-  private static final String PROP_LIBRARY_LOADED = &quot;org.newsclub.net.unix.library.loaded&quot;;
+  static String loadedLibrary; // set by NativeLibraryLoader
+
   protected AFUNIXSocketImpl impl;
   AFUNIXSocketAddress addr;
 
@@ -36,20 +40,20 @@ public class AFUNIXSocket extends Socket {
 
   private AFUNIXSocket(final AFUNIXSocketImpl impl, AFUNIXSocketFactory factory)
       throws IOException {
-<span class="fc" id="L39">    super(impl);</span>
-<span class="fc" id="L40">    this.socketFactory = factory;</span>
-<span class="pc bpc" id="L41" title="1 of 2 branches missed.">    if (factory == null) {</span>
-<span class="fc" id="L42">      setIsCreated();</span>
+<span class="fc" id="L43">    super(impl);</span>
+<span class="fc" id="L44">    this.socketFactory = factory;</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">    if (factory == null) {</span>
+<span class="fc" id="L46">      setIsCreated();</span>
     }
-<span class="fc" id="L44">  }</span>
+<span class="fc" id="L48">  }</span>
 
   private void setIsCreated() throws IOException {
     try {
-<span class="fc" id="L48">      NativeUnixSocket.setCreated(this);</span>
-<span class="nc" id="L49">    } catch (LinkageError e) {</span>
-<span class="nc" id="L50">      throw new IOException(&quot;Couldn't load native library&quot;, e);</span>
-<span class="fc" id="L51">    }</span>
-<span class="fc" id="L52">  }</span>
+<span class="fc" id="L52">      NativeUnixSocket.setCreated(this);</span>
+<span class="nc" id="L53">    } catch (LinkageError e) {</span>
+<span class="nc" id="L54">      throw new IOException(&quot;Couldn't load native library&quot;, e);</span>
+<span class="fc" id="L55">    }</span>
+<span class="fc" id="L56">  }</span>
 
   /**
    * Creates a new, unbound {@link AFUNIXSocket}.
@@ -63,14 +67,14 @@ public class AFUNIXSocket extends Socket {
    * @throws IOException if the operation fails.
    */
   public static AFUNIXSocket newInstance() throws IOException {
-<span class="fc" id="L66">    return newInstance(null);</span>
+<span class="fc" id="L70">    return newInstance(null);</span>
   }
 
   static AFUNIXSocket newInstance(AFUNIXSocketFactory factory) throws IOException {
-<span class="fc" id="L70">    final AFUNIXSocketImpl impl = new AFUNIXSocketImpl.Lenient();</span>
-<span class="fc" id="L71">    AFUNIXSocket instance = new AFUNIXSocket(impl, factory);</span>
-<span class="fc" id="L72">    instance.impl = impl;</span>
-<span class="fc" id="L73">    return instance;</span>
+<span class="fc" id="L74">    final AFUNIXSocketImpl impl = new AFUNIXSocketImpl.Lenient();</span>
+<span class="fc" id="L75">    AFUNIXSocket instance = new AFUNIXSocket(impl, factory);</span>
+<span class="fc" id="L76">    instance.impl = impl;</span>
+<span class="fc" id="L77">    return instance;</span>
   }
 
   /**
@@ -83,10 +87,10 @@ public class AFUNIXSocket extends Socket {
    * @throws IOException if the operation fails.
    */
   public static AFUNIXSocket newStrictInstance() throws IOException {
-<span class="fc" id="L86">    final AFUNIXSocketImpl impl = new AFUNIXSocketImpl();</span>
-<span class="fc" id="L87">    AFUNIXSocket instance = new AFUNIXSocket(impl, null);</span>
-<span class="fc" id="L88">    instance.impl = impl;</span>
-<span class="fc" id="L89">    return instance;</span>
+<span class="fc" id="L90">    final AFUNIXSocketImpl impl = new AFUNIXSocketImpl();</span>
+<span class="fc" id="L91">    AFUNIXSocket instance = new AFUNIXSocket(impl, null);</span>
+<span class="fc" id="L92">    instance.impl = impl;</span>
+<span class="fc" id="L93">    return instance;</span>
   }
 
   /**
@@ -97,9 +101,9 @@ public class AFUNIXSocket extends Socket {
    * @throws IOException if the operation fails.
    */
   public static AFUNIXSocket connectTo(AFUNIXSocketAddress addr) throws IOException {
-<span class="fc" id="L100">    AFUNIXSocket socket = newInstance();</span>
-<span class="fc" id="L101">    socket.connect(addr);</span>
-<span class="fc" id="L102">    return socket;</span>
+<span class="fc" id="L104">    AFUNIXSocket socket = newInstance();</span>
+<span class="fc" id="L105">    socket.connect(addr);</span>
+<span class="fc" id="L106">    return socket;</span>
   }
 
   /**
@@ -108,44 +112,45 @@ public class AFUNIXSocket extends Socket {
    */
   @Override
   public void bind(SocketAddress bindpoint) throws IOException {
-<span class="nc" id="L111">    super.bind(bindpoint);</span>
-<span class="nc" id="L112">    this.addr = (AFUNIXSocketAddress) bindpoint;</span>
-<span class="nc" id="L113">  }</span>
+<span class="nc" id="L115">    super.bind(bindpoint);</span>
+<span class="nc" id="L116">    this.addr = (AFUNIXSocketAddress) bindpoint;</span>
+<span class="nc" id="L117">  }</span>
 
   @Override
   public void connect(SocketAddress endpoint) throws IOException {
-<span class="fc" id="L117">    connect(endpoint, 0);</span>
-<span class="fc" id="L118">  }</span>
+<span class="fc" id="L121">    connect(endpoint, 0);</span>
+<span class="fc" id="L122">  }</span>
 
   @Override
   public void connect(SocketAddress endpoint, int timeout) throws IOException {
-<span class="pc bpc" id="L122" title="1 of 2 branches missed.">    if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
-<span class="nc bnc" id="L123" title="All 2 branches missed.">      if (socketFactory != null) {</span>
-<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (endpoint instanceof InetSocketAddress) {</span>
-<span class="nc" id="L125">          InetSocketAddress isa = (InetSocketAddress) endpoint;</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">    if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">      if (socketFactory != null) {</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        if (endpoint instanceof InetSocketAddress) {</span>
+<span class="nc" id="L129">          InetSocketAddress isa = (InetSocketAddress) endpoint;</span>
 
-<span class="nc" id="L127">          String hostname = isa.getHostString();</span>
-<span class="nc bnc" id="L128" title="All 2 branches missed.">          if (socketFactory.isHostnameSupported(hostname)) {</span>
-<span class="nc" id="L129">            endpoint = socketFactory.addressFromHost(hostname, isa.getPort());</span>
+<span class="nc" id="L131">          String hostname = isa.getHostString();</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">          if (socketFactory.isHostnameSupported(hostname)) {</span>
+<span class="nc" id="L133">            endpoint = socketFactory.addressFromHost(hostname, isa.getPort());</span>
           }
         }
       }
-<span class="nc bnc" id="L133" title="All 2 branches missed.">      if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
-<span class="nc" id="L134">        throw new IllegalArgumentException(&quot;Can only connect to endpoints of type &quot; + AFUNIXSocketAddress.class</span>
-<span class="nc" id="L135">            .getName() + &quot;, got: &quot; + endpoint);</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">      if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
+<span class="nc" id="L138">        throw new IllegalArgumentException(&quot;Can only connect to endpoints of type &quot;</span>
+<span class="nc" id="L139">            + AFUNIXSocketAddress.class.getName() + &quot;, got: &quot; + endpoint);</span>
       }
     }
-<span class="fc" id="L138">    impl.connect(endpoint, timeout);</span>
-<span class="fc" id="L139">    this.addr = (AFUNIXSocketAddress) endpoint;</span>
-<span class="fc" id="L140">    NativeUnixSocket.setConnected(this);</span>
-<span class="fc" id="L141">  }</span>
+<span class="fc" id="L142">    impl.connect(endpoint, timeout);</span>
+<span class="fc" id="L143">    this.addr = (AFUNIXSocketAddress) endpoint;</span>
+<span class="fc" id="L144">    NativeUnixSocket.setBound(this);</span>
+<span class="fc" id="L145">    NativeUnixSocket.setConnected(this);</span>
+<span class="fc" id="L146">  }</span>
 
   @Override
   public String toString() {
-<span class="nc bnc" id="L145" title="All 2 branches missed.">    if (isConnected()) {</span>
-<span class="nc" id="L146">      return &quot;AFUNIXSocket[fd=&quot; + impl.getFD() + &quot;;path=&quot; + addr.getSocketFile() + &quot;]&quot;;</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">    if (isConnected()) {</span>
+<span class="nc" id="L151">      return &quot;AFUNIXSocket[fd=&quot; + impl.getFD() + &quot;;path=&quot; + addr.getSocketFile() + &quot;]&quot;;</span>
     }
-<span class="nc" id="L148">    return &quot;AFUNIXSocket[unconnected]&quot;;</span>
+<span class="nc" id="L153">    return &quot;AFUNIXSocket[unconnected]&quot;;</span>
   }
 
   /**
@@ -157,7 +162,7 @@ public class AFUNIXSocket extends Socket {
    * @return {@code true} iff supported.
    */
   public static boolean isSupported() {
-<span class="nc" id="L160">    return NativeUnixSocket.isLoaded();</span>
+<span class="nc" id="L165">    return NativeUnixSocket.isLoaded();</span>
   }
 
   /**
@@ -169,7 +174,90 @@ public class AFUNIXSocket extends Socket {
    * @return The identifier of the loaded junixsocket-native library, or {@code null}.
    */
   public static String getLoadedLibrary() {
-<span class="nc" id="L172">    return System.getProperty(PROP_LIBRARY_LOADED);</span>
+<span class="nc" id="L177">    return loadedLibrary;</span>
   }
+
+  /**
+   * Retrieves the &quot;peer credentials&quot; for this connection.
+   *
+   * These credentials may be useful to authenticate the other end of the socket (client or server).
+   *
+   * @return The peer's credentials.
+   * @throws IOException If there was an error returning these credentials.
+   */
+  public AFUNIXSocketCredentials getPeerCredentials() throws IOException {
+<span class="pc bpc" id="L189" title="2 of 4 branches missed.">    if (isClosed() || !isConnected()) {</span>
+<span class="nc" id="L190">      throw new SocketException(&quot;Not connected&quot;);</span>
+    }
+<span class="fc" id="L192">    return impl.getPeerCredentials();</span>
+  }
+
+  @Override
+  public boolean isClosed() {
+<span class="pc bpc" id="L197" title="1 of 6 branches missed.">    return super.isClosed() || (isConnected() &amp;&amp; !impl.getFD().valid());</span>
+  }
+
+  /**
+   * Returns the size of the receive buffer for ancillary messages (in bytes).
+   * 
+   * @return The size.
+   */
+  public int getAncillaryReceiveBufferSize() {
+<span class="fc" id="L206">    return impl.getAncillaryReceiveBufferSize();</span>
+  }
+
+  /**
+   * Sets the size of the receive buffer for ancillary messages (in bytes).
+   * 
+   * To disable handling ancillary messages, set it to 0 (default).
+   * 
+   * @param size The size.
+   */
+  public void setAncillaryReceiveBufferSize(int size) {
+<span class="fc" id="L217">    impl.setAncillaryReceiveBufferSize(size);</span>
+<span class="fc" id="L218">  }</span>
+
+  /**
+   * Retrieves an array of incoming {@link FileDescriptor}s that were sent as ancillary messages,
+   * along with a call to {@link InputStream#read()}, etc.
+   * 
+   * NOTE: Another call to this method will not return the same file descriptors again (most likely,
+   * {@code null} will be returned).
+   * 
+   * @return The file decriptors, or {@code null} if none were available.
+   * @throws IOException if the operation fails.
+   */
+  public FileDescriptor[] getReceivedFileDescriptors() throws IOException {
+<span class="fc" id="L231">    return impl.getReceivedFileDescriptors();</span>
+  }
+
+  /**
+   * Clears the queue of incoming {@link FileDescriptor}s that were sent as ancillary messages.
+   */
+  public void clearReceivedFileDescriptors() {
+<span class="nc" id="L238">    impl.clearReceivedFileDescriptors();</span>
+<span class="nc" id="L239">  }</span>
+
+  /**
+   * Sets a list of {@link FileDescriptor}s that should be sent as an ancillary message along with
+   * the next write.
+   * 
+   * NOTE: There can only be one set of file descriptors active until the write completes.
+   * 
+   * @param fdescs The file descriptors, or {@code null} if none.
+   * @throws IOException if the operation fails.
+   */
+  public void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
+<span class="pc bpc" id="L251" title="2 of 4 branches missed.">    if (fdescs == null || fdescs.length == 0) {</span>
+<span class="nc" id="L252">      impl.setOutboundFileDescriptors(null);</span>
+    } else {
+<span class="fc" id="L254">      int[] fds = new int[fdescs.length];</span>
+<span class="fc bfc" id="L255" title="All 2 branches covered.">      for (int i = 0, n = fdescs.length; i &lt; n; i++) {</span>
+<span class="fc" id="L256">        FileDescriptor fdesc = fdescs[i];</span>
+<span class="fc" id="L257">        fds[i] = NativeUnixSocket.getFD(fdesc);</span>
+      }
+<span class="fc" id="L259">      impl.setOutboundFileDescriptors(fds);</span>
+    }
+<span class="fc" id="L261">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
