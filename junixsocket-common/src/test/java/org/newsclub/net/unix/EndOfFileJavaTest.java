@@ -49,7 +49,7 @@ public class EndOfFileJavaTest extends EndOfFileTest {
     final int desiredPort;
     String explicitPort = System.getProperty("org.newsclub.net.unix.testport");
     if (explicitPort != null) {
-      desiredPort = Integer.valueOf(explicitPort);
+      desiredPort = Integer.parseInt(explicitPort);
     } else {
       desiredPort = 0;
     }

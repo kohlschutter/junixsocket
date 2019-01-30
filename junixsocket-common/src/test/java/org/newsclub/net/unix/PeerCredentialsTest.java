@@ -65,7 +65,6 @@ public class PeerCredentialsTest extends SocketTestBase {
             "The returned PID must be the one of our process");
       }
 
-      serverThread.getServerSocket().close();
       serverThread.checkException();
     });
   }

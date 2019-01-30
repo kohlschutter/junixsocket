@@ -177,7 +177,7 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   private void checkClose() throws IOException {
     if (closedInputStream && closedOutputStream) {
-      // close();
+      close();
     }
   }
 

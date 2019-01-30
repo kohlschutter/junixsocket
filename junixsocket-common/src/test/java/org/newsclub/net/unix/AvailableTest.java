@@ -29,8 +29,8 @@ import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
 public class AvailableTest extends SocketTestBase {
-  private final int bytesSent = 23;
-  private final int timeToSleep = 100;
+  private static final int bytesSent = 23;
+  private static final int timeToSleep = 100;
 
   public AvailableTest() throws IOException {
     super();

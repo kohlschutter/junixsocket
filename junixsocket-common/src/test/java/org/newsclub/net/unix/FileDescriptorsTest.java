@@ -29,9 +29,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.file.Files;
 import java.time.Duration;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -43,11 +43,6 @@ import org.junit.jupiter.api.Test;
 public class FileDescriptorsTest extends SocketTestBase {
   public FileDescriptorsTest() throws IOException {
     super();
-  }
-
-  @AfterAll
-  public static void yo() {
-    Runtime.getRuntime().gc();
   }
 
   @Test
@@ -241,7 +236,7 @@ public class FileDescriptorsTest extends SocketTestBase {
 
       serverThread.getServerSocket().close();
       serverThread.checkException();
-      tmpFile.delete();
+      Files.delete(tmpFile.toPath());
     });
   }
 
@@ -296,7 +291,7 @@ public class FileDescriptorsTest extends SocketTestBase {
 
       serverThread.getServerSocket().close();
       serverThread.checkException();
-      tmpFile.delete();
+      Files.delete(tmpFile.toPath());
     });
   }
 }

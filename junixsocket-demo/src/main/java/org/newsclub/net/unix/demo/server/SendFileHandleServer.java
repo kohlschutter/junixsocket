@@ -18,9 +18,7 @@
 package org.newsclub.net.unix.demo.server;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,7 +26,6 @@ import java.net.Socket;
 import java.net.SocketAddress;
 
 import org.newsclub.net.unix.AFUNIXSocket;
-import org.newsclub.net.unix.AFUNIXSocketCredentials;
 
 /**
  * A multi-threaded unix socket server that simply reads all input, byte per byte, not doing
@@ -59,16 +56,5 @@ public final class SendFileHandleServer extends DemoServerBase {
       socket.setOutboundFileDescriptors(fin.getFD());
       os.write("FD sent via ancillary message.".getBytes("UTF-8"));
     }
-  }
-  
-  void test() throws IOException {
-    File file = null;
-    
-    AFUNIXSocket socket = AFUNIXSocket.newInstance();
-    AFUNIXSocketCredentials credentials = socket.getPeerCredentials();
-    credentials.getUid();
-    credentials.getPid();
-    credentials.getGids();
-    credentials.getUUID();
   }
 }

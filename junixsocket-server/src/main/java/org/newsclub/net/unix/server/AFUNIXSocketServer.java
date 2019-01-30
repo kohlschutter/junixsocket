@@ -77,10 +77,12 @@ public abstract class AFUNIXSocketServer {
   }
 
   public void setServerTimeout(int serverTimeout) {
-    if (serverSocket != null) {
-      throw new IllegalStateException("Already configured");
+    synchronized (this) {
+      if (serverSocket != null) {
+        throw new IllegalStateException("Already configured");
+      }
+      this.serverTimeout = serverTimeout;
     }
-    this.serverTimeout = serverTimeout;
   }
 
   public int getSocketTimeout() {
@@ -349,6 +351,7 @@ public abstract class AFUNIXSocketServer {
   /**
    * Called when a {@link SocketException} was thrown during "accept".
    * 
+   * @param socket The socket.
    * @param e The exception.
    */
   protected void onSocketExceptionAfterAccept(Socket socket, SocketException e) {

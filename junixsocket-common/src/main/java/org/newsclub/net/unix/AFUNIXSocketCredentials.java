@@ -82,6 +82,10 @@ public final class AFUNIXSocketCredentials {
     this.uuid = UUID.fromString(uuidStr);
   }
 
+  void setGids(long[] gids) {
+    this.gids = gids;
+  }
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();

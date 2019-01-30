@@ -55,8 +55,9 @@ abstract class SocketTestBase {
         throw new IllegalStateException("Can't create temporary file", e);
       }
     }
-    f.deleteOnExit();
-    f.delete();
+    if (!f.delete()) {
+      f.deleteOnExit();
+    }
     return f;
   }
 

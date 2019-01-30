@@ -41,6 +41,7 @@ import org.junit.jupiter.api.Test;
 /**
  * See https://code.google.com/p/junixsocket/issues/detail?id=20
  */
+@SuppressFBWarnings("RANGE_ARRAY_LENGTH")
 public class BufferOverflowTest {
   private File socketFile;
   private ServerSocket server;
@@ -104,9 +105,10 @@ public class BufferOverflowTest {
         try (OutputStream clientOutStream = clientSocket.getOutputStream(); //
             InputStream serverInStream = serverSocket.getInputStream()) {
           clientOutStream.write(input, 0, 16);
-          serverInStream.read(output, 0, 16); // we can't read up to 16 bytes on an array that is
-                                              // only 15.
-          fail("The call to read should have thrown an IndexOutOfBoundsException");
+          // we can't read up to 16 bytes on an array that is only 15
+          int numRead = serverInStream.read(output, 0, 16);
+          fail("The call to read should have thrown an IndexOutOfBoundsException, read: " + numRead
+              + " bytes");
         } catch (IndexOutOfBoundsException ex) {
           // expected
         }

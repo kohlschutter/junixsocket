@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.file.Files;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -63,7 +64,7 @@ public class TcpNoDelayTest extends SocketTestBase {
       }
     }
 
-    getSocketFile().delete();
+    Files.delete(getSocketFile().toPath());
   }
 
   @Test
@@ -85,6 +86,6 @@ public class TcpNoDelayTest extends SocketTestBase {
       // No exception
     }
 
-    getSocketFile().delete();
+    Files.delete(getSocketFile().toPath());
   }
 }
