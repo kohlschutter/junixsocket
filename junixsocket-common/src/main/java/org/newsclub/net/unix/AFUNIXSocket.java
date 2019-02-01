@@ -30,10 +30,10 @@ import java.net.SocketException;
  * 
  * @author Christian Kohlschütter
  */
-public class AFUNIXSocket extends Socket {
+public final class AFUNIXSocket extends Socket {
   static String loadedLibrary; // set by NativeLibraryLoader
 
-  protected AFUNIXSocketImpl impl;
+  AFUNIXSocketImpl impl;
   AFUNIXSocketAddress addr;
 
   private final AFUNIXSocketFactory socketFactory;

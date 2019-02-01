@@ -20,6 +20,7 @@ package org.newsclub.net.unix;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +53,7 @@ public class SoTimeoutTest extends SocketTestBase {
       Thread.yield();
 
       try {
-        sock.setSoTimeout(12000);
+        sock.setSoTimeout((int) TimeUnit.SECONDS.toMillis(12));
         System.err.println(
             "NOTE: Socket#setSoTimeout(int) did not throw a SocketException. This is OK.");
       } catch (final SocketException e) {
@@ -80,7 +81,7 @@ public class SoTimeoutTest extends SocketTestBase {
     };
 
     try (AFUNIXSocket sock = connectToServer()) {
-      sock.setSoTimeout(12000);
+      sock.setSoTimeout((int) TimeUnit.SECONDS.toMillis(12));
     }
     serverThread.getServerSocket().close();
   }

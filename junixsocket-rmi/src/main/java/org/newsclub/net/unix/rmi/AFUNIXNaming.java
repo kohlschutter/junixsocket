@@ -46,8 +46,7 @@ public final class AFUNIXNaming {
   private static final File DEFAULT_SOCKET_DIRECTORY = new File(System.getProperty(
       PROP_RMI_SOCKET_DIR, "/tmp"));
 
-  private static final Map<SocketDirAndPort, AFUNIXNaming> instances =
-      new HashMap<SocketDirAndPort, AFUNIXNaming>();
+  private static final Map<SocketDirAndPort, AFUNIXNaming> INSTANCES = new HashMap<>();
 
   private Registry registry = null;
   private PortAssigner portAssigner = null;
@@ -100,7 +99,6 @@ public final class AFUNIXNaming {
    */
   public static AFUNIXNaming getInstance(File socketDir, final int registryPort)
       throws RemoteException {
-
     String socketPrefix = null;
     String socketSuffix = null;
     if (socketDir == null) {
@@ -126,7 +124,7 @@ public final class AFUNIXNaming {
     final SocketDirAndPort sap = new SocketDirAndPort(socketDir, registryPort);
     AFUNIXNaming instance;
     synchronized (AFUNIXNaming.class) {
-      instance = instances.get(sap);
+      instance = INSTANCES.get(sap);
       if (instance == null) {
         try {
           instance = new AFUNIXNaming(sap.socketDir, registryPort, socketPrefix, socketSuffix);
@@ -135,7 +133,7 @@ public final class AFUNIXNaming {
         } catch (IOException e) {
           throw new RemoteException(e.getMessage(), e);
         }
-        instances.put(sap, instance);
+        INSTANCES.put(sap, instance);
       }
     }
     return instance;
@@ -197,23 +195,21 @@ public final class AFUNIXNaming {
     return registry;
   }
 
-  public Remote lookup(String name) throws NotBoundException, java.net.MalformedURLException,
+  public Remote lookup(String name) throws NotBoundException, MalformedURLException,
       RemoteException {
     return getRegistry().lookup(name);
   }
 
-  public void unbind(String name) throws RemoteException, NotBoundException,
-      java.net.MalformedURLException {
+  public void unbind(String name) throws RemoteException, NotBoundException, MalformedURLException {
     getRegistry().unbind(name);
   }
 
-  public void bind(String name, Remote obj) throws AlreadyBoundException,
-      java.net.MalformedURLException, RemoteException {
+  public void bind(String name, Remote obj) throws AlreadyBoundException, MalformedURLException,
+      RemoteException {
     getRegistry().bind(name, obj);
   }
 
-  public void rebind(String name, Remote obj) throws java.net.MalformedURLException,
-      RemoteException {
+  public void rebind(String name, Remote obj) throws MalformedURLException, RemoteException {
     getRegistry().rebind(name, obj);
   }
 

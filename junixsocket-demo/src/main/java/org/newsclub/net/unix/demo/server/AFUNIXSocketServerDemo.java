@@ -30,7 +30,7 @@ import org.newsclub.net.unix.server.AFUNIXSocketServer;
  * 
  * @author Christian Kohlschütter
  */
-public class AFUNIXSocketServerDemo {
+public final class AFUNIXSocketServerDemo {
   public static void main(String[] args) throws IOException, InterruptedException {
     final DemoServerBase demoServer;
 
@@ -66,6 +66,7 @@ public class AFUNIXSocketServerDemo {
           break;
         default:
           demoServer = null;
+          break;
       }
     }
 

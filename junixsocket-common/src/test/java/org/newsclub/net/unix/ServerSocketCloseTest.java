@@ -50,8 +50,8 @@ public class ServerSocketCloseTest {
   private void testUnblockAccepts(int timeout) throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
       File socketFile = SocketTestBase.initSocketFile();
-      try (final AFUNIXServerSocket serverSocket = AFUNIXServerSocket.bindOn(
-          new AFUNIXSocketAddress(socketFile))) {
+      try (AFUNIXServerSocket serverSocket = AFUNIXServerSocket.bindOn(new AFUNIXSocketAddress(
+          socketFile))) {
         serverSocket.setSoTimeout(timeout);
 
         final int numThreads = 32;

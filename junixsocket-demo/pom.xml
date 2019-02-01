@@ -14,6 +14,7 @@
   <name>junixsocket-demo</name>
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+    <kohlschutter.parent.directory>${project.parent.parent.basedir}</kohlschutter.parent.directory>
   </properties>
 
   <description>Some example code to demo junixsocket's features</description>
@@ -45,7 +46,7 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.13</version>
+      <version>8.0.14</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

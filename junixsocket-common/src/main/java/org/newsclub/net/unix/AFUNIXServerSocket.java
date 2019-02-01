@@ -29,7 +29,7 @@ import java.net.SocketException;
  */
 public class AFUNIXServerSocket extends ServerSocket {
   private final AFUNIXSocketImpl implementation;
-  private AFUNIXSocketAddress boundEndpoint = null;
+  private AFUNIXSocketAddress boundEndpoint;
 
   /**
    * Constructs a new, unconnected instance.

@@ -28,7 +28,7 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
  * 
  * @author Christian Kohlschütter
  */
-public class SimpleRMIClient {
+public final class SimpleRMIClient {
   public static void main(String[] args) throws Exception {
     AFUNIXNaming naming = AFUNIXNaming.getInstance();
 

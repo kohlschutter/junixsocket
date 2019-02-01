@@ -29,8 +29,8 @@ import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
 public class AvailableTest extends SocketTestBase {
-  private static final int bytesSent = 23;
-  private static final int timeToSleep = 100;
+  private static final int BYTES_SENT = 23;
+  private static final int TIME_TO_SLEEP = 100;
 
   public AvailableTest() throws IOException {
     super();
@@ -73,8 +73,8 @@ public class AvailableTest extends SocketTestBase {
   private void sendBytes(final Socket sock) throws IOException {
     @SuppressWarnings("resource")
     final OutputStream out = sock.getOutputStream();
-    final byte[] buf = new byte[bytesSent];
-    for (int i = 0; i < bytesSent; i++) {
+    final byte[] buf = new byte[BYTES_SENT];
+    for (int i = 0; i < BYTES_SENT; i++) {
       buf[i] = (byte) (i + 'A');
     }
     out.write(buf);
@@ -94,16 +94,16 @@ public class AvailableTest extends SocketTestBase {
         @Override
         protected void handleConnection(final Socket sock) throws IOException {
           sendBytes(sock);
-          sleepFor(timeToSleep);
-          receiveBytes(sock, bytesSent);
+          sleepFor(TIME_TO_SLEEP);
+          receiveBytes(sock, BYTES_SENT);
 
           stopAcceptingConnections();
         }
       };
 
       try (AFUNIXSocket sock = connectToServer()) {
-        sleepFor(timeToSleep);
-        receiveBytes(sock, bytesSent);
+        sleepFor(TIME_TO_SLEEP);
+        receiveBytes(sock, BYTES_SENT);
         sendBytes(sock);
       }
 
@@ -125,8 +125,8 @@ public class AvailableTest extends SocketTestBase {
 
         @Override
         protected void handleConnection(final Socket sock) throws IOException {
-          sleepFor(timeToSleep);
-          receiveBytes(sock, bytesSent);
+          sleepFor(TIME_TO_SLEEP);
+          receiveBytes(sock, BYTES_SENT);
           sendBytes(sock);
 
           stopAcceptingConnections();
@@ -135,9 +135,9 @@ public class AvailableTest extends SocketTestBase {
 
       try (AFUNIXSocket sock = connectToServer()) {
         sendBytes(sock);
-        sleepFor(timeToSleep);
+        sleepFor(TIME_TO_SLEEP);
 
-        receiveBytes(sock, bytesSent);
+        receiveBytes(sock, BYTES_SENT);
       }
 
       serverThread.getServerSocket().close();

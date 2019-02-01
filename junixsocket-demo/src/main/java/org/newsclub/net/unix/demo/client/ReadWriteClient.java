@@ -27,11 +27,10 @@ import java.util.concurrent.CountDownLatch;
 /**
  * A simple bidirectional Unix socket client that reads from/writes to stdin/stdout.
  */
-public class ReadWriteClient extends DemoClientBase {
+public final class ReadWriteClient extends DemoClientBase {
   @Override
   protected void handleSocket(Socket socket) throws IOException {
-    try (final InputStream in = socket.getInputStream();
-        final OutputStream out = socket.getOutputStream()) {
+    try (InputStream in = socket.getInputStream(); OutputStream out = socket.getOutputStream()) {
       final byte[] readBuf = new byte[socket.getReceiveBufferSize()];
       final byte[] writeBuf = new byte[socket.getSendBufferSize()];
 

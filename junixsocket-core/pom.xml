@@ -17,6 +17,7 @@
   <name>junixsocket-core</name>
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+    <kohlschutter.parent.directory>${project.parent.parent.basedir}</kohlschutter.parent.directory>
 
     <!-- Work-around the fact that this artifact doesn't have a public class -->
     <!-- maven-javadoc-plugin currently fails to handle this properly -->

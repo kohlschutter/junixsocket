@@ -62,6 +62,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
    * @see RMISocketFactory
    */
   public AFUNIXRMISocketFactory() {
+    super();
   }
 
   public AFUNIXRMISocketFactory(final AFUNIXNaming naming, final File socketDir)
@@ -80,6 +81,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
       final RMIClientSocketFactory defaultClientFactory,
       final RMIServerSocketFactory defaultServerFactory, final String socketPrefix,
       final String socketSuffix) throws IOException {
+    super();
     this.naming = naming;
     this.socketDir = socketDir;
     this.defaultClientFactory = defaultClientFactory;

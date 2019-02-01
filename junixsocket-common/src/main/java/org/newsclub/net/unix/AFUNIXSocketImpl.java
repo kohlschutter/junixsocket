@@ -289,7 +289,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   @Override
   protected void listen(int backlog) throws IOException {
     FileDescriptor fdesc = validFdOrException();
-    if (backlog < 1) {
+    if (backlog <= 0) {
       backlog = 50;
     }
     NativeUnixSocket.listen(fdesc, backlog);
@@ -547,10 +547,6 @@ class AFUNIXSocketImpl extends SocketImpl {
    * {@link Socket#setTcpNoDelay(boolean)}.
    */
   static final class Lenient extends AFUNIXSocketImpl {
-    Lenient() {
-      super();
-    }
-
     @Override
     public void setOption(int optID, Object value) throws SocketException {
       try {
@@ -650,10 +646,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   }
 
   // called from native code, too (but only with null)
-  void setOutboundFileDescriptors(int[] fds) {
-    if (fds == null || fds.length == 0) {
-      fds = null;
-    }
-    this.pendingFileDescriptors = fds;
+  void setOutboundFileDescriptors(int... fds) {
+    this.pendingFileDescriptors = (fds == null || fds.length == 0) ? null : fds;
   }
 }

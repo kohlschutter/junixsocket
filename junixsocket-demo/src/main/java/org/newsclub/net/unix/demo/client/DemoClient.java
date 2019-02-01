@@ -29,7 +29,7 @@ import org.newsclub.net.unix.demo.DemoHelper;
  * 
  * @author Christian Kohlschütter
  */
-public class DemoClient {
+public final class DemoClient {
   public static void main(String[] args) throws IOException, InterruptedException {
     final DemoClientBase demoClient;
 
@@ -52,6 +52,7 @@ public class DemoClient {
           break;
         default:
           demoClient = null;
+          break;
       }
     }
 

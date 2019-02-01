@@ -17,6 +17,7 @@
 
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+    <kohlschutter.parent.directory>${project.parent.parent.basedir}</kohlschutter.parent.directory>
     <nar.aolProperties>${project.build.outputDirectory}/aol.properties</nar.aolProperties>
     <!-- <nar.aolProperties>${project.basedir}/aol.properties</nar.aolProperties> -->
 
@@ -68,6 +69,7 @@
           <plugin>
             <groupId>com.github.maven-nar</groupId>
             <artifactId>nar-maven-plugin</artifactId>
+            <version>3.6.0</version>
             <configuration>
               <aol>${junixsocket.native.aol.llvm}</aol>
               <c>

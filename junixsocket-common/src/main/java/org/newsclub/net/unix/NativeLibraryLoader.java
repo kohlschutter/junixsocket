@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
@@ -33,15 +34,15 @@ final class NativeLibraryLoader implements Closeable {
   private static final String PROP_LIBRARY_OVERRIDE = "org.newsclub.net.unix.library.override";
   private static final String PROP_LIBRARY_TMPDIR = "org.newsclub.net.unix.library.tmpdir";
 
-  private static final File tempDir;
-  private static final String architectureAndOS = architectureAndOS();
-  private static final String libraryName = "junixsocket-native";
+  private static final File TEMP_DIR;
+  private static final String ARCHITECTURE_AND_OS = architectureAndOS();
+  private static final String LIBRARY_NAME = "junixsocket-native";
 
   private static boolean loaded = false;
 
   static {
     String dir = System.getProperty(PROP_LIBRARY_TMPDIR, null);
-    tempDir = (dir == null) ? null : new File(dir);
+    TEMP_DIR = (dir == null) ? null : new File(dir);
   }
 
   NativeLibraryLoader() {
@@ -52,7 +53,7 @@ final class NativeLibraryLoader implements Closeable {
     Class<?> providerClass = Class.forName(providerClassname);
 
     String version = getArtifactVersion(providerClass, artifactName);
-    String libraryNameAndVersion = libraryName + "-" + version;
+    String libraryNameAndVersion = LIBRARY_NAME + "-" + version;
 
     return findLibraryCandidates(artifactName, libraryNameAndVersion, providerClass);
   }
@@ -70,9 +71,8 @@ final class NativeLibraryLoader implements Closeable {
         }
         p.load(in);
         String version = p.getProperty("version");
-        if (version == null) {
-          throw new NullPointerException("Could not read version from pom.properties");
-        }
+
+        Objects.requireNonNull(version, "Could not read version from pom.properties");
         return version;
       }
     }
@@ -99,7 +99,7 @@ final class NativeLibraryLoader implements Closeable {
 
   private static final class StandardLibraryCandidate extends LibraryCandidate {
     StandardLibraryCandidate(String version) {
-      super(version == null ? null : libraryName + "-" + version);
+      super(version == null ? null : LIBRARY_NAME + "-" + version);
     }
 
     @Override
@@ -184,7 +184,7 @@ final class NativeLibraryLoader implements Closeable {
 
   @SuppressWarnings("resource")
   public synchronized void loadLibrary() {
-    synchronized (getClass().getClassLoader()) {
+    synchronized (getClass().getClassLoader()) { // NOPMD We want to lock this class' classloader.
       if (loaded) {
         // Already loaded
         return;
@@ -236,8 +236,8 @@ final class NativeLibraryLoader implements Closeable {
       if (loadedLibraryId != null) {
         setLoaded(loadedLibraryId);
       } else {
-        String message = "Could not load native library " + libraryName + " for architecture "
-            + architectureAndOS;
+        String message = "Could not load native library " + LIBRARY_NAME + " for architecture "
+            + ARCHITECTURE_AND_OS;
 
         String cp = System.getProperty("java.class.path", "");
         if (cp.contains("junixsocket-native-custom/target-eclipse") || cp.contains(
@@ -268,7 +268,7 @@ final class NativeLibraryLoader implements Closeable {
     for (String compiler : new String[] {
         "gpp", "g++", "linker", "clang", "gcc", "cc", "CC", "icpc", "icc", "xlC", "xlC_r", "msvc",
         "icl", "ecpc", "ecc"}) {
-      String path = "/lib/" + architectureAndOS + "-" + compiler + "/jni/" + mappedName;
+      String path = "/lib/" + ARCHITECTURE_AND_OS + "-" + compiler + "/jni/" + mappedName;
 
       InputStream in = providerClass.getResourceAsStream(path);
       if (in != null) {
@@ -279,7 +279,7 @@ final class NativeLibraryLoader implements Closeable {
   }
 
   private static File createTempFile(String prefix, String suffix) throws IOException {
-    return File.createTempFile(prefix, suffix, tempDir);
+    return File.createTempFile(prefix, suffix, TEMP_DIR);
   }
 
   @Override

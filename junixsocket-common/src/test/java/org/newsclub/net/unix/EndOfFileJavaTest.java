@@ -45,7 +45,7 @@ public class EndOfFileJavaTest extends EndOfFileTest {
 
   @Override
   @BeforeEach
-  public void setup() throws IOException {
+  public void setUp() throws IOException {
     final int desiredPort;
     String explicitPort = System.getProperty("org.newsclub.net.unix.testport");
     if (explicitPort != null) {
@@ -62,8 +62,8 @@ public class EndOfFileJavaTest extends EndOfFileTest {
 
   @Override
   @AfterEach
-  public void teardown() {
-    super.teardown();
+  public void tearDown() {
+    super.tearDown();
   }
 
   @SuppressWarnings("resource")

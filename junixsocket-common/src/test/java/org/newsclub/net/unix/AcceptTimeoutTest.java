@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  * @author Christian Kohlschütter
  */
 public class AcceptTimeoutTest extends SocketTestBase {
-  private static final int timingInaccuracyMillis = 30;
+  private static final int TIMING_INACCURACY_MILLIS = 30;
 
   public AcceptTimeoutTest() throws IOException {
     super();
@@ -53,7 +53,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
           // expected
           time = System.currentTimeMillis() - time;
 
-          assertTrue(time >= timeoutMillis && (time - timeoutMillis) <= timingInaccuracyMillis,
+          assertTrue(time >= timeoutMillis && (time - timeoutMillis) <= TIMING_INACCURACY_MILLIS,
               "Timeout not properly honored. Exception thrown after " + time + "ms vs. expected "
                   + timeoutMillis + "ms");
         }
@@ -65,12 +65,12 @@ public class AcceptTimeoutTest extends SocketTestBase {
   public void testTimeoutAfterDelay() throws Exception {
     final int timeoutMillis = 250;
     assertTimeoutPreemptively(Duration.ofMillis(2 * timeoutMillis), () -> {
-      try (final AFUNIXServerSocket sock = startServer()) {
+      try (AFUNIXServerSocket sock = startServer()) {
         final int connectDelayMillis = 50;
         sock.setSoTimeout(timeoutMillis);
 
         new Thread() {
-          AFUNIXSocket socket = AFUNIXSocket.newInstance();
+          private final AFUNIXSocket socket = AFUNIXSocket.newInstance();
 
           {
             setDaemon(true);
@@ -98,7 +98,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
         time = System.currentTimeMillis() - time;
 
         assertTrue(time >= connectDelayMillis && (time
-            - connectDelayMillis) <= timingInaccuracyMillis,
+            - connectDelayMillis) <= TIMING_INACCURACY_MILLIS,
             "Timeout not properly honored. Accept succeeded after " + time + "ms vs. expected "
                 + timeoutMillis + "ms");
       }

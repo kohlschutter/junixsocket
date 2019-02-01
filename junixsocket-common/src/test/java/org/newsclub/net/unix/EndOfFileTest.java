@@ -51,7 +51,7 @@ public class EndOfFileTest {
   ExecutorService executor;
 
   @BeforeEach
-  public void setup() throws IOException {
+  public void setUp() throws IOException {
     server = AFUNIXServerSocket.newInstance();
     server.bind(new AFUNIXSocketAddress(socketFile));
 
@@ -59,7 +59,7 @@ public class EndOfFileTest {
   }
 
   @AfterEach
-  public void teardown() {
+  public void tearDown() {
     try {
       if (server != null) {
         server.close();

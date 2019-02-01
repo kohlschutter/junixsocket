@@ -34,7 +34,13 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
  * @author Christian Kohlschütter
  * @see SimpleTestClient
  */
-public class SimpleTestServer {
+public final class SimpleTestServer {
+  private static final int MAX_NUMBER = 5;
+
+  private SimpleTestServer() {
+    throw new UnsupportedOperationException("No instances");
+  }
+
   public static void main(String[] args) throws IOException {
     final File socketFile = new File(new File(System.getProperty("java.io.tmpdir")),
         "junixsocket-test.sock");
@@ -74,7 +80,7 @@ public class SimpleTestServer {
                 e.printStackTrace();
                 break;
               }
-              if (number > 5) {
+              if (number > MAX_NUMBER) {
                 System.out.println("write -123 (end of numbers)");
                 dout.writeInt(-123); // in this demo, -123 is our magic number to indicate the end
                 break;

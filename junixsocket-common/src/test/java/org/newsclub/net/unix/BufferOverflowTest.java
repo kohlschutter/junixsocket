@@ -48,7 +48,7 @@ public class BufferOverflowTest {
   private ExecutorService executor;
 
   @BeforeEach
-  public void setup() throws IOException {
+  public void setUp() throws IOException {
     this.socketFile = SocketTestBase.initSocketFile();
 
     server = AFUNIXServerSocket.newInstance();
@@ -58,7 +58,7 @@ public class BufferOverflowTest {
   }
 
   @AfterEach
-  public void teardown() {
+  public void tearDown() {
     try {
       if (server != null) {
         server.close();

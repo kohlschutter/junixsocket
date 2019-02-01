@@ -36,7 +36,7 @@ import org.newsclub.net.unix.demo.DemoHelper;
  * @author Christian Kohlschuetter
  * @see AFUNIXSocketFactory
  */
-public class PostgresDemo {
+public final class PostgresDemo {
   public static void main(String[] args) throws SQLException, ClassNotFoundException, IOException {
     DemoHelper.initJDBCDriverClass("postgresqlDriver", "org.postgresql.Driver", null);
 
@@ -73,11 +73,11 @@ public class PostgresDemo {
     DemoHelper.addProperty(props, "sslMode", "disable", "postgresqlSslMode", "prefer");
 
     String url;
-    if (socketFactory.equals("org.newsclub.net.unix.AFUNIXSocketFactory$URIScheme")) {
-      url = "jdbc:postgresql://[" + urlEncoded + ":" + port + "/" + databaseName;;
+    if ("org.newsclub.net.unix.AFUNIXSocketFactory$URIScheme".equals(socketFactory)) {
+      url = "jdbc:postgresql://[" + urlEncoded + ":" + port + "/" + databaseName;
     } else {
       url = "jdbc:postgresql://localhost/postgres";
-      if (socketFactory.equals("org.newsclub.net.unix.AFUNIXSocketFactory$FactoryArg")) {
+      if ("org.newsclub.net.unix.AFUNIXSocketFactory$FactoryArg".equals(socketFactory)) {
         DemoHelper.addProperty(props, "socketFactoryArg", socketPath, "socketFactoryArg", null);
       }
     }

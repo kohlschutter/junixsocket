@@ -27,7 +27,7 @@ import java.util.Random;
  * @author Christian Kohlschütter
  */
 class PortAssignerImpl implements PortAssigner {
-  private BitSet ports = new BitSet(1000);
+  private final BitSet ports = new BitSet(1000);
 
   public PortAssignerImpl() {
   }

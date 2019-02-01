@@ -23,6 +23,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 import javax.net.SocketFactory;
 
@@ -132,9 +133,7 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
     if (!isInetAddressSupported(address)) {
       throw new UnknownHostException();
     }
-    if (localAddress == null) {
-      throw new NullPointerException();
-    }
+    Objects.requireNonNull(localAddress, "Local address was null");
     if (localPort < 0) {
       throw new IllegalArgumentException("Illegal local port");
     }
@@ -174,16 +173,16 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
     private final File socketFile;
 
     public FactoryArg(String socketPath) {
-      if (socketPath == null) {
-        throw new NullPointerException("Constructor argument was null");
-      }
+      super();
+      Objects.requireNonNull(socketPath, "Socket path was null");
+
       this.socketFile = new File(socketPath);
     }
 
     public FactoryArg(File file) {
-      if (file == null) {
-        throw new NullPointerException("Constructor argument was null");
-      }
+      super();
+      Objects.requireNonNull(file, "File was null");
+
       this.socketFile = file;
     }
 

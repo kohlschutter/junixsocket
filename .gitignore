@@ -10,3 +10,5 @@ dependency-reduced-pom.xml
 pom.xml.releaseBackup
 /release.properties
 /coding-style
+.pmd
+.pmdruleset.xml

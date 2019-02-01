@@ -24,6 +24,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
@@ -55,9 +56,8 @@ public abstract class AFUNIXSocketServer {
   private ForkJoinPool connectionPool;
 
   public AFUNIXSocketServer(SocketAddress listenAddress) {
-    if (listenAddress == null) {
-      throw new NullPointerException("listenAddress");
-    }
+    Objects.requireNonNull(listenAddress, "listenAddress");
+
     this.listenAddress = listenAddress;
   }
 
@@ -180,7 +180,8 @@ public abstract class AFUNIXSocketServer {
               try {
                 connectionsMonitor.wait(serverBusyTimeout);
               } catch (InterruptedException e) {
-                throw new InterruptedIOException("Interrupted while waiting on server resources");
+                throw (InterruptedIOException) new InterruptedIOException(
+                    "Interrupted while waiting on server resources").initCause(e);
               }
             }
           }
@@ -214,7 +215,7 @@ public abstract class AFUNIXSocketServer {
             continue acceptLoop;
           }
 
-          onSubmitted(socket, submit(socket, server, connectionPool));
+          onSubmitted(socket, submit(socket, connectionPool));
         } catch (SocketTimeoutException e) {
           if (!connectionPool.isQuiescent()) {
             continue acceptLoop;
@@ -249,7 +250,7 @@ public abstract class AFUNIXSocketServer {
     }
   }
 
-  private Future<?> submit(Socket socket, ServerSocket server, ExecutorService executor) {
+  private Future<?> submit(Socket socket, ExecutorService executor) {
     return executor.submit(new Runnable() {
       @Override
       public void run() {

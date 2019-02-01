@@ -24,8 +24,8 @@ import java.util.UUID;
  * AF_UNIX socket credentials.
  */
 public final class AFUNIXSocketCredentials {
-  private long pid = -1;
-  private long uid = -1;
+  private long pid = -1; // NOPMD -- Set in native code
+  private long uid = -1; // NOPMD -- Set in native code
   private long[] gids = null;
   private UUID uuid = null;
 
@@ -83,7 +83,7 @@ public final class AFUNIXSocketCredentials {
   }
 
   void setGids(long[] gids) {
-    this.gids = gids;
+    this.gids = gids.clone();
   }
 
   @Override

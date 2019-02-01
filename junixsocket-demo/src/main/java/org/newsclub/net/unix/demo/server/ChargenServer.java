@@ -32,18 +32,18 @@ import java.net.SocketException;
  * @author Christian Kohlschütter
  */
 public final class ChargenServer extends DemoServerBase {
+  private static final Chargen SIMPLE_CHARGEN = new SimpleChargen();
+  private final boolean fast;
+  private FastChargen cachedChargen = null;
+
   /**
    * Defines a TCP-style character generator compliant with RFC864.
    * 
    * @see <a href="https://tools.ietf.org/html/rfc864">RFC864</a>
    */
-  private static interface Chargen {
+  private interface Chargen {
     void write(Socket socket) throws IOException;
   }
-
-  private static final Chargen SIMPLE_CHARGEN = new SimpleChargen();
-  private final boolean fast;
-  private FastChargen cachedChargen = null;
 
   public ChargenServer(SocketAddress listenAddress) {
     this(listenAddress, true);

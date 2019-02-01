@@ -32,7 +32,7 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 /**
  * Just a helper class to simplify controlling the demo from the command line.
  */
-public class DemoHelper {
+public final class DemoHelper {
 
   private DemoHelper() {
     throw new IllegalStateException("No instances");

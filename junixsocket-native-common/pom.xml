@@ -18,6 +18,7 @@
 
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+    <kohlschutter.parent.directory>${project.parent.parent.basedir}</kohlschutter.parent.directory>
     <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-jni</junixsocket.common.classifier.mac.x86_64>
     <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-jni</junixsocket.common.classifier.linux.x86_64>
   </properties>

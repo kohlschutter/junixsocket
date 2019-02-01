@@ -31,7 +31,7 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
  * 
  * @author Christian Kohlschütter
  */
-public class SimpleRMIServer {
+public final class SimpleRMIServer {
   public static void main(String[] args) throws Exception {
     AFUNIXNaming naming = AFUNIXNaming.getInstance();
     System.out.println("Socket directory: " + naming.getSocketFactory().getSocketDir());

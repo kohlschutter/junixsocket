@@ -88,6 +88,7 @@ abstract class SocketTestBase {
 
     @SuppressFBWarnings("SC_START_IN_CTOR")
     protected ServerThread() throws IOException {
+      super();
       serverSocket = startServer();
       setDaemon(true);
 
