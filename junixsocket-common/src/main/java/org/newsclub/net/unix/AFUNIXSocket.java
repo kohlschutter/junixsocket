@@ -148,7 +148,7 @@ public final class AFUNIXSocket extends Socket {
   @Override
   public String toString() {
     if (isConnected()) {
-      return "AFUNIXSocket[fd=" + impl.getFD() + ";path=" + addr.getSocketFile() + "]";
+      return "AFUNIXSocket[fd=" + impl.getFD() + ";addr=" + addr.toString() + "]";
     }
     return "AFUNIXSocket[unconnected]";
   }

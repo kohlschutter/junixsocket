@@ -25,7 +25,6 @@ import java.net.SocketException;
 import java.util.concurrent.Future;
 
 import org.newsclub.net.unix.AFUNIXSocket;
-import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.server.AFUNIXSocketServer;
 
 /**
@@ -65,12 +64,7 @@ abstract class DemoServerBase extends AFUNIXSocketServer {
 
   @Override
   protected void onServerBound(SocketAddress address) {
-    if (address instanceof AFUNIXSocketAddress) {
-      System.out.println("Created server -- bound to " + ((AFUNIXSocketAddress) address)
-          .getSocketFile());
-    } else {
-      System.out.println("Created server -- bound to " + address);
-    }
+    System.out.println("Created server -- bound to " + address);
   }
 
   @Override

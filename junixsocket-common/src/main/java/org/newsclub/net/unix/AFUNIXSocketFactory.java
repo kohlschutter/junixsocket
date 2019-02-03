@@ -91,14 +91,6 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
     }
 
     AFUNIXSocketAddress socketAddress = addressFromHost(host, port);
-    String socketFile = socketAddress.getSocketFile();
-    if (socketFile == null || socketFile.isEmpty()) {
-      throw new UnknownHostException("Illegal socketFile");
-    }
-    File file = new File(socketFile);
-    if (!file.exists()) {
-      throw new UnknownHostException("Socketfile does not exist");
-    }
     return AFUNIXSocket.connectTo(socketAddress);
   }
 

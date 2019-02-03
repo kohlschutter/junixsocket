@@ -42,6 +42,7 @@ public final class AFUNIXSocketServerDemo {
           + ".sock", "/tmp/test.sock or localhost:1234");
 
       final SocketAddress listenAddress = DemoHelper.socketAddress(socketName);
+      System.out.println("Listen address: " + listenAddress);
 
       switch (demo) {
         case "echo":
