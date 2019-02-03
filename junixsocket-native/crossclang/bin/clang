@@ -70,10 +70,15 @@ previous=""
 
 hasArgs=$#
 hasFiles=0
+withAndWithoutLC=0
+hasO=0
+outputFile=
 
 while [ $# -gt 0 ]; do
   v="$1"
   shift
+  
+  skipArg=0
 
   case "$previous" in
       -target )   target="$v"
@@ -92,6 +97,8 @@ while [ $# -gt 0 ]; do
       -dynamiclib ) isShared=1 ;;
       -shared ) isShared=1; hasShared=1 ;;
       -nostdlib ) nostdlib=1 ;;
+      -Xcrossclang-with-and-without-lc ) withAndWithoutLC=1; skipArg=1 ;;
+      -o ) hasO=1; skipArg=1 ;;
       *.cc ) looksLikeCPP=1 ;;
       *.cpp ) looksLikeCPP=1 ;;
       *.cxx ) looksLikeCPP=1 ;;
@@ -106,10 +113,23 @@ while [ $# -gt 0 ]; do
   if [[ $hasFiles -eq 0 && -n "$v" && "${v:0:1}" != "-" && -e "$v" ]]; then
       hasFiles=1
   fi
+  
+  if [[ "$previous" == "-o" ]]; then
+      outputFile="$v"
+      skipArg=1
+  fi
 
-  clangArgs+=("$v")
+  if [[ "$skipArg" -eq 0 ]]; then
+      clangArgs+=("$v")
+  fi
+
   previous="$v"
 done
+
+output_args=()
+if [ $hasO -gt 0 ]; then
+    output_args+=("-o" "$outputFile")
+fi
 
 if [ $hasFiles -eq 0 ]; then
     needLinker=0
@@ -138,7 +158,7 @@ if [[ -z "$target" ]]; then
         if [ -n "$targetIndex" ]; then
             clangArgs[$targetIndex]="$target"
         fi
-        exec clang ${clangArgs[@]}
+        exec clang ${output_args[@]} ${clangArgs[@]}
     fi
 fi
 
@@ -216,7 +236,7 @@ if [ $needLinker -gt 0 ]; then
 
         if [ $isShared -gt 0 ]; then
           if [[ $hasShared -eq 0 ]]; then
-            clangLinkerArgs+=("-Wl,-shared")
+            clangLinkerArgs+=("-shared")
           fi
         fi
         
@@ -281,5 +301,11 @@ if [ $hasFiles -eq 0 ]; then
     isystem_decls=()
 fi
 
-#echo clang --sysroot "$sdkroot" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${clangArgs[@]}
-exec clang --sysroot "$sdkroot" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${clangArgs[@]}
+# set -x
+if [[ $withAndWithoutLC -eq 1 ]]; then
+  nodepsOut="${outputFile%.*}.nodeps.${outputFile##*.}"
+  clang --sysroot "$sdkroot" ${isystem_decls[@]} ${clangLinkerArgs[@]} -lc ${output_args[@]} ${clangArgs[@]} && \
+  clang --sysroot "$sdkroot" ${isystem_decls[@]} ${clangLinkerArgs[@]} -o "$nodepsOut" ${clangArgs[@]}
+else
+  exec clang --sysroot "$sdkroot" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${output_args[@]} ${clangArgs[@]}
+fi

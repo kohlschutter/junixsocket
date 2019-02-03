@@ -270,12 +270,35 @@ final class NativeLibraryLoader implements Closeable {
         "icl", "ecpc", "ecc"}) {
       String path = "/lib/" + ARCHITECTURE_AND_OS + "-" + compiler + "/jni/" + mappedName;
 
-      InputStream in = providerClass.getResourceAsStream(path);
+      InputStream in;
+      
+      in = providerClass.getResourceAsStream(path);
       if (in != null) {
         list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion, path, in));
       }
+      
+      // NOTE: we have to try .nodeps version _after_ trying the properly linked one.
+      // While the former may throw an UnsatisfiedLinkError, this one may just terminate the VM
+      // with a "symbol lookup error"
+      String nodepsPath = nodepsPath(path);
+      if (nodepsPath != null) {
+        in = providerClass.getResourceAsStream(nodepsPath);
+        if (in != null) {
+          list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion, nodepsPath,
+              in));
+        }
+      }
     }
     return list;
+  }
+
+  private String nodepsPath(String path) {
+    int lastDot = path.lastIndexOf('.');
+    if (lastDot == -1) {
+      return null;
+    } else {
+      return path.substring(0, lastDot) + ".nodeps" + path.substring(lastDot);
+    }
   }
 
   private static File createTempFile(String prefix, String suffix) throws IOException {
