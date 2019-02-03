@@ -14,7 +14,11 @@ It has been tested with Oracle's Java 8 JDK, and OpenJDK for newer versions.
 
 ## Supported Architectures
 
-The minimum set of supported platforms and processor architectures currently is macOS and Linux x86_64.
+The minimum set of supported platforms and processor architectures currently is
+
+* macOS Intel 64-bit
+* Linux x86_64
+* Linux ARM 32-bit
 
 The native-common binaries are built on recent release versions of either platform.  
 
