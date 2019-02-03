@@ -104,6 +104,9 @@ old_IFS=$IFS
 IFS=' '; for f in $(LANG=C "$defaultClangOrGcc" -Xlinker --verbose 2>/dev/null | grep SEARCH_DIR); do
     f=${f#SEARCH_DIR(\"}
     f=${f%\");}
+    # strip optional leading "="
+    f=${f#=}
+
     if [[ -n "$f" && -d "$f" ]]; then
         library_path+=("$f")
     fi
