@@ -155,7 +155,10 @@ public final class DemoHelper {
   }
 
   public static SocketAddress socketAddress(String socketName) throws IOException {
-    if (socketName.contains(":") && !socketName.startsWith("/")) {
+    if (socketName.startsWith("@")) {
+      // abstract namespace (Linux only!)
+      return AFUNIXSocketAddress.inAbstractNamespace(socketName.substring(1));
+    } else if (socketName.contains(":") && !socketName.startsWith("/")) {
       // assume TCP socket
       int colon = socketName.indexOf(':');
       String hostname = socketName.substring(0, colon);

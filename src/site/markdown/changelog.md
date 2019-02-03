@@ -4,6 +4,7 @@
 
  - Add support for receiving peer credentials
  - Add support for sending and receiving file descriptors
+ - Add support for the abstract namespace on Linux
  - Add AFUNIXSocketServer, a multi-threaded UNIX domain server implementation
  - New supported platform: Linux ARM 32-bit (e.g., Raspberry Pi)
  - AFUNIXServerSocket#setReuseAddress can now control whether reusing an existing socket is permitted
@@ -11,7 +12,7 @@
  - Improve handling of closed sockets
  - Improved native library loader code, better error handling
  - Improved handling of libc alternatives, such as musl
-   (we now build two different libraries, one that's linked against glibc, and one that isn't).
+   (we now build two different libraries, one that's linked against glibc, and one that isn't)
  - JNI: Fix some missing return-after-throw, use-after-free in bind
  - Properly close file descriptors upon errors in native code; unlink before bind
  - Ask to not raise SIGPIPE

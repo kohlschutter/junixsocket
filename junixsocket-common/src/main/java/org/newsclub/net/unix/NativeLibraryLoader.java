@@ -271,12 +271,12 @@ final class NativeLibraryLoader implements Closeable {
       String path = "/lib/" + ARCHITECTURE_AND_OS + "-" + compiler + "/jni/" + mappedName;
 
       InputStream in;
-      
+
       in = providerClass.getResourceAsStream(path);
       if (in != null) {
         list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion, path, in));
       }
-      
+
       // NOTE: we have to try .nodeps version _after_ trying the properly linked one.
       // While the former may throw an UnsatisfiedLinkError, this one may just terminate the VM
       // with a "symbol lookup error"

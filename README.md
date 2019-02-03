@@ -10,6 +10,9 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
 * Database support (connect to a local database server via Unix sockets and JDBC)
     * MySQL (provides a custom *AFUNIXDatabaseSocketFactory* for Connector/J).
     * PostgreSQL and others (provides a generic *AFUNIXSocketFactory* with a variety of configuration options).
+* Supports peer credentials.
+* Supports sending and receiving file descriptors.
+* Supports the abstract namespace on Linux.
 * Supports Java 8, 9, 10, 11, 12.
 * Comes with pre-built native libraries for macOS and Linux; custom libraries can be built using Maven.
 * Supports JPMS/Jigsaw modules.

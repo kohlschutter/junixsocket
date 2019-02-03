@@ -48,15 +48,15 @@ final class NativeUnixSocket {
   static void checkSupported() {
   }
 
-  static native long bind(final String socketFile, final FileDescriptor fd, final int options)
+  static native long bind(final byte[] socketAddr, final FileDescriptor fd, final int options)
       throws IOException;
 
   static native void listen(final FileDescriptor fd, final int backlog) throws IOException;
 
-  static native void accept(final String socketFile, final FileDescriptor fdServer,
+  static native void accept(final byte[] socketAddr, final FileDescriptor fdServer,
       final FileDescriptor fd, long inode) throws IOException;
 
-  static native void connect(final String socketFile, final FileDescriptor fd, long inode)
+  static native void connect(final byte[] socketAddr, final FileDescriptor fd, long inode)
       throws IOException;
 
   static native int read(AFUNIXSocketImpl afunixSocketImpl, final FileDescriptor fd, byte[] buf,
@@ -99,6 +99,8 @@ final class NativeUnixSocket {
   static native int getFD(FileDescriptor fdesc) throws IOException;
 
   static native void attachCloseable(FileDescriptor fdsec, Closeable closeable);
+
+  static native int maxAddressLength();
 
   static void setPort1(AFUNIXSocketAddress addr, int port) throws IOException {
     if (port < 0) {

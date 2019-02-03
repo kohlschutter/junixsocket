@@ -18,7 +18,6 @@
 package org.newsclub.net.unix;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +48,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   private static final int SHUT_WR = 1;
   private static final int SHUT_RD_WR = 2;
 
-  private String socketFile;
+  private AFUNIXSocketAddress socketAddress;
 
   /**
    * We keep track of the server's inode to detect when another server connects to our address.
@@ -123,7 +122,7 @@ class AFUNIXSocketImpl extends SocketImpl {
           throw new SocketException("Socket is closed");
         }
 
-        NativeUnixSocket.accept(socketFile, fdesc, si.fd, inode);
+        NativeUnixSocket.accept(socketAddress.getBytes(), fdesc, si.fd, inode);
         if (!bound || closed) {
           try {
             NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
@@ -141,7 +140,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     } finally {
       pendingAccepts.decrementAndGet();
     }
-    si.socketFile = socketFile;
+    si.socketAddress = socketAddress;
     si.connected = true;
   }
 
@@ -160,10 +159,9 @@ class AFUNIXSocketImpl extends SocketImpl {
       throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
     }
 
-    final AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
-    socketFile = socketAddress.getSocketFile();
+    this.socketAddress = (AFUNIXSocketAddress) addr;
 
-    this.inode = NativeUnixSocket.bind(socketFile, fd, options);
+    this.inode = NativeUnixSocket.bind(socketAddress.getBytes(), fd, options);
     validFdOrException();
     bound = true;
     this.localport = socketAddress.getPort();
@@ -190,7 +188,7 @@ class AFUNIXSocketImpl extends SocketImpl {
         FileDescriptor tmpFd = new FileDescriptor();
 
         try {
-          NativeUnixSocket.connect(socketFile, tmpFd, inode);
+          NativeUnixSocket.connect(socketAddress.getBytes(), tmpFd, inode);
         } catch (IOException e) {
           // there's nothing we can do to unlock these accepts
           return;
@@ -221,7 +219,7 @@ class AFUNIXSocketImpl extends SocketImpl {
       NativeUnixSocket.shutdown(fdesc, SHUT_RD_WR);
 
       closed = true;
-      if (wasBound && socketFile != null && inode >= 0) {
+      if (wasBound && socketAddress != null && socketAddress.getBytes() != null && inode >= 0) {
         unblockAccepts();
       }
 
@@ -247,21 +245,13 @@ class AFUNIXSocketImpl extends SocketImpl {
     if (!(addr instanceof AFUNIXSocketAddress)) {
       throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
     }
-    final AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
-    socketFile = socketAddress.getSocketFile();
-    NativeUnixSocket.connect(validateSocketFile(socketFile), fd, -1);
+    this.socketAddress = (AFUNIXSocketAddress) addr;
+    NativeUnixSocket.connect(socketAddress.getBytes(), fd, -1);
     validFdOrException();
     this.address = socketAddress.getAddress();
     this.port = socketAddress.getPort();
     this.localport = 0;
     this.connected = true;
-  }
-
-  private String validateSocketFile(String file) throws SocketException {
-    if (file.isEmpty() || !new File(file).exists()) {
-      throw new SocketException("Socket file not found: " + socketFile);
-    }
-    return file;
   }
 
   @Override
@@ -432,8 +422,8 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   @Override
   public String toString() {
-    return super.toString() + "[fd=" + fd + "; file=" + this.socketFile + "; connected=" + connected
-        + "; bound=" + bound + "]";
+    return super.toString() + "[fd=" + fd + "; addr=" + this.socketAddress + "; connected="
+        + connected + "; bound=" + bound + "]";
   }
 
   private static int expectInteger(Object value) throws SocketException {

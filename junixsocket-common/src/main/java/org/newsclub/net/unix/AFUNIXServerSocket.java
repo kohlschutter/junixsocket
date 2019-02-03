@@ -117,7 +117,7 @@ public class AFUNIXServerSocket extends ServerSocket {
     if (!isBound()) {
       return "AFUNIXServerSocket[unbound]";
     }
-    return "AFUNIXServerSocket[" + boundEndpoint.getSocketFile() + "]";
+    return "AFUNIXServerSocket[" + boundEndpoint.toString() + "]";
   }
 
   @Override

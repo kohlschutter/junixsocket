@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    bind
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;I)J
+ * Signature: ([BLjava/io/FileDescriptor;I)J
  */
 JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
-  (JNIEnv *, jclass, jstring, jobject, jint);
+  (JNIEnv *, jclass, jbyteArray, jobject, jint);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -26,18 +26,18 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    accept
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;J)V
+ * Signature: ([BLjava/io/FileDescriptor;Ljava/io/FileDescriptor;J)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
-  (JNIEnv *, jclass, jstring, jobject, jobject, jlong);
+  (JNIEnv *, jclass, jbyteArray, jobject, jobject, jlong);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    connect
- * Signature: (Ljava/lang/String;Ljava/io/FileDescriptor;J)V
+ * Signature: ([BLjava/io/FileDescriptor;J)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
-  (JNIEnv *, jclass, jstring, jobject, jlong);
+  (JNIEnv *, jclass, jbyteArray, jobject, jlong);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -182,6 +182,14 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getFD
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_attachCloseable
   (JNIEnv *, jclass, jobject, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    maxAddressLength
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_maxAddressLength
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }
