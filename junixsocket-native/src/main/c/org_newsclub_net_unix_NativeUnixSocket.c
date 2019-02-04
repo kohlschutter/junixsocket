@@ -153,7 +153,19 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
 
 	size_t buflen = 256;
 	char *message = calloc(1, buflen);
-	strerror_r(errnum, message, buflen);
+
+#ifdef __linux__
+	char *otherBuf = strerror_r(errnum, message, buflen);
+    if(otherBuf != NULL) {
+        strcpy(message, otherBuf);
+    }
+#else
+    strerror_r(errnum, message, buflen);
+    if(message[0] == 0) {
+        sprintf(message, "error code %i", errnum);
+    }
+#endif
+
 
 #if DEBUG
 	char *message1 = calloc(1, buflen);
