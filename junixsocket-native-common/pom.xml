@@ -193,29 +193,6 @@
         <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-jni</junixsocket.common.classifier.linux.x86_64>
       </properties>
       <dependencies>
-        <dependency>
-          <groupId>com.kohlschutter.junixsocket</groupId>
-          <artifactId>junixsocket-native-cross</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>com.kohlschutter.junixsocket</groupId>
-          <artifactId>junixsocket-native</artifactId>
-          <version>${project.version}</version>
-          <type>nar</type>
-          <classifier>${junixsocket.common.classifier.mac.x86_64}</classifier>
-          <scope>runtime</scope>
-          <optional>true</optional>
-        </dependency>
-        <dependency>
-          <groupId>com.kohlschutter.junixsocket</groupId>
-          <artifactId>junixsocket-native</artifactId>
-          <version>${project.version}</version>
-          <type>nar</type>
-          <classifier>${junixsocket.common.classifier.linux.x86_64}</classifier>
-          <scope>runtime</scope>
-          <optional>true</optional>
-        </dependency>
       </dependencies>
     </profile>
     <profile>

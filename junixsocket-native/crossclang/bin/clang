@@ -142,6 +142,7 @@ elif [ "$target" == "current" ]; then
     target=
 fi
 
+currentTarget=
 if [[ -z "$target" ]]; then
     if [ $defaultFallback -gt 0 ]; then
         PATH=/usr/bin:$PATH
@@ -153,11 +154,12 @@ if [[ -z "$target" ]]; then
         echo "Could not determine target" >&2
         exit 1
     fi
+    currentTarget="$target"
+    if [ -n "$targetIndex" ]; then
+        clangArgs[$targetIndex]="$target"
+    fi
 
     if [ $defaultFallback -gt 0 ]; then
-        if [ -n "$targetIndex" ]; then
-            clangArgs[$targetIndex]="$target"
-        fi
         exec clang ${output_args[@]} ${clangArgs[@]}
     fi
 fi
@@ -193,23 +195,33 @@ sdkrootOrig="$sdkroot"
 sdkroot=$(cd "$sdkroot" 2>/dev/null && pwd)
 targetConf="$sdkroot/target.conf"
 
-if [[ $? -ne 0 || -z "$sdkrootOrig" || ! -f "$targetConf" ]]; then
-    echo "Could not find SDK root for target: $target" >&2
-    echo "Available targets:$(for f in $(find "${sdkroot_bases[@]}" -mindepth 1 -maxdepth 1 2>/dev/null); do if [ -f "$f/target.conf" ]; then echo -n $'\n'"- $(basename $f)"; fi done)" >&2
-    echo "- current (use current target)"
-    echo "- default (use default clang)"
-    exit 1
-fi
-
 clangLinkerArgs=()
 
 target_include_path=()
 target_library_path=()
 target_framework_path=()
-source "$targetConf"
 
-target=$(cd "$sdkroot"; basename "$(pwd)" )
-sdkroot=$(cd "$sdkroot"; pwd )
+if [[ $? -ne 0 || -z "$sdkrootOrig" || ! -f "$targetConf" ]]; then
+    if [[ "$target" != "$currentTarget" ]]; then
+        echo "Could not find SDK root for target: $target" >&2
+        echo "Available targets:$(for f in $(find "${sdkroot_bases[@]}" -mindepth 1 -maxdepth 1 2>/dev/null); do if [ -f "$f/target.conf" ]; then echo -n $'\n'"- $(basename $f)"; fi done)" >&2
+        echo "- current (use current target)" >&2
+        echo "- default (use default clang)" >&2
+        exit 1
+    fi
+    
+    # build for current architecture
+    sdkroot=
+    target_triple="$target"
+    target_linker=ld
+    if [ -n "$(ld -help 2>/dev/null| grep ld64)" ]; then
+        target_linker=ld64
+    fi
+else
+    target=$(cd "$sdkroot"; basename "$(pwd)" )
+    sdkroot=$(cd "$sdkroot"; pwd )
+    source "$targetConf"
+fi
 
 triple="$target"
 if [ -n "$target_triple" ]; then
@@ -240,12 +252,14 @@ if [ $needLinker -gt 0 ]; then
           fi
         fi
         
-        clangLinkerArgs+=("-Wl,--sysroot=$sdkroot")
-        for path in ${target_library_path[@]}; do
-            if [ -d "$sdkroot/$path" ]; then
-                clangLinkerArgs+=("-Wl,-L=$path")
-            fi
-        done
+        if [ -n "$sdkroot" ]; then
+            clangLinkerArgs+=("-Wl,--sysroot=$sdkroot")
+            for path in ${target_library_path[@]}; do
+                if [ -d "$sdkroot/$path" ]; then
+                    clangLinkerArgs+=("-Wl,-L=$path")
+                fi
+            done
+        fi
         
         ;;
       ld64)
@@ -256,16 +270,18 @@ if [ $needLinker -gt 0 ]; then
         #fi
         clangLinkerArgs+=("-Wl,-Z,-syslibroot,$sdkroot")
         
-        for path in ${target_library_path[@]}; do
-            if [ -d "$sdkroot/$path" ]; then
-                clangLinkerArgs+=("-Wl,-L$path")
-            fi
-        done
-        for path in ${target_framework_path[@]}; do
-            if [ -d "$sdkroot/$path" ]; then
-                clangLinkerArgs+=("-Wl,-F$path")
-            fi
-        done
+        if [ -n "$sdkroot" ]; then
+            for path in ${target_library_path[@]}; do
+                if [ -d "$sdkroot/$path" ]; then
+                    clangLinkerArgs+=("-Wl,-L$path")
+                fi
+            done
+            for path in ${target_framework_path[@]}; do
+                if [ -d "$sdkroot/$path" ]; then
+                    clangLinkerArgs+=("-Wl,-F$path")
+                fi
+            done
+        fi
         ;;
       *)
         echo "Warning: Unknown target linker: $target_linker" >&2
@@ -278,7 +294,10 @@ if [ $needLinker -gt 0 ]; then
 fi
 
 isystem_decls=()
-isystem_decls+=("-isysroot" "$sdkroot")
+if [ -n "$sdkroot" ]; then
+    isystem_decls+=("--sysroot" "$sdkroot")
+    isystem_decls+=("-isysroot" "$sdkroot")
+fi
 
 for include in ${target_include_cpp_path[@]}; do
     isystem_decls+=("-cxx-isystem$sdkroot/$include")
@@ -295,7 +314,9 @@ for path in ${target_framework_path[@]}; do
     isystem_decls+=("-iframeworkwithsysroot" "$path")
 done
 
-isystem_decls+=("-imacros" "$sdkroot/target.h")
+if [ -f "$sdkroot/target.h" ]; then
+    isystem_decls+=("-imacros" "$sdkroot/target.h")
+fi
 
 if [ $hasFiles -eq 0 ]; then
     isystem_decls=()
@@ -304,8 +325,8 @@ fi
 # set -x
 if [[ $withAndWithoutLC -eq 1 ]]; then
   nodepsOut="${outputFile%.*}.nodeps.${outputFile##*.}"
-  clang --sysroot "$sdkroot" ${isystem_decls[@]} ${clangLinkerArgs[@]} -lc ${output_args[@]} ${clangArgs[@]} && \
-  clang --sysroot "$sdkroot" ${isystem_decls[@]} ${clangLinkerArgs[@]} -o "$nodepsOut" ${clangArgs[@]}
+  $(which clang) ${isystem_decls[@]} ${clangLinkerArgs[@]} -lc ${output_args[@]} ${clangArgs[@]} && \
+  $(which clang) ${isystem_decls[@]} ${clangLinkerArgs[@]} -o "$nodepsOut" ${clangArgs[@]}
 else
-  exec clang --sysroot "$sdkroot" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${output_args[@]} ${clangArgs[@]}
+  exec $(which clang) ${isystem_decls[@]} ${clangLinkerArgs[@]} ${output_args[@]} ${clangArgs[@]}
 fi

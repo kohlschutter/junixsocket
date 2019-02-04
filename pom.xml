@@ -175,7 +175,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <!-- Specify "junixsocket.native.aol" to override the architecture
           AOL for this environment; see nar-maven-plugin for details -->
         <junixsocket.native.aol>x86_64-MacOSX-clang</junixsocket.native.aol>
-        <junixsocket.native.llvm.target>default</junixsocket.native.llvm.target>
+        <junixsocket.native.llvm.target>current</junixsocket.native.llvm.target>
         <junixsocket.native.jnilib.extension>dylib</junixsocket.native.jnilib.extension>
         <junixsocket.native.default.toolPath>${junixsocket.native.crossclang.toolPath}</junixsocket.native.default.toolPath>
         <junixsocket.native.default.linkerName>clang</junixsocket.native.default.linkerName>
@@ -194,7 +194,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <!-- Specify "junixsocket.native.aol" to override the architecture
           AOL for this environment; see nar-maven-plugin for details -->
         <junixsocket.native.aol>amd64-Linux-clang</junixsocket.native.aol>
-        <junixsocket.native.llvm.target>default</junixsocket.native.llvm.target>
+        <junixsocket.native.llvm.target>current</junixsocket.native.llvm.target>
         <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
         <junixsocket.native.default.toolPath>${junixsocket.native.crossclang.toolPath}</junixsocket.native.default.toolPath>
         <junixsocket.native.default.linkerName>clang</junixsocket.native.default.linkerName>
