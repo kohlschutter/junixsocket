@@ -117,6 +117,15 @@
           <scope>runtime</scope>
           <optional>true</optional>
         </dependency>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native</artifactId>
+          <version>${project.version}</version>
+          <type>nar</type>
+          <classifier>aarch64-Linux-clang-llvm-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
+        </dependency>
       </dependencies>
     </profile>
     <!-- Specify profiles to add particular nars -->

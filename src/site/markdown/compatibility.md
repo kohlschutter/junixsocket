@@ -19,11 +19,12 @@ The minimum set of supported platforms and processor architectures currently is
 * macOS Intel 64-bit
 * Linux x86_64
 * Linux ARM 32-bit
+* Linux ARM 64-bit (aarch64)
 
 The native-common binaries are built on recent release versions of either platform.  
 
 Support for [custom architectures](customarch.html) can be added by compiling a custom native binary
-on the target machine.
+on the target machine, or by [cross-compiling](crosscomp.html) using clang/LLVM on a suitable host.
 
 ## Future versions
 
