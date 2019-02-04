@@ -140,9 +140,13 @@ public class FileDescriptorsTest extends SocketTestBase {
       };
 
       try (AFUNIXSocket socket = connectToServer();) {
-        // NOTE: we haven't set the ancillary receive buffer size - this means we're ignoring
-        // ancillary messages!
-        assertEquals(123, socket.getInputStream().read());
+        // NOTE: we haven't set the ancillary receive buffer size
+
+        try {
+          assertEquals(123, socket.getInputStream().read());
+        } catch (SocketException e) {
+          // on Linux, a SocketException may be thrown (an ancillary message was sent, but not read)
+        }
         assertNull(socket.getReceivedFileDescriptors());
         assertEquals(0, socket.getAncillaryReceiveBufferSize());
       }
