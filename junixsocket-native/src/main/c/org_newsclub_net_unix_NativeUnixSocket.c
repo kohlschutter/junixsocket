@@ -157,7 +157,7 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
 #ifdef __linux__
 	char *otherBuf = strerror_r(errnum, message, buflen);
     if(otherBuf != NULL) {
-        strcpy(message, otherBuf);
+        strncpy(message, otherBuf, buflen-1);
     }
 #else
     strerror_r(errnum, message, buflen);
