@@ -129,8 +129,8 @@ For example:
     
 #### 2. Review the deployed artifacts
   
-    The URL of the staging repository is `https://oss.sonatype.org/content/groups/staging`.
-    The artifacts can be found [here](https://oss.sonatype.org/content/groups/staging/com/kohlschutter/junixsocket/).
+The URL of the staging repository is `https://oss.sonatype.org/content/groups/staging`.
+The artifacts can be found [here](https://oss.sonatype.org/content/groups/staging/com/kohlschutter/junixsocket/).
 
 **IMPORTANT** Double-check that the staged junixsocket-native-common artifact contains both macOS
 and Linux 64-bit libraries. 
@@ -140,6 +140,8 @@ and Linux 64-bit libraries.
 **IMPORTANT** Once released, it cannot be undone! Make sure you verify the staged artifact first!
   
     mvn nexus-staging:release     
+
+NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in Maven Central.
 
 ### Tag the release, push to upstream (i.e., GitHub)
 
