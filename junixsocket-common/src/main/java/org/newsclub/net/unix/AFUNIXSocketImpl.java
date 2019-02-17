@@ -76,6 +76,8 @@ class AFUNIXSocketImpl extends SocketImpl {
   private final Map<FileDescriptor, Integer> closeableFileDescriptors = Collections.synchronizedMap(
       new HashMap<>());
 
+  private int timeout = 0;
+
   protected AFUNIXSocketImpl() {
     super();
     this.fd = new FileDescriptor();
@@ -122,7 +124,7 @@ class AFUNIXSocketImpl extends SocketImpl {
           throw new SocketException("Socket is closed");
         }
 
-        NativeUnixSocket.accept(socketAddress.getBytes(), fdesc, si.fd, inode);
+        NativeUnixSocket.accept(socketAddress.getBytes(), fdesc, si.fd, inode, this.timeout);
         if (!bound || closed) {
           try {
             NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
@@ -241,7 +243,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   }
 
   @Override
-  protected void connect(SocketAddress addr, int timeout) throws IOException {
+  protected void connect(SocketAddress addr, int connectTimeout) throws IOException {
     if (!(addr instanceof AFUNIXSocketAddress)) {
       throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
     }
@@ -458,8 +460,10 @@ class AFUNIXSocketImpl extends SocketImpl {
         case SocketOptions.SO_KEEPALIVE:
         case SocketOptions.TCP_NODELAY:
           return NativeUnixSocket.getSocketOptionInt(fdesc, optID) != 0 ? true : false;
-        case SocketOptions.SO_LINGER:
         case SocketOptions.SO_TIMEOUT:
+          return Math.max(timeout, Math.max(NativeUnixSocket.getSocketOptionInt(fdesc, 0x1005),
+              NativeUnixSocket.getSocketOptionInt(fdesc, 0x1006)));
+        case SocketOptions.SO_LINGER:
         case SocketOptions.SO_RCVBUF:
         case SocketOptions.SO_SNDBUF:
           return NativeUnixSocket.getSocketOptionInt(fdesc, optID);
@@ -495,9 +499,13 @@ class AFUNIXSocketImpl extends SocketImpl {
           }
           NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectInteger(value));
           return;
+        case SocketOptions.SO_TIMEOUT:
+          this.timeout = expectInteger(value);
+          NativeUnixSocket.setSocketOptionInt(fdesc, 0x1005, timeout);
+          NativeUnixSocket.setSocketOptionInt(fdesc, 0x1006, timeout);
+          return;
         case SocketOptions.SO_RCVBUF:
         case SocketOptions.SO_SNDBUF:
-        case SocketOptions.SO_TIMEOUT:
           NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectInteger(value));
           return;
         case SocketOptions.SO_KEEPALIVE:

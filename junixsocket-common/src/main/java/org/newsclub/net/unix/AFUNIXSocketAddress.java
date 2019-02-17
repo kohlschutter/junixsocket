@@ -68,6 +68,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * 
    * @param socketAddress The socket address (as bytes).
    * @throws IOException if the operation fails.
+   * @see AFUNIXSocketAddress#inAbstractNamespace(String)
    */
   public AFUNIXSocketAddress(final byte[] socketAddress) throws IOException {
     this(socketAddress, 0);
@@ -83,6 +84,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @param socketAddress The socket address (as bytes).
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
    * @throws IOException if the operation fails.
+   * @see AFUNIXSocketAddress#inAbstractNamespace(String,int)
    */
   public AFUNIXSocketAddress(final byte[] socketAddress, int port) throws IOException {
     super(0);
@@ -139,10 +141,6 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
     StringBuilder sb = new StringBuilder(data.length + 16);
     for (int i = 0, n = data.length; i < n; i++) {
       byte c = data[i];
-      if (i == (data.length - 1) && data[0] != 0) {
-        // do not show trailing zero byte unless this address is in the abstract namespace
-        break;
-      }
       if (c >= 32 && c < 127) {
         sb.append((char) c);
       } else {

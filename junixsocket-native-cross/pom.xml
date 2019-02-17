@@ -52,6 +52,37 @@
         <version>3.1.0</version>
         <executions>
           <execution>
+            <id>crosscompile-amd64-Windows10-clang</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skipInvocation>${junixsocket.cross.disabled}</skipInvocation>
+              <noLog>true</noLog>
+              <streamLogs>true</streamLogs>
+              <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+              </goals>
+              <projectsDirectory>${project.basedir}/../</projectsDirectory>
+              <pomIncludes>
+                <pomInclude>junixsocket-native</pomInclude>
+              </pomIncludes>
+              <profiles>
+                <profile>llvm</profile>
+              </profiles>
+              <properties>
+                <junixsocket.native.aol.llvm>amd64-Windows10-clang</junixsocket.native.aol.llvm>
+                <junixsocket.install.skip>true</junixsocket.install.skip>
+                <junixsocket.build.directory>${project.build.directory}/junixsocket-native-amd64-Windows10-clang-llvm</junixsocket.build.directory>
+                <junixsocket.native.llvm.target>x86_64-w64-mingw32</junixsocket.native.llvm.target>
+                <junixsocket.native.jnilib.extension>dll</junixsocket.native.jnilib.extension>
+                <junixsocket.common.classifier.win.x86_64-w64>amd64-Windows10-clang-llvm-jni</junixsocket.common.classifier.win.x86_64-w64>
+                <ignorant>${ignorant}</ignorant>
+              </properties>
+            </configuration>
+          </execution>
+          <execution>
             <id>crosscompile-x86_64-MacOSX-clang</id>
             <goals>
               <goal>run</goal>
@@ -181,6 +212,22 @@
       <plugin>
         <artifactId>maven-install-plugin</artifactId>
         <executions>
+          <execution>
+            <id>install-amd64-Windows10-clang</id>
+            <phase>install</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/junixsocket-native-amd64-Windows10-clang-llvm/junixsocket-native-${project.version}-amd64-Windows10-clang-jni.nar</file>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>junixsocket-native</artifactId>
+              <version>${project.version}</version>
+              <packaging>nar</packaging>
+              <classifier>amd64-Windows10-clang-llvm-jni</classifier>
+              <generatePom>false</generatePom>
+            </configuration>
+          </execution>
           <execution>
             <id>install-x86_64-MacOSX-clang</id>
             <phase>install</phase>

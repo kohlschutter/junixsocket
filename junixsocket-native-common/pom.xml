@@ -57,6 +57,7 @@
                   <includes>
                     <include>**/*.dylib</include>
                     <include>**/*.so</include>
+                    <include>**/*.dll</include>
                     <include>META-INF/**/pom.properties</include>
                   </includes>
                 </filter>
@@ -104,6 +105,16 @@
           <artifactId>junixsocket-native</artifactId>
           <version>${project.version}</version>
           <type>nar</type>
+          <!-- FIXME: in order to build on Linux, change this to x86_64-MacOSX-clang-llvm-jni -->
+          <classifier>x86_64-MacOSX-clang-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
+        </dependency>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native</artifactId>
+          <version>${project.version}</version>
+          <type>nar</type>
           <classifier>amd64-Linux-clang-llvm-jni</classifier>
           <scope>runtime</scope>
           <optional>true</optional>
@@ -123,6 +134,15 @@
           <version>${project.version}</version>
           <type>nar</type>
           <classifier>aarch64-Linux-clang-llvm-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
+        </dependency>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native</artifactId>
+          <version>${project.version}</version>
+          <type>nar</type>
+          <classifier>amd64-Windows10-clang-llvm-jni</classifier>
           <scope>runtime</scope>
           <optional>true</optional>
         </dependency>

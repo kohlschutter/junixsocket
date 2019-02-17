@@ -2,11 +2,13 @@
 
 ### _(unreleased)_ **junixsocket 2.2.0**
 
+ - New supported platform: Linux ARM 32-bit and 64-bit (e.g., Raspberry Pi)
+ - New supported platform: Windows 10 AMD64
  - Add support for receiving peer credentials
  - Add support for sending and receiving file descriptors
- - Add support for the abstract namespace on Linux
+ - Add support for the abstract namespace on Linux and Windows
  - Add AFUNIXSocketServer, a multi-threaded UNIX domain server implementation
- - New supported platform: Linux ARM 32-bit and 64-bit (e.g., Raspberry Pi)
+ - Introduced AFUNIXSocketCapabilities to check which capabilities are supported on your platform  
  - AFUNIXServerSocket#setReuseAddress can now control whether reusing an existing socket is permitted
  - Exception handling: No longer wrap SocketExceptions, throw SocketTimeoutException upon EAGAIN for read
  - Improve handling of closed sockets

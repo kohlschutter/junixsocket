@@ -155,12 +155,14 @@ public final class DemoHelper {
   }
 
   public static SocketAddress socketAddress(String socketName) throws IOException {
+    int colon = socketName.lastIndexOf(':');
+    int slashOrBackslash = Math.max(socketName.lastIndexOf('/'), socketName.lastIndexOf('\\'));
+
     if (socketName.startsWith("@")) {
       // abstract namespace (Linux only!)
       return AFUNIXSocketAddress.inAbstractNamespace(socketName.substring(1));
-    } else if (socketName.contains(":") && !socketName.startsWith("/")) {
+    } else if (colon > 0 && slashOrBackslash < colon && !socketName.startsWith("/")) {
       // assume TCP socket
-      int colon = socketName.indexOf(':');
       String hostname = socketName.substring(0, colon);
       int port = Integer.parseInt(socketName.substring(colon + 1));
       return new InetSocketAddress(hostname, port);

@@ -23,21 +23,61 @@
 targetrootbase="$(dirname $0)/../target-sdks/"
 triple=
 
-defaultClangOrGcc="$(PATH=/usr/bin:$PATH which clang gcc 2>/dev/null | head -n 1)"
+printHelp=0
+compiler=("clang" "gcc")
+linkerBinary=("ld")
+allPaths=0
+includeInstallLibs=0
+while [ $# -gt 0 ]; do
+  v="$1"
+  shift
 
-if [ -z "$defaultClangOrGcc" ]; then
+  case "$v" in 
+    -h | --help ) printHelp=1 ;;
+    --compiler ) compiler=("$1"); shift; ;;
+    --linker ) linkerBinary=("$1"); shift; ;;
+    --all-paths ) allPaths=1; ;;
+    --include-install-libs ) includeInstallLibs=1; ;;
+    * ) echo "Illegal argument: $v" >&2 ; printHelp=1; ;;
+  esac
+done
+
+if [ $printHelp -eq 1 ]; then
+    cat <<EOT
+Syntax: $0 [--help|-h]
+           [--compiler <path-to-compiler-binary>] [--linker <path-to-linker-binary>]
+           [--all-paths] [--include-install-libs]
+EOT
+    exit 1
+fi
+
+compiler="$(PATH=/usr/bin:$PATH which ${compiler[@]} 2>/dev/null | head -n 1)"
+if [ -z "$compiler" ]; then
     echo "clang/gcc not available; configuration may not be accurate" >&2
+else
+    echo "Using compiler: $compiler"
+fi
+
+linkerBinary="$(PATH=/usr/bin:$PATH which ${linkerBinary[@]} 2>/dev/null | head -n 1)"
+if [ -z "$linkerBinary" ]; then
+    echo "Linker not available; configuration may not be accurate" >&2
+else
+    echo "Using linker: $linkerBinary"
 fi
 
 if [ -z "$triple" ]; then
-    target=$($defaultClangOrGcc -v 2>&1 | grep "^Target: " | head -n 1)
+    target=$($compiler -v 2>&1 | grep "^Target: " | head -n 1)
     target=${target##* }
     if [ -n "$target" ]; then
         triple="$target"
     fi
 fi
+
+echo "Compiler default triple: $triple"
+
 if [ -z "$triple" ]; then
     triple=$(cd /usr/lib/gcc/ ; ls -d *-* | head -n 1)
+    echo "Inferring triple from /usr/lib/gcc: $triple"
 fi
 if [ -z "$triple" ]; then
     echo "Could not determine target triple" >&2
@@ -82,7 +122,7 @@ framework_path_count_initial=${#framework_path[@]}
 
 # add linker paths from ld64 and friends
 section=
-IFS=$'\n'; for line in $(LANG=C "$defaultClangOrGcc" -Xlinker -v 2>&1 ); do
+IFS=$'\n'; for line in $(LANG=C "$compiler" -Xlinker -v 2>&1 ); do
     if [ "${line:0:1}" == $'\t' ]; then
         path="${line:1}"
         case "$section" in
@@ -101,7 +141,7 @@ done
 
 # add linker paths from ld and friends
 old_IFS=$IFS
-IFS=' '; for f in $(LANG=C "$defaultClangOrGcc" -Xlinker --verbose 2>/dev/null | grep SEARCH_DIR); do
+IFS=' '; for f in $(LANG=C "$compiler" -Xlinker --verbose 2>/dev/null | grep SEARCH_DIR); do
     f=${f#SEARCH_DIR(\"}
     f=${f%\");}
     # strip optional leading "="
@@ -118,7 +158,7 @@ for lang in c c++; do
     section=
     
     # NOTE: Not using -nobuiltininc because it's not supported everywhere 
-    IFS=$'\n'; for line in $( LANG=C "$defaultClangOrGcc" -E -x "$lang" /dev/null -v 2>&1 ); do
+    IFS=$'\n'; for line in $( LANG=C "$compiler" -E -x "$lang" /dev/null -v 2>&1 ); do
         if [ -z "$line" ]; then
            continue
         fi
@@ -130,6 +170,7 @@ for lang in c c++; do
             continue
         fi
         path="${line:1}"
+        
         if [ "$path" == *" (framework directory)" ]; then
             continue
         fi
@@ -141,6 +182,7 @@ for lang in c c++; do
             # echo "Ignoring toolchain include: $path" >&2
             continue
         fi
+        
         if [ "$lang" == "c" ]; then
           include_path+=("$path") 
         elif [ "$lang" == "c++" ]; then
@@ -159,6 +201,17 @@ for lang in c c++; do
         fi
     done
 done
+
+if [[ "$includeInstallLibs" -eq 1 ]]; then
+  installPaths="$(LANG=C "$compiler" -print-search-dirs | grep "^install: " | head -n 1)"
+  installPaths="${installPaths#install: }"
+  library_path+=($(
+      IFS=:
+      for f in $installPaths; do
+        echo $f
+      done
+  ))
+fi
 
 if [[ "$triple" == *"-darwin"* ]]; then
     library_path+=(
@@ -219,12 +272,14 @@ function checkPaths() {
           fi
         done
         
-        if [[ "$path" == "/usr/local/"* ]]; then
+        if [[ "$path" == "/usr/local/"* && $allPaths -eq 0 ]]; then
             # skip "/usr/local/..." paths by default
+            echo "Skipping path (run with --all-paths to force): $path" >&2
             continue
         fi
-        if [[ "$path" == *".xctoolchain/"* ]]; then
+        if [[ "$path" == *".xctoolchain/"* && $allPaths -eq 0  ]]; then
             # skip Xcode toolchain paths by default
+            echo "Skipping path (run with --all-paths to force): $path" >&2
             continue
         fi
         
@@ -251,9 +306,9 @@ checkPaths
 framework_path=(${arrOut[@]})
 
 linker=
-if [ -n "$(ld -help 2>/dev/null| grep ld64)" ]; then
+if [ -n "$($linkerBinary -help 2>/dev/null| grep ld64)" ]; then
     linker=ld64
-elif [ -n "$(ld -version 2>/dev/null| grep GNU)" ]; then 
+elif [ -n "$($linkerBinary -version 2>/dev/null| grep GNU)" ]; then 
     linker=ld
 fi
 

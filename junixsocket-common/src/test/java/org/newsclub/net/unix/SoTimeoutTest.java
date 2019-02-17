@@ -54,8 +54,7 @@ public class SoTimeoutTest extends SocketTestBase {
 
       try {
         sock.setSoTimeout((int) TimeUnit.SECONDS.toMillis(12));
-        System.err.println(
-            "NOTE: Socket#setSoTimeout(int) did not throw a SocketException. This is OK.");
+        // Socket#setSoTimeout(int) did not throw a SocketException. This is OK.
       } catch (final SocketException e) {
         // expected, as the socket is actually closed
       }
@@ -78,6 +77,12 @@ public class SoTimeoutTest extends SocketTestBase {
 
         stopAcceptingConnections();
       }
+
+      @Override
+      protected void handleException(Exception e) {
+        // do not print stacktrace
+      }
+
     };
 
     try (AFUNIXSocket sock = connectToServer()) {

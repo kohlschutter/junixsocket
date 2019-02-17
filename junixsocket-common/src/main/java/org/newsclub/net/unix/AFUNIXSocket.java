@@ -33,6 +33,8 @@ import java.net.SocketException;
 public final class AFUNIXSocket extends Socket {
   static String loadedLibrary; // set by NativeLibraryLoader
 
+  private static Integer capabilities = null;
+
   AFUNIXSocketImpl impl;
   AFUNIXSocketAddress addr;
 
@@ -258,5 +260,27 @@ public final class AFUNIXSocket extends Socket {
       }
       impl.setOutboundFileDescriptors(fds);
     }
+  }
+
+  private static synchronized int getCapabilities() {
+    if (capabilities == null) {
+      if (!isSupported()) {
+        capabilities = 0;
+      } else {
+        capabilities = NativeUnixSocket.capabilities();
+      }
+    }
+    return capabilities.intValue();
+  }
+
+  /**
+   * Checks if the current environment (system platform, native library, etc.) supports a given
+   * junixsocket capability.
+   * 
+   * @param capability The capability.
+   * @return true if supported.
+   */
+  public static boolean supports(AFUNIXSocketCapability capability) {
+    return (getCapabilities() & capability.getBitmask()) != 0;
   }
 }

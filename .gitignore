@@ -12,3 +12,4 @@ pom.xml.releaseBackup
 /coding-style
 .pmd
 .pmdruleset.xml
+interpolated-pom.xml

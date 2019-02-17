@@ -178,8 +178,17 @@ final class NativeLibraryLoader implements Closeable {
   }
 
   private synchronized void setLoaded(String library) {
-    loaded = true;
-    AFUNIXSocket.loadedLibrary = library;
+	  if (!loaded) {
+			loaded = true;
+			AFUNIXSocket.loadedLibrary = library;
+			try {
+				NativeUnixSocket.init();
+			} catch (RuntimeException e) {
+				throw e;
+			} catch (Exception e) {
+				throw new IllegalStateException(e);
+			}
+	  }
   }
 
   @SuppressWarnings("resource")
@@ -189,9 +198,10 @@ final class NativeLibraryLoader implements Closeable {
         // Already loaded
         return;
       }
-      String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, "");
+      String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, "");//"T:/libjunixsocket-native-2.2.0-SNAPSHOT.dll");
       if (!libraryOverride.isEmpty()) {
-        System.loadLibrary(libraryOverride);
+        System.load(libraryOverride);
+
         setLoaded(libraryOverride);
         return;
       }

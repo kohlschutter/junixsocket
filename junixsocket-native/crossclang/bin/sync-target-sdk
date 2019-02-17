@@ -89,7 +89,7 @@ declare -a paths
 declare recursive=0
 
 includeFile="$sdkroot/include-files.txt"
-echo / > "$includeFile"
+rm -f "$includeFile"
 
 function add_paths() {
     for path in "${paths[@]}"; do
@@ -98,20 +98,11 @@ function add_paths() {
         fi
         dir="${path%/*}"
         sourcepath="$path"
-    
-        parent="$dir"
-        while [ 1 ]; do
-            if [[ -z "$parent" || "$parent" == "/" ]]; then
-                break
-            fi
-            echo "$parent" >> "$includeFile"
-            parent=$(dirname "$parent")
-        done
         
         if [ $recursive -eq 0 ]; then
-            find "$path" -mindepth 1 -maxdepth 1 >> "$includeFile"
+            find "$path" -mindepth 1 -maxdepth 1 -not -type d >> "$includeFile"
         else
-            find "$path" >> "$includeFile"
+            find "$path" -not -type d >> "$includeFile"
         fi
     done
 }
@@ -125,5 +116,6 @@ recursive=0
 add_paths
 
 cd "$sdkroot/"
-rsync -avR --prune-empty-dirs --include-from="$includeFile" --exclude '*' / .
+# rsync -avR --prune-empty-dirs --include-from="$includeFile" --exclude '*' / .
+tar cvf - -C / -T "$includeFile" | tar xvf - -C .
 rm "$includeFile"

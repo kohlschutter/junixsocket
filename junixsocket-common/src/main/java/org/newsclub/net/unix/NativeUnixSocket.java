@@ -48,13 +48,19 @@ final class NativeUnixSocket {
   static void checkSupported() {
   }
 
+  static native void init() throws Exception;
+
+  static native void destroy() throws Exception;
+
+  static native int capabilities();
+
   static native long bind(final byte[] socketAddr, final FileDescriptor fd, final int options)
       throws IOException;
 
   static native void listen(final FileDescriptor fd, final int backlog) throws IOException;
 
   static native void accept(final byte[] socketAddr, final FileDescriptor fdServer,
-      final FileDescriptor fd, long inode) throws IOException;
+      final FileDescriptor fd, long inode, int timeout) throws IOException;
 
   static native void connect(final byte[] socketAddr, final FileDescriptor fd, long inode)
       throws IOException;

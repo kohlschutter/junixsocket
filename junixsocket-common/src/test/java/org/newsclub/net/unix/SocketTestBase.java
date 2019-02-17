@@ -119,6 +119,10 @@ abstract class SocketTestBase {
       return serverSocket;
     }
 
+    protected void handleException(Exception e) {
+      e.printStackTrace();
+    }
+
     @Override
     public final void run() {
       try {
@@ -134,7 +138,7 @@ abstract class SocketTestBase {
           serverSocket.close();
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        handleException(e);
         exception = e;
       }
       sema.release();

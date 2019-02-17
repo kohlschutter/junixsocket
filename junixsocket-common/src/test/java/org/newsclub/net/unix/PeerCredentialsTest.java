@@ -38,6 +38,7 @@ public class PeerCredentialsTest extends SocketTestBase {
   }
 
   @Test
+  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_PEER_CREDENTIALS)
   public void testSameProcess() throws Exception {
     assertTimeout(Duration.ofSeconds(2), () -> {
       final CompletableFuture<AFUNIXSocketCredentials> clientCredsFuture =

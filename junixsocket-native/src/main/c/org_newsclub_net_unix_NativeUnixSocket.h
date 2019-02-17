@@ -9,6 +9,30 @@ extern "C" {
 #endif
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    init
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    destroy
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    capabilities
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    bind
  * Signature: ([BLjava/io/FileDescriptor;I)J
  */
@@ -26,10 +50,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    accept
- * Signature: ([BLjava/io/FileDescriptor;Ljava/io/FileDescriptor;J)V
+ * Signature: ([BLjava/io/FileDescriptor;Ljava/io/FileDescriptor;JI)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
-  (JNIEnv *, jclass, jbyteArray, jobject, jobject, jlong);
+  (JNIEnv *, jclass, jbyteArray, jobject, jobject, jlong, jint);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket

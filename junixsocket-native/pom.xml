@@ -198,6 +198,11 @@
                   <globmapper from="*.jnilib"
                     to="*.${junixsocket.native.jnilib.extension}" />
                 </move>
+                <move todir="${project.build.directory}/nar">
+                  <fileset dir="${project.build.directory}/nar" />
+                  <globmapper from="**/${junixsocket.native.jnilib.strip.prefix}*"
+                    to="*" />
+                </move>
               </target>
             </configuration>
             <goals>

@@ -54,6 +54,11 @@ public class CancelAcceptTest extends SocketTestBase {
       protected void onServerSocketClose() {
         serverSocketClosed = true;
       }
+
+      @Override
+      protected void handleException(Exception e) {
+        // do not print stacktrace
+      }
     };
 
     try (AFUNIXSocket sock = connectToServer()) {
