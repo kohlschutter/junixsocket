@@ -24,15 +24,16 @@ package org.newsclub.net.unix;
  * You can check whether your environment supports a given capability by calling
  * {@link AFUNIXSocket#supports(AFUNIXSocketCapability)}.
  */
-// see org_newsclub_net_unix_NativeUnixSocket.c in junixsocket-native
 public enum AFUNIXSocketCapability {
-  /** Socket supports retrieving peer credentials */
+  // see org_newsclub_net_unix_NativeUnixSocket.c in junixsocket-native
+
+  /** Socket supports retrieving peer credentials. */
   CAPABILITY_PEER_CREDENTIALS(0), //
 
-  /** Socket supports sending and receiving ancillary messages */
+  /** Socket supports sending and receiving ancillary messages. */
   CAPABILITY_ANCILLARY_MESSAGES(1), //
 
-  /** Socket supports passing file descriptors via ancillary messages */
+  /** Socket supports passing file descriptors via ancillary messages. */
   CAPABILITY_FILE_DESCRIPTORS(2);
 
   private final int bitmask;
@@ -41,7 +42,7 @@ public enum AFUNIXSocketCapability {
     this.bitmask = 1 << bit;
   }
 
-  public int getBitmask() {
+  int getBitmask() {
     return bitmask;
   }
 }

@@ -198,7 +198,7 @@ final class NativeLibraryLoader implements Closeable {
         // Already loaded
         return;
       }
-      String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, "");// "T:/libjunixsocket-native-2.2.0-SNAPSHOT.dll");
+      String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, "");
       if (!libraryOverride.isEmpty()) {
         System.load(libraryOverride);
 
