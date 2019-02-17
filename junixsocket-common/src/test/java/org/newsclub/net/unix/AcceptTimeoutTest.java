@@ -47,7 +47,8 @@ public class AcceptTimeoutTest extends SocketTestBase {
       try (AFUNIXServerSocket sock = startServer()) {
         long time = System.currentTimeMillis();
         sock.setSoTimeout(timeoutMillis);
-        assertEquals(timeoutMillis, sock.getSoTimeout(), "We should get the same timeout back that we set before");
+        assertEquals(timeoutMillis, sock.getSoTimeout(),
+            "We should get the same timeout back that we set before");
         try {
           sock.accept();
           fail("Did not receive " + SocketTimeoutException.class.getName());
@@ -70,7 +71,8 @@ public class AcceptTimeoutTest extends SocketTestBase {
       try (AFUNIXServerSocket sock = startServer()) {
         final int connectDelayMillis = 50;
         sock.setSoTimeout(timeoutMillis);
-        assertEquals(timeoutMillis, sock.getSoTimeout(), "We should get the same timeout back that we set before");
+        assertEquals(timeoutMillis, sock.getSoTimeout(),
+            "We should get the same timeout back that we set before");
 
         new Thread() {
           private final AFUNIXSocket socket = AFUNIXSocket.newInstance();
