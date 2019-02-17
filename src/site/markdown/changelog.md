@@ -1,6 +1,6 @@
 # Noteworthy changes
 
-### _(unreleased)_ **junixsocket 2.2.0**
+### _(2019-02-16)_ **junixsocket 2.2.0**
 
  - New supported platform: Linux ARM 32-bit and 64-bit (e.g., Raspberry Pi)
  - New supported platform: Windows 10 AMD64
