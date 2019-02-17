@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2018 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2019 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> * you may not use this file except in compliance with the License.</em>
@@ -40,7 +40,7 @@
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> * Just a helper class to simplify controlling the demo from the command line.</em>
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="DemoHelper" href="../../../../../org/newsclub/net/unix/demo/DemoHelper.html#DemoHelper">DemoHelper</a> {
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="DemoHelper" href="../../../../../org/newsclub/net/unix/demo/DemoHelper.html#DemoHelper">DemoHelper</a> {
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">private</strong> <a name="DemoHelper" href="../../../../../org/newsclub/net/unix/demo/DemoHelper.html#DemoHelper">DemoHelper</a>() {
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"No instances"</span>);
@@ -163,28 +163,33 @@
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>   }
 <a class="jxr_linenumber" name="L156" href="#L156">156</a> 
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> SocketAddress socketAddress(String socketName) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>     <strong class="jxr_keyword">if</strong> (socketName.contains(<span class="jxr_string">":"</span>) &amp;&amp; !socketName.startsWith(<span class="jxr_string">"/"</span>)) {
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>       <em class="jxr_comment">// assume TCP socket</em>
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>       <strong class="jxr_keyword">int</strong> colon = socketName.indexOf(':');
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>       String hostname = socketName.substring(0, colon);
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>       <strong class="jxr_keyword">int</strong> port = Integer.parseInt(socketName.substring(colon + 1));
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> InetSocketAddress(hostname, port);
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>       <em class="jxr_comment">// assume unix socket file name</em>
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a>(<strong class="jxr_keyword">new</strong> File(socketName));
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>     }
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>   }
-<a class="jxr_linenumber" name="L169" href="#L169">169</a> 
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Socket connectSocket(SocketAddress socketAddress) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>     <strong class="jxr_keyword">if</strong> (socketAddress instanceof <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a>) {
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>       <strong class="jxr_keyword">return</strong> AFUNIXSocket.connectTo((<a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a>) socketAddress);
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>       Socket socket = <strong class="jxr_keyword">new</strong> Socket();
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>       socket.connect(socketAddress);
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>       <strong class="jxr_keyword">return</strong> socket;
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>     }
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>   }
-<a class="jxr_linenumber" name="L179" href="#L179">179</a> }
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>     <strong class="jxr_keyword">int</strong> colon = socketName.lastIndexOf(':');
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>     <strong class="jxr_keyword">int</strong> slashOrBackslash = Math.max(socketName.lastIndexOf('/'), socketName.lastIndexOf('&#92;&#92;'));
+<a class="jxr_linenumber" name="L160" href="#L160">160</a> 
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>     <strong class="jxr_keyword">if</strong> (socketName.startsWith(<span class="jxr_string">"@"</span>)) {
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>       <em class="jxr_comment">// abstract namespace (Linux only!)</em>
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>       <strong class="jxr_keyword">return</strong> AFUNIXSocketAddress.inAbstractNamespace(socketName.substring(1));
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (colon &gt; 0 &amp;&amp; slashOrBackslash &lt; colon &amp;&amp; !socketName.startsWith(<span class="jxr_string">"/"</span>)) {
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>       <em class="jxr_comment">// assume TCP socket</em>
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>       String hostname = socketName.substring(0, colon);
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>       <strong class="jxr_keyword">int</strong> port = Integer.parseInt(socketName.substring(colon + 1));
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> InetSocketAddress(hostname, port);
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>       <em class="jxr_comment">// assume unix socket file name</em>
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a>(<strong class="jxr_keyword">new</strong> File(socketName));
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>     }
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>   }
+<a class="jxr_linenumber" name="L174" href="#L174">174</a> 
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Socket connectSocket(SocketAddress socketAddress) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>     <strong class="jxr_keyword">if</strong> (socketAddress instanceof <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a>) {
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>       <strong class="jxr_keyword">return</strong> AFUNIXSocket.connectTo((<a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a>) socketAddress);
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>       Socket socket = <strong class="jxr_keyword">new</strong> Socket();
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>       socket.connect(socketAddress);
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>       <strong class="jxr_keyword">return</strong> socket;
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>     }
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>   }
+<a class="jxr_linenumber" name="L184" href="#L184">184</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2019 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

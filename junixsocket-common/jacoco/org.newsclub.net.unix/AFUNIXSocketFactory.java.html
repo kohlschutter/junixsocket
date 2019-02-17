@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXSocketFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXSocketFactory.java</span></div><h1>AFUNIXSocketFactory.java</h1><pre class="source lang-java linenums">/**
  * junixsocket
  *
- * Copyright 2009-2018 Christian Kohlschütter
+ * Copyright 2009-2019 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 import javax.net.SocketFactory;
 
@@ -38,7 +39,7 @@ import javax.net.SocketFactory;
  * @see AFUNIXSocketFactory.SystemProperty
  * @see AFUNIXSocketFactory.URIScheme
  */
-<span class="nc" id="L41">public abstract class AFUNIXSocketFactory extends SocketFactory {</span>
+<span class="nc" id="L42">public abstract class AFUNIXSocketFactory extends SocketFactory {</span>
   /**
    * Translates a &quot;host&quot; string (and port) to an {@link AFUNIXSocketAddress}.
    * 
@@ -58,7 +59,7 @@ import javax.net.SocketFactory;
    * @return {@code true} if supported.
    */
   protected boolean isHostnameSupported(String host) {
-<span class="nc bnc" id="L61" title="All 2 branches missed.">    return host != null;</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">    return host != null;</span>
   }
 
   /**
@@ -72,74 +73,64 @@ import javax.net.SocketFactory;
    * @return {@code true} if supported.
    */
   protected boolean isInetAddressSupported(InetAddress address) {
-<span class="nc bnc" id="L75" title="All 4 branches missed.">    return address != null &amp;&amp; isHostnameSupported(address.getHostName());</span>
+<span class="nc bnc" id="L76" title="All 4 branches missed.">    return address != null &amp;&amp; isHostnameSupported(address.getHostName());</span>
   }
 
   @Override
   public Socket createSocket() throws IOException {
-<span class="nc" id="L80">    return AFUNIXSocket.newInstance(this);</span>
+<span class="nc" id="L81">    return AFUNIXSocket.newInstance(this);</span>
   }
 
   @Override
   public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
-<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (!isHostnameSupported(host)) {</span>
-<span class="nc" id="L86">      throw new UnknownHostException();</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">    if (!isHostnameSupported(host)) {</span>
+<span class="nc" id="L87">      throw new UnknownHostException();</span>
     }
-<span class="nc bnc" id="L88" title="All 2 branches missed.">    if (port &lt; 0) {</span>
-<span class="nc" id="L89">      throw new IllegalArgumentException(&quot;Illegal port&quot;);</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">    if (port &lt; 0) {</span>
+<span class="nc" id="L90">      throw new IllegalArgumentException(&quot;Illegal port&quot;);</span>
     }
 
-<span class="nc" id="L92">    AFUNIXSocketAddress socketAddress = addressFromHost(host, port);</span>
-<span class="nc" id="L93">    String socketFile = socketAddress.getSocketFile();</span>
-<span class="nc bnc" id="L94" title="All 4 branches missed.">    if (socketFile == null || socketFile.isEmpty()) {</span>
-<span class="nc" id="L95">      throw new UnknownHostException(&quot;Illegal socketFile&quot;);</span>
-    }
-<span class="nc" id="L97">    File file = new File(socketFile);</span>
-<span class="nc bnc" id="L98" title="All 2 branches missed.">    if (!file.exists()) {</span>
-<span class="nc" id="L99">      throw new UnknownHostException(&quot;Socketfile does not exist&quot;);</span>
-    }
-<span class="nc" id="L101">    return AFUNIXSocket.connectTo(socketAddress);</span>
+<span class="nc" id="L93">    AFUNIXSocketAddress socketAddress = addressFromHost(host, port);</span>
+<span class="nc" id="L94">    return AFUNIXSocket.connectTo(socketAddress);</span>
   }
 
   @Override
   public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
       throws IOException, UnknownHostException {
-<span class="nc bnc" id="L107" title="All 2 branches missed.">    if (!isHostnameSupported(host)) {</span>
-<span class="nc" id="L108">      throw new UnknownHostException();</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">    if (!isHostnameSupported(host)) {</span>
+<span class="nc" id="L101">      throw new UnknownHostException();</span>
     }
-<span class="nc bnc" id="L110" title="All 2 branches missed.">    if (localPort &lt; 0) {</span>
-<span class="nc" id="L111">      throw new IllegalArgumentException(&quot;Illegal local port&quot;);</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">    if (localPort &lt; 0) {</span>
+<span class="nc" id="L104">      throw new IllegalArgumentException(&quot;Illegal local port&quot;);</span>
     }
     // NOTE: we simply ignore localHost and localPort
-<span class="nc" id="L114">    return createSocket(host, port);</span>
+<span class="nc" id="L107">    return createSocket(host, port);</span>
   }
 
   @Override
   public Socket createSocket(InetAddress address, int port) throws IOException {
-<span class="nc bnc" id="L119" title="All 2 branches missed.">    if (!isInetAddressSupported(address)) {</span>
-<span class="nc" id="L120">      throw new UnknownHostException();</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">    if (!isInetAddressSupported(address)) {</span>
+<span class="nc" id="L113">      throw new UnknownHostException();</span>
     }
-<span class="nc" id="L122">    String hostname = address.getHostName();</span>
-<span class="nc bnc" id="L123" title="All 2 branches missed.">    if (!isHostnameSupported(hostname)) {</span>
-<span class="nc" id="L124">      throw new UnknownHostException();</span>
+<span class="nc" id="L115">    String hostname = address.getHostName();</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">    if (!isHostnameSupported(hostname)) {</span>
+<span class="nc" id="L117">      throw new UnknownHostException();</span>
     }
-<span class="nc" id="L126">    return createSocket(hostname, port);</span>
+<span class="nc" id="L119">    return createSocket(hostname, port);</span>
   }
 
   @Override
   public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
       throws IOException {
-<span class="nc bnc" id="L132" title="All 2 branches missed.">    if (!isInetAddressSupported(address)) {</span>
-<span class="nc" id="L133">      throw new UnknownHostException();</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">    if (!isInetAddressSupported(address)) {</span>
+<span class="nc" id="L126">      throw new UnknownHostException();</span>
     }
-<span class="nc bnc" id="L135" title="All 2 branches missed.">    if (localAddress == null) {</span>
-<span class="nc" id="L136">      throw new NullPointerException();</span>
-    }
-<span class="nc bnc" id="L138" title="All 2 branches missed.">    if (localPort &lt; 0) {</span>
-<span class="nc" id="L139">      throw new IllegalArgumentException(&quot;Illegal local port&quot;);</span>
+<span class="nc" id="L128">    Objects.requireNonNull(localAddress, &quot;Local address was null&quot;);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">    if (localPort &lt; 0) {</span>
+<span class="nc" id="L130">      throw new IllegalArgumentException(&quot;Illegal local port&quot;);</span>
     }
     // NOTE: we simply ignore localAddress and localPort
-<span class="nc" id="L142">    return createSocket(address, port);</span>
+<span class="nc" id="L133">    return createSocket(address, port);</span>
   }
 
   /**
@@ -152,11 +143,11 @@ import javax.net.SocketFactory;
 
     @Override
     protected final boolean isHostnameSupported(String host) {
-<span class="nc" id="L155">      return getDefaultSocketHostname().equals(host);</span>
+<span class="nc" id="L146">      return getDefaultSocketHostname().equals(host);</span>
     }
 
     private static String getDefaultSocketHostname() {
-<span class="nc" id="L159">      return System.getProperty(PROP_SOCKET_HOSTNAME, &quot;localhost&quot;);</span>
+<span class="nc" id="L150">      return System.getProperty(PROP_SOCKET_HOSTNAME, &quot;localhost&quot;);</span>
     }
   }
 
@@ -173,23 +164,23 @@ import javax.net.SocketFactory;
   public static final class FactoryArg extends DefaultSocketHostnameSocketFactory {
     private final File socketFile;
 
-<span class="nc" id="L176">    public FactoryArg(String socketPath) {</span>
-<span class="nc bnc" id="L177" title="All 2 branches missed.">      if (socketPath == null) {</span>
-<span class="nc" id="L178">        throw new NullPointerException(&quot;Constructor argument was null&quot;);</span>
-      }
-<span class="nc" id="L180">      this.socketFile = new File(socketPath);</span>
-<span class="nc" id="L181">    }</span>
+    public FactoryArg(String socketPath) {
+<span class="nc" id="L168">      super();</span>
+<span class="nc" id="L169">      Objects.requireNonNull(socketPath, &quot;Socket path was null&quot;);</span>
 
-<span class="nc" id="L183">    public FactoryArg(File file) {</span>
-<span class="nc bnc" id="L184" title="All 2 branches missed.">      if (file == null) {</span>
-<span class="nc" id="L185">        throw new NullPointerException(&quot;Constructor argument was null&quot;);</span>
-      }
-<span class="nc" id="L187">      this.socketFile = file;</span>
-<span class="nc" id="L188">    }</span>
+<span class="nc" id="L171">      this.socketFile = new File(socketPath);</span>
+<span class="nc" id="L172">    }</span>
+
+    public FactoryArg(File file) {
+<span class="nc" id="L175">      super();</span>
+<span class="nc" id="L176">      Objects.requireNonNull(file, &quot;File was null&quot;);</span>
+
+<span class="nc" id="L178">      this.socketFile = file;</span>
+<span class="nc" id="L179">    }</span>
 
     @Override
     protected AFUNIXSocketAddress addressFromHost(String host, int port) throws IOException {
-<span class="nc" id="L192">      return new AFUNIXSocketAddress(socketFile, port);</span>
+<span class="nc" id="L183">      return new AFUNIXSocketAddress(socketFile, port);</span>
     }
   }
 
@@ -204,18 +195,18 @@ import javax.net.SocketFactory;
    * NOTE: While it is technically possible, it is highly discouraged to programmatically change the
    * value of the property as it can lead to concurrency issues and undefined behavior.
    */
-<span class="nc" id="L207">  public static final class SystemProperty extends DefaultSocketHostnameSocketFactory {</span>
+<span class="nc" id="L198">  public static final class SystemProperty extends DefaultSocketHostnameSocketFactory {</span>
     private static final String PROP_SOCKET_DEFAULT = &quot;org.newsclub.net.unix.socket.default&quot;;
 
     @Override
     protected AFUNIXSocketAddress addressFromHost(String host, int port) throws IOException {
-<span class="nc" id="L212">      String path = System.getProperty(PROP_SOCKET_DEFAULT);</span>
-<span class="nc bnc" id="L213" title="All 4 branches missed.">      if (path == null || path.isEmpty()) {</span>
-<span class="nc" id="L214">        throw new IllegalStateException(&quot;Property not configured: &quot; + PROP_SOCKET_DEFAULT);</span>
+<span class="nc" id="L203">      String path = System.getProperty(PROP_SOCKET_DEFAULT);</span>
+<span class="nc bnc" id="L204" title="All 4 branches missed.">      if (path == null || path.isEmpty()) {</span>
+<span class="nc" id="L205">        throw new IllegalStateException(&quot;Property not configured: &quot; + PROP_SOCKET_DEFAULT);</span>
       }
-<span class="nc" id="L216">      File socketFile = new File(path);</span>
+<span class="nc" id="L207">      File socketFile = new File(path);</span>
 
-<span class="nc" id="L218">      return new AFUNIXSocketAddress(socketFile, port);</span>
+<span class="nc" id="L209">      return new AFUNIXSocketAddress(socketFile, port);</span>
     }
   }
 
@@ -231,55 +222,55 @@ import javax.net.SocketFactory;
    * encoded and without the closing bracket. Since this is an invalid hostname, it will not trigger
    * a DNS lookup, but can still be used within a JDBC Connection URL.
    */
-<span class="nc" id="L234">  public static final class URIScheme extends AFUNIXSocketFactory {</span>
+<span class="nc" id="L225">  public static final class URIScheme extends AFUNIXSocketFactory {</span>
     private static final String FILE_SCHEME_PREFIX = &quot;file://&quot;;
     private static final String FILE_SCHEME_PREFIX_ENCODED = &quot;file%&quot;;
     private static final String FILE_SCHEME_LOCALHOST = &quot;localhost&quot;;
 
     private static String stripBrackets(String host) {
-<span class="nc bnc" id="L240" title="All 2 branches missed.">      if (host.startsWith(&quot;[&quot;)) {</span>
-<span class="nc bnc" id="L241" title="All 2 branches missed.">        if (host.endsWith(&quot;]&quot;)) {</span>
-<span class="nc" id="L242">          host = host.substring(1, host.length() - 1);</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">      if (host.startsWith(&quot;[&quot;)) {</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">        if (host.endsWith(&quot;]&quot;)) {</span>
+<span class="nc" id="L233">          host = host.substring(1, host.length() - 1);</span>
         } else {
-<span class="nc" id="L244">          host = host.substring(1);</span>
+<span class="nc" id="L235">          host = host.substring(1);</span>
         }
       }
-<span class="nc" id="L247">      return host;</span>
+<span class="nc" id="L238">      return host;</span>
     }
 
     @Override
     protected boolean isHostnameSupported(String host) {
-<span class="nc" id="L252">      host = stripBrackets(host);</span>
-<span class="nc bnc" id="L253" title="All 4 branches missed.">      return host.startsWith(FILE_SCHEME_PREFIX) || host.startsWith(FILE_SCHEME_PREFIX_ENCODED);</span>
+<span class="nc" id="L243">      host = stripBrackets(host);</span>
+<span class="nc bnc" id="L244" title="All 4 branches missed.">      return host.startsWith(FILE_SCHEME_PREFIX) || host.startsWith(FILE_SCHEME_PREFIX_ENCODED);</span>
     }
 
     @Override
     protected AFUNIXSocketAddress addressFromHost(String host, int port) throws IOException {
-<span class="nc" id="L258">      host = stripBrackets(host);</span>
-<span class="nc bnc" id="L259" title="All 2 branches missed.">      if (host.startsWith(FILE_SCHEME_PREFIX_ENCODED)) {</span>
+<span class="nc" id="L249">      host = stripBrackets(host);</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">      if (host.startsWith(FILE_SCHEME_PREFIX_ENCODED)) {</span>
         try {
-<span class="nc" id="L261">          host = URLDecoder.decode(host, &quot;UTF-8&quot;);</span>
-<span class="nc" id="L262">        } catch (Exception e) {</span>
-<span class="nc" id="L263">          throw (UnknownHostException) new UnknownHostException().initCause(e);</span>
-<span class="nc" id="L264">        }</span>
+<span class="nc" id="L252">          host = URLDecoder.decode(host, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L253">        } catch (Exception e) {</span>
+<span class="nc" id="L254">          throw (UnknownHostException) new UnknownHostException().initCause(e);</span>
+<span class="nc" id="L255">        }</span>
       }
-<span class="nc bnc" id="L266" title="All 2 branches missed.">      if (!host.startsWith(FILE_SCHEME_PREFIX)) {</span>
-<span class="nc" id="L267">        throw new UnknownHostException();</span>
-      }
-
-<span class="nc" id="L270">      String path = host.substring(FILE_SCHEME_PREFIX.length());</span>
-<span class="nc bnc" id="L271" title="All 2 branches missed.">      if (path.isEmpty()) {</span>
-<span class="nc" id="L272">        throw new UnknownHostException();</span>
-      }
-<span class="nc bnc" id="L274" title="All 2 branches missed.">      if (path.startsWith(FILE_SCHEME_LOCALHOST)) {</span>
-<span class="nc" id="L275">        path = path.substring(FILE_SCHEME_LOCALHOST.length());</span>
-      }
-<span class="nc bnc" id="L277" title="All 2 branches missed.">      if (!path.startsWith(&quot;/&quot;)) {</span>
-<span class="nc" id="L278">        throw new UnknownHostException();</span>
+<span class="nc bnc" id="L257" title="All 2 branches missed.">      if (!host.startsWith(FILE_SCHEME_PREFIX)) {</span>
+<span class="nc" id="L258">        throw new UnknownHostException();</span>
       }
 
-<span class="nc" id="L281">      File socketFile = new File(path);</span>
-<span class="nc" id="L282">      return new AFUNIXSocketAddress(socketFile, port);</span>
+<span class="nc" id="L261">      String path = host.substring(FILE_SCHEME_PREFIX.length());</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">      if (path.isEmpty()) {</span>
+<span class="nc" id="L263">        throw new UnknownHostException();</span>
+      }
+<span class="nc bnc" id="L265" title="All 2 branches missed.">      if (path.startsWith(FILE_SCHEME_LOCALHOST)) {</span>
+<span class="nc" id="L266">        path = path.substring(FILE_SCHEME_LOCALHOST.length());</span>
+      }
+<span class="nc bnc" id="L268" title="All 2 branches missed.">      if (!path.startsWith(&quot;/&quot;)) {</span>
+<span class="nc" id="L269">        throw new UnknownHostException();</span>
+      }
+
+<span class="nc" id="L272">      File socketFile = new File(path);</span>
+<span class="nc" id="L273">      return new AFUNIXSocketAddress(socketFile, port);</span>
     }
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NativeUnixSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">NativeUnixSocket.java</span></div><h1>NativeUnixSocket.java</h1><pre class="source lang-java linenums">/**
  * junixsocket
  *
- * Copyright 2009-2018 Christian Kohlschütter
+ * Copyright 2009-2019 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -42,21 +42,27 @@ final class NativeUnixSocket {
 <span class="fc" id="L42">  }</span>
 
   static boolean isLoaded() {
-<span class="nc" id="L45">    return loaded;</span>
+<span class="fc" id="L45">    return loaded;</span>
   }
 
   static void checkSupported() {
 <span class="nc" id="L49">  }</span>
 
-  static native long bind(final String socketFile, final FileDescriptor fd, final int options)
+  static native void init() throws Exception;
+
+  static native void destroy() throws Exception;
+
+  static native int capabilities();
+
+  static native long bind(final byte[] socketAddr, final FileDescriptor fd, final int options)
       throws IOException;
 
   static native void listen(final FileDescriptor fd, final int backlog) throws IOException;
 
-  static native void accept(final String socketFile, final FileDescriptor fdServer,
-      final FileDescriptor fd, long inode) throws IOException;
+  static native void accept(final byte[] socketAddr, final FileDescriptor fdServer,
+      final FileDescriptor fd, long inode, int timeout) throws IOException;
 
-  static native void connect(final String socketFile, final FileDescriptor fd, long inode)
+  static native void connect(final byte[] socketAddr, final FileDescriptor fd, long inode)
       throws IOException;
 
   static native int read(AFUNIXSocketImpl afunixSocketImpl, final FileDescriptor fd, byte[] buf,
@@ -100,18 +106,20 @@ final class NativeUnixSocket {
 
   static native void attachCloseable(FileDescriptor fdsec, Closeable closeable);
 
+  static native int maxAddressLength();
+
   static void setPort1(AFUNIXSocketAddress addr, int port) throws IOException {
-<span class="fc bfc" id="L104" title="All 2 branches covered.">    if (port &lt; 0) {</span>
-<span class="fc" id="L105">      throw new IllegalArgumentException(&quot;port out of range:&quot; + port);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">    if (port &lt; 0) {</span>
+<span class="fc" id="L113">      throw new IllegalArgumentException(&quot;port out of range:&quot; + port);</span>
     }
 
     try {
-<span class="fc" id="L109">      setPort(addr, port);</span>
-<span class="nc" id="L110">    } catch (RuntimeException e) {</span>
-<span class="nc" id="L111">      throw e;</span>
-<span class="nc" id="L112">    } catch (Exception e) {</span>
-<span class="nc" id="L113">      throw new IOException(&quot;Could not set port&quot;, e);</span>
-<span class="fc" id="L114">    }</span>
-<span class="fc" id="L115">  }</span>
+<span class="fc" id="L117">      setPort(addr, port);</span>
+<span class="nc" id="L118">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L119">      throw e;</span>
+<span class="nc" id="L120">    } catch (Exception e) {</span>
+<span class="nc" id="L121">      throw new IOException(&quot;Could not set port&quot;, e);</span>
+<span class="fc" id="L122">    }</span>
+<span class="fc" id="L123">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

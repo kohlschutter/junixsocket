@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2018 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2019 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> * you may not use this file except in compliance with the License.</em>
@@ -35,7 +35,7 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment"> * @author Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">class</strong> <a name="PortAssignerImpl" href="../../../../../org/newsclub/net/unix/rmi/PortAssignerImpl.html#PortAssignerImpl">PortAssignerImpl</a> <strong class="jxr_keyword">implements</strong> <a name="PortAssigner" href="../../../../../org/newsclub/net/unix/rmi/PortAssigner.html#PortAssigner">PortAssigner</a> {
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>    <strong class="jxr_keyword">private</strong> BitSet ports = <strong class="jxr_keyword">new</strong> BitSet(1000);
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> BitSet ports = <strong class="jxr_keyword">new</strong> BitSet(1000);
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>    <strong class="jxr_keyword">public</strong> <a name="PortAssignerImpl" href="../../../../../org/newsclub/net/unix/rmi/PortAssignerImpl.html#PortAssignerImpl">PortAssignerImpl</a>() {
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>    }

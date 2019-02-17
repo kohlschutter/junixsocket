@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2018 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2019 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> * you may not use this file except in compliance with the License.</em>
@@ -44,7 +44,7 @@
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment"> * @author Christian Kohlschuetter</em>
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment"> * @see AFUNIXSocketFactory</em>
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="PostgresDemo" href="../../../../../../org/newsclub/net/unix/demo/jdbc/PostgresDemo.html#PostgresDemo">PostgresDemo</a> {
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="PostgresDemo" href="../../../../../../org/newsclub/net/unix/demo/jdbc/PostgresDemo.html#PostgresDemo">PostgresDemo</a> {
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> main(String[] args) <strong class="jxr_keyword">throws</strong> SQLException, ClassNotFoundException, IOException {
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>      DemoHelper.initJDBCDriverClass(<span class="jxr_string">"postgresqlDriver"</span>, <span class="jxr_string">"org.postgresql.Driver"</span>, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  
@@ -81,11 +81,11 @@
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      DemoHelper.addProperty(props, <span class="jxr_string">"sslMode"</span>, <span class="jxr_string">"disable"</span>, <span class="jxr_string">"postgresqlSslMode"</span>, <span class="jxr_string">"prefer"</span>);
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>  
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>      String url;
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>      <strong class="jxr_keyword">if</strong> (socketFactory.equals(<span class="jxr_string">"org.newsclub.net.unix.AFUNIXSocketFactory$URIScheme"</span>)) {
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>        url = <span class="jxr_string">"jdbc:postgresql://["</span> + urlEncoded + <span class="jxr_string">":"</span> + port + <span class="jxr_string">"/"</span> + databaseName;;
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      <strong class="jxr_keyword">if</strong> (<span class="jxr_string">"org.newsclub.net.unix.AFUNIXSocketFactory$URIScheme"</span>.equals(socketFactory)) {
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>        url = <span class="jxr_string">"jdbc:postgresql://["</span> + urlEncoded + <span class="jxr_string">":"</span> + port + <span class="jxr_string">"/"</span> + databaseName;
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>      } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>        url = <span class="jxr_string">"jdbc:postgresql://localhost/postgres"</span>;
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>        <strong class="jxr_keyword">if</strong> (socketFactory.equals(<span class="jxr_string">"org.newsclub.net.unix.AFUNIXSocketFactory$FactoryArg"</span>)) {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>        <strong class="jxr_keyword">if</strong> (<span class="jxr_string">"org.newsclub.net.unix.AFUNIXSocketFactory$FactoryArg"</span>.equals(socketFactory)) {
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          DemoHelper.addProperty(props, <span class="jxr_string">"socketFactoryArg"</span>, socketPath, <span class="jxr_string">"socketFactoryArg"</span>, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>        }
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      }

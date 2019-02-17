@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2018 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2019 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> * you may not use this file except in compliance with the License.</em>
@@ -37,7 +37,7 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AFUNIXServerSocket" href="../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> <strong class="jxr_keyword">extends</strong> ServerSocket {
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="AFUNIXSocketImpl" href="../../../../org/newsclub/net/unix/AFUNIXSocketImpl.html#AFUNIXSocketImpl">AFUNIXSocketImpl</a> implementation;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>    <strong class="jxr_keyword">private</strong> <a name="AFUNIXSocketAddress" href="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> boundEndpoint = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>    <strong class="jxr_keyword">private</strong> <a name="AFUNIXSocketAddress" href="../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> boundEndpoint;
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment">   * Constructs a new, unconnected instance.</em>
@@ -125,7 +125,7 @@
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>     <strong class="jxr_keyword">if</strong> (!isBound()) {
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>       <strong class="jxr_keyword">return</strong> <span class="jxr_string">"AFUNIXServerSocket[unbound]"</span>;
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>     }
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">return</strong> <span class="jxr_string">"AFUNIXServerSocket["</span> + boundEndpoint.getSocketFile() + <span class="jxr_string">"]"</span>;
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">return</strong> <span class="jxr_string">"AFUNIXServerSocket["</span> + boundEndpoint.toString() + <span class="jxr_string">"]"</span>;
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>   }
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> 
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>   @Override
