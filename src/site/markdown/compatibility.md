@@ -25,13 +25,3 @@ The native-common binaries are built on recent release versions of either platfo
 
 Support for [custom architectures](customarch.html) can be added by compiling a custom native binary
 on the target machine, or by [cross-compiling](crosscomp.html) using clang/LLVM on a suitable host.
-
-## Future versions
-
-Future junixsocket major releases (e.g., 3.x, 4.x) may require newer versions of Java, most likely
-aligned with the Java LTS (Long Term Support) releases.
-
-A future junixsocket 3.x branch will support Java 11 or newer.
-
-Critical bug fixes will be incorporated at least in every previous major release
-(e.g., into 2.x when 3.0 is released).
