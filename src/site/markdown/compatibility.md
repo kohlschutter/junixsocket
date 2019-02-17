@@ -20,6 +20,7 @@ The minimum set of supported platforms and processor architectures currently is
 * Linux x86_64
 * Linux ARM 32-bit
 * Linux ARM 64-bit (aarch64)
+* Windows 10 Intel 64-bit 
 
 The native-common binaries are built on recent release versions of either platform.  
 
