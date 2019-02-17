@@ -46,13 +46,7 @@
 
   <profiles>
     <profile>
-      <id>release</id>
-      <activation>
-        <property>
-          <name>cross</name>
-          <value>true</value>
-        </property>
-      </activation>
+      <id>dist</id>
       <build>
         <plugins>
           <plugin>
