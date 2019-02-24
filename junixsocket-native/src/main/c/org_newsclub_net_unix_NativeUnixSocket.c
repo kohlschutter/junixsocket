@@ -183,11 +183,13 @@ static const char *kExceptionClasses[kExceptionMaxExcl] = {
 static int _closeFd(JNIEnv * env, jobject fd, int handle);
 
 // see AFUNIXSocketCapability.java in junixsocket-common
-#if !defined(_WIN32)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
 static int CAPABILITY_PEER_CREDENTIALS = (1 << 0);
 static int CAPABILITY_ANCILLARY_MESSAGES = (1 << 1);
 static int CAPABILITY_FILE_DESCRIPTORS = (1 << 2);
-#endif
+static int CAPABILITY_ABSTRACT_NAMESPACE = (1 << 3);
+#pragma GCC diagnostic pop
 
 static void org_newsclub_net_unix_NativeUnixSocket_throwException(JNIEnv* env,
         ExceptionType exceptionType, char* message)
@@ -409,13 +411,17 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
 
     int capabilities = 0;
 
-#if defined(LOCAL_PEERCRED) || defined(LOCAL_PEEREPID) || defined(LOCAL_PEEREUUID) ||defined(SO_PEERCRED)
+#if defined(LOCAL_PEERCRED) || defined(LOCAL_PEEREPID) || defined(LOCAL_PEEREUUID) || defined(SO_PEERCRED)
     capabilities |= CAPABILITY_PEER_CREDENTIALS;
 #endif
 
 #if defined(junixsocket_have_ancillary)
     capabilities |= CAPABILITY_ANCILLARY_MESSAGES;
     capabilities |= CAPABILITY_FILE_DESCRIPTORS;
+#endif
+
+#if defined(_WIN32) || defined(__linux__)
+    capabilities |= CAPABILITY_ABSTRACT_NAMESPACE;
 #endif
 
     return capabilities;
