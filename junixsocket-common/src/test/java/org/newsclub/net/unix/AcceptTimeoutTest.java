@@ -66,7 +66,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
 
   @Test
   public void testTimeoutAfterDelay() throws Exception {
-    final int timeoutMillis = 250;
+    final int timeoutMillis = 252;
     assertTimeoutPreemptively(Duration.ofMillis(2 * timeoutMillis), () -> {
       try (AFUNIXServerSocket sock = startServer()) {
         final int connectDelayMillis = 50;
