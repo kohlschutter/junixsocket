@@ -1651,15 +1651,25 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreated(
         JNIEnv * env, jclass clazz, jobject socket)
 {
     jclass socketClass = (*env)->GetObjectClass(env, socket);
+
     jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setCreated",
             "()V");
-    if(methodID == NULL) {
-        org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-                kExceptionSocketException,
-                "Cannot find method \"setCreated\" in java.net.Socket. Unsupported JVM?");
+    if(methodID != NULL) {
+        (*env)->CallVoidMethod(env, socket, methodID);
         return;
     }
-    (*env)->CallVoidMethod(env, socket, methodID);
+    (*env)->ExceptionClear(env);
+
+    jfieldID fieldID = (*env)->GetFieldID(env, socketClass, "created", "Z");
+    if(fieldID != NULL) {
+        (*env)->SetBooleanField(env, socket, fieldID, JNI_TRUE);
+        return;
+    }
+    (*env)->ExceptionClear(env);
+
+    org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+            kExceptionSocketException,
+            "Cannot find method \"setCreated\" or field \"created\" in java.net.Socket. Unsupported JVM?");
 }
 
 /*
@@ -1671,15 +1681,25 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setConnected(
         JNIEnv * env, jclass clazz, jobject socket)
 {
     jclass socketClass = (*env)->GetObjectClass(env, socket);
+
     jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setConnected",
             "()V");
-    if(methodID == NULL) {
-        org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-                kExceptionSocketException,
-                "Cannot find method \"setConnected\" in java.net.Socket. Unsupported JVM?");
+    if(methodID != NULL) {
+        (*env)->CallVoidMethod(env, socket, methodID);
         return;
     }
-    (*env)->CallVoidMethod(env, socket, methodID);
+    (*env)->ExceptionClear(env);
+
+    jfieldID fieldID = (*env)->GetFieldID(env, socketClass, "connected", "Z");
+    if(fieldID != NULL) {
+        (*env)->SetBooleanField(env, socket, fieldID, JNI_TRUE);
+        return;
+    }
+    (*env)->ExceptionClear(env);
+
+    org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+            kExceptionSocketException,
+            "Cannot find method \"setConnected\" or field \"connected\" in java.net.Socket. Unsupported JVM?");
 }
 
 /*
@@ -1691,15 +1711,25 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBound(
         JNIEnv * env, jclass clazz, jobject socket)
 {
     jclass socketClass = (*env)->GetObjectClass(env, socket);
+
     jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setBound",
             "()V");
-    if(methodID == NULL) {
-        org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-                kExceptionSocketException,
-                "Cannot find method \"setBound\" in java.net.Socket. Unsupported JVM?");
+    if(methodID != NULL) {
+        (*env)->CallVoidMethod(env, socket, methodID);
         return;
     }
-    (*env)->CallVoidMethod(env, socket, methodID);
+    (*env)->ExceptionClear(env);
+
+    jfieldID fieldID = (*env)->GetFieldID(env, socketClass, "bound", "Z");
+    if(fieldID != NULL) {
+        (*env)->SetBooleanField(env, socket, fieldID, JNI_TRUE);
+        return;
+    }
+    (*env)->ExceptionClear(env);
+
+    org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+            kExceptionSocketException,
+            "Cannot find method \"setBound\" or field \"bound\" in java.net.Socket. Unsupported JVM?");
 }
 
 /*
@@ -1711,15 +1741,25 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreatedSer
         JNIEnv * env, jclass clazz, jobject socket)
 {
     jclass socketClass = (*env)->GetObjectClass(env, socket);
+
     jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setCreated",
             "()V");
-    if(methodID == NULL) {
-        org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-                kExceptionSocketException,
-                "Cannot find method \"setCreated\" in java.net.ServerSocket. Unsupported JVM?");
+    if(methodID != NULL) {
+        (*env)->CallVoidMethod(env, socket, methodID);
         return;
     }
-    (*env)->CallVoidMethod(env, socket, methodID);
+    (*env)->ExceptionClear(env);
+
+    jfieldID fieldID = (*env)->GetFieldID(env, socketClass, "created", "Z");
+    if(fieldID != NULL) {
+        (*env)->SetBooleanField(env, socket, fieldID, JNI_TRUE);
+        return;
+    }
+    (*env)->ExceptionClear(env);
+
+    org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+            kExceptionSocketException,
+            "Cannot find method \"setCreated\" or field \"created\" in java.net.ServerSocket. Unsupported JVM?");
 }
 
 /*
@@ -1731,15 +1771,25 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBoundServe
         JNIEnv * env, jclass clazz, jobject socket)
 {
     jclass socketClass = (*env)->GetObjectClass(env, socket);
+
     jmethodID methodID = (*env)->GetMethodID(env, socketClass, "setBound",
             "()V");
-    if(methodID == NULL) {
-        org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-                kExceptionSocketException,
-                "Cannot find method \"setBound\" in java.net.ServerSocket. Unsupported JVM?");
+    if(methodID != NULL) {
+        (*env)->CallVoidMethod(env, socket, methodID);
         return;
     }
-    (*env)->CallVoidMethod(env, socket, methodID);
+    (*env)->ExceptionClear(env);
+
+    jfieldID fieldID = (*env)->GetFieldID(env, socketClass, "bound", "Z");
+    if(fieldID != NULL) {
+        (*env)->SetBooleanField(env, socket, fieldID, JNI_TRUE);
+        return;
+    }
+    (*env)->ExceptionClear(env);
+
+    org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+            kExceptionSocketException,
+            "Cannot find method \"setBound\" or field \"bound\" in java.net.ServerSocket. Unsupported JVM?");
 }
 
 /*
