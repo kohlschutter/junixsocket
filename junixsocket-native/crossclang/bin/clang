@@ -185,7 +185,7 @@ if [[ "$target" != "unspecified" ]]; then
         "$HOME/.crossclang/target-sdks"
         "/opt/crossclang/target-sdks"
     )
-    
+        
     if [[ "$target" == "/"* ]]; then
         sdkroot="$target"
     else
@@ -200,6 +200,13 @@ if [[ "$target" != "unspecified" ]]; then
     if [ -z "$sdkroot" ]; then
         if [[ -n "$sdkroot_base" && -n "$target" ]]; then
             sdkroot="$sdkroot_base/$target"
+            
+            sdkrootFiles=$(ls "$sdkroot" | grep -v target)
+            if [[ -z "$sdkrootFiles" ]]; then
+                echo "Warning: crossclang has an incomplete configuration for target \"$target\" -- you need to run sync-target-sdk first!" >&2
+            fi
+        elif [[ "$defaultFallback" -eq 0 ]]; then
+            echo "Error: crossclang not yet configured for target \"$target\" -- you need to run prepare-target-sdk first!" >&2
         fi
     fi
     
