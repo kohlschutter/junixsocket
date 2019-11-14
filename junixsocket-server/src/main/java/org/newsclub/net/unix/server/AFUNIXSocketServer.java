@@ -253,6 +253,7 @@ public abstract class AFUNIXSocketServer {
   private Future<?> submit(Socket socket, ExecutorService executor) {
     return executor.submit(new Runnable() {
       @Override
+      @SuppressWarnings("PMD.UseTryWithResources")
       public void run() {
         onBeforeServingSocket(socket);
 

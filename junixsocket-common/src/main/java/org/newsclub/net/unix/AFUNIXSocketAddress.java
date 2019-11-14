@@ -138,8 +138,9 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
   }
 
   private static String prettyPrint(byte[] data) {
-    StringBuilder sb = new StringBuilder(data.length + 16);
-    for (int i = 0, n = data.length; i < n; i++) {
+    final int dataLength = data.length;
+    StringBuilder sb = new StringBuilder(dataLength + 16);
+    for (int i = 0; i < dataLength; i++) {
       byte c = data[i];
       if (c >= 32 && c < 127) {
         sb.append((char) c);

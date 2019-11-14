@@ -253,8 +253,9 @@ public final class AFUNIXSocket extends Socket {
     if (fdescs == null || fdescs.length == 0) {
       impl.setOutboundFileDescriptors(null);
     } else {
-      int[] fds = new int[fdescs.length];
-      for (int i = 0, n = fdescs.length; i < n; i++) {
+      final int numFdescs = fdescs.length;
+      final int[] fds = new int[numFdescs];
+      for (int i = 0; i < numFdescs; i++) {
         FileDescriptor fdesc = fdescs[i];
         fds[i] = NativeUnixSocket.getFD(fdesc);
       }

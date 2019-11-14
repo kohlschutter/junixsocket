@@ -352,7 +352,7 @@ class AFUNIXSocketImpl extends SocketImpl {
 
     @Override
     public void write(int oneByte) throws IOException {
-      final byte[] buf1 = new byte[] {(byte) oneByte};
+      final byte[] buf1 = {(byte) oneByte};
       write(buf1, 0, 1);
     }
 
@@ -621,8 +621,9 @@ class AFUNIXSocketImpl extends SocketImpl {
     if (fds == null || fds.length == 0) {
       return;
     }
-    FileDescriptor[] descriptors = new FileDescriptor[fds.length];
-    for (int i = 0, n = fds.length; i < n; i++) {
+    final int fdsLength = fds.length;
+    FileDescriptor[] descriptors = new FileDescriptor[fdsLength];
+    for (int i = 0; i < fdsLength; i++) {
       FileDescriptor fdesc = new FileDescriptor();
       NativeUnixSocket.initFD(fdesc, fds[i]);
       descriptors[i] = fdesc;
