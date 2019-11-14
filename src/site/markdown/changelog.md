@@ -1,5 +1,10 @@
 # Noteworthy changes
 
+### _(2019-11-14)_ **junixsocket 2.2.1**
+
+ - Add support for Java 13
+ - Code cleanup, dependency updates
+
 ### _(2019-02-17)_ **junixsocket 2.2.0**
 
  - New supported platform: Linux ARM 32-bit and 64-bit (e.g., Raspberry Pi)
