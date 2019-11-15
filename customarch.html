@@ -118,8 +118,8 @@
 <div>
 <div>
 <pre class="source">cd junixsocket
-# replace 2.2.0 with the version of junixsocket you're trying to build.
-junixsocket-native-prebuilt/bin/list-available-in-m2repo.sh -c 2.2.0
+# replace 2.x.y with the version of junixsocket you're trying to build.
+junixsocket-native-prebuilt/bin/list-available-in-m2repo.sh -c 2.x.y
 </pre></div></div>
 
 <p>On x86_64 Linux, this script should show the following line:</p>
@@ -145,8 +145,8 @@ mvn clean install -Djunixsocket.custom.arch=amd64-Linux-gpp-jni
 <div>
 <div>
 <pre class="source">cd junixsocket 
-# replace 2.2.0 with the version of junixsocket you're trying to build.
-junixsocket-native-prebuilt/bin/list-native-custom.sh 2.2.0
+# replace 2.x.y with the version of junixsocket you're trying to build.
+junixsocket-native-prebuilt/bin/list-native-custom.sh 2.x.y
 </pre></div></div>
 
 <p>Copy the file somewhere else where you need it (e.g., your local artifact manager).</p>
@@ -167,7 +167,7 @@ junixsocket-native-prebuilt/bin/install-to-m2repo.sh &lt;path-to-junixsocket-nat
 <pre class="source">&lt;dependency&gt;
   &lt;groupId&gt;com.kohlschutter.junixsocket&lt;/groupId&gt;
   &lt;artifactId&gt;junixsocket-native-custom&lt;/artifactId&gt;
-  &lt;version&gt;2.2.0&lt;/version&gt;
+  &lt;version&gt;2.2.1&lt;/version&gt;
   &lt;classifier&gt;amd64-Linux-gpp-jni&lt;/classifier&gt;
 &lt;/dependency&gt;
 </pre></div></div>
@@ -178,7 +178,7 @@ junixsocket-native-prebuilt/bin/install-to-m2repo.sh &lt;path-to-junixsocket-nat
 
 <div>
 <div>
-<pre class="source">java -cp junixsocket-native-custom-2.2.0-amd64-Linux-gpp-jni.jar:*(...)* *YourMainClass*
+<pre class="source">java -cp junixsocket-native-custom-2.2.1-amd64-Linux-gpp-jni.jar:*(...)* *YourMainClass*
 </pre></div></div>
 </section><section>
 <h2><a name="If_that_doesn.E2.80.99t_work.E2.80.A6"></a>If that doesn&#x2019;t work&#x2026;</h2>
@@ -187,7 +187,7 @@ junixsocket-native-prebuilt/bin/install-to-m2repo.sh &lt;path-to-junixsocket-nat
 
 <div>
 <div>
-<pre class="source">java -Dorg.newsclub.net.unix.library.override=junixsocket-native-2.2.0 (...)
+<pre class="source">java -Dorg.newsclub.net.unix.library.override=junixsocket-native-2.2.1 (...)
 </pre></div></div></section>
         </main>
       </div>

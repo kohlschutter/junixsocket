@@ -550,11 +550,11 @@ class AFUNIXSocketImpl extends SocketImpl {
       try {
 <span class="fc" id="L551">        super.setOption(optID, value);</span>
 <span class="fc" id="L552">      } catch (SocketException e) {</span>
-<span class="pc bpc" id="L553" title="1 of 2 branches missed.">        switch (optID) {</span>
+<span class="fc bfc" id="L553" title="All 2 branches covered.">        switch (optID) {</span>
           case SocketOptions.TCP_NODELAY:
 <span class="fc" id="L555">            return;</span>
           default:
-<span class="nc" id="L557">            throw e;</span>
+<span class="fc" id="L557">            throw e;</span>
         }
 <span class="fc" id="L559">      }</span>
 <span class="fc" id="L560">    }</span>
