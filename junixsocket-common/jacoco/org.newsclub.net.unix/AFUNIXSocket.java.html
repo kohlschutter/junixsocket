@@ -253,24 +253,25 @@ public final class AFUNIXSocket extends Socket {
 <span class="pc bpc" id="L253" title="2 of 4 branches missed.">    if (fdescs == null || fdescs.length == 0) {</span>
 <span class="nc" id="L254">      impl.setOutboundFileDescriptors(null);</span>
     } else {
-<span class="fc" id="L256">      int[] fds = new int[fdescs.length];</span>
-<span class="fc bfc" id="L257" title="All 2 branches covered.">      for (int i = 0, n = fdescs.length; i &lt; n; i++) {</span>
-<span class="fc" id="L258">        FileDescriptor fdesc = fdescs[i];</span>
-<span class="fc" id="L259">        fds[i] = NativeUnixSocket.getFD(fdesc);</span>
+<span class="fc" id="L256">      final int numFdescs = fdescs.length;</span>
+<span class="fc" id="L257">      final int[] fds = new int[numFdescs];</span>
+<span class="fc bfc" id="L258" title="All 2 branches covered.">      for (int i = 0; i &lt; numFdescs; i++) {</span>
+<span class="fc" id="L259">        FileDescriptor fdesc = fdescs[i];</span>
+<span class="fc" id="L260">        fds[i] = NativeUnixSocket.getFD(fdesc);</span>
       }
-<span class="fc" id="L261">      impl.setOutboundFileDescriptors(fds);</span>
+<span class="fc" id="L262">      impl.setOutboundFileDescriptors(fds);</span>
     }
-<span class="fc" id="L263">  }</span>
+<span class="fc" id="L264">  }</span>
 
   private static synchronized int getCapabilities() {
-<span class="fc bfc" id="L266" title="All 2 branches covered.">    if (capabilities == null) {</span>
-<span class="pc bpc" id="L267" title="1 of 2 branches missed.">      if (!isSupported()) {</span>
-<span class="nc" id="L268">        capabilities = 0;</span>
+<span class="fc bfc" id="L267" title="All 2 branches covered.">    if (capabilities == null) {</span>
+<span class="pc bpc" id="L268" title="1 of 2 branches missed.">      if (!isSupported()) {</span>
+<span class="nc" id="L269">        capabilities = 0;</span>
       } else {
-<span class="fc" id="L270">        capabilities = NativeUnixSocket.capabilities();</span>
+<span class="fc" id="L271">        capabilities = NativeUnixSocket.capabilities();</span>
       }
     }
-<span class="fc" id="L273">    return capabilities.intValue();</span>
+<span class="fc" id="L274">    return capabilities.intValue();</span>
   }
 
   /**
@@ -281,7 +282,7 @@ public final class AFUNIXSocket extends Socket {
    * @return true if supported.
    */
   public static boolean supports(AFUNIXSocketCapability capability) {
-<span class="pc bpc" id="L284" title="1 of 2 branches missed.">    return (getCapabilities() &amp; capability.getBitmask()) != 0;</span>
+<span class="pc bpc" id="L285" title="1 of 2 branches missed.">    return (getCapabilities() &amp; capability.getBitmask()) != 0;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

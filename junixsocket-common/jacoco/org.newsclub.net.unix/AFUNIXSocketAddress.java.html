@@ -138,22 +138,23 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
   }
 
   private static String prettyPrint(byte[] data) {
-<span class="nc" id="L141">    StringBuilder sb = new StringBuilder(data.length + 16);</span>
-<span class="nc bnc" id="L142" title="All 2 branches missed.">    for (int i = 0, n = data.length; i &lt; n; i++) {</span>
-<span class="nc" id="L143">      byte c = data[i];</span>
-<span class="nc bnc" id="L144" title="All 4 branches missed.">      if (c &gt;= 32 &amp;&amp; c &lt; 127) {</span>
-<span class="nc" id="L145">        sb.append((char) c);</span>
+<span class="nc" id="L141">    final int dataLength = data.length;</span>
+<span class="nc" id="L142">    StringBuilder sb = new StringBuilder(dataLength + 16);</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">    for (int i = 0; i &lt; dataLength; i++) {</span>
+<span class="nc" id="L144">      byte c = data[i];</span>
+<span class="nc bnc" id="L145" title="All 4 branches missed.">      if (c &gt;= 32 &amp;&amp; c &lt; 127) {</span>
+<span class="nc" id="L146">        sb.append((char) c);</span>
       } else {
-<span class="nc" id="L147">        sb.append(&quot;\\x&quot;);</span>
-<span class="nc" id="L148">        sb.append(String.format(Locale.ENGLISH, &quot;%02x&quot;, c));</span>
+<span class="nc" id="L148">        sb.append(&quot;\\x&quot;);</span>
+<span class="nc" id="L149">        sb.append(String.format(Locale.ENGLISH, &quot;%02x&quot;, c));</span>
       }
     }
-<span class="nc" id="L151">    return sb.toString();</span>
+<span class="nc" id="L152">    return sb.toString();</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L156">    return getClass().getName() + &quot;[port=&quot; + getPort() + &quot;;address=&quot; + prettyPrint(bytes) + &quot;]&quot;;</span>
+<span class="nc" id="L157">    return getClass().getName() + &quot;[port=&quot; + getPort() + &quot;;address=&quot; + prettyPrint(bytes) + &quot;]&quot;;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

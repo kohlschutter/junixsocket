@@ -42,18 +42,21 @@
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>    CAPABILITY_ANCILLARY_MESSAGES(1), <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>    <em class="jxr_javadoccomment">/** Socket supports passing file descriptors via ancillary messages. */</em>
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>    CAPABILITY_FILE_DESCRIPTORS(2);
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    CAPABILITY_FILE_DESCRIPTORS(2), <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> bitmask;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>    <a name="AFUNIXSocketCapability" href="../../../../org/newsclub/net/unix/AFUNIXSocketCapability.html#AFUNIXSocketCapability">AFUNIXSocketCapability</a>(<strong class="jxr_keyword">int</strong> bit) {
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">this</strong>.bitmask = 1 &lt;&lt; bit;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>    }
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">int</strong> getBitmask() {
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>      <strong class="jxr_keyword">return</strong> bitmask;
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>    }
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  }
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>    <em class="jxr_javadoccomment">/** Socket addressing supports the abstract namespace (Linux/Windows). */</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>    CAPABILITY_ABSTRACT_NAMESPACE(3);
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> bitmask;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>    <a name="AFUNIXSocketCapability" href="../../../../org/newsclub/net/unix/AFUNIXSocketCapability.html#AFUNIXSocketCapability">AFUNIXSocketCapability</a>(<strong class="jxr_keyword">int</strong> bit) {
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">this</strong>.bitmask = 1 &lt;&lt; bit;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    }
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">int</strong> getBitmask() {
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">return</strong> bitmask;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    }
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2019 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

@@ -360,7 +360,7 @@
 <a class="jxr_linenumber" name="L352" href="#L352">352</a> 
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>     @Override
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> write(<strong class="jxr_keyword">int</strong> oneByte) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>       <strong class="jxr_keyword">final</strong> byte[] buf1 = <strong class="jxr_keyword">new</strong> byte[] {(byte) oneByte};
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>       <strong class="jxr_keyword">final</strong> byte[] buf1 = {(byte) oneByte};
 <a class="jxr_linenumber" name="L356" href="#L356">356</a>       write(buf1, 0, 1);
 <a class="jxr_linenumber" name="L357" href="#L357">357</a>     }
 <a class="jxr_linenumber" name="L358" href="#L358">358</a> 
@@ -629,33 +629,34 @@
 <a class="jxr_linenumber" name="L621" href="#L621">621</a>     <strong class="jxr_keyword">if</strong> (fds == <strong class="jxr_keyword">null</strong> || fds.length == 0) {
 <a class="jxr_linenumber" name="L622" href="#L622">622</a>       <strong class="jxr_keyword">return</strong>;
 <a class="jxr_linenumber" name="L623" href="#L623">623</a>     }
-<a class="jxr_linenumber" name="L624" href="#L624">624</a>     FileDescriptor[] descriptors = <strong class="jxr_keyword">new</strong> FileDescriptor[fds.length];
-<a class="jxr_linenumber" name="L625" href="#L625">625</a>     <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0, n = fds.length; i &lt; n; i++) {
-<a class="jxr_linenumber" name="L626" href="#L626">626</a>       FileDescriptor fdesc = <strong class="jxr_keyword">new</strong> FileDescriptor();
-<a class="jxr_linenumber" name="L627" href="#L627">627</a>       NativeUnixSocket.initFD(fdesc, fds[i]);
-<a class="jxr_linenumber" name="L628" href="#L628">628</a>       descriptors[i] = fdesc;
-<a class="jxr_linenumber" name="L629" href="#L629">629</a> 
-<a class="jxr_linenumber" name="L630" href="#L630">630</a>       closeableFileDescriptors.put(fdesc, fds[i]);
-<a class="jxr_linenumber" name="L631" href="#L631">631</a> 
-<a class="jxr_linenumber" name="L632" href="#L632">632</a>       @SuppressWarnings(<span class="jxr_string">"resource"</span>)
-<a class="jxr_linenumber" name="L633" href="#L633">633</a>       <strong class="jxr_keyword">final</strong> Closeable cleanup = <strong class="jxr_keyword">new</strong> Closeable() {
-<a class="jxr_linenumber" name="L634" href="#L634">634</a> 
-<a class="jxr_linenumber" name="L635" href="#L635">635</a>         @Override
-<a class="jxr_linenumber" name="L636" href="#L636">636</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> close() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L637" href="#L637">637</a>           closeableFileDescriptors.remove(fdesc);
-<a class="jxr_linenumber" name="L638" href="#L638">638</a>         }
-<a class="jxr_linenumber" name="L639" href="#L639">639</a>       };
-<a class="jxr_linenumber" name="L640" href="#L640">640</a>       NativeUnixSocket.attachCloseable(fdesc, cleanup);
-<a class="jxr_linenumber" name="L641" href="#L641">641</a>     }
-<a class="jxr_linenumber" name="L642" href="#L642">642</a> 
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>     <strong class="jxr_keyword">this</strong>.receivedFileDescriptors.add(descriptors);
-<a class="jxr_linenumber" name="L644" href="#L644">644</a>   }
-<a class="jxr_linenumber" name="L645" href="#L645">645</a> 
-<a class="jxr_linenumber" name="L646" href="#L646">646</a>   <em class="jxr_comment">// called from native code, too (but only with null)</em>
-<a class="jxr_linenumber" name="L647" href="#L647">647</a>   <strong class="jxr_keyword">void</strong> setOutboundFileDescriptors(<strong class="jxr_keyword">int</strong>... fds) {
-<a class="jxr_linenumber" name="L648" href="#L648">648</a>     <strong class="jxr_keyword">this</strong>.pendingFileDescriptors = (fds == <strong class="jxr_keyword">null</strong> || fds.length == 0) ? <strong class="jxr_keyword">null</strong> : fds;
-<a class="jxr_linenumber" name="L649" href="#L649">649</a>   }
-<a class="jxr_linenumber" name="L650" href="#L650">650</a> }
+<a class="jxr_linenumber" name="L624" href="#L624">624</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> fdsLength = fds.length;
+<a class="jxr_linenumber" name="L625" href="#L625">625</a>     FileDescriptor[] descriptors = <strong class="jxr_keyword">new</strong> FileDescriptor[fdsLength];
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>     <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; fdsLength; i++) {
+<a class="jxr_linenumber" name="L627" href="#L627">627</a>       FileDescriptor fdesc = <strong class="jxr_keyword">new</strong> FileDescriptor();
+<a class="jxr_linenumber" name="L628" href="#L628">628</a>       NativeUnixSocket.initFD(fdesc, fds[i]);
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>       descriptors[i] = fdesc;
+<a class="jxr_linenumber" name="L630" href="#L630">630</a> 
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>       closeableFileDescriptors.put(fdesc, fds[i]);
+<a class="jxr_linenumber" name="L632" href="#L632">632</a> 
+<a class="jxr_linenumber" name="L633" href="#L633">633</a>       @SuppressWarnings(<span class="jxr_string">"resource"</span>)
+<a class="jxr_linenumber" name="L634" href="#L634">634</a>       <strong class="jxr_keyword">final</strong> Closeable cleanup = <strong class="jxr_keyword">new</strong> Closeable() {
+<a class="jxr_linenumber" name="L635" href="#L635">635</a> 
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>         @Override
+<a class="jxr_linenumber" name="L637" href="#L637">637</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> close() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>           closeableFileDescriptors.remove(fdesc);
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>         }
+<a class="jxr_linenumber" name="L640" href="#L640">640</a>       };
+<a class="jxr_linenumber" name="L641" href="#L641">641</a>       NativeUnixSocket.attachCloseable(fdesc, cleanup);
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>     }
+<a class="jxr_linenumber" name="L643" href="#L643">643</a> 
+<a class="jxr_linenumber" name="L644" href="#L644">644</a>     <strong class="jxr_keyword">this</strong>.receivedFileDescriptors.add(descriptors);
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>   }
+<a class="jxr_linenumber" name="L646" href="#L646">646</a> 
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>   <em class="jxr_comment">// called from native code, too (but only with null)</em>
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>   <strong class="jxr_keyword">void</strong> setOutboundFileDescriptors(<strong class="jxr_keyword">int</strong>... fds) {
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>     <strong class="jxr_keyword">this</strong>.pendingFileDescriptors = (fds == <strong class="jxr_keyword">null</strong> || fds.length == 0) ? <strong class="jxr_keyword">null</strong> : fds;
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>   }
+<a class="jxr_linenumber" name="L651" href="#L651">651</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2019 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

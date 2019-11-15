@@ -120,8 +120,8 @@ class AFUNIXSocketImpl extends SocketImpl {
 <span class="pc bpc" id="L120" title="1 of 2 branches missed.">      if (pendingAccepts.incrementAndGet() &gt;= Integer.MAX_VALUE) {</span>
 <span class="nc" id="L121">        throw new SocketException(&quot;Too many pending accepts&quot;);</span>
       } else {
-<span class="pc bpc" id="L123" title="1 of 4 branches missed.">        if (!bound || closed) {</span>
-<span class="fc" id="L124">          throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="pc bpc" id="L123" title="2 of 4 branches missed.">        if (!bound || closed) {</span>
+<span class="nc" id="L124">          throw new SocketException(&quot;Socket is closed&quot;);</span>
         }
 
 <span class="fc" id="L127">        NativeUnixSocket.accept(socketAddress.getBytes(), fdesc, si.fd, inode, this.timeout);</span>
@@ -352,7 +352,7 @@ class AFUNIXSocketImpl extends SocketImpl {
 
     @Override
     public void write(int oneByte) throws IOException {
-<span class="fc" id="L355">      final byte[] buf1 = new byte[] {(byte) oneByte};</span>
+<span class="fc" id="L355">      final byte[] buf1 = {(byte) oneByte};</span>
 <span class="fc" id="L356">      write(buf1, 0, 1);</span>
 <span class="fc" id="L357">    }</span>
 
@@ -621,31 +621,32 @@ class AFUNIXSocketImpl extends SocketImpl {
 <span class="pc bpc" id="L621" title="2 of 4 branches missed.">    if (fds == null || fds.length == 0) {</span>
 <span class="nc" id="L622">      return;</span>
     }
-<span class="fc" id="L624">    FileDescriptor[] descriptors = new FileDescriptor[fds.length];</span>
-<span class="fc bfc" id="L625" title="All 2 branches covered.">    for (int i = 0, n = fds.length; i &lt; n; i++) {</span>
-<span class="fc" id="L626">      FileDescriptor fdesc = new FileDescriptor();</span>
-<span class="fc" id="L627">      NativeUnixSocket.initFD(fdesc, fds[i]);</span>
-<span class="fc" id="L628">      descriptors[i] = fdesc;</span>
+<span class="fc" id="L624">    final int fdsLength = fds.length;</span>
+<span class="fc" id="L625">    FileDescriptor[] descriptors = new FileDescriptor[fdsLength];</span>
+<span class="fc bfc" id="L626" title="All 2 branches covered.">    for (int i = 0; i &lt; fdsLength; i++) {</span>
+<span class="fc" id="L627">      FileDescriptor fdesc = new FileDescriptor();</span>
+<span class="fc" id="L628">      NativeUnixSocket.initFD(fdesc, fds[i]);</span>
+<span class="fc" id="L629">      descriptors[i] = fdesc;</span>
 
-<span class="fc" id="L630">      closeableFileDescriptors.put(fdesc, fds[i]);</span>
+<span class="fc" id="L631">      closeableFileDescriptors.put(fdesc, fds[i]);</span>
 
       @SuppressWarnings(&quot;resource&quot;)
-<span class="fc" id="L633">      final Closeable cleanup = new Closeable() {</span>
+<span class="fc" id="L634">      final Closeable cleanup = new Closeable() {</span>
 
         @Override
         public void close() throws IOException {
-<span class="fc" id="L637">          closeableFileDescriptors.remove(fdesc);</span>
-<span class="fc" id="L638">        }</span>
+<span class="fc" id="L638">          closeableFileDescriptors.remove(fdesc);</span>
+<span class="fc" id="L639">        }</span>
       };
-<span class="fc" id="L640">      NativeUnixSocket.attachCloseable(fdesc, cleanup);</span>
+<span class="fc" id="L641">      NativeUnixSocket.attachCloseable(fdesc, cleanup);</span>
     }
 
-<span class="fc" id="L643">    this.receivedFileDescriptors.add(descriptors);</span>
-<span class="fc" id="L644">  }</span>
+<span class="fc" id="L644">    this.receivedFileDescriptors.add(descriptors);</span>
+<span class="fc" id="L645">  }</span>
 
   // called from native code, too (but only with null)
   void setOutboundFileDescriptors(int... fds) {
-<span class="pc bpc" id="L648" title="1 of 4 branches missed.">    this.pendingFileDescriptors = (fds == null || fds.length == 0) ? null : fds;</span>
-<span class="fc" id="L649">  }</span>
+<span class="pc bpc" id="L649" title="1 of 4 branches missed.">    this.pendingFileDescriptors = (fds == null || fds.length == 0) ? null : fds;</span>
+<span class="fc" id="L650">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

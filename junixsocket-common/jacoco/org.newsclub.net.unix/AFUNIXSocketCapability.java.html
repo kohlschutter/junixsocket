@@ -34,16 +34,19 @@ package org.newsclub.net.unix;
 <span class="fc" id="L34">  CAPABILITY_ANCILLARY_MESSAGES(1), //</span>
 
   /** Socket supports passing file descriptors via ancillary messages. */
-<span class="fc" id="L37">  CAPABILITY_FILE_DESCRIPTORS(2);</span>
+<span class="fc" id="L37">  CAPABILITY_FILE_DESCRIPTORS(2), //</span>
+
+  /** Socket addressing supports the abstract namespace (Linux/Windows). */
+<span class="fc" id="L40">  CAPABILITY_ABSTRACT_NAMESPACE(3);</span>
 
   private final int bitmask;
 
-<span class="fc" id="L41">  AFUNIXSocketCapability(int bit) {</span>
-<span class="fc" id="L42">    this.bitmask = 1 &lt;&lt; bit;</span>
-<span class="fc" id="L43">  }</span>
+<span class="fc" id="L44">  AFUNIXSocketCapability(int bit) {</span>
+<span class="fc" id="L45">    this.bitmask = 1 &lt;&lt; bit;</span>
+<span class="fc" id="L46">  }</span>
 
   int getBitmask() {
-<span class="fc" id="L46">    return bitmask;</span>
+<span class="fc" id="L49">    return bitmask;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

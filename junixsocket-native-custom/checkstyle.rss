@@ -19,13 +19,13 @@ under the License.
 -->
 <rss version="0.91">
   <channel>
-    <title>junixsocket-native-common - Checkstyle report</title>
+    <title>junixsocket-native-custom - Checkstyle report</title>
     <link>https://github.com/kohlschutter/junixsocket/junixsocket-native-custom</link>
-    <description>junixsocket-native-common - Checkstyle report</description>
+    <description>junixsocket-native-custom - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2009 - 2019 Kohlschütter Search Intelligence</copyright>
     <item>
-      <title>File: 0,
+      <title>File: 2,
              Errors: 0,
              Warnings: 0,
              Infos: 0
@@ -44,6 +44,34 @@ under the License.
             </tr>
           </thead>
           <tbody>
+                          <tr>
+                <td>
+                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-native-custom/checkstyle.html#org.newsclub.lib.junixsocket.custom.NarMetadata.java">org/newsclub/lib/junixsocket/custom/NarMetadata.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-native-custom/checkstyle.html#org.newsclub.lib.junixsocket.custom.package-info.java">org/newsclub/lib/junixsocket/custom/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
                       </tbody>
         </table>
         

@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2009 - 2019 Kohlschütter Search Intelligence</copyright>
     <item>
-      <title>File: 5,
+      <title>File: 7,
              Errors: 0,
              Warnings: 0,
              Infos: 0
@@ -47,6 +47,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.DefaultRMIClientSocketFactory.java">org/newsclub/net/unix/rmi/DefaultRMIClientSocketFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.PortAssignerImpl.java">org/newsclub/net/unix/rmi/PortAssignerImpl.java</a>
                 </td>
                 <td>
                   0
@@ -89,6 +103,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXNaming.java">org/newsclub/net/unix/rmi/AFUNIXNaming.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.PortAssigner.java">org/newsclub/net/unix/rmi/PortAssigner.java</a>
                 </td>
                 <td>
                   0

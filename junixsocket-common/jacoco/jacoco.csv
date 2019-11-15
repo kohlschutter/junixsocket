@@ -6,8 +6,8 @@ junixsocket-common,org.newsclub.net.unix,AFUNIXSocketFactory.SystemProperty,28,0
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketImpl.Lenient,14,13,3,1,6,7,3,2,1,2
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketFactory.URIScheme,109,0,18,0,25,0,13,0,4,0
 junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader.ClasspathLibraryCandidate,28,71,2,4,6,19,3,4,1,3
-junixsocket-common,org.newsclub.net.unix,AFUNIXSocketImpl,350,563,43,54,75,153,46,40,11,24
-junixsocket-common,org.newsclub.net.unix,AFUNIXSocketAddress,121,33,7,3,17,11,9,5,5,4
+junixsocket-common,org.newsclub.net.unix,AFUNIXSocketImpl,355,557,44,53,76,153,47,39,11,24
+junixsocket-common,org.newsclub.net.unix,AFUNIXSocketAddress,120,33,7,3,18,11,9,5,5,4
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketFactory.DefaultSocketHostnameSocketFactory,8,0,0,0,2,0,2,0,2,0
 junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader,130,381,17,19,30,68,14,15,0,11
 junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader.LibraryCandidate,15,6,0,0,1,3,1,1,1,1
@@ -16,6 +16,6 @@ junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader.StandardLibraryCand
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketFactory,114,0,22,0,27,0,19,0,8,0
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketCredentials,217,65,28,8,37,19,25,4,7,4
 junixsocket-common,org.newsclub.net.unix,NativeUnixSocket,18,32,0,2,7,11,2,4,2,3
-junixsocket-common,org.newsclub.net.unix,AFUNIXSocket,104,171,19,17,23,49,18,22,4,18
-junixsocket-common,org.newsclub.net.unix,AFUNIXSocketCapability,0,50,0,0,0,8,0,3,0,3
+junixsocket-common,org.newsclub.net.unix,AFUNIXSocket,104,170,19,17,23,50,18,22,4,18
+junixsocket-common,org.newsclub.net.unix,AFUNIXSocketCapability,0,61,0,0,0,9,0,3,0,3
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketFactory.FactoryArg,32,0,0,0,9,0,3,0,3,0
