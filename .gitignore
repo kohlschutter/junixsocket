@@ -13,3 +13,4 @@ pom.xml.releaseBackup
 .pmd
 .pmdruleset.xml
 interpolated-pom.xml
+.eclipse-pmd
