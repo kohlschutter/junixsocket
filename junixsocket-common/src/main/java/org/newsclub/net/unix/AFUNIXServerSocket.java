@@ -28,6 +28,10 @@ import java.net.SocketException;
  * @author Christian Kohlschütter
  */
 public class AFUNIXServerSocket extends ServerSocket {
+  private enum Mode {
+    DEFAULT, RMI;
+  };
+
   private final AFUNIXSocketImpl implementation;
   private AFUNIXSocketAddress boundEndpoint;
 
@@ -36,11 +40,15 @@ public class AFUNIXServerSocket extends ServerSocket {
    * 
    * @throws IOException if the operation fails.
    */
-  protected AFUNIXServerSocket() throws IOException {
+  AFUNIXServerSocket() throws IOException {
+    this(Mode.DEFAULT);
+  }
+
+  AFUNIXServerSocket(Mode mode) throws IOException {
     super();
     setReuseAddress(true);
 
-    this.implementation = new AFUNIXSocketImpl();
+    this.implementation = (mode == Mode.RMI) ? new AFUNIXSocketImpl.ForRMI() : new AFUNIXSocketImpl();
     NativeUnixSocket.initServerImpl(this, implementation);
 
     NativeUnixSocket.setCreatedServer(this);
@@ -53,8 +61,7 @@ public class AFUNIXServerSocket extends ServerSocket {
    * @throws IOException if the operation fails.
    */
   public static AFUNIXServerSocket newInstance() throws IOException {
-    AFUNIXServerSocket instance = new AFUNIXServerSocket();
-    return instance;
+    return new AFUNIXServerSocket(Mode.DEFAULT);
   }
 
   /**
@@ -105,11 +112,15 @@ public class AFUNIXServerSocket extends ServerSocket {
     if (isClosed()) {
       throw new SocketException("Socket is closed");
     }
-    AFUNIXSocket as = AFUNIXSocket.newInstance();
+    AFUNIXSocket as = newSocketInstance();
     implementation.accept(as.impl);
     as.addr = boundEndpoint;
     NativeUnixSocket.setConnected(as);
     return as;
+  }
+
+  protected AFUNIXSocket newSocketInstance() throws IOException {
+    return AFUNIXSocket.newInstance();
   }
 
   @Override
@@ -137,5 +148,26 @@ public class AFUNIXServerSocket extends ServerSocket {
    */
   public static boolean isSupported() {
     return NativeUnixSocket.isLoaded();
+  }
+
+  public static class ForRMI extends AFUNIXServerSocket {
+    protected ForRMI() throws IOException {
+      super(Mode.RMI);
+    }
+
+    public static AFUNIXServerSocket newInstance() throws IOException {
+      return new AFUNIXServerSocket(Mode.RMI);
+    }
+
+    public static AFUNIXServerSocket bindOn(final AFUNIXSocketAddress addr) throws IOException {
+      AFUNIXServerSocket socket = new AFUNIXServerSocket.ForRMI();
+      socket.bind(addr);
+      return socket;
+    }
+
+    @Override
+    protected AFUNIXSocket newSocketInstance() throws IOException {
+      return AFUNIXSocket.newInstanceForRMI();
+    }
   }
 }

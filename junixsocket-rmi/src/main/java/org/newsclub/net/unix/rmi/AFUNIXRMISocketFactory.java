@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix.rmi;
 
+import java.io.Closeable;
 import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +39,7 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
  * 
  * @author Christian Kohlschütter
  */
-public class AFUNIXRMISocketFactory extends RMISocketFactory implements Externalizable {
+public class AFUNIXRMISocketFactory extends RMISocketFactory implements Externalizable, Closeable {
   static final String DEFAULT_SOCKET_FILE_PREFIX = "";
   static final String DEFAULT_SOCKET_FILE_SUFFIX = ".rmi";
 
@@ -54,7 +55,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
 
   private String socketSuffix;
 
-  private PortAssigner generator = null;
+  private PortAssigner portAssigner = null;
 
   /**
    * Constructor required per definition.
@@ -112,7 +113,10 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     }
 
     final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(getFile(port), port);
-    return AFUNIXSocket.connectTo(addr);
+
+    final AFUNIXSocket socket = AFUNIXSocket.newInstanceForRMI();
+    socket.connect(addr);
+    return socket;
   }
 
   public File getSocketDir() {
@@ -127,29 +131,40 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     }
   }
 
-  public void close() {
+  void deleteSocketFile(int port) {
+    if (naming.getRegistryPort() == AFUNIXRMIPorts.PLAIN_FILE_SOCKET) {
+      socketDir.delete();
+    } else {
+      new File(socketDir, socketPrefix + port + socketSuffix).delete();
+    }
+  }
+
+  @Override
+  public void close() throws IOException {
+    if (portAssigner != null) {
+      portAssigner.openPorts().forEach((int port) -> {
+        deleteSocketFile(port);
+      });
+    }
+  }
+
+  private PortAssigner getPortAssigner() throws IOException {
+    if (portAssigner == null) {
+      try {
+        portAssigner = naming.getPortAssigner();
+      } catch (NotBoundException e) {
+        throw (IOException) new IOException(e.getMessage()).initCause(e);
+      }
+    }
+    return portAssigner;
   }
 
   protected int newPort() throws IOException {
-    if (generator == null) {
-      try {
-        generator = naming.getPortAssigner();
-      } catch (NotBoundException e) {
-        throw (IOException) new IOException(e.getMessage()).initCause(e);
-      }
-    }
-    return generator.newPort();
+    return getPortAssigner().newPort();
   }
 
   protected void returnPort(int port) throws IOException {
-    if (generator == null) {
-      try {
-        generator = naming.getPortAssigner();
-      } catch (NotBoundException e) {
-        throw (IOException) new IOException(e.getMessage()).initCause(e);
-      }
-    }
-    generator.returnPort(port);
+    getPortAssigner().returnPort(port);
   }
 
   @Override
@@ -168,7 +183,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     }
 
     final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(getFile(port), port);
-    return AFUNIXServerSocket.bindOn(addr);
+    return AFUNIXServerSocket.ForRMI.bindOn(addr);
   }
 
   @Override
@@ -196,7 +211,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     out.writeUTF(socketSuffix);
   }
 
-  private final class AnonymousServerSocket extends AFUNIXServerSocket {
+  private final class AnonymousServerSocket extends AFUNIXServerSocket.ForRMI {
     private final int returnPort;
 
     protected AnonymousServerSocket(int returnPort) throws IOException {

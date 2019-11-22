@@ -20,13 +20,14 @@ package org.newsclub.net.unix.rmi;
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 /**
  * A very simple implementation of a {@link PortAssigner}.
  * 
  * @author Christian Kohlschütter
  */
-class PortAssignerImpl implements PortAssigner {
+final class PortAssignerImpl implements PortAssigner {
   private final BitSet ports = new BitSet(1000);
 
   public PortAssignerImpl() {
@@ -62,5 +63,12 @@ class PortAssignerImpl implements PortAssigner {
   @Override
   public synchronized void returnPort(int port) throws IOException {
     ports.clear(port - AFUNIXRMIPorts.ANONYMOUS_PORT_BASE);
+  }
+
+  @Override
+  public IntStream openPorts() throws IOException {
+    return ports.stream().map((int v) -> {
+      return v + AFUNIXRMIPorts.ANONYMOUS_PORT_BASE;
+    });
   }
 }

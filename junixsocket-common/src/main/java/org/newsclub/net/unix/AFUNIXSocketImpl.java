@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 
  * @author Christian Kohlschütter
  */
-class AFUNIXSocketImpl extends SocketImpl {
+class AFUNIXSocketImpl extends SocketImpl implements AncillaryFileDescriptors.Support {
   private static final int SHUT_RD = 0;
   private static final int SHUT_WR = 1;
   private static final int SHUT_RD_WR = 2;
@@ -61,8 +61,8 @@ class AFUNIXSocketImpl extends SocketImpl {
   private volatile boolean closedInputStream = false;
   private volatile boolean closedOutputStream = false;
 
-  private final AFUNIXInputStream in = new AFUNIXInputStream();
-  private final AFUNIXOutputStream out = new AFUNIXOutputStream();
+  private final AFUNIXInputStream in = newInputStream();
+  private final AFUNIXOutputStream out = newOutputStream();
 
   private final AtomicInteger pendingAccepts = new AtomicInteger(0);
 
@@ -81,6 +81,14 @@ class AFUNIXSocketImpl extends SocketImpl {
   protected AFUNIXSocketImpl() {
     super();
     this.fd = new FileDescriptor();
+  }
+
+  protected AFUNIXInputStream newInputStream() {
+    return new AFUNIXInputStream();
+  }
+
+  protected AFUNIXOutputStream newOutputStream() {
+    return new AFUNIXOutputStream();
   }
 
   FileDescriptor getFD() {
@@ -294,7 +302,7 @@ class AFUNIXSocketImpl extends SocketImpl {
         pendingFileDescriptors);
   }
 
-  private final class AFUNIXInputStream extends InputStream {
+  private class AFUNIXInputStream extends InputStream {
     private volatile boolean streamClosed = false;
 
     @Override
@@ -347,7 +355,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
   }
 
-  private final class AFUNIXOutputStream extends OutputStream {
+  private class AFUNIXOutputStream extends OutputStream {
     private volatile boolean streamClosed = false;
 
     @Override
@@ -575,6 +583,39 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
   }
 
+  /**
+   * Special implementation to support ancillary file descriptors over RMI.
+   * 
+   * @author Christian Kohlschütter
+   */
+  static final class ForRMI extends AFUNIXSocketImpl {
+    @Override
+    protected AFUNIXInputStream newInputStream() {
+      return new AFUNIXRMIInputStream();
+    }
+
+    @Override
+    protected AFUNIXOutputStream newOutputStream() {
+      return new AFUNIXRMIOutputStream();
+    }
+  }
+
+  final class AFUNIXRMIInputStream extends AFUNIXInputStream {
+    @Override
+    public int available() throws IOException {
+      AncillaryFileDescriptors.setSupportRef(AFUNIXSocketImpl.this);
+      return super.available();
+    }
+  }
+
+  final class AFUNIXRMIOutputStream extends AFUNIXOutputStream {
+    @Override
+    public void flush() throws IOException {
+      super.flush();
+      AncillaryFileDescriptors.setSupportRef(AFUNIXSocketImpl.this);
+    }
+  }
+
   AFUNIXSocketCredentials getPeerCredentials() throws IOException {
     return NativeUnixSocket.peerCredentials(fd, new AFUNIXSocketCredentials());
   }
@@ -587,7 +628,18 @@ class AFUNIXSocketImpl extends SocketImpl {
     this.ancillaryReceiveBuffer = ByteBuffer.allocateDirect(size);
   }
 
-  FileDescriptor[] getReceivedFileDescriptors() {
+  @Override
+  public final void ensureAncillaryReceiveBufferSize(int minSize) {
+    if (minSize <= 0) {
+      return;
+    }
+    if (ancillaryReceiveBuffer.capacity() < minSize) {
+      setAncillaryReceiveBufferSize(minSize);
+    }
+  }
+
+  @Override
+  public final FileDescriptor[] getReceivedFileDescriptors() {
     if (receivedFileDescriptors.isEmpty()) {
       return null;
     }
@@ -612,12 +664,13 @@ class AFUNIXSocketImpl extends SocketImpl {
     return oneArray;
   }
 
-  void clearReceivedFileDescriptors() {
+  @Override
+  public final void clearReceivedFileDescriptors() {
     receivedFileDescriptors.clear();
   }
 
   // called from native code
-  void receiveFileDescriptors(int[] fds) throws IOException {
+  final void receiveFileDescriptors(int[] fds) throws IOException {
     if (fds == null || fds.length == 0) {
       return;
     }
@@ -645,7 +698,22 @@ class AFUNIXSocketImpl extends SocketImpl {
   }
 
   // called from native code, too (but only with null)
-  void setOutboundFileDescriptors(int... fds) {
+  final void setOutboundFileDescriptors(int... fds) {
     this.pendingFileDescriptors = (fds == null || fds.length == 0) ? null : fds;
+  }
+
+  @Override
+  public final void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
+    if (fdescs == null || fdescs.length == 0) {
+      this.setOutboundFileDescriptors((int[]) null);
+    } else {
+      final int numFdescs = fdescs.length;
+      final int[] fds = new int[numFdescs];
+      for (int i = 0; i < numFdescs; i++) {
+        FileDescriptor fdesc = fdescs[i];
+        fds[i] = NativeUnixSocket.getFD(fdesc);
+      }
+      this.setOutboundFileDescriptors(fds);
+    }
   }
 }

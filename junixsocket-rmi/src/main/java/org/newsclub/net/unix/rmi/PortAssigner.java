@@ -19,6 +19,7 @@ package org.newsclub.net.unix.rmi;
 
 import java.io.IOException;
 import java.rmi.Remote;
+import java.util.stream.IntStream;
 
 /**
  * The {@link PortAssigner} assigns and keeps track of anonymous ports. This feature is to be used
@@ -44,4 +45,12 @@ public interface PortAssigner extends Remote {
    * @throws IOException if the operation fails.
    */
   void returnPort(int port) throws IOException;
+
+  /**
+   * Returns a stream of open ports.
+   * 
+   * @return A sequence of open ports.
+   * @throws IOException
+   */
+  IntStream openPorts() throws IOException;
 }

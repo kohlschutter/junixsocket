@@ -52,4 +52,8 @@ final class AFUNIXRMIPorts {
    * points to a socket <em>file</em>, not a directory.
    */
   static final int PLAIN_FILE_SOCKET = Integer.MAX_VALUE;
+
+  private AFUNIXRMIPorts() {
+    throw new UnsupportedOperationException("No instances");
+  }
 }

@@ -52,12 +52,14 @@ public final class AFUNIXNaming {
   private PortAssigner portAssigner = null;
   private final File registrySocketDir;
   private final int registryPort;
+  private final int portAssignerPort;
   private AFUNIXRMISocketFactory socketFactory;
 
   private AFUNIXNaming(final File socketDir, final int port, final String socketPrefix,
       final String socketSuffix) throws IOException {
     this.registrySocketDir = socketDir;
     this.registryPort = port;
+    this.portAssignerPort = AFUNIXRMIPorts.PORT_ASSIGNER_PORT;
     this.socketFactory = new AFUNIXRMISocketFactory(this, socketDir, null, null, socketPrefix,
         socketSuffix);
   }
@@ -163,7 +165,7 @@ public final class AFUNIXNaming {
     return registryPort;
   }
 
-  public PortAssigner getPortAssigner() throws RemoteException, NotBoundException {
+  public synchronized PortAssigner getPortAssigner() throws RemoteException, NotBoundException {
     if (portAssigner != null) {
       return portAssigner;
     }
@@ -228,6 +230,8 @@ public final class AFUNIXNaming {
     }
     portAssigner = null;
 
+    socketFactory.deleteSocketFile(registryPort);
+    socketFactory.deleteSocketFile(portAssignerPort);
     socketFactory.close();
     socketFactory = null;
   }
@@ -280,10 +284,8 @@ public final class AFUNIXNaming {
     }
     this.registry = LocateRegistry.createRegistry(registryPort, socketFactory, socketFactory);
     final PortAssigner ass = new PortAssignerImpl();
-    UnicastRemoteObject.exportObject(ass, AFUNIXRMIPorts.PORT_ASSIGNER_PORT, socketFactory,
-        socketFactory);
+    UnicastRemoteObject.exportObject(ass, portAssignerPort, socketFactory, socketFactory);
     rebindPortAssigner(ass);
     return registry;
   }
-
 }
