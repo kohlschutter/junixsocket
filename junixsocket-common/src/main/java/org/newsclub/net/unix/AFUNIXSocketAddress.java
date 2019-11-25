@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.charset.Charset;
@@ -87,7 +88,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @see AFUNIXSocketAddress#inAbstractNamespace(String,int)
    */
   public AFUNIXSocketAddress(final byte[] socketAddress, int port) throws IOException {
-    super(0);
+    super(InetAddress.getLoopbackAddress(), 0);
     if (port != 0) {
       NativeUnixSocket.setPort1(this, port);
     }

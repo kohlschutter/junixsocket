@@ -153,6 +153,8 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
     si.socketAddress = socketAddress;
     si.connected = true;
+    si.port = socketAddress.getPort();
+    si.address = socketAddress.getAddress();
   }
 
   @Override
@@ -171,6 +173,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
 
     this.socketAddress = (AFUNIXSocketAddress) addr;
+    this.address = socketAddress.getAddress();
 
     this.inode = NativeUnixSocket.bind(socketAddress.getBytes(), fd, options);
     validFdOrException();
