@@ -20,7 +20,9 @@ package org.newsclub.net.unix.demo.rmi;
 import java.rmi.registry.Registry;
 
 import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
+import org.newsclub.net.unix.demo.rmi.services.World;
 import org.newsclub.net.unix.rmi.AFUNIXNaming;
+import org.newsclub.net.unix.rmi.RemoteObjectUtil;
 
 /**
  * A simple RMI client. Locates the RMI registry via AF_UNIX sockets and calls
@@ -28,7 +30,7 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
  * 
  * @author Christian Kohlschütter
  */
-public final class SimpleRMIClient {
+public final class SimpleRMIClientActingAsServer {
   public static void main(String[] args) throws Exception {
     AFUNIXNaming naming = AFUNIXNaming.getInstance();
 
@@ -39,7 +41,27 @@ public final class SimpleRMIClient {
     HelloWorld obj = (HelloWorld) registry.lookup("helloWorld");
     System.out.println("HelloWorld instance: " + obj);
     System.out.println();
+
+    World world = new WorldImpl("everybody");
+    RemoteObjectUtil.exportAndRebind(naming, "world", world);
+    System.out.println("Exporting our own World instance");
+
     System.out.println("Calling HelloWorld...");
-    System.out.println(obj.hello() + " " + obj.world());
+    System.out.println(obj.hello() + " " + obj.world() + "!");
+
+    /**
+     * Uncommenting the line below keeps this instance running.
+     * 
+     * Try it and run SimpleRMIClient to see the difference.
+     */
+    RemoteObjectUtil.unexportAndUnbind(naming, "world", world);
+
+    /**
+     * Also try to remotely shut down the registry.
+     * 
+     * This will not succeed if the server set {@code naming.setRemoteShutdownAllowed(false)}. See
+     * {@link SimpleRMIServer}
+     */
+    // naming.shutdownRegistry();
   }
 }

@@ -21,18 +21,18 @@ import java.io.IOException;
 import java.rmi.Remote;
 
 /**
- * 
+ * A test service for {@link RemoteFileDescriptorTest}.
  * 
  * @author Christian Kohlschütter
  */
 public interface RemoteFileDescriptorTestService extends Remote {
   RemoteFileDescriptor stdout() throws IOException;
 
-  RemoteFileDescriptor.FileInput input() throws IOException;
+  RemoteFileInput input() throws IOException;
 
-  RemoteFileDescriptor.FileInput input(long skipBytes) throws IOException;
+  RemoteFileInput input(long skipBytes) throws IOException;
 
-  RemoteFileDescriptor.FileOutput output() throws IOException;
+  RemoteFileOutput output() throws IOException;
 
   void verifyContents(byte[] expectedData) throws IOException;
 
@@ -41,6 +41,6 @@ public interface RemoteFileDescriptorTestService extends Remote {
   void touchFile() throws IOException;
 
   void deleteFile() throws IOException;
-  
+
   NaiveFileInputStreamRemote naiveInputStreamRemote() throws IOException;
 }

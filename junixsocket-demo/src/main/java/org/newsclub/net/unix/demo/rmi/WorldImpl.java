@@ -15,30 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.newsclub.net.unix.demo.rmi.services;
+package org.newsclub.net.unix.demo.rmi;
 
-import java.io.IOException;
-import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-/**
- * A very simple "hello world" service.
- * 
- * @author Christian Kohlschütter
- */
-public interface HelloWorld extends Remote {
-  /**
-   * Returns "Hello".
-   * 
-   * @return "Hello"
-   * @throws IOException if the operation fails.
-   */
-  String hello() throws IOException;
+import org.newsclub.net.unix.demo.rmi.services.World;
 
-  /**
-   * Returns "World" (or something else?).
-   * 
-   * @return "World" (usually)
-   * @throws IOException if the operation fails.
-   */
-  String world() throws IOException;
+public class WorldImpl implements World {
+
+  private final String text;
+
+  public WorldImpl(String text) {
+    this.text = text;
+  }
+
+  @Override
+  public String world() throws RemoteException {
+    return text;
+  }
 }

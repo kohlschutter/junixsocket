@@ -17,28 +17,9 @@
  */
 package org.newsclub.net.unix.demo.rmi.services;
 
-import java.io.IOException;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-/**
- * A very simple "hello world" service.
- * 
- * @author Christian Kohlschütter
- */
-public interface HelloWorld extends Remote {
-  /**
-   * Returns "Hello".
-   * 
-   * @return "Hello"
-   * @throws IOException if the operation fails.
-   */
-  String hello() throws IOException;
-
-  /**
-   * Returns "World" (or something else?).
-   * 
-   * @return "World" (usually)
-   * @throws IOException if the operation fails.
-   */
-  String world() throws IOException;
+public interface World extends Remote {
+  String world() throws RemoteException;
 }

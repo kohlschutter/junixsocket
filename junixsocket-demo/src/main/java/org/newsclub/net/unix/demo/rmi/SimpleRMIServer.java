@@ -17,13 +17,9 @@
  */
 package org.newsclub.net.unix.demo.rmi;
 
-import java.rmi.Remote;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.concurrent.Semaphore;
-
 import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
 import org.newsclub.net.unix.rmi.AFUNIXNaming;
+import org.newsclub.net.unix.rmi.RemoteObjectUtil;
 
 /**
  * A very simple RMI server. Provides a registry and the implementation of the {@link HelloWorld}
@@ -34,22 +30,14 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
 public final class SimpleRMIServer {
   public static void main(String[] args) throws Exception {
     AFUNIXNaming naming = AFUNIXNaming.getInstance();
-    System.out.println("Socket directory: " + naming.getSocketFactory().getSocketDir());
+    naming.createRegistry();
+    // naming.setRemoteShutdownAllowed(false);
+    System.out.println("Using " + naming.getSocketFactory());
 
-    System.out.println("Creating registry...");
-    final Registry registry = naming.createRegistry();
-    System.out.println(registry);
-    System.out.println();
-
-    HelloWorldImpl obj = new HelloWorldImpl();
-
+    HelloWorldImpl obj = new HelloWorldImpl(naming);
     System.out.println("Binding " + obj.toString() + " to \"helloWorld\"...");
-    final Remote remote = UnicastRemoteObject.exportObject(obj, 0, naming.getSocketFactory(), naming
-        .getSocketFactory());
-    registry.bind("helloWorld", remote);
+    RemoteObjectUtil.exportAndBind(naming, "helloWorld", obj);
 
     System.out.println("Ready to accept connections!");
-
-    new Semaphore(0).acquire(); // keep running
   }
 }

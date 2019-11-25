@@ -22,33 +22,31 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.rmi.server.RMISocketFactory;
-import java.rmi.server.UnicastRemoteObject;
 
 import org.apache.log4j.lf5.util.StreamUtils;
 
 public final class NaiveFileInputStreamRemoteImpl extends FileInputStream implements
     NaiveFileInputStreamRemote {
-  private final RemoteFileDescriptor.FileInput rfd;
+  private final RemoteFileInput rfd;
 
-  public NaiveFileInputStreamRemoteImpl(RMISocketFactory socketFactory, File file)
+  public NaiveFileInputStreamRemoteImpl(AFUNIXRMISocketFactory socketFactory, File file)
       throws IOException {
     super(file);
-    this.rfd = new RemoteFileDescriptor.FileInput(this);
+    this.rfd = new RemoteFileInput(socketFactory, this);
 
-    UnicastRemoteObject.exportObject(this, 0, socketFactory, socketFactory);
+    RemoteObjectUtil.exportObject(this, socketFactory);
   }
 
-  public NaiveFileInputStreamRemoteImpl(RMISocketFactory socketFactory, FileDescriptor fd)
+  public NaiveFileInputStreamRemoteImpl(AFUNIXRMISocketFactory socketFactory, FileDescriptor fd)
       throws IOException {
     super(fd);
-    this.rfd = new RemoteFileDescriptor.FileInput(this);
+    this.rfd = new RemoteFileInput(socketFactory, this);
 
-    UnicastRemoteObject.exportObject(this, 0, socketFactory, socketFactory);
+    RemoteObjectUtil.exportObject(this, socketFactory);
   }
 
   @Override
-  public RemoteFileDescriptor.FileInput getRemoteFileDescriptor() {
+  public RemoteFileInput getRemoteFileDescriptor() {
     return rfd;
   }
 

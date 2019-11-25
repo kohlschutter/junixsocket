@@ -18,8 +18,11 @@
 package org.newsclub.net.unix.demo.rmi;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
 
 import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
+import org.newsclub.net.unix.demo.rmi.services.World;
+import org.newsclub.net.unix.rmi.AFUNIXNaming;
 
 /**
  * The implementation of the very simple {@link HelloWorld} service.
@@ -27,9 +30,25 @@ import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
  * @author Christian Kohlschütter
  */
 public class HelloWorldImpl implements HelloWorld {
+
+  private final AFUNIXNaming naming;
+
+  public HelloWorldImpl(AFUNIXNaming naming) {
+    this.naming = naming;
+  }
+
   @Override
   public String hello() throws IOException {
     System.out.println("Received call to hello()");
-    return "Hello world";
+    return "Hello";
+  }
+
+  @Override
+  public String world() throws IOException {
+    try {
+      return ((World) naming.lookup("world")).world();
+    } catch (NotBoundException e) {
+      return "world";
+    }
   }
 }

@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 
  * @author Christian Kohlschütter
  */
-class AFUNIXSocketImpl extends SocketImpl implements AncillaryFileDescriptors.Support {
+class AFUNIXSocketImpl extends SocketImpl {
   private static final int SHUT_RD = 0;
   private static final int SHUT_WR = 1;
   private static final int SHUT_RD_WR = 2;
@@ -81,6 +81,7 @@ class AFUNIXSocketImpl extends SocketImpl implements AncillaryFileDescriptors.Su
   protected AFUNIXSocketImpl() {
     super();
     this.fd = new FileDescriptor();
+    this.address = InetAddress.getLoopbackAddress();
   }
 
   protected AFUNIXInputStream newInputStream() {
@@ -304,6 +305,7 @@ class AFUNIXSocketImpl extends SocketImpl implements AncillaryFileDescriptors.Su
 
   private class AFUNIXInputStream extends InputStream {
     private volatile boolean streamClosed = false;
+    private boolean eofReached = false;
 
     @Override
     public int read(byte[] buf, int off, int len) throws IOException {
@@ -323,9 +325,13 @@ class AFUNIXSocketImpl extends SocketImpl implements AncillaryFileDescriptors.Su
 
     @Override
     public int read() throws IOException {
+      if (eofReached) {
+        return -1;
+      }
       final byte[] buf1 = new byte[1];
       final int numRead = read(buf1, 0, 1);
       if (numRead <= 0) {
+        eofReached = true;
         return -1;
       } else {
         return buf1[0] & 0xFF;
@@ -583,39 +589,6 @@ class AFUNIXSocketImpl extends SocketImpl implements AncillaryFileDescriptors.Su
     }
   }
 
-  /**
-   * Special implementation to support ancillary file descriptors over RMI.
-   * 
-   * @author Christian Kohlschütter
-   */
-  static final class ForRMI extends AFUNIXSocketImpl {
-    @Override
-    protected AFUNIXInputStream newInputStream() {
-      return new AFUNIXRMIInputStream();
-    }
-
-    @Override
-    protected AFUNIXOutputStream newOutputStream() {
-      return new AFUNIXRMIOutputStream();
-    }
-  }
-
-  final class AFUNIXRMIInputStream extends AFUNIXInputStream {
-    @Override
-    public int available() throws IOException {
-      AncillaryFileDescriptors.setSupportRef(AFUNIXSocketImpl.this);
-      return super.available();
-    }
-  }
-
-  final class AFUNIXRMIOutputStream extends AFUNIXOutputStream {
-    @Override
-    public void flush() throws IOException {
-      super.flush();
-      AncillaryFileDescriptors.setSupportRef(AFUNIXSocketImpl.this);
-    }
-  }
-
   AFUNIXSocketCredentials getPeerCredentials() throws IOException {
     return NativeUnixSocket.peerCredentials(fd, new AFUNIXSocketCredentials());
   }
@@ -628,7 +601,6 @@ class AFUNIXSocketImpl extends SocketImpl implements AncillaryFileDescriptors.Su
     this.ancillaryReceiveBuffer = ByteBuffer.allocateDirect(size);
   }
 
-  @Override
   public final void ensureAncillaryReceiveBufferSize(int minSize) {
     if (minSize <= 0) {
       return;
@@ -638,7 +610,6 @@ class AFUNIXSocketImpl extends SocketImpl implements AncillaryFileDescriptors.Su
     }
   }
 
-  @Override
   public final FileDescriptor[] getReceivedFileDescriptors() {
     if (receivedFileDescriptors.isEmpty()) {
       return null;
@@ -664,7 +635,6 @@ class AFUNIXSocketImpl extends SocketImpl implements AncillaryFileDescriptors.Su
     return oneArray;
   }
 
-  @Override
   public final void clearReceivedFileDescriptors() {
     receivedFileDescriptors.clear();
   }
@@ -702,7 +672,6 @@ class AFUNIXSocketImpl extends SocketImpl implements AncillaryFileDescriptors.Su
     this.pendingFileDescriptors = (fds == null || fds.length == 0) ? null : fds;
   }
 
-  @Override
   public final void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
     if (fdescs == null || fdescs.length == 0) {
       this.setOutboundFileDescriptors((int[]) null);

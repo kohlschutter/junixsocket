@@ -18,28 +18,32 @@
 package org.newsclub.net.unix.rmi;
 
 import java.io.Closeable;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.server.RMISocketFactory;
 
-/**
- * Exposes a {@link FileInputStream}'s basic functionality over RMI.
- * 
- * As opposed to {@link RemoteFileDescriptorBase}, all data is read, then copied and serialized via
- * RMI.
- * 
- * @author Christian Kohlschütter
- * @see RemoteFileDescriptorBase for a better way.
- */
-public interface NaiveFileInputStreamRemote extends Remote, Closeable {
-  RemoteFileInput getRemoteFileDescriptor() throws RemoteException;
+public class RemoteCloseableImpl<T> implements RemoteCloseable<T> {
+  private final T remote;
 
-  int read() throws IOException;
+  public RemoteCloseableImpl(RMISocketFactory socketFactory, T obj) throws RemoteException {
+    this.remote = obj;
+    RemoteObjectUtil.exportObject(this, socketFactory);
+  }
 
-  long skip(long n) throws IOException;
+  @Override
+  public final void close() throws IOException {
+    RemoteObjectUtil.unexportObject(this);
+    doClose(remote);
+  }
 
-  int available() throws IOException;
+  protected void doClose(T obj) throws IOException {
+    if (obj instanceof Closeable) {
+      ((Closeable) obj).close();
+    }
+  }
 
-  byte[] readAllBytes() throws IOException;
+  @Override
+  public T get() throws IOException {
+    return remote;
+  }
 }

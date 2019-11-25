@@ -28,10 +28,6 @@ import java.net.SocketException;
  * @author Christian Kohlschütter
  */
 public class AFUNIXServerSocket extends ServerSocket {
-  private enum Mode {
-    DEFAULT, RMI;
-  };
-
   private final AFUNIXSocketImpl implementation;
   private AFUNIXSocketAddress boundEndpoint;
 
@@ -40,15 +36,11 @@ public class AFUNIXServerSocket extends ServerSocket {
    * 
    * @throws IOException if the operation fails.
    */
-  AFUNIXServerSocket() throws IOException {
-    this(Mode.DEFAULT);
-  }
-
-  AFUNIXServerSocket(Mode mode) throws IOException {
+  protected AFUNIXServerSocket() throws IOException {
     super();
     setReuseAddress(true);
 
-    this.implementation = (mode == Mode.RMI) ? new AFUNIXSocketImpl.ForRMI() : new AFUNIXSocketImpl();
+    this.implementation = new AFUNIXSocketImpl();
     NativeUnixSocket.initServerImpl(this, implementation);
 
     NativeUnixSocket.setCreatedServer(this);
@@ -61,7 +53,7 @@ public class AFUNIXServerSocket extends ServerSocket {
    * @throws IOException if the operation fails.
    */
   public static AFUNIXServerSocket newInstance() throws IOException {
-    return new AFUNIXServerSocket(Mode.DEFAULT);
+    return new AFUNIXServerSocket();
   }
 
   /**
@@ -150,24 +142,16 @@ public class AFUNIXServerSocket extends ServerSocket {
     return NativeUnixSocket.isLoaded();
   }
 
-  public static class ForRMI extends AFUNIXServerSocket {
-    protected ForRMI() throws IOException {
-      super(Mode.RMI);
-    }
+  @Override
+  public SocketAddress getLocalSocketAddress() {
+    return boundEndpoint;
+  }
 
-    public static AFUNIXServerSocket newInstance() throws IOException {
-      return new AFUNIXServerSocket(Mode.RMI);
+  @Override
+  public int getLocalPort() {
+    if (boundEndpoint == null) {
+      return -1;
     }
-
-    public static AFUNIXServerSocket bindOn(final AFUNIXSocketAddress addr) throws IOException {
-      AFUNIXServerSocket socket = new AFUNIXServerSocket.ForRMI();
-      socket.bind(addr);
-      return socket;
-    }
-
-    @Override
-    protected AFUNIXSocket newSocketInstance() throws IOException {
-      return AFUNIXSocket.newInstanceForRMI();
-    }
+    return boundEndpoint.getPort();
   }
 }

@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -29,7 +30,7 @@ import java.net.SocketException;
  * 
  * @author Christian Kohlschütter
  */
-public final class AFUNIXSocket extends Socket implements AncillaryFileDescriptors.Support {
+public final class AFUNIXSocket extends Socket {
   static String loadedLibrary; // set by NativeLibraryLoader
 
   private static Integer capabilities = null;
@@ -74,20 +75,6 @@ public final class AFUNIXSocket extends Socket implements AncillaryFileDescripto
   static AFUNIXSocket newInstance(AFUNIXSocketFactory factory) throws IOException {
     final AFUNIXSocketImpl impl = new AFUNIXSocketImpl.Lenient();
     AFUNIXSocket instance = new AFUNIXSocket(impl, factory);
-    instance.impl = impl;
-    return instance;
-  }
-
-  /**
-   * Returns a new {@link AFUNIXSocket} instance suitable for RMI.
-   * 
-   * @return A new instance.
-   * @throws IOException
-   * @see "org.newsclub.net.unix.rmi.AFUNIXRMISocketFactory"
-   */
-  public static AFUNIXSocket newInstanceForRMI() throws IOException {
-    final AFUNIXSocketImpl impl = new AFUNIXSocketImpl.ForRMI();
-    AFUNIXSocket instance = new AFUNIXSocket(impl, null);
     instance.impl = impl;
     return instance;
   }
@@ -232,22 +219,45 @@ public final class AFUNIXSocket extends Socket implements AncillaryFileDescripto
     impl.setAncillaryReceiveBufferSize(size);
   }
 
-  @Override
+  /**
+   * Ensures a minimum ancillary receive buffer size.
+   * 
+   * @param minSize The minimum size (in bytes).
+   */
   public void ensureAncillaryReceiveBufferSize(int minSize) {
     impl.ensureAncillaryReceiveBufferSize(minSize);
   }
 
-  @Override
+  /**
+   * Retrieves an array of incoming {@link FileDescriptor}s that were sent as ancillary messages,
+   * along with a call to {@link InputStream#read()}, etc.
+   * 
+   * NOTE: Another call to this method will not return the same file descriptors again (most likely,
+   * {@code null} will be returned).
+   * 
+   * @return The file descriptors, or {@code null} if none were available.
+   * @throws IOException if the operation fails.
+   */
   public FileDescriptor[] getReceivedFileDescriptors() throws IOException {
     return impl.getReceivedFileDescriptors();
   }
 
-  @Override
+  /**
+   * Clears the queue of incoming {@link FileDescriptor}s that were sent as ancillary messages.
+   */
   public void clearReceivedFileDescriptors() {
     impl.clearReceivedFileDescriptors();
   }
 
-  @Override
+  /**
+   * Sets a list of {@link FileDescriptor}s that should be sent as an ancillary message along with
+   * the next write.
+   * 
+   * NOTE: There can only be one set of file descriptors active until the write completes.
+   * 
+   * @param fdescs The file descriptors, or {@code null} if none.
+   * @throws IOException if the operation fails.
+   */
   public void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
     impl.setOutboundFileDescriptors(fdescs);
   }

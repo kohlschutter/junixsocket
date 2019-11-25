@@ -23,8 +23,6 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.rmi.server.RMISocketFactory;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 
 /**
@@ -35,38 +33,39 @@ import java.util.Arrays;
 public class RemoteFileDescriptorTestServiceImpl implements RemoteFileDescriptorTestService,
     Closeable {
   private File tmpFile;
-  private final RMISocketFactory socketFactory;
+  private final AFUNIXRMISocketFactory socketFactory;
 
-  public RemoteFileDescriptorTestServiceImpl(RMISocketFactory socketFactory) throws IOException {
+  public RemoteFileDescriptorTestServiceImpl(AFUNIXRMISocketFactory socketFactory)
+      throws IOException {
     this.socketFactory = socketFactory;
     this.tmpFile = File.createTempFile("FDTestService", ".tmp");
 
-    UnicastRemoteObject.exportObject(this, 0, socketFactory, socketFactory);
+    RemoteObjectUtil.exportObject(this, socketFactory);
   }
 
   @Override
   public RemoteFileDescriptor stdout() throws IOException {
-    return new RemoteFileDescriptor(FileDescriptor.out);
+    return new RemoteFileDescriptor(socketFactory, FileDescriptor.out);
   }
 
   @Override
   @SuppressWarnings("resource")
-  public RemoteFileDescriptor.FileInput input() throws IOException {
-    return new RemoteFileDescriptor.FileInput(new FileInputStream(tmpFile));
+  public RemoteFileInput input() throws IOException {
+    return new RemoteFileInput(socketFactory, new FileInputStream(tmpFile));
   }
 
   @Override
   @SuppressWarnings("resource")
-  public RemoteFileDescriptor.FileInput input(long skipBytes) throws IOException {
+  public RemoteFileInput input(long skipBytes) throws IOException {
     FileInputStream fin = new FileInputStream(tmpFile);
     fin.skip(skipBytes);
-    return new RemoteFileDescriptor.FileInput(fin);
+    return new RemoteFileInput(socketFactory, fin);
   }
 
   @Override
   @SuppressWarnings("resource")
-  public RemoteFileDescriptor.FileOutput output() throws IOException {
-    return new RemoteFileDescriptor.FileOutput(new FileOutputStream(tmpFile));
+  public RemoteFileOutput output() throws IOException {
+    return new RemoteFileOutput(socketFactory, new FileOutputStream(tmpFile));
   }
 
   @Override

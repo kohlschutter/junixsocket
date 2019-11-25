@@ -15,31 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.newsclub.net.unix.rmi;
+package org.newsclub.net.unix.demo.rmi.services;
 
-import java.io.Closeable;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.rmi.Remote;
-import java.rmi.RemoteException;
+
+import org.newsclub.net.unix.demo.rmi.fd.StreamServer;
+import org.newsclub.net.unix.rmi.RemoteCloseable;
+import org.newsclub.net.unix.rmi.RemoteFileInput;
+import org.newsclub.net.unix.rmi.RemoteFileOutput;
 
 /**
- * Exposes a {@link FileInputStream}'s basic functionality over RMI.
- * 
- * As opposed to {@link RemoteFileDescriptorBase}, all data is read, then copied and serialized via
- * RMI.
+ * The {@link StreamServer}'s RMI service.
  * 
  * @author Christian Kohlschütter
- * @see RemoteFileDescriptorBase for a better way.
+ * @see StreamServer
  */
-public interface NaiveFileInputStreamRemote extends Remote, Closeable {
-  RemoteFileInput getRemoteFileDescriptor() throws RemoteException;
+public interface StreamService extends Remote {
+  RemoteCloseable<RemoteFileInput> openForReading(File path) throws IOException;
 
-  int read() throws IOException;
-
-  long skip(long n) throws IOException;
-
-  int available() throws IOException;
-
-  byte[] readAllBytes() throws IOException;
+  RemoteCloseable<RemoteFileOutput> openForWriting(File path) throws IOException;
 }

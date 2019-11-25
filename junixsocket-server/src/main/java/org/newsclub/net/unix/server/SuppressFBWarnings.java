@@ -15,30 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.newsclub.net.unix.demo.rmi.services;
+package org.newsclub.net.unix.server;
 
-import java.io.IOException;
-import java.rmi.Remote;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-/**
- * A very simple "hello world" service.
- * 
- * @author Christian Kohlschütter
- */
-public interface HelloWorld extends Remote {
-  /**
-   * Returns "Hello".
-   * 
-   * @return "Hello"
-   * @throws IOException if the operation fails.
-   */
-  String hello() throws IOException;
-
-  /**
-   * Returns "World" (or something else?).
-   * 
-   * @return "World" (usually)
-   * @throws IOException if the operation fails.
-   */
-  String world() throws IOException;
+@Retention(RetentionPolicy.CLASS)
+@interface SuppressFBWarnings {
+  String[] value() default {};
 }

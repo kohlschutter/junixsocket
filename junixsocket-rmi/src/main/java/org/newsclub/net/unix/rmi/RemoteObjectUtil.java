@@ -21,8 +21,12 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.lang.reflect.Proxy;
+import java.net.MalformedURLException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.NoSuchObjectException;
+import java.rmi.NotBoundException;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.RemoteObject;
 import java.rmi.server.RemoteObjectInvocationHandler;
@@ -36,6 +40,52 @@ import java.rmi.server.UnicastRemoteObject;
 public final class RemoteObjectUtil {
   private RemoteObjectUtil() {
     throw new UnsupportedOperationException("No instances");
+  }
+
+  /**
+   * Exports the given Remote object, using the given socket factory and a randomly assigned port.
+   * 
+   * @param obj The object to export.
+   * @param socketFactory The socket factory to use.
+   * @return The remote stub.
+   * @throws RemoteException if the operation fails.
+   */
+  public static Remote exportObject(Remote obj, RMISocketFactory socketFactory)
+      throws RemoteException {
+    return UnicastRemoteObject.exportObject(obj, 0, socketFactory, socketFactory);
+  }
+
+  /**
+   * Exports and binds the given Remote object to the given name, using the given
+   * {@link AFUNIXNaming} setup.
+   * 
+   * @param naming The {@link AFUNIXNaming} instance to use.
+   * @param name The name to use to bind the object in the registry.
+   * @param obj The object to export and bind.
+   * @throws RemoteException if the operation fails.
+   * @throws AlreadyBoundException if there already was something bound at that name
+   */
+  public static void exportAndBind(AFUNIXNaming naming, String name, Remote obj)
+      throws RemoteException, AlreadyBoundException {
+    RemoteObjectUtil.exportObject(obj, naming.getSocketFactory());
+
+    naming.getRegistry().bind(name, obj);
+  }
+
+  /**
+   * Exports and re-binds the given Remote object to the given name, using the given
+   * {@link AFUNIXNaming} setup.
+   * 
+   * @param naming The {@link AFUNIXNaming} instance to use.
+   * @param name The name to use to bind the object in the registry.
+   * @param obj The object to export and bind.
+   * @throws RemoteException if the operation fails.
+   */
+  public static void exportAndRebind(AFUNIXNaming naming, String name, Remote obj)
+      throws RemoteException {
+    RemoteObjectUtil.exportObject(obj, naming.getSocketFactory());
+
+    naming.getRegistry().rebind(name, obj);
   }
 
   /**
@@ -53,26 +103,61 @@ public final class RemoteObjectUtil {
   }
 
   /**
-   * Returns the {@link RMISocketFactory} used for the given {@link Remote} object, or {@code null}
-   * if no custom {@link RMISocketFactory} was specified.
+   * Forcibly un-exports the given object, if it exists, and unbinds the object from the registry
+   * (otherwise returns without an error).
+   * 
+   * @param obj The object to un-export.
+   */
+  public static void unexportAndUnbind(AFUNIXNaming naming, String name, Remote obj)
+      throws RemoteException {
+    unexportObject(obj);
+    try {
+      naming.unbind(name);
+    } catch (MalformedURLException | NotBoundException e) {
+      // ignore
+    }
+  }
+
+  /**
+   * Returns the connection information ({@link RMISocketFactory}, hostname and port) used for the
+   * given {@link Remote} object, or {@code null} if no custom {@link RMISocketFactory} was
+   * specified.
    * 
    * An {@link IOException} may be thrown if we couldn't determine the socket factory.
    * 
    * @param obj The remote object.
    * @return The factory, or {@code null}
-   * @throws IOException
+   * @throws IOException if the operation fails.
    */
-  public static RMISocketFactory findSocketFactory(Remote obj) throws IOException {
+  public static RemoteConnectionInfo getConnectionInfo(Remote obj) throws IOException {
     try (ExtractingObjectOutput eoo = new ExtractingObjectOutput()) {
       RemoteObjectInvocationHandler roih = (RemoteObjectInvocationHandler) Proxy
           .getInvocationHandler(RemoteObject.toStub(obj));
 
       roih.getRef().writeExternal(eoo);
       if (!eoo.validate()) {
-        throw new IOException("Unexpected data format for " + obj);
+        throw new IOException("Unexpected data format for " + obj.getClass());
       }
 
-      return eoo.getSocketFactory();
+      return eoo.data;
+    }
+  }
+
+  public static final class RemoteConnectionInfo {
+    private RMISocketFactory socketFactory;
+    private String host;
+    private int port;
+
+    public RMISocketFactory getSocketFactory() {
+      return socketFactory;
+    }
+
+    public String getHost() {
+      return host;
+    }
+
+    public int getPort() {
+      return port;
     }
   }
 
@@ -91,9 +176,7 @@ public final class RemoteObjectUtil {
     private boolean invalid = false;
     private int format = -1;
 
-    private String host = null;
-    private int port = 0;
-    private RMISocketFactory socketFactory = null;
+    private final RemoteConnectionInfo data = new RemoteConnectionInfo();
 
     public ExtractingObjectOutput() {
     }
@@ -122,7 +205,7 @@ public final class RemoteObjectUtil {
           break;
         case 2:
           if (v instanceof String) {
-            this.host = (String) v;
+            this.data.host = (String) v;
             return;
           }
           break;
@@ -131,8 +214,8 @@ public final class RemoteObjectUtil {
             done = true;
           }
           if (v instanceof Integer) {
-            this.port = (int) v;
-            if (port <= 0) {
+            this.data.port = (int) v;
+            if (this.data.port <= 0) {
               setInvalid();
             }
             return;
@@ -140,7 +223,7 @@ public final class RemoteObjectUtil {
           break;
         case 4:
           if (v instanceof RMISocketFactory && format == 1) {
-            this.socketFactory = (RMISocketFactory) v;
+            this.data.socketFactory = (RMISocketFactory) v;
             return;
           }
           break;
@@ -291,18 +374,6 @@ public final class RemoteObjectUtil {
 
     @Override
     public void close() {
-    }
-
-    public String getHost() {
-      return host;
-    }
-
-    public int getPort() {
-      return port;
-    }
-
-    public RMISocketFactory getSocketFactory() {
-      return socketFactory;
     }
   }
 }

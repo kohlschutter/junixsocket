@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -50,7 +49,8 @@ public class RemoteFileDescriptorTest {
 
   @BeforeAll
   public static void setupClass() throws IOException, AlreadyBoundException {
-    NAMING = AFUNIXNaming.getInstance();
+    // NOTE: for testing. You'd probably want to use AFUNIXNaming.getInstance()
+    NAMING = AFUNIXNaming.newPrivateInstance();
 
     // Create registry
     final Registry registry = NAMING.createRegistry();
@@ -77,10 +77,11 @@ public class RemoteFileDescriptorTest {
     RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) NAMING.getRegistry()
         .lookup(TEST_SERVICE_NAME);
 
-    final FileDescriptor fd = svc.stdout().getFileDescriptor();
-    try (FileOutputStream fos = new FileOutputStream(fd)) {
-//      fos.write(SMILEY);
-      fos.flush();
+    try (RemoteFileDescriptor stdout = svc.stdout()) {
+      try (FileOutputStream fos = new FileOutputStream(stdout.getFileDescriptor())) {
+        // fos.write(SMILEY);
+        fos.flush();
+      }
     }
   }
 
@@ -89,18 +90,18 @@ public class RemoteFileDescriptorTest {
     RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) NAMING.getRegistry()
         .lookup(TEST_SERVICE_NAME);
 
-    try (FileOutputStream fos = svc.output().toFileOutputStream()) {
+    try (FileOutputStream fos = svc.output().asFileOutputStream()) {
       fos.write(HELLO_WORLD);
     }
     svc.verifyContents(HELLO_WORLD);
 
-    try (FileInputStream fin = svc.input(12).toFileInputStream()) {
+    try (FileInputStream fin = svc.input(12).asFileInputStream()) {
       byte[] data = fin.readAllBytes();
       assertArrayEquals(SMILEY, data);
     }
 
     try (NaiveFileInputStreamRemote rfis = svc.naiveInputStreamRemote();
-        FileInputStream fin = rfis.getRemoteFileDescriptor().toFileInputStream()) {
+        FileInputStream fin = rfis.getRemoteFileDescriptor().asFileInputStream()) {
       assertEquals('H', rfis.read());
       assertEquals('e', fin.read());
       assertEquals('l', fin.read());
@@ -115,7 +116,7 @@ public class RemoteFileDescriptorTest {
     RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) NAMING.getRegistry()
         .lookup(TEST_SERVICE_NAME);
 
-    RMISocketFactory factory = RemoteObjectUtil.findSocketFactory(svc);
+    RMISocketFactory factory = RemoteObjectUtil.getConnectionInfo(svc).getSocketFactory();
     assertNotNull(factory);
     assertEquals(NAMING.getSocketFactory(), factory);
   }
@@ -128,12 +129,12 @@ public class RemoteFileDescriptorTest {
     byte[] expected = new byte[5000];
     new Random().nextBytes(expected);
 
-    try (FileOutputStream fos = svc.output().toFileOutputStream()) {
+    try (FileOutputStream fos = svc.output().asFileOutputStream()) {
       fos.write(expected);
     }
 
     byte[] actual;
-    try (FileInputStream fin = svc.input().toFileInputStream()) {
+    try (FileInputStream fin = svc.input().asFileInputStream()) {
       actual = fin.readAllBytes();
     }
     assertArrayEquals(expected, actual);

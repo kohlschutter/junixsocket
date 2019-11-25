@@ -22,7 +22,7 @@ package org.newsclub.net.unix.rmi;
  * 
  * @author Christian Kohlschütter
  * @see AFUNIXRMISocketFactory
- * @see PortAssigner
+ * @see AFUNIXRMIService
  */
 final class AFUNIXRMIPorts {
   /**
@@ -37,13 +37,13 @@ final class AFUNIXRMIPorts {
   /**
    * This is the port reserved for the port assigner.
    * 
-   * @see PortAssigner
+   * @see AFUNIXRMIService
    */
-  public static final int PORT_ASSIGNER_PORT = 100002;
+  public static final int RMI_SERVICE_PORT = 100002;
   /**
    * This is the base for anonymous ports. Any anonymous port will be higher than this number.
    * 
-   * @see PortAssigner
+   * @see AFUNIXRMIService
    */
   public static final int ANONYMOUS_PORT_BASE = 110000;
 
