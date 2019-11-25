@@ -215,6 +215,14 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_attachCloseab
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_maxAddressLength
   (JNIEnv *, jclass);
 
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    currentRMISocket
+ * Signature: ()Ljava/net/Socket;
+ */
+JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_currentRMISocket
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

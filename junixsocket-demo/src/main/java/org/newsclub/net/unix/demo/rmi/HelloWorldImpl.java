@@ -20,6 +20,7 @@ package org.newsclub.net.unix.demo.rmi;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 
+import org.newsclub.net.unix.AFUNIXSocketCredentials;
 import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
 import org.newsclub.net.unix.demo.rmi.services.World;
 import org.newsclub.net.unix.rmi.AFUNIXNaming;
@@ -30,7 +31,6 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
  * @author Christian Kohlschütter
  */
 public class HelloWorldImpl implements HelloWorld {
-
   private final AFUNIXNaming naming;
 
   public HelloWorldImpl(AFUNIXNaming naming) {
@@ -39,7 +39,8 @@ public class HelloWorldImpl implements HelloWorld {
 
   @Override
   public String hello() throws IOException {
-    System.out.println("Received call to hello()");
+    System.out.println("Received call to hello() from: " + AFUNIXSocketCredentials
+        .remotePeerCredentials());
     return "Hello";
   }
 

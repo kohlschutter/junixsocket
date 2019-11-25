@@ -1884,6 +1884,56 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_maxAddressLen
     return sizeof(su.sun_path);
 }
 
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    currentRMISocket
+ * Signature: ()Ljava/net/Socket;
+ */
+JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_currentRMISocket
+  (JNIEnv *env, jclass clazz)
+{
+    jclass tcpTransport = (*env)->FindClass(env,
+            "sun/rmi/transport/tcp/TCPTransport");
+    if(tcpTransport == NULL) {
+        return NULL;
+    }
+    jfieldID threadConnectionHandler = (*env)->GetStaticFieldID(env, tcpTransport,
+            "threadConnectionHandler", "Ljava/lang/ThreadLocal;");
+    if(threadConnectionHandler == NULL) {
+        return NULL;
+    }
+    jobject tl = (*env)->GetStaticObjectField(env, tcpTransport, threadConnectionHandler);
+    if(tl == NULL) {
+        return NULL;
+    }
+    jclass tlClass = (*env)->GetObjectClass(env, tl);
+    if(tlClass == NULL) {
+        return NULL;
+    }
+    jmethodID tlGet = (*env)->GetMethodID(env, tlClass,
+            "get", "()Ljava/lang/Object;");
+    if(tlGet == NULL) {
+        return NULL;
+    }
+    jobject connHandler = (*env)->CallObjectMethod(env, tl,
+            tlGet);
+    if(connHandler == NULL) {
+        return NULL;
+    }
+    jclass connHandlerClass = (*env)->GetObjectClass(env, connHandler);
+    if(connHandlerClass == NULL) {
+        return NULL;
+    }
+    jfieldID socketField = (*env)->GetFieldID(env, connHandlerClass,
+            "socket", "Ljava/net/Socket;");
+    if(socketField == NULL) {
+        return NULL;
+    }
+    jobject socket = (*env)->GetObjectField(env, connHandler, socketField);
+
+    return socket;
+}
+
 #ifdef __cplusplus
 }
 #endif

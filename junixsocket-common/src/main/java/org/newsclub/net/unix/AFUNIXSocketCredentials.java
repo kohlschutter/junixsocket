@@ -17,6 +17,10 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.rmi.server.RemoteServer;
+import java.rmi.server.ServerNotActiveException;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -143,5 +147,32 @@ public final class AFUNIXSocketCredentials {
     } else if (!uuid.equals(other.uuid))
       return false;
     return true;
+  }
+
+  /**
+   * Returns the {@link AFUNIXSocketCredentials} for the currently active RMI socket, or returns
+   * {@code null} if it was not possible to retrieve these credentials.
+   *
+   * @return The credentials, or {@code null} if unable.
+   */
+  @SuppressWarnings("resource")
+  public static AFUNIXSocketCredentials remotePeerCredentials() {
+    try {
+      RemoteServer.getClientHost();
+    } catch (ServerNotActiveException e) {
+      return null;
+    }
+
+    Socket sock = NativeUnixSocket.currentRMISocket();
+    if (!(sock instanceof AFUNIXSocket)) {
+      return null;
+    }
+    AFUNIXSocket socket = (AFUNIXSocket) sock;
+
+    try {
+      return socket.getPeerCredentials();
+    } catch (IOException e) {
+      return null;
+    }
   }
 }

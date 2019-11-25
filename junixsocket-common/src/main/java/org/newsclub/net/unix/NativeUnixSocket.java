@@ -20,6 +20,7 @@ package org.newsclub.net.unix;
 import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 
 /**
@@ -121,4 +122,6 @@ final class NativeUnixSocket {
       throw new IOException("Could not set port", e);
     }
   }
+
+  static native Socket currentRMISocket();
 }
