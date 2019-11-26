@@ -51,12 +51,13 @@ final class ShutdownHookSupport {
      * 
      * When you implement this method, make sure to check that the given Thread matches the current
      * thread, e.g.: <code>
-     * if (thread != Thread.currentThread()) { throw new IllegalStateException("Illegal caller"); }
+     * if (thread != Thread.currentThread() || !(thread instanceof ShutdownThread)) {
+     * throw new IllegalStateException("Illegal caller"); }
      * </code>
      * 
      * @param thread The current Thread.
      */
-    void onRuntimeShutdown(ShutdownThread thread);
+    void onRuntimeShutdown(Thread thread);
   }
 
   /**

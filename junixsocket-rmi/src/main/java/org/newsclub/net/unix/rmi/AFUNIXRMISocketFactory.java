@@ -309,8 +309,8 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
   }
 
   @Override
-  public void onRuntimeShutdown(@SuppressWarnings("exports") ShutdownThread thread) {
-    if (thread != Thread.currentThread()) {
+  public void onRuntimeShutdown(Thread thread) {
+    if (thread != Thread.currentThread() || !(thread instanceof ShutdownThread)) {
       throw new IllegalStateException("Illegal caller");
     }
     try {

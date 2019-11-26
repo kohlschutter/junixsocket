@@ -192,8 +192,8 @@ final class AFUNIXRegistry implements Registry, ShutdownHook {
   }
 
   @Override
-  public void onRuntimeShutdown(ShutdownThread thread) {
-    if (thread != Thread.currentThread()) {
+  public void onRuntimeShutdown(Thread thread) {
+    if (thread != Thread.currentThread() | !(thread instanceof ShutdownThread)) {
       throw new IllegalStateException("Illegal caller");
     }
     forceUnexportBound();
