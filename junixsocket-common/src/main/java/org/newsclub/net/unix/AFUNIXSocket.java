@@ -17,13 +17,18 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Implementation of an AF_UNIX domain socket.
@@ -39,6 +44,7 @@ public final class AFUNIXSocket extends Socket {
   AFUNIXSocketAddress addr;
 
   private final AFUNIXSocketFactory socketFactory;
+  private List<WeakReference<Closeable>> closeables;
 
   private AFUNIXSocket(final AFUNIXSocketImpl impl, AFUNIXSocketFactory factory)
       throws IOException {
@@ -282,5 +288,82 @@ public final class AFUNIXSocket extends Socket {
    */
   public static boolean supports(AFUNIXSocketCapability capability) {
     return (getCapabilities() & capability.getBitmask()) != 0;
+  }
+
+  static final class HardReference<V> extends WeakReference<V> {
+    private final V strongRef;
+
+    HardReference(final V referent) {
+      super(null);
+      this.strongRef = referent;
+    }
+
+    @Override
+    public V get() {
+      return strongRef;
+    }
+  }
+
+  public synchronized void addCloseable(WeakReference<Closeable> ref) {
+    @SuppressWarnings("resource")
+    Closeable cl = ref.get();
+    removeCloseable(cl);
+    if (cl == null) {
+      // ignore
+      return;
+    }
+    if (closeables == null) {
+      closeables = new ArrayList<>();
+    }
+    closeables.add(ref);
+  }
+
+  public synchronized void addCloseable(Closeable closeable) {
+    addCloseable(new HardReference<>(closeable));
+  }
+
+  public synchronized void removeCloseable(Closeable closeable) {
+    if (closeables == null) {
+      return;
+    }
+    for (Iterator<WeakReference<Closeable>> it = closeables.iterator(); it.hasNext();) {
+      if (it.next().get() == closeable) {
+        it.remove();
+        return;
+      }
+    }
+  }
+
+  @Override
+  public synchronized void close() throws IOException {
+    IOException exc = null;
+    try {
+      super.close();
+    } catch (IOException e) {
+      exc = e;
+    }
+
+    if (closeables != null) {
+      for (WeakReference<Closeable> ref : closeables) {
+        @SuppressWarnings("resource")
+        Closeable cl = ref.get();
+        if (cl == null) {
+          continue;
+        }
+        try {
+          cl.close();
+        } catch (IOException e) {
+          if (exc == null) {
+            exc = e;
+          } else {
+            exc.addSuppressed(e);
+          }
+        }
+      }
+    }
+
+    if (exc != null) {
+      throw exc;
+    }
   }
 }

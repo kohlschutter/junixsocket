@@ -32,10 +32,13 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.RMISocketFactory;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.AFUNIXSocketCredentials;
 import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownHook;
 import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownThread;
 
@@ -61,6 +64,8 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
   private String socketSuffix;
 
   private AFUNIXRMIService rmiService = null;
+
+  private Map<HostAndPort, AFUNIXSocketCredentials> credentials = new HashMap<>();
 
   /**
    * Constructor required per definition.
@@ -169,6 +174,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     return sf.socketDir.equals(socketDir);
   }
 
+  @SuppressWarnings("resource")
   @Override
   public Socket createSocket(String host, int port) throws IOException {
     final RMIClientSocketFactory cf = defaultClientFactory;
@@ -180,6 +186,25 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
 
     final AFUNIXSocket socket = AFUNIXSocket.newInstance();
     socket.connect(addr);
+    AFUNIXSocketCredentials creds = socket.getPeerCredentials();
+
+    final HostAndPort hap = new HostAndPort(host, port);
+    synchronized (credentials) {
+      if (credentials.put(hap, creds) != null) {
+        System.err.println("HUH? " + hap);
+      }
+    }
+    socket.addCloseable(new Closeable() {
+      @Override
+      public void close() throws IOException {
+        if (credentials == null) {
+          return;
+        }
+        synchronized (credentials) {
+          credentials.remove(hap);
+        }
+      }
+    });
     return socket;
   }
 
@@ -209,6 +234,8 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
 
   @Override
   public void close() throws RemoteException {
+    credentials = null;
+
     if (rmiService != null) {
       rmiService.openPorts().forEach((int port) -> {
         deleteSocketFile(port);
@@ -317,6 +344,51 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
       close();
     } catch (IOException e) {
       // ignore
+    }
+  }
+
+  AFUNIXSocketCredentials peerCredentialsFor(RemotePeerInfo data) {
+    synchronized (credentials) {
+      return credentials.get(new HostAndPort(data.host, data.port));
+    }
+  }
+
+  private static final class HostAndPort {
+    final String hostname;
+    final int port;
+
+    private HostAndPort(String hostname, int port) {
+      this.hostname = hostname;
+      this.port = port;
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((hostname == null) ? 0 : hostname.hashCode());
+      result = prime * result + port;
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (!(obj instanceof HostAndPort)) {
+        return false;
+      }
+      HostAndPort other = (HostAndPort) obj;
+      if (hostname == null) {
+        if (other.hostname != null) {
+          return false;
+        }
+      } else if (!hostname.equals(other.hostname)) {
+        return false;
+      }
+
+      return port == other.port;
     }
   }
 }

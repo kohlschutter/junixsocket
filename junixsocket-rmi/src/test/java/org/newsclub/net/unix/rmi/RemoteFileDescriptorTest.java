@@ -116,7 +116,8 @@ public class RemoteFileDescriptorTest {
     RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) NAMING.getRegistry()
         .lookup(TEST_SERVICE_NAME);
 
-    RMISocketFactory factory = RemoteObjectUtil.getConnectionInfo(svc).getSocketFactory();
+    RemotePeerInfo rci = RemotePeerInfo.getConnectionInfo(svc);
+    RMISocketFactory factory = rci.getSocketFactory();
     assertNotNull(factory);
     assertEquals(NAMING.getSocketFactory(), factory);
   }

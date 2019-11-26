@@ -20,7 +20,6 @@ package org.newsclub.net.unix;
 import java.io.IOException;
 import java.net.Socket;
 import java.rmi.server.RemoteServer;
-import java.rmi.server.ServerNotActiveException;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -150,16 +149,22 @@ public final class AFUNIXSocketCredentials {
   }
 
   /**
-   * Returns the {@link AFUNIXSocketCredentials} for the currently active RMI socket, or returns
+   * Returns the {@link AFUNIXSocketCredentials} for the currently active remote session, or
    * {@code null} if it was not possible to retrieve these credentials.
+   * 
+   * NOTE: For now, only RMI remote sessions are supported (RemoteServer sessions during a remote
+   * method invocation).
+   * 
+   * If you want to retrieve the peer credentials for an RMI server, see junixsocket-rmi's
+   * RemotePeerInfo.
    *
-   * @return The credentials, or {@code null} if unable.
+   * @return The credentials, or {@code null} if unable to retrieve.
    */
   @SuppressWarnings("resource")
   public static AFUNIXSocketCredentials remotePeerCredentials() {
     try {
       RemoteServer.getClientHost();
-    } catch (ServerNotActiveException e) {
+    } catch (Exception e) {
       return null;
     }
 
