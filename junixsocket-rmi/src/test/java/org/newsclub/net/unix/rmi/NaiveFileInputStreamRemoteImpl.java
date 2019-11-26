@@ -34,7 +34,7 @@ public final class NaiveFileInputStreamRemoteImpl extends FileInputStream implem
     super(file);
     this.rfd = new RemoteFileInput(socketFactory, this);
 
-    RemoteObjectUtil.exportObject(this, socketFactory);
+    AFUNIXNaming.exportObject(this, socketFactory);
   }
 
   public NaiveFileInputStreamRemoteImpl(AFUNIXRMISocketFactory socketFactory, FileDescriptor fd)
@@ -42,7 +42,7 @@ public final class NaiveFileInputStreamRemoteImpl extends FileInputStream implem
     super(fd);
     this.rfd = new RemoteFileInput(socketFactory, this);
 
-    RemoteObjectUtil.exportObject(this, socketFactory);
+    AFUNIXNaming.exportObject(this, socketFactory);
   }
 
   @Override
@@ -52,7 +52,7 @@ public final class NaiveFileInputStreamRemoteImpl extends FileInputStream implem
 
   @Override
   public void close() throws IOException {
-    RemoteObjectUtil.unexportObject(this);
+    AFUNIXNaming.unexportObject(this);
     super.close();
   }
 

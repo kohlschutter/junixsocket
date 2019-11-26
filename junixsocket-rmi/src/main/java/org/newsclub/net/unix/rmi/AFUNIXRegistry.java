@@ -60,7 +60,7 @@ final class AFUNIXRegistry implements Registry, ShutdownHook {
       @Override
       public void close() throws IOException {
         AFUNIXRegistry.this.forceUnexportBound();
-        RemoteObjectUtil.unexportObject(this);
+        AFUNIXNaming.unexportObject(this);
       }
     };
 
@@ -96,7 +96,7 @@ final class AFUNIXRegistry implements Registry, ShutdownHook {
         continue;
       }
       try {
-        RemoteObjectUtil.unexportAndUnbind(naming, name, obj);
+        naming.unexportAndUnbind(name, obj);
       } catch (RemoteException e) {
         // ignore
       }
@@ -173,11 +173,11 @@ final class AFUNIXRegistry implements Registry, ShutdownHook {
           } catch (NoSuchObjectException | NotBoundException e) {
             return;
           } finally {
-            RemoteObjectUtil.unexportObject(boundCloser);
+            AFUNIXNaming.unexportObject(boundCloser);
           }
         }
       } else if (!boundCloserExported) {
-        RemoteObjectUtil.exportObject(boundCloser, naming.getSocketFactory());
+        AFUNIXNaming.exportObject(boundCloser, naming.getSocketFactory());
         boundCloserExported = true;
 
         AFUNIXRMIService service;

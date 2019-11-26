@@ -40,7 +40,7 @@ public class RemoteFileDescriptorTestServiceImpl implements RemoteFileDescriptor
     this.socketFactory = socketFactory;
     this.tmpFile = File.createTempFile("FDTestService", ".tmp");
 
-    RemoteObjectUtil.exportObject(this, socketFactory);
+    AFUNIXNaming.exportObject(this, socketFactory);
   }
 
   @Override
@@ -106,7 +106,7 @@ public class RemoteFileDescriptorTestServiceImpl implements RemoteFileDescriptor
 
   @Override
   public void close() throws IOException {
-    RemoteObjectUtil.unexportObject(this);
+    AFUNIXNaming.unexportObject(this);
     deleteFile();
   }
 }

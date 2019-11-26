@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix.rmi;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -24,12 +25,14 @@ import java.nio.file.Files;
 import java.rmi.AlreadyBoundException;
 import java.rmi.ConnectIOException;
 import java.rmi.Naming;
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
@@ -330,7 +333,7 @@ public final class AFUNIXNaming implements ShutdownHook {
     serviceImpl.shutdownRegisteredCloseables();
 
     try {
-      RemoteObjectUtil.unexportObject(rmiService);
+      unexportObject(rmiService);
       registry.unbind(RMI_SERVICE_NAME);
     } catch (NotBoundException e) {
       // ignore
@@ -435,6 +438,81 @@ public final class AFUNIXNaming implements ShutdownHook {
     try {
       shutdownRegistry();
     } catch (IOException e) {
+      // ignore
+    }
+  }
+
+  /**
+   * Exports and binds the given Remote object to the given name, using the given
+   * {@link AFUNIXNaming} setup.
+   * 
+   * @param name The name to use to bind the object in the registry.
+   * @param obj The object to export and bind.
+   * @throws RemoteException if the operation fails.
+   * @throws AlreadyBoundException if there already was something bound at that name
+   */
+  public void exportAndBind(String name, Remote obj) throws RemoteException, AlreadyBoundException {
+    exportObject(obj, getSocketFactory());
+
+    getRegistry().bind(name, obj);
+  }
+
+  /**
+   * Exports and re-binds the given Remote object to the given name, using the given
+   * {@link AFUNIXNaming} setup.
+   * 
+   * @param name The name to use to bind the object in the registry.
+   * @param obj The object to export and bind.
+   * @throws RemoteException if the operation fails.
+   */
+  public void exportAndRebind(String name, Remote obj) throws RemoteException {
+    exportObject(obj, getSocketFactory());
+
+    getRegistry().rebind(name, obj);
+  }
+
+  /**
+   * Forcibly un-exports the given object, if it exists, and unbinds the object from the registry
+   * (otherwise returns without an error).
+   * 
+   * @param obj The object to un-export.
+   */
+  public void unexportAndUnbind(String name, Remote obj) throws RemoteException {
+    unexportObject(obj);
+    try {
+      unbind(name);
+    } catch (MalformedURLException | NotBoundException e) {
+      // ignore
+    }
+  }
+
+  /**
+   * Exports the given Remote object, using the given socket factory and a randomly assigned port.
+   * 
+   * NOTE: This helper function can also be used for regular RMI servers.
+   * 
+   * @param obj The object to export.
+   * @param socketFactory The socket factory to use.
+   * @return The remote stub.
+   * @throws RemoteException if the operation fails.
+   */
+  public static Remote exportObject(Remote obj, RMISocketFactory socketFactory)
+      throws RemoteException {
+    return UnicastRemoteObject.exportObject(obj, 0, socketFactory, socketFactory);
+  }
+
+  /**
+   * Forcibly un-exports the given object, if it exists (otherwise returns without an error). This
+   * should be called upon closing a {@link Closeable} {@link Remote} object.
+   * 
+   * NOTE: This helper function can also be used for regular RMI servers.
+   * 
+   * @param obj The object to un-export.
+   */
+  public static void unexportObject(Remote obj) {
+    try {
+      UnicastRemoteObject.unexportObject(obj, true);
+    } catch (NoSuchObjectException e) {
       // ignore
     }
   }

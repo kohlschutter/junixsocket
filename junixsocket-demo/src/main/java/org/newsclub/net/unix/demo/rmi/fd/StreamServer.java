@@ -18,7 +18,6 @@
 package org.newsclub.net.unix.demo.rmi.fd;
 
 import org.newsclub.net.unix.rmi.AFUNIXNaming;
-import org.newsclub.net.unix.rmi.RemoteObjectUtil;
 
 /**
  * Demonstrates how to read/write files via FileDescriptors that are exchanged via RMI.
@@ -39,7 +38,7 @@ public class StreamServer {
     System.out.println("Socket directory: " + naming.getSocketFactory().getSocketDir());
 
     try (StreamServiceImpl service = new StreamServiceImpl(naming.getSocketFactory())) {
-      RemoteObjectUtil.exportAndBind(naming, "streamService", service);
+      naming.exportAndBind("streamService", service);
 
       System.out.println("StreamServer ready; user.name=" + System.getProperty("user.name"));
     }

@@ -22,7 +22,6 @@ import java.rmi.registry.Registry;
 import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
 import org.newsclub.net.unix.demo.rmi.services.World;
 import org.newsclub.net.unix.rmi.AFUNIXNaming;
-import org.newsclub.net.unix.rmi.RemoteObjectUtil;
 
 /**
  * A simple RMI client. Locates the RMI registry via AF_UNIX sockets and calls
@@ -43,7 +42,7 @@ public final class SimpleRMIClientActingAsServer {
     System.out.println();
 
     World world = new WorldImpl("everybody");
-    RemoteObjectUtil.exportAndRebind(naming, "world", world);
+    naming.exportAndRebind("world", world);
     System.out.println("Exporting our own World instance");
 
     System.out.println("Calling HelloWorld...");
@@ -54,7 +53,7 @@ public final class SimpleRMIClientActingAsServer {
      * 
      * Try it and run SimpleRMIClient to see the difference.
      */
-    RemoteObjectUtil.unexportAndUnbind(naming, "world", world);
+    naming.unexportAndUnbind("world", world);
 
     /**
      * Also try to remotely shut down the registry.

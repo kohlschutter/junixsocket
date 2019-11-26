@@ -19,7 +19,6 @@ package org.newsclub.net.unix.demo.rmi;
 
 import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
 import org.newsclub.net.unix.rmi.AFUNIXNaming;
-import org.newsclub.net.unix.rmi.RemoteObjectUtil;
 
 /**
  * A very simple RMI server. Provides a registry and the implementation of the {@link HelloWorld}
@@ -36,7 +35,7 @@ public final class SimpleRMIServer {
 
     HelloWorldImpl obj = new HelloWorldImpl(naming);
     System.out.println("Binding " + obj.toString() + " to \"helloWorld\"...");
-    RemoteObjectUtil.exportAndBind(naming, "helloWorld", obj);
+    naming.exportAndBind("helloWorld", obj);
 
     System.out.println("Ready to accept connections!");
   }
