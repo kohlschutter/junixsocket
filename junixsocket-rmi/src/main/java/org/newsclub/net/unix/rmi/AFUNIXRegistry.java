@@ -64,7 +64,7 @@ final class AFUNIXRegistry implements Registry, ShutdownHook {
       }
     };
 
-    ShutdownHookSupport.addShutdownHook(this);
+    ShutdownHookSupport.addWeakShutdownHook(this);
   }
 
   /**

@@ -218,7 +218,7 @@ public final class AFUNIXNaming implements ShutdownHook {
   }
 
   private void closeUponRuntimeShutdown() {
-    ShutdownHookSupport.addShutdownHook(this);
+    ShutdownHookSupport.addWeakShutdownHook(this);
   }
 
   private void rebindRMIService(final AFUNIXRMIService assigner) throws RemoteException {

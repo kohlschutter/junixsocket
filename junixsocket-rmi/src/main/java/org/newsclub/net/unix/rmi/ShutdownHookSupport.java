@@ -36,7 +36,7 @@ final class ShutdownHookSupport {
    * 
    * @param hook The hook to register.
    */
-  public static void addShutdownHook(ShutdownHook hook) {
+  public static void addWeakShutdownHook(ShutdownHook hook) {
     Runtime.getRuntime().addShutdownHook(new ShutdownThread(new WeakReference<>(hook)));
   }
 
