@@ -32,6 +32,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.RMISocketFactory;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,6 +67,8 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
   private AFUNIXRMIService rmiService = null;
 
   private Map<HostAndPort, AFUNIXSocketCredentials> credentials = new HashMap<>();
+
+  private BitSet openServerPorts = new BitSet();
 
   /**
    * Constructor required per definition.
@@ -268,6 +271,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     return new AFUNIXSocketAddress(getFile(port), port);
   }
 
+  @SuppressWarnings("resource")
   @Override
   public ServerSocket createServerSocket(int port) throws IOException {
     if (port == 0) {
@@ -275,6 +279,10 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
       final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(getFile(port), port);
       final AnonymousServerSocket ass = new AnonymousServerSocket(port);
       ass.bind(addr);
+
+      if (port >= AFUNIXRMIPorts.AF_PORT_BASE) {
+        ass.addCloseable(new PortCloseable(port - AFUNIXRMIPorts.AF_PORT_BASE));
+      }
       return ass;
     }
 
@@ -284,7 +292,27 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     }
 
     final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(getFile(port), port);
-    return AFUNIXServerSocket.bindOn(addr);
+    AFUNIXServerSocket socket = AFUNIXServerSocket.bindOn(addr);
+    socket.addCloseable(new PortCloseable(port - AFUNIXRMIPorts.AF_PORT_BASE));
+    return socket;
+  }
+
+  private final class PortCloseable implements Closeable {
+    private final int port;
+
+    private PortCloseable(int port) {
+      synchronized (openServerPorts) {
+        openServerPorts.set(port);
+      }
+      this.port = port;
+    }
+
+    @Override
+    public void close() throws IOException {
+      synchronized (openServerPorts) {
+        openServerPorts.clear(port);
+      }
+    }
   }
 
   @Override
@@ -389,6 +417,15 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
       }
 
       return port == other.port;
+    }
+  }
+
+  public boolean isLocalServer(int port) {
+    if (port < AFUNIXRMIPorts.AF_PORT_BASE) {
+      return false;
+    }
+    synchronized (openServerPorts) {
+      return openServerPorts.get(port - AFUNIXRMIPorts.AF_PORT_BASE);
     }
   }
 }

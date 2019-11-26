@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
@@ -30,6 +31,7 @@ import java.net.SocketException;
 public class AFUNIXServerSocket extends ServerSocket {
   private final AFUNIXSocketImpl implementation;
   private AFUNIXSocketAddress boundEndpoint;
+  private final Closeables closeables = new Closeables();
 
   /**
    * Constructs a new, unconnected instance.
@@ -124,13 +126,47 @@ public class AFUNIXServerSocket extends ServerSocket {
   }
 
   @Override
-  public void close() throws IOException {
+  public synchronized void close() throws IOException {
     if (isClosed()) {
       return;
     }
 
-    super.close();
-    implementation.close();
+    IOException superException = null;
+    try {
+      super.close();
+    } catch (IOException e) {
+      superException = e;
+    }
+    if (implementation != null) {
+      try {
+        implementation.close();
+      } catch (IOException e) {
+        if (superException == null) {
+          superException = e;
+        } else {
+          superException.addSuppressed(e);
+        }
+      }
+    }
+    closeables.close(superException);
+  }
+
+  /**
+   * Registers a {@link Closeable} that should be closed when this socket is closed.
+   * 
+   * @param closeable The closeable.
+   */
+  public void addCloseable(Closeable closeable) {
+    closeables.add(closeable);
+  }
+
+  /**
+   * Unregisters a previously registered {@link Closeable}.
+   * 
+   * @param closeable The closeable.
+   */
+  public void removeCloseable(Closeable closeable) {
+    closeables.remove(closeable);
   }
 
   /**

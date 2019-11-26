@@ -129,6 +129,12 @@ public final class RemotePeerInfo {
       if ((data.socketFactory) instanceof AFUNIXRMISocketFactory) {
         AFUNIXRMISocketFactory sf = ((AFUNIXRMISocketFactory) (data.socketFactory));
         data.peerCredentials = sf.peerCredentialsFor(data);
+
+        if (data.peerCredentials == null) {
+          if (sf.isLocalServer(data.port)) {
+            data.peerCredentials = AFUNIXSocketCredentials.SAME_PROCESS;
+          }
+        }
       }
 
       return data;
@@ -349,5 +355,11 @@ public final class RemotePeerInfo {
     @Override
     public void close() {
     }
+  }
+
+  @Override
+  public String toString() {
+    return getClass().getName() + "[" + host + ":" + port + ";socketFactory=" + socketFactory
+        + ";peerCredentials=" + peerCredentials + "]";
   }
 }

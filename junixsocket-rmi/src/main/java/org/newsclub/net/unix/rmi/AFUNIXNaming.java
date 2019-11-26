@@ -56,7 +56,7 @@ public final class AFUNIXNaming implements ShutdownHook {
 
   private static final Map<AFUNIXNamingRef, AFUNIXNaming> INSTANCES = new HashMap<>();
 
-  private Registry registry = null;
+  private AFUNIXRegistry registry = null;
   private AFUNIXRMIService rmiService = null;
   private File registrySocketDir;
   private final int registryPort;
@@ -237,8 +237,8 @@ public final class AFUNIXNaming implements ShutdownHook {
    * @return The registry.
    * @throws RemoteException If there was a problem.
    */
-  public synchronized Registry getRegistry() throws RemoteException {
-    Registry reg = getRegistry(false);
+  public synchronized AFUNIXRegistry getRegistry() throws RemoteException {
+    AFUNIXRegistry reg = getRegistry(false);
     if (reg == null) {
       throw new RemoteException("Could not find registry at " + socketFactory.getFile(
           registryPort));
@@ -255,7 +255,7 @@ public final class AFUNIXNaming implements ShutdownHook {
    * @return The registry, or {@code null}
    * @throws RemoteException If there was a problem.
    */
-  public synchronized Registry getRegistry(boolean create) throws RemoteException {
+  public synchronized AFUNIXRegistry getRegistry(boolean create) throws RemoteException {
     if (registry != null) {
       return registry;
     } else if (!socketFactory.hasSocketFile(registryPort)) {
@@ -266,7 +266,7 @@ public final class AFUNIXNaming implements ShutdownHook {
     if (reg != null) {
       reg = new AFUNIXRegistry(this, reg);
     }
-    this.registry = reg;
+    this.registry = (AFUNIXRegistry) reg;
 
     AFUNIXRMIService service;
     try {
@@ -385,7 +385,7 @@ public final class AFUNIXNaming implements ShutdownHook {
    * @throws RemoteException if the operation fails.
    * @see #getRegistry()
    */
-  public synchronized Registry createRegistry() throws RemoteException {
+  public synchronized AFUNIXRegistry createRegistry() throws RemoteException {
     if (registry != null) {
       throw new RemoteException("The Registry is already created: " + registry);
     }

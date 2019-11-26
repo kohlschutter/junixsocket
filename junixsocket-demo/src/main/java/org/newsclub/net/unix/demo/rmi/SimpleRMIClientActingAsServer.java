@@ -18,10 +18,12 @@
 package org.newsclub.net.unix.demo.rmi;
 
 import java.rmi.registry.Registry;
+import java.rmi.server.RemoteObject;
 
 import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
 import org.newsclub.net.unix.demo.rmi.services.World;
 import org.newsclub.net.unix.rmi.AFUNIXNaming;
+import org.newsclub.net.unix.rmi.RemotePeerInfo;
 
 /**
  * A simple RMI client. Locates the RMI registry via AF_UNIX sockets and calls
@@ -38,12 +40,17 @@ public final class SimpleRMIClientActingAsServer {
     System.out.println(registry);
     System.out.println();
     HelloWorld obj = (HelloWorld) registry.lookup("helloWorld");
-    System.out.println("HelloWorld instance: " + obj);
+    System.out.println("HelloWorld instance:");
+    System.out.println("    " + obj);
+    System.out.println("    " + RemotePeerInfo.remotePeerCredentials(obj));
     System.out.println();
 
     World world = new WorldImpl("everybody");
     naming.exportAndRebind("world", world);
-    System.out.println("Exporting our own World instance");
+    System.out.println("Exporting our own World instance:");
+    System.out.println("    " + RemoteObject.toStub(world));
+    System.out.println("    " + RemotePeerInfo.remotePeerCredentials(world));
+    System.out.println();
 
     System.out.println("Calling HelloWorld...");
     System.out.println(obj.hello() + " " + obj.world() + "!");

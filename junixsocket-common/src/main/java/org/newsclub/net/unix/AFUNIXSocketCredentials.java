@@ -27,6 +27,12 @@ import java.util.UUID;
  * AF_UNIX socket credentials.
  */
 public final class AFUNIXSocketCredentials {
+  /**
+   * Special instance, indicating that there is no remote peer, but the referenced object is from
+   * the same process.
+   */
+  public static final AFUNIXSocketCredentials SAME_PROCESS = new AFUNIXSocketCredentials();
+
   private long pid = -1; // NOPMD -- Set in native code
   private long uid = -1; // NOPMD -- Set in native code
   private long[] gids = null;
@@ -94,14 +100,18 @@ public final class AFUNIXSocketCredentials {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
     sb.append('[');
+    if (this == SAME_PROCESS) {
+      sb.append("(same process)]");
+      return sb.toString();
+    }
+    if (pid != -1) {
+      sb.append("pid=" + pid + ";");
+    }
     if (uid != -1) {
       sb.append("uid=" + uid + ";");
     }
     if (gids != null) {
       sb.append("gids=" + Arrays.toString(gids) + ";");
-    }
-    if (pid != -1) {
-      sb.append("pid=" + pid + ";");
     }
     if (uuid != null) {
       sb.append("uuid=" + uuid + ";");

@@ -40,7 +40,7 @@ import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownThread;
  * 
  * @author Christian Kohlschütter
  */
-final class AFUNIXRegistry implements Registry, ShutdownHook {
+public final class AFUNIXRegistry implements Registry, ShutdownHook {
   final RemoteCloseable<?> boundCloser;
 
   private final Registry impl;
