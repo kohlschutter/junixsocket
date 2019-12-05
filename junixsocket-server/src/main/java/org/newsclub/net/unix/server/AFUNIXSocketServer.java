@@ -320,11 +320,10 @@ public abstract class AFUNIXSocketServer {
   private Future<?> submit(Socket socket, ExecutorService executor) {
     return executor.submit(new Runnable() {
       @Override
-      @SuppressWarnings("PMD.UseTryWithResources")
       public void run() {
         onBeforeServingSocket(socket);
 
-        try {
+        try { // NOPMD
           doServeSocket(socket);
         } catch (Exception e) {
           onServingException(socket, e);

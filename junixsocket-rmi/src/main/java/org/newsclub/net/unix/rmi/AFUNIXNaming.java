@@ -47,6 +47,7 @@ import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownThread;
  * 
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class AFUNIXNaming implements ShutdownHook {
   private static final String RMI_SERVICE_NAME = AFUNIXRMIService.class.getName();
   private static final String PROP_RMI_SOCKET_DIR = "org.newsclub.net.unix.rmi.socketdir";
@@ -137,10 +138,8 @@ public final class AFUNIXNaming implements ShutdownHook {
       String socketPrefix, String socketSuffix) throws RemoteException {
     if (socketDir == null) {
       socketDir = DEFAULT_SOCKET_DIRECTORY;
-      if (!socketDir.mkdirs()) {
-        if (!socketDir.isDirectory()) {
-          throw new RemoteException("Cannot create directory for temporary file: " + socketDir);
-        }
+      if (!socketDir.mkdirs() && !socketDir.isDirectory()) {
+        throw new RemoteException("Cannot create directory for temporary file: " + socketDir);
       }
 
       if (socketPrefix == null) {
@@ -201,10 +200,9 @@ public final class AFUNIXNaming implements ShutdownHook {
   }
 
   AFUNIXRMIService getRMIService() throws RemoteException, NotBoundException {
-    if (rmiService != null) {
-      return rmiService;
+    if (rmiService == null) {
+      rmiService = getRMIServiceFromRegistry();
     }
-    rmiService = getRMIServiceFromRegistry();
     return rmiService;
   }
 
@@ -313,13 +311,9 @@ public final class AFUNIXNaming implements ShutdownHook {
   public synchronized void shutdownRegistry() throws RemoteException {
     if (registry == null) {
       return;
-    } else if (!(registry instanceof AFUNIXRegistry)) {
-      // trying to shut down remote registry
-      shutdownViaRMIService();
-      return;
     }
 
-    AFUNIXRegistry reg = (AFUNIXRegistry) registry;
+    AFUNIXRegistry reg = registry;
     if (!reg.isRemoteServer()) {
       reg.forceUnexportBound();
       shutdownViaRMIService();

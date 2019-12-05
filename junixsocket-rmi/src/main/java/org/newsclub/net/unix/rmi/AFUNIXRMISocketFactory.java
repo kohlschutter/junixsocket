@@ -68,7 +68,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
 
   private Map<HostAndPort, AFUNIXSocketCredentials> credentials = new HashMap<>();
 
-  private BitSet openServerPorts = new BitSet();
+  private final BitSet openServerPorts = new BitSet();
 
   /**
    * Constructor required per definition.

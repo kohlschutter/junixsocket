@@ -17,10 +17,7 @@
  */
 package org.newsclub.net.unix.demo.rmi;
 
-import java.lang.reflect.Proxy;
 import java.rmi.registry.Registry;
-import java.rmi.server.RemoteObject;
-import java.rmi.server.RemoteObjectInvocationHandler;
 
 import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
 import org.newsclub.net.unix.rmi.AFUNIXNaming;
