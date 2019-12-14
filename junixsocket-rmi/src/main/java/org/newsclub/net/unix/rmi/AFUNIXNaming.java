@@ -47,7 +47,6 @@ import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownThread;
  * 
  * @author Christian Kohlschütter
  */
-@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class AFUNIXNaming implements ShutdownHook {
   private static final String RMI_SERVICE_NAME = AFUNIXRMIService.class.getName();
   private static final String PROP_RMI_SOCKET_DIR = "org.newsclub.net.unix.rmi.socketdir";
