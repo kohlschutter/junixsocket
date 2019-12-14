@@ -1,3 +1,4 @@
+@SuppressWarnings("module")
 module org.newsclub.net.mysql {
   exports org.newsclub.net.mysql;
 
