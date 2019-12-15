@@ -155,6 +155,37 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
 
   @Override
   public String toString() {
-    return getClass().getName() + "[port=" + getPort() + ";address=" + prettyPrint(bytes) + "]";
+    return getClass().getName() + "[port=" + getPort() + ";path=" + prettyPrint(bytes) + "]";
+  }
+
+  /**
+   * Returns the path to the UNIX domain socket, as a human-readable string.
+   * 
+   * Zero-bytes are converted to '@', other non-printable bytes are converted to '.'
+   * 
+   * @return The path.
+   * @see #getPathAsBytes()
+   */
+  public String getPath() {
+    byte[] by = getPathAsBytes();
+    for (int i = 1; i < by.length; i++) {
+      byte b = by[i];
+      if (b == 0) {
+        by[i] = '@';
+      } else if (b < 32 || b == 127) {
+        by[i] = '.';
+      }
+    }
+    return new String(by, Charset.defaultCharset());
+  }
+
+  /**
+   * Returns the path to the UNIX domain socket, as bytes.
+   * 
+   * @return The path.
+   * @see #getPath()
+   */
+  public byte[] getPathAsBytes() {
+    return this.bytes.clone();
   }
 }
