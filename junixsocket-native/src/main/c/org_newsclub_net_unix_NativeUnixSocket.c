@@ -195,7 +195,7 @@ static int CAPABILITY_ABSTRACT_NAMESPACE = (1 << 3);
 static void org_newsclub_net_unix_NativeUnixSocket_throwException(JNIEnv* env,
         ExceptionType exceptionType, char* message)
 {
-    if(exceptionType < 0 || exceptionType >= kExceptionMaxExcl) {
+    if((int)exceptionType < 0 || exceptionType >= kExceptionMaxExcl) {
         exceptionType = kExceptionIllegalStateException;
     }
     const char *exceptionClass = kExceptionClasses[exceptionType];
