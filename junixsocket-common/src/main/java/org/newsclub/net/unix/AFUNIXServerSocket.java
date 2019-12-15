@@ -72,6 +72,25 @@ public class AFUNIXServerSocket extends ServerSocket {
     return socket;
   }
 
+  /**
+   * Returns a new, <em>unbound</em> AF_UNIX {@link ServerSocket} that will always bind to the given
+   * address, regardless of any socket address used in a call to <code>bind</code>.
+   * 
+   * @param forceAddr The address to use.
+   * @return The new, yet unbound {@link AFUNIXServerSocket}.
+   * @throws IOException
+   */
+  public static AFUNIXServerSocket forceBindOn(final AFUNIXSocketAddress forceAddr)
+      throws IOException {
+    return new AFUNIXServerSocket() {
+
+      @Override
+      public void bind(SocketAddress ignored, int backlog) throws IOException {
+        super.bind(forceAddr, backlog);
+      }
+    };
+  }
+
   @Override
   public void bind(SocketAddress endpoint, int backlog) throws IOException {
     if (isClosed()) {
