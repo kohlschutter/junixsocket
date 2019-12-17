@@ -51,7 +51,7 @@ public final class Closeables implements Closeable {
    * 
    * @param superException If set, any exceptions thrown in here will be chained to the given
    *          exception via addSuppressed, and then thrown.
-   * @throws IOException
+   * @throws IOException if an exception occurs.
    */
   public void close(IOException superException) throws IOException {
     IOException exc = superException;

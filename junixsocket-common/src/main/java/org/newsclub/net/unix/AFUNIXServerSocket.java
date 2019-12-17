@@ -78,7 +78,7 @@ public class AFUNIXServerSocket extends ServerSocket {
    * 
    * @param forceAddr The address to use.
    * @return The new, yet unbound {@link AFUNIXServerSocket}.
-   * @throws IOException
+   * @throws IOException if an exception occurs.
    */
   public static AFUNIXServerSocket forceBindOn(final AFUNIXSocketAddress forceAddr)
       throws IOException {

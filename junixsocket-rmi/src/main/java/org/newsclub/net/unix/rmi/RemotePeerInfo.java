@@ -94,14 +94,10 @@ public final class RemotePeerInfo {
    * 
    * @param obj The remote object.
    * @return The credentials, or {@code null} if unable to retrieve.
-   * @throws IOException
+   * @throws IOException if an exception occurs.
    */
   public static AFUNIXSocketCredentials remotePeerCredentials(Remote obj) throws IOException {
-    RemotePeerInfo rpi = getConnectionInfo(obj);
-    if (rpi == null) {
-      return null;
-    }
-    return rpi.getPeerCredentials();
+    return getConnectionInfo(obj).getPeerCredentials();
   }
 
   /**
