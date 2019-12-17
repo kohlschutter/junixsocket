@@ -357,6 +357,10 @@ if [ $needLinker -gt 0 ]; then
         ;; 
     esac
     
+    if [[ -n "$target_linker_binary" ]]; then
+      ldPath="$target_linker_binary"
+    fi
+    
     if [[ $gccMode -eq 1 ]]; then
         # ignore -fuse-ld
         true
