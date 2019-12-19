@@ -358,7 +358,7 @@ if [ $needLinker -gt 0 ]; then
     esac
     
     if [[ -n "$target_linker_binary" ]]; then
-      ldPath="$target_linker_binary"
+      ldPath=$(which "$target_linker_binary")
     fi
     
     if [[ $gccMode -eq 1 ]]; then
@@ -407,7 +407,7 @@ fi
 if [[ $withAndWithoutLC -eq 1 ]]; then
   nodepsOut="${outputFile%.*}.nodeps.${outputFile##*.}"
   $(which $compiler) ${isystem_decls[@]} ${clangLinkerArgs[@]} -lc ${output_args[@]} ${clangArgs[@]} ${libsArgs[@]} && \
-  $(which $compiler) ${isystem_decls[@]} ${clangLinkerArgs[@]} -o "$nodepsOut" ${clangArgs[@]} ${libsArgs[@]}
+  $(which $compiler) ${isystem_decls[@]} ${clangLinkerArgs[@]} -nostdlib -o "$nodepsOut" ${clangArgs[@]} ${libsArgs[@]}
 else
   exec $(which $compiler) ${isystem_decls[@]} ${clangLinkerArgs[@]} ${output_args[@]} ${clangArgs[@]} ${libsArgs[@]}
 fi
