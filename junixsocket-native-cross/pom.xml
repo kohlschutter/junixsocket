@@ -136,7 +136,7 @@
                 <junixsocket.native.aol.llvm>amd64-Linux-clang</junixsocket.native.aol.llvm>
                 <junixsocket.install.skip>true</junixsocket.install.skip>
                 <junixsocket.build.directory>${project.build.directory}/junixsocket-native-amd64-Linux-clang-llvm</junixsocket.build.directory>
-                <junixsocket.native.llvm.target>x86_64-pc-linux-gnu</junixsocket.native.llvm.target>
+                <junixsocket.native.llvm.target>x86_64-unknown-linux-gnu</junixsocket.native.llvm.target>
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.x86_64>
                 <ignorant>${ignorant}</ignorant>
@@ -167,7 +167,7 @@
                 <junixsocket.native.aol.llvm>arm-Linux-clang</junixsocket.native.aol.llvm>
                 <junixsocket.install.skip>true</junixsocket.install.skip>
                 <junixsocket.build.directory>${project.build.directory}/junixsocket-native-arm-Linux-clang-llvm</junixsocket.build.directory>
-                <junixsocket.native.llvm.target>arm-linux-gnueabihf</junixsocket.native.llvm.target>
+                <junixsocket.native.llvm.target>armv6--linux-gnueabihf</junixsocket.native.llvm.target>
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.linux.arm>arm-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.arm>
                 <ignorant>${ignorant}</ignorant>
@@ -198,9 +198,40 @@
                 <junixsocket.native.aol.llvm>aarch64-Linux-clang</junixsocket.native.aol.llvm>
                 <junixsocket.install.skip>true</junixsocket.install.skip>
                 <junixsocket.build.directory>${project.build.directory}/junixsocket-native-aarch64-Linux-clang-llvm</junixsocket.build.directory>
-                <junixsocket.native.llvm.target>aarch64-linux-gnu</junixsocket.native.llvm.target>
+                <junixsocket.native.llvm.target>aarch64-unknown-linux-gnu</junixsocket.native.llvm.target>
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.linux.arm>aarch64-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.arm>
+                <ignorant>${ignorant}</ignorant>
+              </properties>
+            </configuration>
+          </execution>
+          <execution>
+            <id>crosscompile-s390x-Linux-clang</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skipInvocation>${junixsocket.cross.disabled}</skipInvocation>
+              <noLog>true</noLog>
+              <streamLogs>true</streamLogs>
+              <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+              </goals>
+              <projectsDirectory>${project.basedir}/../</projectsDirectory>
+              <pomIncludes>
+                <pomInclude>junixsocket-native</pomInclude>
+              </pomIncludes>
+              <profiles>
+                <profile>llvm</profile>
+              </profiles>
+              <properties>
+                <junixsocket.native.aol.llvm>s390x-Linux-clang</junixsocket.native.aol.llvm>
+                <junixsocket.install.skip>true</junixsocket.install.skip>
+                <junixsocket.build.directory>${project.build.directory}/junixsocket-native-s390x-Linux-clang-llvm</junixsocket.build.directory>
+                <junixsocket.native.llvm.target>s390x-ibm-linux-gnu</junixsocket.native.llvm.target>
+                <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
+                <junixsocket.common.classifier.linux.s390x>s390x-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.s390x>
                 <ignorant>${ignorant}</ignorant>
               </properties>
             </configuration>
@@ -288,6 +319,22 @@
               <version>${project.version}</version>
               <packaging>nar</packaging>
               <classifier>aarch64-Linux-clang-llvm-jni</classifier>
+              <generatePom>false</generatePom>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-s390x-Linux-clang</id>
+            <phase>install</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/junixsocket-native-s390x-Linux-clang-llvm/junixsocket-native-${project.version}-s390x-Linux-clang-jni.nar</file>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>junixsocket-native</artifactId>
+              <version>${project.version}</version>
+              <packaging>nar</packaging>
+              <classifier>s390x-Linux-clang-llvm-jni</classifier>
               <generatePom>false</generatePom>
             </configuration>
           </execution>

@@ -142,6 +142,15 @@
           <artifactId>junixsocket-native</artifactId>
           <version>${project.version}</version>
           <type>nar</type>
+          <classifier>s390x-Linux-clang-llvm-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
+        </dependency>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native</artifactId>
+          <version>${project.version}</version>
+          <type>nar</type>
           <classifier>amd64-Windows10-clang-llvm-jni</classifier>
           <scope>runtime</scope>
           <optional>true</optional>
