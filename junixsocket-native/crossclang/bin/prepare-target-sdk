@@ -208,6 +208,9 @@ if [[ /bin/true ]]; then
   library_path+=($(
       IFS=:
       for f in $libPaths; do
+        # strip optional leading "="
+        f=${f#=}
+
         echo $f
       done
   ))
@@ -220,6 +223,9 @@ if [[ "$includeInstallLibs" -eq 1 ]]; then
   library_path+=($(
       IFS=:
       for f in $installPaths; do
+        # strip optional leading "="
+        f=${f#=}
+
         echo $f
       done
   ))
