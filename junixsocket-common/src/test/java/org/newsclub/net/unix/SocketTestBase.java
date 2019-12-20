@@ -23,6 +23,7 @@ import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -83,7 +84,7 @@ abstract class SocketTestBase {
   protected abstract class ServerThread extends Thread {
     private final AFUNIXServerSocket serverSocket;
     private volatile Exception exception = null;
-    private volatile boolean loop = true;
+    private final AtomicBoolean loop = new AtomicBoolean(true);
     private final Semaphore sema = new Semaphore(0);
 
     @SuppressFBWarnings("SC_START_IN_CTOR")
@@ -93,6 +94,16 @@ abstract class SocketTestBase {
       setDaemon(true);
 
       start();
+    }
+
+    /**
+     * Stops the server.
+     * 
+     * @throws IOException
+     */
+    public void shutdown() throws IOException {
+      stopAcceptingConnections();
+      serverSocket.close();
     }
 
     /**
@@ -109,7 +120,7 @@ abstract class SocketTestBase {
      * new calls and to terminate the server thread.
      */
     protected void stopAcceptingConnections() {
-      loop = false;
+      loop.set(false);
     }
 
     protected void onServerSocketClose() {
@@ -126,9 +137,9 @@ abstract class SocketTestBase {
     @Override
     public final void run() {
       try {
-        loop = true;
+        loop.set(true);
         try {
-          while (loop) {
+          while (loop.get()) {
             try (Socket sock = serverSocket.accept()) {
               handleConnection(sock);
             }
@@ -138,8 +149,12 @@ abstract class SocketTestBase {
           serverSocket.close();
         }
       } catch (IOException e) {
-        handleException(e);
-        exception = e;
+        if (!loop.get() && serverSocket.isClosed()) {
+          // ignore
+        } else {
+          handleException(e);
+          exception = e;
+        }
       }
       sema.release();
     }

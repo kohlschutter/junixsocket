@@ -59,7 +59,7 @@ public class SoTimeoutTest extends SocketTestBase {
         // expected, as the socket is actually closed
       }
     }
-    serverThread.getServerSocket().close();
+    serverThread.shutdown();
   }
 
   /**
@@ -88,6 +88,6 @@ public class SoTimeoutTest extends SocketTestBase {
     try (AFUNIXSocket sock = connectToServer()) {
       sock.setSoTimeout((int) TimeUnit.SECONDS.toMillis(12));
     }
-    serverThread.getServerSocket().close();
+    serverThread.shutdown();
   }
 }
