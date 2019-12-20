@@ -206,6 +206,37 @@
             </configuration>
           </execution>
           <execution>
+            <id>crosscompile-ppc64le-Linux-clang</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skipInvocation>${junixsocket.cross.disabled}</skipInvocation>
+              <noLog>true</noLog>
+              <streamLogs>true</streamLogs>
+              <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+              </goals>
+              <projectsDirectory>${project.basedir}/../</projectsDirectory>
+              <pomIncludes>
+                <pomInclude>junixsocket-native</pomInclude>
+              </pomIncludes>
+              <profiles>
+                <profile>llvm</profile>
+              </profiles>
+              <properties>
+                <junixsocket.native.aol.llvm>ppc64le-Linux-clang</junixsocket.native.aol.llvm>
+                <junixsocket.install.skip>true</junixsocket.install.skip>
+                <junixsocket.build.directory>${project.build.directory}/junixsocket-native-ppc64le-Linux-clang-llvm</junixsocket.build.directory>
+                <junixsocket.native.llvm.target>powerpc64le-linux-gnu</junixsocket.native.llvm.target>
+                <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
+                <junixsocket.common.classifier.linux.ppc>ppc64le-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.ppc>
+                <ignorant>${ignorant}</ignorant>
+              </properties>
+            </configuration>
+          </execution>
+          <execution>
             <id>crosscompile-s390x-Linux-clang</id>
             <goals>
               <goal>run</goal>
@@ -319,6 +350,22 @@
               <version>${project.version}</version>
               <packaging>nar</packaging>
               <classifier>aarch64-Linux-clang-llvm-jni</classifier>
+              <generatePom>false</generatePom>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-ppc64le-Linux-clang</id>
+            <phase>install</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/junixsocket-native-ppc64le-Linux-clang-llvm/junixsocket-native-${project.version}-ppc64le-Linux-clang-jni.nar</file>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>junixsocket-native</artifactId>
+              <version>${project.version}</version>
+              <packaging>nar</packaging>
+              <classifier>ppc64le-Linux-clang-llvm-jni</classifier>
               <generatePom>false</generatePom>
             </configuration>
           </execution>
