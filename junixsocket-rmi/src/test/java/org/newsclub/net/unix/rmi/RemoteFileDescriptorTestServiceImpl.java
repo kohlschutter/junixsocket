@@ -23,6 +23,7 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 
 /**
@@ -32,7 +33,7 @@ import java.util.Arrays;
  */
 public class RemoteFileDescriptorTestServiceImpl implements RemoteFileDescriptorTestService,
     Closeable {
-  private File tmpFile;
+  private final File tmpFile;
   private final AFUNIXRMISocketFactory socketFactory;
 
   public RemoteFileDescriptorTestServiceImpl(AFUNIXRMISocketFactory socketFactory)
@@ -58,8 +59,18 @@ public class RemoteFileDescriptorTestServiceImpl implements RemoteFileDescriptor
   @SuppressWarnings("resource")
   public RemoteFileInput input(long skipBytes) throws IOException {
     FileInputStream fin = new FileInputStream(tmpFile);
-    fin.skip(skipBytes);
-    return new RemoteFileInput(socketFactory, fin);
+    try {
+
+      long skipped;
+      while (skipBytes > 0 && (skipped = fin.skip(skipBytes)) >= 0) {
+        skipBytes -= skipped;
+      }
+
+      return new RemoteFileInput(socketFactory, fin);
+    } catch (IOException e) {
+      fin.close();
+      throw e;
+    }
   }
 
   @Override
@@ -71,7 +82,7 @@ public class RemoteFileDescriptorTestServiceImpl implements RemoteFileDescriptor
   @Override
   public void verifyContents(byte[] expectedData) throws IOException {
     try (FileInputStream fin = new FileInputStream(tmpFile)) {
-      byte[] bytes = fin.readAllBytes();
+      byte[] bytes = TestUtils.readAllBytes(fin);
       if (!Arrays.equals(bytes, expectedData)) {
         throw new IOException("Unexpected bytes");
       }
@@ -91,12 +102,12 @@ public class RemoteFileDescriptorTestServiceImpl implements RemoteFileDescriptor
 
   @Override
   public void deleteFile() throws IOException {
-    tmpFile.delete();
+    Files.deleteIfExists(tmpFile.toPath());
   }
 
   @Override
   public void touchFile() throws IOException {
-    tmpFile.createNewFile();
+    Files.createFile(tmpFile.toPath());
   }
 
   @Override

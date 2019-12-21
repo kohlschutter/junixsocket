@@ -40,6 +40,7 @@ import org.junit.jupiter.api.Test;
  * 
  * @author Christian Kohlschütter
  */
+// CPD-OFF - Skip code-duplication checks
 public class FileDescriptorsTest extends SocketTestBase {
   public FileDescriptorsTest() throws IOException {
     super();

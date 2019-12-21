@@ -37,9 +37,11 @@ public class SoTimeoutTest extends SocketTestBase {
   /**
    * Triggers a case where {@link Socket#setSoTimeout(int)} fails on some platforms: when the socket
    * is closed.
+   * 
+   * @throws IOException on error.
    */
   @Test
-  public void issue14Fail() throws Exception {
+  public void issue14Fail() throws IOException {
     final ServerThread serverThread = new ServerThread() {
 
       @Override
@@ -64,9 +66,11 @@ public class SoTimeoutTest extends SocketTestBase {
 
   /**
    * Triggers a regular case where {@link Socket#setSoTimeout(int)} should work.
+   * 
+   * @throws IOException on error.
    */
   @Test
-  public void issue14Pass() throws Exception {
+  public void issue14Pass() throws IOException {
     final ServerThread serverThread = new ServerThread() {
 
       @Override

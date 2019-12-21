@@ -17,13 +17,10 @@
  */
 package org.newsclub.net.unix.rmi;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
-
-import org.apache.log4j.lf5.util.StreamUtils;
 
 public final class NaiveFileInputStreamRemoteImpl extends FileInputStream implements
     NaiveFileInputStreamRemote {
@@ -58,8 +55,6 @@ public final class NaiveFileInputStreamRemoteImpl extends FileInputStream implem
 
   @Override
   public byte[] readAllBytes() throws IOException {
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    StreamUtils.copy(this, bos);
-    return bos.toByteArray();
+    return TestUtils.readAllBytes(this);
   }
 }

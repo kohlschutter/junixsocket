@@ -44,38 +44,40 @@ public class RemoteFileDescriptorTest {
   private static final byte[] HELLO_WORLD = "Hello World :-)\n".getBytes(StandardCharsets.US_ASCII);
   private static final byte[] SMILEY = ":-)\n".getBytes(StandardCharsets.US_ASCII);
 
-  private static AFUNIXNaming NAMING;
-  private static RemoteFileDescriptorTestServiceImpl TEST_SERVICE;
+  private static final Random RANDOM = new Random();
+  private static AFUNIXNaming namingInstance;
+  private static RemoteFileDescriptorTestServiceImpl testService;
 
   @BeforeAll
   public static void setupClass() throws IOException, AlreadyBoundException {
     // NOTE: for testing. You'd probably want to use AFUNIXNaming.getInstance()
-    NAMING = AFUNIXNaming.newPrivateInstance();
+    namingInstance = AFUNIXNaming.newPrivateInstance();
 
     // Create registry
-    final Registry registry = NAMING.createRegistry();
+    final Registry registry = namingInstance.createRegistry();
 
     // Create and bind service
-    TEST_SERVICE = new RemoteFileDescriptorTestServiceImpl(NAMING.getSocketFactory());
-    registry.bind(TEST_SERVICE_NAME, RemoteObject.toStub(TEST_SERVICE));
+    testService = new RemoteFileDescriptorTestServiceImpl(namingInstance.getSocketFactory());
+    registry.bind(TEST_SERVICE_NAME, RemoteObject.toStub(testService));
   }
 
   @AfterAll
   public static void tearDownClass() throws IOException, NotBoundException {
-    TEST_SERVICE.close();
-    NAMING.shutdownRegistry();
+    testService.close();
+    namingInstance.shutdownRegistry();
   }
 
+  @Test
   public void testServiceProxy() throws Exception {
-    RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) NAMING.getRegistry()
-        .lookup(TEST_SERVICE_NAME);
+    RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) namingInstance
+        .getRegistry().lookup(TEST_SERVICE_NAME);
     assertTrue(Proxy.isProxyClass(svc.getClass()));
   }
 
   @Test
   public void testRemoteStdout() throws Exception {
-    RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) NAMING.getRegistry()
-        .lookup(TEST_SERVICE_NAME);
+    RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) namingInstance
+        .getRegistry().lookup(TEST_SERVICE_NAME);
 
     try (RemoteFileDescriptor stdout = svc.stdout()) {
       try (FileOutputStream fos = new FileOutputStream(stdout.getFileDescriptor())) {
@@ -87,8 +89,8 @@ public class RemoteFileDescriptorTest {
 
   @Test
   public void testWriteAndReadHello() throws Exception {
-    RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) NAMING.getRegistry()
-        .lookup(TEST_SERVICE_NAME);
+    RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) namingInstance
+        .getRegistry().lookup(TEST_SERVICE_NAME);
 
     try (FileOutputStream fos = svc.output().asFileOutputStream()) {
       fos.write(HELLO_WORLD);
@@ -96,7 +98,7 @@ public class RemoteFileDescriptorTest {
     svc.verifyContents(HELLO_WORLD);
 
     try (FileInputStream fin = svc.input(12).asFileInputStream()) {
-      byte[] data = fin.readAllBytes();
+      byte[] data = TestUtils.readAllBytes(fin);
       assertArrayEquals(SMILEY, data);
     }
 
@@ -113,22 +115,22 @@ public class RemoteFileDescriptorTest {
 
   @Test
   public void testFindSocketFactory() throws IOException, NotBoundException {
-    RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) NAMING.getRegistry()
-        .lookup(TEST_SERVICE_NAME);
+    RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) namingInstance
+        .getRegistry().lookup(TEST_SERVICE_NAME);
 
     RemotePeerInfo rci = RemotePeerInfo.getConnectionInfo(svc);
     RMISocketFactory factory = rci.getSocketFactory();
     assertNotNull(factory);
-    assertEquals(NAMING.getSocketFactory(), factory);
+    assertEquals(namingInstance.getSocketFactory(), factory);
   }
 
   @Test
   public void testReadWrite() throws IOException, NotBoundException {
-    RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) NAMING.getRegistry()
-        .lookup(TEST_SERVICE_NAME);
+    RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) namingInstance
+        .getRegistry().lookup(TEST_SERVICE_NAME);
 
     byte[] expected = new byte[5000];
-    new Random().nextBytes(expected);
+    RANDOM.nextBytes(expected);
 
     try (FileOutputStream fos = svc.output().asFileOutputStream()) {
       fos.write(expected);
@@ -136,7 +138,7 @@ public class RemoteFileDescriptorTest {
 
     byte[] actual;
     try (FileInputStream fin = svc.input().asFileInputStream()) {
-      actual = fin.readAllBytes();
+      actual = TestUtils.readAllBytes(fin);
     }
     assertArrayEquals(expected, actual);
 

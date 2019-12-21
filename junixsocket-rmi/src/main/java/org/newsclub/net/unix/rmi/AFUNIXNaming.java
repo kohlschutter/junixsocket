@@ -249,6 +249,7 @@ public final class AFUNIXNaming implements ShutdownHook {
    * If there's no registry running at this port, and {@code create} is set to {@code true}, a new
    * one is created; when {@code create} is set to {@code false}, {@code null} is returned.
    * 
+   * @param create {@code true} if a new register may be created if necessary.
    * @return The registry, or {@code null}
    * @throws RemoteException If there was a problem.
    */
@@ -467,8 +468,10 @@ public final class AFUNIXNaming implements ShutdownHook {
   /**
    * Forcibly un-exports the given object, if it exists, and unbinds the object from the registry
    * (otherwise returns without an error).
-   * 
+   *
+   * @param name The name used to bind the object.
    * @param obj The object to un-export.
+   * @throws RemoteException if the operation fails.
    */
   public void unexportAndUnbind(String name, Remote obj) throws RemoteException {
     unexportObject(obj);

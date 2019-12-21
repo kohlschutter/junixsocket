@@ -99,7 +99,7 @@ abstract class SocketTestBase {
     /**
      * Stops the server.
      * 
-     * @throws IOException
+     * @throws IOException on error.
      */
     public void shutdown() throws IOException {
       stopAcceptingConnections();

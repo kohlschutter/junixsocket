@@ -53,7 +53,7 @@ final class TestUtils {
       return (long) phClass.getMethod("pid").invoke(currentProcessHandle);
     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
         | NoSuchMethodException | SecurityException e) {
-      throw new IllegalStateException(e);
+      throw new IllegalStateException("Unable to determine current process PID", e);
     }
   }
 
@@ -64,7 +64,7 @@ final class TestUtils {
       managementClass = Class.forName("java.lang.management.ManagementFactory");
       mxBeanClass = Class.forName("java.lang.management.RuntimeMXBean");
     } catch (ClassNotFoundException e) {
-      throw new IllegalStateException("Unable to determine current process PID");
+      throw new IllegalStateException("Unable to determine current process PID", e);
     }
     try {
       Object mxBean = managementClass.getMethod("getRuntimeMXBean").invoke(null);
@@ -77,7 +77,7 @@ final class TestUtils {
       }
     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
         | NoSuchMethodException | SecurityException e) {
-      throw new IllegalStateException(e);
+      throw new IllegalStateException("Unable to determine current process PID", e);
     }
     throw new IllegalStateException("Unable to determine current process PID");
   }

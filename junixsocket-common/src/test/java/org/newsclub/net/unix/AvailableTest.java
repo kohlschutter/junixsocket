@@ -87,7 +87,7 @@ public class AvailableTest extends SocketTestBase {
    * blocking. Then, we try the opposite direction.
    */
   @Test
-  public void testAvailableAtClient() throws Exception {
+  public void testAvailableAtClient() {
     assertTimeout(Duration.ofSeconds(2), () -> {
       final ServerThread serverThread = new ServerThread() {
 
@@ -118,7 +118,7 @@ public class AvailableTest extends SocketTestBase {
    * blocking. Then, we try the opposite direction.
    */
   @Test
-  public void testAvailableAtServer() throws Exception {
+  public void testAvailableAtServer() {
     assertTimeout(Duration.ofSeconds(2), () -> {
 
       final ServerThread serverThread = new ServerThread() {
