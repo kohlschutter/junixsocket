@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.time.Duration;
 
@@ -42,7 +43,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
 
   @Test
   public void testCatchTimeout() throws Exception {
-    final int timeoutMillis = 100;
+    final int timeoutMillis = 250;
     assertTimeoutPreemptively(Duration.ofMillis(5 * timeoutMillis), () -> {
       try (AFUNIXServerSocket sock = startServer()) {
         long time = System.currentTimeMillis();
@@ -52,7 +53,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
         try {
           sock.accept();
           fail("Did not receive " + SocketTimeoutException.class.getName());
-        } catch (SocketTimeoutException e) {
+        } catch (SocketException | SocketTimeoutException e) {
           // expected
           time = System.currentTimeMillis() - time;
 
