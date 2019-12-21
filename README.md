@@ -50,3 +50,14 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
 junixsocket is released under the Apache 2.0 License.
 
 Commercial support is available through [Kohlschütter Search Intelligence](http://www.kohlschutter.com/).
+
+## Self-test
+
+To verify that the software works as expected on your platform, you can run the selftest program,
+which is located in the "junixsocket-dist" distribution package:
+
+```
+java -jar junixsocket-selftest-VERSION-jar-with-dependencies.jar 
+```
+
+(with VERSION being the corresponding junixsocket version).
