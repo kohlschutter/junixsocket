@@ -103,8 +103,8 @@ public class AcceptTimeoutTest extends SocketTestBase {
         sock.accept();
         time = System.currentTimeMillis() - time;
 
-        assertTrue(time >= connectDelayMillis && (time
-            - connectDelayMillis) <= TIMING_INACCURACY_MILLIS,
+        assertTrue(time >= connectDelayMillis && (time < timeoutMillis || (time
+            - connectDelayMillis) <= TIMING_INACCURACY_MILLIS),
             "Timeout not properly honored. Accept succeeded after " + time + "ms vs. expected "
                 + timeoutMillis + "ms");
       }
