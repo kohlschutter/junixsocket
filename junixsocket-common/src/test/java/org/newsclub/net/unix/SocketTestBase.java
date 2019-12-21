@@ -35,6 +35,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 abstract class SocketTestBase {
   private final AFUNIXSocketAddress serverAddress;
   private final File socketFile = initSocketFile();
+  private Exception caller = new Exception();
 
   public SocketTestBase() throws IOException {
     this.serverAddress = new AFUNIXSocketAddress(socketFile);
@@ -67,6 +68,7 @@ abstract class SocketTestBase {
   }
 
   protected AFUNIXServerSocket startServer() throws IOException {
+    caller = new Exception();
     final AFUNIXServerSocket server = AFUNIXServerSocket.newInstance();
     server.bind(serverAddress);
     return server;
@@ -152,6 +154,7 @@ abstract class SocketTestBase {
         if (!loop.get() && serverSocket.isClosed()) {
           // ignore
         } else {
+          e.addSuppressed(caller);
           handleException(e);
           exception = e;
         }
