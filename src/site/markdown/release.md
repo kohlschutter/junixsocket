@@ -56,7 +56,7 @@ install Java, Maven and junixsocket, and you should be good to go.
 ### Bump project version
 
     cd junixsocket
-    mvn versions:set -DnewVersion=2.1.0
+    mvn versions:set -DnewVersion=2.3.0
     # git add / commit here...
     
 ### Build native libraries on other supported, common platforms
@@ -74,8 +74,8 @@ The platform-dependent nar files should now be available in the local maven repo
 Use the provided script to copy the corresponding nar to a project folder:
 
     cd junixsocket
-    # replace 2.1.0 with the desired version number
-    junixsocket-native-prebuilt/bin/copy-nar-from-m2repo.sh 2.1.0
+    # replace 2.3.0 with the desired version number
+    junixsocket-native-prebuilt/bin/copy-nar-from-m2repo.sh 2.3.0
 
 Now copy the nar files from the target machine to your development computer (from where you do the release).
 By convention, copy the files to the same folder as on the target machine (*junixsocket/junixsocket-native-prebuilt/bin*)
@@ -92,13 +92,12 @@ a script to run the demo classes from the command-line.
 
     cd junixsocket
     mvn clean install -Pstrict -Prelease
-    ( cd junixsocket-dist ; mvn assembly:single -Prelease -Pstrict )
 
 The files can be found in
 
-   * `junixsocket/junixsocket-dist/target/junixsocket-dist-2.1.0-bin`
-   * `junixsocket/junixsocket-dist/target/junixsocket-dist-2.1.0-bin.tar.gz`
-   * `junixsocket/junixsocket-dist/target/junixsocket-dist-2.1.0-bin.zip`
+   * `junixsocket/junixsocket-dist/target/junixsocket-dist-2.3.0-bin`
+   * `junixsocket/junixsocket-dist/target/junixsocket-dist-2.3.0-bin.tar.gz`
+   * `junixsocket/junixsocket-dist/target/junixsocket-dist-2.3.0-bin.zip`
 
 ### Deploy code to Maven central
 
