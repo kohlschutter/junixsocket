@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -91,12 +92,14 @@ public class Selftest {
   public void printExplanation() throws IOException {
     out.println("junixsocket selftest");
     out.println();
-    out.println("This program determines whether junixsocket is supported on the current platform.");
+    out.println(
+        "This program determines whether junixsocket is supported on the current platform.");
     out.println("The final line should say whether the selftest passed or failed.");
-    out.println("If the selftest failed, please visit https://github.com/kohlschutter/junixsocket/issues");
+    out.println(
+        "If the selftest failed, please visit https://github.com/kohlschutter/junixsocket/issues");
     out.println("and file a new bug report with the output below.");
     out.println();
-    out.println("selftest version "+AFUNIXSocket.getVersion());
+    out.println("selftest version " + AFUNIXSocket.getVersion());
     out.println();
   }
 
@@ -120,9 +123,10 @@ public class Selftest {
             break;
           default:
             if (c < 32 || c >= 127) {
-              sb.append(String.format("\\u%04x", (int) c));
+              sb.append(String.format(Locale.ENGLISH, "\\u%04x", (int) c));
             }
             sb.append(c);
+            break;
         }
       }
       out.println(key + ": " + sb.toString());
