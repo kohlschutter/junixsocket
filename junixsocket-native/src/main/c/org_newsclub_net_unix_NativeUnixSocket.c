@@ -120,6 +120,12 @@ extern "C" {
 // Linux
 #ifdef __linux__
 #undef junixsocket_have_sun_len
+
+#if !defined(JUNIXSOCKET_HARDEN_CMSG_NXTHDR)
+// workaround for systems using musl libc
+#  define JUNIXSOCKET_HARDEN_CMSG_NXTHDR 1
+#endif
+
 #endif
 
 // Solaris
@@ -427,6 +433,25 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
 
     return capabilities;
 }
+
+#if defined(junixsocket_have_ancillary)
+
+#if JUNIXSOCKET_HARDEN_CMSG_NXTHDR
+static struct cmsghdr* junixsocket_CMSG_NXTHDR (struct msghdr *mhdr, struct cmsghdr *cmsg)
+{
+    if ((size_t)cmsg->cmsg_len >= sizeof(struct cmsghdr)) {
+        cmsg = (struct cmsghdr*)((unsigned char*) cmsg + CMSG_ALIGN (cmsg->cmsg_len));
+        if ((unsigned char*)cmsg < ((unsigned char*) mhdr->msg_control + mhdr->msg_controllen)) {
+            return CMSG_NXTHDR(mhdr, cmsg);
+        }
+    }
+    return NULL;
+}
+#else
+#  define junixsocket_CMSG_NXTHDR CMSG_NXTHDR
+#endif
+
+#endif
 
 static int org_newsclub_net_unix_NativeUnixSocket_getFD(JNIEnv * env,
         jobject fd)
@@ -1112,7 +1137,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
         jint offset, jint length, jobject ancBuf)
 {
     jsize bufLen = (*env)->GetArrayLength(env, jbuf);
-    if(offset < 0 || length < 0) {
+    if(offset < 0 || length < 0 || offset >= bufLen) {
         org_newsclub_net_unix_NativeUnixSocket_throwException(env,
                 kExceptionSocketException, "Illegal offset or length");
         return -1;
@@ -1136,74 +1161,79 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
     }
 #endif
 
+    ssize_t count;
+
 #if defined(junixsocket_have_ancillary)
-
-    struct iovec iov = {.iov_base = &(buf[offset]), .iov_len = length};
-
-    jbyte *control = (*env)->GetDirectBufferAddress(env, ancBuf);
     jsize controlLen = (*env)->GetDirectBufferCapacity(env, ancBuf);
 
-    struct sockaddr_un sender;
-    struct msghdr msg = {.msg_name = (struct sockaddr*)&sender, .msg_namelen =
-            sizeof(sender), .msg_iov = &iov, .msg_iovlen = 1, .msg_control =
-            control, .msg_controllen = controlLen, };
+    if(controlLen == 0) {
+        do {
+            count = recv(handle, &(((char*)buf)[offset]), (size_t)length, 0);
+        } while(count == -1 && socket_errno == EINTR);
+    } else {
+        jbyte *control = (*env)->GetDirectBufferAddress(env, ancBuf);
 
-    ssize_t count;
-    do {
-        count = recvmsg(handle, &msg, 0);
-    } while(count == (ssize_t)-1 && socket_errno == EINTR);
+        struct iovec iov = {.iov_base = &(buf[offset]), .iov_len = length};
+        struct sockaddr_un sender;
+        struct msghdr msg = {.msg_name = (struct sockaddr*)&sender, .msg_namelen =
+                sizeof(sender), .msg_iov = &iov, .msg_iovlen = 1, .msg_control =
+                control, .msg_controllen = controlLen, };
 
-    if((msg.msg_flags & MSG_CTRUNC) != 0) {
-        if(count >= 0) {
-            count = -1;
-            errno = ENOBUFS;
+        do {
+            count = recvmsg(handle, &msg, 0);
+        } while(count == (ssize_t)-1 && socket_errno == EINTR);
+
+        if((msg.msg_flags & MSG_CTRUNC) != 0) {
+            if(count >= 0) {
+                count = -1;
+                errno = ENOBUFS;
+            }
+            goto readEnd;
         }
-        goto readEnd;
-    }
 
-    if(msg.msg_controllen > 0) {
-        for(struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg); cmsg != NULL; cmsg =
-                CMSG_NXTHDR(&msg, cmsg)) {
-            if(cmsg->cmsg_level == SOL_SOCKET
-                    && cmsg->cmsg_type == SCM_RIGHTS) {
-                char *endBytes = (char*)cmsg + cmsg->cmsg_len;
-                char *controlEnd = (char*)control + controlLen;
-                if(controlEnd < endBytes) {
-                    endBytes = controlEnd;
-                }
-
-                int *data = (int*)CMSG_DATA(cmsg);
-                int *end = (int*)endBytes;
-                int numFds = (int)(end - data);
-
-                if(numFds > 0) {
-                    jintArray fdArray = (*env)->NewIntArray(env, numFds);
-                    jint *fdBuf = (*env)->GetIntArrayElements(env, fdArray,
-                    NULL);
-
-                    for(int i = 0; i < numFds; i++) {
-                        fdBuf[i] = data[i];
+        if(msg.msg_controllen > 0) {
+            for(struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg); cmsg != NULL; cmsg =
+                    junixsocket_CMSG_NXTHDR(&msg, cmsg)) {
+                if(cmsg->cmsg_level == SOL_SOCKET
+                        && cmsg->cmsg_type == SCM_RIGHTS) {
+                    char *endBytes = (char*)cmsg + cmsg->cmsg_len;
+                    char *controlEnd = (char*)control + controlLen;
+                    if(controlEnd < endBytes) {
+                        endBytes = controlEnd;
                     }
 
-                    (*env)->ReleaseIntArrayElements(env, fdArray, fdBuf, 0);
+                    int *data = (int*)CMSG_DATA(cmsg);
+                    int *end = (int*)endBytes;
+                    int numFds = (int)(end - data);
 
-                    callObjectSetter(env, impl, "receiveFileDescriptors",
-                            "([I)V", fdArray);
+                    if(numFds > 0) {
+                        jintArray fdArray = (*env)->NewIntArray(env, numFds);
+                        jint *fdBuf = (*env)->GetIntArrayElements(env, fdArray,
+                        NULL);
+
+                        for(int i = 0; i < numFds; i++) {
+                            fdBuf[i] = data[i];
+                        }
+
+                        (*env)->ReleaseIntArrayElements(env, fdArray, fdBuf, 0);
+
+                        callObjectSetter(env, impl, "receiveFileDescriptors",
+                                "([I)V", fdArray);
+                    }
+                } else {
+    #if DEBUG
+                    fprintf(stderr, "NativeUnixSocket_read: Unexpected cmsg level:%i type:%i\n", cmsg->cmsg_level, cmsg->cmsg_type);
+                    fflush(stderr);
+    #endif
                 }
-            } else {
-#if DEBUG
-                fprintf(stderr, "NativeUnixSocket_read: Unexpected cmsg level:%i type:%i\n", cmsg->cmsg_level, cmsg->cmsg_type);
-                fflush(stderr);
-#endif
             }
         }
     }
 
 #else
-    ssize_t count;
     do {
         count = recv(handle, &(((char*)buf)[offset]), (size_t)length, 0);
-    }while(count == -1 && socket_errno == EINTR);
+    } while(count == -1 && socket_errno == EINTR);
 #endif
 
 #if !defined(_WIN32)
@@ -1253,7 +1283,6 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
     int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
 #if defined(junixsocket_have_ancillary)
-
     struct iovec iov = {.iov_base = &buf[offset], .iov_len = (size_t)length};
     struct msghdr msg = {.msg_name = NULL, .msg_namelen = 0, .msg_iov = &iov,
             .msg_iovlen = 1, };
@@ -1275,7 +1304,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
         for(int i = 0; i < ancFdsLen; i++) {
             data[i] = ancBuf[i];
         }
-        cmsg = CMSG_NXTHDR(&msg, cmsg);
+        cmsg = junixsocket_CMSG_NXTHDR(&msg, cmsg);
         if(cmsg == NULL) {
             // FIXME: not enough space in header?
         }
@@ -1304,7 +1333,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
     ssize_t count;
     do {
         count = send(handle, &((char*)buf)[offset], (size_t)length, 0);
-    }while(count == -1 && socket_errno == EINTR);
+    } while(count == -1 && socket_errno == EINTR);
 
     int myErr = errno;
 #endif
