@@ -20,14 +20,16 @@ package org.newsclub.net.unix.selftest;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.platform.console.options.CommandLineOptions;
 import org.junit.platform.console.options.Theme;
 import org.junit.platform.console.tasks.ConsoleTestExecutor;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
+import org.newsclub.net.unix.AFUNIXSocket;
 
 /**
  * Performs a series of self-tests.
@@ -57,6 +59,8 @@ public class Selftest {
     Selftest st = new Selftest(new PrintWriter(new OutputStreamWriter(System.out, Charset
         .defaultCharset()), true));
 
+    st.checkSupported();
+
     st.runTests("junixsocket-common", new String[] {
         "org.newsclub.net.unix.AcceptTimeoutTest", //
         "org.newsclub.net.unix.AFUNIXSocketAddressTest", //
@@ -78,6 +82,22 @@ public class Selftest {
 
     st.dumpResults();
     System.exit(st.isFail() ? 1 : 0); // NOPMD
+  }
+
+  public void checkSupported() {
+    out.print("AFUNIXSocket.isSupported: ");
+    out.flush();
+
+    boolean isSupported = AFUNIXSocket.isSupported();
+    out.println(isSupported);
+    out.println();
+    out.flush();
+
+    if (!isSupported) {
+      out.println("FAIL: junixsocket is not supported on this platform");
+      out.println();
+      fail = true;
+    }
   }
 
   /**
@@ -142,13 +162,23 @@ public class Selftest {
 
     Object summary;
     if (Boolean.valueOf(System.getProperty("selftest.skip." + module, "false"))) {
-      out.println("Skipping; selftest disabled");
+      out.println("Skipping module " + module + "; selftest disabled");
       summary = null;
     } else {
       CommandLineOptions options = new CommandLineOptions();
       options.setAnsiColorOutputDisabled(true);
       options.setTheme(Theme.ASCII);
-      options.setSelectedClasses(Arrays.asList(classesToTest));
+
+      List<String> list = new ArrayList<>(classesToTest.length);
+      for (String cl : classesToTest) {
+        if (Boolean.valueOf(System.getProperty("selftest.skip." + cl, "false"))) {
+          out.println("Skipping test class " + cl + "; selftest disabled");
+        } else {
+          list.add(cl);
+        }
+      }
+
+      options.setSelectedClasses(list);
 
       try {
         summary = new ConsoleTestExecutor(options).execute(out);
