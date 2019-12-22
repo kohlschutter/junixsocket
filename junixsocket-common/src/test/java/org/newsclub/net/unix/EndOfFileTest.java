@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -45,27 +46,31 @@ import org.junit.jupiter.api.Test;
  * @author Derrick Rice (April, 2010)
  */
 public class EndOfFileTest {
-  static File socketFile = SocketTestBase.initSocketFile();
-
-  ServerSocket server;
-  ExecutorService executor;
+  private File socketFile;
+  protected ServerSocket server;
+  protected ExecutorService executor;
 
   @BeforeEach
   public void setUp() throws IOException {
     server = AFUNIXServerSocket.newInstance();
+    this.socketFile = SocketTestBase.initSocketFile();
     server.bind(new AFUNIXSocketAddress(socketFile));
 
     executor = Executors.newFixedThreadPool(2);
   }
 
   @AfterEach
-  public void tearDown() {
+  public void tearDown() throws IOException {
     try {
       if (server != null) {
         server.close();
       }
     } catch (IOException ignore) {
       // ignore
+    }
+    
+    if (socketFile != null) {
+      Files.delete(socketFile.toPath());
     }
 
     if (executor != null) {

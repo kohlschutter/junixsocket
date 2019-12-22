@@ -62,7 +62,7 @@ public class EndOfFileJavaTest extends EndOfFileTest {
 
   @Override
   @AfterEach
-  public void tearDown() {
+  public void tearDown() throws IOException {
     super.tearDown();
   }
 
