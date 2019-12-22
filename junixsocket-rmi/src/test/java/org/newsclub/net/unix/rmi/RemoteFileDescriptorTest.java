@@ -32,7 +32,6 @@ import java.rmi.NotBoundException;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.RemoteObject;
-import java.util.Random;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -44,7 +43,6 @@ public class RemoteFileDescriptorTest {
   private static final byte[] HELLO_WORLD = "Hello World :-)\n".getBytes(StandardCharsets.US_ASCII);
   private static final byte[] SMILEY = ":-)\n".getBytes(StandardCharsets.US_ASCII);
 
-  private static final Random RANDOM = new Random();
   private static AFUNIXNaming namingInstance;
   private static RemoteFileDescriptorTestServiceImpl testService;
 
@@ -130,7 +128,9 @@ public class RemoteFileDescriptorTest {
         .getRegistry().lookup(TEST_SERVICE_NAME);
 
     byte[] expected = new byte[5000];
-    RANDOM.nextBytes(expected);
+    for (int i = 0; i < expected.length; i++) {
+      expected[i] = (byte) ((i + 123) % 256);
+    }
 
     try (FileOutputStream fos = svc.output().asFileOutputStream()) {
       fos.write(expected);
