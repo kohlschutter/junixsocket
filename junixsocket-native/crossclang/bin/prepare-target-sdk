@@ -51,14 +51,14 @@ EOT
     exit 1
 fi
 
-compiler="$(PATH=/usr/bin:$PATH which ${compiler[@]} 2>/dev/null | head -n 1)"
+compiler="$(PATH=/usr/bin:$PATH which ${compiler[@]} 2>/dev/null | grep -e "^/" | head -n 1)"
 if [ -z "$compiler" ]; then
     echo "clang/gcc not available; configuration may not be accurate" >&2
 else
     echo "Using compiler: $compiler"
 fi
 
-linkerBinary="$(PATH=/usr/bin:$PATH which ${linkerBinary[@]} 2>/dev/null | head -n 1)"
+linkerBinary="$(PATH=/usr/bin:$PATH which ${linkerBinary[@]} 2>/dev/null | grep -e "^/" | head -n 1)"
 if [ -z "$linkerBinary" ]; then
     echo "Linker not available; configuration may not be accurate" >&2
 else
