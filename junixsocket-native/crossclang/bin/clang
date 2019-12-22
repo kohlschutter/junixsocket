@@ -291,6 +291,11 @@ fi
 
 if [ $needLinker -gt 0 ]; then
     ldPath=""
+    
+    if [ -z "$target_linker" ]; then
+        target_linker=ld
+    fi
+    
     case "$target_linker" in
         ld)
         ldPath=$(which ld.lld)
