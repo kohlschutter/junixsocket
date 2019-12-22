@@ -17,7 +17,6 @@
  */
 package org.newsclub.net.unix;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -48,8 +47,10 @@ public class AcceptTimeoutTest extends SocketTestBase {
       try (AFUNIXServerSocket sock = startServer()) {
         long time = System.currentTimeMillis();
         sock.setSoTimeout(timeoutMillis);
-        assertEquals(timeoutMillis, sock.getSoTimeout(),
-            "We should get the same timeout back that we set before");
+        long actualTimeout = sock.getSoTimeout();
+        assertTrue(Math.abs(timeoutMillis - actualTimeout) <= 10,
+            "We should roughly get the same timeout back that we set before, but was "
+                + actualTimeout + " instead of " + timeoutMillis);
         try {
           sock.accept();
           fail("Did not receive " + SocketTimeoutException.class.getName());
@@ -72,8 +73,11 @@ public class AcceptTimeoutTest extends SocketTestBase {
       try (AFUNIXServerSocket sock = startServer()) {
         final int connectDelayMillis = 50;
         sock.setSoTimeout(timeoutMillis);
-        assertEquals(timeoutMillis, sock.getSoTimeout(),
-            "We should get the same timeout back that we set before");
+
+        long actualTimeout = sock.getSoTimeout();
+        assertTrue(Math.abs(timeoutMillis - actualTimeout) <= 10,
+            "We should roughly get the same timeout back that we set before, but was "
+                + actualTimeout + " instead of " + timeoutMillis);
 
         new Thread() {
           private final AFUNIXSocket socket = AFUNIXSocket.newInstance();
