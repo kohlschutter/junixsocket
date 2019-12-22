@@ -58,7 +58,11 @@ final class NativeLibraryLoader implements Closeable {
     return findLibraryCandidates(artifactName, libraryNameAndVersion, providerClass);
   }
 
-  private String getArtifactVersion(Class<?> providerClass, String... artifactNames)
+  public static String getJunixsocketVersion() throws IOException {
+    return getArtifactVersion(AFUNIXSocket.class, "junixsocket-common");
+  }
+
+  private static String getArtifactVersion(Class<?> providerClass, String... artifactNames)
       throws IOException {
     for (String artifactName : artifactNames) {
       Properties p = new Properties();

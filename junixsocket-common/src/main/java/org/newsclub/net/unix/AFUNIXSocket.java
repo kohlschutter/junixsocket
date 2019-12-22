@@ -170,6 +170,22 @@ public final class AFUNIXSocket extends Socket {
   }
 
   /**
+   * Returns the version of the junixsocket library, as a string, for debugging purposes.
+   * 
+   * NOTE: Do not rely on the format of the version identifier, use socket capabilities instead.
+   * 
+   * @return String The version identfier, or {@code null} if it could not be determined.
+   * @see #supports(AFUNIXSocketCapability)
+   */
+  public static String getVersion() {
+    try {
+      return NativeLibraryLoader.getJunixsocketVersion();
+    } catch (IOException e) {
+      return null;
+    }
+  }
+
+  /**
    * Returns an identifier of the loaded native library, or {@code null} if the library hasn't been
    * loaded yet.
    * 
