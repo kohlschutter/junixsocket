@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix.selftest;
 
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import org.junit.platform.console.options.CommandLineOptions;
 import org.junit.platform.console.options.Theme;
@@ -59,6 +61,8 @@ public class Selftest {
     Selftest st = new Selftest(new PrintWriter(new OutputStreamWriter(System.out, Charset
         .defaultCharset()), true));
 
+    st.printExplanation();
+    st.dumpSystemProperties();
     st.checkSupported();
 
     st.runTests("junixsocket-common", new String[] {
@@ -82,6 +86,48 @@ public class Selftest {
 
     st.dumpResults();
     System.exit(st.isFail() ? 1 : 0); // NOPMD
+  }
+
+  public void printExplanation() throws IOException {
+    out.println("junixsocket selftest");
+    out.println();
+    out.println("This program determines whether junixsocket is supported on the current platform.");
+    out.println("The final line should say whether the selftest passed or failed.");
+    out.println("If the selftest failed, please visit https://github.com/kohlschutter/junixsocket/issues");
+    out.println("and file a new bug report with the output below.");
+    out.println();
+    out.println("selftest version "+AFUNIXSocket.getVersion());
+    out.println();
+  }
+
+  public void dumpSystemProperties() {
+    out.println("System properties:");
+    out.println();
+    for (Object key : new TreeSet<>(System.getProperties().keySet())) {
+      String value = System.getProperty(key.toString());
+      StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < value.length(); i++) {
+        char c = value.charAt(i);
+        switch (c) {
+          case '\n':
+            sb.append("\\n");
+            break;
+          case '\r':
+            sb.append("\\r");
+            break;
+          case '\t':
+            sb.append("\\r");
+            break;
+          default:
+            if (c < 32 || c >= 127) {
+              sb.append(String.format("\\u%04x", (int) c));
+            }
+            sb.append(c);
+        }
+      }
+      out.println(key + ": " + sb.toString());
+    }
+    out.println();
   }
 
   public void checkSupported() {
@@ -114,7 +160,7 @@ public class Selftest {
    * 
    */
   public void dumpResults() {
-    System.out.println();
+    out.println();
     out.println("Selftest results:");
 
     for (Map.Entry<String, Object> en : results.entrySet()) {
