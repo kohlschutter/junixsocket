@@ -44,6 +44,7 @@ import org.newsclub.net.unix.AFUNIXSocket;
 public class Selftest {
   private final Map<String, Object> results = new LinkedHashMap<>();
   private final PrintWriter out;
+  private boolean withIssues = false;
   private boolean fail = false;
 
   public Selftest(PrintWriter out) {
@@ -173,6 +174,7 @@ public class Selftest {
       String extra = "";
       if (res == null) {
         result = "SKIP";
+        extra = "(skipped by user request)";
       } else if (res instanceof Throwable) {
         result = "FAIL";
         extra = res.toString();
@@ -180,14 +182,21 @@ public class Selftest {
         TestExecutionSummary summary = (TestExecutionSummary) en.getValue();
 
         extra = summary.getTestsSucceededCount() + "/" + summary.getTestsFoundCount();
+        long nSkipped = summary.getTestsSkippedCount();
+        if (nSkipped > 0) {
+          extra += " (" + nSkipped + " skipped)";
+        }
+
         if (summary.getTestsFailedCount() > 0) {
           result = "FAIL";
           fail = true;
         } else if (summary.getTestsFoundCount() == 0) {
           result = "NONE";
           fail = true;
-        } else if (summary.getTestsStartedCount() == summary.getTestsSucceededCount()) {
+        } else if (summary.getTestsSucceededCount() == summary.getTestsFoundCount()) {
           result = "PASS";
+        } else if (summary.getTestsSkippedCount() > 0) {
+          withIssues = true;
         }
       }
       out.println(result + "\t" + en.getKey() + "\t" + extra);
@@ -196,6 +205,8 @@ public class Selftest {
 
     if (fail) {
       out.println("Selftest FAILED");
+    } else if (withIssues) {
+      out.println("Selftest PASSED WITH ISSUES");
     } else {
       out.println("Selftest PASSED");
     }
@@ -212,7 +223,8 @@ public class Selftest {
 
     Object summary;
     if (Boolean.valueOf(System.getProperty("selftest.skip." + module, "false"))) {
-      out.println("Skipping module " + module + "; selftest disabled");
+      out.println("Skipping module " + module + "; skipped by request");
+      withIssues = true;
       summary = null;
     } else {
       CommandLineOptions options = new CommandLineOptions();
@@ -222,7 +234,8 @@ public class Selftest {
       List<String> list = new ArrayList<>(classesToTest.length);
       for (String cl : classesToTest) {
         if (Boolean.valueOf(System.getProperty("selftest.skip." + cl, "false"))) {
-          out.println("Skipping test class " + cl + "; selftest disabled");
+          out.println("Skipping test class " + cl + "; skipped by request");
+          withIssues = true;
         } else {
           list.add(cl);
         }
