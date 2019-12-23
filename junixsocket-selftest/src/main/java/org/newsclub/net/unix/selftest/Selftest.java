@@ -20,6 +20,8 @@ package org.newsclub.net.unix.selftest;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -33,6 +35,7 @@ import org.junit.platform.console.options.Theme;
 import org.junit.platform.console.tasks.ConsoleTestExecutor;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 import org.newsclub.net.unix.AFUNIXSocket;
+import org.newsclub.net.unix.AFUNIXSocketCapability;
 
 /**
  * Performs a series of self-tests.
@@ -42,8 +45,13 @@ import org.newsclub.net.unix.AFUNIXSocket;
  * @author Christian Kohlschütter
  */
 public class Selftest {
+  private static final Class<? extends Annotation> CAP_ANNOTATION_CLASS =
+      getAFUNIXSocketCapabilityRequirementClass();
+
   private final Map<String, Object> results = new LinkedHashMap<>();
   private final PrintWriter out;
+  private final List<AFUNIXSocketCapability> supportedCapabilites = new ArrayList<>();
+  private final List<AFUNIXSocketCapability> unsupportedCapabilites = new ArrayList<>();
   private boolean withIssues = false;
   private boolean fail = false;
 
@@ -66,6 +74,7 @@ public class Selftest {
     st.printExplanation();
     st.dumpSystemProperties();
     st.checkSupported();
+    st.checkCapabilities();
 
     st.runTests("junixsocket-common", new String[] {
         "org.newsclub.net.unix.AcceptTimeoutTest", //
@@ -151,6 +160,13 @@ public class Selftest {
     }
   }
 
+  public void checkCapabilities() {
+    for (AFUNIXSocketCapability cap : AFUNIXSocketCapability.values()) {
+      boolean supported = AFUNIXSocket.supports(cap);
+      (supported ? supportedCapabilites : unsupportedCapabilites).add(cap);
+    }
+  }
+
   /**
    * Checks if any test has failed so far.
    * 
@@ -204,6 +220,10 @@ public class Selftest {
     }
     out.println();
 
+    out.println("Supported capabilities:   " + supportedCapabilites);
+    out.println("Unsupported capabilities: " + unsupportedCapabilites);
+    out.println();
+
     if (fail) {
       out.println("Selftest FAILED");
     } else if (withIssues) {
@@ -211,6 +231,47 @@ public class Selftest {
     } else {
       out.println("Selftest PASSED");
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static Class<? extends Annotation> getAFUNIXSocketCapabilityRequirementClass() {
+    try {
+      return (Class<? extends Annotation>) Class.forName(
+          "org.newsclub.net.unix.AFUNIXSocketCapabilityRequirement");
+    } catch (ClassNotFoundException e1) {
+      return null;
+    }
+  }
+
+  private boolean checkIfCapabilitiesSupported(String className) {
+    if (CAP_ANNOTATION_CLASS != null) {
+      try {
+        Class<?> klass = Class.forName(className);
+        Annotation annotation = klass.getAnnotation(CAP_ANNOTATION_CLASS);
+        if (annotation != null) {
+          try {
+            AFUNIXSocketCapability[] caps = (AFUNIXSocketCapability[]) annotation.getClass()
+                .getMethod("value").invoke(annotation);
+            if (caps != null) {
+              for (AFUNIXSocketCapability cap : caps) {
+                if (!AFUNIXSocket.supports(cap)) {
+                  out.println("Skipping class " + className + "; unsupported capability: " + cap);
+                  return false;
+                }
+              }
+            }
+          } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+              | NoSuchMethodException | SecurityException e) {
+            // ignore
+          }
+        }
+      } catch (ClassNotFoundException e) {
+        out.println("Class not found: " + className);
+        withIssues = true;
+      }
+    }
+
+    return true;
   }
 
   /**
@@ -233,12 +294,16 @@ public class Selftest {
       options.setTheme(Theme.ASCII);
 
       List<String> list = new ArrayList<>(classesToTest.length);
-      for (String cl : classesToTest) {
-        if (Boolean.valueOf(System.getProperty("selftest.skip." + cl, "false"))) {
-          out.println("Skipping test class " + cl + "; skipped by request");
+      for (String className : classesToTest) {
+        if (classesToTest == null || classesToTest.length == 0) {
+          // ignore
+          continue;
+        }
+        if (Boolean.valueOf(System.getProperty("selftest.skip." + className, "false"))) {
+          out.println("Skipping test class " + className + "; skipped by request");
           withIssues = true;
-        } else {
-          list.add(cl);
+        } else if (checkIfCapabilitiesSupported(className)) {
+          list.add(className);
         }
       }
 

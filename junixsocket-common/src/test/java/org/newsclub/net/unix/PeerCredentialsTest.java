@@ -32,13 +32,13 @@ import org.junit.jupiter.api.Test;
  * 
  * @author Christian Kohlschütter
  */
+@AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_PEER_CREDENTIALS)
 public class PeerCredentialsTest extends SocketTestBase {
   public PeerCredentialsTest() throws IOException {
     super();
   }
 
   @Test
-  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_PEER_CREDENTIALS)
   public void testSameProcess() throws Exception {
     assertTimeout(Duration.ofSeconds(2), () -> {
       final CompletableFuture<AFUNIXSocketCredentials> clientCredsFuture =
