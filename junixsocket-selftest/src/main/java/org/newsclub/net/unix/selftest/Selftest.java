@@ -178,6 +178,7 @@ public class Selftest {
       } else if (res instanceof Throwable) {
         result = "FAIL";
         extra = res.toString();
+        fail = true;
       } else {
         TestExecutionSummary summary = (TestExecutionSummary) en.getValue();
 
