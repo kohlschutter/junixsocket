@@ -69,9 +69,11 @@ it's explicitly disabled with `-Dcross=false`.
 If you want to extend support beyond these platforms, check the `pom.xml` files in _junixsocket_,
 _junixsocket-native_, junixsocket-native-cross, and junixsocket-native-common.
 
-> **NOTE:** On Linux, the junixsocket library is not linked against libc. Since the java process is
-already linked to the C library, this trick allows using alternative libc implementations,
-such as musl-libc (used by Alpine Linux, for example).
+> **NOTE:** On Linux, the junixsocket library is not always linked against glibc.
+Some distributions use alternative libc implementations, such as musl-libc (on Alpine Linux, for
+example). In order to support these environments, the native library loader tries to load the
+junixsocket version for glibc first, and if that doesn't work, it falls back to the ".nodeps.so"
+version, which does not have glibc linked.
 
 ## Using crossclang from the command-line
 

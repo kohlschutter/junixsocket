@@ -1,5 +1,19 @@
 # Noteworthy changes
 
+### _(2019-12-XX)_ **junixsocket 2.3.0**
+
+ - Add support for Java 7 (core/server package only)
+ - Add support for s390x Linux
+ - Add support for ppc64le (POWER) Linux
+ - Add support for Solaris x86/OpenIndiana (Intel 64-bit)
+ - Add support to send FileDescriptors (FileInputStream, FileOutputStream) via RMI
+ - Add support to retrieve peer credentials for RMI connections
+ - Add new self-test functionality to verify that junixsocket works on a given platform
+ - New demo code: HTTP Server over Unix sockets (using NanoHTTPD)
+ - macOS: Use poll for read; fix read timeout not being honored
+ - musl-libc: Workaround for segmentation fault in CMSG_NXTHDR (ancillary messages).
+ - Several other bug fixes and improvements
+
 ### _(2019-11-14)_ **junixsocket 2.2.1**
 
  - Add support for Java 13

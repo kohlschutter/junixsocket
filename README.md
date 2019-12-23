@@ -13,10 +13,13 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
 * Supports [peer credentials](https://kohlschutter.github.io/junixsocket/peercreds.html).
 * Supports sending and receiving [file descriptors](https://kohlschutter.github.io/junixsocket/filedescriptors.html).
 * Supports the abstract namespace on Linux.
-* Supports Java 8, 9, 10, 11, 12, 13.
-* Comes with pre-built native libraries for macOS, Linux and Windows; custom libraries can be built using Maven.
+* Supports HTTP over unix socket (using [NanoHTTPD](https://github.com/NanoHttpd/nanohttpd))
+* Supports Java 7*, 8, 9, 10, 11, 12, 13.
+* Comes with pre-built native libraries for macOS, Linux, Solaris and Windows; custom libraries can be built using Maven.
 * Supports JPMS/Jigsaw modules.
 * Apache 2.0 licensed.
+
+`*` (basic support for Java 7 only, no RMI, no Demos).
 
 ## Quick links
 

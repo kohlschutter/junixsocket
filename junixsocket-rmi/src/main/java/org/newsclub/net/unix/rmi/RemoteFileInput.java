@@ -41,6 +41,14 @@ public final class RemoteFileInput extends RemoteFileDescriptorBase<FileInputStr
     super();
   }
 
+  /**
+   * Creates a new {@link RemoteFileInput} instance, encapsulating a {@link FileInputStream} so that
+   * it can be shared with other processes via RMI.
+   * 
+   * @param socketFactory The socket factory.
+   * @param fin The {@link FileInputStream}.
+   * @throws IOException if the operation fails.
+   */
   public RemoteFileInput(AFUNIXRMISocketFactory socketFactory, FileInputStream fin)
       throws IOException {
     super(socketFactory, fin, fin.getFD(), RemoteFileDescriptorBase.MAGIC_VALUE_MASK

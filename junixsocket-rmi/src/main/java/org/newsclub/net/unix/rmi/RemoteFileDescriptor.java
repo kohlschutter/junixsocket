@@ -42,10 +42,11 @@ public final class RemoteFileDescriptor extends RemoteFileDescriptorBase<Void> {
   }
 
   /**
-   * Creates an instance for the given {@link FileDescriptor}.
+   * Creates a new {@link RemoteFileOutput} instance, encapsulating a generic {@link FileDescriptor}
+   * so that it can be shared with other processes via RMI.
    * 
-   * @param socketFactory The socketFactory
-   * @param fd The file descriptor that is to be exposed via RMI.
+   * @param socketFactory The socket factory.
+   * @param fd The {@link FileDescriptor}.
    */
   public RemoteFileDescriptor(AFUNIXRMISocketFactory socketFactory, FileDescriptor fd) {
     super(socketFactory, null, fd, MAGIC_VALUE_MASK | 0);

@@ -25,3 +25,21 @@ which means it may change upon recompilation, but should remain stable otherwise
 > You can use `otool` to inspect the UUID for a binary: `otool -l <path-to-binary> | grep uuid`
 > 
 > **IMPORTANT:** All Java programs using the same JVM binary share the same UUID. 
+
+## Authenticating RMI connections with Peer Credentials
+
+`junixsocket-rmi` not only allows RMI connections over AF_UNIX sockets, it also makes it very easy
+to authenticate these connections with the help of peer credentials:
+
+    // Returns the peer credentials of a client calling our RMI method
+    // Helps answering the question "is the caller authorized"?
+    AFUNIXSocketCredentials credentials = RemotePeerInfo.remotePeerCredentials();
+
+    // Returns the peer credentials of a server providing the given remote object
+    // Helps answering the question "is the service trusted"?
+    AFUNIXSocketCredentials credentials = RemotePeerInfo.remotePeerCredentials(someRemoteObject);
+
+## Not supported by all platforms
+
+ Not all platforms support file descriptors over AF_UNIX. Make sure they're available using
+> `AFUNIXSocket.supports(AFUNIXSocketCapability.CAPABILITY_PEER_CREDENTIALS)`.

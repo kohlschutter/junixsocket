@@ -42,11 +42,11 @@ public final class RemoteFileOutput extends RemoteFileDescriptorBase<FileOutputS
   }
 
   /**
-   * Creates a new RemoteFileOut instance, encapsulating a FileOutputStream so that it can be shared
-   * with other processes via RMI.
+   * Creates a new {@link RemoteFileOutput} instance, encapsulating a {@link FileOutputStream} so
+   * that it can be shared with other processes via RMI.
    * 
    * @param socketFactory The socket factory.
-   * @param fout The FileOutputStream.
+   * @param fout The {@link FileOutputStream}.
    * @throws IOException if the operation fails.
    */
   public RemoteFileOutput(AFUNIXRMISocketFactory socketFactory, FileOutputStream fout)

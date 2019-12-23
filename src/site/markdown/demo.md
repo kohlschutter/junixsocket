@@ -6,6 +6,25 @@ the `junixsocket-demo` artifact.
 
 junixsocket-dist comes either as a `.tar.gz` or `.zip` archive. Get either one of them.
 
+## Selftest
+
+Before we start running demos, let's make sure that junixsocket works on the current platform
+as expected.
+
+junixsocket-dist provides a self-contained jar that performs this selftest:
+
+    java -jar junixsocket-selftest-2.3.0-jar-with-dependencies.jar
+
+The last line should say "Selftest PASSED", and you're good to go.
+
+If not, please [file a bug report](https://github.com/kohlschutter/junixsocket/issues) with the
+output of the selftest.
+
+> **NOTE:** On Java 7, you can use the following command for a very basic check:
+ 
+    java -cp junixsocket-common.jar:junixsocket-native-common.jar \
+             org.newsclub.net.unix.AFUNIXSocket
+
 ## Running the demos
 
 Simply run
@@ -40,6 +59,9 @@ You will see a couple of examples on how to invoke the individual demos.
     
     # Runs the PostgreSQL demo
     ./run-demo.sh -j (path-to-postgresql-jar) -- -DsocketPath=/tmp/.s.PGSQL.5432 org.newsclub.net.unix.demo.jdbc.PostgresDemo
+    
+    # Runs the HTTP Server
+    ./run-demo.sh -j (path-to-nanohttpd-2.3.1-jar) -- org.newsclub.net.unix.demo.nanohttpd.NanoHttpdServerDemo
     
     Other flags:
      -m Use the Java module-path instead of the classpath (Java 9 or higher)

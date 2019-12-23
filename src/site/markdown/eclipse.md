@@ -24,6 +24,9 @@ If you don't, you may encounter the following error:
 
     java.lang.UnsatisfiedLinkError: Could not load native library.
 
+Moreover, if you try to run "Selftest" (from junixsocket-selftest) from within Eclipse, it will
+most likely tell you that the selftest failed.
+
 ## Code Formatter and Style conventions
  
 We use the coding conventions from [https://github.com/kohlschutter/coding-style](https://github.com/kohlschutter/coding-style).
