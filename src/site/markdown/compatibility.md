@@ -8,7 +8,7 @@ junixsocket versions consist of three parts: major, minor and patch (for example
 
 ### junixsocket 2.3
 
-junixsocket 2.3 is fully compatible with Java 8 and newer (tested up to Java 13).
+junixsocket 2.3 is fully compatible with Java 8 and newer (tested up to Java 14).
 
 There is limited support for Java 7 systems: the core functionality (junixsocket-common and
 junixsocket-server) is supported, but RMI, selftest and demos aren't.
