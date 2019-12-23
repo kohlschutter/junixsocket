@@ -22,8 +22,12 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -33,12 +37,22 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author Christian Kohlschuetter
  */
 abstract class SocketTestBase {
+  private static final File socketFile = initSocketFile();
   private final AFUNIXSocketAddress serverAddress;
-  private final File socketFile = initSocketFile();
   private Exception caller = new Exception();
 
   public SocketTestBase() throws IOException {
     this.serverAddress = new AFUNIXSocketAddress(socketFile);
+  }
+
+  @BeforeEach
+  public void ensureSocketFileIsDeleted() throws IOException {
+    Files.deleteIfExists(socketFile.toPath());
+  }
+
+  @AfterAll
+  public static void tearDownClass() throws IOException {
+    Files.deleteIfExists(socketFile.toPath());
   }
 
   protected AFUNIXSocketAddress getServerAddress() {
