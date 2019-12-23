@@ -330,4 +330,23 @@ public final class AFUNIXSocket extends Socket {
   public void removeCloseable(Closeable closeable) {
     closeables.remove(closeable);
   }
+
+  /**
+   * Very basic self-test function.
+   * 
+   * Prints "supported" and "capabilities" status to System.out.
+   * 
+   * @param args ignored.
+   */
+  public static void main(String[] args) {
+    System.out.print("AFUNIXSocket.isSupported(): ");
+    System.out.flush();
+    System.out.println(AFUNIXSocket.isSupported());
+
+    for (AFUNIXSocketCapability cap : AFUNIXSocketCapability.values()) {
+      System.out.print(cap + ": ");
+      System.out.flush();
+      System.out.println(AFUNIXSocket.supports(cap));
+    }
+  }
 }
