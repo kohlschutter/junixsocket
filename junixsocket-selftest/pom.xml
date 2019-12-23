@@ -15,6 +15,7 @@
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
     <kohlschutter.parent.directory>${project.parent.parent.basedir}</kohlschutter.parent.directory>
+    <junixsocket.java8.release>8</junixsocket.java8.release>
   </properties>
 
   <description>Runs junixsocket's unit tests as selftests</description>
@@ -132,7 +133,7 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.version}</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>

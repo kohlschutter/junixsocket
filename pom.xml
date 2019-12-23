@@ -73,6 +73,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <junixsocket.native.default.linkerName></junixsocket.native.default.linkerName>
     <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
     <junixsocket.custom.arch></junixsocket.custom.arch>
+    
+    <junixsocket.java8.release>7</junixsocket.java8.release>
   </properties>
 
   <modules>
@@ -229,8 +231,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
                   <goal>compile</goal>
                 </goals>
                 <configuration>
-                  <target>1.8</target>
-                  <release>8</release>
+                  <target>1.${junixsocket.java8.release}</target>
+                  <release>${junixsocket.java8.release}</release>
                   <multiReleaseOutput>false</multiReleaseOutput>
                   <excludes>
                     <exclude>module-info.java</exclude>

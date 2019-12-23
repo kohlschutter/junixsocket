@@ -344,7 +344,7 @@ public abstract class AFUNIXSocketServer {
     theServerSocket.close();
   }
 
-  private Future<?> submit(Socket socket, ExecutorService executor) {
+  private Future<?> submit(final Socket socket, ExecutorService executor) {
     return executor.submit(new Runnable() {
       @Override
       public void run() {

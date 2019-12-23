@@ -70,11 +70,11 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   private ByteBuffer ancillaryReceiveBuffer = ByteBuffer.allocateDirect(0);
   private final List<FileDescriptor[]> receivedFileDescriptors = Collections.synchronizedList(
-      new LinkedList<>());
+      new LinkedList<FileDescriptor[]>());
   private int[] pendingFileDescriptors = null;
 
   private final Map<FileDescriptor, Integer> closeableFileDescriptors = Collections.synchronizedMap(
-      new HashMap<>());
+      new HashMap<FileDescriptor, Integer>());
 
   private int timeout = 0;
 
@@ -650,7 +650,7 @@ class AFUNIXSocketImpl extends SocketImpl {
     final int fdsLength = fds.length;
     FileDescriptor[] descriptors = new FileDescriptor[fdsLength];
     for (int i = 0; i < fdsLength; i++) {
-      FileDescriptor fdesc = new FileDescriptor();
+      final FileDescriptor fdesc = new FileDescriptor();
       NativeUnixSocket.initFD(fdesc, fds[i]);
       descriptors[i] = fdesc;
 
