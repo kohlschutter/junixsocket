@@ -194,7 +194,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     final HostAndPort hap = new HostAndPort(host, port);
     synchronized (credentials) {
       if (credentials.put(hap, creds) != null) {
-        System.err.println("HUH? " + hap);
+        // unexpected
       }
     }
     socket.addCloseable(new Closeable() {
