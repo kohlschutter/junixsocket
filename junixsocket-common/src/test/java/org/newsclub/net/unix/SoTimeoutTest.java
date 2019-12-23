@@ -48,7 +48,7 @@ public class SoTimeoutTest extends SocketTestBase {
       protected void handleConnection(final Socket sock) throws IOException {
         stopAcceptingConnections();
       }
-      
+
       @Override
       protected void handleException(Exception e) {
         // do not print stacktrace

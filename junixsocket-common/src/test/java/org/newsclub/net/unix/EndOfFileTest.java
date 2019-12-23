@@ -68,7 +68,7 @@ public class EndOfFileTest {
     } catch (IOException ignore) {
       // ignore
     }
-    
+
     if (socketFile != null) {
       Files.delete(socketFile.toPath());
     }
