@@ -42,8 +42,12 @@
 #define junixsocket_have_sun_len // might be undef'ed below
 #define junixsocket_have_ancillary // might be undef'ed below
 
-#if !defined(uint64_t)
+#if !defined(uint64_t) && !defined(_INT64_TYPE) && !defined(_UINT64_T)
+#  ifdef _LP64
+typedef unsigned long uint64_t;
+#  else
 typedef unsigned long long uint64_t;
+#  endif
 #endif
 
 #if defined(_WIN32)
@@ -129,8 +133,10 @@ extern "C" {
 #endif
 
 // Solaris
-#if defined(__sun)
+#if defined(__sun) || defined(__sun__)
 #undef junixsocket_have_sun_len
+#define junixsocket_use_poll_for_accept
+#define junixsocket_use_poll_for_read
 #endif
 
 // Tru64
@@ -742,6 +748,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
 
     const char* socketFile = (char*)(void*)(*env)->GetByteArrayElements(env,
             addr, NULL);
+
     if(socketFile == NULL) {
         return -1; // OOME
     }
@@ -749,6 +756,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
     su.sun_family = AF_UNIX;
     memset(su.sun_path, 0, maxLen);
     memcpy(su.sun_path, socketFile, addrLen);
+
     (*env)->ReleaseByteArrayElements(env, addr, (jbyte*)(void*)socketFile, 0);
     socketFile = NULL;
 
@@ -856,6 +864,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
         }
 
         myErr = socket_errno;
+
         if(bindRes == 0) {
             break;
         } else if(attempt == 0 && (!reuse || myErr == EADDRINUSE)) {
