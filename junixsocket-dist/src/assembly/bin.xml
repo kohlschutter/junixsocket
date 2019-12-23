@@ -39,12 +39,14 @@
       <excludes>
         <exclude>com.kohlschutter.junixsocket:junixsocket-selftest:*</exclude>
       </excludes>
+      <useProjectArtifact>false</useProjectArtifact>
     </dependencySet>
     <dependencySet>
       <outputDirectory></outputDirectory>
       <includes>
         <include>com.kohlschutter.junixsocket:junixsocket-selftest:jar</include>
       </includes>
+      <useProjectArtifact>false</useProjectArtifact>
     </dependencySet>
   </dependencySets>
 </assembly>

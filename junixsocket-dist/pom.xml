@@ -83,6 +83,7 @@
           <descriptors>
             <descriptor>src/assembly/bin.xml</descriptor>
           </descriptors>
+          <attach>false</attach>
         </configuration>
       </plugin>
     </plugins>
