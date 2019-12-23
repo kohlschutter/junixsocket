@@ -171,7 +171,8 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
     try (AFUNIXSocket socket = (AFUNIXSocket) socketFactory.createSocket("", port)) {
       try {
         socket.setSoTimeout(CONNECT_TIMEOUT);
-      } catch (IOException e) {
+      } catch (IOException e) { // NOPMD
+        // ignore
         // FIXME: spurious IOExceptions ("socket closed) on Solaris only; ignoring them for now
       }
       try (DataInputStream in1 = new DataInputStream(socket.getInputStream())) {
