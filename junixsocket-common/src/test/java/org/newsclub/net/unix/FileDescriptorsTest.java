@@ -40,6 +40,7 @@ import org.junit.jupiter.api.Test;
  * 
  * @author Christian Kohlschütter
  */
+@AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_FILE_DESCRIPTORS)
 // CPD-OFF - Skip code-duplication checks
 public class FileDescriptorsTest extends SocketTestBase {
   public FileDescriptorsTest() throws IOException {
@@ -47,7 +48,6 @@ public class FileDescriptorsTest extends SocketTestBase {
   }
 
   @Test
-  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_FILE_DESCRIPTORS)
   public void testSendRecvFileDescriptors() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       final ServerThread serverThread = new ServerThread() {
@@ -94,7 +94,6 @@ public class FileDescriptorsTest extends SocketTestBase {
   }
 
   @Test
-  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_FILE_DESCRIPTORS)
   public void testBadFileDescriptor() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       final ServerThread serverThread = new ServerThread() {
@@ -162,7 +161,6 @@ public class FileDescriptorsTest extends SocketTestBase {
   }
 
   @Test
-  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_FILE_DESCRIPTORS)
   public void testAncillaryReceiveBufferTooSmall() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       final ServerThread serverThread = new ServerThread() {
@@ -197,7 +195,6 @@ public class FileDescriptorsTest extends SocketTestBase {
   }
 
   @Test
-  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_FILE_DESCRIPTORS)
   public void testFileInputStream() throws Exception {
     final File tmpFile = File.createTempFile("junixsocket", "test");
     tmpFile.deleteOnExit();
@@ -250,7 +247,6 @@ public class FileDescriptorsTest extends SocketTestBase {
   }
 
   @Test
-  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_FILE_DESCRIPTORS)
   public void testFileInputStreamPartiallyConsumed() throws Exception {
     final File tmpFile = File.createTempFile("junixsocket", "test");
     tmpFile.deleteOnExit();
