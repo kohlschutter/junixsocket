@@ -104,7 +104,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
       @SuppressWarnings("resource")
       AFUNIXServerSocket serverSocket = (AFUNIXServerSocket) socketFactory.createServerSocket(0);
       localPort = serverSocket.getLocalPort();
-      AFUNIXSocketServer server = new AFUNIXSocketServer(serverSocket.getLocalSocketAddress()) {
+      AFUNIXSocketServer server = new AFUNIXSocketServer(serverSocket) {
 
         @Override
         protected void doServeSocket(Socket socket) throws IOException {
@@ -169,7 +169,11 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
     int port = objIn.readInt();
     FileDescriptor[] descriptors;
     try (AFUNIXSocket socket = (AFUNIXSocket) socketFactory.createSocket("", port)) {
-      socket.setSoTimeout(CONNECT_TIMEOUT);
+      try {
+        socket.setSoTimeout(CONNECT_TIMEOUT);
+      } catch (IOException e) {
+        // FIXME: spurious IOExceptions ("socket closed) on Solaris only; ignoring them for now
+      }
       try (DataInputStream in1 = new DataInputStream(socket.getInputStream())) {
         socket.ensureAncillaryReceiveBufferSize(128);
 
