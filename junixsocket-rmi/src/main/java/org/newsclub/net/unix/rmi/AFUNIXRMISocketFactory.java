@@ -266,11 +266,6 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     getRmiService().returnPort(port);
   }
 
-  public AFUNIXSocketAddress newAnonymousServerSocketAddress() throws IOException {
-    int port = newPort();
-    return new AFUNIXSocketAddress(getFile(port), port);
-  }
-
   @SuppressWarnings("resource")
   @Override
   public ServerSocket createServerSocket(int port) throws IOException {
@@ -346,6 +341,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     protected AnonymousServerSocket(int returnPort) throws IOException {
       super();
       this.returnPort = returnPort;
+      setReuseAddress(true);
     }
 
     @Override
