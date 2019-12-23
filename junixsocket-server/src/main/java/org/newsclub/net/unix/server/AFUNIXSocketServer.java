@@ -63,8 +63,28 @@ public abstract class AFUNIXSocketServer {
   private ForkJoinPool connectionPool;
 
   private ScheduledFuture<IOException> timeoutFuture;
+  private final ServerSocket reuseSocket;
 
+  /**
+   * Creates a server using the given {@link SocketAddress}.
+   * 
+   * @param listenAddress The address to bind the socket on.
+   */
   public AFUNIXSocketServer(SocketAddress listenAddress) {
+    this(listenAddress, null);
+  }
+
+  /**
+   * Creates a server using the given, bound {@link ServerSocket}.
+   * 
+   * @param serverSocket The server socket to use (must be bound).
+   */
+  public AFUNIXSocketServer(ServerSocket serverSocket) {
+    this(serverSocket.getLocalSocketAddress(), serverSocket);
+  }
+
+  private AFUNIXSocketServer(SocketAddress listenAddress, ServerSocket preboundSocket) {
+    this.reuseSocket = preboundSocket;
     Objects.requireNonNull(listenAddress, "listenAddress");
 
     this.listenAddress = listenAddress;
@@ -197,18 +217,25 @@ public abstract class AFUNIXSocketServer {
   @SuppressFBWarnings("NN_NAKED_NOTIFY")
   private void listen() throws IOException {
     ServerSocket server;
+
     synchronized (this) {
-      if (serverSocket != null) {
-        throw new IllegalStateException("The server is already listening");
+      if (reuseSocket != null) {
+        serverSocket = reuseSocket;
+      } else {
+        if (serverSocket != null) {
+          throw new IllegalStateException("The server is already listening");
+        }
+        serverSocket = newServerSocket();
       }
-      serverSocket = newServerSocket();
       server = serverSocket;
     }
     onServerStarting();
 
     try {
-      server.bind(listenAddress);
-      onServerBound(listenAddress);
+      if (!server.isBound()) {
+        server.bind(listenAddress);
+        onServerBound(listenAddress);
+      }
       server.setSoTimeout(serverTimeout);
 
       acceptLoop(server);
@@ -390,6 +417,8 @@ public abstract class AFUNIXSocketServer {
 
   /**
    * Called when the server has been bound to a socket.
+   * 
+   * This is not called when you instantiated the server with a pre-bound socket.
    * 
    * @param address The bound address.
    */
