@@ -37,22 +37,22 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author Christian Kohlschuetter
  */
 abstract class SocketTestBase {
-  private static final File socketFile = initSocketFile();
+  private static final File SOCKET_FILE = initSocketFile();
   private final AFUNIXSocketAddress serverAddress;
   private Exception caller = new Exception();
 
   public SocketTestBase() throws IOException {
-    this.serverAddress = new AFUNIXSocketAddress(socketFile);
+    this.serverAddress = new AFUNIXSocketAddress(SOCKET_FILE);
   }
 
   @BeforeEach
   public void ensureSocketFileIsDeleted() throws IOException {
-    Files.deleteIfExists(socketFile.toPath());
+    Files.deleteIfExists(SOCKET_FILE.toPath());
   }
 
   @AfterAll
   public static void tearDownClass() throws IOException {
-    Files.deleteIfExists(socketFile.toPath());
+    Files.deleteIfExists(SOCKET_FILE.toPath());
   }
 
   protected AFUNIXSocketAddress getServerAddress() {
@@ -78,7 +78,7 @@ abstract class SocketTestBase {
   }
 
   protected File getSocketFile() {
-    return socketFile;
+    return SOCKET_FILE;
   }
 
   protected AFUNIXServerSocket startServer() throws IOException {
