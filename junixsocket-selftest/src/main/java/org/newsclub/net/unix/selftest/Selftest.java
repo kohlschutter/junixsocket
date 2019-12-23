@@ -42,6 +42,9 @@ import org.newsclub.net.unix.AFUNIXSocketCapability;
  * 
  * Specifically, we run all unit tests of junixsocket-core and junixsocket-rmi.
  * 
+ * NOTE: The Selftest will fail when run from within Eclipse due to test classes not being present.
+ * Invoke via <code>java -jar junixsocket-selftest-...-jar-with-dependencies.jar</code>.
+ * 
  * @author Christian Kohlschütter
  */
 public class Selftest {
