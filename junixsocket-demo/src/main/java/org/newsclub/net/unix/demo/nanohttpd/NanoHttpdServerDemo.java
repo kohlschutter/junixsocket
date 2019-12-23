@@ -39,7 +39,7 @@ public class NanoHttpdServerDemo extends NanoHTTPD {
     });
     System.out.println("Address: " + socketAddress);
     System.out.println("Try:  curl --unix-socket " + socketAddress.getPath()
-        + " https://localhost/");
+        + " http://localhost/");
   }
 
   public static void main(String[] args) throws IOException {
