@@ -3,8 +3,9 @@
 ### _(2019-12-XX)_ **junixsocket 2.3.0**
 
  - Add support for Java 7 (core/server package only)
- - Add support for s390x Linux
  - Add support for ppc64le (POWER) Linux
+ - Add support for RISC-V 64-bit Linux
+ - Add support for s390x Linux
  - Add support for Solaris x86/OpenIndiana (Intel 64-bit)
  - Add support to send FileDescriptors (FileInputStream, FileOutputStream) via RMI
  - Add support to retrieve peer credentials for RMI connections

@@ -24,6 +24,7 @@ The minimum set of supported (out of the box) platforms and processor architectu
 * Linux ARM 32-bit (armhf)
 * Linux ARM 64-bit (aarch64)
 * Linux s390x
+* Linux RISC-V 64-bit (rv64ifd / lp64d)
 * Linux ppc64le (POWER 64-bit Little Endian)
 * Solaris x86 64-bit / OpenIndiana
 * Windows 10 Intel 64-bit 
