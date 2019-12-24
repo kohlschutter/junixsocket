@@ -195,6 +195,21 @@ final class NativeLibraryLoader implements Closeable {
     }
   }
 
+  private Throwable loadLibraryOverride() {
+    String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, "");
+    if (!libraryOverride.isEmpty()) {
+      try {
+        System.load(libraryOverride);
+        setLoaded(libraryOverride);
+        return null;
+      } catch (Exception | LinkageError e) {
+        return e;
+      }
+    } else {
+      return new Exception("No library specified with -D" + PROP_LIBRARY_OVERRIDE + "=");
+    }
+  }
+
   @SuppressWarnings("resource")
   // NOPMD
   public synchronized void loadLibrary() {
@@ -203,17 +218,16 @@ final class NativeLibraryLoader implements Closeable {
         // Already loaded
         return;
       }
-      String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, "");
-      if (!libraryOverride.isEmpty()) {
-        System.load(libraryOverride);
 
-        setLoaded(libraryOverride);
+      List<Throwable> suppressedThrowables = new ArrayList<>();
+      Throwable ex = loadLibraryOverride();
+      if (ex == null) {
         return;
+      } else {
+        suppressedThrowables.add(ex);
       }
 
       List<LibraryCandidate> candidates = new ArrayList<>();
-      List<Throwable> suppressedThrowables = new ArrayList<>();
-
       try {
         candidates.add(new StandardLibraryCandidate(getArtifactVersion(getClass(),
             "junixsocket-common", "junixsocket-core")));
