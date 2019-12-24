@@ -61,8 +61,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <java.version>9</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <slf4j.version>1.7.29</slf4j.version>
-    <log4j.version>1.2.17</log4j.version>
     <junit.version>5.5.2</junit.version>
     <junixsocket.native.aol></junixsocket.native.aol>
     <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
@@ -298,25 +296,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
