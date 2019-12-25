@@ -152,7 +152,7 @@ NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in
 
 2. Select the newly created tag (= search for the version).
 
-3. Release title = "junixsocket" + version>, e.g., "junixsocket 2.2.0"
+3. Release title = "junixsocket" + version>, e.g., "junixsocket 2.3.0"
 
 4. Hit "Publish release"    
 
