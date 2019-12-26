@@ -10,7 +10,7 @@
   <parent>
     <groupId>com.kohlschutter</groupId>
     <artifactId>kohlschutter-parent</artifactId>
-    <version>1.3.2</version>
+    <version>1.3.3</version>
     <relativePath>../kohlschutter-parent/pom.xml</relativePath>
   </parent>
   <name>junixsocket-parent</name>
@@ -61,7 +61,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <java.version>9</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <junit.version>5.5.2</junit.version>
+    <junit.version>5.6.0-M1</junit.version>
     <junixsocket.native.aol></junixsocket.native.aol>
     <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
     <junixsocket.native.crossclang.toolPath>${project.basedir}/crossclang/bin/</junixsocket.native.crossclang.toolPath>
@@ -71,7 +71,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <junixsocket.native.default.linkerName></junixsocket.native.default.linkerName>
     <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
     <junixsocket.custom.arch></junixsocket.custom.arch>
-    
+
     <junixsocket.java8.release>7</junixsocket.java8.release>
   </properties>
 
@@ -104,6 +104,17 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- surefire would fail upon deploy -->
+          <argLine>
+            --add-opens
+            org.newsclub.net.unix/org.newsclub.net.unix=ALL-UNNAMED
+          </argLine>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -216,7 +227,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <plugins>
           <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.0</version>
             <configuration>
               <target>9</target>
               <release>9</release>
