@@ -1,6 +1,6 @@
 # Noteworthy changes
 
-### _(2019-12-XX)_ **junixsocket 2.3.0**
+### _(2019-12-26)_ **junixsocket 2.3.0**
 
  - Add support for Java 7 (core/server package only)
  - Add support for ppc64le (POWER) Linux
