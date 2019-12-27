@@ -128,6 +128,7 @@ public abstract class SocketTestBase { // NOTE: needs to be public for junit
      * Use {@link #stopAcceptingConnections()} to stop accepting new calls.
      * 
      * @param sock The socket to handle.
+     * @throws IOException upon error.
      */
     protected abstract void handleConnection(final Socket sock) throws IOException;
 
@@ -179,7 +180,9 @@ public abstract class SocketTestBase { // NOTE: needs to be public for junit
     /**
      * Checks if there were any exceptions thrown during the lifetime of this ServerThread.
      * 
-     * NOTE: This call blogs until the Thread actually terminates.
+     * NOTE: This call blocks until the Thread actually terminates.
+     * 
+     * @throws Exception upon error.
      */
     public void checkException() throws Exception {
       sema.acquire();
@@ -189,7 +192,13 @@ public abstract class SocketTestBase { // NOTE: needs to be public for junit
     }
   }
 
-  protected void sleepFor(final int ms) throws IOException {
+  /**
+   * Sleeps for the given amount of milliseconds.
+   * 
+   * @param ms The duration in milliseconds.
+   * @throws InterruptedIOException when interrupted.
+   */
+  protected void sleepFor(final int ms) throws InterruptedIOException {
     try {
       Thread.sleep(ms);
     } catch (InterruptedException e) {
