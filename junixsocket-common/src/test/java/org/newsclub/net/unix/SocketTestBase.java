@@ -36,7 +36,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * 
  * @author Christian Kohlschuetter
  */
-abstract class SocketTestBase {
+public abstract class SocketTestBase { // NOTE: needs to be public for junit
   private static final File SOCKET_FILE = initSocketFile();
   private final AFUNIXSocketAddress serverAddress;
   private Exception caller = new Exception();

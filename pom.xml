@@ -106,17 +106,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <!-- surefire would fail upon deploy -->
-          <argLine>
-            --add-opens
-            org.newsclub.net.unix/org.newsclub.net.unix=ALL-UNNAMED
-          </argLine>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
