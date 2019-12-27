@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RemoteFileDescriptorBase.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">RemoteFileDescriptorBase.java</span></div><h1>RemoteFileDescriptorBase.java</h1><pre class="source lang-java linenums">/**
+ * junixsocket
+ *
+ * Copyright 2009-2019 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.rmi;
+
+import java.io.Closeable;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.Externalizable;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
+import org.newsclub.net.unix.AFUNIXServerSocket;
+import org.newsclub.net.unix.AFUNIXSocket;
+import org.newsclub.net.unix.server.AFUNIXSocketServer;
+
+/**
+ * A wrapper that allows a {@link FileDescriptor} be sent via RMI over AF_UNIX sockets.
+ * 
+ * @author Christian Kohlschütter
+ * @see RemoteFileInput subclass for sending {@link FileInputStream}s.
+ * @see RemoteFileOutput subclass for sending {@link FileOutputStream}s.
+ */
+public abstract class RemoteFileDescriptorBase&lt;T&gt; implements Externalizable, Closeable {
+  private static final String PROP_SERVER_TIMEOUT =
+      &quot;org.newsclub.net.unix.rmi.rfd-server-timeout-millis&quot;;
+  private static final String PROP_CONNECT_TIMEOUT =
+      &quot;org.newsclub.net.unix.rmi.rfd-connect-timeout-millis&quot;;
+
+<span class="fc" id="L54">  private static final int SERVER_TIMEOUT = //</span>
+<span class="fc" id="L55">      parseTimeoutMillis(System.getProperty(PROP_SERVER_TIMEOUT, &quot;10000&quot;), false);</span>
+<span class="fc" id="L56">  private static final int CONNECT_TIMEOUT = //</span>
+<span class="fc" id="L57">      parseTimeoutMillis(System.getProperty(PROP_CONNECT_TIMEOUT, &quot;1000&quot;), true);</span>
+
+  protected static final int MAGIC_VALUE_MASK = 0x00FD0000;
+  protected static final int BIT_READABLE = 1 &lt;&lt; 0;
+  protected static final int BIT_WRITABLE = 1 &lt;&lt; 1;
+
+  private static final long serialVersionUID = 1L;
+<span class="fc" id="L64">  private static final Random RANDOM = new Random();</span>
+
+  /**
+   * An optional, closeable resource that is related to this instance. If non-null, this will be
+   * closed upon {@link #close()}.
+   * 
+   * For unidirectional implementations, this could be the corresponding input/output stream. For
+   * bidirectional implementations (e.g., a Socket, Pipe, etc.), this should close both directions.
+   */
+  protected transient T resource;
+
+  private int magicValue;
+  private FileDescriptor fd;
+  private AFUNIXRMISocketFactory socketFactory;
+
+  /**
+   * Creates an uninitialized instance; used for externalization.
+   * 
+   * @see #readExternal(ObjectInput)
+   */
+<span class="fc" id="L84">  protected RemoteFileDescriptorBase() {</span>
+<span class="fc" id="L85">  }</span>
+
+  RemoteFileDescriptorBase(AFUNIXRMISocketFactory socketFactory, T stream, FileDescriptor fd,
+<span class="fc" id="L88">      int magicValue) {</span>
+<span class="fc" id="L89">    this.resource = stream;</span>
+<span class="fc" id="L90">    this.socketFactory = socketFactory;</span>
+<span class="fc" id="L91">    this.fd = fd;</span>
+<span class="fc" id="L92">    this.magicValue = magicValue;</span>
+<span class="fc" id="L93">  }</span>
+
+  @Override
+  public final void writeExternal(ObjectOutput objOut) throws IOException {
+<span class="pc bpc" id="L97" title="2 of 4 branches missed.">    if (fd == null || !fd.valid()) {</span>
+<span class="nc" id="L98">      throw new IOException(&quot;No or invalid file descriptor&quot;);</span>
+    }
+<span class="fc" id="L100">    final int randomValue = RANDOM.nextInt();</span>
+
+<span class="fc" id="L102">    int localPort = 0;</span>
+    try {
+      @SuppressWarnings(&quot;resource&quot;)
+<span class="fc" id="L105">      AFUNIXServerSocket serverSocket = (AFUNIXServerSocket) socketFactory.createServerSocket(0);</span>
+<span class="fc" id="L106">      localPort = serverSocket.getLocalPort();</span>
+<span class="fc" id="L107">      AFUNIXSocketServer server = new AFUNIXSocketServer(serverSocket) {</span>
+
+        @Override
+        protected void doServeSocket(Socket socket) throws IOException {
+<span class="fc" id="L111">          AFUNIXSocket unixSocket = (AFUNIXSocket) socket;</span>
+<span class="fc" id="L112">          try (DataOutputStream out = new DataOutputStream(socket.getOutputStream())) {</span>
+<span class="fc" id="L113">            unixSocket.setOutboundFileDescriptors(fd);</span>
+<span class="fc" id="L114">            out.writeInt(randomValue);</span>
+          }
+<span class="fc" id="L116">          stop();</span>
+<span class="fc" id="L117">        }</span>
+
+        @Override
+        protected void onServerStopped(java.net.ServerSocket socket) {
+          try {
+<span class="fc" id="L122">            serverSocket.close();</span>
+<span class="nc" id="L123">          } catch (IOException e) {</span>
+            // ignore
+<span class="fc" id="L125">          }</span>
+<span class="fc" id="L126">        }</span>
+      };
+<span class="fc" id="L128">      server.stopAfter(SERVER_TIMEOUT, TimeUnit.MILLISECONDS);</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">      if (!server.startAndWait(SERVER_TIMEOUT, TimeUnit.MILLISECONDS)) {</span>
+<span class="nc" id="L130">        server.stop();</span>
+<span class="nc" id="L131">        serverSocket.close();</span>
+<span class="nc" id="L132">        throw new SocketTimeoutException(&quot;Timeout setting up FileDescriptor server&quot;);</span>
+      }
+<span class="nc" id="L134">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L135">      InterruptedIOException ioe = (InterruptedIOException) new InterruptedIOException().initCause(</span>
+          e);
+<span class="nc" id="L137">      objOut.writeObject(ioe);</span>
+<span class="nc" id="L138">      throw ioe;</span>
+<span class="nc" id="L139">    } catch (IOException e) {</span>
+<span class="nc" id="L140">      objOut.writeObject(e);</span>
+<span class="nc" id="L141">      throw e;</span>
+<span class="fc" id="L142">    }</span>
+
+<span class="fc" id="L144">    objOut.writeObject(socketFactory);</span>
+<span class="fc" id="L145">    objOut.writeInt(magicValue);</span>
+<span class="fc" id="L146">    objOut.writeInt(randomValue);</span>
+<span class="fc" id="L147">    objOut.writeInt(localPort);</span>
+<span class="fc" id="L148">    objOut.flush();</span>
+<span class="fc" id="L149">  }</span>
+
+  @Override
+  public final void readExternal(ObjectInput objIn) throws IOException, ClassNotFoundException {
+<span class="fc" id="L153">    Object obj = objIn.readObject();</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">    if (obj instanceof IOException) {</span>
+<span class="nc" id="L155">      IOException e = new IOException(&quot;Could not read RemoteFileDescriptor&quot;);</span>
+<span class="nc" id="L156">      e.addSuppressed((IOException) obj);</span>
+<span class="nc" id="L157">      throw e;</span>
+    }
+<span class="fc" id="L159">    this.socketFactory = (AFUNIXRMISocketFactory) obj;</span>
+
+    // Since ancillary messages can only be read in combination with real data, we read and verify a
+    // magic value
+<span class="fc" id="L163">    this.magicValue = objIn.readInt();</span>
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">    if ((magicValue &amp; MAGIC_VALUE_MASK) != MAGIC_VALUE_MASK) {</span>
+<span class="nc" id="L165">      throw new IOException(&quot;Unexpected magic value: &quot; + Integer.toHexString(magicValue));</span>
+    }
+<span class="fc" id="L167">    final int randomValue = objIn.readInt();</span>
+
+<span class="fc" id="L169">    int port = objIn.readInt();</span>
+    FileDescriptor[] descriptors;
+<span class="fc" id="L171">    try (AFUNIXSocket socket = (AFUNIXSocket) socketFactory.createSocket(&quot;&quot;, port)) {</span>
+      try {
+<span class="fc" id="L173">        socket.setSoTimeout(CONNECT_TIMEOUT);</span>
+<span class="nc" id="L174">      } catch (IOException e) { // NOPMD</span>
+        // ignore
+        // FIXME: spurious IOExceptions (&quot;socket closed) on Solaris only; ignoring them for now
+<span class="fc" id="L177">      }</span>
+<span class="fc" id="L178">      try (DataInputStream in1 = new DataInputStream(socket.getInputStream())) {</span>
+<span class="fc" id="L179">        socket.ensureAncillaryReceiveBufferSize(128);</span>
+
+<span class="fc" id="L181">        int random = in1.readInt();</span>
+
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">        if (random != randomValue) {</span>
+<span class="nc" id="L184">          throw new IOException(&quot;Invalid socket connection&quot;);</span>
+        }
+<span class="fc" id="L186">        descriptors = socket.getReceivedFileDescriptors();</span>
+      }
+    }
+<span class="pc bpc" id="L189" title="2 of 4 branches missed.">    if (descriptors == null || descriptors.length != 1) {</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">      throw new IOException(&quot;Did not receive exactly 1 file descriptor but &quot; + (descriptors == null</span>
+<span class="nc" id="L191">          ? 0 : descriptors.length));</span>
+    }
+<span class="fc" id="L193">    this.fd = descriptors[0];</span>
+<span class="fc" id="L194">  }</span>
+
+  /**
+   * Returns the file descriptor.
+   * 
+   * This is either the original one that was specified in the constructor or a copy that was sent
+   * via RMI over an AF_UNIX connection as part of an ancillary message.
+   * 
+   * @return The file descriptor.
+   */
+  public final FileDescriptor getFileDescriptor() {
+<span class="fc" id="L205">    return fd;</span>
+  }
+
+  /**
+   * Returns the &quot;magic value&quot; for this type of file descriptor.
+   * 
+   * The magic value consists of an indicator (&quot;this is a file descriptor&quot;) as well as its
+   * capabilities (read/write). It is used to prevent, for example, converting an output stream to
+   * an input stream.
+   * 
+   * @return The magic value.
+   */
+  protected final int getMagicValue() {
+<span class="fc" id="L218">    return magicValue;</span>
+  }
+
+  @Override
+  public synchronized void close() throws IOException {
+<span class="fc" id="L223">    T c = this.resource;</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">    if (c != null) {</span>
+<span class="fc" id="L225">      this.resource = null;</span>
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">      if (c instanceof Closeable) {</span>
+<span class="fc" id="L227">        ((Closeable) c).close();</span>
+      }
+    }
+<span class="fc" id="L230">  }</span>
+
+  private static int parseTimeoutMillis(String s, boolean zeroPermitted) {
+<span class="fc" id="L233">    Objects.requireNonNull(s);</span>
+    int duration;
+    try {
+<span class="fc" id="L236">      duration = Integer.parseInt(s);</span>
+<span class="nc" id="L237">    } catch (Exception e) {</span>
+<span class="nc" id="L238">      throw new IllegalArgumentException(&quot;Illegal timeout value: &quot; + s, e);</span>
+<span class="fc" id="L239">    }</span>
+<span class="pc bpc" id="L240" title="4 of 6 branches missed.">    if (duration &lt; 0 || (duration == 0 &amp;&amp; !zeroPermitted)) {</span>
+<span class="nc" id="L241">      throw new IllegalArgumentException(&quot;Illegal timeout value: &quot; + s);</span>
+    }
+<span class="fc" id="L243">    return duration;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

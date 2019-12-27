@@ -1,5 +1,5 @@
 --class-path
-'/Users/ck/.m2/repository/org/slf4j/slf4j-log4j12/1.7.29/slf4j-log4j12-1.7.29.jar:/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-native-common/target/classes:/Users/ck/.m2/repository/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar:/Users/ck/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/ck/.m2/repository/org/junit/platform/junit-platform-commons/1.5.2/junit-platform-commons-1.5.2.jar:/Users/ck/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.5.2/junit-jupiter-engine-5.5.2.jar:/Users/ck/.m2/repository/com/github/spotbugs/spotbugs-annotations/3.1.12/spotbugs-annotations-3.1.12.jar:/Users/ck/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar:/Users/ck/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.5.2/junit-jupiter-api-5.5.2.jar:/Users/ck/.m2/repository/log4j/log4j/1.2.17/log4j-1.2.17.jar:/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-common/target/classes:/Users/ck/.m2/repository/org/junit/platform/junit-platform-engine/1.5.2/junit-platform-engine-1.5.2.jar:/Users/ck/.m2/repository/org/slf4j/slf4j-api/1.7.29/slf4j-api-1.7.29.jar:/Users/ck/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar'
+'/Users/ck/.m2/repository/com/github/spotbugs/spotbugs-annotations/3.1.12/spotbugs-annotations-3.1.12.jar:/Users/ck/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar:/Users/ck/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.6.0-M1/junit-jupiter-api-5.6.0-M1.jar:/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-native-common/target/classes:/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-common/target/classes:/Users/ck/.m2/repository/org/junit/platform/junit-platform-engine/1.6.0-M1/junit-platform-engine-1.6.0-M1.jar:/Users/ck/.m2/repository/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar:/Users/ck/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/ck/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/Users/ck/.m2/repository/org/junit/platform/junit-platform-commons/1.6.0-M1/junit-platform-commons-1.6.0-M1.jar:/Users/ck/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.6.0-M1/junit-jupiter-engine-5.6.0-M1.jar'
 -encoding
 'UTF-8'
 -protected
@@ -15,8 +15,8 @@
 -docencoding
 'UTF-8'
 -doctitle
-'junixsocket-core 2.2.1 API'
+'junixsocket-core 2.3.0 API'
 -use
 -version
 -windowtitle
-'junixsocket-core 2.2.1 API'
+'junixsocket-core 2.3.0 API'

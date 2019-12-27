@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"org.newsclub.net.unix"},{"l":"org.newsclub.net.unix.rmi"},{"l":"org.newsclub.net.unix.selftest"}]

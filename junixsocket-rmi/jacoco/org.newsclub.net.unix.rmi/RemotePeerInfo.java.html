@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RemotePeerInfo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">RemotePeerInfo.java</span></div><h1>RemotePeerInfo.java</h1><pre class="source lang-java linenums">/**
+ * junixsocket
+ *
+ * Copyright 2009-2019 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.rmi;
+
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.lang.reflect.Proxy;
+import java.rmi.Remote;
+import java.rmi.server.RMISocketFactory;
+import java.rmi.server.RemoteObject;
+import java.rmi.server.RemoteObjectInvocationHandler;
+
+import org.newsclub.net.unix.AFUNIXSocketCredentials;
+
+/**
+ * Information about the remote connection.
+ * 
+ * @author Christian Kohlschütter
+ */
+public final class RemotePeerInfo {
+  private RMISocketFactory socketFactory;
+  String host;
+  int port;
+  private AFUNIXSocketCredentials peerCredentials;
+
+<span class="fc" id="L41">  RemotePeerInfo() {</span>
+<span class="fc" id="L42">  }</span>
+
+  /**
+   * The socket factory used to establish connections.
+   * 
+   * @return The socket factory.
+   */
+  public RMISocketFactory getSocketFactory() {
+<span class="fc" id="L50">    return socketFactory;</span>
+  }
+
+  /**
+   * The hostname.
+   * 
+   * @return The hostname
+   */
+  public String getHost() {
+<span class="nc" id="L59">    return host;</span>
+  }
+
+  /**
+   * The port.
+   * 
+   * @return The port
+   */
+  public int getPort() {
+<span class="nc" id="L68">    return port;</span>
+  }
+
+  /**
+   * The remote socket credentials, or {@code null} if they could not be retrieved.
+   * 
+   * @return The peer credentials, or {@code null}.
+   */
+  public AFUNIXSocketCredentials getPeerCredentials() {
+<span class="nc" id="L77">    return peerCredentials;</span>
+  }
+
+  /**
+   * Returns the {@link AFUNIXSocketCredentials} for the currently active remote session
+   * (RemoteServer session during a remote method invocation), or {@code null} if it was not
+   * possible to retrieve these credentials.
+   *
+   * @return The credentials, or {@code null} if unable to retrieve.
+   */
+  public static AFUNIXSocketCredentials remotePeerCredentials() {
+<span class="nc" id="L88">    return AFUNIXSocketCredentials.remotePeerCredentials();</span>
+  }
+
+  /**
+   * Returns the {@link AFUNIXSocketCredentials} for the peer (server) of the given {@link Remote}
+   * instance, or {@code null} if it was not possible to retrieve these credentials.
+   * 
+   * @param obj The remote object.
+   * @return The credentials, or {@code null} if unable to retrieve.
+   * @throws IOException if an exception occurs.
+   */
+  public static AFUNIXSocketCredentials remotePeerCredentials(Remote obj) throws IOException {
+<span class="nc" id="L100">    return getConnectionInfo(obj).getPeerCredentials();</span>
+  }
+
+  /**
+   * Returns the connection information ({@link RMISocketFactory}, hostname and port) used for the
+   * given {@link Remote} object, or {@code null} if no custom {@link RMISocketFactory} was
+   * specified.
+   * 
+   * An {@link IOException} may be thrown if we couldn't determine the socket factory.
+   * 
+   * @param obj The remote object.
+   * @return The factory, or {@code null}
+   * @throws IOException if the operation fails.
+   */
+  public static RemotePeerInfo getConnectionInfo(Remote obj) throws IOException {
+<span class="fc" id="L115">    try (RemotePeerInfo.ExtractingObjectOutput eoo = new RemotePeerInfo.ExtractingObjectOutput()) {</span>
+<span class="fc" id="L116">      RemoteObjectInvocationHandler roih = (RemoteObjectInvocationHandler) Proxy</span>
+<span class="fc" id="L117">          .getInvocationHandler(RemoteObject.toStub(obj));</span>
+
+<span class="fc" id="L119">      roih.getRef().writeExternal(eoo);</span>
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">      if (!eoo.validate()) {</span>
+<span class="nc" id="L121">        throw new IOException(&quot;Unexpected data format for &quot; + obj.getClass());</span>
+      }
+
+<span class="fc" id="L124">      RemotePeerInfo data = eoo.data;</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">      if ((data.socketFactory) instanceof AFUNIXRMISocketFactory) {</span>
+<span class="fc" id="L126">        AFUNIXRMISocketFactory sf = ((AFUNIXRMISocketFactory) (data.socketFactory));</span>
+<span class="fc" id="L127">        data.peerCredentials = sf.peerCredentialsFor(data);</span>
+
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">        if (data.peerCredentials == null) {</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">          if (sf.isLocalServer(data.port)) {</span>
+<span class="nc" id="L131">            data.peerCredentials = AFUNIXSocketCredentials.SAME_PROCESS;</span>
+          }
+        }
+      }
+
+<span class="fc" id="L136">      return data;</span>
+    }
+  }
+
+  /**
+   * Mimics a Serializer for RemoteRef.writeExternal, so we can extract the information we need
+   * about the remote reference without having to break-open internal Java classes.
+   * 
+   * NOTE: The format for the data we extract is assumed to be stable across JVM implementations,
+   * otherwise RMI would probably not work.
+   * 
+   * @author Christian Kohlschütter
+   */
+  static final class ExtractingObjectOutput implements ObjectOutput {
+<span class="fc" id="L150">    private int callId = 0;</span>
+<span class="fc" id="L151">    private boolean done = false;</span>
+<span class="fc" id="L152">    private boolean invalid = false;</span>
+<span class="fc" id="L153">    private int format = -1;</span>
+
+<span class="fc" id="L155">    final RemotePeerInfo data = new RemotePeerInfo();</span>
+
+<span class="fc" id="L157">    public ExtractingObjectOutput() {</span>
+<span class="fc" id="L158">    }</span>
+
+    private void setInvalid() {
+<span class="nc" id="L161">      invalid = done = true;</span>
+<span class="nc" id="L162">    }</span>
+
+    private void call(int id, Object v) {
+<span class="fc bfc" id="L165" title="All 5 branches covered.">      switch (id) {</span>
+        case 1:
+<span class="pc bpc" id="L167" title="1 of 2 branches missed.">          if (v instanceof Integer) {</span>
+            // see sun.rmi.transport.tcp.TCPEndpoint
+<span class="pc bpc" id="L169" title="2 of 3 branches missed.">            switch ((int) v) {</span>
+              case 0:
+                // FORMAT_HOST_PORT (= no socket factory)
+<span class="nc" id="L172">                format = 0;</span>
+<span class="nc" id="L173">                return;</span>
+              case 1:
+                // FORMAT_HOST_PORT_FACTORY
+<span class="fc" id="L176">                format = 1;</span>
+<span class="pc" id="L177">                return;</span>
+              default:
+            }
+          }
+          break;
+        case 2:
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">          if (v instanceof String) {</span>
+<span class="fc" id="L184">            this.data.host = (String) v;</span>
+<span class="fc" id="L185">            return;</span>
+          }
+          break;
+        case 3:
+<span class="pc bpc" id="L189" title="1 of 2 branches missed.">          if (format == 0) {</span>
+<span class="nc" id="L190">            done = true;</span>
+          }
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">          if (v instanceof Integer) {</span>
+<span class="fc" id="L193">            this.data.port = (int) v;</span>
+<span class="pc bpc" id="L194" title="1 of 2 branches missed.">            if (this.data.port &lt;= 0) {</span>
+<span class="nc" id="L195">              setInvalid();</span>
+            }
+<span class="fc" id="L197">            return;</span>
+          }
+          break;
+        case 4:
+<span class="pc bpc" id="L201" title="2 of 4 branches missed.">          if (v instanceof RMISocketFactory &amp;&amp; format == 1) {</span>
+<span class="fc" id="L202">            this.data.socketFactory = (RMISocketFactory) v;</span>
+<span class="fc" id="L203">            return;</span>
+          }
+          break;
+        default:
+          // no need to read any further
+<span class="fc" id="L208">          done = true;</span>
+<span class="fc" id="L209">          return;</span>
+      }
+
+      // otherwise:
+<span class="nc" id="L213">      setInvalid();</span>
+<span class="nc" id="L214">    }</span>
+
+    @Override
+    public void writeBoolean(boolean v) {
+<span class="pc bpc" id="L218" title="1 of 2 branches missed.">      if (done) {</span>
+<span class="fc" id="L219">        return;</span>
+      }
+<span class="nc" id="L221">      call(++callId, v);</span>
+<span class="nc" id="L222">    }</span>
+
+    @Override
+    public void writeByte(int v) {
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">      if (done) {</span>
+<span class="nc" id="L227">        return;</span>
+      }
+<span class="fc" id="L229">      call(++callId, v);</span>
+<span class="fc" id="L230">    }</span>
+
+    @Override
+    public void writeShort(int v) {
+<span class="pc bpc" id="L234" title="1 of 2 branches missed.">      if (done) {</span>
+<span class="fc" id="L235">        return;</span>
+      }
+<span class="nc" id="L237">      call(++callId, v);</span>
+<span class="nc" id="L238">    }</span>
+
+    @Override
+    public void writeChar(int v) {
+<span class="nc bnc" id="L242" title="All 2 branches missed.">      if (done) {</span>
+<span class="nc" id="L243">        return;</span>
+      }
+<span class="nc" id="L245">      call(++callId, v);</span>
+<span class="nc" id="L246">    }</span>
+
+    @Override
+    public void writeInt(int v) {
+<span class="fc bfc" id="L250" title="All 2 branches covered.">      if (done) {</span>
+<span class="fc" id="L251">        return;</span>
+      }
+<span class="fc" id="L253">      call(++callId, v);</span>
+<span class="fc" id="L254">    }</span>
+
+    @Override
+    public void writeLong(long v) {
+<span class="fc bfc" id="L258" title="All 2 branches covered.">      if (done) {</span>
+<span class="fc" id="L259">        return;</span>
+      }
+<span class="fc" id="L261">      call(++callId, v);</span>
+<span class="fc" id="L262">    }</span>
+
+    @Override
+    public void writeFloat(float v) {
+<span class="nc bnc" id="L266" title="All 2 branches missed.">      if (done) {</span>
+<span class="nc" id="L267">        return;</span>
+      }
+<span class="nc" id="L269">      call(++callId, v);</span>
+<span class="nc" id="L270">    }</span>
+
+    @Override
+    public void writeDouble(double v) {
+<span class="nc bnc" id="L274" title="All 2 branches missed.">      if (done) {</span>
+<span class="nc" id="L275">        return;</span>
+      }
+<span class="nc" id="L277">      call(++callId, v);</span>
+<span class="nc" id="L278">    }</span>
+
+    @Override
+    public void writeBytes(String s) {
+<span class="nc bnc" id="L282" title="All 2 branches missed.">      if (done) {</span>
+<span class="nc" id="L283">        return;</span>
+      }
+<span class="nc" id="L285">      call(++callId, s);</span>
+<span class="nc" id="L286">    }</span>
+
+    @Override
+    public void writeChars(String s) {
+<span class="nc bnc" id="L290" title="All 2 branches missed.">      if (done) {</span>
+<span class="nc" id="L291">        return;</span>
+      }
+<span class="nc" id="L293">      call(++callId, s);</span>
+<span class="nc" id="L294">    }</span>
+
+    @Override
+    public void writeUTF(String s) {
+<span class="pc bpc" id="L298" title="1 of 2 branches missed.">      if (done) {</span>
+<span class="nc" id="L299">        return;</span>
+      }
+<span class="fc" id="L301">      call(++callId, s);</span>
+<span class="fc" id="L302">    }</span>
+
+    @Override
+    public void writeObject(Object obj) {
+<span class="pc bpc" id="L306" title="1 of 2 branches missed.">      if (done) {</span>
+<span class="nc" id="L307">        return;</span>
+      }
+<span class="fc" id="L309">      call(++callId, obj);</span>
+<span class="fc" id="L310">    }</span>
+
+    @Override
+    public void write(int b) {
+<span class="nc bnc" id="L314" title="All 2 branches missed.">      if (done) {</span>
+<span class="nc" id="L315">        return;</span>
+      }
+<span class="nc" id="L317">      call(++callId, b);</span>
+<span class="nc" id="L318">    }</span>
+
+    @Override
+    public void write(byte[] b) {
+<span class="nc bnc" id="L322" title="All 2 branches missed.">      if (done) {</span>
+<span class="nc" id="L323">        return;</span>
+      }
+<span class="nc" id="L325">      call(++callId, b);</span>
+<span class="nc" id="L326">    }</span>
+
+    @Override
+    public void write(byte[] b, int off, int len) {
+<span class="nc bnc" id="L330" title="All 2 branches missed.">      if (done) {</span>
+<span class="nc" id="L331">        return;</span>
+      }
+<span class="nc" id="L333">      setInvalid();</span>
+      // NOTE: not yet needed
+      // byte[] copy = Arrays.copyOfRange(b, off, off + len);
+      // call(++callId, copy);
+<span class="nc" id="L337">    }</span>
+
+    @Override
+    public void flush() {
+<span class="nc" id="L341">    }</span>
+
+    public boolean validate() {
+<span class="fc" id="L344">      this.done = true;</span>
+<span class="pc bpc" id="L345" title="1 of 2 branches missed.">      if (callId &lt; 3) {</span>
+<span class="nc" id="L346">        setInvalid();</span>
+      }
+<span class="pc bpc" id="L348" title="1 of 2 branches missed.">      return !invalid;</span>
+    }
+
+    @Override
+    public void close() {
+<span class="fc" id="L353">    }</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L358">    return getClass().getName() + &quot;[&quot; + host + &quot;:&quot; + port + &quot;;socketFactory=&quot; + socketFactory</span>
+        + &quot;;peerCredentials=&quot; + peerCredentials + &quot;]&quot;;
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

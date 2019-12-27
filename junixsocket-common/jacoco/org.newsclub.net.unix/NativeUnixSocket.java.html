@@ -20,6 +20,7 @@ package org.newsclub.net.unix;
 import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 
 /**
@@ -28,25 +29,25 @@ import java.nio.ByteBuffer;
  * @author Christian Kohlschütter
  */
 final class NativeUnixSocket {
-<span class="fc" id="L31">  private static boolean loaded = false;</span>
+<span class="fc" id="L32">  private static boolean loaded = false;</span>
 
-<span class="nc" id="L33">  private NativeUnixSocket() {</span>
-<span class="nc" id="L34">    throw new UnsupportedOperationException(&quot;No instances&quot;);</span>
+<span class="nc" id="L34">  private NativeUnixSocket() {</span>
+<span class="nc" id="L35">    throw new UnsupportedOperationException(&quot;No instances&quot;);</span>
   }
 
   static {
-<span class="fc" id="L38">    try (NativeLibraryLoader nll = new NativeLibraryLoader()) {</span>
-<span class="fc" id="L39">      nll.loadLibrary();</span>
+<span class="fc" id="L39">    try (NativeLibraryLoader nll = new NativeLibraryLoader()) {</span>
+<span class="fc" id="L40">      nll.loadLibrary();</span>
     }
-<span class="fc" id="L41">    loaded = true;</span>
-<span class="fc" id="L42">  }</span>
+<span class="fc" id="L42">    loaded = true;</span>
+<span class="fc" id="L43">  }</span>
 
   static boolean isLoaded() {
-<span class="fc" id="L45">    return loaded;</span>
+<span class="fc" id="L46">    return loaded;</span>
   }
 
   static void checkSupported() {
-<span class="nc" id="L49">  }</span>
+<span class="nc" id="L50">  }</span>
 
   static native void init() throws Exception;
 
@@ -109,17 +110,19 @@ final class NativeUnixSocket {
   static native int maxAddressLength();
 
   static void setPort1(AFUNIXSocketAddress addr, int port) throws IOException {
-<span class="fc bfc" id="L112" title="All 2 branches covered.">    if (port &lt; 0) {</span>
-<span class="fc" id="L113">      throw new IllegalArgumentException(&quot;port out of range:&quot; + port);</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">    if (port &lt; 0) {</span>
+<span class="fc" id="L114">      throw new IllegalArgumentException(&quot;port out of range:&quot; + port);</span>
     }
 
     try {
-<span class="fc" id="L117">      setPort(addr, port);</span>
-<span class="nc" id="L118">    } catch (RuntimeException e) {</span>
-<span class="nc" id="L119">      throw e;</span>
-<span class="nc" id="L120">    } catch (Exception e) {</span>
-<span class="nc" id="L121">      throw new IOException(&quot;Could not set port&quot;, e);</span>
-<span class="fc" id="L122">    }</span>
-<span class="fc" id="L123">  }</span>
+<span class="fc" id="L118">      setPort(addr, port);</span>
+<span class="nc" id="L119">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L120">      throw e;</span>
+<span class="nc" id="L121">    } catch (Exception e) {</span>
+<span class="nc" id="L122">      throw new IOException(&quot;Could not set port&quot;, e);</span>
+<span class="fc" id="L123">    }</span>
+<span class="fc" id="L124">  }</span>
+
+  static native Socket currentRMISocket();
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

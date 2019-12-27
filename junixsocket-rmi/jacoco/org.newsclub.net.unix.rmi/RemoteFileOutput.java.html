@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RemoteFileOutput.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">RemoteFileOutput.java</span></div><h1>RemoteFileOutput.java</h1><pre class="source lang-java linenums">/**
+ * junixsocket
+ *
+ * Copyright 2009-2019 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.rmi;
+
+import java.io.Closeable;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+
+/**
+ * A specialized subclass of {@link RemoteFileDescriptorBase}, specifically for
+ * {@link FileOutputStream}s.
+ * 
+ * @author Christian Kohlschütter
+ */
+public final class RemoteFileOutput extends RemoteFileDescriptorBase&lt;FileOutputStream&gt; implements
+    Closeable {
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * Creates an uninitialized instance; used for externalization.
+   * 
+   * @see #readExternal(ObjectInput)
+   */
+  public RemoteFileOutput() {
+<span class="fc" id="L41">    super();</span>
+<span class="fc" id="L42">  }</span>
+
+  /**
+   * Creates a new {@link RemoteFileOutput} instance, encapsulating a {@link FileOutputStream} so
+   * that it can be shared with other processes via RMI.
+   * 
+   * @param socketFactory The socket factory.
+   * @param fout The {@link FileOutputStream}.
+   * @throws IOException if the operation fails.
+   */
+  public RemoteFileOutput(AFUNIXRMISocketFactory socketFactory, FileOutputStream fout)
+      throws IOException {
+<span class="fc" id="L54">    super(socketFactory, fout, fout.getFD(), RemoteFileDescriptorBase.MAGIC_VALUE_MASK</span>
+        | RemoteFileDescriptorBase.BIT_WRITABLE);
+<span class="fc" id="L56">  }</span>
+
+  /**
+   * Returns a FileOutputStream for the given instance. This either is the actual instance provided
+   * by the constructor or a new instance created from the file descriptor.
+   * 
+   * @return The FileOutputStream.
+   * @throws IOException if the operation fails.
+   */
+  public synchronized FileOutputStream asFileOutputStream() throws IOException {
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">    if (resource != null) {</span>
+<span class="nc" id="L67">      return resource;</span>
+    }
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">    if ((getMagicValue() &amp; RemoteFileDescriptorBase.BIT_WRITABLE) == 0) {</span>
+<span class="nc" id="L70">      throw new IOException(&quot;FileDescriptor is not writable&quot;);</span>
+    }
+<span class="fc" id="L72">    return (this.resource = new FileOutputStream(getFileDescriptor()) {</span>
+      @Override
+      public synchronized void close() throws IOException {
+<span class="fc" id="L75">        RemoteFileOutput.this.close();</span>
+<span class="fc" id="L76">        super.close();</span>
+<span class="fc" id="L77">      }</span>
+    });
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

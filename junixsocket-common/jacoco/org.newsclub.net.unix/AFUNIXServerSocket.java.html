@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
@@ -30,6 +31,7 @@ import java.net.SocketException;
 public class AFUNIXServerSocket extends ServerSocket {
   private final AFUNIXSocketImpl implementation;
   private AFUNIXSocketAddress boundEndpoint;
+<span class="fc" id="L34">  private final Closeables closeables = new Closeables();</span>
 
   /**
    * Constructs a new, unconnected instance.
@@ -37,14 +39,14 @@ public class AFUNIXServerSocket extends ServerSocket {
    * @throws IOException if the operation fails.
    */
   protected AFUNIXServerSocket() throws IOException {
-<span class="fc" id="L40">    super();</span>
-<span class="fc" id="L41">    setReuseAddress(true);</span>
+<span class="fc" id="L42">    super();</span>
+<span class="fc" id="L43">    setReuseAddress(true);</span>
 
-<span class="fc" id="L43">    this.implementation = new AFUNIXSocketImpl();</span>
-<span class="fc" id="L44">    NativeUnixSocket.initServerImpl(this, implementation);</span>
+<span class="fc" id="L45">    this.implementation = new AFUNIXSocketImpl();</span>
+<span class="fc" id="L46">    NativeUnixSocket.initServerImpl(this, implementation);</span>
 
-<span class="fc" id="L46">    NativeUnixSocket.setCreatedServer(this);</span>
-<span class="fc" id="L47">  }</span>
+<span class="fc" id="L48">    NativeUnixSocket.setCreatedServer(this);</span>
+<span class="fc" id="L49">  }</span>
 
   /**
    * Returns a new, unbound AF_UNIX {@link ServerSocket}.
@@ -53,8 +55,7 @@ public class AFUNIXServerSocket extends ServerSocket {
    * @throws IOException if the operation fails.
    */
   public static AFUNIXServerSocket newInstance() throws IOException {
-<span class="fc" id="L56">    AFUNIXServerSocket instance = new AFUNIXServerSocket();</span>
-<span class="fc" id="L57">    return instance;</span>
+<span class="fc" id="L58">    return new AFUNIXServerSocket();</span>
   }
 
   /**
@@ -66,69 +67,126 @@ public class AFUNIXServerSocket extends ServerSocket {
    * @throws IOException if the operation fails.
    */
   public static AFUNIXServerSocket bindOn(final AFUNIXSocketAddress addr) throws IOException {
-<span class="fc" id="L69">    AFUNIXServerSocket socket = newInstance();</span>
-<span class="fc" id="L70">    socket.bind(addr);</span>
-<span class="fc" id="L71">    return socket;</span>
+<span class="fc" id="L70">    AFUNIXServerSocket socket = newInstance();</span>
+<span class="fc" id="L71">    socket.bind(addr);</span>
+<span class="fc" id="L72">    return socket;</span>
+  }
+
+  /**
+   * Returns a new, &lt;em&gt;unbound&lt;/em&gt; AF_UNIX {@link ServerSocket} that will always bind to the given
+   * address, regardless of any socket address used in a call to &lt;code&gt;bind&lt;/code&gt;.
+   * 
+   * @param forceAddr The address to use.
+   * @return The new, yet unbound {@link AFUNIXServerSocket}.
+   * @throws IOException if an exception occurs.
+   */
+  public static AFUNIXServerSocket forceBindOn(final AFUNIXSocketAddress forceAddr)
+      throws IOException {
+<span class="nc" id="L85">    return new AFUNIXServerSocket() {</span>
+
+      @Override
+      public void bind(SocketAddress ignored, int backlog) throws IOException {
+<span class="nc" id="L89">        super.bind(forceAddr, backlog);</span>
+<span class="nc" id="L90">      }</span>
+    };
   }
 
   @Override
   public void bind(SocketAddress endpoint, int backlog) throws IOException {
-<span class="pc bpc" id="L76" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L77">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L97">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
-<span class="pc bpc" id="L79" title="1 of 2 branches missed.">    if (isBound()) {</span>
-<span class="nc" id="L80">      throw new SocketException(&quot;Already bound&quot;);</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">    if (isBound()) {</span>
+<span class="nc" id="L100">      throw new SocketException(&quot;Already bound&quot;);</span>
     }
-<span class="pc bpc" id="L82" title="1 of 2 branches missed.">    if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
-<span class="nc" id="L83">      throw new IOException(&quot;Can only bind to endpoints of type &quot; + AFUNIXSocketAddress.class</span>
-<span class="nc" id="L84">          .getName());</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">    if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
+<span class="nc" id="L103">      throw new IOException(&quot;Can only bind to endpoints of type &quot; + AFUNIXSocketAddress.class</span>
+<span class="nc" id="L104">          .getName());</span>
     }
 
-<span class="pc bpc" id="L87" title="1 of 2 branches missed.">    implementation.bind(endpoint, getReuseAddress() ? -1 : 0);</span>
-<span class="fc" id="L88">    boundEndpoint = (AFUNIXSocketAddress) endpoint;</span>
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">    implementation.bind(endpoint, getReuseAddress() ? -1 : 0);</span>
+<span class="fc" id="L108">    boundEndpoint = (AFUNIXSocketAddress) endpoint;</span>
 
-<span class="fc" id="L90">    implementation.listen(backlog);</span>
-<span class="fc" id="L91">  }</span>
+<span class="fc" id="L110">    implementation.listen(backlog);</span>
+<span class="fc" id="L111">  }</span>
 
   @Override
   public boolean isBound() {
-<span class="fc bfc" id="L95" title="All 2 branches covered.">    return boundEndpoint != null;</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">    return boundEndpoint != null;</span>
   }
 
   @Override
   public boolean isClosed() {
-<span class="pc bpc" id="L100" title="1 of 6 branches missed.">    return super.isClosed() || (isBound() &amp;&amp; !implementation.getFD().valid());</span>
+<span class="pc bpc" id="L120" title="1 of 6 branches missed.">    return super.isClosed() || (isBound() &amp;&amp; !implementation.getFD().valid());</span>
   }
 
   @Override
   public AFUNIXSocket accept() throws IOException {
-<span class="pc bpc" id="L105" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L106">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L126">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
-<span class="fc" id="L108">    AFUNIXSocket as = AFUNIXSocket.newInstance();</span>
-<span class="fc" id="L109">    implementation.accept(as.impl);</span>
-<span class="fc" id="L110">    as.addr = boundEndpoint;</span>
-<span class="fc" id="L111">    NativeUnixSocket.setConnected(as);</span>
-<span class="fc" id="L112">    return as;</span>
+<span class="fc" id="L128">    AFUNIXSocket as = newSocketInstance();</span>
+<span class="fc" id="L129">    implementation.accept(as.impl);</span>
+<span class="fc" id="L130">    as.addr = boundEndpoint;</span>
+<span class="fc" id="L131">    NativeUnixSocket.setConnected(as);</span>
+<span class="fc" id="L132">    return as;</span>
+  }
+
+  protected AFUNIXSocket newSocketInstance() throws IOException {
+<span class="fc" id="L136">    return AFUNIXSocket.newInstance();</span>
   }
 
   @Override
   public String toString() {
-<span class="nc bnc" id="L117" title="All 2 branches missed.">    if (!isBound()) {</span>
-<span class="nc" id="L118">      return &quot;AFUNIXServerSocket[unbound]&quot;;</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">    if (!isBound()) {</span>
+<span class="nc" id="L142">      return &quot;AFUNIXServerSocket[unbound]&quot;;</span>
     }
-<span class="nc" id="L120">    return &quot;AFUNIXServerSocket[&quot; + boundEndpoint.toString() + &quot;]&quot;;</span>
+<span class="nc" id="L144">    return &quot;AFUNIXServerSocket[&quot; + boundEndpoint.toString() + &quot;]&quot;;</span>
   }
 
   @Override
-  public void close() throws IOException {
-<span class="fc bfc" id="L125" title="All 2 branches covered.">    if (isClosed()) {</span>
-<span class="fc" id="L126">      return;</span>
+  public synchronized void close() throws IOException {
+<span class="fc bfc" id="L149" title="All 2 branches covered.">    if (isClosed()) {</span>
+<span class="fc" id="L150">      return;</span>
     }
 
-<span class="fc" id="L129">    super.close();</span>
-<span class="fc" id="L130">    implementation.close();</span>
-<span class="fc" id="L131">  }</span>
+<span class="fc" id="L153">    IOException superException = null;</span>
+    try {
+<span class="fc" id="L155">      super.close();</span>
+<span class="nc" id="L156">    } catch (IOException e) {</span>
+<span class="nc" id="L157">      superException = e;</span>
+<span class="fc" id="L158">    }</span>
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">    if (implementation != null) {</span>
+      try {
+<span class="fc" id="L161">        implementation.close();</span>
+<span class="nc" id="L162">      } catch (IOException e) {</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        if (superException == null) {</span>
+<span class="nc" id="L164">          superException = e;</span>
+        } else {
+<span class="nc" id="L166">          superException.addSuppressed(e);</span>
+        }
+<span class="fc" id="L168">      }</span>
+    }
+<span class="fc" id="L170">    closeables.close(superException);</span>
+<span class="fc" id="L171">  }</span>
+
+  /**
+   * Registers a {@link Closeable} that should be closed when this socket is closed.
+   * 
+   * @param closeable The closeable.
+   */
+  public void addCloseable(Closeable closeable) {
+<span class="nc" id="L179">    closeables.add(closeable);</span>
+<span class="nc" id="L180">  }</span>
+
+  /**
+   * Unregisters a previously registered {@link Closeable}.
+   * 
+   * @param closeable The closeable.
+   */
+  public void removeCloseable(Closeable closeable) {
+<span class="nc" id="L188">    closeables.remove(closeable);</span>
+<span class="nc" id="L189">  }</span>
 
   /**
    * Checks whether everything is setup to support AF_UNIX sockets.
@@ -136,7 +194,20 @@ public class AFUNIXServerSocket extends ServerSocket {
    * @return {@code true} if supported.
    */
   public static boolean isSupported() {
-<span class="nc" id="L139">    return NativeUnixSocket.isLoaded();</span>
+<span class="nc" id="L197">    return NativeUnixSocket.isLoaded();</span>
+  }
+
+  @Override
+  public SocketAddress getLocalSocketAddress() {
+<span class="nc" id="L202">    return boundEndpoint;</span>
+  }
+
+  @Override
+  public int getLocalPort() {
+<span class="nc bnc" id="L207" title="All 2 branches missed.">    if (boundEndpoint == null) {</span>
+<span class="nc" id="L208">      return -1;</span>
+    }
+<span class="nc" id="L210">    return boundEndpoint.getPort();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

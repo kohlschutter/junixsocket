@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Closeables.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">Closeables.java</span></div><h1>Closeables.java</h1><pre class="source lang-java linenums">/**
+ * junixsocket
+ *
+ * Copyright 2009-2019 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * A set of {@link Closeables} that can be closed at once.
+ * 
+ * @author Christian Kohlschütter
+ */
+public final class Closeables implements Closeable {
+  private List&lt;WeakReference&lt;Closeable&gt;&gt; list;
+
+<span class="fc" id="L35">  public Closeables() {</span>
+<span class="fc" id="L36">  }</span>
+
+<span class="nc" id="L38">  public Closeables(Closeable... closeable) {</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">    for (Closeable cl : closeable) {</span>
+<span class="nc" id="L40">      this.list.add(new HardReference&lt;Closeable&gt;(cl));</span>
+    }
+<span class="nc" id="L42">  }</span>
+
+  @Override
+  public void close() throws IOException {
+<span class="nc" id="L46">    close(null);</span>
+<span class="nc" id="L47">  }</span>
+
+  /**
+   * Closes all registered closeables.
+   * 
+   * @param superException If set, any exceptions thrown in here will be chained to the given
+   *          exception via addSuppressed, and then thrown.
+   * @throws IOException if an exception occurs.
+   */
+  public void close(IOException superException) throws IOException {
+<span class="fc" id="L57">    IOException exc = superException;</span>
+
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">    if (list != null) {</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">      for (WeakReference&lt;Closeable&gt; ref : list) {</span>
+        @SuppressWarnings(&quot;resource&quot;)
+<span class="nc" id="L62">        Closeable cl = ref.get();</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (cl == null) {</span>
+<span class="nc" id="L64">          continue;</span>
+        }
+        try {
+<span class="nc" id="L67">          cl.close();</span>
+<span class="nc" id="L68">        } catch (IOException e) {</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">          if (exc == null) {</span>
+<span class="nc" id="L70">            exc = e;</span>
+          } else {
+<span class="nc" id="L72">            exc.addSuppressed(e);</span>
+          }
+<span class="nc" id="L74">        }</span>
+<span class="nc" id="L75">      }</span>
+    }
+
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">    if (exc != null) {</span>
+<span class="nc" id="L79">      throw exc;</span>
+    }
+<span class="fc" id="L81">  }</span>
+
+  private static final class HardReference&lt;V&gt; extends WeakReference&lt;V&gt; {
+    private final V strongRef;
+
+    private HardReference(final V referent) {
+<span class="nc" id="L87">      super(null);</span>
+<span class="nc" id="L88">      this.strongRef = referent;</span>
+<span class="nc" id="L89">    }</span>
+
+    @Override
+    public V get() {
+<span class="nc" id="L93">      return strongRef;</span>
+    }
+  }
+
+  /**
+   * Adds the given closeable, but only using a weak reference.
+   * 
+   * @param closeable The closeable.
+   * @return {@code true} iff the closeable was added, {@code false} if it was {@code null} or
+   *         already added before.
+   */
+  @SuppressWarnings(&quot;resource&quot;)
+  public synchronized boolean add(WeakReference&lt;Closeable&gt; closeable) {
+<span class="nc" id="L106">    Closeable cl = closeable.get();</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">    if (cl == null) {</span>
+      // ignore
+<span class="nc" id="L109">      return false;</span>
+    }
+<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (list == null) {</span>
+<span class="nc" id="L112">      list = new ArrayList&lt;&gt;();</span>
+    } else {
+<span class="nc bnc" id="L114" title="All 2 branches missed.">      for (WeakReference&lt;Closeable&gt; ref : list) {</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (ref.get() == cl) {</span>
+<span class="nc" id="L116">          return false;</span>
+        }
+<span class="nc" id="L118">      }</span>
+    }
+<span class="nc" id="L120">    list.add(closeable);</span>
+
+<span class="nc" id="L122">    return true;</span>
+  }
+
+  /**
+   * Adds the given closeable.
+   * 
+   * @param closeable The closeable.
+   * @return {@code true} iff the closeable was added, {@code false} if it was {@code null} or
+   *         already added before.
+   */
+  public synchronized boolean add(Closeable closeable) {
+<span class="nc" id="L133">    return add(new HardReference&lt;&gt;(closeable));</span>
+  }
+
+  /**
+   * Removes the given closeable.
+   * 
+   * @param closeable The closeable.
+   * @return {@code true} iff the closeable was removed, {@code fale} if it was {@code null} or not
+   *         previously added.
+   */
+  public synchronized boolean remove(Closeable closeable) {
+<span class="nc bnc" id="L144" title="All 4 branches missed.">    if (list == null || closeable == null) {</span>
+<span class="nc" id="L145">      return false;</span>
+    }
+<span class="nc bnc" id="L147" title="All 2 branches missed.">    for (Iterator&lt;WeakReference&lt;Closeable&gt;&gt; it = list.iterator(); it.hasNext();) {</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">      if (it.next().get() == closeable) {</span>
+<span class="nc" id="L149">        it.remove();</span>
+<span class="nc" id="L150">        return true;</span>
+      }
+    }
+<span class="nc" id="L153">    return false;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
