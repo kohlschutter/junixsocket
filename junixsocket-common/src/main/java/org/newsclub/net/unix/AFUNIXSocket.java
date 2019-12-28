@@ -127,6 +127,16 @@ public final class AFUNIXSocket extends Socket {
 
   @Override
   public void connect(SocketAddress endpoint, int timeout) throws IOException {
+    if (endpoint == null) {
+      throw new IllegalArgumentException("connect: The address can't be null");
+    }
+    if (timeout < 0) {
+      throw new IllegalArgumentException("connect: timeout can't be negative");
+    }
+    if (isClosed()) {
+      throw new SocketException("Socket is closed");
+    }
+
     if (!(endpoint instanceof AFUNIXSocketAddress)) {
       if (socketFactory != null) {
         if (endpoint instanceof InetSocketAddress) {
