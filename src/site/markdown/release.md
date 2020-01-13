@@ -4,6 +4,18 @@ NOTE: This is probably not interesting unless you're the project admin or going 
 
 ## Prerequisites
 
+### llvm and mingw-w64
+
+In order to build for all supported target platforms included in the release, our development
+machine (the one where we do the compilation), needs to have clang and llvm, as well as
+x86_64-w64-mingw32-gcc, a GCC compiler binary to allow building for Windows.
+
+On Mac, run the following command.
+
+    brew install llvm mingw-w64
+    
+If you don't have Homebrew, obtain it from [here](https://brew.sh/) first.
+
 ### github.com credentials
 
 1. On github.com, create an OAuth token with write permissions to the repo.
