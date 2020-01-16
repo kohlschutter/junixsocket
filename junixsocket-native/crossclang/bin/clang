@@ -321,7 +321,7 @@ if [ $needLinker -gt 0 ]; then
         ;;
         ld64)
         ldPath=$(which ld64.lld)
-        clangLinkerArgs+=("-Wl,-sdk_version,10.7")
+        clangLinkerArgs+=("-Wl,-sdk_version,10.9")
         #if [ $nostdlib -gt 0 ]; then
         #  clangLinkerArgs+=("-Wl,-undefined,dynamic_lookup")
         #fi
