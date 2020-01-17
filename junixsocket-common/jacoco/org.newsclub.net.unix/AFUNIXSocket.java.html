@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXSocket.java</span></div><h1>AFUNIXSocket.java</h1><pre class="source lang-java linenums">/**
  * junixsocket
  *
- * Copyright 2009-2019 Christian Kohlschütter
+ * Copyright 2009-2020 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -127,34 +127,44 @@ public final class AFUNIXSocket extends Socket {
 
   @Override
   public void connect(SocketAddress endpoint, int timeout) throws IOException {
-<span class="pc bpc" id="L130" title="1 of 2 branches missed.">    if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
-<span class="nc bnc" id="L131" title="All 2 branches missed.">      if (socketFactory != null) {</span>
-<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (endpoint instanceof InetSocketAddress) {</span>
-<span class="nc" id="L133">          InetSocketAddress isa = (InetSocketAddress) endpoint;</span>
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">    if (endpoint == null) {</span>
+<span class="nc" id="L131">      throw new IllegalArgumentException(&quot;connect: The address can't be null&quot;);</span>
+    }
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">    if (timeout &lt; 0) {</span>
+<span class="nc" id="L134">      throw new IllegalArgumentException(&quot;connect: timeout can't be negative&quot;);</span>
+    }
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L137">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+    }
 
-<span class="nc" id="L135">          String hostname = isa.getHostString();</span>
-<span class="nc bnc" id="L136" title="All 2 branches missed.">          if (socketFactory.isHostnameSupported(hostname)) {</span>
-<span class="nc" id="L137">            endpoint = socketFactory.addressFromHost(hostname, isa.getPort());</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">    if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">      if (socketFactory != null) {</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (endpoint instanceof InetSocketAddress) {</span>
+<span class="nc" id="L143">          InetSocketAddress isa = (InetSocketAddress) endpoint;</span>
+
+<span class="nc" id="L145">          String hostname = isa.getHostString();</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">          if (socketFactory.isHostnameSupported(hostname)) {</span>
+<span class="nc" id="L147">            endpoint = socketFactory.addressFromHost(hostname, isa.getPort());</span>
           }
         }
       }
-<span class="nc bnc" id="L141" title="All 2 branches missed.">      if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
-<span class="nc" id="L142">        throw new IllegalArgumentException(&quot;Can only connect to endpoints of type &quot;</span>
-<span class="nc" id="L143">            + AFUNIXSocketAddress.class.getName() + &quot;, got: &quot; + endpoint);</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">      if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
+<span class="nc" id="L152">        throw new IllegalArgumentException(&quot;Can only connect to endpoints of type &quot;</span>
+<span class="nc" id="L153">            + AFUNIXSocketAddress.class.getName() + &quot;, got: &quot; + endpoint);</span>
       }
     }
-<span class="fc" id="L146">    impl.connect(endpoint, timeout);</span>
-<span class="fc" id="L147">    this.addr = (AFUNIXSocketAddress) endpoint;</span>
-<span class="fc" id="L148">    NativeUnixSocket.setBound(this);</span>
-<span class="fc" id="L149">    NativeUnixSocket.setConnected(this);</span>
-<span class="fc" id="L150">  }</span>
+<span class="fc" id="L156">    impl.connect(endpoint, timeout);</span>
+<span class="fc" id="L157">    this.addr = (AFUNIXSocketAddress) endpoint;</span>
+<span class="fc" id="L158">    NativeUnixSocket.setBound(this);</span>
+<span class="fc" id="L159">    NativeUnixSocket.setConnected(this);</span>
+<span class="fc" id="L160">  }</span>
 
   @Override
   public String toString() {
-<span class="nc bnc" id="L154" title="All 2 branches missed.">    if (isConnected()) {</span>
-<span class="nc" id="L155">      return &quot;AFUNIXSocket[fd=&quot; + impl.getFD() + &quot;;addr=&quot; + addr.toString() + &quot;]&quot;;</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">    if (isConnected()) {</span>
+<span class="nc" id="L165">      return &quot;AFUNIXSocket[fd=&quot; + impl.getFD() + &quot;;addr=&quot; + addr.toString() + &quot;]&quot;;</span>
     }
-<span class="nc" id="L157">    return &quot;AFUNIXSocket[unconnected]&quot;;</span>
+<span class="nc" id="L167">    return &quot;AFUNIXSocket[unconnected]&quot;;</span>
   }
 
   /**
@@ -166,7 +176,7 @@ public final class AFUNIXSocket extends Socket {
    * @return {@code true} iff supported.
    */
   public static boolean isSupported() {
-<span class="fc" id="L169">    return NativeUnixSocket.isLoaded();</span>
+<span class="fc" id="L179">    return NativeUnixSocket.isLoaded();</span>
   }
 
   /**
@@ -179,9 +189,9 @@ public final class AFUNIXSocket extends Socket {
    */
   public static String getVersion() {
     try {
-<span class="nc" id="L182">      return NativeLibraryLoader.getJunixsocketVersion();</span>
-<span class="nc" id="L183">    } catch (IOException e) {</span>
-<span class="nc" id="L184">      return null;</span>
+<span class="nc" id="L192">      return NativeLibraryLoader.getJunixsocketVersion();</span>
+<span class="nc" id="L193">    } catch (IOException e) {</span>
+<span class="nc" id="L194">      return null;</span>
     }
   }
 
@@ -194,7 +204,7 @@ public final class AFUNIXSocket extends Socket {
    * @return The identifier of the loaded junixsocket-native library, or {@code null}.
    */
   public static String getLoadedLibrary() {
-<span class="nc" id="L197">    return loadedLibrary;</span>
+<span class="nc" id="L207">    return loadedLibrary;</span>
   }
 
   /**
@@ -206,15 +216,15 @@ public final class AFUNIXSocket extends Socket {
    * @throws IOException If there was an error returning these credentials.
    */
   public AFUNIXSocketCredentials getPeerCredentials() throws IOException {
-<span class="pc bpc" id="L209" title="2 of 4 branches missed.">    if (isClosed() || !isConnected()) {</span>
-<span class="nc" id="L210">      throw new SocketException(&quot;Not connected&quot;);</span>
+<span class="pc bpc" id="L219" title="2 of 4 branches missed.">    if (isClosed() || !isConnected()) {</span>
+<span class="nc" id="L220">      throw new SocketException(&quot;Not connected&quot;);</span>
     }
-<span class="fc" id="L212">    return impl.getPeerCredentials();</span>
+<span class="fc" id="L222">    return impl.getPeerCredentials();</span>
   }
 
   @Override
   public boolean isClosed() {
-<span class="pc bpc" id="L217" title="1 of 6 branches missed.">    return super.isClosed() || (isConnected() &amp;&amp; !impl.getFD().valid());</span>
+<span class="fc bfc" id="L227" title="All 6 branches covered.">    return super.isClosed() || (isConnected() &amp;&amp; !impl.getFD().valid());</span>
   }
 
   /**
@@ -223,7 +233,7 @@ public final class AFUNIXSocket extends Socket {
    * @return The size.
    */
   public int getAncillaryReceiveBufferSize() {
-<span class="fc" id="L226">    return impl.getAncillaryReceiveBufferSize();</span>
+<span class="fc" id="L236">    return impl.getAncillaryReceiveBufferSize();</span>
   }
 
   /**
@@ -234,8 +244,8 @@ public final class AFUNIXSocket extends Socket {
    * @param size The size.
    */
   public void setAncillaryReceiveBufferSize(int size) {
-<span class="fc" id="L237">    impl.setAncillaryReceiveBufferSize(size);</span>
-<span class="fc" id="L238">  }</span>
+<span class="fc" id="L247">    impl.setAncillaryReceiveBufferSize(size);</span>
+<span class="fc" id="L248">  }</span>
 
   /**
    * Ensures a minimum ancillary receive buffer size.
@@ -243,8 +253,8 @@ public final class AFUNIXSocket extends Socket {
    * @param minSize The minimum size (in bytes).
    */
   public void ensureAncillaryReceiveBufferSize(int minSize) {
-<span class="nc" id="L246">    impl.ensureAncillaryReceiveBufferSize(minSize);</span>
-<span class="nc" id="L247">  }</span>
+<span class="nc" id="L256">    impl.ensureAncillaryReceiveBufferSize(minSize);</span>
+<span class="nc" id="L257">  }</span>
 
   /**
    * Retrieves an array of incoming {@link FileDescriptor}s that were sent as ancillary messages,
@@ -257,15 +267,15 @@ public final class AFUNIXSocket extends Socket {
    * @throws IOException if the operation fails.
    */
   public FileDescriptor[] getReceivedFileDescriptors() throws IOException {
-<span class="fc" id="L260">    return impl.getReceivedFileDescriptors();</span>
+<span class="fc" id="L270">    return impl.getReceivedFileDescriptors();</span>
   }
 
   /**
    * Clears the queue of incoming {@link FileDescriptor}s that were sent as ancillary messages.
    */
   public void clearReceivedFileDescriptors() {
-<span class="nc" id="L267">    impl.clearReceivedFileDescriptors();</span>
-<span class="nc" id="L268">  }</span>
+<span class="nc" id="L277">    impl.clearReceivedFileDescriptors();</span>
+<span class="nc" id="L278">  }</span>
 
   /**
    * Sets a list of {@link FileDescriptor}s that should be sent as an ancillary message along with
@@ -277,18 +287,18 @@ public final class AFUNIXSocket extends Socket {
    * @throws IOException if the operation fails.
    */
   public void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
-<span class="fc" id="L280">    impl.setOutboundFileDescriptors(fdescs);</span>
-<span class="fc" id="L281">  }</span>
+<span class="fc" id="L290">    impl.setOutboundFileDescriptors(fdescs);</span>
+<span class="fc" id="L291">  }</span>
 
   private static synchronized int getCapabilities() {
-<span class="fc bfc" id="L284" title="All 2 branches covered.">    if (capabilities == null) {</span>
-<span class="pc bpc" id="L285" title="1 of 2 branches missed.">      if (!isSupported()) {</span>
-<span class="nc" id="L286">        capabilities = 0;</span>
+<span class="fc bfc" id="L294" title="All 2 branches covered.">    if (capabilities == null) {</span>
+<span class="pc bpc" id="L295" title="1 of 2 branches missed.">      if (!isSupported()) {</span>
+<span class="nc" id="L296">        capabilities = 0;</span>
       } else {
-<span class="fc" id="L288">        capabilities = NativeUnixSocket.capabilities();</span>
+<span class="fc" id="L298">        capabilities = NativeUnixSocket.capabilities();</span>
       }
     }
-<span class="fc" id="L291">    return capabilities.intValue();</span>
+<span class="fc" id="L301">    return capabilities.intValue();</span>
   }
 
   /**
@@ -299,19 +309,19 @@ public final class AFUNIXSocket extends Socket {
    * @return true if supported.
    */
   public static boolean supports(AFUNIXSocketCapability capability) {
-<span class="pc bpc" id="L302" title="1 of 2 branches missed.">    return (getCapabilities() &amp; capability.getBitmask()) != 0;</span>
+<span class="pc bpc" id="L312" title="1 of 2 branches missed.">    return (getCapabilities() &amp; capability.getBitmask()) != 0;</span>
   }
 
   @Override
   public synchronized void close() throws IOException {
-<span class="fc" id="L307">    IOException superException = null;</span>
+<span class="fc" id="L317">    IOException superException = null;</span>
     try {
-<span class="fc" id="L309">      super.close();</span>
-<span class="nc" id="L310">    } catch (IOException e) {</span>
-<span class="nc" id="L311">      superException = e;</span>
-<span class="fc" id="L312">    }</span>
-<span class="fc" id="L313">    closeables.close(superException);</span>
-<span class="fc" id="L314">  }</span>
+<span class="fc" id="L319">      super.close();</span>
+<span class="nc" id="L320">    } catch (IOException e) {</span>
+<span class="nc" id="L321">      superException = e;</span>
+<span class="fc" id="L322">    }</span>
+<span class="fc" id="L323">    closeables.close(superException);</span>
+<span class="fc" id="L324">  }</span>
 
   /**
    * Registers a {@link Closeable} that should be closed when this socket is closed.
@@ -319,8 +329,8 @@ public final class AFUNIXSocket extends Socket {
    * @param closeable The closeable.
    */
   public void addCloseable(Closeable closeable) {
-<span class="nc" id="L322">    closeables.add(closeable);</span>
-<span class="nc" id="L323">  }</span>
+<span class="nc" id="L332">    closeables.add(closeable);</span>
+<span class="nc" id="L333">  }</span>
 
   /**
    * Unregisters a previously registered {@link Closeable}.
@@ -328,8 +338,8 @@ public final class AFUNIXSocket extends Socket {
    * @param closeable The closeable.
    */
   public void removeCloseable(Closeable closeable) {
-<span class="nc" id="L331">    closeables.remove(closeable);</span>
-<span class="nc" id="L332">  }</span>
+<span class="nc" id="L341">    closeables.remove(closeable);</span>
+<span class="nc" id="L342">  }</span>
 
   /**
    * Very basic self-test function.
@@ -339,15 +349,15 @@ public final class AFUNIXSocket extends Socket {
    * @param args ignored.
    */
   public static void main(String[] args) {
-<span class="nc" id="L342">    System.out.print(&quot;AFUNIXSocket.isSupported(): &quot;);</span>
-<span class="nc" id="L343">    System.out.flush();</span>
-<span class="nc" id="L344">    System.out.println(AFUNIXSocket.isSupported());</span>
+<span class="nc" id="L352">    System.out.print(&quot;AFUNIXSocket.isSupported(): &quot;);</span>
+<span class="nc" id="L353">    System.out.flush();</span>
+<span class="nc" id="L354">    System.out.println(AFUNIXSocket.isSupported());</span>
 
-<span class="nc bnc" id="L346" title="All 2 branches missed.">    for (AFUNIXSocketCapability cap : AFUNIXSocketCapability.values()) {</span>
-<span class="nc" id="L347">      System.out.print(cap + &quot;: &quot;);</span>
-<span class="nc" id="L348">      System.out.flush();</span>
-<span class="nc" id="L349">      System.out.println(AFUNIXSocket.supports(cap));</span>
+<span class="nc bnc" id="L356" title="All 2 branches missed.">    for (AFUNIXSocketCapability cap : AFUNIXSocketCapability.values()) {</span>
+<span class="nc" id="L357">      System.out.print(cap + &quot;: &quot;);</span>
+<span class="nc" id="L358">      System.out.flush();</span>
+<span class="nc" id="L359">      System.out.println(AFUNIXSocket.supports(cap));</span>
     }
-<span class="nc" id="L351">  }</span>
+<span class="nc" id="L361">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
