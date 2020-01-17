@@ -1,7 +1,15 @@
 # Noteworthy changes
 
+### _(2020-01-16)_ **junixsocket 2.3.1**
+
+ - Add support for Java 15
+ - Increase minimum version requirement for macOS to 10.9 to comply with notarization requirements
+ - Improved error reporting upon trying to connect an already closed socket
+ - Improved error reporting when a compiler binary is missing for cross-compilation
+
 ### _(2019-12-26)_ **junixsocket 2.3.0**
 
+ - Add support for Java 14
  - Add support for Java 7 (core/server package only)
  - Add support for ppc64le (POWER) Linux
  - Add support for RISC-V 64-bit Linux
