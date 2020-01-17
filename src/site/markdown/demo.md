@@ -13,7 +13,7 @@ as expected.
 
 junixsocket-dist provides a self-contained jar that performs this selftest:
 
-    java -jar junixsocket-selftest-2.3.0-jar-with-dependencies.jar
+    java -jar junixsocket-selftest-2.3.1-jar-with-dependencies.jar
 
 The last line should say "Selftest PASSED", and you're good to go.
 

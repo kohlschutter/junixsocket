@@ -74,7 +74,7 @@ for development and testing purposes:
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-native-custom</artifactId>
-      <version>2.3.0</version>
+      <version>2.3.1</version>
       <classifier>amd64-Linux-gpp-jni</classifier>
     </dependency>
 
@@ -87,7 +87,7 @@ have your custom artifact, there's a chance it wouldn't even build on other peop
 An alternative is to directly add the junixsocket-native-custom jar to the classpath whenever you
 invoke the Java VM (e.g., your web server, etc.), for example:
 
-    java -cp junixsocket-native-custom-2.3.0-amd64-Linux-gpp-jni.jar:*(...)* *YourMainClass*
+    java -cp junixsocket-native-custom-2.3.1-amd64-Linux-gpp-jni.jar:*(...)* *YourMainClass*
 
 ## If that doesn't work...
 
@@ -97,4 +97,4 @@ the native library yourself.
 Simply set the system property `org.newsclub.net.unix.library.override` to the location of the native
 library. For example:
 
-    java -Dorg.newsclub.net.unix.library.override=junixsocket-native-2.3.0 (...)
+    java -Dorg.newsclub.net.unix.library.override=junixsocket-native-2.3.1 (...)
