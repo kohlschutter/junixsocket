@@ -58,7 +58,8 @@ public class AcceptTimeoutTest extends SocketTestBase {
           // expected
           time = System.currentTimeMillis() - time;
 
-          assertTrue(time >= timeoutMillis && (time - timeoutMillis) <= TIMING_INACCURACY_MILLIS,
+          assertTrue(time >= (timeoutMillis - 25) && (time
+              - timeoutMillis) <= TIMING_INACCURACY_MILLIS,
               "Timeout not properly honored. Exception thrown after " + time + "ms vs. expected "
                   + timeoutMillis + "ms");
         }
