@@ -213,7 +213,7 @@ final class NativeLibraryLoader implements Closeable {
   @SuppressWarnings("resource")
   // NOPMD
   public synchronized void loadLibrary() {
-    synchronized (getClass().getClassLoader()) { // NOPMD We want to lock this class' classloader.
+    synchronized (getClass().getClassLoader() != null ? getClass().getClassLoader() : getClass()) { // NOPMD We want to lock this class' classloader.
       if (loaded) {
         // Already loaded
         return;
