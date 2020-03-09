@@ -333,7 +333,7 @@ static void handleFieldNotFound(JNIEnv *env, jobject instance, char *fieldName)
     }
 
     char *template = "Cannot find '%s' in class %s";
-    int buflen = strlen(template) + strlen(fieldName) + strlen(classNameStr);
+    size_t buflen = strlen(template) + strlen(fieldName) + strlen(classNameStr);
     char *message = calloc(1, buflen);
     snprintf(message, buflen, template, fieldName, classNameStr);
     (*env)->ReleaseStringUTFChars(env, className, classNameStr);
@@ -555,9 +555,9 @@ static jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
     }
 #endif
 
-    if(timeout > 0 && (uint64_t)timeout > millis) {
+    if(timeout > 0 && millis < (uint64_t)timeout) {
         // Some platforms (Windows) may not support SO_TIMEOUT, so let's override the timeout with our own value
-        millis = timeout;
+        millis = (uint64_t)timeout;
     }
 
     if(millis <= 0) {
@@ -659,8 +659,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
     struct sockaddr_un su;
     const int maxLen = sizeof(su.sun_path);
 
-    int addrLen = (*env)->GetArrayLength(env, addr);
-    if(addrLen <= 0 || addrLen >= maxLen) {
+    socklen_t addrLen = (socklen_t)(*env)->GetArrayLength(env, addr);
+    if((int)addrLen <= 0 || addrLen >= maxLen) {
         org_newsclub_net_unix_NativeUnixSocket_throwException(env,
                 kExceptionSocketException,
                 "Socket address length out of range");
@@ -698,9 +698,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
         // It's OK when the file's gone, but not OK if it refers to another inode.
         int statRes = stat(su.sun_path, &fdStat);
         if(statRes == 0) {
-            long statInode = fdStat.st_ino;
+            ino_t statInode = fdStat.st_ino;
 
-            if(expectedInode != statInode) {
+            if(statInode != (ino_t)expectedInode) {
                 // inode mismatch -> someone else took over this socket address
                 _closeFd(env, fdServer, serverHandle);
                 org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env,
@@ -748,8 +748,8 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
     struct sockaddr_un su;
     const int maxLen = sizeof(su.sun_path);
 
-    int addrLen = (*env)->GetArrayLength(env, addr);
-    if(addrLen <= 0 || addrLen >= maxLen) {
+    socklen_t addrLen = (socklen_t)(*env)->GetArrayLength(env, addr);
+    if((int)addrLen <= 0 || addrLen >= maxLen) {
         org_newsclub_net_unix_NativeUnixSocket_throwException(env,
                 kExceptionSocketException,
                 "Socket address length out of range");
@@ -979,7 +979,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
     org_newsclub_net_unix_NativeUnixSocket_initFD(env, fd, serverHandle);
 
     struct stat fdStat;
-    jlong inode;
+    ino_t inode;
 
     if(su.sun_path[0] == 0) {
         // no inodes in the abstract namespace
@@ -1039,7 +1039,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
         }
     }
 
-    return inode;
+    return (jlong)inode;
 #endif
 }
 
@@ -1073,8 +1073,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
     struct sockaddr_un su;
     const int maxLen = sizeof(su.sun_path);
 
-    int addrLen = (*env)->GetArrayLength(env, addr);
-    if(addrLen <= 0 || addrLen >= maxLen) {
+    socklen_t addrLen = (socklen_t)(*env)->GetArrayLength(env, addr);
+    if((int)addrLen <= 0 || addrLen >= maxLen) {
         org_newsclub_net_unix_NativeUnixSocket_throwException(env,
                 kExceptionSocketException,
                 "Socket address length out of range");
@@ -1117,9 +1117,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
         // It's OK when the file's gone, but not OK if it refers to another inode.
         int statRes = stat(su.sun_path, &fdStat);
         if(statRes == 0) {
-            long statInode = fdStat.st_ino;
+            ino_t statInode = fdStat.st_ino;
 
-            if(expectedInode != statInode) {
+            if(statInode != (ino_t)expectedInode) {
                 // inode mismatch -> someone else took over this socket address
                 _closeFd(env, fd, socketHandle);
                 org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env,
@@ -1183,16 +1183,16 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
     ssize_t count;
 
 #if defined(junixsocket_have_ancillary)
-    jsize controlLen = (*env)->GetDirectBufferCapacity(env, ancBuf);
+    socklen_t controlLen = (socklen_t)(*env)->GetDirectBufferCapacity(env, ancBuf);
 
-    if(controlLen == 0) {
+    if((jsize)controlLen <= 0) {
         do {
             count = recv(handle, &(((char*)buf)[offset]), (size_t)length, 0);
         } while(count == -1 && socket_errno == EINTR);
     } else {
         jbyte *control = (*env)->GetDirectBufferAddress(env, ancBuf);
 
-        struct iovec iov = {.iov_base = &(buf[offset]), .iov_len = length};
+        struct iovec iov = {.iov_base = &(buf[offset]), .iov_len = (size_t)length};
         struct sockaddr_un sender;
         struct msghdr msg = {.msg_name = (struct sockaddr*)&sender, .msg_namelen =
                 sizeof(sender), .msg_iov = &iov, .msg_iovlen = 1, .msg_control =
@@ -1309,14 +1309,14 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
     char *control = NULL;
     if(ancFds != NULL) {
         jsize ancFdsLen = (*env)->GetArrayLength(env, ancFds);
-        msg.msg_controllen = CMSG_SPACE(ancFdsLen * sizeof(int));
+        msg.msg_controllen = (socklen_t)CMSG_SPACE((socklen_t)ancFdsLen * sizeof(jint));
         control = msg.msg_control = malloc(msg.msg_controllen);
 
-        int controlLen = 0;
+        socklen_t controlLen = 0;
         struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
         cmsg->cmsg_level = SOL_SOCKET;
         cmsg->cmsg_type = SCM_RIGHTS;
-        controlLen += (cmsg->cmsg_len = CMSG_LEN(ancFdsLen * sizeof(int)));
+        controlLen += (cmsg->cmsg_len = (socklen_t)CMSG_LEN((socklen_t)ancFdsLen * sizeof(jint)));
         int *data = (int*)CMSG_DATA(cmsg);
 
         jint *ancBuf = (*env)->GetIntArrayElements(env, ancFds, NULL);
