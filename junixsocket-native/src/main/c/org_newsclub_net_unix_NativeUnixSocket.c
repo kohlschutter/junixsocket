@@ -150,10 +150,20 @@ typedef unsigned long socklen_t; /* 64-bits */
 #endif
 
 #if defined(__MACH__)
-#define junixsocket_use_poll_for_accept
+#  define junixsocket_use_poll_for_accept
 //#define junixsocket_use_poll_interval_millis    1000
-#define junixsocket_use_poll_for_read
-#include <sys/ucred.h>
+#  define junixsocket_use_poll_for_read
+#  include <sys/ucred.h>
+#endif
+
+#if defined(__FreeBSD__)
+#  define junixsocket_use_poll_for_accept
+//#define junixsocket_use_poll_interval_millis    1000
+#  define junixsocket_use_poll_for_read
+#  include <sys/ucred.h>
+#  if !defined(SOL_LOCAL)
+#    define SOL_LOCAL               0
+#  endif
 #endif
 
 #if defined(junixsocket_use_poll_for_accept) || defined(junixsocket_use_poll_for_read)
@@ -165,7 +175,7 @@ typedef unsigned long socklen_t; /* 64-bits */
 #endif
 
 #if defined(LOCAL_PEEREUUID)
-#include <uuid/uuid.h>
+#  include <uuid/uuid.h>
 #endif
 
 // Windows requires us fetching errno for socket-related errors
