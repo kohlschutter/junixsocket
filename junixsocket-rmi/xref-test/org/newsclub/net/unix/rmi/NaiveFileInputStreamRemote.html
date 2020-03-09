@@ -50,7 +50,11 @@
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>    <strong class="jxr_keyword">int</strong> available() <strong class="jxr_keyword">throws</strong> IOException;
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>    byte[] readAllBytes() <strong class="jxr_keyword">throws</strong> IOException;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  }
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <em class="jxr_comment">// JDK-8230967 If we want to call #close remotely, we need to declare it</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>    @Override
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">void</strong> close() <strong class="jxr_keyword">throws</strong> IOException;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2020 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

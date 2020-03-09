@@ -129,8 +129,8 @@ class AFUNIXSocketImpl extends SocketImpl {
 <span class="pc bpc" id="L129" title="1 of 2 branches missed.">      if (pendingAccepts.incrementAndGet() &gt;= Integer.MAX_VALUE) {</span>
 <span class="nc" id="L130">        throw new SocketException(&quot;Too many pending accepts&quot;);</span>
       } else {
-<span class="pc bpc" id="L132" title="1 of 4 branches missed.">        if (!bound || closed) {</span>
-<span class="fc" id="L133">          throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="pc bpc" id="L132" title="2 of 4 branches missed.">        if (!bound || closed) {</span>
+<span class="nc" id="L133">          throw new SocketException(&quot;Socket is closed&quot;);</span>
         }
 
 <span class="fc" id="L136">        NativeUnixSocket.accept(socketAddress.getBytes(), fdesc, si.fd, inode, this.timeout);</span>
@@ -567,11 +567,11 @@ class AFUNIXSocketImpl extends SocketImpl {
       try {
 <span class="fc" id="L568">        super.setOption(optID, value);</span>
 <span class="fc" id="L569">      } catch (SocketException e) {</span>
-<span class="pc bpc" id="L570" title="1 of 2 branches missed.">        switch (optID) {</span>
+<span class="fc bfc" id="L570" title="All 2 branches covered.">        switch (optID) {</span>
           case SocketOptions.TCP_NODELAY:
 <span class="fc" id="L572">            return;</span>
           default:
-<span class="nc" id="L574">            throw e;</span>
+<span class="fc" id="L574">            throw e;</span>
         }
 <span class="fc" id="L576">      }</span>
 <span class="fc" id="L577">    }</span>
