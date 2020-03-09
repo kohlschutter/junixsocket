@@ -13,7 +13,7 @@ as expected.
 
 junixsocket-dist provides a self-contained jar that performs this selftest:
 
-    java -jar junixsocket-selftest-2.3.1-jar-with-dependencies.jar
+    java -jar junixsocket-selftest-2.3.2-jar-with-dependencies.jar
 
 The last line should say "Selftest PASSED", and you're good to go.
 
@@ -61,7 +61,7 @@ You will see a couple of examples on how to invoke the individual demos.
     ./run-demo.sh -j (path-to-postgresql-jar) -- -DsocketPath=/tmp/.s.PGSQL.5432 org.newsclub.net.unix.demo.jdbc.PostgresDemo
     
     # Runs the HTTP Server
-    ./run-demo.sh -j (path-to-nanohttpd-2.3.1-jar) -- org.newsclub.net.unix.demo.nanohttpd.NanoHttpdServerDemo
+    ./run-demo.sh -j (path-to-nanohttpd-jar) -- org.newsclub.net.unix.demo.nanohttpd.NanoHttpdServerDemo
     
     Other flags:
      -m Use the Java module-path instead of the classpath (Java 9 or higher)

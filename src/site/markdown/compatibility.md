@@ -2,7 +2,7 @@
 
 ## Versioning
 
-junixsocket versions consist of three parts: major, minor and patch (for example, 2.3.1).
+junixsocket versions consist of three parts: major, minor and patch (for example, 2.3.2).
 
 `-SNAPSHOT` builds are not considered releases, but merely previews of a future release.
 
