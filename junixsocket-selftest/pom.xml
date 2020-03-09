@@ -115,6 +115,7 @@
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-native-custom</artifactId>
       <version>${project.version}</version>
+      <classifier>${junixsocket.custom.arch}</classifier>
     </dependency>
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
