@@ -42,4 +42,8 @@ public interface NaiveFileInputStreamRemote extends Remote, Closeable {
   int available() throws IOException;
 
   byte[] readAllBytes() throws IOException;
+
+  // JDK-8230967 If we want to call #close remotely, we need to declare it
+  @Override
+  void close() throws IOException;
 }
