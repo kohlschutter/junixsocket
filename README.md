@@ -16,7 +16,7 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
 * Supports HTTP over unix socket (using [NanoHTTPD](https://github.com/NanoHttpd/nanohttpd))
 * Supports Java 7*, 8, 9, 10, 11, 12, 13, 14, 15.
 * Comes with pre-built native libraries for several operating systems and platforms, including
-  macOS, Linux, Solaris and Windows; custom libraries can be built using Maven.
+  macOS, Linux, FreeBSD, Solaris and Windows; custom libraries can be built using Maven.
 * Supports JPMS/Jigsaw modules.
 * Apache 2.0 licensed.
 

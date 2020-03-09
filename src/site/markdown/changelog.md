@@ -1,5 +1,12 @@
 # Noteworthy changes
 
+### _(2020-03-08)_ **junixsocket 2.3.2**
+
+ - Add support for FreeBSD (Intel 64-bit)
+ - Fix an NPE when junixsocket is on the bootstrap classloader
+ - Fix AcceptTimeoutTest#testCatchTimeout (selftest would sometimes erroneously fail)
+ - Code cleanup
+
 ### _(2020-01-16)_ **junixsocket 2.3.1**
 
  - Add support for Java 15
