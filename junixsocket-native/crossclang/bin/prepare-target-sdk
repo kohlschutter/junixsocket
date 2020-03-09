@@ -5,7 +5,7 @@
 #
 # prepare-target-sdk is to be run on the target platform
 #
-# Copyright 2019 Christian Kohlschütter
+# Copyright 2019, 2020 Christian Kohlschütter
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -235,6 +235,22 @@ if [[ "$triple" == *"-darwin"* ]]; then
     library_path+=(
         /usr/lib
         /usr/lib/system
+    )
+fi
+
+# Add /lib when missing but likely required
+haveUsrLib=0
+haveLib=0
+for f in ${library_path[@]}; do
+  if [[ "$f" == "/usr/lib" ]]; then
+    haveUsrLib=1
+  elif [[ "$f" == "/lib" ]]; then
+    haveLib=1
+  fi
+done
+if [[ $haveUsrLib -eq 1 && $haveLib -eq 0 ]]; then
+    library_path+=(
+        /lib
     )
 fi
 
