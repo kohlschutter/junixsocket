@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # junixsocket
 #
-# Copyright (c) 2009-2018 Christian Kohlschütter
+# Copyright (c) 2009-2020 Christian Kohlschütter
 #
 # The author licenses this file to You under the Apache License, Version 2.0
 # (the "License"); you may not use this file except in compliance with

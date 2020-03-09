@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 classifierOnly=0
 if [ "$1" == "-c" ]; then

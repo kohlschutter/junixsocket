@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ $# -eq 0 ]; then
   echo "Syntax: $0 <*.jar|nar>+" >&2
