@@ -210,10 +210,19 @@ final class NativeLibraryLoader implements Closeable {
     }
   }
 
-  @SuppressWarnings("resource")
+  private static Object loadLibrarySyncMonitor() {
+    Object monitor = NativeLibraryLoader.class.getClassLoader(); // NOPMD
+    if (monitor == null) {
+      // bootstrap classloader?
+      return NativeLibraryLoader.class;
+    } else {
+      return monitor;
+    }
+  }
+
   // NOPMD
   public synchronized void loadLibrary() {
-    synchronized (getClass().getClassLoader() != null ? getClass().getClassLoader() : getClass()) { // NOPMD We want to lock this class' classloader.
+    synchronized (loadLibrarySyncMonitor()) { // NOPMD We want to lock this class' classloader.
       if (loaded) {
         // Already loaded
         return;
@@ -223,32 +232,12 @@ final class NativeLibraryLoader implements Closeable {
       Throwable ex = loadLibraryOverride();
       if (ex == null) {
         return;
-      } else {
-        suppressedThrowables.add(ex);
       }
+      suppressedThrowables.add(ex);
 
-      List<LibraryCandidate> candidates = new ArrayList<>();
-      try {
-        candidates.add(new StandardLibraryCandidate(getArtifactVersion(getClass(),
-            "junixsocket-common", "junixsocket-core")));
-      } catch (Exception e) {
-        suppressedThrowables.add(e);
-      }
-      try {
-        candidates.addAll(tryProviderClass("org.newsclub.lib.junixsocket.custom.NarMetadata",
-            "junixsocket-native-custom"));
-      } catch (Exception e) {
-        suppressedThrowables.add(e);
-      }
-      try {
-        candidates.addAll(tryProviderClass("org.newsclub.lib.junixsocket.common.NarMetadata",
-            "junixsocket-native-common"));
-      } catch (Exception e) {
-        suppressedThrowables.add(e);
-      }
+      List<LibraryCandidate> candidates = initLibraryCandidates(suppressedThrowables);
 
       String loadedLibraryId = null;
-
       for (LibraryCandidate candidate : candidates) {
         try {
           if ((loadedLibraryId = candidate.load()) != null) {
@@ -258,30 +247,60 @@ final class NativeLibraryLoader implements Closeable {
           suppressedThrowables.add(e);
         }
       }
+
       for (LibraryCandidate candidate : candidates) {
         candidate.close();
       }
 
-      if (loadedLibraryId != null) {
-        setLoaded(loadedLibraryId);
-      } else {
-        String message = "Could not load native library " + LIBRARY_NAME + " for architecture "
-            + ARCHITECTURE_AND_OS;
-
-        String cp = System.getProperty("java.class.path", "");
-        if (cp.contains("junixsocket-native-custom/target-eclipse") || cp.contains(
-            "junixsocket-native-common/target-eclipse")) {
-          message += "\n\n*** ECLIPSE USERS ***\nIf you're running from within Eclipse, "
-              + "please close the projects \"junixsocket-native-common\" and \"junixsocket-native-custom\"\n";
-        }
-
-        UnsatisfiedLinkError e = new UnsatisfiedLinkError(message);
-        for (Throwable suppressed : suppressedThrowables) {
-          e.addSuppressed(suppressed);
-        }
-        throw e;
+      if (loadedLibraryId == null) {
+        throw initCantLoadLibraryError(suppressedThrowables);
       }
+
+      setLoaded(loadedLibraryId);
     }
+  }
+
+  private UnsatisfiedLinkError initCantLoadLibraryError(List<Throwable> suppressedThrowables) {
+    String message = "Could not load native library " + LIBRARY_NAME + " for architecture "
+        + ARCHITECTURE_AND_OS;
+
+    String cp = System.getProperty("java.class.path", "");
+    if (cp.contains("junixsocket-native-custom/target-eclipse") || cp.contains(
+        "junixsocket-native-common/target-eclipse")) {
+      message += "\n\n*** ECLIPSE USERS ***\nIf you're running from within Eclipse, "
+          + "please close the projects \"junixsocket-native-common\" and \"junixsocket-native-custom\"\n";
+    }
+
+    UnsatisfiedLinkError e = new UnsatisfiedLinkError(message);
+    for (Throwable suppressed : suppressedThrowables) {
+      e.addSuppressed(suppressed);
+    }
+    throw e;
+  }
+
+  @SuppressWarnings("resource")
+  private List<LibraryCandidate> initLibraryCandidates(List<Throwable> suppressedThrowables) {
+    List<LibraryCandidate> candidates = new ArrayList<>();
+    try {
+      candidates.add(new StandardLibraryCandidate(getArtifactVersion(getClass(),
+          "junixsocket-common", "junixsocket-core")));
+    } catch (Exception e) {
+      suppressedThrowables.add(e);
+    }
+    try {
+      candidates.addAll(tryProviderClass("org.newsclub.lib.junixsocket.custom.NarMetadata",
+          "junixsocket-native-custom"));
+    } catch (Exception e) {
+      suppressedThrowables.add(e);
+    }
+    try {
+      candidates.addAll(tryProviderClass("org.newsclub.lib.junixsocket.common.NarMetadata",
+          "junixsocket-native-common"));
+    } catch (Exception e) {
+      suppressedThrowables.add(e);
+    }
+
+    return candidates;
   }
 
   private static String architectureAndOS() {
