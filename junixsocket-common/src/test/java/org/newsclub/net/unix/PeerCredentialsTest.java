@@ -62,8 +62,13 @@ public class PeerCredentialsTest extends SocketTestBase {
 
         assertEquals(clientCreds, serverCreds,
             "Since our tests run in the same process, the peer credentials must be identical");
-        assertEquals(/* ProcessHandle.current().pid() */ TestUtils.getPid(), clientCreds.getPid(),
-            "The returned PID must be the one of our process");
+
+        if (clientCreds.getPid() == -1) {
+          // PID information is unvailable on this platform
+        } else {
+          assertEquals(/* ProcessHandle.current().pid() */ TestUtils.getPid(), clientCreds.getPid(),
+              "The returned PID must be the one of our process");
+        }
       }
 
       serverThread.checkException();
