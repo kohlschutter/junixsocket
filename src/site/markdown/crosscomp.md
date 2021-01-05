@@ -12,6 +12,10 @@ On Mac, the Xcode version of clang is not sufficient. You have to install llvm f
 
     brew install llvm
 
+In order to compile for RISC-V, you need LLVM 9. Currently, it won't compile on newer versions, so install that one, too:
+
+    brew install llvm@9
+
 ## Setting up the target SDKs
 
 First, we need to setup the SDK of all supported target platforms, so we can build our code one

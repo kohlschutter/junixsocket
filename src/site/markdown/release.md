@@ -12,7 +12,7 @@ x86_64-w64-mingw32-gcc, a GCC compiler binary to allow building for Windows.
 
 On Mac, run the following command.
 
-    brew install llvm mingw-w64
+    brew install llvm llvm@9 mingw-w64
     
 If you don't have Homebrew, obtain it from [here](https://brew.sh/) first.
 
