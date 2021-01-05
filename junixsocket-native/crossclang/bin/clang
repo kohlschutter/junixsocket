@@ -38,24 +38,6 @@ if [ "$currentDir" == "$clangDir" ]; then
     findOtherClang=1
 fi
 
-if [[ -z "$(which llvm-ar)" || $findOtherClang -gt 0 ]]; then
-  # let's add the latest LLVM to the path
-  latestLLVM=$(for f in /usr/local/Cellar/llvm/*/bin; do echo $f; done | sort -r -n | head -n 1)
-  if [[ -n "$latestLLVM" && -d "$latestLLVM" ]]; then
-      export PATH="$latestLLVM:$PATH"
-  fi
-fi
-
-clangDir=$(cd "$(dirname $(which clang))"; pwd)
-if [ "$currentDir" == "$clangDir" ]; then
-    export PATH="/usr/bin:/usr/local/bin:$PATH"
-    clangDir=$(cd "$(dirname $(which clang))"; pwd)
-    if [ "$currentDir" == "$clangDir" ]; then
-        echo "crossclang detected in PATH. Can't find real clang, giving up" >&2
-        exit 1
-    fi
-fi
-
 clangArgs=()
 libsArgs=()
 target=""
@@ -83,6 +65,8 @@ gccMode=0
 compiler=clang
 outputStripLibPrefix=0
 
+llvmName=llvm
+
 while [ $# -gt 0 ]; do
   v="$1"
   shift
@@ -104,6 +88,7 @@ while [ $# -gt 0 ]; do
       -shared ) isShared=1; hasShared=1 ;;
       -nostdlib ) nostdlib=1 ;;
       -Xcrossclang-with-and-without-lc ) withAndWithoutLC=1; skipArg=1 ;;
+      -Xcrossclang-llvm-name ) llvmName="$1"; shift ; skipArg=1 ;;
       -Xcrossclang-use-ldshim ) useLdShim=1 ; skipArg=1 ;;
       -Xcrossclang-use-gcc=* ) gccMode=1 ; compiler="${v#-Xcrossclang-use-gcc=}" ; skipArg=1 ;;
       -Xcrossclang-output-strip-lib-prefix ) outputStripLibPrefix=1 ; skipArg=1 ;;
@@ -136,6 +121,24 @@ while [ $# -gt 0 ]; do
 
   previous="$v"
 done
+
+if [[ -z "$(which llvm-ar)" || $findOtherClang -gt 0 ]]; then
+  # let's add the latest LLVM to the path
+  latestLLVM=$(for f in /usr/local/Cellar/"$llvmName"/*/bin; do echo $f; done | sort -r -n | head -n 1)
+  if [[ -n "$latestLLVM" && -d "$latestLLVM" ]]; then
+      export PATH="$latestLLVM:$PATH"
+  fi
+fi
+
+clangDir=$(cd "$(dirname $(which clang))"; pwd)
+if [ "$currentDir" == "$clangDir" ]; then
+    export PATH="/usr/bin:/usr/local/bin:$PATH"
+    clangDir=$(cd "$(dirname $(which clang))"; pwd)
+    if [ "$currentDir" == "$clangDir" ]; then
+        echo "crossclang detected in PATH. Can't find real clang, giving up" >&2
+        exit 1
+    fi
+fi
 
 output_args=()
 clangLinkerArgs=()
