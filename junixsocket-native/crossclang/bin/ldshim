@@ -28,8 +28,6 @@ searchPaths=()
 replaceWithAbsolutePaths=()
 sysroot=
 
-echo XXXX $@
-
 while [ $# -gt 0 ]; do
     v="$1"
     shift
