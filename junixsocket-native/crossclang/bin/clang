@@ -25,6 +25,11 @@
 #     and add custom options to clang to simplify cross-compilation
 # if you specify an invalid value to -target, the set of available targets is shown as an error message
 
+## debugging
+# echo PWD $(pwd)
+# echo CROSSCLANG $0 $@
+# set -x
+
 currentDir=$(cd "$(dirname $0)"; pwd)
 clangDir=$(cd "$(dirname $(which clang))"; pwd)
 findOtherClang=0
@@ -320,7 +325,7 @@ if [ $needLinker -gt 0 ]; then
         
         ;;
         ld64)
-        ldPath=$(which ld64.lld)
+        ldPath=$currentDir/ld64shim
         clangLinkerArgs+=("-Wl,-sdk_version,10.9")
         #if [ $nostdlib -gt 0 ]; then
         #  clangLinkerArgs+=("-Wl,-undefined,dynamic_lookup")
