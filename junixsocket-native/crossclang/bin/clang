@@ -144,6 +144,9 @@ output_args=()
 clangLinkerArgs=()
 isystem_decls=()
 
+isCompile=0
+[[ "$outputFile" == *.o ]] && isCompile=1
+
 if [ $hasO -gt 0 ]; then
     if [[ $outputStripLibPrefix -eq 1 ]]; then
         outputFile="${outputFile#lib}"
@@ -424,9 +427,25 @@ fi
 
 # set -x
 if [[ $withAndWithoutLC -eq 1 ]]; then
-  nodepsOut="${outputFile%.*}.nodeps.${outputFile##*.}"
-  "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} -lc ${output_args[@]} ${clangArgs[@]} ${libsArgs[@]} && \
-  "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} -nostdlib -o "$nodepsOut" ${clangArgs[@]} ${libsArgs[@]}
+    nodepsOut="${outputFile%.*}.nodeps.${outputFile##*.}"
+
+    wwoArgs=(${output_args[@]})
+    wwoArgsNoDeps=(-D__CROSSCLANG_NODEPS__=1 -o "$nodepsOut")
+    if [ $isCompile -eq 0 ]; then
+        # linking phase
+        wwoArgs+=(-lc)
+        wwoArgsNoDeps+=(-nostdlib)
+    fi
+    clangArgsNoDeps=()
+    for arg in ${clangArgs[@]}; do
+        if [[ $arg != -* && $arg == *.o ]]; then
+	    arg="${arg%.*}.nodeps.${arg##*.}"
+        fi
+        clangArgsNoDeps+=($arg)
+    done
+
+    "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${wwoArgs[@]} ${clangArgs[@]} ${libsArgs[@]} && \
+    "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${wwoArgsNoDeps[@]} ${clangArgsNoDeps[@]} ${libsArgs[@]}
 else
-  exec "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${output_args[@]} ${clangArgs[@]} ${libsArgs[@]}
+    exec "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${output_args[@]} ${clangArgs[@]} ${libsArgs[@]}
 fi
