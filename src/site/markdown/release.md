@@ -47,7 +47,7 @@ Instructions for macOS
    
    Remember the GPG key ID. Publish the corresponding GPG public key on the GPG keyservers:
    
-    gpg2 --send-keys THEKEYID
+    gpg2 --keyserver hkp://hkps.pool.sks-keyservers.net --send-key THEKEYID
     
 ### Build environment for other platforms
 
@@ -117,7 +117,9 @@ The files can be found in
   
     cd junixsocket
     mvn clean install -Pstrict -Prelease
-    mvn deploy -Pstrict -Prelease -Psigned
+
+    # after gpg.keyname, specify the key you want to use for signing
+    mvn deploy -Pstrict -Prelease -Psigned -Dgpg.keyname=5034B...
     
 ##### Notes
 
@@ -136,12 +138,17 @@ servers. Try to manually push to the ones mentioned in the error message, and tr
 
 For example:
 
-    gpg2 --keyserver http://keyserver.ubuntu.com:11371 --send-keys THEKEYID
-    
+    gpg2 --keyserver http://keyserver.ubuntu.com:11371 --send-key THEKEYID
+
+If you get an error `Remote staging failed: A message body reader for Java class
+com.sonatype.nexus.staging.api.dto.StagingProfileRepositoryDTO, and Java type class
+com.sonatype.nexus.staging.api.dto.StagingProfileRepositoryDTO, and MIME media type text/html was
+not found`, then simply try again; see [OSSRH-51097](https://issues.sonatype.org/browse/OSSRH-51097).
+
 #### 2. Review the deployed artifacts
   
 The URL of the staging repository is `https://oss.sonatype.org/content/groups/staging`.
-The artifacts can be found [here](https://oss.sonatype.org/content/groups/staging/com/kohlschutter/junixsocket/).
+The artifacts can be found [here](https://oss.sonatype.org/content/groups/staging/com/kohlschutter/).
 
 **IMPORTANT** Double-check that the staged junixsocket-native-common artifact contains both macOS
 and Linux 64-bit libraries. 
