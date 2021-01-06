@@ -1,5 +1,13 @@
 # Noteworthy changes
 
+### _(2021-01-XX)_ **junixsocket 2.3.3**
+
+ - Fix "undefined symbol: stat" error on older Linux machines
+ - Fix self-test on Windows
+ - Fix LICENSE/NOTICE files (no license change, just reorganization)
+ - Fix build issues with RISC-V (use LLVM 9)
+ - Fix build issues on macOS
+
 ### _(2020-03-08)_ **junixsocket 2.3.2**
 
  - Add support for FreeBSD (Intel 64-bit)
