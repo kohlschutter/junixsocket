@@ -185,6 +185,16 @@ typedef unsigned long socklen_t; /* 64-bits */
 #  define socket_errno errno
 #endif
 
+#if __GLIBC__
+#  if __CROSSCLANG_NODEPS__
+// nothing to do
+#  else
+// This allows us to link against older glibc versions
+#    define memcpy memmove
+#    define stat(...) __xstat(1, __VA_ARGS__)
+#  endif
+#endif
+
 typedef enum {
     kExceptionSocketException = 0,
     kExceptionSocketTimeoutException,
@@ -391,6 +401,47 @@ static void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
     (*env)->SetLongField(env, instance, fieldID, value);
 }
 #endif
+
+/**
+ * Initializes a sockaddr_un given a byte[] address, returning the socklen,
+ * or 0 if an error occurred.
+ */
+static socklen_t initSu(JNIEnv * env, struct sockaddr_un *su, jbyteArray addr) {
+    const int maxLen = sizeof(su->sun_path);
+
+    socklen_t addrLen = (socklen_t)(*env)->GetArrayLength(env, addr);
+    if((int)addrLen <= 0 || addrLen >= maxLen) {
+        org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+                kExceptionSocketException,
+                "Socket address length out of range");
+        return 0;
+    }
+
+    const char* socketFile = (char*)(void*)(*env)->GetByteArrayElements(env,
+            addr, NULL);
+    if(socketFile == NULL) {
+        return 0; // OOME
+    }
+
+    su->sun_family = AF_UNIX;
+    memset(su->sun_path, 0, maxLen);
+    memcpy(su->sun_path, socketFile, addrLen);
+
+    (*env)->ReleaseByteArrayElements(env, addr, (jbyte*)(void*)socketFile, 0);
+    socketFile = NULL;
+
+#ifdef junixsocket_have_sun_len
+    su->sun_len = (unsigned char)(sizeof(*su) - sizeof(su->sun_path) + addrLen);
+#endif
+
+    socklen_t suLength = (socklen_t)(addrLen + sizeof(su->sun_family)
+#ifdef junixsocket_have_sun_len
+            + sizeof(su->sun_len)
+#endif
+            );
+
+    return suLength;
+}
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -657,40 +708,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
         jobject fd, jlong expectedInode, int timeout)
 {
     struct sockaddr_un su;
-    const int maxLen = sizeof(su.sun_path);
-
-    socklen_t addrLen = (socklen_t)(*env)->GetArrayLength(env, addr);
-    if((int)addrLen <= 0 || addrLen >= maxLen) {
-        org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-                kExceptionSocketException,
-                "Socket address length out of range");
-        return;
-    }
-
-    const char* socketFile = (char*)(void*)(*env)->GetByteArrayElements(env,
-            addr, NULL);
-    if(socketFile == NULL) {
-        return; // OOME
-    }
+    socklen_t suLength = initSu(env, &su, addr);
+    if(suLength == 0) return;
 
     int serverHandle = org_newsclub_net_unix_NativeUnixSocket_getFD(env,
             fdServer);
-
-    su.sun_family = AF_UNIX;
-    memset(su.sun_path, 0, maxLen);
-    memcpy(su.sun_path, socketFile, addrLen);
-    (*env)->ReleaseByteArrayElements(env, addr, (jbyte*)(void*)socketFile, 0);
-    socketFile = NULL;
-
-#ifdef junixsocket_have_sun_len
-    su.sun_len = (unsigned char)(sizeof(su) - sizeof(su.sun_path) + addrLen);
-#endif
-
-    socklen_t suLength = (socklen_t)(addrLen + sizeof(su.sun_family)
-#ifdef junixsocket_have_sun_len
-            + (unsigned char)sizeof(su.sun_len)
-#endif
-            );
 
     if(expectedInode > 0) {
         struct stat fdStat;
@@ -746,39 +768,8 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
         JNIEnv * env, jclass clazz, jbyteArray addr, jobject fd, jint options)
 {
     struct sockaddr_un su;
-    const int maxLen = sizeof(su.sun_path);
-
-    socklen_t addrLen = (socklen_t)(*env)->GetArrayLength(env, addr);
-    if((int)addrLen <= 0 || addrLen >= maxLen) {
-        org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-                kExceptionSocketException,
-                "Socket address length out of range");
-        return -1;
-    }
-
-    const char* socketFile = (char*)(void*)(*env)->GetByteArrayElements(env,
-            addr, NULL);
-
-    if(socketFile == NULL) {
-        return -1; // OOME
-    }
-
-    su.sun_family = AF_UNIX;
-    memset(su.sun_path, 0, maxLen);
-    memcpy(su.sun_path, socketFile, addrLen);
-
-    (*env)->ReleaseByteArrayElements(env, addr, (jbyte*)(void*)socketFile, 0);
-    socketFile = NULL;
-
-#ifdef junixsocket_have_sun_len
-    su.sun_len = (unsigned char)(sizeof(su) - sizeof(su.sun_path) + addrLen);
-#endif
-
-    socklen_t suLength = (socklen_t)(addrLen + sizeof(su.sun_family)
-#ifdef junixsocket_have_sun_len
-            + sizeof(su.sun_len)
-#endif
-            );
+    socklen_t suLength = initSu(env, &su, addr);
+    if(suLength == 0) return -1;
 
 #if defined(_WIN32)
     int serverHandle = socket(PF_UNIX, SOCK_STREAM, 0);
@@ -1071,21 +1062,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
         jlong expectedInode)
 {
     struct sockaddr_un su;
-    const int maxLen = sizeof(su.sun_path);
-
-    socklen_t addrLen = (socklen_t)(*env)->GetArrayLength(env, addr);
-    if((int)addrLen <= 0 || addrLen >= maxLen) {
-        org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-                kExceptionSocketException,
-                "Socket address length out of range");
-        return;
-    }
-
-    const char* socketFile = (char*)(void*)(*env)->GetByteArrayElements(env,
-            addr, NULL);
-    if(socketFile == NULL) {
-        return; // OOME
-    }
+    socklen_t suLength = initSu(env, &su, addr);
+    if(suLength == 0) return;
 
     SOCKET socketHandle = socket(PF_UNIX, SOCK_STREAM, 0);
     if(socketHandle == INVALID_SOCKET) {
@@ -1093,23 +1071,6 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
         socket_errno, fd);
         return;
     }
-
-    su.sun_family = AF_UNIX;
-    memset(su.sun_path, 0, maxLen);
-    memcpy(su.sun_path, socketFile, addrLen);
-
-    (*env)->ReleaseByteArrayElements(env, addr, (jbyte*)(void*)socketFile, 0);
-    socketFile = NULL;
-
-#ifdef junixsocket_have_sun_len
-    su.sun_len = (unsigned char)(sizeof(su) - sizeof(su.sun_path) + addrLen);
-#endif
-
-    socklen_t suLength = (socklen_t)(addrLen + sizeof(su.sun_family)
-#ifdef junixsocket_have_sun_len
-            + sizeof(su.sun_len)
-#endif
-            );
 
     if(expectedInode > 0) {
         struct stat fdStat;
