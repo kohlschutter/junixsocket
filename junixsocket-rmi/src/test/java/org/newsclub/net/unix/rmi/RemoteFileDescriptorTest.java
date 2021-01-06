@@ -36,7 +36,9 @@ import java.rmi.server.RemoteObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.newsclub.net.unix.AFUNIXSocketCapability;
 
+@AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_FILE_DESCRIPTORS)
 public class RemoteFileDescriptorTest {
   private static final String TEST_SERVICE_NAME = RemoteFileDescriptorTest.class.getName();
 
