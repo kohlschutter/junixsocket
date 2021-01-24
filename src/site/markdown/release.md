@@ -150,8 +150,14 @@ not found`, then simply try again; see [OSSRH-51097](https://issues.sonatype.org
 The URL of the staging repository is `https://oss.sonatype.org/content/groups/staging`.
 The artifacts can be found [here](https://oss.sonatype.org/content/groups/staging/com/kohlschutter/).
 
-**IMPORTANT** Double-check that the staged junixsocket-native-common artifact contains both macOS
-and Linux 64-bit libraries. 
+If you're deploying a `-SNAPSHOT` version, you can find the artifacts
+[here](https://oss.sonatype.org/content/repositories/snapshots/com/kohlschutter/junixsocket/).
+
+**IMPORTANT** Double-check that the staged junixsocket-native-common artifact contains all required
+library binaries (macOS, Linux 64-bit, etc.).
+
+At that point, it is a good idea to download the junixsocket-selftest-jar-with-dependencies.jar,
+and try it on all supported platforms. The last output line should say "Selftest PASSED".
 
 #### 3. Release artifact to Maven Central
   
