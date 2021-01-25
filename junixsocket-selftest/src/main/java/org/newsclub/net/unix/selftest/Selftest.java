@@ -17,17 +17,25 @@
  */
 package org.newsclub.net.unix.selftest;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.junit.platform.console.options.CommandLineOptions;
@@ -76,6 +84,7 @@ public class Selftest {
 
     st.printExplanation();
     st.dumpSystemProperties();
+    st.dumpOSReleaseFiles();
     st.checkSupported();
     st.checkCapabilities();
 
@@ -320,5 +329,72 @@ public class Selftest {
       }
     }
     results.put(module, summary);
+  }
+
+  private void dumpContentsOfSystemConfigFile(File file) {
+    if (!file.exists()) {
+      return;
+    }
+    String p = file.getAbsolutePath();
+    System.out.println("BEGIN contents of file: " + p);
+
+    final int maxToRead = 4096;
+    char[] buf = new char[4096];
+    int numRead = 0;
+    try (InputStreamReader isr = new InputStreamReader(new FileInputStream(file),
+        StandardCharsets.UTF_8);) {
+
+      OutputStreamWriter outWriter = new OutputStreamWriter(System.out, Charset.defaultCharset());
+      int read = -1;
+      boolean lastWasNewline = false;
+      while (numRead < maxToRead && (read = isr.read(buf)) != -1) {
+        numRead += read;
+        outWriter.write(buf, 0, read);
+        outWriter.flush();
+        lastWasNewline = (read > 0 && buf[read - 1] == '\n');
+      }
+      if (!lastWasNewline) {
+        System.out.println();
+      }
+      if (read != -1) {
+        System.out.println("[...]");
+      }
+    } catch (Exception e) {
+      System.out.println("ERROR while reading contents of file: " + p + ": " + e);
+    }
+    System.out.println("=END= contents of file: " + p);
+    System.out.println();
+  }
+
+  public void dumpOSReleaseFiles() throws IOException {
+    Set<Path> canonicalPaths = new HashSet<>();
+    for (String f : new String[] {
+        "/etc/os-release", "/etc/lsb-release", "/etc/lsb_release", "/etc/system-release",
+        "/etc/system-release-cpe",
+        //
+        "/etc/debian_version", "/etc/fedora-release", "/etc/redhat-release", "/etc/centos-release",
+        "/etc/centos-release-upstream", "/etc/SuSE-release", "/etc/arch-release",
+        "/etc/gentoo-release", "/etc/ubuntu-release",}) {
+
+      File file = new File(f);
+      if (!file.exists() || file.isDirectory()) {
+        continue;
+      }
+      Path p = file.toPath().toAbsolutePath();
+      for (int i = 0; i < 2; i++) {
+        if (Files.isSymbolicLink(p)) {
+          Path p2 = Files.readSymbolicLink(p);
+          if (!p2.isAbsolute()) {
+            p = new File(p.toFile().getParentFile(), p2.toString()).toPath().toAbsolutePath();
+          }
+        }
+      }
+
+      if (!canonicalPaths.add(p)) {
+        continue;
+      }
+
+      dumpContentsOfSystemConfigFile(file);
+    }
   }
 }
