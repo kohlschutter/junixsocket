@@ -1,7 +1,8 @@
 # Noteworthy changes
 
-### _(2021-01-XX)_ **junixsocket 2.3.3**
+### _(2021-04-XX)_ **junixsocket 2.3.3**
 
+ - Add support for aarch64 on Apple Silicon Macs
  - Fix "undefined symbol: stat" error on older Linux machines
  - Fix self-test on Windows
  - Fix LICENSE/NOTICE files (no license change, just reorganization)
