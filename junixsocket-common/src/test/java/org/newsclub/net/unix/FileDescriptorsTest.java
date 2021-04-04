@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.file.Files;
@@ -57,7 +58,9 @@ public class FileDescriptorsTest extends SocketTestBase {
           AFUNIXSocket socket = (AFUNIXSocket) sock;
 
           socket.setOutboundFileDescriptors(FileDescriptor.out, FileDescriptor.err);
-          socket.getOutputStream().write("HELLO".getBytes("UTF-8"));
+          try (OutputStream outputStream = socket.getOutputStream()) {
+            outputStream.write("HELLO".getBytes("UTF-8"));
+          }
 
           stopAcceptingConnections();
         }
@@ -82,10 +85,12 @@ public class FileDescriptorsTest extends SocketTestBase {
         fds = socket.getReceivedFileDescriptors();
         assertNull(fds, "If we ask again, these new file descriptors should be gone");
 
-        numRead = socket.getInputStream().read(buf);
-        assertEquals(-1, numRead, "There shouldn't be anything left to read");
-        fds = socket.getReceivedFileDescriptors();
-        assertNull(fds, "There shouldn't be any new file descriptors");
+        try (InputStream is = socket.getInputStream()) {
+          numRead = is.read(buf);
+          assertEquals(-1, numRead, "There shouldn't be anything left to read");
+          fds = socket.getReceivedFileDescriptors();
+          assertNull(fds, "There shouldn't be any new file descriptors");
+        }
       }
 
       serverThread.getServerSocket().close();
@@ -105,7 +110,10 @@ public class FileDescriptorsTest extends SocketTestBase {
           socket.setOutboundFileDescriptors(new FileDescriptor());
           try {
             // NOTE: send an arbitrary byte — we can't send fds without any in-band data
-            socket.getOutputStream().write(123);
+            try (OutputStream outputStream = socket.getOutputStream()) {
+              outputStream.write(123);
+            }
+
             Assertions.fail("Expected a \"Bad file descriptor\" SocketException");
           } catch (SocketException e) {
             // expected
@@ -117,7 +125,9 @@ public class FileDescriptorsTest extends SocketTestBase {
 
       try (AFUNIXSocket socket = connectToServer();) {
         socket.setAncillaryReceiveBufferSize(1024);
-        socket.getInputStream().read();
+        try (InputStream inputStream = socket.getInputStream()) {
+          inputStream.read();
+        }
       }
 
       serverThread.getServerSocket().close();
@@ -137,17 +147,20 @@ public class FileDescriptorsTest extends SocketTestBase {
           socket.setOutboundFileDescriptors(FileDescriptor.out, FileDescriptor.err);
 
           // NOTE: send an arbitrary byte — we can't send fds without any in-band data
-          socket.getOutputStream().write(123);
+          try (OutputStream outputStream = socket.getOutputStream()) {
+            outputStream.write(123);
+          }
 
           stopAcceptingConnections();
         }
       };
 
-      try (AFUNIXSocket socket = connectToServer();) {
+      try (AFUNIXSocket socket = connectToServer();
+          InputStream inputStream = socket.getInputStream()) {
         // NOTE: we haven't set the ancillary receive buffer size
 
         try {
-          assertEquals(123, socket.getInputStream().read());
+          assertEquals(123, inputStream.read());
         } catch (SocketException e) {
           // on Linux, a SocketException may be thrown (an ancillary message was sent, but not read)
         }
@@ -172,16 +185,19 @@ public class FileDescriptorsTest extends SocketTestBase {
           socket.setOutboundFileDescriptors(FileDescriptor.out, FileDescriptor.err);
 
           // NOTE: send an arbitrary byte — we can't send fds without any in-band data
-          socket.getOutputStream().write(123);
+          try (OutputStream outputStream = socket.getOutputStream()) {
+            outputStream.write(123);
+          }
 
           stopAcceptingConnections();
         }
       };
 
-      try (AFUNIXSocket socket = connectToServer();) {
+      try (AFUNIXSocket socket = connectToServer();
+          InputStream inputStream = socket.getInputStream()) {
         socket.setAncillaryReceiveBufferSize(13);
         try {
-          assertEquals(123, socket.getInputStream().read());
+          assertEquals(123, inputStream.read());
           Assertions.fail("Expected a \"No buffer space available\" SocketException");
         } catch (SocketException e) {
           // expected
@@ -211,7 +227,9 @@ public class FileDescriptorsTest extends SocketTestBase {
           }
           try (FileInputStream fin = new FileInputStream(tmpFile)) {
             socket.setOutboundFileDescriptors(fin.getFD());
-            socket.getOutputStream().write("HELLO".getBytes("UTF-8"));
+            try (OutputStream outputStream = socket.getOutputStream()) {
+              outputStream.write("HELLO".getBytes("UTF-8"));
+            }
           }
 
           stopAcceptingConnections();
@@ -266,7 +284,9 @@ public class FileDescriptorsTest extends SocketTestBase {
 
             // We send the file descriptor of fin, from which we already consumed one byte.
             socket.setOutboundFileDescriptors(fin.getFD());
-            socket.getOutputStream().write("HELLO".getBytes("UTF-8"));
+            try (OutputStream outputStream = socket.getOutputStream()) {
+              outputStream.write("HELLO".getBytes("UTF-8"));
+            }
           }
 
           stopAcceptingConnections();

@@ -156,6 +156,7 @@ public final class AFUNIXRegistry implements Registry, ShutdownHook {
     return impl.list();
   }
 
+  @SuppressWarnings("resource")
   private void checkBound() throws RemoteException {
     boolean empty = false;
     synchronized (bound) {

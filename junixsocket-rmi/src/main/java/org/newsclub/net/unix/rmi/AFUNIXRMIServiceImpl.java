@@ -115,6 +115,7 @@ final class AFUNIXRMIServiceImpl implements AFUNIXRMIService {
     }
   }
 
+  @SuppressWarnings("resource")
   @Override
   public void unregisterForShutdown(Closeable closeable) throws RemoteException {
     synchronized (closeAtShutdown) {

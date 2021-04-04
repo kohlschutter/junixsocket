@@ -48,6 +48,7 @@ public class RemoteFileDescriptorTest {
   private static AFUNIXNaming namingInstance;
   private static RemoteFileDescriptorTestServiceImpl testService;
 
+  @SuppressWarnings("resource")
   @BeforeAll
   public static void setupClass() throws IOException, AlreadyBoundException {
     // NOTE: for testing. You'd probably want to use AFUNIXNaming.getInstance()
@@ -87,6 +88,7 @@ public class RemoteFileDescriptorTest {
     }
   }
 
+  @SuppressWarnings("resource")
   @Test
   public void testWriteAndReadHello() throws Exception {
     RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) namingInstance
@@ -113,6 +115,7 @@ public class RemoteFileDescriptorTest {
     }
   }
 
+  @SuppressWarnings("resource")
   @Test
   public void testFindSocketFactory() throws IOException, NotBoundException {
     RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) namingInstance
@@ -124,6 +127,7 @@ public class RemoteFileDescriptorTest {
     assertEquals(namingInstance.getSocketFactory(), factory);
   }
 
+  @SuppressWarnings("resource")
   @Test
   public void testReadWrite() throws IOException, NotBoundException {
     RemoteFileDescriptorTestService svc = (RemoteFileDescriptorTestService) namingInstance

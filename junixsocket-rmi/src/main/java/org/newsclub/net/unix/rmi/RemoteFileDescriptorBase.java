@@ -168,7 +168,8 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
 
     int port = objIn.readInt();
     FileDescriptor[] descriptors;
-    try (AFUNIXSocket socket = (AFUNIXSocket) socketFactory.createSocket("", port)) {
+    try (Socket sock = socketFactory.createSocket("", port); //
+        AFUNIXSocket socket = (AFUNIXSocket) sock) {
       try {
         socket.setSoTimeout(CONNECT_TIMEOUT);
       } catch (IOException e) { // NOPMD

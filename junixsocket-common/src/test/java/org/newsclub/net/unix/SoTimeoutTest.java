@@ -18,6 +18,7 @@
 package org.newsclub.net.unix;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.TimeUnit;
@@ -82,7 +83,9 @@ public class SoTimeoutTest extends SocketTestBase {
       protected void handleConnection(final Socket sock) throws IOException {
         // Let's wait some time for a byte that never gets sent by the
         // client
-        sock.getInputStream().read();
+        try (InputStream inputStream = sock.getInputStream()) {
+          inputStream.read();
+        }
 
         stopAcceptingConnections();
       }

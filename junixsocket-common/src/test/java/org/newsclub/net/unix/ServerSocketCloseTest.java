@@ -18,6 +18,7 @@
 package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -67,7 +68,9 @@ public class ServerSocketCloseTest {
             public void run() {
               try {
                 cdl.countDown();
-                serverSocket.accept();
+                try (AFUNIXSocket accept = serverSocket.accept()) {
+                  assertNotNull(accept);
+                }
               } catch (SocketException e) {
                 if (serverSocket.isClosed()) {
                   // ignore
