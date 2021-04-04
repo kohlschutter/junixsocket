@@ -229,6 +229,30 @@
       </dependencies>
     </profile>
     <profile>
+      <id>aarch64-MacOSX-clang-jni</id>
+      <activation>
+        <os>
+          <arch>aarch64</arch>
+          <family>mac</family>
+        </os>
+        <property>
+          <name>cross</name>
+          <value>!true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.kohlschutter.junixsocket</groupId>
+          <artifactId>junixsocket-native</artifactId>
+          <version>${project.version}</version>
+          <type>nar</type>
+          <classifier>aarch64-MacOSX-clang-jni</classifier>
+          <scope>runtime</scope>
+          <optional>true</optional>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>amd64-Linux-clang-jni</id>
       <activation>
         <os>

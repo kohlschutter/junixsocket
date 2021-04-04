@@ -170,13 +170,31 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
       <activation>
         <os>
           <arch>x86_64</arch>
-          <name>Mac OS X</name>
+          <family>mac</family>
         </os>
       </activation>
       <properties>
         <!-- Specify "junixsocket.native.aol" to override the architecture
           AOL for this environment; see nar-maven-plugin for details -->
         <junixsocket.native.aol>x86_64-MacOSX-clang</junixsocket.native.aol>
+        <junixsocket.native.llvm.target>current</junixsocket.native.llvm.target>
+        <junixsocket.native.jnilib.extension>dylib</junixsocket.native.jnilib.extension>
+        <junixsocket.native.default.toolPath>${junixsocket.native.crossclang.toolPath}</junixsocket.native.default.toolPath>
+        <junixsocket.native.default.linkerName>clang</junixsocket.native.default.linkerName>
+      </properties>
+    </profile>
+    <profile>
+      <id>arch-aarch64-MacOSX</id>
+      <activation>
+        <os>
+          <arch>aarch64</arch>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <!-- Specify "junixsocket.native.aol" to override the architecture
+          AOL for this environment; see nar-maven-plugin for details -->
+        <junixsocket.native.aol>aarch64-MacOSX-clang</junixsocket.native.aol>
         <junixsocket.native.llvm.target>current</junixsocket.native.llvm.target>
         <junixsocket.native.jnilib.extension>dylib</junixsocket.native.jnilib.extension>
         <junixsocket.native.default.toolPath>${junixsocket.native.crossclang.toolPath}</junixsocket.native.default.toolPath>
