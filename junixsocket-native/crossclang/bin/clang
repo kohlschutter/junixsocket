@@ -162,6 +162,7 @@ if [ "$target" == "default" ]; then
     defaultFallback=1
     target=""
 elif [ "$target" == "current" ]; then
+    defaultFallback=2
     target=
 elif [[ -z "$target" && $gccMode -eq 1 ]]; then
     target=unspecified
@@ -170,7 +171,7 @@ fi
 if [[ "$target" != "unspecified" ]]; then
     currentTarget=
     if [[ -z "$target" ]]; then
-        if [ $defaultFallback -gt 0 ]; then
+        if [ $defaultFallback -eq 0 ]; then
             PATH=/usr/bin:$PATH
         fi
     
@@ -182,7 +183,7 @@ if [[ "$target" != "unspecified" ]]; then
         fi
         currentTarget="$target"
     
-        if [ $defaultFallback -gt 0 ]; then
+        if [ $defaultFallback -eq 1 ]; then
             exec clang ${output_args[@]} ${clangArgs[@]}
         fi
     fi
@@ -217,7 +218,45 @@ if [[ "$target" != "unspecified" ]]; then
                 echo "Warning: crossclang has an incomplete configuration for target \"$target\" -- you need to run sync-target-sdk first!" >&2
             fi
         elif [[ "$defaultFallback" -eq 0 ]]; then
-            echo "Error: crossclang not yet configured for target \"$target\" -- you need to run prepare-target-sdk first!" >&2
+            platformTarget=$($(which $compiler) --version | grep "^Target: " | head -n 1)
+            platformTarget=${platformTarget##* }
+
+            tryPlatformClang=0
+            case "$target" in
+                arm64-apple-macos11)
+                    case "$platformTarget" in
+                    arm64-apple-darwin*)
+                        tryPlatformClang=1
+                        ;;
+                    esac
+                ;;
+                x86_64-apple-macos11)
+                    case "$platformTarget" in
+                    arm64-apple-darwin*|x86_64-apple-darwin2*)
+                        tryPlatformClang=1
+                        ;;
+                    esac
+                ;;
+                x86_64-apple-macos)
+                    case "$platformTarget" in
+                    arm64-apple-darwin*|x86_64-apple-darwin*)
+                        tryPlatformClang=1
+                        ;;
+                    esac
+                ;;
+            esac
+
+            if [[ $tryPlatformClang -eq 1 ]]; then
+                echo "Warning: crossclang not configured for target \"$target\" -- you need to run prepare-target-sdk first. Trying native clang now." >&2
+                export PATH=/usr/bin:$PATH
+                exec clang ${output_args[@]} ${clangArgs[@]} -target "$target"
+            fi
+
+            echo "Error: crossclang not configured for target \"$target\" -- you need to run prepare-target-sdk first!" >&2
+        elif [[ "$defaultFallback" -eq 2 ]]; then
+            echo "Warning: crossclang not configured for target \"$target\" -- you need to run prepare-target-sdk first. Trying native clang now." >&2
+            export PATH=/usr/bin:$PATH
+            exec clang ${output_args[@]} ${clangArgs[@]} -target "$target"
         fi
     fi
     
