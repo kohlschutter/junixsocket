@@ -25,11 +25,15 @@ _Pragma("clang diagnostic pop")
  */
 #   define CK_EXCLUDED_FROM_STATIC_ANALYSIS !(__clang_analyzer__)
 
+#   define CK_STATIC_ASSERT(COND) _Static_assert(COND, "Assertion failed")
+
 #else
 #   define CK_IGNORE_UNUSED_MACRO_BEGIN
 #   define CK_IGNORE_UNUSED_MACRO_END
 
 #   define CK_EXCLUDED_FROM_STATIC_ANALYSIS 1
+
+#   define CK_STATIC_ASSERT(COND)
 #endif
 
 #ifndef __unused

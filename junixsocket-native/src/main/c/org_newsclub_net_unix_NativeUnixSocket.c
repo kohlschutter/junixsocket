@@ -1,5 +1,5 @@
 /**
- * Copyright 2009-2019 Christian Kohlschütter
+ * Copyright 2009-2021 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1192,18 +1192,18 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
                         endBytes = controlEnd;
                     }
 
-                    int *data = (int*)CMSG_DATA(cmsg);
-                    int *end = (int*)endBytes;
-                    int numFds = (int)(end - data);
+                    unsigned char *data = CMSG_DATA(cmsg);
+                    unsigned char *end = (unsigned char *)endBytes;
+                    int numFds = (int)(end - data) / sizeof(int);
+
+                    CK_STATIC_ASSERT(sizeof(int)==sizeof(jint));
 
                     if(numFds > 0) {
                         jintArray fdArray = (*env)->NewIntArray(env, numFds);
                         jint *fdBuf = (*env)->GetIntArrayElements(env, fdArray,
                         NULL);
 
-                        for(int i = 0; i < numFds; i++) {
-                            fdBuf[i] = data[i];
-                        }
+                        memcpy(fdBuf, data, numFds * sizeof(int));
 
                         (*env)->ReleaseIntArrayElements(env, fdArray, fdBuf, 0);
 
@@ -1288,12 +1288,11 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
         cmsg->cmsg_level = SOL_SOCKET;
         cmsg->cmsg_type = SCM_RIGHTS;
         controlLen += (cmsg->cmsg_len = (socklen_t)CMSG_LEN((socklen_t)ancFdsLen * sizeof(jint)));
-        int *data = (int*)CMSG_DATA(cmsg);
+        unsigned char *data = CMSG_DATA(cmsg);
 
         jint *ancBuf = (*env)->GetIntArrayElements(env, ancFds, NULL);
-        for(int i = 0; i < ancFdsLen; i++) {
-            data[i] = ancBuf[i];
-        }
+        memcpy(data, ancBuf, ancFdsLen * sizeof(jint));
+
         cmsg = junixsocket_CMSG_NXTHDR(&msg, cmsg);
         if(cmsg == NULL) {
             // FIXME: not enough space in header?
