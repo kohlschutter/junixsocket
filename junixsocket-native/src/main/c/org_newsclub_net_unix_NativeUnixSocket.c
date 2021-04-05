@@ -15,17 +15,17 @@
  */
 
 ///
-/// The native C part of the AFUnixSocket implementation.
+/// The native C part of the AFUNIXSocket implementation.
 ///
 /// @author Christian Kohlschuetter
 ///
-#include "org_newsclub_net_unix_NativeUnixSocket.h"
+#include "ckmacros.h"
 
-#include "devmacros.h"
-
-CK_IGNORE_UNUSED_MACRO_BEGIN
+CK_IGNORE_UNUSED_MACROS_BEGIN
 #define _GNU_SOURCE 1
-CK_IGNORE_UNUSED_MACRO_END
+CK_IGNORE_UNUSED_MACROS_END
+
+#include "org_newsclub_net_unix_NativeUnixSocket.h"
 
 #if defined(_WIN32)
 #  define WIN32_LEAN_AND_MEAN
@@ -44,8 +44,10 @@ CK_IGNORE_UNUSED_MACRO_END
 #include <string.h>
 #include <strings.h>
 
+CK_IGNORE_UNUSED_MACROS_BEGIN
 #define junixsocket_have_sun_len // might be undef'ed below
 #define junixsocket_have_ancillary // might be undef'ed below
+CK_IGNORE_UNUSED_MACROS_END
 
 #if !defined(uint64_t) && !defined(_INT64_TYPE) && !defined(_UINT64_T)
 #  ifdef _LP64
@@ -71,7 +73,7 @@ typedef unsigned long long uint64_t;
 #  define WIN32_NEEDS_CHARP (char *)
 
 #  if !defined(clock_gettime) // older time.h
-int clock_gettime(int ignored, struct timespec *spec) {
+int clock_gettime(int ignored CK_UNUSED, struct timespec *spec) {
     __int64 time;
     GetSystemTimeAsFileTime((FILETIME*)&time);
     time -= 116444736000000000LL; // EPOCHFILETIME
@@ -93,6 +95,7 @@ typedef struct sockaddr_un
 
 // Redefining these errors simplifies WinSock error handling
 // make sure you're not using these error codes for anything not WinSock-related
+CK_IGNORE_UNUSED_MACROS_BEGIN
 #  undef ENOTCONN
 #  define ENOTCONN WSAENOTCONN
 #  undef EINVAL
@@ -103,6 +106,7 @@ typedef struct sockaddr_un
 #  define EWOULDBLOCK WSAEWOULDBLOCK
 #  undef ECONNREFUSED
 #  define ECONNREFUSED WSAECONNREFUSED
+CK_IGNORE_UNUSED_MACROS_END
 
 #else // not windows:
 #  include <sys/ioctl.h>
@@ -268,7 +272,7 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
             _closeFd(env, fdToClose, -1);
         }
 
-        // fall-through
+        __attribute__((fallthrough));
     default:
         exceptionType = kExceptionSocketException;
     }
@@ -277,9 +281,12 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
     char *message = calloc(1, buflen + 1);
 
 #ifdef __linux__
-    char *otherBuf = strerror_r(errnum, message, buflen);
-    if(otherBuf != NULL) {
-        strncpy(message, otherBuf, buflen);
+    __auto_type otherBuf = strerror_r(errnum, message, buflen);
+    if(CK_IGNORE_CAST_BEGIN (int)otherBuf CK_IGNORE_CAST_END > 255) {
+        // strerror_r is ill-defined.
+        strncpy(message,
+                CK_IGNORE_CAST_BEGIN (char *)otherBuf CK_IGNORE_CAST_END,
+                buflen);
     }
 #elif defined(_WIN32)
     if(errnum >= 10000) {
@@ -303,7 +310,9 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
 
 #if DEBUG
     char *message1 = calloc(1, buflen);
-    snprintf(message1, buflen, "%s; errnox=%i", message, errnum);
+CK_IGNORE_USED_BUT_MARKED_UNUSED_BEGIN
+    snprintf(message1, buflen, "%s; errno=%i", message, errnum);
+CK_IGNORE_USED_BUT_MARKED_UNUSED_END
     free(message);
     message = message1;
 #endif
@@ -350,7 +359,9 @@ static void handleFieldNotFound(JNIEnv *env, jobject instance, char *fieldName)
 #define handleFieldNotFound_error_message_template "Cannot find '%s' in class %s"
     size_t buflen = strlen(handleFieldNotFound_error_message_template) + strlen(fieldName) + strlen(classNameStr);
     char *message = calloc(1, buflen);
+    CK_IGNORE_USED_BUT_MARKED_UNUSED_BEGIN
     snprintf(message, buflen, handleFieldNotFound_error_message_template, fieldName, classNameStr);
+    CK_IGNORE_USED_BUT_MARKED_UNUSED_END
     (*env)->ReleaseStringUTFChars(env, className, classNameStr);
 
     org_newsclub_net_unix_NativeUnixSocket_throwException(env,
@@ -373,7 +384,7 @@ static void callObjectSetter(JNIEnv *env, jobject instance, char *methodName,
         return;
     }
 
-    jobject array[] = {value};
+    __attribute__((aligned(8))) jobject array[] = {value};
     (*env)->CallObjectMethodA(env, instance, methodId, (jvalue*)array);
 }
 
@@ -393,8 +404,8 @@ static void setObjectFieldValue(JNIEnv *env, jobject instance, char *fieldName,
     (*env)->SetObjectField(env, instance, fieldID, value);
 }
 
-#if !defined(_WIN32)
-static void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
+CK_IGNORE_UNUSED_FUNCTION_BEGIN
+    static void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
         jlong value)
 {
     jclass instanceClass = (*env)->GetObjectClass(env, instance);
@@ -405,7 +416,7 @@ static void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
     }
     (*env)->SetLongField(env, instance, fieldID, value);
 }
-#endif
+CK_IGNORE_UNUSED_FUNCTION_END
 
 /**
  * Initializes a sockaddr_un given a byte[] address, returning the socklen,
@@ -454,8 +465,10 @@ static socklen_t initSu(JNIEnv * env, struct sockaddr_un *su, jbyteArray addr) {
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init(
-        JNIEnv *env __unused, jclass clazz __unused)
+        JNIEnv *env, jclass clazz CK_UNUSED)
 {
+    CK_ARGUMENT_POTENTIALLY_UNUSED(env);
+
 #if defined(_WIN32)
     WSADATA wsaData;
     int ret = WSAStartup(MAKEWORD(2,2), &wsaData);
@@ -472,7 +485,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init(
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy(
-        JNIEnv *env __unused, jclass clazz __unused)
+        JNIEnv *env CK_UNUSED, jclass clazz CK_UNUSED)
 {
 #if defined(_WIN32)
     WSACleanup();
@@ -485,7 +498,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy(
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
-        JNIEnv *env __unused, jclass clazz __unused)
+        JNIEnv *env CK_UNUSED, jclass clazz CK_UNUSED)
 {
 
     int capabilities = 0;
@@ -512,10 +525,14 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
 static struct cmsghdr* junixsocket_CMSG_NXTHDR (struct msghdr *mhdr, struct cmsghdr *cmsg)
 {
     if ((size_t)cmsg->cmsg_len >= sizeof(struct cmsghdr)) {
+        CK_IGNORE_CAST_ALIGN_BEGIN // false positive: CMSG_ALIGN ensures alignment
         cmsg = (struct cmsghdr*)((unsigned char*) cmsg + CMSG_ALIGN (cmsg->cmsg_len));
         if ((unsigned char*)cmsg < ((unsigned char*) mhdr->msg_control + mhdr->msg_controllen)) {
+            CK_IGNORE_SIGN_COMPARE_BEGIN
             return CMSG_NXTHDR(mhdr, cmsg);
+            CK_IGNORE_SIGN_COMPARE_END
         }
+        CK_IGNORE_CAST_ALIGN_END
     }
     return NULL;
 }
@@ -545,7 +562,7 @@ static int org_newsclub_net_unix_NativeUnixSocket_getFD(JNIEnv * env,
  * Signature: (Ljava/io/FileDescriptor;)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getFD(
-        JNIEnv *env, jclass clazz __unused, jobject fd)
+        JNIEnv *env, jclass clazz CK_UNUSED, jobject fd)
 {
     return org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 }
@@ -570,7 +587,7 @@ static void org_newsclub_net_unix_NativeUnixSocket_initFD(JNIEnv * env,
  * Signature: (Ljava/io/FileDescriptor;I)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initFD(
-        JNIEnv * env, jclass clazz __unused, jobject fd, jint handle)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jint handle)
 {
     org_newsclub_net_unix_NativeUnixSocket_initFD(env, fd, handle);
 }
@@ -709,9 +726,11 @@ static jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
  * Signature: ([BLjava/io/FileDescriptor;Ljava/io/FileDescriptor;JI)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
-        JNIEnv * env, jclass clazz __unused, jbyteArray addr, jobject fdServer,
+        JNIEnv * env, jclass clazz CK_UNUSED, jbyteArray addr, jobject fdServer,
         jobject fd, jlong expectedInode, int timeout)
 {
+    CK_ARGUMENT_POTENTIALLY_UNUSED(timeout);
+
     struct sockaddr_un su;
     socklen_t suLength = initSu(env, &su, addr);
     if(suLength == 0) return;
@@ -770,13 +789,18 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
  * Signature: ([BLjava/io/FileDescriptor;I)J
  */
 JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
-        JNIEnv * env, jclass clazz __unused, jbyteArray addr, jobject fd, jint options)
+        JNIEnv * env, jclass clazz CK_UNUSED, jbyteArray addr, jobject fd, jint options)
 {
+#if defined(_WIN32)
+    CK_ARGUMENT_POTENTIALLY_UNUSED(options);
+#endif
+
     struct sockaddr_un su;
     socklen_t suLength = initSu(env, &su, addr);
     if(suLength == 0) return -1;
 
 #if defined(_WIN32)
+
     int serverHandle = socket(PF_UNIX, SOCK_STREAM, 0);
     if(serverHandle == -1) {
         org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env,
@@ -1050,7 +1074,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
  * Signature: (Ljava/io/FileDescriptor;I)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen(
-        JNIEnv * env, jclass clazz __unused, jobject fd, jint backlog)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jint backlog)
 {
     int serverHandle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
@@ -1068,7 +1092,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen(
  * Signature: ([BLjava/io/FileDescriptor;J)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
-        JNIEnv * env, jclass clazz __unused, jbyteArray addr, jobject fd,
+        JNIEnv * env, jclass clazz CK_UNUSED, jbyteArray addr, jobject fd,
         jlong expectedInode)
 {
     struct sockaddr_un su;
@@ -1123,9 +1147,14 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
  * Signature: (Lorg/newsclub/net/unix/AFUNIXSocketImpl;Ljava/io/FileDescriptor;[BIILjava/nio/ByteBuffer;)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
-        JNIEnv * env, jclass clazz __unused, jobject impl, jobject fd, jbyteArray jbuf,
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject impl, jobject fd, jbyteArray jbuf,
         jint offset, jint length, jobject ancBuf)
 {
+#if defined(_WIN32)
+    CK_ARGUMENT_POTENTIALLY_UNUSED(impl);
+    CK_ARGUMENT_POTENTIALLY_UNUSED(ancBuf);
+#endif
+
     jsize bufLen = (*env)->GetArrayLength(env, jbuf);
     if(offset < 0 || length < 0 || offset >= bufLen) {
         org_newsclub_net_unix_NativeUnixSocket_throwException(env,
@@ -1255,9 +1284,14 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
  * Signature: (Lorg/newsclub/net/unix/AFUNIXSocketImpl;Ljava/io/FileDescriptor;[BII[I)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
-        JNIEnv * env, jclass clazz __unused, jobject impl, jobject fd, jbyteArray jbuf,
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject impl, jobject fd, jbyteArray jbuf,
         jint offset, jint length, jintArray ancFds)
 {
+#if defined(_WIN32)
+    CK_ARGUMENT_POTENTIALLY_UNUSED(impl);
+    CK_ARGUMENT_POTENTIALLY_UNUSED(ancFds);
+#endif
+
     jbyte *buf = (*env)->GetByteArrayElements(env, jbuf, NULL);
     if(buf == NULL) {
         return -1; // OOME
@@ -1348,7 +1382,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
  * Signature: (Ljava/io/FileDescriptor;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close(
-        JNIEnv * env, jclass clazz __unused, jobject fd)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject fd)
 {
     if(fd == NULL) {
         org_newsclub_net_unix_NativeUnixSocket_throwException(env,
@@ -1416,7 +1450,7 @@ static int _closeFd(JNIEnv * env, jobject fd, int handle)
  * Signature: (Ljava/io/FileDescriptor;I)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shutdown(
-        JNIEnv * env, jclass clazz __unused, jobject fd, jint mode)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jint mode)
 {
     int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
     int ret = shutdown(handle, mode);
@@ -1458,7 +1492,7 @@ jint convertSocketOptionToNative(jint optID)
  * Signature: (Ljava/io/FileDescriptor;I)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOptionInt(
-        JNIEnv * env, jclass clazz __unused, jobject fd, jint optID)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jint optID)
 {
     int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
@@ -1519,7 +1553,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
  * Signature: (Ljava/io/FileDescriptor;II)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOptionInt(
-        JNIEnv * env, jclass clazz __unused, jobject fd, jint optID, jint value)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jint optID, jint value)
 {
     int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
@@ -1580,7 +1614,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
  * Signature: (Ljava/io/FileDescriptor;)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available(
-        JNIEnv * env, jclass clazz __unused, jobject fd)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject fd)
 {
     int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
@@ -1610,8 +1644,11 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available(
  * Signature: (Ljava/io/FileDescriptor;Lorg/newsclub/net/unix/AFUNIXSocketCredentials;)Lorg/newsclub/net/unix/AFUNIXSocketCredentials;
  */
 JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCredentials(
-        JNIEnv *env, jclass clazz __unused, jobject fdesc, jobject creds)
+        JNIEnv *env, jclass clazz CK_UNUSED, jobject fdesc, jobject creds)
 {
+    CK_ARGUMENT_POTENTIALLY_UNUSED(env);
+    CK_ARGUMENT_POTENTIALLY_UNUSED(fdesc);
+
 #if defined(LOCAL_PEERCRED) || defined(LOCAL_PEEREPID) || defined(LOCAL_PEEREUUID) ||defined(SO_PEERCRED)
     int fd = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fdesc);
 
@@ -1692,7 +1729,7 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
  * Signature: (Lcom/newsclub/net/unix/AFUNIXServerSocket;Lcom/newsclub/net/unix/AFUNIXSocketImpl;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImpl(
-        JNIEnv * env, jclass clazz __unused, jobject serverSocket, jobject impl)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject serverSocket, jobject impl)
 {
     setObjectFieldValue(env, serverSocket, "impl", "Ljava/net/SocketImpl;",
             impl);
@@ -1704,7 +1741,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImp
  * Signature: (Lcom/newsclub/net/unix/AFUNIXSocket;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreated(
-        JNIEnv * env, jclass clazz __unused, jobject socket)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject socket)
 {
     jclass socketClass = (*env)->GetObjectClass(env, socket);
 
@@ -1734,7 +1771,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreated(
  * Signature: (Lcom/newsclub/net/unix/AFUNIXSocket;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setConnected(
-        JNIEnv * env, jclass clazz __unused, jobject socket)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject socket)
 {
     jclass socketClass = (*env)->GetObjectClass(env, socket);
 
@@ -1764,7 +1801,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setConnected(
  * Signature: (Lcom/newsclub/net/unix/AFUNIXSocket;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBound(
-        JNIEnv * env, jclass clazz __unused, jobject socket)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject socket)
 {
     jclass socketClass = (*env)->GetObjectClass(env, socket);
 
@@ -1794,7 +1831,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBound(
  * Signature: (Lorg/newsclub/net/unix/AFUNIXServerSocket;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreatedServer(
-        JNIEnv * env, jclass clazz __unused, jobject socket)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject socket)
 {
     jclass socketClass = (*env)->GetObjectClass(env, socket);
 
@@ -1824,7 +1861,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreatedSer
  * Signature: (Lorg/newsclub/net/unix/AFUNIXServerSocket;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBoundServer(
-        JNIEnv * env, jclass clazz __unused, jobject socket)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject socket)
 {
     jclass socketClass = (*env)->GetObjectClass(env, socket);
 
@@ -1854,7 +1891,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBoundServe
  * Signature: (Lorg/newsclub/net/unix/AFUNIXSocketAddress;I)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setPort(
-        JNIEnv * env, jclass clazz __unused, jobject addr, jint port)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject addr, jint port)
 {
     jclass fileDescriptorClass = (*env)->GetObjectClass(env, addr);
 
@@ -1885,7 +1922,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setPort(
  * Signature: (Ljava/io/FileDescriptor;Ljava/io/Closeable;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_attachCloseable(
-        JNIEnv * env, jclass clazz __unused, jobject fdesc, jobject closeable)
+        JNIEnv * env, jclass clazz CK_UNUSED, jobject fdesc, jobject closeable)
 {
     callObjectSetter(env, fdesc, "attach", "(Ljava/io/Closeable;)V", closeable);
 }
@@ -1896,7 +1933,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_attachCloseab
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_maxAddressLength(
-        JNIEnv * env __unused, jclass clazz __unused)
+        JNIEnv * env CK_UNUSED, jclass clazz CK_UNUSED)
 {
     struct sockaddr_un su;
     return sizeof(su.sun_path);
@@ -1908,7 +1945,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_maxAddressLen
  * Signature: ()Ljava/net/Socket;
  */
 JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_currentRMISocket
-  (JNIEnv *env, jclass clazz __unused)
+  (JNIEnv *env, jclass clazz CK_UNUSED)
 {
     jclass tcpTransport = (*env)->FindClass(env,
             "sun/rmi/transport/tcp/TCPTransport");
