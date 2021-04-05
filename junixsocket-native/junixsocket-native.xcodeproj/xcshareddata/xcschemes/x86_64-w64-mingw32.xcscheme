@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "43D436BB261A564C002D0C12"
-               BuildableName = "libjunixsocket-native-macos.dylib"
-               BlueprintName = "junixsocket-native-macos"
+               BlueprintIdentifier = "432EF19D261AD6D700F4A583"
+               BuildableName = "libjunixsocket-x86_64-w64-mingw32.so"
+               BlueprintName = "x86_64-w64-mingw32"
                ReferencedContainer = "container:junixsocket-native.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -50,9 +50,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "43D436BB261A564C002D0C12"
-            BuildableName = "libjunixsocket-native-macos.dylib"
-            BlueprintName = "junixsocket-native-macos"
+            BlueprintIdentifier = "432EF19D261AD6D700F4A583"
+            BuildableName = "libjunixsocket-x86_64-w64-mingw32.so"
+            BlueprintName = "x86_64-w64-mingw32"
             ReferencedContainer = "container:junixsocket-native.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
