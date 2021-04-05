@@ -25,7 +25,7 @@
       Use CDATA to prevent line breaks when formatting —
       line breaks will break nar-maven-plugin, and may not trigger an error
     -->
-    <junixsocket.native.default.options><![CDATA[-Werror -Wall -Wextra -pedantic -Wno-unused-parameter -fno-strict-overflow -finline-functions]]></junixsocket.native.default.options>
+    <junixsocket.native.default.options><![CDATA[-Wall -Wextra -pedantic -Wno-unused-parameter -Wno-gnu-auto-type -fno-strict-overflow -finline-functions]]></junixsocket.native.default.options>
     <junixsocket.native.default.c.options>${junixsocket.native.default.options}<![CDATA[ -std=c11]]></junixsocket.native.default.c.options>
     <junixsocket.native.default.cpp.options>${junixsocket.native.default.options}<![CDATA[ -std=c++11]]></junixsocket.native.default.cpp.options>
     <junixsocket.native.default.c.includes><![CDATA[**/*.c **/*.m]]></junixsocket.native.default.c.includes>
