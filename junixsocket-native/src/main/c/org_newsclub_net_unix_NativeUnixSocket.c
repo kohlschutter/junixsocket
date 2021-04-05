@@ -405,7 +405,7 @@ static void setObjectFieldValue(JNIEnv *env, jobject instance, char *fieldName,
 }
 
 CK_IGNORE_UNUSED_FUNCTION_BEGIN
-    static void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
+static void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
         jlong value)
 {
     jclass instanceClass = (*env)->GetObjectClass(env, instance);

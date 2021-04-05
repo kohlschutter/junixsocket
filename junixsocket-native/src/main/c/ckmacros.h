@@ -74,11 +74,14 @@ _Pragma("clang diagnostic pop")
 #   define CK_IGNORE_USED_BUT_MARKED_UNUSED_BEGIN
 #   define CK_IGNORE_USED_BUT_MARKED_UNUSED_END
 
+#   define CK_IGNORE_UNUSED_FUNCTION_BEGIN
+#   define CK_IGNORE_UNUSED_FUNCTION_END
+
 #   define CK_EXCLUDED_FROM_STATIC_ANALYSIS 1
 
 #   define CK_STATIC_ASSERT(COND)
 
-#define CK_FALLTHROUGH __attribute__((fallthrough))
+#   define CK_FALLTHROUGH __attribute__((fallthrough))
 
 #endif
 
