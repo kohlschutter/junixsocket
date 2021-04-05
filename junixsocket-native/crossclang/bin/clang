@@ -31,7 +31,7 @@
 # set -x
 
 # Make sure to include all paths that may contain custom linkers etc.
-PATH="$PATH":/opt/homebrew/bin:/usr/local/bin
+PATH="$PATH":/usr/bin:/opt/homebrew/bin:/usr/local/bin
 export PATH
 
 currentDir=$(cd "$(dirname $0)"; pwd)
@@ -193,6 +193,10 @@ if [[ "$target" != "unspecified" ]]; then
         currentTarget="$target"
     
         if [ $defaultFallback -eq 1 ]; then
+            if [[ -n "$fileList" ]]; then
+                    clangArgs+=("-filelist" "$fileList")
+            fi
+
             exec clang ${output_args[@]} ${clangArgs[@]}
         fi
     fi
@@ -258,6 +262,9 @@ if [[ "$target" != "unspecified" ]]; then
             if [[ $tryPlatformClang -eq 1 ]]; then
                 echo "Warning: crossclang not configured for target \"$target\" -- you need to run prepare-target-sdk first. Trying native clang now." >&2
                 export PATH=/usr/bin:$PATH
+                if [[ -n "$fileList" ]]; then
+                        clangArgs+=("-filelist" "$fileList")
+                fi
                 exec clang ${output_args[@]} ${clangArgs[@]} -target "$target"
             fi
 
@@ -265,6 +272,9 @@ if [[ "$target" != "unspecified" ]]; then
         elif [[ "$defaultFallback" -eq 2 ]]; then
             echo "Warning: crossclang not configured for target \"$target\" -- you need to run prepare-target-sdk first. Trying native clang now." >&2
             export PATH=/usr/bin:$PATH
+            if [[ -n "$fileList" ]]; then
+                    clangArgs+=("-filelist" "$fileList")
+            fi
             exec clang ${output_args[@]} ${clangArgs[@]} -target "$target"
         fi
     fi
