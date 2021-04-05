@@ -52,6 +52,12 @@ _Pragma("clang diagnostic pop")
 
 #   define CK_STATIC_ASSERT(COND) _Static_assert(COND, "Assertion failed")
 
+#define CK_FALLTHROUGH \
+    _Pragma("clang diagnostic push") \
+    _Pragma("clang diagnostic ignored \"-Wmissing-declarations\"") \
+    __attribute__((fallthrough)) \
+    _Pragma("clang diagnostic pop")
+
 #else
 #   define CK_IGNORE_UNUSED_MACROS_BEGIN
 #   define CK_IGNORE_UNUSED_MACROS_END
@@ -71,6 +77,9 @@ _Pragma("clang diagnostic pop")
 #   define CK_EXCLUDED_FROM_STATIC_ANALYSIS 1
 
 #   define CK_STATIC_ASSERT(COND)
+
+#define CK_FALLTHROUGH __attribute__((fallthrough))
+
 #endif
 
 #define CK_UNUSED __attribute__((__unused__))

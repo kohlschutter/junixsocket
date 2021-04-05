@@ -272,7 +272,7 @@ static void org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(
             _closeFd(env, fdToClose, -1);
         }
 
-        __attribute__((fallthrough));
+            CK_FALLTHROUGH;
     default:
         exceptionType = kExceptionSocketException;
     }
