@@ -76,6 +76,11 @@
 		432EF20A261AE29200F4A583 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
 		432EF20B261AE29200F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
 		432EF20D261AE29200F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
+		43663ED8261AECC400CEED08 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
+		43663ED9261AECC400CEED08 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
+		43663EDA261AECC400CEED08 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
+		43663EDB261AECC400CEED08 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		43663EDD261AECC400CEED08 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
 		43C5FB73261AC3700088E301 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
 		43C5FB74261AC3700088E301 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
 		43C5FB75261AC3700088E301 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
@@ -178,6 +183,7 @@
 		432EF1F4261ADE4900F4A583 /* libjunixsocket-riscv64-redhat-linux.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-riscv64-redhat-linux.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF203261ADEDD00F4A583 /* libjunixsocket-armv6--linux-gnueabihf.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-armv6--linux-gnueabihf.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF212261AE29200F4A583 /* libjunixsocket-x86_64-apple-darwin18.2.0.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-apple-darwin18.2.0.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		43663EE2261AECC400CEED08 /* libjunixsocket-default.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-default.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43C5FB7D261AC3700088E301 /* libjunixsocket-arm64-apple-macos11.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-arm64-apple-macos11.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = org_newsclub_net_unix_NativeUnixSocket.c; path = src/main/c/org_newsclub_net_unix_NativeUnixSocket.c; sourceTree = "<group>"; };
 		43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = org_newsclub_net_unix_NativeUnixSocket.h; path = src/main/c/org_newsclub_net_unix_NativeUnixSocket.h; sourceTree = "<group>"; };
@@ -251,6 +257,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		43663EDE261AECC400CEED08 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		43C5FB79261AC3700088E301 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -293,6 +306,7 @@
 				432EF1F4261ADE4900F4A583 /* libjunixsocket-riscv64-redhat-linux.so */,
 				432EF203261ADEDD00F4A583 /* libjunixsocket-armv6--linux-gnueabihf.so */,
 				432EF212261AE29200F4A583 /* libjunixsocket-x86_64-apple-darwin18.2.0.dylib */,
+				43663EE2261AECC400CEED08 /* libjunixsocket-default.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -406,6 +420,17 @@
 				432EF209261AE29200F4A583 /* ckmacros.h in Headers */,
 				432EF20A261AE29200F4A583 /* jni.h in Headers */,
 				432EF20B261AE29200F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		43663ED7261AECC400CEED08 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43663ED8261AECC400CEED08 /* jniport.h in Headers */,
+				43663ED9261AECC400CEED08 /* ckmacros.h in Headers */,
+				43663EDA261AECC400CEED08 /* jni.h in Headers */,
+				43663EDB261AECC400CEED08 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,6 +612,23 @@
 			productReference = 432EF212261AE29200F4A583 /* libjunixsocket-x86_64-apple-darwin18.2.0.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
+		43663ED6261AECC400CEED08 /* default */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43663EDF261AECC400CEED08 /* Build configuration list for PBXNativeTarget "default" */;
+			buildPhases = (
+				43663ED7261AECC400CEED08 /* Headers */,
+				43663EDC261AECC400CEED08 /* Sources */,
+				43663EDE261AECC400CEED08 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = default;
+			productName = "junixsocket-native";
+			productReference = 43663EE2261AECC400CEED08 /* libjunixsocket-default.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 		43C5FB71261AC3700088E301 /* arm64-apple-macos11 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 43C5FB7A261AC3700088E301 /* Build configuration list for PBXNativeTarget "arm64-apple-macos11" */;
@@ -650,6 +692,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				43663ED6261AECC400CEED08 /* default */,
 				432EF186261AD52100F4A583 /* All Architectures */,
 				432EF18E261AD60200F4A583 /* aarch64-linux-gnu */,
 				43C5FB71261AC3700088E301 /* arm64-apple-macos11 */,
@@ -736,6 +779,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				432EF20D261AE29200F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		43663EDC261AECC400CEED08 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43663EDD261AECC400CEED08 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1248,6 +1299,48 @@
 			};
 			name = Release;
 		};
+		43663EE0261AECC400CEED08 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CROSSCLANG_TARGET = default;
+				EXECUTABLE_EXTENSION = dylib;
+				LD_DEPENDENCY_INFO_FILE = "";
+				LD_LTO_OBJECT_FILE = "";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CFLAGS = (
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+				);
+				OTHER_LDFLAGS = (
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		43663EE1261AECC400CEED08 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CROSSCLANG_TARGET = default;
+				EXECUTABLE_EXTENSION = dylib;
+				LD_DEPENDENCY_INFO_FILE = "";
+				LD_LTO_OBJECT_FILE = "";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CFLAGS = (
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+				);
+				OTHER_LDFLAGS = (
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		43C5FB7B261AC3700088E301 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1502,6 +1595,15 @@
 			buildConfigurations = (
 				432EF210261AE29200F4A583 /* Debug */,
 				432EF211261AE29200F4A583 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		43663EDF261AECC400CEED08 /* Build configuration list for PBXNativeTarget "default" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				43663EE0261AECC400CEED08 /* Debug */,
+				43663EE1261AECC400CEED08 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
