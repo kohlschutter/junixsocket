@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Aliases</key>
+	<array>
+		<string>crossclang</string>
+	</array>
+	<key>CFBundleIdentifier</key>
+	<string>com.kohlschutter.crossclang.toolchain</string>
+	<key>CompatibilityVersion</key>
+	<integer>2</integer>
+	<key>CompatibilityVersionDisplayString</key>
+	<string>Xcode 8.0</string>
+	<key>CreatedDate</key>
+	<date>2021-04-04T19:22:34Z</date>
+	<key>DisplayName</key>
+	<string>crossclang</string>
+	<key>OverrideBuildSettings</key>
+	<dict>
+		<key>ENABLE_BITCODE</key>
+		<string>NO</string>
+	</dict>
+	<key>ReportProblemURL</key>
+	<string>about:blank</string>
+	<key>ShortDisplayName</key>
+	<string>crossclang 1.0</string>
+	<key>Version</key>
+	<string>1.0</string>
+</dict>
+</plist>

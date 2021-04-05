@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# Installs optional Xcode helper components for crossclang
+#
+# You should run this as root, i.e.,: sudo ./install
+#
+
+cd "$(dirname $0)"
+pwd=$(pwd)
+
+developerPath=$(xcode-select -p)
+if [[ -z "$developerPath" ]]; then
+    echo "Error: Could not resolve XCode Developer path" >&2
+    exit 1
+fi
+sdksPath="$developerPath/Platforms/MacOSX.platform/Developer/SDKs"
+if [[ ! -d "$sdksPath" ]]; then
+    echo "Error: Could not find SDKs path: $sdksPath" >&2
+    exit 1
+fi
+toolchainsPath="/Library/Developer/Toolchains"
+echo "Toolchains path: $toolchainsPath"
+if [[ ! -d "$toolchainsPath" ]]; then
+    mkdir -pv "$toolchainsPath"
+fi
+
+for toolchain in $(ls -1 | grep '\.xctoolchain$'); do
+    echo Installing "$toolchain" ... 
+    ( cd "$toolchainsPath" ; ln -s "$pwd/$toolchain" )
+done
+echo
+
+echo "SDKs path: $sdksPath"
+for sdk in $(ls -1 | grep '\.sdk$'); do
+    echo Installing "$sdk" ... 
+    ( cd "$sdksPath" ; ln -s "$pwd/$sdk" )
+done
+
+echo Done. Now please restart XCode

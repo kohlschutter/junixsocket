@@ -30,6 +30,10 @@
 # echo CROSSCLANG $0 $@
 # set -x
 
+# Make sure to include all paths that may contain custom linkers etc.
+PATH="$PATH":/opt/homebrew/bin:/usr/local/bin
+export PATH
+
 currentDir=$(cd "$(dirname $0)"; pwd)
 clangDir=$(cd "$(dirname $(which clang))"; pwd)
 findOtherClang=0
@@ -66,6 +70,8 @@ compiler=clang
 outputStripLibPrefix=0
 
 llvmName=llvm
+fileList=
+ld64_sdk_version=10.9
 
 while [ $# -gt 0 ]; do
   v="$1"
@@ -92,6 +98,9 @@ while [ $# -gt 0 ]; do
       -Xcrossclang-use-ldshim ) useLdShim=1 ; skipArg=1 ;;
       -Xcrossclang-use-gcc=* ) gccMode=1 ; compiler="${v#-Xcrossclang-use-gcc=}" ; skipArg=1 ;;
       -Xcrossclang-output-strip-lib-prefix ) outputStripLibPrefix=1 ; skipArg=1 ;;
+      -Xcrossclang-ld64-sdk-version ) ld64_sdk_version="$1"; shift ; skipArg=1 ;;
+      # -index-store-path ) shift ; skipArg=1 ;; # if you're hitting this, set "Enable Index-While-Building Functionality=No" in Xcode build settings instead
+      -filelist ) fileList="$1" ; shift; skipArg=1 ;;
       -o ) hasO=1; skipArg=1 ;;
       *.cc ) looksLikeCPP=1 ;;
       *.cpp ) looksLikeCPP=1 ;;
@@ -345,10 +354,11 @@ if [ $needLinker -gt 0 ]; then
     if [ -z "$target_linker" ]; then
         target_linker=ld
     fi
-    
+
     case "$target_linker" in
         ld)
         ldPath=$(which ld.lld)
+
         if [ $nostdlib -gt 0 ]; then
             clangLinkerArgs+=("-fPIC")
         fi
@@ -358,7 +368,7 @@ if [ $needLinker -gt 0 ]; then
                 clangLinkerArgs+=("-shared")
             fi
         fi
-        
+
         if [ -n "$sdkroot" ]; then
             clangLinkerArgs+=("-Wl,--sysroot=$sdkroot")
             for path in ${target_library_path[@]}; do
@@ -367,11 +377,14 @@ if [ $needLinker -gt 0 ]; then
                 fi
             done
         fi
-        
+
         ;;
         ld64)
         ldPath=$currentDir/ld64shim
-        clangLinkerArgs+=("-Wl,-sdk_version,10.9")
+        if [[ -n "$ld64_sdk_version" ]]; then
+            clangLinkerArgs+=("-Wl,-sdk_version,$ld64_sdk_version")
+        fi
+
         #if [ $nostdlib -gt 0 ]; then
         #  clangLinkerArgs+=("-Wl,-undefined,dynamic_lookup")
         #fi
@@ -411,9 +424,13 @@ if [ $needLinker -gt 0 ]; then
         echo "Warning: Unknown target linker: $target_linker" >&2
         ;; 
     esac
-    
+
     if [[ -n "$target_linker_binary" ]]; then
       ldPath=$(which "$target_linker_binary")
+      if [[ -z "$ldPath" ]]; then
+        echo "Error: Could not find custom target linker in path: $target_linker_binary" >&2
+        exit 1
+      fi
     fi
     
     if [[ $gccMode -eq 1 ]]; then
@@ -429,6 +446,13 @@ if [ $needLinker -gt 0 ]; then
     fi
 fi
 
+if [[ -n "$fileList" ]]; then
+    if [[ "$target_linker" == "ld64" ]]; then
+        clangLinkerArgs+=("-filelist" "$fileList")
+    else
+        clangLinkerArgs+=($(cat "$fileList"))
+    fi
+fi
 
 if [[ "$triple" == *"-w64-"* ]]; then
     clangArgsNew=()
