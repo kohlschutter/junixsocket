@@ -1161,16 +1161,11 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
                 kExceptionSocketException, "Illegal offset or length");
         return -1;
     }
-    jbyte *buf = (*env)->GetByteArrayElements(env, jbuf, NULL);
-    if(buf == NULL) {
-        return -1; // OOME
-    }
 
     jint maxRead = bufLen - offset;
     if(length > maxRead) {
         length = maxRead;
     }
-
     int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
 #if defined(junixsocket_use_poll_for_read)
@@ -1180,6 +1175,11 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
     }
 #endif
 
+    jbyte *buf = malloc((size_t)length);
+    if(buf == NULL) {
+        return -1; // OOME
+    }
+
     ssize_t count;
 
 #if defined(junixsocket_have_ancillary)
@@ -1187,12 +1187,12 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 
     if((jsize)controlLen <= 0) {
         do {
-            count = recv(handle, &(((char*)buf)[offset]), (size_t)length, 0);
+            count = recv(handle, (char*)buf, (size_t)length, 0);
         } while(count == -1 && socket_errno == EINTR);
     } else {
         jbyte *control = (*env)->GetDirectBufferAddress(env, ancBuf);
 
-        struct iovec iov = {.iov_base = &(buf[offset]), .iov_len = (size_t)length};
+        struct iovec iov = {.iov_base = buf, .iov_len = (size_t)length};
         struct sockaddr_un sender;
         struct msghdr msg = {.msg_name = (struct sockaddr*)&sender, .msg_namelen =
                 sizeof(sender), .msg_iov = &iov, .msg_iovlen = 1, .msg_control =
@@ -1251,14 +1251,16 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 
 #else
     do {
-        count = recv(handle, &(((char*)buf)[offset]), (size_t)length, 0);
+        count = recv(handle, (char*)buf, (size_t)length, 0);
     } while(count == -1 && socket_errno == EINTR);
 #endif
 
 #if !defined(_WIN32)
     readEnd:
 #endif
-    (*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
+    (*env)->SetByteArrayRegion(env, jbuf, offset, length, buf);
+
+    free(buf);
 
     if(count == 0) {
         // read(2) returns 0 on EOF. Java returns -1.
@@ -1292,10 +1294,6 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
     CK_ARGUMENT_POTENTIALLY_UNUSED(ancFds);
 #endif
 
-    jbyte *buf = (*env)->GetByteArrayElements(env, jbuf, NULL);
-    if(buf == NULL) {
-        return -1; // OOME
-    }
     jsize bufLen = (*env)->GetArrayLength(env, jbuf);
     if(offset < 0 || length < 0 || (length > (bufLen - offset))) {
         org_newsclub_net_unix_NativeUnixSocket_throwException(env,
@@ -1304,10 +1302,17 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
         return -1;
     }
 
+    jbyte *buf = malloc(length);
+    if(buf == NULL) {
+        return -1; // OOME
+    }
+
+    (*env)->GetByteArrayRegion(env, jbuf, offset, length, buf);
+
     int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
 #if defined(junixsocket_have_ancillary)
-    struct iovec iov = {.iov_base = &buf[offset], .iov_len = (size_t)length};
+    struct iovec iov = {.iov_base = buf, .iov_len = (size_t)length};
     struct msghdr msg = {.msg_name = NULL, .msg_namelen = 0, .msg_iov = &iov,
             .msg_iovlen = 1, };
 
@@ -1324,8 +1329,11 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
         controlLen += (cmsg->cmsg_len = (socklen_t)CMSG_LEN((socklen_t)ancFdsLen * sizeof(jint)));
         unsigned char *data = CMSG_DATA(cmsg);
 
-        jint *ancBuf = (*env)->GetIntArrayElements(env, ancFds, NULL);
-        memcpy(data, ancBuf, ancFdsLen * sizeof(jint));
+        jint *ancBuf = NULL;
+        if(ancFdsLen > 0) {
+            ancBuf = (*env)->GetIntArrayElements(env, ancFds, NULL);
+            memcpy(data, ancBuf, ancFdsLen * sizeof(jint));
+        }
 
         cmsg = junixsocket_CMSG_NXTHDR(&msg, cmsg);
         if(cmsg == NULL) {
@@ -1334,7 +1342,9 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 
         msg.msg_controllen = controlLen;
 
-        (*env)->ReleaseIntArrayElements(env, ancFds, ancBuf, 0);
+        if(ancFdsLen > 0) {
+            (*env)->ReleaseIntArrayElements(env, ancFds, ancBuf, 0);
+        }
 
         callObjectSetter(env, impl, "setOutboundFileDescriptors", "([I)V",
         NULL);
@@ -1355,13 +1365,13 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
     errno = 0;
     ssize_t count;
     do {
-        count = send(handle, &((char*)buf)[offset], (size_t)length, 0);
+        count = send(handle, (char*)buf, (size_t)length, 0);
     } while(count == -1 && socket_errno == EINTR);
 
     int myErr = errno;
 #endif
 
-    (*env)->ReleaseByteArrayElements(env, jbuf, buf, 0);
+    free(buf);
 
     if(count == -1) {
         if(errno == EAGAIN || errno == EWOULDBLOCK) {
