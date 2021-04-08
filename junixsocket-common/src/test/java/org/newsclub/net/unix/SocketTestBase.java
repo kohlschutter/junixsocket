@@ -106,10 +106,14 @@ public abstract class SocketTestBase { // NOTE: needs to be public for junit
     @SuppressFBWarnings("SC_START_IN_CTOR")
     protected ServerThread() throws IOException {
       super();
-      serverSocket = startServer();
+      serverSocket = startServer(); //NOPMD
       setDaemon(true);
 
       start();
+    }
+
+    protected AFUNIXServerSocket startServer() throws IOException {
+      return SocketTestBase.this.startServer();
     }
 
     /**
@@ -119,7 +123,9 @@ public abstract class SocketTestBase { // NOTE: needs to be public for junit
      */
     public void shutdown() throws IOException {
       stopAcceptingConnections();
-      serverSocket.close();
+      if (serverSocket != null) {
+        serverSocket.close();
+      }
     }
 
     /**
@@ -151,22 +157,28 @@ public abstract class SocketTestBase { // NOTE: needs to be public for junit
       e.printStackTrace();
     }
 
+    protected void acceptAndHandleConnection() throws IOException {
+      try (Socket sock = serverSocket.accept()) {
+        handleConnection(sock);
+      }
+    }
+
     @Override
     public final void run() {
       try {
         loop.set(true);
         try {
           while (loop.get()) {
-            try (Socket sock = serverSocket.accept()) {
-              handleConnection(sock);
-            }
+            acceptAndHandleConnection();
           }
         } finally {
           onServerSocketClose();
-          serverSocket.close();
+          if (serverSocket != null) {
+            serverSocket.close();
+          }
         }
       } catch (IOException e) {
-        if (!loop.get() && serverSocket.isClosed()) {
+        if (!loop.get() && (serverSocket == null || serverSocket.isClosed())) {
           // ignore
         } else {
           e.addSuppressed(caller);
