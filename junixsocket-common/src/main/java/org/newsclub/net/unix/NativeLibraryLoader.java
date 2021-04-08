@@ -32,6 +32,8 @@ import java.util.Properties;
 @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
 final class NativeLibraryLoader implements Closeable {
   private static final String PROP_LIBRARY_OVERRIDE = "org.newsclub.net.unix.library.override";
+  private static final String PROP_LIBRARY_OVERRIDE_FALSE =
+      "org.newsclub.net.unix.library.override.force";
   private static final String PROP_LIBRARY_TMPDIR = "org.newsclub.net.unix.library.tmpdir";
 
   private static final File TEMP_DIR;
@@ -203,6 +205,9 @@ final class NativeLibraryLoader implements Closeable {
         setLoaded(libraryOverride);
         return null;
       } catch (Exception | LinkageError e) {
+        if (Boolean.valueOf(System.getProperty(PROP_LIBRARY_OVERRIDE_FALSE, "false"))) {
+          throw e;
+        }
         return e;
       }
     } else {
