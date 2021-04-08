@@ -101,6 +101,7 @@ public class Selftest {
         "org.newsclub.net.unix.ServerSocketCloseTest", //
         "org.newsclub.net.unix.SoTimeoutTest", //
         "org.newsclub.net.unix.TcpNoDelayTest",//
+        "org.newsclub.net.unix.ThroughputTest",//
     });
 
     st.runTests("junixsocket-rmi", new String[] {
