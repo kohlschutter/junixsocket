@@ -1333,6 +1333,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
         if(ancFdsLen > 0) {
             ancBuf = (*env)->GetIntArrayElements(env, ancFds, NULL);
             memcpy(data, ancBuf, ancFdsLen * sizeof(jint));
+            (*env)->ReleaseIntArrayElements(env, ancFds, ancBuf, 0);
         }
 
         cmsg = junixsocket_CMSG_NXTHDR(&msg, cmsg);
@@ -1341,10 +1342,6 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
         }
 
         msg.msg_controllen = controlLen;
-
-        if(ancFdsLen > 0) {
-            (*env)->ReleaseIntArrayElements(env, ancFds, ancBuf, 0);
-        }
 
         callObjectSetter(env, impl, "setOutboundFileDescriptors", "([I)V",
         NULL);
