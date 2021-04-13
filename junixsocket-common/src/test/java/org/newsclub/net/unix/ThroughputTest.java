@@ -133,6 +133,8 @@ public class ThroughputTest extends SocketTestBase {
   }
 
   @Test
+  @AvailabilityRequirement(classes = {"java.net.UnixDomainSocketAddress"}, //
+      message = "This test requires Java 16 or later")
   public void testJEP380() throws Exception {
     assumeTrue(ENABLED > 0, "Throughput tests are disabled");
     assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
@@ -140,6 +142,8 @@ public class ThroughputTest extends SocketTestBase {
   }
 
   @Test
+  @AvailabilityRequirement(classes = {"java.net.UnixDomainSocketAddress"}, //
+      message = "This test requires Java 16 or later")
   public void testJEP380directBuffer() throws Exception {
     assumeTrue(ENABLED > 0, "Throughput tests are disabled");
     assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
