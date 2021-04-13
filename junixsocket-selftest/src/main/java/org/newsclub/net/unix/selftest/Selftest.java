@@ -100,7 +100,7 @@ public class Selftest {
         "org.newsclub.net.unix.PeerCredentialsTest", //
         "org.newsclub.net.unix.ServerSocketCloseTest", //
         "org.newsclub.net.unix.SoTimeoutTest", //
-        "org.newsclub.net.unix.TcpNoDelayTest",//
+        "org.newsclub.net.unix.TcpNoDelayTest", //
         "org.newsclub.net.unix.ThroughputTest",//
     });
 
@@ -223,9 +223,10 @@ public class Selftest {
         } else if (summary.getTestsFoundCount() == 0) {
           result = "NONE";
           fail = true;
-        } else if (summary.getTestsSucceededCount() == summary.getTestsFoundCount()) {
+        } else if ((summary.getTestsSucceededCount() + summary.getTestsSkippedCount()) == summary
+            .getTestsFoundCount()) {
           result = "PASS";
-        } else if (summary.getTestsSkippedCount() > 0) {
+        } else if (summary.getTestsAbortedCount() > 0) {
           withIssues = true;
         }
       }
