@@ -41,6 +41,15 @@ public class TcpNoDelayTest extends SocketTestBase {
       }
 
       @Override
+      protected void handleException(Exception e) {
+        if (e instanceof SocketException) {
+          // ignore
+        } else {
+          super.handleException(e);
+        }
+      }
+
+      @Override
       protected void onServerSocketClose() {
       }
     };
@@ -70,6 +79,15 @@ public class TcpNoDelayTest extends SocketTestBase {
       @Override
       protected void handleConnection(final Socket sock) throws IOException {
         stopAcceptingConnections();
+      }
+
+      @Override
+      protected void handleException(Exception e) {
+        if (e instanceof SocketException) {
+          // ignore
+        } else {
+          super.handleException(e);
+        }
       }
 
       @Override
