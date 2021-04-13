@@ -524,10 +524,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
 #if JUNIXSOCKET_HARDEN_CMSG_NXTHDR
 static struct cmsghdr* junixsocket_CMSG_NXTHDR (struct msghdr *mhdr, struct cmsghdr *cmsg)
 {
-    if ((size_t)cmsg->cmsg_len >= sizeof(struct cmsghdr)) {
+    if((size_t)cmsg->cmsg_len >= sizeof(struct cmsghdr)) {
         CK_IGNORE_CAST_ALIGN_BEGIN // false positive: CMSG_ALIGN ensures alignment
         cmsg = (struct cmsghdr*)((unsigned char*) cmsg + CMSG_ALIGN (cmsg->cmsg_len));
-        if ((unsigned char*)cmsg < ((unsigned char*) mhdr->msg_control + mhdr->msg_controllen)) {
+        if((unsigned char*)cmsg < ((unsigned char*) mhdr->msg_control + mhdr->msg_controllen)) {
             CK_IGNORE_SIGN_COMPARE_BEGIN
             return CMSG_NXTHDR(mhdr, cmsg);
             CK_IGNORE_SIGN_COMPARE_END
