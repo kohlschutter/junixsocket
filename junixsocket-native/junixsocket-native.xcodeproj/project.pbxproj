@@ -995,6 +995,7 @@
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-m64",
+					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
@@ -1019,6 +1020,7 @@
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-m64",
+					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
