@@ -33,6 +33,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
@@ -56,8 +57,8 @@ public abstract class AFUNIXSocketServer {
 
   private Thread listenThread = null;
   private ServerSocket serverSocket;
-  private boolean stopRequested = false;
-  private boolean ready = false;
+  private final AtomicBoolean stopRequested = new AtomicBoolean(false);
+  private final AtomicBoolean ready = new AtomicBoolean(false);
 
   private final Object connectionsMonitor = new Object();
   private ForkJoinPool connectionPool;
@@ -147,9 +148,7 @@ public abstract class AFUNIXSocketServer {
    * @return {@code true} if the server is alive and ready to accept new connections.
    */
   public boolean isReady() {
-    synchronized (this) {
-      return ready && !stopRequested && isRunning();
-    }
+    return ready.get() && !stopRequested.get() && isRunning();
   }
 
   /**
@@ -214,7 +213,6 @@ public abstract class AFUNIXSocketServer {
     }
   }
 
-  @SuppressFBWarnings("NN_NAKED_NOTIFY")
   private void listen() throws IOException {
     ServerSocket server;
 
@@ -243,9 +241,6 @@ public abstract class AFUNIXSocketServer {
       onSocketExceptionDuringAccept(e);
     } finally {
       stop();
-      synchronized (AFUNIXSocketServer.this) {
-        AFUNIXSocketServer.this.notifyAll();
-      }
       onServerStopped(server);
     }
   }
@@ -253,9 +248,9 @@ public abstract class AFUNIXSocketServer {
   @SuppressFBWarnings("NN_NAKED_NOTIFY")
   private void acceptLoop(ServerSocket server) throws IOException {
     long busyStartTime = 0;
-    acceptLoop : while (!stopRequested && !Thread.interrupted()) {
+    acceptLoop : while (!stopRequested.get() && !Thread.interrupted()) {
       try {
-        while (!stopRequested && connectionPool
+        while (!stopRequested.get() && connectionPool
             .getActiveThreadCount() >= maxConcurrentConnections) {
           if (busyStartTime == 0) {
             busyStartTime = System.currentTimeMillis();
@@ -273,14 +268,14 @@ public abstract class AFUNIXSocketServer {
         }
         busyStartTime = 0;
 
-        if (stopRequested || server == null) {
+        if (stopRequested.get() || server == null) {
           break;
         }
 
         synchronized (AFUNIXSocketServer.this) {
           AFUNIXSocketServer.this.notifyAll();
         }
-        ready = true;
+        ready.set(true);
         onServerReady(connectionPool.getActiveThreadCount());
 
         final Socket socket;
@@ -324,24 +319,29 @@ public abstract class AFUNIXSocketServer {
    * 
    * @throws IOException If there was an error.
    */
+  @SuppressFBWarnings("NN_NAKED_NOTIFY")
   public void stop() throws IOException {
-    ready = false;
-    stopRequested = true;
+    stopRequested.set(true);
+    ready.set(false);
 
-    ServerSocket theServerSocket = null;
     synchronized (this) {
-      theServerSocket = serverSocket;
+      ServerSocket theServerSocket = serverSocket;
       serverSocket = null;
-      ScheduledFuture<IOException> future = this.timeoutFuture;
-      if (future != null) {
-        future.cancel(false);
-        this.timeoutFuture = null;
+      try {
+        if (theServerSocket == null) {
+          return;
+        }
+        ScheduledFuture<IOException> future = this.timeoutFuture;
+        if (future != null) {
+          future.cancel(false);
+          this.timeoutFuture = null;
+        }
+
+        theServerSocket.close();
+      } finally {
+        AFUNIXSocketServer.this.notifyAll();
       }
     }
-    if (theServerSocket == null) {
-      return;
-    }
-    theServerSocket.close();
   }
 
   private Future<?> submit(final Socket socket, ExecutorService executor) {
@@ -371,34 +371,39 @@ public abstract class AFUNIXSocketServer {
   }
 
   /**
-   * Requests that the server will be stopped after the given time delay.
+   * Requests that the server will be stopped after the given time delay. If the server is not
+   * started yet (and {@link #stop()} was not called yet, it will be started first.
    * 
    * @param delay The delay.
    * @param unit The time unit for the delay.
    * @return A scheduled future that can be used to monitor progress / cancel the request. If there
-   *         was a problem with stopping, an IOException is returned as the value (not thrown).
+   *         was a problem with stopping, an IOException is returned as the value (not thrown). If
+   *         stop was already requested, {@code null} is returned.
    */
-  public synchronized ScheduledFuture<IOException> stopAfter(long delay, TimeUnit unit) {
-    ScheduledFuture<?> existingFuture = this.timeoutFuture;
-    if (existingFuture != null) {
-      existingFuture.cancel(false);
-      this.timeoutFuture = null;
-    }
-    if (!isRunning() || stopRequested) {
+  public ScheduledFuture<IOException> startThenStopAfter(long delay, TimeUnit unit) {
+    if (stopRequested.get()) {
       return null;
     }
-
-    return (this.timeoutFuture = TIMEOUTS.schedule(new Callable<IOException>() {
-      @Override
-      public IOException call() throws Exception {
-        try {
-          stop();
-          return null;
-        } catch (IOException e) {
-          return e;
-        }
+    synchronized (this) {
+      start();
+      ScheduledFuture<?> existingFuture = this.timeoutFuture;
+      if (existingFuture != null) {
+        existingFuture.cancel(false);
+        this.timeoutFuture = null;
       }
-    }, delay, unit));
+
+      return (this.timeoutFuture = TIMEOUTS.schedule(new Callable<IOException>() {
+        @Override
+        public IOException call() throws Exception {
+          try {
+            stop();
+            return null;
+          } catch (IOException e) {
+            return e;
+          }
+        }
+      }, delay, unit));
+    }
   }
 
   /**

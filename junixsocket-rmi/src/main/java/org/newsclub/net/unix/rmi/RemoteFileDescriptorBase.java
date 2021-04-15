@@ -25,11 +25,9 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -125,17 +123,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
           }
         }
       };
-      server.stopAfter(SERVER_TIMEOUT, TimeUnit.MILLISECONDS);
-      if (!server.startAndWait(SERVER_TIMEOUT, TimeUnit.MILLISECONDS)) {
-        server.stop();
-        serverSocket.close();
-        throw new SocketTimeoutException("Timeout setting up FileDescriptor server");
-      }
-    } catch (InterruptedException e) {
-      InterruptedIOException ioe = (InterruptedIOException) new InterruptedIOException().initCause(
-          e);
-      objOut.writeObject(ioe);
-      throw ioe;
+      server.startThenStopAfter(SERVER_TIMEOUT, TimeUnit.MILLISECONDS);
     } catch (IOException e) {
       objOut.writeObject(e);
       throw e;

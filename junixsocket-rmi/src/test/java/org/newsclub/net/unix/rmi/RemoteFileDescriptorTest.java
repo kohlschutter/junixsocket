@@ -82,7 +82,7 @@ public class RemoteFileDescriptorTest {
 
     try (RemoteFileDescriptor stdout = svc.stdout()) {
       try (FileOutputStream fos = new FileOutputStream(stdout.getFileDescriptor())) {
-        // fos.write(SMILEY);
+        // fos.write(SMILEY); // uncomment to write a smiley to stdout
         fos.flush();
       }
     }
