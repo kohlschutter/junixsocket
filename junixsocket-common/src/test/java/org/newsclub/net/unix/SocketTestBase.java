@@ -67,13 +67,12 @@ public abstract class SocketTestBase { // NOTE: needs to be public for junit
     } else {
       try {
         f = File.createTempFile("jutest", ".sock");
+        f.deleteOnExit(); // always delete on exit to clean-up sockets created under that name
       } catch (IOException e) {
         throw new IllegalStateException("Can't create temporary file", e);
       }
     }
-    if (!f.delete()) {
-      f.deleteOnExit();
-    }
+    f.delete();
     return f;
   }
 
