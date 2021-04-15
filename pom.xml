@@ -61,7 +61,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <java.version>9</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <junit.version>5.6.0-M1</junit.version>
+    <junit.version>5.7.1</junit.version>
     <junixsocket.native.aol></junixsocket.native.aol>
     <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
     <junixsocket.native.crossclang.toolPath>${project.basedir}/crossclang/bin/</junixsocket.native.crossclang.toolPath>
@@ -302,17 +302,22 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     </profile>
   </profiles>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>5.7.1</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit.version}</version>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
