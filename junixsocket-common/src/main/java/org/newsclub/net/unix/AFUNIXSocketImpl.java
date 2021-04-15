@@ -47,6 +47,7 @@ class AFUNIXSocketImpl extends SocketImpl {
   private static final int SHUT_RD = 0;
   private static final int SHUT_WR = 1;
   private static final int SHUT_RD_WR = 2;
+  private static final ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate(0);
 
   private AFUNIXSocketAddress socketAddress;
 
@@ -68,7 +69,7 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   private boolean reuseAddr = true;
 
-  private ByteBuffer ancillaryReceiveBuffer = ByteBuffer.allocateDirect(0);
+  private ByteBuffer ancillaryReceiveBuffer = EMPTY_BUFFER;
   private final List<FileDescriptor[]> receivedFileDescriptors = Collections.synchronizedList(
       new LinkedList<FileDescriptor[]>());
   private int[] pendingFileDescriptors = null;
@@ -601,7 +602,10 @@ class AFUNIXSocketImpl extends SocketImpl {
   }
 
   void setAncillaryReceiveBufferSize(int size) {
-    this.ancillaryReceiveBuffer = ByteBuffer.allocateDirect(size);
+    if (size == ancillaryReceiveBuffer.capacity()) {
+      return;
+    }
+    this.ancillaryReceiveBuffer = size <= 0 ? EMPTY_BUFFER : ByteBuffer.allocateDirect(size);
   }
 
   public final void ensureAncillaryReceiveBufferSize(int minSize) {
