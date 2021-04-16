@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
  * @author Christian Kohlschütter
  */
 public class AcceptTimeoutTest extends SocketTestBase {
-  private static final int TIMING_INACCURACY_MILLIS = 500;
+  private static final int TIMING_INACCURACY_MILLIS = 1000;
 
   public AcceptTimeoutTest() throws IOException {
     super();
@@ -58,8 +58,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
           // expected
           time = System.currentTimeMillis() - time;
 
-          assertTrue(Math.abs(time
-              - timeoutMillis) <= TIMING_INACCURACY_MILLIS,
+          assertTrue(Math.abs(time - timeoutMillis) <= TIMING_INACCURACY_MILLIS,
               "Timeout not properly honored. Exception thrown after " + time + "ms vs. expected "
                   + timeoutMillis + "ms");
         }
