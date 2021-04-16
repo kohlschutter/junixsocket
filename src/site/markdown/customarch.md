@@ -18,7 +18,8 @@ machine. See [Cross-compiling junixsocket](crosscomp.html) for details.
 
 Make sure we can build junixsocket's JNI library.
 
-If this step fails, you're mostly on your own for now; closely inspect the error log and consider filing a bug report against junixsocket. Also check the [Unix socket reference](unixsockets.html), which may reveal some
+If this step fails, you're mostly on your own for now; closely inspect the error log and consider filing a bug report
+against junixsocket. Also check the [Unix socket reference](unixsockets.html), which may reveal some
 hints how to get it compile on your platform.
 
     cd junixsocket
@@ -94,7 +95,10 @@ invoke the Java VM (e.g., your web server, etc.), for example:
 There may be reasons why all this doesn't work, and you simply want to specify the location of
 the native library yourself.
 
-Simply set the system property `org.newsclub.net.unix.library.override` to the location of the native
+Simply set the system property `org.newsclub.net.unix.library.override` to the path of the native
 library. For example:
 
-    java -Dorg.newsclub.net.unix.library.override=junixsocket-native-2.3.3 (...)
+    java -Dorg.newsclub.net.unix.library.override=/path/to/junixsocket-native-2.3.3.so (...)
+
+> **NOTE** If this override fails to load, an attempt is made to load the standard junixsocket library,
+unless the system property `org.newsclub.net.unix.library.override.force` is set to `true`.

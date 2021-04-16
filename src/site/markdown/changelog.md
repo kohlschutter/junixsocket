@@ -1,20 +1,23 @@
 # Noteworthy changes
 
-### _(2021-04-XX)_ **junixsocket 2.3.3**
+### _(2021-04-15)_ **junixsocket 2.3.3**
 
  - Add support for aarch64 on Apple Silicon Macs
+ - Improved throughput by up to 40% by removing some JNI overhead (now on par with JEP380)
  - Fix "undefined symbol: stat" error on older Linux machines
- - Fix self-test on Windows
+ - Fix self-test on Windows; add more system information to selftest
  - Fix LICENSE/NOTICE files (no license change, just reorganization)
  - Fix build issues with RISC-V (use LLVM 9)
  - Fix build issues on macOS
+ - Improve handling of ancillary receive buffers
+ - Add a new system property to control what happens when the library override fails to load
+ - Add an Xcode project to simplify cross-compilation; improved crossclang
 
 ### _(2020-03-08)_ **junixsocket 2.3.2**
 
  - Add support for FreeBSD (Intel 64-bit)
  - Fix an NPE when junixsocket is on the bootstrap classloader
  - Fix AcceptTimeoutTest#testCatchTimeout (selftest would sometimes erroneously fail)
- - Code cleanup
 
 ### _(2020-01-16)_ **junixsocket 2.3.1**
 
@@ -42,7 +45,6 @@
 ### _(2019-11-14)_ **junixsocket 2.2.1**
 
  - Add support for Java 13
- - Code cleanup, dependency updates
 
 ### _(2019-02-17)_ **junixsocket 2.2.0**
 
@@ -64,7 +66,6 @@
  - Ask to not raise SIGPIPE
  - Introduced "crossclang": junixsocket can now be cross-compiled with clang/LLVM
  - Improved demo code, new demo client
- - Code cleanup
 
 
 #### _(2018-12-29)_ **junixsocket 2.1.2**      
@@ -91,7 +92,6 @@
 - Script to run the demos from the command-line
 - Documentation updates
 - Updated Maven dependencies
-- Code cleanup and other bug fixes
 
 
 #### _(2014-09-29)_ **junixsocket 2.0.1**
