@@ -72,7 +72,9 @@ public abstract class SocketTestBase { // NOTE: needs to be public for junit
         throw new IllegalStateException("Can't create temporary file", e);
       }
     }
-    f.delete();
+    if (!f.delete()) {
+      throw new IllegalStateException("Could not delete temporary file that we just created: " + f);
+    }
     return f;
   }
 
@@ -105,7 +107,7 @@ public abstract class SocketTestBase { // NOTE: needs to be public for junit
     @SuppressFBWarnings("SC_START_IN_CTOR")
     protected ServerThread() throws IOException {
       super();
-      serverSocket = startServer(); //NOPMD
+      serverSocket = startServer(); // NOPMD
       setDaemon(true);
 
       start();
