@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
  * @author Christian Kohlschütter
  */
 final class NativeUnixSocket {
-  private static boolean loaded = false;
+  private static boolean loaded;
 
   private NativeUnixSocket() {
     throw new UnsupportedOperationException("No instances");

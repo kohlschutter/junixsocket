@@ -42,7 +42,7 @@ final class TestUtils {
    * @throws IllegalStateException if the PID could not be determined.
    */
   public static long getPid() {
-    Class<?> phClass = null;
+    Class<?> phClass;
     try {
       phClass = Class.forName("java.lang.ProcessHandle");
     } catch (ClassNotFoundException e) {

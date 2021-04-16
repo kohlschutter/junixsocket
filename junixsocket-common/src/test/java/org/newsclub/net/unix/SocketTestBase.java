@@ -36,12 +36,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * 
  * @author Christian Kohlschuetter
  */
-public abstract class SocketTestBase { // NOTE: needs to be public for junit
+public class SocketTestBase { // NOTE: needs to be public for junit
   private static final File SOCKET_FILE = initSocketFile();
   private final AFUNIXSocketAddress serverAddress;
   private Exception caller = new Exception();
 
-  public SocketTestBase() throws IOException {
+  protected SocketTestBase() throws IOException {
     this.serverAddress = new AFUNIXSocketAddress(SOCKET_FILE);
   }
 
@@ -168,7 +168,7 @@ public abstract class SocketTestBase { // NOTE: needs to be public for junit
     public final void run() {
       try {
         loop.set(true);
-        try {
+        try { // NOPMD: ignore UseTryWithResources warning
           while (loop.get()) {
             acceptAndHandleConnection();
           }

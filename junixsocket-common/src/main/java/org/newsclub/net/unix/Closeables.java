@@ -112,7 +112,7 @@ public final class Closeables implements Closeable {
       list = new ArrayList<>();
     } else {
       for (WeakReference<Closeable> ref : list) {
-        if (ref.get() == cl) {
+        if (cl.equals(ref.get())) {
           return false;
         }
       }
@@ -146,7 +146,7 @@ public final class Closeables implements Closeable {
       return false;
     }
     for (Iterator<WeakReference<Closeable>> it = list.iterator(); it.hasNext();) {
-      if (it.next().get() == closeable) {
+      if (closeable.equals(it.next().get())) {
         it.remove();
         return true;
       }

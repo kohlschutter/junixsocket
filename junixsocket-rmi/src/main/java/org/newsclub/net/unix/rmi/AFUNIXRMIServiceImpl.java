@@ -121,7 +121,7 @@ final class AFUNIXRMIServiceImpl implements AFUNIXRMIService {
     synchronized (closeAtShutdown) {
       Objects.requireNonNull(closeable);
       for (Iterator<WeakReference<Closeable>> it = closeAtShutdown.iterator(); it.hasNext();) {
-        if (it.next().get() == closeable) {
+        if (closeable.equals(it.next().get())) {
           it.remove();
           return;
         }

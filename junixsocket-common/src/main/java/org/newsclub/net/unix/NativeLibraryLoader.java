@@ -149,7 +149,7 @@ final class NativeLibraryLoader implements Closeable {
       File libFile;
       try {
         libFile = createTempFile("libtmp", System.mapLibraryName(libraryNameAndVersion));
-        try (OutputStream out = new FileOutputStream(libFile)) {
+        try (OutputStream out = new FileOutputStream(libFile)) {  // NOPMD UseTryWithResources
           byte[] buf = new byte[4096];
           int read;
           while ((read = libraryIn.read(buf)) >= 0) {

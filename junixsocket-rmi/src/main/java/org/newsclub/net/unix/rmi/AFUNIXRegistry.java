@@ -158,7 +158,7 @@ public final class AFUNIXRegistry implements Registry, ShutdownHook {
 
   @SuppressWarnings("resource")
   private void checkBound() throws RemoteException {
-    boolean empty = false;
+    boolean empty;
     synchronized (bound) {
       empty = bound.isEmpty();
     }
@@ -194,7 +194,7 @@ public final class AFUNIXRegistry implements Registry, ShutdownHook {
 
   @Override
   public void onRuntimeShutdown(Thread thread) {
-    if (thread != Thread.currentThread() | !(thread instanceof ShutdownThread)) {
+    if (!thread.equals(Thread.currentThread()) | !(thread instanceof ShutdownThread)) {
       throw new IllegalStateException("Illegal caller");
     }
     forceUnexportBound();

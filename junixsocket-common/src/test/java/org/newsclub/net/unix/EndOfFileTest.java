@@ -104,8 +104,8 @@ public class EndOfFileTest {
       Socket[] sockets = connectToServer();
       try (Socket serverSocket = sockets[0]; //
           Socket clientSocket = sockets[1]) {
-        String input = null;
-        String output = null;
+        String input;
+        String output;
 
         OutputStreamWriter clientOutWriter = new OutputStreamWriter(clientSocket.getOutputStream(),
             "UTF-8");

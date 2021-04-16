@@ -200,7 +200,7 @@ public class Selftest {
     for (Map.Entry<String, Object> en : results.entrySet()) {
       Object res = en.getValue();
       String result = "DONE";
-      String extra = "";
+      String extra;
       if (res == null) {
         result = "SKIP";
         extra = "(skipped by user request)";

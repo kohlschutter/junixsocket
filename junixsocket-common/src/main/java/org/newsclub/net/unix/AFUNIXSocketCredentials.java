@@ -100,21 +100,29 @@ public final class AFUNIXSocketCredentials {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
     sb.append('[');
-    if (this == SAME_PROCESS) {
+    if (this == SAME_PROCESS) { // NOPMD: CompareObjectsWithEquals
       sb.append("(same process)]");
       return sb.toString();
     }
     if (pid != -1) {
-      sb.append("pid=" + pid + ";");
+      sb.append("pid=");
+      sb.append(pid);
+      sb.append(';');
     }
     if (uid != -1) {
-      sb.append("uid=" + uid + ";");
+      sb.append("uid=");
+      sb.append(uid);
+      sb.append(';');
     }
     if (gids != null) {
-      sb.append("gids=" + Arrays.toString(gids) + ";");
+      sb.append("gids=");
+      sb.append(Arrays.toString(gids));
+      sb.append(';');
     }
     if (uuid != null) {
-      sb.append("uuid=" + uuid + ";");
+      sb.append("uuid=");
+      sb.append(uuid);
+      sb.append(';');
     }
     if (sb.charAt(sb.length() - 1) == ';') {
       sb.setLength(sb.length() - 1);

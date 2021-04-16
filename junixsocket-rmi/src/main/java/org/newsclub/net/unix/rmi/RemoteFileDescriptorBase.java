@@ -97,13 +97,13 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
     }
     final int randomValue = RANDOM.nextInt();
 
-    int localPort = 0;
+    int localPort;
     try {
       @SuppressWarnings("resource")
       AFUNIXServerSocket serverSocket = (AFUNIXServerSocket) socketFactory.createServerSocket(0);
       localPort = serverSocket.getLocalPort();
-      AFUNIXSocketServer server = new AFUNIXSocketServer(serverSocket) {
 
+      AFUNIXSocketServer server = new AFUNIXSocketServer(serverSocket) {
         @Override
         protected void doServeSocket(Socket socket) throws IOException {
           AFUNIXSocket unixSocket = (AFUNIXSocket) socket;

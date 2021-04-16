@@ -426,7 +426,7 @@ public final class AFUNIXNaming implements ShutdownHook {
 
   @Override
   public void onRuntimeShutdown(Thread thread) {
-    if (thread != Thread.currentThread() || !(thread instanceof ShutdownThread)) {
+    if (!thread.equals(Thread.currentThread()) || !(thread instanceof ShutdownThread)) {
       throw new IllegalStateException("Illegal caller");
     }
     try {

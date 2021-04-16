@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 
  * @author Christian Kohlschütter
  */
+@SuppressWarnings({"PMD.CyclomaticComplexity"})
 class AFUNIXSocketImpl extends SocketImpl {
   private static final int SHUT_RD = 0;
   private static final int SHUT_WR = 1;
