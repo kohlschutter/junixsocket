@@ -118,8 +118,8 @@ The files can be found in
     cd junixsocket
     mvn clean install -Pstrict -Prelease
 
-    # after gpg.keyname, specify the key you want to use for signing
-    mvn deploy -Pstrict -Prelease -Psigned -Dgpg.keyname=5034B...
+    # after gpgkeyname, specify the key you want to use for signing
+    mvn deploy -Pstrict -Prelease -Psigned -Dgpgkeyname=5034B...
     
 ##### Notes
 

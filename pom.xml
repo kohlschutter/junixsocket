@@ -10,7 +10,7 @@
   <parent>
     <groupId>com.kohlschutter</groupId>
     <artifactId>kohlschutter-parent</artifactId>
-    <version>1.3.6</version>
+    <version>1.3.7</version>
     <relativePath>../kohlschutter-parent/pom.xml</relativePath>
   </parent>
   <name>junixsocket-parent</name>
@@ -234,6 +234,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <plugins>
           <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
             <configuration>
               <target>9</target>
               <release>9</release>
