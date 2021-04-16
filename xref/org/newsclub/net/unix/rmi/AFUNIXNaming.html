@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2020 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2021 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> * you may not use this file except in compliance with the License.</em>
@@ -453,76 +453,78 @@
 <a class="jxr_linenumber" name="L445" href="#L445">445</a> <em class="jxr_javadoccomment">   * @throws RemoteException if the operation fails.</em>
 <a class="jxr_linenumber" name="L446" href="#L446">446</a> <em class="jxr_javadoccomment">   * @throws AlreadyBoundException if there already was something bound at that name</em>
 <a class="jxr_linenumber" name="L447" href="#L447">447</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exportAndBind(String name, Remote obj) <strong class="jxr_keyword">throws</strong> RemoteException, AlreadyBoundException {
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>     exportObject(obj, getSocketFactory());
-<a class="jxr_linenumber" name="L450" href="#L450">450</a> 
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>     getRegistry().bind(name, obj);
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>   }
-<a class="jxr_linenumber" name="L453" href="#L453">453</a> 
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L455" href="#L455">455</a> <em class="jxr_javadoccomment">   * Exports and re-binds the given Remote object to the given name, using the given</em>
-<a class="jxr_linenumber" name="L456" href="#L456">456</a> <em class="jxr_javadoccomment">   * {@link AFUNIXNaming} setup.</em>
-<a class="jxr_linenumber" name="L457" href="#L457">457</a> <em class="jxr_javadoccomment">   * </em>
-<a class="jxr_linenumber" name="L458" href="#L458">458</a> <em class="jxr_javadoccomment">   * @param name The name to use to bind the object in the registry.</em>
-<a class="jxr_linenumber" name="L459" href="#L459">459</a> <em class="jxr_javadoccomment">   * @param obj The object to export and bind.</em>
-<a class="jxr_linenumber" name="L460" href="#L460">460</a> <em class="jxr_javadoccomment">   * @throws RemoteException if the operation fails.</em>
-<a class="jxr_linenumber" name="L461" href="#L461">461</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exportAndRebind(String name, Remote obj) <strong class="jxr_keyword">throws</strong> RemoteException {
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>     exportObject(obj, getSocketFactory());
-<a class="jxr_linenumber" name="L464" href="#L464">464</a> 
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>     getRegistry().rebind(name, obj);
-<a class="jxr_linenumber" name="L466" href="#L466">466</a>   }
-<a class="jxr_linenumber" name="L467" href="#L467">467</a> 
-<a class="jxr_linenumber" name="L468" href="#L468">468</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L469" href="#L469">469</a> <em class="jxr_javadoccomment">   * Forcibly un-exports the given object, if it exists, and unbinds the object from the registry</em>
-<a class="jxr_linenumber" name="L470" href="#L470">470</a> <em class="jxr_javadoccomment">   * (otherwise returns without an error).</em>
-<a class="jxr_linenumber" name="L471" href="#L471">471</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L472" href="#L472">472</a> <em class="jxr_javadoccomment">   * @param name The name used to bind the object.</em>
-<a class="jxr_linenumber" name="L473" href="#L473">473</a> <em class="jxr_javadoccomment">   * @param obj The object to un-export.</em>
-<a class="jxr_linenumber" name="L474" href="#L474">474</a> <em class="jxr_javadoccomment">   * @throws RemoteException if the operation fails.</em>
-<a class="jxr_linenumber" name="L475" href="#L475">475</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> unexportAndUnbind(String name, Remote obj) <strong class="jxr_keyword">throws</strong> RemoteException {
-<a class="jxr_linenumber" name="L477" href="#L477">477</a>     unexportObject(obj);
-<a class="jxr_linenumber" name="L478" href="#L478">478</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L479" href="#L479">479</a>       unbind(name);
-<a class="jxr_linenumber" name="L480" href="#L480">480</a>     } <strong class="jxr_keyword">catch</strong> (MalformedURLException | NotBoundException e) {
-<a class="jxr_linenumber" name="L481" href="#L481">481</a>       <em class="jxr_comment">// ignore</em>
-<a class="jxr_linenumber" name="L482" href="#L482">482</a>     }
-<a class="jxr_linenumber" name="L483" href="#L483">483</a>   }
-<a class="jxr_linenumber" name="L484" href="#L484">484</a> 
-<a class="jxr_linenumber" name="L485" href="#L485">485</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L486" href="#L486">486</a> <em class="jxr_javadoccomment">   * Exports the given Remote object, using the given socket factory and a randomly assigned port.</em>
-<a class="jxr_linenumber" name="L487" href="#L487">487</a> <em class="jxr_javadoccomment">   * </em>
-<a class="jxr_linenumber" name="L488" href="#L488">488</a> <em class="jxr_javadoccomment">   * NOTE: This helper function can also be used for regular RMI servers.</em>
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>   @SuppressWarnings(<span class="jxr_string">"resource"</span>)
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exportAndBind(String name, Remote obj) <strong class="jxr_keyword">throws</strong> RemoteException, AlreadyBoundException {
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>     exportObject(obj, getSocketFactory());
+<a class="jxr_linenumber" name="L451" href="#L451">451</a> 
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>     getRegistry().bind(name, obj);
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>   }
+<a class="jxr_linenumber" name="L454" href="#L454">454</a> 
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L456" href="#L456">456</a> <em class="jxr_javadoccomment">   * Exports and re-binds the given Remote object to the given name, using the given</em>
+<a class="jxr_linenumber" name="L457" href="#L457">457</a> <em class="jxr_javadoccomment">   * {@link AFUNIXNaming} setup.</em>
+<a class="jxr_linenumber" name="L458" href="#L458">458</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L459" href="#L459">459</a> <em class="jxr_javadoccomment">   * @param name The name to use to bind the object in the registry.</em>
+<a class="jxr_linenumber" name="L460" href="#L460">460</a> <em class="jxr_javadoccomment">   * @param obj The object to export and bind.</em>
+<a class="jxr_linenumber" name="L461" href="#L461">461</a> <em class="jxr_javadoccomment">   * @throws RemoteException if the operation fails.</em>
+<a class="jxr_linenumber" name="L462" href="#L462">462</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>   @SuppressWarnings(<span class="jxr_string">"resource"</span>)
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exportAndRebind(String name, Remote obj) <strong class="jxr_keyword">throws</strong> RemoteException {
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>     exportObject(obj, getSocketFactory());
+<a class="jxr_linenumber" name="L466" href="#L466">466</a> 
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>     getRegistry().rebind(name, obj);
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>   }
+<a class="jxr_linenumber" name="L469" href="#L469">469</a> 
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L471" href="#L471">471</a> <em class="jxr_javadoccomment">   * Forcibly un-exports the given object, if it exists, and unbinds the object from the registry</em>
+<a class="jxr_linenumber" name="L472" href="#L472">472</a> <em class="jxr_javadoccomment">   * (otherwise returns without an error).</em>
+<a class="jxr_linenumber" name="L473" href="#L473">473</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L474" href="#L474">474</a> <em class="jxr_javadoccomment">   * @param name The name used to bind the object.</em>
+<a class="jxr_linenumber" name="L475" href="#L475">475</a> <em class="jxr_javadoccomment">   * @param obj The object to un-export.</em>
+<a class="jxr_linenumber" name="L476" href="#L476">476</a> <em class="jxr_javadoccomment">   * @throws RemoteException if the operation fails.</em>
+<a class="jxr_linenumber" name="L477" href="#L477">477</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> unexportAndUnbind(String name, Remote obj) <strong class="jxr_keyword">throws</strong> RemoteException {
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>     unexportObject(obj);
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>       unbind(name);
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>     } <strong class="jxr_keyword">catch</strong> (MalformedURLException | NotBoundException e) {
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>       <em class="jxr_comment">// ignore</em>
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>     }
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>   }
+<a class="jxr_linenumber" name="L486" href="#L486">486</a> 
+<a class="jxr_linenumber" name="L487" href="#L487">487</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L488" href="#L488">488</a> <em class="jxr_javadoccomment">   * Exports the given Remote object, using the given socket factory and a randomly assigned port.</em>
 <a class="jxr_linenumber" name="L489" href="#L489">489</a> <em class="jxr_javadoccomment">   * </em>
-<a class="jxr_linenumber" name="L490" href="#L490">490</a> <em class="jxr_javadoccomment">   * @param obj The object to export.</em>
-<a class="jxr_linenumber" name="L491" href="#L491">491</a> <em class="jxr_javadoccomment">   * @param socketFactory The socket factory to use.</em>
-<a class="jxr_linenumber" name="L492" href="#L492">492</a> <em class="jxr_javadoccomment">   * @return The remote stub.</em>
-<a class="jxr_linenumber" name="L493" href="#L493">493</a> <em class="jxr_javadoccomment">   * @throws RemoteException if the operation fails.</em>
-<a class="jxr_linenumber" name="L494" href="#L494">494</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L495" href="#L495">495</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Remote exportObject(Remote obj, RMISocketFactory socketFactory)
-<a class="jxr_linenumber" name="L496" href="#L496">496</a>       <strong class="jxr_keyword">throws</strong> RemoteException {
-<a class="jxr_linenumber" name="L497" href="#L497">497</a>     <strong class="jxr_keyword">return</strong> UnicastRemoteObject.exportObject(obj, 0, socketFactory, socketFactory);
-<a class="jxr_linenumber" name="L498" href="#L498">498</a>   }
-<a class="jxr_linenumber" name="L499" href="#L499">499</a> 
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L501" href="#L501">501</a> <em class="jxr_javadoccomment">   * Forcibly un-exports the given object, if it exists (otherwise returns without an error). This</em>
-<a class="jxr_linenumber" name="L502" href="#L502">502</a> <em class="jxr_javadoccomment">   * should be called upon closing a {@link Closeable} {@link Remote} object.</em>
-<a class="jxr_linenumber" name="L503" href="#L503">503</a> <em class="jxr_javadoccomment">   * </em>
-<a class="jxr_linenumber" name="L504" href="#L504">504</a> <em class="jxr_javadoccomment">   * NOTE: This helper function can also be used for regular RMI servers.</em>
+<a class="jxr_linenumber" name="L490" href="#L490">490</a> <em class="jxr_javadoccomment">   * NOTE: This helper function can also be used for regular RMI servers.</em>
+<a class="jxr_linenumber" name="L491" href="#L491">491</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L492" href="#L492">492</a> <em class="jxr_javadoccomment">   * @param obj The object to export.</em>
+<a class="jxr_linenumber" name="L493" href="#L493">493</a> <em class="jxr_javadoccomment">   * @param socketFactory The socket factory to use.</em>
+<a class="jxr_linenumber" name="L494" href="#L494">494</a> <em class="jxr_javadoccomment">   * @return The remote stub.</em>
+<a class="jxr_linenumber" name="L495" href="#L495">495</a> <em class="jxr_javadoccomment">   * @throws RemoteException if the operation fails.</em>
+<a class="jxr_linenumber" name="L496" href="#L496">496</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Remote exportObject(Remote obj, RMISocketFactory socketFactory)
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>       <strong class="jxr_keyword">throws</strong> RemoteException {
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>     <strong class="jxr_keyword">return</strong> UnicastRemoteObject.exportObject(obj, 0, socketFactory, socketFactory);
+<a class="jxr_linenumber" name="L500" href="#L500">500</a>   }
+<a class="jxr_linenumber" name="L501" href="#L501">501</a> 
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L503" href="#L503">503</a> <em class="jxr_javadoccomment">   * Forcibly un-exports the given object, if it exists (otherwise returns without an error). This</em>
+<a class="jxr_linenumber" name="L504" href="#L504">504</a> <em class="jxr_javadoccomment">   * should be called upon closing a {@link Closeable} {@link Remote} object.</em>
 <a class="jxr_linenumber" name="L505" href="#L505">505</a> <em class="jxr_javadoccomment">   * </em>
-<a class="jxr_linenumber" name="L506" href="#L506">506</a> <em class="jxr_javadoccomment">   * @param obj The object to un-export.</em>
-<a class="jxr_linenumber" name="L507" href="#L507">507</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L508" href="#L508">508</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> unexportObject(Remote obj) {
-<a class="jxr_linenumber" name="L509" href="#L509">509</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L510" href="#L510">510</a>       UnicastRemoteObject.unexportObject(obj, <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L511" href="#L511">511</a>     } <strong class="jxr_keyword">catch</strong> (NoSuchObjectException e) {
-<a class="jxr_linenumber" name="L512" href="#L512">512</a>       <em class="jxr_comment">// ignore</em>
-<a class="jxr_linenumber" name="L513" href="#L513">513</a>     }
-<a class="jxr_linenumber" name="L514" href="#L514">514</a>   }
-<a class="jxr_linenumber" name="L515" href="#L515">515</a> }
+<a class="jxr_linenumber" name="L506" href="#L506">506</a> <em class="jxr_javadoccomment">   * NOTE: This helper function can also be used for regular RMI servers.</em>
+<a class="jxr_linenumber" name="L507" href="#L507">507</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L508" href="#L508">508</a> <em class="jxr_javadoccomment">   * @param obj The object to un-export.</em>
+<a class="jxr_linenumber" name="L509" href="#L509">509</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> unexportObject(Remote obj) {
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>       UnicastRemoteObject.unexportObject(obj, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L513" href="#L513">513</a>     } <strong class="jxr_keyword">catch</strong> (NoSuchObjectException e) {
+<a class="jxr_linenumber" name="L514" href="#L514">514</a>       <em class="jxr_comment">// ignore</em>
+<a class="jxr_linenumber" name="L515" href="#L515">515</a>     }
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>   }
+<a class="jxr_linenumber" name="L517" href="#L517">517</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2020 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2021 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>

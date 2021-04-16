@@ -14,11 +14,11 @@ junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXRegistry,56,227,6,12,18,65,8,13,
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXRMIServiceImpl,53,155,13,5,17,39,10,10,2,9
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileInput,9,30,2,2,2,7,2,3,0,3
 junixsocket-rmi,org.newsclub.net.unix.rmi,DefaultRMIClientSocketFactory,23,0,0,0,7,0,6,0,6,0
-junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileDescriptorBase,109,195,15,13,22,59,13,10,0,9
+junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileDescriptorBase,87,191,14,12,15,59,12,10,0,9
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXRMISocketFactory.AnonymousServerSocket,0,20,0,0,0,8,0,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXRMIServiceImpl.new Runnable() {...},6,20,1,1,4,6,1,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileOutput.new FileOutputStream() {...},0,13,0,0,0,4,0,2,0,2
-junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileDescriptor,5,19,2,2,1,7,2,3,0,3
+junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileDescriptor,7,19,2,2,2,7,2,3,0,3
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemotePeerInfo,67,45,5,3,9,14,10,3,6,3
 junixsocket-rmi,org.newsclub.net.unix.rmi,ShutdownHookSupport.ShutdownThread,0,17,1,1,0,7,1,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXRMISocketFactory,137,433,27,23,38,100,26,25,4,22

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXRegistry.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFUNIXRegistry.java</span></div><h1>AFUNIXRegistry.java</h1><pre class="source lang-java linenums">/**
  * junixsocket
  *
- * Copyright 2009-2020 Christian Kohlschütter
+ * Copyright 2009-2021 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -156,47 +156,48 @@ public final class AFUNIXRegistry implements Registry, ShutdownHook {
 <span class="nc" id="L156">    return impl.list();</span>
   }
 
+  @SuppressWarnings(&quot;resource&quot;)
   private void checkBound() throws RemoteException {
-<span class="fc" id="L160">    boolean empty = false;</span>
-<span class="fc" id="L161">    synchronized (bound) {</span>
-<span class="fc" id="L162">      empty = bound.isEmpty();</span>
-<span class="fc" id="L163">    }</span>
-<span class="fc" id="L164">    synchronized (boundCloser) {</span>
-<span class="fc bfc" id="L165" title="All 2 branches covered.">      if (empty) {</span>
-<span class="fc bfc" id="L166" title="All 2 branches covered.">        if (boundCloserExported) {</span>
-<span class="fc" id="L167">          boundCloserExported = false;</span>
+<span class="fc" id="L161">    boolean empty = false;</span>
+<span class="fc" id="L162">    synchronized (bound) {</span>
+<span class="fc" id="L163">      empty = bound.isEmpty();</span>
+<span class="fc" id="L164">    }</span>
+<span class="fc" id="L165">    synchronized (boundCloser) {</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">      if (empty) {</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (boundCloserExported) {</span>
+<span class="fc" id="L168">          boundCloserExported = false;</span>
 
           AFUNIXRMIService service;
           try {
-<span class="fc" id="L171">            service = naming.getRMIService();</span>
-<span class="fc" id="L172">            service.unregisterForShutdown(boundCloser);</span>
-<span class="nc" id="L173">          } catch (NoSuchObjectException | NotBoundException e) {</span>
-<span class="nc" id="L174">            return;</span>
+<span class="fc" id="L172">            service = naming.getRMIService();</span>
+<span class="fc" id="L173">            service.unregisterForShutdown(boundCloser);</span>
+<span class="nc" id="L174">          } catch (NoSuchObjectException | NotBoundException e) {</span>
+<span class="nc" id="L175">            return;</span>
           } finally {
-<span class="pc" id="L176">            AFUNIXNaming.unexportObject(boundCloser);</span>
+<span class="pc" id="L177">            AFUNIXNaming.unexportObject(boundCloser);</span>
           }
-<span class="fc" id="L178">        }</span>
-<span class="fc bfc" id="L179" title="All 2 branches covered.">      } else if (!boundCloserExported) {</span>
-<span class="fc" id="L180">        AFUNIXNaming.exportObject(boundCloser, naming.getSocketFactory());</span>
-<span class="fc" id="L181">        boundCloserExported = true;</span>
+<span class="fc" id="L179">        }</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">      } else if (!boundCloserExported) {</span>
+<span class="fc" id="L181">        AFUNIXNaming.exportObject(boundCloser, naming.getSocketFactory());</span>
+<span class="fc" id="L182">        boundCloserExported = true;</span>
 
         AFUNIXRMIService service;
         try {
-<span class="fc" id="L185">          service = naming.getRMIService();</span>
-<span class="nc" id="L186">        } catch (NotBoundException e) {</span>
-<span class="nc" id="L187">          return;</span>
-<span class="fc" id="L188">        }</span>
-<span class="fc" id="L189">        service.registerForShutdown(boundCloser);</span>
+<span class="fc" id="L186">          service = naming.getRMIService();</span>
+<span class="nc" id="L187">        } catch (NotBoundException e) {</span>
+<span class="nc" id="L188">          return;</span>
+<span class="fc" id="L189">        }</span>
+<span class="fc" id="L190">        service.registerForShutdown(boundCloser);</span>
       }
-<span class="fc" id="L191">    }</span>
-<span class="fc" id="L192">  }</span>
+<span class="fc" id="L192">    }</span>
+<span class="fc" id="L193">  }</span>
 
   @Override
   public void onRuntimeShutdown(Thread thread) {
-<span class="pc bpc" id="L196" title="3 of 6 branches missed.">    if (thread != Thread.currentThread() | !(thread instanceof ShutdownThread)) {</span>
-<span class="nc" id="L197">      throw new IllegalStateException(&quot;Illegal caller&quot;);</span>
+<span class="pc bpc" id="L197" title="3 of 6 branches missed.">    if (thread != Thread.currentThread() | !(thread instanceof ShutdownThread)) {</span>
+<span class="nc" id="L198">      throw new IllegalStateException(&quot;Illegal caller&quot;);</span>
     }
-<span class="fc" id="L199">    forceUnexportBound();</span>
-<span class="fc" id="L200">  }</span>
+<span class="fc" id="L200">    forceUnexportBound();</span>
+<span class="fc" id="L201">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

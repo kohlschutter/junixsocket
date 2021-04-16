@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2020 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2021 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> * you may not use this file except in compliance with the License.</em>
@@ -41,19 +41,20 @@
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> * @see StreamClient</em>
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="StreamServer" href="../../../../../../../org/newsclub/net/unix/demo/rmi/fd/StreamServer.html#StreamServer">StreamServer</a> {
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> main(String[] args) <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>      <a name="AFUNIXNaming" href="../../../../../../../org/newsclub/net/unix/rmi/AFUNIXNaming.html#AFUNIXNaming">AFUNIXNaming</a> naming = AFUNIXNaming.getInstance();
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      System.out.println(<span class="jxr_string">"Socket directory: "</span> + naming.getSocketFactory().getSocketDir());
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">try</strong> (<a name="StreamServiceImpl" href="../../../../../../../org/newsclub/n<a name="StreamServiceImpl" href="../../../../../../../org/newsclub/net/unix/demo/rmi/fd/StreamServiceImpl.html#StreamServiceImpl">StreamServiceImpl</a>fd/StreamServiceImpl.html#StreamServiceImpl">StreamServiceImpl</a> service = <strong class="jxr_keyword">new</strong> <a name="StreamServiceImpl" href="../../../../../../../org/newsclub/net/unix/demo/rmi/fd/StreamServiceImpl.html#StreamServiceImpl">StreamServiceImpl</a>(naming.getSocketFactory())) {
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>        naming.exportAndBind(<span class="jxr_string">"streamService"</span>, service);
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>        System.out.println(<span class="jxr_string">"StreamServer ready; user.name="</span> + System.getProperty(<span class="jxr_string">"user.name"</span>));
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>      }
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>    }
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  }
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>    @SuppressWarnings(<span class="jxr_string">"resource"</span>)
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> main(String[] args) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <a name="AFUNIXNaming" href="../../../../../../../org/newsclub/net/unix/rmi/AFUNIXNaming.html#AFUNIXNaming">AFUNIXNaming</a> naming = AFUNIXNaming.getInstance();
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      System.out.println(<span class="jxr_string">"Socket directory: "</span> + naming.getSocketFactory().getSocketDir());
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">try</strong> (<a name="StreamServiceImpl" href="../../../../../../../org/newsclub/n<a name="StreamServiceImpl" href="../../../../../../../org/newsclub/net/unix/demo/rmi/fd/StreamServiceImpl.html#StreamServiceImpl">StreamServiceImpl</a>fd/StreamServiceImpl.html#StreamServiceImpl">StreamServiceImpl</a> service = <strong class="jxr_keyword">new</strong> <a name="StreamServiceImpl" href="../../../../../../../org/newsclub/net/unix/demo/rmi/fd/StreamServiceImpl.html#StreamServiceImpl">StreamServiceImpl</a>(naming.getSocketFactory())) {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>        naming.exportAndBind(<span class="jxr_string">"streamService"</span>, service);
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>        System.out.println(<span class="jxr_string">"StreamServer ready; user.name="</span> + System.getProperty(<span class="jxr_string">"user.name"</span>));
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      }
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    }
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2020 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2021 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>

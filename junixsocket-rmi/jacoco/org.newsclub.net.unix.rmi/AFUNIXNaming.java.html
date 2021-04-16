@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXNaming.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFUNIXNaming.java</span></div><h1>AFUNIXNaming.java</h1><pre class="source lang-java linenums">/**
  * junixsocket
  *
- * Copyright 2009-2020 Christian Kohlschütter
+ * Copyright 2009-2021 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -445,11 +445,12 @@ public final class AFUNIXNaming implements ShutdownHook {
    * @throws RemoteException if the operation fails.
    * @throws AlreadyBoundException if there already was something bound at that name
    */
+  @SuppressWarnings(&quot;resource&quot;)
   public void exportAndBind(String name, Remote obj) throws RemoteException, AlreadyBoundException {
-<span class="nc" id="L449">    exportObject(obj, getSocketFactory());</span>
+<span class="nc" id="L450">    exportObject(obj, getSocketFactory());</span>
 
-<span class="nc" id="L451">    getRegistry().bind(name, obj);</span>
-<span class="nc" id="L452">  }</span>
+<span class="nc" id="L452">    getRegistry().bind(name, obj);</span>
+<span class="nc" id="L453">  }</span>
 
   /**
    * Exports and re-binds the given Remote object to the given name, using the given
@@ -459,11 +460,12 @@ public final class AFUNIXNaming implements ShutdownHook {
    * @param obj The object to export and bind.
    * @throws RemoteException if the operation fails.
    */
+  @SuppressWarnings(&quot;resource&quot;)
   public void exportAndRebind(String name, Remote obj) throws RemoteException {
-<span class="nc" id="L463">    exportObject(obj, getSocketFactory());</span>
+<span class="nc" id="L465">    exportObject(obj, getSocketFactory());</span>
 
-<span class="nc" id="L465">    getRegistry().rebind(name, obj);</span>
-<span class="nc" id="L466">  }</span>
+<span class="nc" id="L467">    getRegistry().rebind(name, obj);</span>
+<span class="nc" id="L468">  }</span>
 
   /**
    * Forcibly un-exports the given object, if it exists, and unbinds the object from the registry
@@ -474,13 +476,13 @@ public final class AFUNIXNaming implements ShutdownHook {
    * @throws RemoteException if the operation fails.
    */
   public void unexportAndUnbind(String name, Remote obj) throws RemoteException {
-<span class="fc" id="L477">    unexportObject(obj);</span>
+<span class="fc" id="L479">    unexportObject(obj);</span>
     try {
-<span class="fc" id="L479">      unbind(name);</span>
-<span class="fc" id="L480">    } catch (MalformedURLException | NotBoundException e) {</span>
+<span class="fc" id="L481">      unbind(name);</span>
+<span class="fc" id="L482">    } catch (MalformedURLException | NotBoundException e) {</span>
       // ignore
-<span class="fc" id="L482">    }</span>
-<span class="fc" id="L483">  }</span>
+<span class="fc" id="L484">    }</span>
+<span class="fc" id="L485">  }</span>
 
   /**
    * Exports the given Remote object, using the given socket factory and a randomly assigned port.
@@ -494,7 +496,7 @@ public final class AFUNIXNaming implements ShutdownHook {
    */
   public static Remote exportObject(Remote obj, RMISocketFactory socketFactory)
       throws RemoteException {
-<span class="fc" id="L497">    return UnicastRemoteObject.exportObject(obj, 0, socketFactory, socketFactory);</span>
+<span class="fc" id="L499">    return UnicastRemoteObject.exportObject(obj, 0, socketFactory, socketFactory);</span>
   }
 
   /**
@@ -507,10 +509,10 @@ public final class AFUNIXNaming implements ShutdownHook {
    */
   public static void unexportObject(Remote obj) {
     try {
-<span class="fc" id="L510">      UnicastRemoteObject.unexportObject(obj, true);</span>
-<span class="fc" id="L511">    } catch (NoSuchObjectException e) {</span>
+<span class="fc" id="L512">      UnicastRemoteObject.unexportObject(obj, true);</span>
+<span class="fc" id="L513">    } catch (NoSuchObjectException e) {</span>
       // ignore
-<span class="fc" id="L513">    }</span>
-<span class="fc" id="L514">  }</span>
+<span class="fc" id="L515">    }</span>
+<span class="fc" id="L516">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

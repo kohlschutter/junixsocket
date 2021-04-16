@@ -1,5 +1,5 @@
 --class-path
-'/Users/ck/.m2/repository/com/github/spotbugs/spotbugs-annotations/3.1.12/spotbugs-annotations-3.1.12.jar:/Users/ck/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar:/Users/ck/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.6.0-M1/junit-jupiter-api-5.6.0-M1.jar:/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-native-common/target/classes:/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-common/target/classes:/Users/ck/.m2/repository/org/junit/platform/junit-platform-engine/1.6.0-M1/junit-platform-engine-1.6.0-M1.jar:/Users/ck/.m2/repository/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar:/Users/ck/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/ck/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/Users/ck/.m2/repository/org/junit/platform/junit-platform-commons/1.6.0-M1/junit-platform-commons-1.6.0-M1.jar:/Users/ck/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.6.0-M1/junit-jupiter-engine-5.6.0-M1.jar'
+'/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-native-common/target/classes:/Users/ck/.m2/repository/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar:/Users/ck/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/ck/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.7.1/junit-jupiter-params-5.7.1.jar:/Users/ck/.m2/repository/org/junit/platform/junit-platform-commons/1.7.1/junit-platform-commons-1.7.1.jar:/Users/ck/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.7.1/junit-jupiter-engine-5.7.1.jar:/Users/ck/.m2/repository/com/github/spotbugs/spotbugs-annotations/4.2.2/spotbugs-annotations-4.2.2.jar:/Users/ck/.m2/repository/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar:/Users/ck/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.7.1/junit-jupiter-api-5.7.1.jar:/Users/ck/.m2/repository/org/junit/jupiter/junit-jupiter/5.7.1/junit-jupiter-5.7.1.jar:/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-common/target/classes:/Users/ck/.m2/repository/org/junit/platform/junit-platform-engine/1.7.1/junit-platform-engine-1.7.1.jar:/Users/ck/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar'
 -encoding
 'UTF-8'
 -protected
@@ -7,7 +7,7 @@
 '/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-core/src/main/java:/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-core/target/generated-sources/annotations'
 -author
 -bottom
-'Copyright &#169; 2009&#x2013;2020 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.'
+'Copyright &#169; 2009&#x2013;2021 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.'
 -charset
 'UTF-8'
 -d
@@ -15,8 +15,8 @@
 -docencoding
 'UTF-8'
 -doctitle
-'junixsocket-core 2.3.2 API'
+'junixsocket-core 2.3.3 API'
 -use
 -version
 -windowtitle
-'junixsocket-core 2.3.2 API'
+'junixsocket-core 2.3.3 API'
