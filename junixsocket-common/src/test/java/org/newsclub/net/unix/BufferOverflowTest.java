@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -59,13 +60,17 @@ public class BufferOverflowTest {
   }
 
   @AfterEach
-  public void tearDown() {
+  public void tearDown() throws IOException {
     try {
       if (server != null) {
         server.close();
       }
     } catch (IOException e) {
       // ignore
+    }
+
+    if (socketFile != null) {
+      Files.delete(socketFile.toPath());
     }
 
     if (executor != null) {

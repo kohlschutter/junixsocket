@@ -40,6 +40,7 @@ public class RemoteFileDescriptorTestServiceImpl implements RemoteFileDescriptor
       throws IOException {
     this.socketFactory = socketFactory;
     this.tmpFile = File.createTempFile("FDTestService", ".tmp");
+    tmpFile.deleteOnExit();
 
     AFUNIXNaming.exportObject(this, socketFactory);
   }
