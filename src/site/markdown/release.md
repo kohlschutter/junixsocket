@@ -187,7 +187,7 @@ This builds the Maven site and publishes it to [https://kohlschutter.github.io/j
 
     cd junixsocket 
     mvn clean install -Pstrict -Prelease
-    mvn site site:stage scm-publish:publish-scm
+    mvn site site:stage scm-publish:publish-scm -Pstrict -Prelease
 
 NOTE: There can be a 10-minute delay until the pages get updated automatically in your browser cache.
 Hit refresh to expedite.
