@@ -227,7 +227,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <plugins>
           <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.1</version>
             <configuration>
               <target>9</target>
               <release>9</release>
@@ -256,7 +255,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-resources-plugin</artifactId>
-            <version>3.1.0</version>
             <executions>
               <execution>
                 <!-- module-info.class needs to be in the root of the jar -->
@@ -282,7 +280,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jar-plugin</artifactId>
-            <version>3.1.1</version>
             <configuration>
               <archive>
                 <manifestEntries>
