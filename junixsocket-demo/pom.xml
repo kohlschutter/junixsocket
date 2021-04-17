@@ -27,7 +27,7 @@
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-core</artifactId>
       <version>${project.version}</version>
-      <!-- <type>pom</type> --> <!-- Blocked by MCOMPILER-360 -->
+      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>

@@ -16,6 +16,8 @@ Add the following dependency to your Maven project
       <type>pom</type>
     </dependency>
 
+> **NOTE:** In junixsocket versions older than 2.4.0, the `<type>pom</type>` declaration must be omitted.
+
 [See here](customarch.html) how to add support for custom architectures that aren't supported out of the box.
     
 If you're going to use AFUNIXSocketServer code, add the following dependency:
