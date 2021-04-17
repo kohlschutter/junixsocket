@@ -1,4 +1,4 @@
-/**
+/*
  * junixsocket
  *
  * Copyright 2009-2021 Christian Kohlschütter
