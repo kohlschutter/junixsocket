@@ -22,6 +22,12 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 
+/**
+ * The default implementation of {@link RemoteCloseable}.
+ *
+ * @author Christian Kohlschütter
+ * @see RemoteCloseable
+ */
 public class RemoteCloseableImpl<T> implements RemoteCloseable<T> {
   private final T remote;
 
