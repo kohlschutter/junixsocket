@@ -2,13 +2,13 @@
 
 ## Versioning
 
-junixsocket versions consist of three parts: major, minor and patch (for example, 2.3.3).
+junixsocket versions consist of three parts: major, minor and patch (for example, 2.4.0).
 
 `-SNAPSHOT` builds are not considered releases, but merely previews of a future release.
 
-### junixsocket 2.3.3
+### junixsocket 2.4.0
 
-junixsocket 2.3.3 is fully compatible with Java 8 and newer (tested up to Java 16).
+junixsocket 2.4.0 is fully compatible with Java 8 and newer (tested up to Java 16).
 
 There is limited functionality for Java 7 systems: the core functionality (junixsocket-common and
 junixsocket-server) is supported, but RMI, selftest and demos aren't.

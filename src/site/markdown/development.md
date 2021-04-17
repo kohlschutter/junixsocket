@@ -17,4 +17,3 @@ And here are some other useful resources:
 
    * [Issue tracker on GitHub](https://github.com/kohlschutter/junixsocket/issues)
    * [Official website](https://kohlschutter.github.io/junixsocket/)
-   
