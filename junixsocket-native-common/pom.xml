@@ -97,6 +97,7 @@
           <groupId>com.kohlschutter.junixsocket</groupId>
           <artifactId>junixsocket-native-cross</artifactId>
           <version>${project.version}</version>
+          <type>pom</type>
           <scope>provided</scope>
           <optional>true</optional>
         </dependency>
