@@ -47,7 +47,7 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.18</version>
+      <version>8.0.23</version>
     </dependency>
     <dependency>
       <!-- NOTE: Due to this dependency, maven-project-info-reports-plugin
@@ -56,13 +56,13 @@
       <!-- https://issues.apache.org/jira/browse/MPIR-374 -->
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.2.8</version>
+      <version>42.2.19</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>org.eclipse.jdt.annotation</artifactId>
-      <version>2.2.300</version>
+      <version>2.2.600</version>
     </dependency>
     <dependency>
       <groupId>org.nanohttpd</groupId>

@@ -92,14 +92,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <plugin>
           <groupId>com.github.maven-nar</groupId>
           <artifactId>nar-maven-plugin</artifactId>
-          <version>3.6.0</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.apache.bcel</groupId>
-              <artifactId>bcel</artifactId>
-              <version>6.4.1</version>
-            </dependency>
-          </dependencies>
+          <version>3.10.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
