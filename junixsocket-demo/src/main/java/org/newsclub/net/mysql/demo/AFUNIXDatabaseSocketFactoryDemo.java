@@ -62,23 +62,20 @@ public class AFUNIXDatabaseSocketFactoryDemo {
 
     System.out.println();
 
-    // with SSL enabled, closing the Connection will throw a stupid exception
-    // see https://bugs.mysql.com/bug.php?id=93590
-    @SuppressWarnings("resource")
-    Connection conn = DriverManager.getConnection(connectionUrl, props);
+    try (Connection conn = DriverManager.getConnection(connectionUrl, props)) {
+      System.out.println("Connection: " + conn);
 
-    System.out.println("Connection: " + conn);
+      DatabaseMetaData metadata = conn.getMetaData();
+      System.out.println("Database version: " + metadata.getDatabaseProductName() + " " + metadata
+          .getDatabaseProductVersion());
 
-    DatabaseMetaData metadata = conn.getMetaData();
-    System.out.println("Database version: " + metadata.getDatabaseProductName() + " " + metadata
-        .getDatabaseProductVersion());
-
-    String sql = "SHOW DATABASES";
-    System.out.println(sql);
-    try (Statement stmt = conn.createStatement(); //
-        ResultSet rs = stmt.executeQuery(sql)) {
-      while (rs.next()) {
-        System.out.println("* " + rs.getString(1));
+      String sql = "SHOW DATABASES";
+      System.out.println(sql);
+      try (Statement stmt = conn.createStatement(); //
+          ResultSet rs = stmt.executeQuery(sql)) {
+        while (rs.next()) {
+          System.out.println("* " + rs.getString(1));
+        }
       }
     }
   }
