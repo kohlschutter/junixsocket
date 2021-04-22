@@ -58,6 +58,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
   <properties>
     <kohlschutter.project.base.directory>${project.basedir}</kohlschutter.project.base.directory>
     <kohlschutter.parent.directory>${project.parent.basedir}</kohlschutter.parent.directory>
+    <!-- When changing java.version, make sure to still compile Java 9 classes in the "multi-release" profile below -->
     <java.version>9</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -84,6 +85,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <module>junixsocket-demo</module>
     <module>junixsocket-selftest</module>
     <module>junixsocket-dist</module>
+    <module>junixsocket-codecoverage</module>
   </modules>
 
   <build>
@@ -215,10 +217,10 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     </profile>
 
     <profile>
-      <id>java8-support</id>
+      <id>multi-release</id>
+      <!-- Java 8 / multi-release support is enabled by default, unless you're in Eclipse,
+        which doesn't support compiling with multiple compilers -->
       <activation>
-        <!-- Java 8 support is enabled by default, unless you're in Eclipse,
-          which doesn't support compiling with multiple compilers -->
         <property>
           <name>!m2e.version</name>
         </property>
@@ -227,11 +229,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <plugins>
           <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <target>9</target>
-              <release>9</release>
-              <multiReleaseOutput>true</multiReleaseOutput>
-            </configuration>
             <executions>
               <execution>
                 <id>java8-compile</id>
@@ -239,6 +236,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
                   <goal>compile</goal>
                 </goals>
                 <configuration>
+                  <outputDirectory>${project.build.outputDirectory}/../classes-multirelease</outputDirectory>
                   <target>1.${junixsocket.java8.release}</target>
                   <release>${junixsocket.java8.release}</release>
                   <multiReleaseOutput>false</multiReleaseOutput>
@@ -257,19 +255,18 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
             <artifactId>maven-resources-plugin</artifactId>
             <executions>
               <execution>
-                <!-- module-info.class needs to be in the root of the jar -->
-                <id>copy-module-info-to-root-level</id>
-                <phase>prepare-package</phase>
+                <id>copy-default-compile-classes-to-multirelease</id>
+                <phase>compile</phase>
                 <goals>
                   <goal>copy-resources</goal>
                 </goals>
                 <configuration>
-                  <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                  <outputDirectory>${project.build.outputDirectory}/../classes-multirelease/META-INF/versions/${java.version}</outputDirectory>
                   <resources>
                     <resource>
-                      <directory>${project.build.outputDirectory}/META-INF/versions/9</directory>
+                      <directory>${project.build.outputDirectory}</directory>
                       <includes>
-                        <include>module-info.class</include>
+                        <include>**</include>
                       </includes>
                     </resource>
                   </resources>
@@ -286,6 +283,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
                   <Multi-Release>true</Multi-Release>
                 </manifestEntries>
               </archive>
+              <classesDirectory>${project.build.outputDirectory}/../classes-multirelease</classesDirectory>
             </configuration>
           </plugin>
         </plugins>

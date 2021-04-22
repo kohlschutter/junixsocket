@@ -86,6 +86,12 @@
         <configuration>
           <failOnViolation>false</failOnViolation>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-cpd-check</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
