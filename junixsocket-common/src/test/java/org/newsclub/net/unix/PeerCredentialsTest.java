@@ -41,7 +41,7 @@ public class PeerCredentialsTest extends SocketTestBase {
 
   @Test
   public void testSameProcess() throws Exception {
-    assertTimeout(Duration.ofSeconds(2), () -> {
+    assertTimeout(Duration.ofSeconds(10), () -> {
       final CompletableFuture<AFUNIXSocketCredentials> clientCredsFuture =
           new CompletableFuture<>();
 
