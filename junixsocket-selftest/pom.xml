@@ -15,6 +15,11 @@
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
     <kohlschutter.multirelease.java8.release>8</kohlschutter.multirelease.java8.release>
+    <kohlschutter.multirelease.java.release>8</kohlschutter.multirelease.java.release>
+
+    <kohlschutter.multirelease.jar.phase>none</kohlschutter.multirelease.jar.phase>
+    <kohlschutter.singlerelease.jar.phase>package</kohlschutter.singlerelease.jar.phase>
+
   </properties>
 
   <description>Runs junixsocket's unit tests as selftests</description>
@@ -24,7 +29,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.0.0</version>
         <executions>
           <execution>
             <id>add-sources-from-junixsocket-common</id>
