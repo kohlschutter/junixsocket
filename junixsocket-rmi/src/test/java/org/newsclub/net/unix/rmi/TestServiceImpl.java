@@ -26,17 +26,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 
+import org.newsclub.net.unix.AFUNIXSocketCredentials;
+
 /**
- * The implementation for the test service for {@link RemoteFileDescriptorTest}.
+ * The implementation for the test service.
  * 
  * @author Christian Kohlschütter
  */
-public class RemoteFileDescriptorTestServiceImpl implements RemoteFileDescriptorTestService,
+public class TestServiceImpl implements TestService,
     Closeable {
   private final File tmpFile;
   private final AFUNIXRMISocketFactory socketFactory;
 
-  public RemoteFileDescriptorTestServiceImpl(AFUNIXRMISocketFactory socketFactory)
+  public TestServiceImpl(AFUNIXRMISocketFactory socketFactory)
       throws IOException {
     this.socketFactory = socketFactory;
     this.tmpFile = File.createTempFile("FDTestService", ".tmp");
@@ -120,5 +122,10 @@ public class RemoteFileDescriptorTestServiceImpl implements RemoteFileDescriptor
   public void close() throws IOException {
     AFUNIXNaming.unexportObject(this);
     deleteFile();
+  }
+  
+  @Override
+  public AFUNIXSocketCredentials remotePeerCredentials() {
+    return AFUNIXSocketCredentials.remotePeerCredentials();
   }
 }

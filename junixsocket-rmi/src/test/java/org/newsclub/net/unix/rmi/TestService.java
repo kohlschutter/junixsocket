@@ -20,12 +20,14 @@ package org.newsclub.net.unix.rmi;
 import java.io.IOException;
 import java.rmi.Remote;
 
+import org.newsclub.net.unix.AFUNIXSocketCredentials;
+
 /**
- * A test service for {@link RemoteFileDescriptorTest}.
+ * A test service.
  * 
  * @author Christian Kohlschütter
  */
-public interface RemoteFileDescriptorTestService extends Remote {
+public interface TestService extends Remote {
   RemoteFileDescriptor stdout() throws IOException;
 
   RemoteFileInput input() throws IOException;
@@ -43,4 +45,6 @@ public interface RemoteFileDescriptorTestService extends Remote {
   void deleteFile() throws IOException;
 
   NaiveFileInputStreamRemote naiveInputStreamRemote() throws IOException;
+
+  AFUNIXSocketCredentials remotePeerCredentials() throws IOException;
 }

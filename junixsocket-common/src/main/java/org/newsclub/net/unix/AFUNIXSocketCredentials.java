@@ -28,11 +28,7 @@ import java.util.UUID;
  * AF_UNIX socket credentials.
  *
  * @see AFUNIXSocket#getPeerCredentials()
- * @see org.newsclub.net.unix.rmi.RemotePeerInfo#getPeerCredentials()
- * @see org.newsclub.net.unix.rmi.RemotePeerInfo#remotePeerCredentials()
- * @see org.newsclub.net.unix.rmi.RemotePeerInfo#remotePeerCredentials(Remote)
  */
-@SuppressWarnings("javadoc")
 public final class AFUNIXSocketCredentials implements Serializable {
   private static final long serialVersionUID = 1L;
 

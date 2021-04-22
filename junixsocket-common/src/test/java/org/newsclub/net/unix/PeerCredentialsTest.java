@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
@@ -61,6 +62,18 @@ public class PeerCredentialsTest extends SocketTestBase {
         AFUNIXSocketCredentials clientCreds = clientCredsFuture.get();
 
         assertEquals(clientCreds, serverCreds,
+            "Since our tests run in the same process, the peer credentials must be identical");
+        assertEquals(clientCreds.toString(), serverCreds.toString(),
+            "Since our tests run in the same process, the peer credentials must be identical");
+        assertEquals(clientCreds.getGid(), serverCreds.getGid(),
+            "Since our tests run in the same process, the peer credentials must be identical");
+        assertArrayEquals(clientCreds.getGids(), serverCreds.getGids(),
+            "Since our tests run in the same process, the peer credentials must be identical");
+        assertEquals(clientCreds.getUid(), serverCreds.getUid(),
+            "Since our tests run in the same process, the peer credentials must be identical");
+        assertEquals(clientCreds.getPid(), serverCreds.getPid(),
+            "Since our tests run in the same process, the peer credentials must be identical");
+        assertEquals(clientCreds.getUUID(), serverCreds.getUUID(),
             "Since our tests run in the same process, the peer credentials must be identical");
 
         if (clientCreds.getPid() == -1) {
