@@ -18,6 +18,7 @@
 package org.newsclub.net.unix;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Socket;
 import java.rmi.server.RemoteServer;
 import java.util.Arrays;
@@ -25,8 +26,16 @@ import java.util.UUID;
 
 /**
  * AF_UNIX socket credentials.
+ *
+ * @see AFUNIXSocket#getPeerCredentials()
+ * @see org.newsclub.net.unix.rmi.RemotePeerInfo#getPeerCredentials()
+ * @see org.newsclub.net.unix.rmi.RemotePeerInfo#remotePeerCredentials()
+ * @see org.newsclub.net.unix.rmi.RemotePeerInfo#remotePeerCredentials(Remote)
  */
-public final class AFUNIXSocketCredentials {
+@SuppressWarnings("javadoc")
+public final class AFUNIXSocketCredentials implements Serializable {
+  private static final long serialVersionUID = 1L;
+
   /**
    * Special instance, indicating that there is no remote peer, but the referenced object is from
    * the same process.
