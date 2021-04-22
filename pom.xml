@@ -9,9 +9,9 @@
   <packaging>pom</packaging>
   <parent>
     <groupId>com.kohlschutter</groupId>
-    <artifactId>kohlschutter-parent</artifactId>
+    <artifactId>kohlschutter-parent-multirelease</artifactId>
     <version>1.4.0</version>
-    <relativePath>../kohlschutter-parent/pom.xml</relativePath>
+    <relativePath>../kohlschutter-parent/kohlschutter-parent-multirelease/pom.xml</relativePath>
   </parent>
   <name>junixsocket-parent</name>
   <inceptionYear>2009</inceptionYear>
@@ -57,11 +57,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
   </issueManagement>
   <properties>
     <kohlschutter.project.base.directory>${project.basedir}</kohlschutter.project.base.directory>
-    <kohlschutter.parent.directory>${project.parent.basedir}</kohlschutter.parent.directory>
-    <!-- When changing java.version, make sure to still compile Java 9 classes in the "multi-release" profile below -->
-    <java.version>9</java.version>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <kohlschutter.project.notice.file>${kohlschutter.project.base.directory}/NOTICE</kohlschutter.project.notice.file>
+
     <junit.version>5.7.1</junit.version>
     <junixsocket.native.aol></junixsocket.native.aol>
     <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
@@ -73,7 +70,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
     <junixsocket.custom.arch></junixsocket.custom.arch>
 
-    <junixsocket.java8.release>7</junixsocket.java8.release>
+    <kohlschutter.multirelease.java8.release>7</kohlschutter.multirelease.java8.release>
   </properties>
 
   <modules>
@@ -98,19 +95,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         </plugin>
       </plugins>
     </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Multi-Release>true</Multi-Release>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 
   <profiles>
@@ -215,80 +199,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <junixsocket.native.default.linkerName>clang</junixsocket.native.default.linkerName>
       </properties>
     </profile>
-
-    <profile>
-      <id>multi-release</id>
-      <!-- Java 8 / multi-release support is enabled by default, unless you're in Eclipse,
-        which doesn't support compiling with multiple compilers -->
-      <activation>
-        <property>
-          <name>!m2e.version</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>java8-compile</id>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>${project.build.outputDirectory}/../classes-multirelease</outputDirectory>
-                  <target>1.${junixsocket.java8.release}</target>
-                  <release>${junixsocket.java8.release}</release>
-                  <multiReleaseOutput>false</multiReleaseOutput>
-                  <excludes>
-                    <exclude>module-info.java</exclude>
-                  </excludes>
-                  <testExcludes>
-                    <testExclude>**/*</testExclude>
-                  </testExcludes>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-resources-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-default-compile-classes-to-multirelease</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>copy-resources</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>${project.build.outputDirectory}/../classes-multirelease/META-INF/versions/${java.version}</outputDirectory>
-                  <resources>
-                    <resource>
-                      <directory>${project.build.outputDirectory}</directory>
-                      <includes>
-                        <include>**</include>
-                      </includes>
-                    </resource>
-                  </resources>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <configuration>
-              <archive>
-                <manifestEntries>
-                  <Multi-Release>true</Multi-Release>
-                </manifestEntries>
-              </archive>
-              <classesDirectory>${project.build.outputDirectory}/../classes-multirelease</classesDirectory>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 
   <dependencyManagement>
@@ -308,6 +218,11 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.kohlschutter</groupId>
+      <artifactId>compiler-annotations</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

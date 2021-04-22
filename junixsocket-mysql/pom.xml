@@ -14,7 +14,6 @@
   <name>junixsocket-mysql</name>
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
-    <kohlschutter.parent.directory>${project.parent.parent.basedir}</kohlschutter.parent.directory>
   </properties>
 
   <description>Access MySQL databases over Unix sockets</description>

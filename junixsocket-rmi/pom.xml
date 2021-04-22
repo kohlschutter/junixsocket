@@ -14,8 +14,8 @@
   <name>junixsocket-rmi</name>
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
-    <kohlschutter.parent.directory>${project.parent.parent.basedir}</kohlschutter.parent.directory>
-    <junixsocket.java8.release>8</junixsocket.java8.release>
+
+    <kohlschutter.multirelease.java8.release>8</kohlschutter.multirelease.java8.release>
   </properties>
 
   <description>RMI over Unix sockets</description>

@@ -17,7 +17,6 @@
 
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
-    <kohlschutter.parent.directory>${project.parent.parent.basedir}</kohlschutter.parent.directory>
     <nar.aolProperties>${project.build.outputDirectory}/aol.properties</nar.aolProperties>
     <!-- <nar.aolProperties>${project.basedir}/aol.properties</nar.aolProperties> -->
 

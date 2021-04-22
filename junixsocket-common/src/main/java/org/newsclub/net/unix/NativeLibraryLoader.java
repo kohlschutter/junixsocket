@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
 final class NativeLibraryLoader implements Closeable {
   private static final String PROP_LIBRARY_OVERRIDE = "org.newsclub.net.unix.library.override";

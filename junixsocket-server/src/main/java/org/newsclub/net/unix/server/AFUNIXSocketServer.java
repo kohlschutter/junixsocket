@@ -38,10 +38,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A base implementation for a simple, multi-threaded socket server.
  * 
- * This class supports both unix and "regular" sockets.
+ * This class supports both AF_UNIX and "regular" sockets.
  * 
  * @author Christian Kohlschütter
  */

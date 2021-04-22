@@ -16,7 +16,6 @@
   <name>junixsocket-dist</name>
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
-    <kohlschutter.parent.directory>${project.parent.parent.basedir}</kohlschutter.parent.directory>
   </properties>
 
   <description>Builds a distribution of junixsocket, for the folks without Maven</description>

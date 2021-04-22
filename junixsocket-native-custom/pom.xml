@@ -18,7 +18,6 @@
 
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
-    <kohlschutter.parent.directory>${project.parent.parent.basedir}</kohlschutter.parent.directory>
     <junixsocket.custom.arch></junixsocket.custom.arch>
   </properties>
 

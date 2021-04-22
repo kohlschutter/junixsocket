@@ -39,6 +39,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * See https://code.google.com/p/junixsocket/issues/detail?id=20
  */
