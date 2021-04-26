@@ -311,10 +311,8 @@ class AFUNIXSocketImpl extends SocketImpl {
           pendingFileDescriptors);
       if (written != 0) {
         break;
-      } else if (Thread.interrupted()) {
-        throw writeInterruptedException(0);
       }
-    } while (true);
+    } while (checkWriteInterruptedException(0));
     pendingFileDescriptors = null;
   }
 
@@ -378,11 +376,15 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
   }
 
-  private static InterruptedIOException writeInterruptedException(int bytesTransferred) {
-    InterruptedIOException ex = new InterruptedIOException("Thread interrupted during write");
-    ex.bytesTransferred = bytesTransferred;
-    Thread.currentThread().interrupt();
-    return ex;
+  private static boolean checkWriteInterruptedException(int bytesTransferred)
+      throws InterruptedIOException {
+    if (Thread.interrupted()) {
+      InterruptedIOException ex = new InterruptedIOException("Thread interrupted during write");
+      ex.bytesTransferred = bytesTransferred;
+      Thread.currentThread().interrupt();
+      throw ex;
+    }
+    return true;
   }
 
   private final class AFUNIXOutputStream extends OutputStream {
@@ -402,9 +404,13 @@ class AFUNIXSocketImpl extends SocketImpl {
         throw new IndexOutOfBoundsException();
       }
       FileDescriptor fdesc = validFdOrException();
+      if (len == 0) {
+        return;
+      }
+
       int writtenTotal = 0;
 
-      while (len > 0) {
+      do {
         final int written = NativeUnixSocket.write(AFUNIXSocketImpl.this, fdesc, buf, off, len,
             pendingFileDescriptors);
         if (written < 0) {
@@ -416,13 +422,7 @@ class AFUNIXSocketImpl extends SocketImpl {
         len -= written;
         off += written;
         writtenTotal += written;
-
-        if (len == 0) {
-          break;
-        } else if (Thread.interrupted()) {
-          throw writeInterruptedException(writtenTotal);
-        }
-      }
+      } while (len > 0 && checkWriteInterruptedException(writtenTotal));
     }
 
     @Override

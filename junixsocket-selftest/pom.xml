@@ -15,11 +15,7 @@
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
     <kohlschutter.multirelease.java8.release>8</kohlschutter.multirelease.java8.release>
-    <kohlschutter.multirelease.java.release>8</kohlschutter.multirelease.java.release>
-
-    <kohlschutter.multirelease.jar.phase>none</kohlschutter.multirelease.jar.phase>
-    <kohlschutter.singlerelease.jar.phase>package</kohlschutter.singlerelease.jar.phase>
-
+    <kohlschutter.multirelease.java.release>9</kohlschutter.multirelease.java.release>
   </properties>
 
   <description>Runs junixsocket's unit tests as selftests</description>
@@ -42,24 +38,6 @@
               </sources>
             </configuration>
           </execution>
-          <!--
-            // not needed for now, and would create a warning about the resource
-            folder being outside the project directory
-            <execution>
-            <id>add-resources-from-junixsocket-common</id>
-            <phase>generate-resources</phase>
-            <goals>
-            <goal>add-resource</goal>
-            </goals>
-            <configuration>
-            <resources>
-            <resource>
-            <directory>${project.parent.basedir}/junixsocket-common/src/test/resources</directory>
-            </resource>
-            </resources>
-            </configuration>
-            </execution>
-          -->
           <execution>
             <id>add-sources-from-junixsocket-rmi</id>
             <phase>generate-sources</phase>
@@ -76,6 +54,49 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-sources-from-junixsocket-java8</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/sources-java8</outputDirectory>
+              <includeEmptyDirs>true</includeEmptyDirs>
+              <resources>
+                <resource>
+                  <directory>${project.parent.basedir}/junixsocket-common/src/test/java</directory>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>${project.parent.basedir}/junixsocket-common/src/test/java8</directory>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>${project.parent.basedir}/junixsocket-rmi/src/test/java</directory>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>${project.parent.basedir}/junixsocket-rmi/src/test/java8</directory>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </resource>
+              </resources>
+              <overwrite>true</overwrite>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
 
         <configuration>

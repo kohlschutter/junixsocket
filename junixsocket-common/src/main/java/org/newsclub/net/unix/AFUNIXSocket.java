@@ -349,7 +349,8 @@ public final class AFUNIXSocket extends Socket {
    * @param args ignored.
    */
   public static void main(String[] args) {
-    System.out.print("AFUNIXSocket.isSupported(): ");
+    // If you want to run this directly from within Eclipse, see AFUNIXSocketTest#testMain.
+    System.out.print(AFUNIXSocket.class.getName() + ".isSupported(): ");
     System.out.flush();
     System.out.println(AFUNIXSocket.isSupported());
 

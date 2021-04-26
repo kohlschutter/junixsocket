@@ -17,11 +17,13 @@
  */
 package org.newsclub.net.unix;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import org.junit.jupiter.api.Test;
 
@@ -43,5 +45,25 @@ public final class AFUNIXSocketAddressTest {
     } catch (final IllegalArgumentException e) {
       fail("AFUNIXSocketAddress supports ports larger than 65535");
     }
+  }
+
+  @Test
+  public void testPath() throws Exception {
+    // as of junixsocket 2.4.0, a different canonical path doesn't matter
+    assertEquals("/tmp/whatever", new AFUNIXSocketAddress(new File("/tmp/whatever")).getPath());
+    assertEquals("whatever", new AFUNIXSocketAddress(new File("whatever")).getPath());
+    assertArrayEquals("/tmp/whatever".getBytes(Charset.defaultCharset()), new AFUNIXSocketAddress(
+        new File("/tmp/whatever")).getPathAsBytes());
+  }
+
+  @Test
+  public void testAbstractNamespace() throws Exception {
+    AFUNIXSocketAddress address = AFUNIXSocketAddress.inAbstractNamespace("test");
+    byte[] addressBytes = {0, 't', 'e', 's', 't'};
+    assertArrayEquals(addressBytes, address.getPathAsBytes());
+    assertEquals(0, address.getPort());
+    assertEquals("@test", address.getPath());
+    assertEquals("org.newsclub.net.unix.AFUNIXSocketAddress[port=0;path=@test]", address
+        .toString());
   }
 }
