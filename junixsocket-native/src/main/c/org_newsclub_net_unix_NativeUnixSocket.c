@@ -1155,17 +1155,26 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
     CK_ARGUMENT_POTENTIALLY_UNUSED(ancBuf);
 #endif
 
-    jsize bufLen = (*env)->GetArrayLength(env, jbuf);
-    if(offset < 0 || length < 0 || offset >= bufLen) {
-        org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-                kExceptionSocketException, "Illegal offset or length");
+    // Performance: In order to read a single byte, simply don't specify a receive buffer.
+    if(jbuf) {
+        jsize bufLen = (*env)->GetArrayLength(env, jbuf);
+        if(offset < 0 || length < 0 || offset >= bufLen) {
+            org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+                                                                  kExceptionSocketException, "Illegal offset or length");
+            return -1;
+        }
+
+        jint maxRead = bufLen - offset;
+        if(length > maxRead) {
+            length = maxRead;
+        }
+    } else if(length != 1) {
+        org_newsclub_net_unix_NativeUnixSocket_throwException
+        (env, kExceptionIndexOutOfBoundsException,
+         "Illegal length");
         return -1;
     }
 
-    jint maxRead = bufLen - offset;
-    if(length > maxRead) {
-        length = maxRead;
-    }
     int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 
 #if defined(junixsocket_use_poll_for_read)
@@ -1183,13 +1192,17 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
     ssize_t count;
 
 #if defined(junixsocket_have_ancillary)
-    socklen_t controlLen = (socklen_t)(*env)->GetDirectBufferCapacity(env, ancBuf);
+    socklen_t controlLen = (ancBuf != NULL) ? (socklen_t)(*env)->GetDirectBufferCapacity(env, ancBuf) : 0;
 
     if((jsize)controlLen <= 0) {
+        // No ancillary data
+
         do {
             count = recv(handle, (char*)buf, (size_t)length, 0);
-        } while(count == -1 && socket_errno == EINTR);
+        } while(count == -1 && (socket_errno == EINTR  || (jbuf == NULL && (errno == EAGAIN || errno == EWOULDBLOCK))));
     } else {
+        // We need to check for ancillary data
+
         jbyte *control = (*env)->GetDirectBufferAddress(env, ancBuf);
 
         struct iovec iov = {.iov_base = buf, .iov_len = (size_t)length};
@@ -1199,16 +1212,18 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
                 control, .msg_controllen = controlLen, };
 
         do {
-            count = recvmsg(handle, &msg, 0);
-        } while(count == (ssize_t)-1 && socket_errno == EINTR);
+            do {
+                count = recvmsg(handle, &msg, 0);
+            } while(count == (ssize_t)-1 && (socket_errno == EINTR || (jbuf == NULL && (errno == EAGAIN || errno == EWOULDBLOCK))));
 
-        if((msg.msg_flags & MSG_CTRUNC) != 0) {
-            if(count >= 0) {
-                count = -1;
-                errno = ENOBUFS;
+            if((msg.msg_flags & MSG_CTRUNC) != 0) {
+                if(count >= 0) {
+                    count = -1;
+                    errno = ENOBUFS;
+                }
+                goto readEnd;
             }
-            goto readEnd;
-        }
+        } while(errno == EAGAIN && jbuf == NULL);
 
         if(msg.msg_controllen > 0) {
             for(struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg); cmsg != NULL; cmsg =
@@ -1252,32 +1267,36 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 #else
     do {
         count = recv(handle, (char*)buf, (size_t)length, 0);
-    } while(count == -1 && socket_errno == EINTR);
+    } while(count == -1 && (socket_errno == EINTR || (jbuf == NULL && (errno == EAGAIN || errno == EWOULDBLOCK))));
 #endif
 
 #if !defined(_WIN32)
     readEnd:
 #endif
-    (*env)->SetByteArrayRegion(env, jbuf, offset, length, buf);
 
-    free(buf);
-
-    if(count == 0) {
-        // read(2) returns 0 on EOF. Java returns -1.
-        return -1;
-    } else if(count == -1) {
+    if(count < 0) {
         // read(2) returns -1 on error. Java throws an Exception.
-
-// Removed since non-blocking is not yet supported
-//        if(errno == EAGAIN || errno == EWOULDBLOCK) {
-//            return 0;
-//        }
+        free(buf);
         org_newsclub_net_unix_NativeUnixSocket_throwErrnumException(env, errno,
-                fd);
+                                                                    fd);
+        return -1;
+    } else if(count == 0) {
+        // read(2)/recv return 0 on EOF. Java returns -1.
+        free(buf);
         return -1;
     }
 
-    return (jint)count;
+    if(jbuf) {
+        (*env)->SetByteArrayRegion(env, jbuf, offset, length, buf);
+        free(buf);
+
+        return (jint)count;
+    } else {
+        // Directly return the byte we just read.
+        jint readVal = (*buf & 0xFF);
+        free(buf);
+        return readVal;
+    }
 }
 
 /*
@@ -1294,11 +1313,20 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
     CK_ARGUMENT_POTENTIALLY_UNUSED(ancFds);
 #endif
 
-    jsize bufLen = (*env)->GetArrayLength(env, jbuf);
-    if(offset < 0 || length < 0 || (length > (bufLen - offset))) {
-        org_newsclub_net_unix_NativeUnixSocket_throwException(env,
-                kExceptionIndexOutOfBoundsException,
-                "Illegal offset or length");
+    // Performance: In order to write a single byte, simply don't specify a receive buffer.
+    // "offset" contains the byte to write, and length must be 1
+    if(jbuf) {
+        jsize bufLen = (*env)->GetArrayLength(env, jbuf);
+        if(offset < 0 || length < 0 || (length > (bufLen - offset))) {
+            org_newsclub_net_unix_NativeUnixSocket_throwException(env,
+                    kExceptionIndexOutOfBoundsException,
+                    "Illegal offset or length");
+            return -1;
+        }
+    } else if(length != 1) {
+        org_newsclub_net_unix_NativeUnixSocket_throwException
+        (env, kExceptionIndexOutOfBoundsException,
+         "Illegal length");
         return -1;
     }
 
@@ -1307,7 +1335,11 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
         return -1; // OOME
     }
 
-    (*env)->GetByteArrayRegion(env, jbuf, offset, length, buf);
+    if(jbuf) {
+        (*env)->GetByteArrayRegion(env, jbuf, offset, length, buf);
+    } else {
+        *buf = (jbyte)offset;
+    }
 
     int handle = org_newsclub_net_unix_NativeUnixSocket_getFD(env, fd);
 

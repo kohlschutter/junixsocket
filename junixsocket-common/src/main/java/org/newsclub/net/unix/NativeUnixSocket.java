@@ -66,9 +66,35 @@ final class NativeUnixSocket {
   static native void connect(final byte[] socketAddr, final FileDescriptor fd, long inode)
       throws IOException;
 
+  /**
+   * Reads data from an {@link AFUNIXSocketImpl}.
+   * 
+   * @param afunixSocketImpl The socket.
+   * @param fd The corresponding file descriptor.
+   * @param buf The buffer to read into, or {@code null} if a single byte should be read.
+   * @param off The buffer offset.
+   * @param len The maximum number of bytes to read. Must be 1 if {@code buf} is {@code null}.
+   * @param ancillaryReceiveBuffer An optional buffer for ancillary data.
+   * @return The number of bytes read, -1 if nothing could be read, or the byte itself iff
+   *         {@code buf} was {@code null}.
+   * @throws IOException upon error.
+   */
   static native int read(AFUNIXSocketImpl afunixSocketImpl, final FileDescriptor fd, byte[] buf,
       int off, int len, ByteBuffer ancillaryReceiveBuffer) throws IOException;
 
+  /**
+   * Writes data to an {@link AFUNIXSocketImpl}.
+   * 
+   * @param afunixSocketImpl The socket.
+   * @param fd The corresponding file descriptor.
+   * @param buf The buffer to write from, or {@code null} if a single byte should be written.
+   * @param off The buffer offset, or the byte to write if {@code buf} is {@code null}.
+   * @param len The number of bytes to write. Must be 1 if {@code buf} is {@code null}.
+   * @param fileDescriptors An optional array of file descriptors that should be sent as ancillary
+   *          data, or {@code null}.
+   * @return The number of bytes written (which could be 0).
+   * @throws IOException upon error.
+   */
   static native int write(AFUNIXSocketImpl afunixSocketImpl, final FileDescriptor fd, byte[] buf,
       int off, int len, int[] fileDescriptors) throws IOException;
 

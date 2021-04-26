@@ -304,11 +304,21 @@ class AFUNIXSocketImpl extends SocketImpl {
   @Override
   protected void sendUrgentData(int data) throws IOException {
     FileDescriptor fdesc = validFdOrException();
-    NativeUnixSocket.write(AFUNIXSocketImpl.this, fdesc, new byte[] {(byte) (data & 0xFF)}, 0, 1,
-        pendingFileDescriptors);
+
+    int written;
+    do {
+      written = NativeUnixSocket.write(AFUNIXSocketImpl.this, fdesc, null, data, 1,
+          pendingFileDescriptors);
+      if (written != 0) {
+        break;
+      } else if (Thread.interrupted()) {
+        throw writeInterruptedException(0);
+      }
+    } while (true);
+    pendingFileDescriptors = null;
   }
 
-  private class AFUNIXInputStream extends InputStream {
+  private final class AFUNIXInputStream extends InputStream {
     private volatile boolean streamClosed = false;
     private boolean eofReached = false;
 
@@ -330,16 +340,18 @@ class AFUNIXSocketImpl extends SocketImpl {
 
     @Override
     public int read() throws IOException {
+      FileDescriptor fdesc = validFdOrException();
+
       if (eofReached) {
         return -1;
       }
-      final byte[] buf1 = new byte[1];
-      final int numRead = read(buf1, 0, 1);
-      if (numRead <= 0) {
+      int byteRead = NativeUnixSocket.read(AFUNIXSocketImpl.this, fdesc, null, 0, 1,
+          ancillaryReceiveBuffer);
+      if (byteRead < 0) {
         eofReached = true;
         return -1;
       } else {
-        return buf1[0] & 0xFF;
+        return byteRead;
       }
     }
 
@@ -366,13 +378,19 @@ class AFUNIXSocketImpl extends SocketImpl {
     }
   }
 
-  private class AFUNIXOutputStream extends OutputStream {
+  private static InterruptedIOException writeInterruptedException(int bytesTransferred) {
+    InterruptedIOException ex = new InterruptedIOException("Thread interrupted during write");
+    ex.bytesTransferred = bytesTransferred;
+    Thread.currentThread().interrupt();
+    return ex;
+  }
+
+  private final class AFUNIXOutputStream extends OutputStream {
     private volatile boolean streamClosed = false;
 
     @Override
     public void write(int oneByte) throws IOException {
-      final byte[] buf1 = {(byte) oneByte};
-      write(buf1, 0, 1);
+      AFUNIXSocketImpl.this.sendUrgentData(oneByte);
     }
 
     @Override
@@ -387,21 +405,23 @@ class AFUNIXSocketImpl extends SocketImpl {
       int writtenTotal = 0;
 
       while (len > 0) {
-        if (Thread.interrupted()) {
-          InterruptedIOException ex = new InterruptedIOException("Thread interrupted during write");
-          ex.bytesTransferred = writtenTotal;
-          Thread.currentThread().interrupt();
-          throw ex;
-        }
-
         final int written = NativeUnixSocket.write(AFUNIXSocketImpl.this, fdesc, buf, off, len,
             pendingFileDescriptors);
         if (written < 0) {
           throw new IOException("Unspecific error while writing");
+        } else if (written > 0) {
+          pendingFileDescriptors = null;
         }
+
         len -= written;
         off += written;
         writtenTotal += written;
+
+        if (len == 0) {
+          break;
+        } else if (Thread.interrupted()) {
+          throw writeInterruptedException(writtenTotal);
+        }
       }
     }
 
@@ -681,16 +701,17 @@ class AFUNIXSocketImpl extends SocketImpl {
   }
 
   public final void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
+    final int[] fds;
     if (fdescs == null || fdescs.length == 0) {
-      this.setOutboundFileDescriptors((int[]) null);
+      fds = null;
     } else {
       final int numFdescs = fdescs.length;
-      final int[] fds = new int[numFdescs];
+      fds = new int[numFdescs];
       for (int i = 0; i < numFdescs; i++) {
         FileDescriptor fdesc = fdescs[i];
         fds[i] = NativeUnixSocket.getFD(fdesc);
       }
-      this.setOutboundFileDescriptors(fds);
     }
+    this.setOutboundFileDescriptors(fds);
   }
 }
