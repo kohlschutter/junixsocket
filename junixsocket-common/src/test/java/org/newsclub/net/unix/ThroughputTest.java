@@ -76,7 +76,7 @@ public class ThroughputTest extends SocketTestBase {
   public void testAFUnixSocket() throws Exception {
     assumeTrue(ENABLED > 0, "Throughput tests are disabled");
     assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
-    new ServerThread() {
+    try (ServerThread serverThread = new ServerThread() {
       @Override
       protected void handleConnection(final Socket sock) throws IOException {
         byte[] buf = new byte[PAYLOAD_SIZE];
@@ -91,43 +91,44 @@ public class ThroughputTest extends SocketTestBase {
 
         stopAcceptingConnections();
       }
-    };
+    }) {
 
-    AtomicBoolean keepRunning = new AtomicBoolean(true);
-    Executors.newSingleThreadScheduledExecutor().schedule(() -> {
-      keepRunning.set(false);
-    }, NUM_SECONDS, TimeUnit.SECONDS);
+      AtomicBoolean keepRunning = new AtomicBoolean(true);
+      Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+        keepRunning.set(false);
+      }, NUM_SECONDS, TimeUnit.SECONDS);
 
-    try (AFUNIXSocket sock = connectToServer()) {
-      byte[] buf = createTestData(PAYLOAD_SIZE);
+      try (AFUNIXSocket sock = connectToServer()) {
+        byte[] buf = createTestData(PAYLOAD_SIZE);
 
-      try (InputStream inputStream = sock.getInputStream();
-          OutputStream outputStream = sock.getOutputStream()) {
+        try (InputStream inputStream = sock.getInputStream();
+            OutputStream outputStream = sock.getOutputStream()) {
 
-        long readTotal = 0;
-        long time = System.currentTimeMillis();
-        while (keepRunning.get()) {
-          outputStream.write(buf);
+          long readTotal = 0;
+          long time = System.currentTimeMillis();
+          while (keepRunning.get()) {
+            outputStream.write(buf);
 
-          int remaining = buf.length;
-          int offset = 0;
+            int remaining = buf.length;
+            int offset = 0;
 
-          int read; // limited by net.local.stream.recvspace / sendspace etc.
-          while (remaining > 0 && (read = inputStream.read(buf, offset, remaining)) >= 0) {
-            int pos = random.nextInt(read) + offset;
-            if ((buf[pos] & 0xFF) != (pos % 256)) {
-              throw new IllegalStateException("Unexpected response from read: value@pos " + pos
-                  + "=" + (buf[pos] & 0xFF) + " != " + (pos % 256));
+            int read; // limited by net.local.stream.recvspace / sendspace etc.
+            while (remaining > 0 && (read = inputStream.read(buf, offset, remaining)) >= 0) {
+              int pos = random.nextInt(read) + offset;
+              if ((buf[pos] & 0xFF) != (pos % 256)) {
+                throw new IllegalStateException("Unexpected response from read: value@pos " + pos
+                    + "=" + (buf[pos] & 0xFF) + " != " + (pos % 256));
+              }
+              remaining -= read;
+              offset += read;
+              readTotal += read;
             }
-            remaining -= read;
-            offset += read;
-            readTotal += read;
           }
-        }
-        time = System.currentTimeMillis() - time;
+          time = System.currentTimeMillis() - time;
 
-        System.out.println("ThroughputTest (junixsocket byte[]): " + ((1000f * readTotal / time)
-            / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE);
+          System.out.println("ThroughputTest (junixsocket byte[]): " + ((1000f * readTotal / time)
+              / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE);
+        }
       }
     }
   }
@@ -162,7 +163,7 @@ public class ThroughputTest extends SocketTestBase {
       return;
     }
 
-    new ServerThread() {
+    try (ServerThread serverThread = new ServerThread() {
       ServerSocketChannel ssc;
 
       @Override
@@ -202,40 +203,41 @@ public class ThroughputTest extends SocketTestBase {
       protected void handleConnection(Socket sock) throws IOException {
         throw new IllegalStateException();
       }
-    };
+    }) {
 
-    AtomicBoolean keepRunning = new AtomicBoolean(true);
-    Executors.newSingleThreadScheduledExecutor().schedule(() -> {
-      keepRunning.set(false);
-    }, NUM_SECONDS, TimeUnit.SECONDS);
+      AtomicBoolean keepRunning = new AtomicBoolean(true);
+      Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+        keepRunning.set(false);
+      }, NUM_SECONDS, TimeUnit.SECONDS);
 
-    try (SocketChannel sc = SocketChannel.open(sa)) {
-      ByteBuffer bb = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE) : ByteBuffer.allocate(
-          PAYLOAD_SIZE);
-      bb.put(createTestData(PAYLOAD_SIZE));
-      bb.flip();
-
-      long readTotal = 0;
-      long time = System.currentTimeMillis();
-      while (keepRunning.get()) {
-        int remaining = sc.write(bb);
+      try (SocketChannel sc = SocketChannel.open(sa)) {
+        ByteBuffer bb = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE) : ByteBuffer.allocate(
+            PAYLOAD_SIZE);
+        bb.put(createTestData(PAYLOAD_SIZE));
         bb.flip();
 
-        long read; // limited by net.local.stream.recvspace / sendspace etc.
-        while (remaining > 0 && (read = sc.read(bb)) >= 0) {
-          remaining -= read;
-          readTotal += read;
-        }
+        long readTotal = 0;
+        long time = System.currentTimeMillis();
+        while (keepRunning.get()) {
+          int remaining = sc.write(bb);
+          bb.flip();
 
-        int pos = random.nextInt(bb.limit());
-        if ((bb.get(pos) & 0xFF) != (pos % 256)) {
-          throw new IllegalStateException("Unexpected response from read");
-        }
+          long read; // limited by net.local.stream.recvspace / sendspace etc.
+          while (remaining > 0 && (read = sc.read(bb)) >= 0) {
+            remaining -= read;
+            readTotal += read;
+          }
 
+          int pos = random.nextInt(bb.limit());
+          if ((bb.get(pos) & 0xFF) != (pos % 256)) {
+            throw new IllegalStateException("Unexpected response from read");
+          }
+
+        }
+        time = System.currentTimeMillis() - time;
+        System.out.println("ThroughputTest (JEP380 direct=" + direct + "): " + ((1000f * readTotal
+            / time) / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE);
       }
-      time = System.currentTimeMillis() - time;
-      System.out.println("ThroughputTest (JEP380 direct=" + direct + "): " + ((1000f * readTotal
-          / time) / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE);
     }
   }
 }

@@ -33,7 +33,7 @@ public class TcpNoDelayTest extends SocketTestBase {
 
   @Test
   public void testStrictImpl() throws Exception {
-    new ServerThread() {
+    try (ServerThread serverThread = new ServerThread() {
 
       @Override
       protected void handleConnection(final Socket sock) throws IOException {
@@ -41,40 +41,41 @@ public class TcpNoDelayTest extends SocketTestBase {
       }
 
       @Override
-      protected void handleException(Exception e) {
+      protected ExceptionHandlingDecision handleException(Exception e) {
         if (e instanceof SocketException) {
-          // ignore
+          return ExceptionHandlingDecision.IGNORE;
         } else {
-          super.handleException(e);
+          return super.handleException(e);
         }
       }
 
       @Override
       protected void onServerSocketClose() {
       }
-    };
+    }) {
 
-    try (@SuppressWarnings("resource")
-    AFUNIXSocket sock = connectToServer(AFUNIXSocket.newStrictInstance())) {
-      boolean gotException = false;
-      try {
-        sock.setTcpNoDelay(true);
-      } catch (SocketException e) {
-        // Got expected exception
-        gotException = true;
+      try (@SuppressWarnings("resource")
+      AFUNIXSocket sock = connectToServer(AFUNIXSocket.newStrictInstance())) {
+        boolean gotException = false;
+        try {
+          sock.setTcpNoDelay(true);
+        } catch (SocketException e) {
+          // Got expected exception
+          gotException = true;
+        }
+        if (!gotException) {
+          // Did not expected SocketException (but that's implementation-specific)
+          assertTrue(sock.getTcpNoDelay());
+        }
       }
-      if (!gotException) {
-        // Did not expected SocketException (but that's implementation-specific)
-        assertTrue(sock.getTcpNoDelay());
-      }
+    } finally {
+      Files.delete(getSocketFile().toPath());
     }
-
-    Files.delete(getSocketFile().toPath());
   }
 
   @Test
   public void testDefaultImpl() throws Exception {
-    new ServerThread() {
+    try (ServerThread serverThread = new ServerThread() {
 
       @Override
       protected void handleConnection(final Socket sock) throws IOException {
@@ -82,24 +83,26 @@ public class TcpNoDelayTest extends SocketTestBase {
       }
 
       @Override
-      protected void handleException(Exception e) {
+      protected ExceptionHandlingDecision handleException(Exception e) {
         if (e instanceof SocketException) {
-          // ignore
+          return ExceptionHandlingDecision.IGNORE;
         } else {
-          super.handleException(e);
+          return super.handleException(e);
         }
       }
 
       @Override
       protected void onServerSocketClose() {
       }
-    };
+    }) {
 
-    try (AFUNIXSocket sock = connectToServer()) {
-      sock.setTcpNoDelay(true);
-      // No exception
+      try (AFUNIXSocket sock = connectToServer()) {
+        sock.setTcpNoDelay(true);
+        // No exception
+      }
+
+    } finally {
+      Files.delete(getSocketFile().toPath());
     }
-
-    Files.delete(getSocketFile().toPath());
   }
 }

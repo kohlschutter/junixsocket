@@ -45,7 +45,7 @@ public class PeerCredentialsTest extends SocketTestBase {
       final CompletableFuture<AFUNIXSocketCredentials> clientCredsFuture =
           new CompletableFuture<>();
 
-      final ServerThread serverThread = new ServerThread() {
+      try (ServerThread serverThread = new ServerThread() {
 
         @Override
         protected void handleConnection(final Socket sock) throws IOException {
@@ -55,9 +55,7 @@ public class PeerCredentialsTest extends SocketTestBase {
 
           stopAcceptingConnections();
         }
-      };
-
-      try (AFUNIXSocket socket = connectToServer()) {
+      }; AFUNIXSocket socket = connectToServer()) {
         AFUNIXSocketCredentials serverCreds = socket.getPeerCredentials();
         AFUNIXSocketCredentials clientCreds = clientCredsFuture.get();
 
@@ -83,8 +81,6 @@ public class PeerCredentialsTest extends SocketTestBase {
               "The returned PID must be the one of our process");
         }
       }
-
-      serverThread.checkException();
     });
   }
 }

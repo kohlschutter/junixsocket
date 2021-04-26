@@ -98,7 +98,11 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     return socket;
   }
 
-  protected abstract class ServerThread extends Thread {
+  protected enum ExceptionHandlingDecision {
+    RAISE, IGNORE
+  }
+
+  protected abstract class ServerThread extends Thread implements AutoCloseable {
     private final AFUNIXServerSocket serverSocket;
     private volatile Exception exception = null;
     private final AtomicBoolean loop = new AtomicBoolean(true);
@@ -115,6 +119,12 @@ public class SocketTestBase { // NOTE: needs to be public for junit
 
     protected AFUNIXServerSocket startServer() throws IOException {
       return SocketTestBase.this.startServer();
+    }
+
+    @Override
+    public void close() throws Exception {
+      shutdown();
+      checkException();
     }
 
     /**
@@ -154,8 +164,16 @@ public class SocketTestBase { // NOTE: needs to be public for junit
       return serverSocket;
     }
 
-    protected void handleException(Exception e) {
-      e.printStackTrace();
+    /**
+     * Called upon receiving an exception that may be handled specifically.
+     * 
+     * @param e The exception
+     * @return {@link ExceptionHandlingDecision#RAISE} if we should handle the exception somehow,
+     *         {@link ExceptionHandlingDecision#IGNORE} if we should pretend the exception never
+     *         occurred.
+     */
+    protected ExceptionHandlingDecision handleException(Exception e) {
+      return ExceptionHandlingDecision.RAISE;
     }
 
     protected void acceptAndHandleConnection() throws IOException {
@@ -181,13 +199,13 @@ public class SocketTestBase { // NOTE: needs to be public for junit
       } catch (IOException e) {
         if (!loop.get() && (serverSocket == null || serverSocket.isClosed())) {
           // ignore
-        } else {
+        } else if (handleException(e) != ExceptionHandlingDecision.IGNORE) {
           e.addSuppressed(caller);
-          handleException(e);
           exception = e;
         }
+      } finally {
+        sema.release();
       }
-      sema.release();
     }
 
     /**

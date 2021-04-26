@@ -51,8 +51,7 @@ public class FileDescriptorsTest extends SocketTestBase {
   @Test
   public void testSendRecvFileDescriptors() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      final ServerThread serverThread = new ServerThread() {
-
+      try (ServerThread serverThread = new ServerThread() {
         @Override
         protected void handleConnection(final Socket sock) throws IOException {
           AFUNIXSocket socket = (AFUNIXSocket) sock;
@@ -65,8 +64,8 @@ public class FileDescriptorsTest extends SocketTestBase {
           stopAcceptingConnections();
         }
       };
-
-      try (AFUNIXSocket socket = connectToServer(); InputStream in = socket.getInputStream()) {
+          AFUNIXSocket socket = connectToServer(); //
+          InputStream in = socket.getInputStream()) {
         socket.setAncillaryReceiveBufferSize(1024);
 
         byte[] buf = new byte[64];
@@ -92,16 +91,66 @@ public class FileDescriptorsTest extends SocketTestBase {
           assertNull(fds, "There shouldn't be any new file descriptors");
         }
       }
-
-      serverThread.getServerSocket().close();
-      serverThread.checkException();
     });
   }
 
   @Test
+  public void testNullFileDescriptorArray() throws Exception {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
+      try (ServerThread serverThread = new ServerThread() {
+
+        @Override
+        protected void handleConnection(final Socket sock) throws IOException {
+          AFUNIXSocket socket = (AFUNIXSocket) sock;
+
+          socket.setOutboundFileDescriptors((FileDescriptor[]) null);
+          // NOTE: send an arbitrary byte — we can't send fds without any in-band data
+          try (OutputStream outputStream = socket.getOutputStream()) {
+            outputStream.write(123);
+          }
+
+          stopAcceptingConnections();
+        }
+      }; //
+          AFUNIXSocket socket = connectToServer();) {
+        socket.setAncillaryReceiveBufferSize(1024);
+        try (InputStream inputStream = socket.getInputStream()) {
+          inputStream.read();
+        }
+      }
+    });
+  }
+
+  @Test
+  public void testEmptyFileDescriptorArray() throws Exception {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
+      try (ServerThread serverThread = new ServerThread() {
+
+        @Override
+        protected void handleConnection(final Socket sock) throws IOException {
+          AFUNIXSocket socket = (AFUNIXSocket) sock;
+
+          socket.setOutboundFileDescriptors();
+          // NOTE: send an arbitrary byte — we can't send fds without any in-band data
+          try (OutputStream outputStream = socket.getOutputStream()) {
+            outputStream.write(123);
+          }
+
+          stopAcceptingConnections();
+        }
+      }; //
+          AFUNIXSocket socket = connectToServer();) {
+        socket.setAncillaryReceiveBufferSize(1024);
+        try (InputStream inputStream = socket.getInputStream()) {
+          inputStream.read();
+        }
+      }
+    });
+  }
+  @Test
   public void testBadFileDescriptor() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      final ServerThread serverThread = new ServerThread() {
+      try (ServerThread serverThread = new ServerThread() {
 
         @Override
         protected void handleConnection(final Socket sock) throws IOException {
@@ -121,24 +170,20 @@ public class FileDescriptorsTest extends SocketTestBase {
 
           stopAcceptingConnections();
         }
-      };
-
-      try (AFUNIXSocket socket = connectToServer();) {
+      }; //
+          AFUNIXSocket socket = connectToServer();) {
         socket.setAncillaryReceiveBufferSize(1024);
         try (InputStream inputStream = socket.getInputStream()) {
           inputStream.read();
         }
       }
-
-      serverThread.getServerSocket().close();
-      serverThread.checkException();
     });
   }
 
   @Test
   public void testNoAncillaryReceiveBuffer() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      final ServerThread serverThread = new ServerThread() {
+      try (ServerThread serverThread = new ServerThread() {
 
         @Override
         protected void handleConnection(final Socket sock) throws IOException {
@@ -153,9 +198,8 @@ public class FileDescriptorsTest extends SocketTestBase {
 
           stopAcceptingConnections();
         }
-      };
-
-      try (AFUNIXSocket socket = connectToServer();
+      }; //
+          AFUNIXSocket socket = connectToServer(); //
           InputStream inputStream = socket.getInputStream()) {
         // NOTE: we haven't set the ancillary receive buffer size
 
@@ -167,16 +211,13 @@ public class FileDescriptorsTest extends SocketTestBase {
         assertNull(socket.getReceivedFileDescriptors());
         assertEquals(0, socket.getAncillaryReceiveBufferSize());
       }
-
-      serverThread.getServerSocket().close();
-      serverThread.checkException();
     });
   }
 
   @Test
   public void testAncillaryReceiveBufferTooSmall() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      final ServerThread serverThread = new ServerThread() {
+      try (ServerThread serverThread = new ServerThread() {
 
         @Override
         protected void handleConnection(final Socket sock) throws IOException {
@@ -192,8 +233,7 @@ public class FileDescriptorsTest extends SocketTestBase {
           stopAcceptingConnections();
         }
       };
-
-      try (AFUNIXSocket socket = connectToServer();
+          AFUNIXSocket socket = connectToServer();
           InputStream inputStream = socket.getInputStream()) {
         socket.setAncillaryReceiveBufferSize(13);
         try {
@@ -204,9 +244,6 @@ public class FileDescriptorsTest extends SocketTestBase {
         }
         assertNull(socket.getReceivedFileDescriptors());
       }
-
-      serverThread.getServerSocket().close();
-      serverThread.checkException();
     });
   }
 
@@ -216,7 +253,7 @@ public class FileDescriptorsTest extends SocketTestBase {
     tmpFile.deleteOnExit();
 
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      final ServerThread serverThread = new ServerThread() {
+      try (ServerThread serverThread = new ServerThread() {
 
         @Override
         protected void handleConnection(final Socket sock) throws IOException {
@@ -234,9 +271,9 @@ public class FileDescriptorsTest extends SocketTestBase {
 
           stopAcceptingConnections();
         }
-      };
-
-      try (AFUNIXSocket socket = connectToServer(); InputStream in = socket.getInputStream()) {
+      }; //
+          AFUNIXSocket socket = connectToServer(); //
+          InputStream in = socket.getInputStream()) {
         socket.setAncillaryReceiveBufferSize(1024);
 
         byte[] buf = new byte[64];
@@ -256,11 +293,9 @@ public class FileDescriptorsTest extends SocketTestBase {
           assertEquals(6, numRead, "'WORLD!' is six bytes long");
           assertEquals("WORLD!", new String(buf, 0, numRead, "UTF-8"));
         }
+      } finally {
+        Files.delete(tmpFile.toPath());
       }
-
-      serverThread.getServerSocket().close();
-      serverThread.checkException();
-      Files.delete(tmpFile.toPath());
     });
   }
 
@@ -270,7 +305,7 @@ public class FileDescriptorsTest extends SocketTestBase {
     tmpFile.deleteOnExit();
 
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      final ServerThread serverThread = new ServerThread() {
+      try (ServerThread serverThread = new ServerThread() {
 
         @Override
         protected void handleConnection(final Socket sock) throws IOException {
@@ -291,9 +326,9 @@ public class FileDescriptorsTest extends SocketTestBase {
 
           stopAcceptingConnections();
         }
-      };
-
-      try (AFUNIXSocket socket = connectToServer(); InputStream in = socket.getInputStream()) {
+      }; //
+          AFUNIXSocket socket = connectToServer(); //
+          InputStream in = socket.getInputStream()) {
         socket.setAncillaryReceiveBufferSize(1024);
 
         byte[] buf = new byte[64];
@@ -313,11 +348,9 @@ public class FileDescriptorsTest extends SocketTestBase {
           assertEquals(5, numRead, "'ORLD!' is five bytes long");
           assertEquals("ORLD!", new String(buf, 0, numRead, "UTF-8"));
         }
+      } finally {
+        Files.delete(tmpFile.toPath());
       }
-
-      serverThread.getServerSocket().close();
-      serverThread.checkException();
-      Files.delete(tmpFile.toPath());
     });
   }
 }

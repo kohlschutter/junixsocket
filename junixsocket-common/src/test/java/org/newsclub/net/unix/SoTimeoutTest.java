@@ -42,21 +42,14 @@ public class SoTimeoutTest extends SocketTestBase {
    * @throws IOException on error.
    */
   @Test
-  public void issue14Fail() throws IOException {
-    final ServerThread serverThread = new ServerThread() {
+  public void issue14Fail() throws Exception {
+    try (ServerThread serverThread = new ServerThread() {
 
       @Override
       protected void handleConnection(final Socket sock) throws IOException {
         stopAcceptingConnections();
       }
-
-      @Override
-      protected void handleException(Exception e) {
-        // do not print stacktrace
-      }
-    };
-
-    try (AFUNIXSocket sock = connectToServer()) {
+    }; AFUNIXSocket sock = connectToServer()) {
       // Sometimes this test would pass, so let's sleep for a moment
       Thread.yield();
 
@@ -67,7 +60,6 @@ public class SoTimeoutTest extends SocketTestBase {
         // expected, as the socket is actually closed
       }
     }
-    serverThread.shutdown();
   }
 
   /**
@@ -76,8 +68,8 @@ public class SoTimeoutTest extends SocketTestBase {
    * @throws IOException on error.
    */
   @Test
-  public void issue14Pass() throws IOException {
-    final ServerThread serverThread = new ServerThread() {
+  public void issue14Pass() throws Exception {
+    try (ServerThread serverThread = new ServerThread() {
 
       @Override
       protected void handleConnection(final Socket sock) throws IOException {
@@ -89,17 +81,8 @@ public class SoTimeoutTest extends SocketTestBase {
 
         stopAcceptingConnections();
       }
-
-      @Override
-      protected void handleException(Exception e) {
-        // do not print stacktrace
-      }
-
-    };
-
-    try (AFUNIXSocket sock = connectToServer()) {
+    }; AFUNIXSocket sock = connectToServer()) {
       sock.setSoTimeout((int) TimeUnit.SECONDS.toMillis(12));
     }
-    serverThread.shutdown();
   }
 }

@@ -89,7 +89,7 @@ public class AvailableTest extends SocketTestBase {
   @Test
   public void testAvailableAtClient() {
     assertTimeout(Duration.ofSeconds(2), () -> {
-      final ServerThread serverThread = new ServerThread() {
+      try (ServerThread serverThread = new ServerThread() {
 
         @Override
         protected void handleConnection(final Socket sock) throws IOException {
@@ -99,16 +99,11 @@ public class AvailableTest extends SocketTestBase {
 
           stopAcceptingConnections();
         }
-      };
-
-      try (AFUNIXSocket sock = connectToServer()) {
+      }; AFUNIXSocket sock = connectToServer()) {
         sleepFor(TIME_TO_SLEEP);
         receiveBytes(sock, BYTES_SENT);
         sendBytes(sock);
       }
-
-      serverThread.getServerSocket().close();
-      serverThread.checkException();
     });
   }
 
@@ -121,8 +116,7 @@ public class AvailableTest extends SocketTestBase {
   public void testAvailableAtServer() {
     assertTimeout(Duration.ofSeconds(2), () -> {
 
-      final ServerThread serverThread = new ServerThread() {
-
+      try (ServerThread serverThread = new ServerThread() {
         @Override
         protected void handleConnection(final Socket sock) throws IOException {
           sleepFor(TIME_TO_SLEEP);
@@ -131,17 +125,12 @@ public class AvailableTest extends SocketTestBase {
 
           stopAcceptingConnections();
         }
-      };
-
-      try (AFUNIXSocket sock = connectToServer()) {
+      }; AFUNIXSocket sock = connectToServer()) {
         sendBytes(sock);
         sleepFor(TIME_TO_SLEEP);
 
         receiveBytes(sock, BYTES_SENT);
       }
-
-      serverThread.getServerSocket().close();
-      serverThread.checkException();
     });
   }
 }

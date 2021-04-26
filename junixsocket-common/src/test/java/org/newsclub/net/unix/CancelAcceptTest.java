@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +45,8 @@ public class CancelAcceptTest extends SocketTestBase {
   public void issue6test1() throws Exception {
     serverSocketClosed = false;
 
-    final ServerThread st = new ServerThread() {
+    AtomicBoolean ignoreServerSocketClosedException = new AtomicBoolean(false);
+    try (ServerThread serverThread = new ServerThread() {
 
       @Override
       protected void handleConnection(final Socket sock) throws IOException {
@@ -55,42 +57,58 @@ public class CancelAcceptTest extends SocketTestBase {
         serverSocketClosed = true;
       }
 
+      @SuppressWarnings("resource")
       @Override
-      protected void handleException(Exception e) {
-        // do not print stacktrace
+      protected ExceptionHandlingDecision handleException(Exception e) {
+        if (ignoreServerSocketClosedException.get() && e instanceof SocketException) {
+          ServerSocket serverSocket = getServerSocket();
+          if (serverSocket != null && serverSocket.isClosed()) {
+            return ExceptionHandlingDecision.IGNORE;
+          }
+        }
+        return ExceptionHandlingDecision.RAISE;
       }
-    };
+    }) {
 
-    try (AFUNIXSocket sock = connectToServer()) {
-      // open and close
-    }
-    try (AFUNIXSocket sock = connectToServer()) {
-      // open and close
-    }
-
-    @SuppressWarnings("resource")
-    final ServerSocket servSock = st.getServerSocket();
-
-    assertFalse(serverSocketClosed && !servSock.isClosed(),
-        "ServerSocket should not be closed now");
-    servSock.close();
-    try {
       try (AFUNIXSocket sock = connectToServer()) {
         // open and close
       }
-      fail("Did not throw SocketException");
-    } catch (SocketException e) {
-      // as expected
-    }
-    assertTrue(serverSocketClosed || servSock.isClosed(), "ServerSocket should be closed now");
-
-    try {
       try (AFUNIXSocket sock = connectToServer()) {
-        fail("ServerSocket should have been closed already");
+        // open and close
       }
-      fail("Did not throw SocketException");
+
+      @SuppressWarnings("resource")
+      final ServerSocket serverSocket = serverThread.getServerSocket();
+
+      assertFalse(serverSocketClosed && !serverSocket.isClosed(),
+          "ServerSocket should not be closed now");
+
+      // serverSocket.close() may throw a "Socket is closed" exception in the server thread
+      // so let's make sure we ignore that error when the auto-closing ServerThread
+      ignoreServerSocketClosedException.set(true);
+      serverSocket.close();
+      try {
+        try (AFUNIXSocket sock = connectToServer()) {
+          // open and close
+        }
+        fail("Did not throw SocketException");
+      } catch (SocketException e) {
+        // as expected
+      }
+
+      assertTrue(serverSocketClosed || serverSocket.isClosed(),
+          "ServerSocket should be closed now");
+
+      try {
+        try (AFUNIXSocket sock = connectToServer()) {
+          fail("ServerSocket should have been closed already");
+        }
+        fail("Did not throw SocketException");
+      } catch (SocketException e) {
+        // as expected
+      }
     } catch (SocketException e) {
-      // as expected
+      e.printStackTrace();
     }
   }
 }
