@@ -104,6 +104,9 @@
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
           <archive>
+            <manifestEntries>
+              <Multi-Release>true</Multi-Release>
+            </manifestEntries>
             <manifest>
               <mainClass>org.newsclub.net.unix.selftest.Selftest</mainClass>
             </manifest>
