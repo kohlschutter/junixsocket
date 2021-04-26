@@ -57,7 +57,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @throws IOException if the operation fails.
    */
   public AFUNIXSocketAddress(final File socketFile, int port) throws IOException {
-    this(socketFile.getCanonicalPath().getBytes(Charset.defaultCharset()), port);
+    this(socketFile.getPath().getBytes(Charset.defaultCharset()), port);
   }
 
   /**
@@ -167,8 +167,8 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @see #getPathAsBytes()
    */
   public String getPath() {
-    byte[] by = getPathAsBytes();
-    for (int i = 1; i < by.length; i++) {
+    byte[] by = bytes;
+    for (int i = 0; i < by.length; i++) {
       byte b = by[i];
       if (b == 0) {
         by[i] = '@';
