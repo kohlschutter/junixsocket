@@ -28,9 +28,12 @@ import java.net.UnknownHostException;
 
 import org.junit.jupiter.api.Test;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+@SuppressFBWarnings("DMI_HARDCODED_ABSOLUTE_FILENAME")
 public class AFUNIXSocketFactoryTest {
   @Test
-  public void testURIScheme() throws Exception {
+  public void testURISchemeCeateSocketThenConnect() throws Exception {
     AFUNIXSocketFactory.URIScheme factory = new AFUNIXSocketFactory.URIScheme();
 
     try (Socket sock = factory.createSocket(); //
@@ -59,92 +62,123 @@ public class AFUNIXSocketFactoryTest {
         socket.connect(new InetSocketAddress("file:///", 0));
       });
     }
+  }
+
+  @Test
+  public void testURISchemeCeateSocketWithIllegalArguments() throws Exception {
+    AFUNIXSocketFactory.URIScheme factory = new AFUNIXSocketFactory.URIScheme();
+    assertThrows(IllegalArgumentException.class, () -> {
+      // Illegal local port
+      try (Socket sock = factory.createSocket("file:///", 0, null, -1)) {
+        // not reached
+      }
+    });
+  }
+
+  @Test
+  public void testURISchemeCeateSocketWithInvalidHostname() throws Exception {
+    AFUNIXSocketFactory.URIScheme factory = new AFUNIXSocketFactory.URIScheme();
 
     assertThrows(UnknownHostException.class, () -> {
       // We don't support empty hosts
       try (Socket sock = factory.createSocket("", 0)) {
+        // not reached
       }
     });
     assertThrows(UnknownHostException.class, () -> {
       // We don't support empty hosts
       try (Socket sock = factory.createSocket("", 0, null, 0)) {
-      }
-    });
-    assertThrows(IllegalArgumentException.class, () -> {
-      // Illegal local port
-      try (Socket sock = factory.createSocket("file:///", 0, null, -1)) {
+        // not reached
       }
     });
     assertThrows(UnknownHostException.class, () -> {
       // We don't support IP addresses
       try (Socket sock = factory.createSocket(InetAddress.getByName(""), 0)) {
+        // not reached
       }
     });
     assertThrows(UnknownHostException.class, () -> {
       // We don't support IP addresses
       try (Socket sock = factory.createSocket(InetAddress.getLoopbackAddress(), 0, null, 0)) {
+        // not reached
       }
     });
-
     assertThrows(UnknownHostException.class, () -> {
       // file:// has an empty path component
       try (Socket sock = factory.createSocket("file:", 0)) {
+        // not reached
       }
     });
     assertThrows(UnknownHostException.class, () -> {
       // file:// has an empty path component
       try (Socket sock = factory.createSocket("file:/", 0)) {
+        // not reached
       }
     });
     assertThrows(UnknownHostException.class, () -> {
       // file:// has an empty path component
       try (Socket sock = factory.createSocket("file://", 0)) {
-      }
-    });
-    assertThrows(SocketException.class, () -> {
-      // file exists (root directory), but is definitely not a unix socket
-      try (Socket sock = factory.createSocket("file:///", 0)) {
-      }
-    });
-    assertThrows(SocketException.class, () -> {
-      // file exists (root directory), but is definitely not a unix socket
-      try (Socket sock = factory.createSocket("file://localhost/", 0)) {
+        // not reached
       }
     });
     assertThrows(UnknownHostException.class, () -> {
       // file://not-absolute is not an absolute path (three slashes needed)
       try (Socket sock = factory.createSocket("file://not-absolute", 0)) {
+        // not reached
       }
     });
-
     assertThrows(UnknownHostException.class, () -> {
       // incomplete
       try (Socket sock = factory.createSocket("[", 0)) {
-      }
-    });
-    assertThrows(SocketException.class, () -> {
-      // file exists (root directory), but is definitely not a unix socket
-      try (Socket sock = factory.createSocket("[file:///]", 0)) {
-      }
-    });
-    assertThrows(SocketException.class, () -> {
-      // file exists (root directory), but is definitely not a unix socket
-      try (Socket sock = factory.createSocket("[file:///", 0)) {
-      }
-    });
-    assertThrows(SocketException.class, () -> {
-      // encoded; file exists (root directory), but is definitely not a unix socket
-      try (Socket sock = factory.createSocket("file%3A%2F%2F%2F", 0)) {
-      }
-    });
-    assertThrows(SocketException.class, () -> {
-      // encoded; file exists (root directory), but is definitely not a unix socket
-      try (Socket sock = factory.createSocket("file%3A%2F%2Flocalhost%2F", 0)) {
+        // not reached
       }
     });
     assertThrows(UnknownHostException.class, () -> {
       // encoded; incomplete trailing escape
       try (Socket sock = factory.createSocket("file%3A%2F%2F%", 0)) {
+        // not reached
+      }
+    });
+  }
+
+  @Test
+  public void testURISchemeCeateSocketWithHostnameValidCases() throws Exception {
+    AFUNIXSocketFactory.URIScheme factory = new AFUNIXSocketFactory.URIScheme();
+
+    assertThrows(SocketException.class, () -> {
+      // file exists (root directory), but is definitely not a unix socket
+      try (Socket sock = factory.createSocket("file:///", 0)) {
+        // not reached
+      }
+    });
+    assertThrows(SocketException.class, () -> {
+      // file exists (root directory), but is definitely not a unix socket
+      try (Socket sock = factory.createSocket("file://localhost/", 0)) {
+        // not reached
+      }
+    });
+    assertThrows(SocketException.class, () -> {
+      // file exists (root directory), but is definitely not a unix socket
+      try (Socket sock = factory.createSocket("[file:///]", 0)) {
+        // not reached
+      }
+    });
+    assertThrows(SocketException.class, () -> {
+      // file exists (root directory), but is definitely not a unix socket
+      try (Socket sock = factory.createSocket("[file:///", 0)) {
+        // not reached
+      }
+    });
+    assertThrows(SocketException.class, () -> {
+      // encoded; file exists (root directory), but is definitely not a unix socket
+      try (Socket sock = factory.createSocket("file%3A%2F%2F%2F", 0)) {
+        // not reached
+      }
+    });
+    assertThrows(SocketException.class, () -> {
+      // encoded; file exists (root directory), but is definitely not a unix socket
+      try (Socket sock = factory.createSocket("file%3A%2F%2Flocalhost%2F", 0)) {
+        // not reached
       }
     });
   }
