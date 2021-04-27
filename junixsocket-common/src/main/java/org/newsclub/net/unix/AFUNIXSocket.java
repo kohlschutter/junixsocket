@@ -111,13 +111,25 @@ public final class AFUNIXSocket extends Socket {
   }
 
   /**
-   * Binds this {@link AFUNIXSocket} to the given bindpoint. Only bindpoints of the type
-   * {@link AFUNIXSocketAddress} are supported.
+   * Not supported, since it's not necessary for client sockets.
+   * 
+   * @see AFUNIXServerSocket
    */
   @Override
   public void bind(SocketAddress bindpoint) throws IOException {
-    super.bind(bindpoint);
-    this.addr = (AFUNIXSocketAddress) bindpoint;
+    if (isClosed()) {
+      throw new SocketException("Socket is closed");
+    }
+    if (isBound()) {
+      throw new SocketException("Already bound");
+    }
+    preprocessSocketAddress(bindpoint);
+    throw new SocketException("Use AFUNIXServerSocket#bind or #bindOn");
+  }
+
+  @Override
+  public boolean isBound() {
+    return impl.isBound() || super.isBound();
   }
 
   @Override
@@ -137,22 +149,8 @@ public final class AFUNIXSocket extends Socket {
       throw new SocketException("Socket is closed");
     }
 
-    if (!(endpoint instanceof AFUNIXSocketAddress)) {
-      if (socketFactory != null) {
-        if (endpoint instanceof InetSocketAddress) {
-          InetSocketAddress isa = (InetSocketAddress) endpoint;
+    endpoint = preprocessSocketAddress(endpoint);
 
-          String hostname = isa.getHostString();
-          if (socketFactory.isHostnameSupported(hostname)) {
-            endpoint = socketFactory.addressFromHost(hostname, isa.getPort());
-          }
-        }
-      }
-      if (!(endpoint instanceof AFUNIXSocketAddress)) {
-        throw new IllegalArgumentException("Can only connect to endpoints of type "
-            + AFUNIXSocketAddress.class.getName() + ", got: " + endpoint);
-      }
-    }
     impl.connect(endpoint, timeout);
     this.addr = (AFUNIXSocketAddress) endpoint;
     NativeUnixSocket.setBound(this);
@@ -162,9 +160,9 @@ public final class AFUNIXSocket extends Socket {
   @Override
   public String toString() {
     if (isConnected()) {
-      return "AFUNIXSocket[fd=" + impl.getFD() + ";addr=" + addr.toString() + "]";
+      return getClass().getName() + "[fd=" + impl.getFD() + ";addr=" + addr.toString() + "]";
     }
-    return "AFUNIXSocket[unconnected]";
+    return getClass().getName() + "[unconnected]";
   }
 
   /**
@@ -359,5 +357,27 @@ public final class AFUNIXSocket extends Socket {
       System.out.flush();
       System.out.println(AFUNIXSocket.supports(cap));
     }
+  }
+
+  private AFUNIXSocketAddress preprocessSocketAddress(SocketAddress endpoint) throws IOException {
+    if (!(endpoint instanceof AFUNIXSocketAddress)) {
+      if (socketFactory != null) {
+        if (endpoint instanceof InetSocketAddress) {
+          InetSocketAddress isa = (InetSocketAddress) endpoint;
+
+          String hostname = isa.getHostString();
+          if (socketFactory.isHostnameSupported(hostname)) {
+            endpoint = socketFactory.addressFromHost(hostname, isa.getPort());
+          }
+        }
+      }
+    }
+
+    if (!(endpoint instanceof AFUNIXSocketAddress)) {
+      throw new IllegalArgumentException("Can only connect to endpoints of type "
+          + AFUNIXSocketAddress.class.getName() + ", got: " + endpoint);
+    }
+
+    return (AFUNIXSocketAddress) endpoint;
   }
 }

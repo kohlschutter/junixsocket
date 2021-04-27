@@ -18,10 +18,13 @@
 package org.newsclub.net.unix;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * The server part of an AF_UNIX domain socket.
@@ -40,10 +43,10 @@ public class AFUNIXServerSocket extends ServerSocket {
    */
   protected AFUNIXServerSocket() throws IOException {
     super();
-    setReuseAddress(true);
-
     this.implementation = new AFUNIXSocketImpl();
     NativeUnixSocket.initServerImpl(this, implementation);
+
+    setReuseAddress(true);
 
     NativeUnixSocket.setCreatedServer(this);
   }
@@ -63,13 +66,53 @@ public class AFUNIXServerSocket extends ServerSocket {
    * {@link AFUNIXSocketAddress}.
    * 
    * @param addr The socket file to bind to.
-   * @return The new, unbound {@link AFUNIXServerSocket}.
+   * @return The new, bound {@link AFUNIXServerSocket}.
    * @throws IOException if the operation fails.
    */
   public static AFUNIXServerSocket bindOn(final AFUNIXSocketAddress addr) throws IOException {
     AFUNIXServerSocket socket = newInstance();
     socket.bind(addr);
     return socket;
+  }
+
+  /**
+   * Returns a new AF_UNIX {@link ServerSocket} that is bound to the given path.
+   * 
+   * @param path The path to bind to.
+   * @param deleteOnClose If {@code true}, the socket will be deleted upon {@link #close}.
+   * @return The new, bound {@link AFUNIXServerSocket}.
+   * @throws IOException if the operation fails.
+   */
+  public static AFUNIXServerSocket bindOn(final File path, boolean deleteOnClose)
+      throws IOException {
+    return bindOn(path.toPath(), deleteOnClose);
+  }
+
+  /**
+   * Returns a new AF_UNIX {@link ServerSocket} that is bound to the given path.
+   * 
+   * @param path The path to bind to.
+   * @param deleteOnClose If {@code true}, the socket will be deleted upon {@link #close}.
+   * @return The new, bound {@link AFUNIXServerSocket}.
+   * @throws IOException if the operation fails.
+   */
+  @SuppressWarnings("resource")
+  public static AFUNIXServerSocket bindOn(final Path path, boolean deleteOnClose)
+      throws IOException {
+    AFUNIXServerSocket socket = newInstance();
+    socket.bind(new AFUNIXSocketAddress(path));
+    socket.addCloseable(new Closeable() {
+
+      @Override
+      public void close() throws IOException {
+        Files.delete(path);
+      }
+    });
+    return socket;
+  }
+
+  AFUNIXSocketImpl getImplementation() {
+    return implementation;
   }
 
   /**

@@ -23,6 +23,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.Locale;
 
 /**
@@ -58,6 +59,29 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    */
   public AFUNIXSocketAddress(final File socketFile, int port) throws IOException {
     this(socketFile.getPath().getBytes(Charset.defaultCharset()), port);
+  }
+
+  /**
+   * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
+   * given path.
+   * 
+   * @param socketPath The socket to connect to.
+   * @throws IOException if the operation fails.
+   */
+  public AFUNIXSocketAddress(final Path socketPath) throws IOException {
+    this(socketPath, 0);
+  }
+
+  /**
+   * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
+   * given path, assigning the given port to it.
+   * 
+   * @param socketPath The socket to connect to.
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @throws IOException if the operation fails.
+   */
+  public AFUNIXSocketAddress(final Path socketPath, int port) throws IOException {
+    this(socketPath.toString().getBytes(Charset.defaultCharset()), port);
   }
 
   /**
