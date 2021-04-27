@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.Socket;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
@@ -90,7 +89,7 @@ public class ReadWriteTest extends SocketTestBase {
     }
 
     @Override
-    protected void handleConnection(final Socket sock) throws IOException {
+    protected void handleConnection(final AFUNIXSocket sock) throws IOException {
       try (OutputStream out = sock.getOutputStream(); //
           InputStream in = sock.getInputStream()) {
 
@@ -112,7 +111,7 @@ public class ReadWriteTest extends SocketTestBase {
     }
 
     @Override
-    protected void handleConnection(final Socket sock) throws IOException {
+    protected void handleConnection(final AFUNIXSocket sock) throws IOException {
       try (OutputStream out = sock.getOutputStream(); //
           InputStream in = sock.getInputStream()) {
 

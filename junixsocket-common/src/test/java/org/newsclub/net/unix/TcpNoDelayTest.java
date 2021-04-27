@@ -20,7 +20,6 @@ package org.newsclub.net.unix;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.net.SocketException;
 import java.nio.file.Files;
 
@@ -36,7 +35,7 @@ public class TcpNoDelayTest extends SocketTestBase {
     try (ServerThread serverThread = new ServerThread() {
 
       @Override
-      protected void handleConnection(final Socket sock) throws IOException {
+      protected void handleConnection(final AFUNIXSocket sock) throws IOException {
         stopAcceptingConnections();
       }
 
@@ -78,7 +77,7 @@ public class TcpNoDelayTest extends SocketTestBase {
     try (ServerThread serverThread = new ServerThread() {
 
       @Override
-      protected void handleConnection(final Socket sock) throws IOException {
+      protected void handleConnection(final AFUNIXSocket sock) throws IOException {
         stopAcceptingConnections();
       }
 

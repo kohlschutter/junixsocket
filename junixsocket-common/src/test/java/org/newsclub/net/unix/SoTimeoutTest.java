@@ -46,7 +46,7 @@ public class SoTimeoutTest extends SocketTestBase {
     try (ServerThread serverThread = new ServerThread() {
 
       @Override
-      protected void handleConnection(final Socket sock) throws IOException {
+      protected void handleConnection(final AFUNIXSocket socket) throws IOException {
         stopAcceptingConnections();
       }
     }; AFUNIXSocket sock = connectToServer()) {
@@ -72,7 +72,7 @@ public class SoTimeoutTest extends SocketTestBase {
     try (ServerThread serverThread = new ServerThread() {
 
       @Override
-      protected void handleConnection(final Socket sock) throws IOException {
+      protected void handleConnection(final AFUNIXSocket sock) throws IOException {
         // Let's wait some time for a byte that never gets sent by the
         // client
         try (InputStream inputStream = sock.getInputStream()) {

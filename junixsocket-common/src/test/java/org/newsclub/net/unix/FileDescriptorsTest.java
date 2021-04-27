@@ -28,7 +28,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.Socket;
 import java.net.SocketException;
 import java.nio.file.Files;
 import java.time.Duration;
@@ -53,9 +52,7 @@ public class FileDescriptorsTest extends SocketTestBase {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ServerThread() {
         @Override
-        protected void handleConnection(final Socket sock) throws IOException {
-          AFUNIXSocket socket = (AFUNIXSocket) sock;
-
+        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           socket.setOutboundFileDescriptors(FileDescriptor.out, FileDescriptor.err);
           try (OutputStream outputStream = socket.getOutputStream()) {
             outputStream.write("HELLO".getBytes("UTF-8"));
@@ -100,9 +97,7 @@ public class FileDescriptorsTest extends SocketTestBase {
       try (ServerThread serverThread = new ServerThread() {
 
         @Override
-        protected void handleConnection(final Socket sock) throws IOException {
-          AFUNIXSocket socket = (AFUNIXSocket) sock;
-
+        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           socket.setOutboundFileDescriptors((FileDescriptor[]) null);
           // NOTE: send an arbitrary byte — we can't send fds without any in-band data
           try (OutputStream outputStream = socket.getOutputStream()) {
@@ -127,9 +122,7 @@ public class FileDescriptorsTest extends SocketTestBase {
       try (ServerThread serverThread = new ServerThread() {
 
         @Override
-        protected void handleConnection(final Socket sock) throws IOException {
-          AFUNIXSocket socket = (AFUNIXSocket) sock;
-
+        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           socket.setOutboundFileDescriptors();
           // NOTE: send an arbitrary byte — we can't send fds without any in-band data
           try (OutputStream outputStream = socket.getOutputStream()) {
@@ -154,9 +147,7 @@ public class FileDescriptorsTest extends SocketTestBase {
       try (ServerThread serverThread = new ServerThread() {
 
         @Override
-        protected void handleConnection(final Socket sock) throws IOException {
-          AFUNIXSocket socket = (AFUNIXSocket) sock;
-
+        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           socket.setOutboundFileDescriptors(new FileDescriptor());
           try {
             // NOTE: send an arbitrary byte — we can't send fds without any in-band data
@@ -187,9 +178,7 @@ public class FileDescriptorsTest extends SocketTestBase {
       try (ServerThread serverThread = new ServerThread() {
 
         @Override
-        protected void handleConnection(final Socket sock) throws IOException {
-          AFUNIXSocket socket = (AFUNIXSocket) sock;
-
+        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           socket.setOutboundFileDescriptors(FileDescriptor.out, FileDescriptor.err);
 
           // NOTE: send an arbitrary byte — we can't send fds without any in-band data
@@ -221,9 +210,7 @@ public class FileDescriptorsTest extends SocketTestBase {
       try (ServerThread serverThread = new ServerThread() {
 
         @Override
-        protected void handleConnection(final Socket sock) throws IOException {
-          AFUNIXSocket socket = (AFUNIXSocket) sock;
-
+        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           socket.setOutboundFileDescriptors(FileDescriptor.out, FileDescriptor.err);
 
           // NOTE: send an arbitrary byte — we can't send fds without any in-band data
@@ -257,9 +244,7 @@ public class FileDescriptorsTest extends SocketTestBase {
       try (ServerThread serverThread = new ServerThread() {
 
         @Override
-        protected void handleConnection(final Socket sock) throws IOException {
-          AFUNIXSocket socket = (AFUNIXSocket) sock;
-
+        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
             fos.write("WORLD!".getBytes("UTF-8"));
           }
@@ -309,9 +294,7 @@ public class FileDescriptorsTest extends SocketTestBase {
       try (ServerThread serverThread = new ServerThread() {
 
         @Override
-        protected void handleConnection(final Socket sock) throws IOException {
-          AFUNIXSocket socket = (AFUNIXSocket) sock;
-
+        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
             fos.write("WORLD!".getBytes("UTF-8"));
           }

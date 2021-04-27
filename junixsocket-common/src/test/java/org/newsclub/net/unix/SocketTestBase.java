@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.file.Files;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -147,11 +146,11 @@ public class SocketTestBase { // NOTE: needs to be public for junit
      * @param sock The socket to handle.
      * @throws IOException upon error.
      */
-    protected abstract void handleConnection(final Socket sock) throws IOException;
+    protected abstract void handleConnection(final AFUNIXSocket sock) throws IOException;
 
     /**
-     * Called from within {@link #handleConnection(Socket)} to tell the server to no longer accept
-     * new calls and to terminate the server thread.
+     * Called from within {@link #handleConnection(AFUNIXSocket)} to tell the server to no longer
+     * accept new calls and to terminate the server thread.
      */
     protected void stopAcceptingConnections() {
       loop.set(false);
@@ -177,7 +176,7 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     }
 
     protected void acceptAndHandleConnection() throws IOException {
-      try (Socket sock = serverSocket.accept()) {
+      try (AFUNIXSocket sock = serverSocket.accept()) {
         handleConnection(sock);
       }
     }

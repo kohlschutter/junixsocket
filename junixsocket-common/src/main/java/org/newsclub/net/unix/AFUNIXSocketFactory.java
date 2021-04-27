@@ -125,7 +125,6 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
     if (!isInetAddressSupported(address)) {
       throw new UnknownHostException();
     }
-    Objects.requireNonNull(localAddress, "Local address was null");
     if (localPort < 0) {
       throw new IllegalArgumentException("Illegal local port");
     }
@@ -259,14 +258,14 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
       }
 
       String path = host.substring(FILE_SCHEME_PREFIX.length());
-      if (path.isEmpty()) {
-        throw new UnknownHostException();
-      }
       if (path.startsWith(FILE_SCHEME_LOCALHOST)) {
         path = path.substring(FILE_SCHEME_LOCALHOST.length());
       }
+      if (path.isEmpty()) {
+        throw new UnknownHostException("Path is empty");
+      }
       if (!path.startsWith("/")) {
-        throw new UnknownHostException();
+        throw new UnknownHostException("Path must be absolute: " + path);
       }
 
       File socketFile = new File(path);

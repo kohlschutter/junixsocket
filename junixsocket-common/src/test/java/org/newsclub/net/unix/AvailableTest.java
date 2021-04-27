@@ -92,7 +92,7 @@ public class AvailableTest extends SocketTestBase {
       try (ServerThread serverThread = new ServerThread() {
 
         @Override
-        protected void handleConnection(final Socket sock) throws IOException {
+        protected void handleConnection(final AFUNIXSocket sock) throws IOException {
           sendBytes(sock);
           sleepFor(TIME_TO_SLEEP);
           receiveBytes(sock, BYTES_SENT);
@@ -118,7 +118,7 @@ public class AvailableTest extends SocketTestBase {
 
       try (ServerThread serverThread = new ServerThread() {
         @Override
-        protected void handleConnection(final Socket sock) throws IOException {
+        protected void handleConnection(final AFUNIXSocket sock) throws IOException {
           sleepFor(TIME_TO_SLEEP);
           receiveBytes(sock, BYTES_SENT);
           sendBytes(sock);

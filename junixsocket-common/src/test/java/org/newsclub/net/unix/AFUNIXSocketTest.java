@@ -17,11 +17,17 @@
  */
 package org.newsclub.net.unix;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
@@ -35,6 +41,16 @@ public class AFUNIXSocketTest {
   @Test
   public void testMain() throws Exception {
     AFUNIXSocket.main(new String[0]);
+  }
+
+  @Test
+  public void testVersion() throws Exception {
+    assertNotEquals("", AFUNIXSocket.getVersion());
+  }
+
+  @Test
+  public void testLoadedLibrary() throws Exception {
+    assertNotEquals("", AFUNIXSocket.getLoadedLibrary());
   }
 
   @Test
@@ -67,6 +83,74 @@ public class AFUNIXSocketTest {
   public void testSupports() throws Exception {
     for (AFUNIXSocketCapability cap : AFUNIXSocketCapability.values()) {
       AFUNIXSocket.supports(cap);
+    }
+  }
+
+  @Test
+  public void testConnectBadArguments() throws Exception {
+    try (AFUNIXSocket socket = AFUNIXSocket.newInstance()) {
+      assertThrows(IllegalArgumentException.class, () -> {
+        socket.connect(null);
+      });
+      assertThrows(IllegalArgumentException.class, () -> {
+        socket.connect(new InetSocketAddress(0), -1);
+      });
+      assertThrows(IllegalArgumentException.class, () -> {
+        socket.connect(new InetSocketAddress(0), 0);
+      });
+
+      assertEquals("org.newsclub.net.unix.AFUNIXSocket[unconnected]", socket.toString());
+    }
+
+    try (AFUNIXSocket socket = AFUNIXSocket.newInstance()) {
+      assertThrows(IllegalArgumentException.class, () -> {
+        socket.connect((SocketAddress) null);
+      });
+      assertThrows(IllegalArgumentException.class, () -> {
+        socket.connect(new InetSocketAddress("http://example.com/", 0));
+      });
+      assertThrows(IllegalArgumentException.class, () -> {
+        socket.connect(new InetSocketAddress("", 0), -1);
+      });
+      assertThrows(IllegalArgumentException.class, () -> {
+        // use AFUNIXSocketFactory.URIScheme
+        socket.connect(new InetSocketAddress("file://", 0));
+      });
+      assertThrows(IllegalArgumentException.class, () -> {
+        // use AFUNIXSocketFactory.URIScheme
+        socket.connect(new InetSocketAddress("file://not-absolute", 0));
+      });
+      assertThrows(IllegalArgumentException.class, () -> {
+        // use AFUNIXSocketFactory.URIScheme
+        socket.connect(new InetSocketAddress("file:///", 0));
+      });
+    }
+  }
+
+  @Test
+  public void testBindBadArguments() throws Exception {
+    try (AFUNIXSocket sock = AFUNIXSocket.newInstance()) {
+      assertFalse(sock.isBound());
+      assertThrows(IllegalArgumentException.class, () -> {
+        sock.bind(null);
+      });
+      assertFalse(sock.isBound());
+    }
+    try (AFUNIXSocket sock = AFUNIXSocket.newInstance()) {
+      assertFalse(sock.isBound());
+      assertThrows(IllegalArgumentException.class, () -> {
+        sock.bind(new InetSocketAddress("", 0));
+      });
+      assertFalse(sock.isBound());
+    }
+  }
+
+  @Test
+  public void testReceivedFileDescriptorsUnconnected() throws Exception {
+    try (AFUNIXSocket sock = AFUNIXSocket.newInstance()) {
+      // We don't check socket status, so these calls are perfectly fine for unconnected sockets.
+      assertNull(sock.getReceivedFileDescriptors());
+      sock.clearReceivedFileDescriptors();
     }
   }
 }

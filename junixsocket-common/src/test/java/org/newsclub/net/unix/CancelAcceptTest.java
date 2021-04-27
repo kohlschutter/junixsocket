@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -49,7 +48,7 @@ public class CancelAcceptTest extends SocketTestBase {
     try (ServerThread serverThread = new ServerThread() {
 
       @Override
-      protected void handleConnection(final Socket sock) throws IOException {
+      protected void handleConnection(final AFUNIXSocket sock) throws IOException {
       }
 
       @Override
