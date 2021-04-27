@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Christian Kohlschütter
  */
 @SuppressWarnings({"PMD.CyclomaticComplexity"})
-class AFUNIXSocketImpl extends SocketImpl {
+class AFUNIXSocketImpl extends SocketImplShim {
   private static final int SHUT_RD = 0;
   private static final int SHUT_WR = 1;
   private static final int SHUT_RD_WR = 2;
@@ -96,6 +96,10 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   FileDescriptor getFD() {
     return fd;
+  }
+
+  boolean isBound() {
+    return bound;
   }
 
   // NOTE: This prevents a file descriptor leak
@@ -165,11 +169,10 @@ class AFUNIXSocketImpl extends SocketImpl {
     return NativeUnixSocket.available(fdesc);
   }
 
-  protected void bind(SocketAddress addr) throws IOException {
-    bind(addr, -1);
-  }
-
   protected void bind(SocketAddress addr, int options) throws IOException {
+    if (addr == null) {
+      throw new IllegalArgumentException("Cannot bind to null address");
+    }
     if (!(addr instanceof AFUNIXSocketAddress)) {
       throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
     }
@@ -302,18 +305,14 @@ class AFUNIXSocketImpl extends SocketImpl {
   }
 
   @Override
-  protected void sendUrgentData(int data) throws IOException {
-    FileDescriptor fdesc = validFdOrException();
+  protected boolean supportsUrgentData() {
+    // We don't really support it
+    return false;
+  }
 
-    int written;
-    do {
-      written = NativeUnixSocket.write(AFUNIXSocketImpl.this, fdesc, null, data, 1,
-          pendingFileDescriptors);
-      if (written != 0) {
-        break;
-      }
-    } while (checkWriteInterruptedException(0));
-    pendingFileDescriptors = null;
+  @Override
+  protected void sendUrgentData(int data) throws IOException {
+    throw new UnsupportedOperationException();
   }
 
   private final class AFUNIXInputStream extends InputStream {
@@ -370,9 +369,8 @@ class AFUNIXSocketImpl extends SocketImpl {
       if (streamClosed) {
         throw new IOException("This InputStream has already been closed.");
       }
-      FileDescriptor fdesc = validFdOrException();
 
-      return NativeUnixSocket.available(fdesc);
+      return AFUNIXSocketImpl.this.available();
     }
   }
 
@@ -392,7 +390,17 @@ class AFUNIXSocketImpl extends SocketImpl {
 
     @Override
     public void write(int oneByte) throws IOException {
-      AFUNIXSocketImpl.this.sendUrgentData(oneByte);
+      FileDescriptor fdesc = validFdOrException();
+
+      int written;
+      do {
+        written = NativeUnixSocket.write(AFUNIXSocketImpl.this, fdesc, null, oneByte, 1,
+            pendingFileDescriptors);
+        if (written != 0) {
+          break;
+        }
+      } while (checkWriteInterruptedException(0));
+      pendingFileDescriptors = null;
     }
 
     @Override
@@ -489,6 +497,9 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   @Override
   public Object getOption(int optID) throws SocketException {
+    if (closed) {
+      throw new SocketException("Socket is closed");
+    }
     if (optID == SocketOptions.SO_REUSEADDR) {
       return reuseAddr;
     }
@@ -506,6 +517,8 @@ class AFUNIXSocketImpl extends SocketImpl {
         case SocketOptions.SO_RCVBUF:
         case SocketOptions.SO_SNDBUF:
           return NativeUnixSocket.getSocketOptionInt(fdesc, optID);
+        case SocketOptions.IP_TOS:
+          return 0;
         default:
           throw new SocketException("Unsupported option: " + optID);
       }
@@ -518,6 +531,9 @@ class AFUNIXSocketImpl extends SocketImpl {
 
   @Override
   public void setOption(int optID, Object value) throws SocketException {
+    if (closed) {
+      throw new SocketException("Socket is closed");
+    }
     if (optID == SocketOptions.SO_REUSEADDR) {
       reuseAddr = expectBoolean(value) == 0 ? false : true;
       return;
@@ -550,6 +566,9 @@ class AFUNIXSocketImpl extends SocketImpl {
         case SocketOptions.SO_KEEPALIVE:
         case SocketOptions.TCP_NODELAY:
           NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectBoolean(value));
+          return;
+        case SocketOptions.IP_TOS:
+          // ignore
           return;
         default:
           throw new SocketException("Unsupported option: " + optID);
