@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ProtocolFamily;
-import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.StandardProtocolFamily;
 import java.nio.ByteBuffer;
@@ -35,6 +34,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
+
+import com.kohlschutter.testutil.AvailabilityRequirement;
+import com.kohlschutter.util.SystemPropertyUtil;
 
 /**
  * This test measures throughput for sending and receiving messages over AF_UNIX, comparing
@@ -52,11 +54,11 @@ import org.junit.jupiter.api.Test;
  * @author Christian Kohlschütter
  */
 public class ThroughputTest extends SocketTestBase {
-  private static final int ENABLED = TestUtils.getIntSystemProperty(
+  private static final int ENABLED = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.enabled", 1);
-  private static final int PAYLOAD_SIZE = TestUtils.getIntSystemProperty(
+  private static final int PAYLOAD_SIZE = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.payload-size", 8192);
-  private static final int NUM_SECONDS = TestUtils.getIntSystemProperty(
+  private static final int NUM_SECONDS = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.seconds", 1);
   private final Random random = new Random();
 
@@ -78,7 +80,7 @@ public class ThroughputTest extends SocketTestBase {
     assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
     try (ServerThread serverThread = new ServerThread() {
       @Override
-      protected void handleConnection(final Socket sock) throws IOException {
+      protected void handleConnection(final AFUNIXSocket sock) throws IOException {
         byte[] buf = new byte[PAYLOAD_SIZE];
         int read;
 
@@ -200,7 +202,7 @@ public class ThroughputTest extends SocketTestBase {
       }
 
       @Override
-      protected void handleConnection(Socket sock) throws IOException {
+      protected void handleConnection(AFUNIXSocket sock) throws IOException {
         throw new IllegalStateException();
       }
     }) {

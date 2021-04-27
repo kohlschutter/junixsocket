@@ -22,11 +22,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 import org.junit.jupiter.api.Test;
+
+import com.kohlschutter.util.ProcessUtil;
 
 /**
  * Verifies that peer credentials are properly set.
@@ -48,8 +49,7 @@ public class PeerCredentialsTest extends SocketTestBase {
       try (ServerThread serverThread = new ServerThread() {
 
         @Override
-        protected void handleConnection(final Socket sock) throws IOException {
-          AFUNIXSocket socket = (AFUNIXSocket) sock;
+        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           AFUNIXSocketCredentials clientCreds = socket.getPeerCredentials();
           clientCredsFuture.complete(clientCreds);
 
@@ -77,7 +77,7 @@ public class PeerCredentialsTest extends SocketTestBase {
         if (clientCreds.getPid() == -1) {
           // PID information is unvailable on this platform
         } else {
-          assertEquals(/* ProcessHandle.current().pid() */ TestUtils.getPid(), clientCreds.getPid(),
+          assertEquals(ProcessUtil.getPid(), clientCreds.getPid(),
               "The returned PID must be the one of our process");
         }
       }

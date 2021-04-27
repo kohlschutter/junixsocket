@@ -22,6 +22,8 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import com.kohlschutter.util.IOUtil;
+
 public final class NaiveFileInputStreamRemoteImpl extends FileInputStream implements
     NaiveFileInputStreamRemote {
   private final RemoteFileInput rfd;
@@ -55,6 +57,6 @@ public final class NaiveFileInputStreamRemoteImpl extends FileInputStream implem
 
   @Override
   public byte[] readAllBytes() throws IOException {
-    return TestUtils.readAllBytes(this);
+    return IOUtil.readAllBytesNaively(this);
   }
 }

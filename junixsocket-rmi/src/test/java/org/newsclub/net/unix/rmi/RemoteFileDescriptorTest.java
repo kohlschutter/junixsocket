@@ -33,6 +33,8 @@ import java.rmi.server.RMISocketFactory;
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFUNIXSocketCapability;
 
+import com.kohlschutter.util.IOUtil;
+
 @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_FILE_DESCRIPTORS)
 public class RemoteFileDescriptorTest extends TestBase {
   private static final byte[] HELLO_WORLD = "Hello World :-)\n".getBytes(StandardCharsets.US_ASCII);
@@ -67,7 +69,7 @@ public class RemoteFileDescriptorTest extends TestBase {
     svc.verifyContents(HELLO_WORLD);
 
     try (FileInputStream fin = svc.input(12).asFileInputStream()) {
-      byte[] data = TestUtils.readAllBytes(fin);
+      byte[] data = IOUtil.readAllBytes(fin);
       assertArrayEquals(SMILEY, data);
     }
 
@@ -109,7 +111,7 @@ public class RemoteFileDescriptorTest extends TestBase {
 
     byte[] actual;
     try (FileInputStream fin = svc.input().asFileInputStream()) {
-      actual = TestUtils.readAllBytes(fin);
+      actual = IOUtil.readAllBytes(fin);
     }
     assertArrayEquals(expected, actual);
 

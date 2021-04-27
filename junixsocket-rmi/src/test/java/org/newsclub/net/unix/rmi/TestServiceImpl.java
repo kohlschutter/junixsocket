@@ -28,6 +28,8 @@ import java.util.Arrays;
 
 import org.newsclub.net.unix.AFUNIXSocketCredentials;
 
+import com.kohlschutter.util.IOUtil;
+
 /**
  * The implementation for the test service.
  * 
@@ -85,7 +87,7 @@ public class TestServiceImpl implements TestService,
   @Override
   public void verifyContents(byte[] expectedData) throws IOException {
     try (FileInputStream fin = new FileInputStream(tmpFile)) {
-      byte[] bytes = TestUtils.readAllBytes(fin);
+      byte[] bytes = IOUtil.readAllBytes(fin);
       if (!Arrays.equals(bytes, expectedData)) {
         throw new IOException("Unexpected bytes");
       }
