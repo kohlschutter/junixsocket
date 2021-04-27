@@ -38,12 +38,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.junit.jupiter.engine.JupiterTestEngine;
+import org.junit.jupiter.engine.discovery.DiscoverySelectorResolver;
 import org.junit.platform.console.options.CommandLineOptions;
 import org.junit.platform.console.options.Theme;
 import org.junit.platform.console.tasks.ConsoleTestExecutor;
+import org.junit.platform.engine.support.descriptor.EngineDescriptor;
+import org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketCapability;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Performs a series of self-tests.
@@ -65,6 +71,22 @@ public class Selftest {
   private final List<AFUNIXSocketCapability> unsupportedCapabilites = new ArrayList<>();
   private boolean withIssues = false;
   private boolean fail = false;
+
+  /**
+   * maven-shade-plugin's minimizeJar isn't perfect, so we give it a little hint by adding static
+   * references to classes that are otherwise only found via reflection.
+   * 
+   * @author Christian Kohlschütter
+   */
+  @SuppressFBWarnings("UUF_UNUSED_FIELD")
+  static final class MinimizeJarDependencies {
+    JupiterTestEngine jte;
+    HierarchicalTestEngine<?> hte;
+    EngineDescriptor ed;
+    DiscoverySelectorResolver dsr;
+    org.newsclub.lib.junixsocket.common.NarMetadata nmCommon;
+    org.newsclub.lib.junixsocket.custom.NarMetadata nmCustom;
+  }
 
   public Selftest(PrintWriter out) {
     this.out = out;
@@ -91,6 +113,7 @@ public class Selftest {
     st.runTests("junixsocket-common", new String[] {
         "org.newsclub.net.unix.AcceptTimeoutTest", //
         "org.newsclub.net.unix.AFUNIXSocketAddressTest", //
+        "org.newsclub.net.unix.AFUNIXSocketTest", //
         "org.newsclub.net.unix.AvailableTest", //
         "org.newsclub.net.unix.BufferOverflowTest", //
         "org.newsclub.net.unix.CancelAcceptTest", //
@@ -98,8 +121,10 @@ public class Selftest {
         "org.newsclub.net.unix.EndOfFileTest", //
         "org.newsclub.net.unix.FileDescriptorsTest", //
         "org.newsclub.net.unix.PeerCredentialsTest", //
+        "org.newsclub.net.unix.ReadWriteTest", //
         "org.newsclub.net.unix.ServerSocketCloseTest", //
         "org.newsclub.net.unix.SoTimeoutTest", //
+        "org.newsclub.net.unix.StandardSocketOptionsTest", //
         "org.newsclub.net.unix.TcpNoDelayTest", //
         "org.newsclub.net.unix.ThroughputTest",//
     });

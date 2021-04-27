@@ -16,121 +16,157 @@
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
     <kohlschutter.multirelease.java8.release>8</kohlschutter.multirelease.java8.release>
     <kohlschutter.multirelease.java.release>9</kohlschutter.multirelease.java.release>
+
+    <!-- moving standard jar building to an earlier phase to prevent maven-shade-plugin
+      from failing with "The project main artifact does not exist" -->
+    <kohlschutter.multirelease.jar.phase>prepare-package</kohlschutter.multirelease.jar.phase>
   </properties>
 
-  <description>Runs junixsocket's unit tests as selftests</description>
+  <description>Runs junixsocket's unit tests as a selftest</description>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>add-sources-from-junixsocket-common</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
+  <profiles>
+    <profile>
+      <id>build-selftest</id>
+      <activation>
+        <property>
+          <name>!m2e.version</name>
+          <!-- Ignore the below configuration when running from within Eclipse -->
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-sources-from-junixsocket-common</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>add-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>${project.parent.basedir}/junixsocket-common/src/test/java</source>
+                  </sources>
+                </configuration>
+              </execution>
+              <execution>
+                <id>add-sources-from-junixsocket-rmi</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>add-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>${project.parent.basedir}/junixsocket-rmi/src/test/java</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-sources-from-junixsocket-java8</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.build.directory}/sources-java8</outputDirectory>
+                  <includeEmptyDirs>true</includeEmptyDirs>
+                  <resources>
+                    <resource>
+                      <directory>${project.parent.basedir}/junixsocket-common/src/test/java</directory>
+                      <includes>
+                        <include>**</include>
+                      </includes>
+                    </resource>
+                    <resource>
+                      <directory>${project.parent.basedir}/junixsocket-common/src/test/java8</directory>
+                      <includes>
+                        <include>**</include>
+                      </includes>
+                    </resource>
+                    <resource>
+                      <directory>${project.parent.basedir}/junixsocket-rmi/src/test/java</directory>
+                      <includes>
+                        <include>**</include>
+                      </includes>
+                    </resource>
+                    <resource>
+                      <directory>${project.parent.basedir}/junixsocket-rmi/src/test/java8</directory>
+                      <includes>
+                        <include>**</include>
+                      </includes>
+                    </resource>
+                  </resources>
+                  <overwrite>true</overwrite>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default-jar</id>
+                <configuration>
+                  <classifier>jar</classifier>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>jar-with-dependencies</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <shadedArtifactAttached>true</shadedArtifactAttached>
+                  <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
+                  <transformers>
+                    <transformer
+                      implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                      <mainClass>org.newsclub.net.unix.selftest.Selftest</mainClass>
+                    </transformer>
+                  </transformers>
+                  <minimizeJar>true</minimizeJar>
+                  <filters>
+                    <filter>
+                      <artifact>*:*</artifact>
+                      <excludes>
+                        <exclude>module-info.class</exclude>
+                        <exclude>**/module-info.class</exclude>
+                        <exclude>META-INF/*.SF</exclude>
+                        <exclude>META-INF/*.DSA</exclude>
+                        <exclude>META-INF/*.RSA</exclude>
+                      </excludes>
+                    </filter>
+                  </filters>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
             <configuration>
-              <sources>
-                <source>${project.parent.basedir}/junixsocket-common/src/test/java</source>
-              </sources>
+              <failOnViolation>true</failOnViolation>
             </configuration>
-          </execution>
-          <execution>
-            <id>add-sources-from-junixsocket-rmi</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${project.parent.basedir}/junixsocket-rmi/src/test/java</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-sources-from-junixsocket-java8</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/sources-java8</outputDirectory>
-              <includeEmptyDirs>true</includeEmptyDirs>
-              <resources>
-                <resource>
-                  <directory>${project.parent.basedir}/junixsocket-common/src/test/java</directory>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </resource>
-                <resource>
-                  <directory>${project.parent.basedir}/junixsocket-common/src/test/java8</directory>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </resource>
-                <resource>
-                  <directory>${project.parent.basedir}/junixsocket-rmi/src/test/java</directory>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </resource>
-                <resource>
-                  <directory>${project.parent.basedir}/junixsocket-rmi/src/test/java8</directory>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </resource>
-              </resources>
-              <overwrite>true</overwrite>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-
-        <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-          <archive>
-            <manifestEntries>
-              <Multi-Release>true</Multi-Release>
-            </manifestEntries>
-            <manifest>
-              <mainClass>org.newsclub.net.unix.selftest.Selftest</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <configuration>
-          <failOnViolation>true</failOnViolation>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <dependencies>
     <dependency>
@@ -152,10 +188,14 @@
     </dependency>
 
     <dependency>
+      <groupId>com.kohlschutter</groupId>
+      <artifactId>kohlschutter-test-util</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-console</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
