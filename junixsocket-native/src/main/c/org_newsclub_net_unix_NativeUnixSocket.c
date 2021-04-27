@@ -404,6 +404,23 @@ static void setObjectFieldValue(JNIEnv *env, jobject instance, char *fieldName,
     (*env)->SetObjectField(env, instance, fieldID, value);
 }
 
+static void setObjectFieldValueIfPossible(JNIEnv *env, jobject instance, char *fieldName,
+                                char *fieldType, jobject value)
+{
+    jclass instanceClass = (*env)->GetObjectClass(env, instance);
+    if(instanceClass == NULL) {
+        return;
+    }
+    jfieldID fieldID = (*env)->GetFieldID(env, instanceClass, fieldName,
+                                          fieldType);
+    if(fieldID == NULL) {
+        // ignore
+        (*env)->ExceptionClear(env);
+        return;
+    }
+    (*env)->SetObjectField(env, instance, fieldID, value);
+}
+
 CK_IGNORE_UNUSED_FUNCTION_BEGIN
 static void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
         jlong value)
@@ -1772,6 +1789,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImp
 {
     setObjectFieldValue(env, serverSocket, "impl", "Ljava/net/SocketImpl;",
             impl);
+
+    // no longer present in Java 16
+    setObjectFieldValueIfPossible(env, impl, "serverSocket", "Ljava/net/ServerSocket;",
+                        serverSocket);
 }
 
 /*
