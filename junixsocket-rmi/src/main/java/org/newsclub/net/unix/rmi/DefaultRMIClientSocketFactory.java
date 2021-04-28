@@ -59,5 +59,4 @@ public final class DefaultRMIClientSocketFactory implements RMIClientSocketFacto
   public int hashCode() {
     return 1;
   }
-
 }

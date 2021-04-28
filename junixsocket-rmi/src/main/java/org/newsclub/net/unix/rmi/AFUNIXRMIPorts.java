@@ -30,16 +30,19 @@ final class AFUNIXRMIPorts {
    * ports, we use numbers > 65535.
    */
   public static final int AF_PORT_BASE = 100000;
+
   /**
    * This is the port reserved for the default registry.
    */
   public static final int DEFAULT_REGISTRY_PORT = 100001;
+
   /**
    * This is the port reserved for the port assigner.
    * 
    * @see AFUNIXRMIService
    */
   public static final int RMI_SERVICE_PORT = 100002;
+
   /**
    * This is the base for anonymous ports. Any anonymous port will be higher than this number.
    * 
