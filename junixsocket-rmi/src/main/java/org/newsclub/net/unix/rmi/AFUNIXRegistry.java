@@ -27,7 +27,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.RemoteObject;
 import java.rmi.server.RemoteServer;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,21 +100,6 @@ public final class AFUNIXRegistry implements Registry, ShutdownHook {
         // ignore
       }
     }
-  }
-
-  Remote getInstance(String name) throws NoSuchObjectException {
-    Remote remote;
-    synchronized (bound) {
-      remote = bound.get(name);
-    }
-    if (remote == null) {
-      throw new NoSuchObjectException(name);
-    }
-    return remote;
-  }
-
-  void unexport(String name) throws NoSuchObjectException {
-    UnicastRemoteObject.unexportObject(getInstance(name), true);
   }
 
   @Override
