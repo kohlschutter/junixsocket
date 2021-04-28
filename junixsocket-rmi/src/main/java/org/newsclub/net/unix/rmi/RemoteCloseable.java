@@ -19,6 +19,7 @@ package org.newsclub.net.unix.rmi;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 
 /**
@@ -35,9 +36,10 @@ public interface RemoteCloseable<T> extends Remote, Closeable {
    * depends on the resource).
    * 
    * @return The wrapped resource.
+   * @throws NoSuchObjectException if this instance has been closed already.
    * @throws IOException if there was a problem.
    */
-  T get() throws IOException;
+  T get() throws NoSuchObjectException, IOException;
 
   /**
    * Closes the resource on the server-side (i.e., where it was created), and — as long as the
