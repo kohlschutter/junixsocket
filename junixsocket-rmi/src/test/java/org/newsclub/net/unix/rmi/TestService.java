@@ -47,4 +47,13 @@ public interface TestService extends Remote {
   NaiveFileInputStreamRemote naiveInputStreamRemote() throws IOException;
 
   AFUNIXSocketCredentials remotePeerCredentials() throws IOException;
+
+  <T extends RemoteCloseableThing> RemoteCloseable<? extends T> remoteCloseable(Class<T> klass)
+      throws IOException;
+
+  <T extends RemoteCloseableThing> void remoteCloseableThingResetNumberOfCloseCalls(Class<T> klass)
+      throws IOException;
+
+  <T extends RemoteCloseableThing> int remoteCloseableThingNumberOfCloseCalls(Class<T> klass)
+      throws IOException;
 }

@@ -231,5 +231,4 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
     }
     return duration;
   }
-
 }

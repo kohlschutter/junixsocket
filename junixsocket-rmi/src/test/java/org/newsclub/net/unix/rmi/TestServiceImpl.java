@@ -27,6 +27,8 @@ import java.nio.file.Files;
 import java.util.Arrays;
 
 import org.newsclub.net.unix.AFUNIXSocketCredentials;
+import org.newsclub.net.unix.rmi.RemoteCloseableThing.IsCloseable;
+import org.newsclub.net.unix.rmi.RemoteCloseableThing.NotCloseable;
 
 import com.kohlschutter.util.IOUtil;
 
@@ -35,13 +37,15 @@ import com.kohlschutter.util.IOUtil;
  * 
  * @author Christian Kohlschütter
  */
-public class TestServiceImpl implements TestService,
-    Closeable {
+public class TestServiceImpl implements TestService, Closeable {
   private final File tmpFile;
   private final AFUNIXRMISocketFactory socketFactory;
+  private final RemoteCloseableThingImpl.NotCloseableImpl testNotCloseableImpl =
+      new RemoteCloseableThingImpl.NotCloseableImpl();
+  private final RemoteCloseableThingImpl.IsCloseableImpl testCloseableImpl =
+      new RemoteCloseableThingImpl.IsCloseableImpl();
 
-  public TestServiceImpl(AFUNIXRMISocketFactory socketFactory)
-      throws IOException {
+  public TestServiceImpl(AFUNIXRMISocketFactory socketFactory) throws IOException {
     this.socketFactory = socketFactory;
     this.tmpFile = File.createTempFile("FDTestService", ".tmp");
     tmpFile.deleteOnExit();
@@ -125,9 +129,48 @@ public class TestServiceImpl implements TestService,
     AFUNIXNaming.unexportObject(this);
     deleteFile();
   }
-  
+
   @Override
   public AFUNIXSocketCredentials remotePeerCredentials() {
     return AFUNIXSocketCredentials.remotePeerCredentials();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T extends RemoteCloseableThing> RemoteCloseable<? extends T> remoteCloseable(
+      Class<T> klass) throws IOException {
+    if (klass.equals(NotCloseable.class)) {
+      return (RemoteCloseable<? extends T>) new RemoteCloseableImpl<RemoteCloseableThing.NotCloseable>(
+          socketFactory, testNotCloseableImpl);
+    } else if (klass.equals(IsCloseable.class)) {
+      return (RemoteCloseable<? extends T>) new RemoteCloseableImpl<RemoteCloseableThing.IsCloseable>(
+          socketFactory, testCloseableImpl);
+    } else {
+      throw new UnsupportedOperationException();
+    }
+  }
+
+  @Override
+  public <T extends RemoteCloseableThing> void remoteCloseableThingResetNumberOfCloseCalls(Class<T> klass)
+      throws IOException {
+    if (klass.equals(NotCloseable.class)) {
+      testNotCloseableImpl.resetCount();
+    } else if (klass.equals(IsCloseable.class)) {
+      testCloseableImpl.resetCount();
+    } else {
+      throw new UnsupportedOperationException();
+    }
+  }
+
+  @Override
+  public <T extends RemoteCloseableThing> int remoteCloseableThingNumberOfCloseCalls(Class<T> klass)
+      throws IOException {
+    if (klass.equals(NotCloseable.class)) {
+      return testNotCloseableImpl.numberOfCloseCalls();
+    } else if (klass.equals(IsCloseable.class)) {
+      return testCloseableImpl.numberOfCloseCalls();
+    } else {
+      throw new UnsupportedOperationException();
+    }
   }
 }
