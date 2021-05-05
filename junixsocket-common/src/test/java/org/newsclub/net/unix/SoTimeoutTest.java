@@ -77,9 +77,9 @@ public class SoTimeoutTest extends SocketTestBase {
         // client
         try (InputStream inputStream = sock.getInputStream()) {
           inputStream.read();
+        } finally {
+          stopAcceptingConnections();
         }
-
-        stopAcceptingConnections();
       }
     }; AFUNIXSocket sock = connectToServer()) {
       sock.setSoTimeout((int) TimeUnit.SECONDS.toMillis(12));

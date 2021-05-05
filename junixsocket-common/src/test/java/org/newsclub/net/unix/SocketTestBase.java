@@ -192,11 +192,15 @@ public class SocketTestBase { // NOTE: needs to be public for junit
         } finally {
           onServerSocketClose();
           if (serverSocket != null) {
-            serverSocket.close();
+            try {
+              serverSocket.close();
+            } catch (IOException e) {
+              // ignore
+            }
           }
         }
       } catch (IOException e) {
-        if (!loop.get() && (serverSocket == null || serverSocket.isClosed())) {
+        if (!loop.get()) {
           // ignore
         } else if (handleException(e) != ExceptionHandlingDecision.IGNORE) {
           e.addSuppressed(caller);
