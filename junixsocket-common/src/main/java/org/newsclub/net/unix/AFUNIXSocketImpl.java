@@ -209,7 +209,8 @@ class AFUNIXSocketImpl extends SocketImplShim {
         try {
           NativeUnixSocket.connect(socketAddress.getBytes(), tmpFd, inode);
         } catch (IOException e) {
-          // there's nothing we can do to unlock these accepts
+          // there's nothing more we can do to unlock these accepts
+          // (e.g., SocketException: No such file or directory)
           return;
         }
         try {

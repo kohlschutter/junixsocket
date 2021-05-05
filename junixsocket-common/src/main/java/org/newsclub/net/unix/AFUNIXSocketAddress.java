@@ -18,6 +18,7 @@
 package org.newsclub.net.unix;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -211,5 +212,39 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    */
   public byte[] getPathAsBytes() {
     return this.bytes.clone();
+  }
+
+  /**
+   * Checks if the address is in the abstract namespace.
+   * 
+   * @return {@code true} if the address is in the abstract namespace.
+   */
+  public boolean isInAbstractNamespace() {
+    return bytes[0] == 0;
+  }
+
+  /**
+   * Checks if the address can be resolved to a {@link File}.
+   * 
+   * @return {@code true} if the address has a filename.
+   */
+  public boolean hasFilename() {
+    return !isInAbstractNamespace();
+  }
+
+  /**
+   * Returns the {@link File} corresponding with this address, if possible.
+   * 
+   * A {@link FileNotFoundException} is thrown if there is no filename associated with the address,
+   * which applies to addresses in the abstract namespace, for example.
+   * 
+   * @return The filename.
+   * @throws FileNotFoundException if the address is not associated with a filename.
+   */
+  public File getFile() throws FileNotFoundException {
+    if (isInAbstractNamespace()) {
+      throw new FileNotFoundException("Socket is in abstract namespace");
+    }
+    return new File(new String(bytes, Charset.defaultCharset()));
   }
 }
