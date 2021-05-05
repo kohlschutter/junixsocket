@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -96,18 +95,10 @@ public class AFUNIXServerSocket extends ServerSocket {
    * @return The new, bound {@link AFUNIXServerSocket}.
    * @throws IOException if the operation fails.
    */
-  @SuppressWarnings("resource")
   public static AFUNIXServerSocket bindOn(final Path path, boolean deleteOnClose)
       throws IOException {
     AFUNIXServerSocket socket = newInstance();
     socket.bind(new AFUNIXSocketAddress(path));
-    socket.addCloseable(new Closeable() {
-
-      @Override
-      public void close() throws IOException {
-        Files.delete(path);
-      }
-    });
     return socket;
   }
 
@@ -193,6 +184,8 @@ public class AFUNIXServerSocket extends ServerSocket {
       return;
     }
 
+    AFUNIXSocketAddress endpoint = boundEndpoint;
+
     IOException superException = null;
     try {
       super.close();
@@ -210,7 +203,16 @@ public class AFUNIXServerSocket extends ServerSocket {
         }
       }
     }
-    closeables.close(superException);
+    try {
+      closeables.close(superException);
+    } finally {
+      if (endpoint != null && !endpoint.isInAbstractNamespace()) {
+        File f = endpoint.getFile();
+        if (!f.delete() && f.exists()) {
+          throw new IOException("Could not delete socket file after close: " + f);
+        }
+      }
+    }
   }
 
   /**
@@ -241,7 +243,7 @@ public class AFUNIXServerSocket extends ServerSocket {
   }
 
   @Override
-  public SocketAddress getLocalSocketAddress() {
+  public AFUNIXSocketAddress getLocalSocketAddress() {
     return boundEndpoint;
   }
 
