@@ -93,7 +93,11 @@ final class AFUNIXRMIServiceImpl implements AFUNIXRMIService {
       if (!namingInstance.isRemoteShutdownAllowed()) {
         throw new ServerException("Remote shutdown is disabled");
       }
-      namingInstance.shutdownRegistry();
+      try {
+        namingInstance.shutdownRegistry();
+      } catch (ShutdownException e) {
+        // already shut down
+      }
     }
   }
 

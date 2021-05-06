@@ -1,0 +1,76 @@
+/*
+ * junixsocket
+ *
+ * Copyright 2009-2021 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.rmi;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
+import java.rmi.server.ExportException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.jupiter.api.Test;
+
+public class RegistryTest extends ShutdownHookTestBase {
+  @Test
+  public void testDoubleCreateRegistry() throws Exception {
+    AFUNIXNaming naming = AFUNIXNaming.newPrivateInstance();
+    naming.createRegistry();
+    naming.createRegistry();
+    naming.shutdownRegistry();
+  }
+
+  @SuppressWarnings("resource")
+  @Test
+  public void testExportAndBind() throws Exception {
+    AFUNIXNaming naming = AFUNIXNaming.newPrivateInstance();
+
+    assertEquals(naming.getRegistrySocketDir(), naming.getSocketFactory().getSocketDir());
+
+    naming.createRegistry();
+    assertEquals(Arrays.asList(AFUNIXRMIService.class.getName()), Arrays.asList(naming.list()));
+
+    Hello hello = new HelloImpl();
+
+    assertThrows(NotBoundException.class, () -> naming.lookup("hello", 1, TimeUnit.MILLISECONDS));
+
+    naming.exportAndBind("hello", hello);
+    assertThrows(ExportException.class, () -> naming.exportAndBind("hello", hello));
+    naming.bind("hello2", hello);
+    naming.rebind("hello2", hello);
+    assertThrows(AlreadyBoundException.class, () -> naming.bind("hello2", hello));
+    assertEquals(new HashSet<>(Arrays.asList(AFUNIXRMIService.class.getName(), "hello", "hello2")),
+        new HashSet<>(Arrays.asList(naming.list())));
+
+    assertEquals("Hello", ((Hello) naming.lookup("hello2")).hello());
+    assertEquals("Hello", ((Hello) naming.lookup("hello2", 1, TimeUnit.MILLISECONDS)).hello());
+
+    naming.exportAndRebind("hello2", new HelloImpl());
+
+    naming.unbind("hello2");
+    naming.unexportAndUnbind("hello", hello);
+    assertEquals(Arrays.asList(AFUNIXRMIService.class.getName()), Arrays.asList(naming.list()));
+
+    naming.shutdownRegistry();
+
+    assertEquals(Arrays.asList(), Arrays.asList(naming.list()));
+  }
+}

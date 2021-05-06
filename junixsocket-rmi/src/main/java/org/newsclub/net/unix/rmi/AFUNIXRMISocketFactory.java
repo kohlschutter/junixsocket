@@ -20,36 +20,32 @@ package org.newsclub.net.unix.rmi;
 import java.io.Closeable;
 import java.io.Externalizable;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
 import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.RMISocketFactory;
-import java.util.BitSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketCredentials;
 import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownHook;
-import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownThread;
 
 /**
  * An {@link RMISocketFactory} that supports {@link AFUNIXSocket}s.
  * 
  * @author Christian Kohlschütter
  */
-public class AFUNIXRMISocketFactory extends RMISocketFactory implements Externalizable, Closeable,
-    ShutdownHook {
+public class AFUNIXRMISocketFactory extends RMISocketFactory implements Externalizable, Closeable {
   static final String DEFAULT_SOCKET_FILE_PREFIX = "";
   static final String DEFAULT_SOCKET_FILE_SUFFIX = ".rmi";
 
@@ -66,9 +62,9 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
 
   private AFUNIXRMIService rmiService = null;
 
-  private Map<HostAndPort, AFUNIXSocketCredentials> credentials = new HashMap<>();
-
-  private final BitSet openServerPorts = new BitSet();
+  private final Map<HostAndPort, AFUNIXSocketCredentials> credentials = new HashMap<>();
+  private final Map<Integer, AFUNIXServerSocket> openServerSockets = new HashMap<>();
+  private final Set<AFUNIXSocket> openSockets = new HashSet<>();
 
   /**
    * Constructor required per definition.
@@ -111,56 +107,19 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     return (naming.getRegistryPort() == AFUNIXRMIPorts.PLAIN_FILE_SOCKET);
   }
 
-  void deleteStaleFiles() {
-    if (isPlainFileSocket()) {
-      // nothing to do
-      return;
-    }
-    File sd = socketDir;
-    if (sd == null) {
-      return;
-    }
-    File[] files = sd.listFiles(new FilenameFilter() {
+  // only to be called from the constructor
+  private void closeUponRuntimeShutdown() {
+    ShutdownHookSupport.addWeakShutdownHook(new ShutdownHook() {
+      
       @Override
-      public boolean accept(File dir, String name) {
-        return name.startsWith(socketPrefix) && name.endsWith(socketSuffix);
+      public void onRuntimeShutdown(Thread thread) {
+        try {
+          close();
+        } catch (IOException e) {
+          // ignore
+        }
       }
     });
-    if (files == null) {
-      return;
-    }
-    for (File f : files) {
-      String name = f.getName();
-      String portName = name.substring(0, name.length() - socketSuffix.length()).substring(
-          socketPrefix.length());
-
-      int port;
-      try {
-        port = Integer.parseInt(portName);
-      } catch (Exception e) {
-        port = -1;
-      }
-      if (port >= AFUNIXRMIPorts.AF_PORT_BASE) {
-        boolean connected = false;
-        try (Socket s = this.createSocket("", port)) {
-          connected = true;
-        } catch (IOException e) {
-          // connection refused or something else
-        }
-
-        if (!connected) {
-          try {
-            Files.delete(f.toPath());
-          } catch (IOException e) {
-            // ignore
-          }
-        }
-      }
-    }
-  }
-
-  private void closeUponRuntimeShutdown() {
-    ShutdownHookSupport.addWeakShutdownHook(this);
   }
 
   @Override
@@ -197,12 +156,17 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
         // unexpected
       }
     }
+
+    synchronized (openSockets) {
+      openSockets.add(socket);
+    }
     socket.addCloseable(new Closeable() {
       @Override
       public void close() throws IOException {
-        if (credentials == null) {
-          return;
+        synchronized (openSockets) {
+          openSockets.remove(socket);
         }
+
         synchronized (credentials) {
           credentials.remove(hap);
         }
@@ -217,17 +181,9 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
 
   File getFile(int port) {
     if (isPlainFileSocket()) {
-      return socketDir;
+      return getSocketDir();
     } else {
       return new File(socketDir, socketPrefix + port + socketSuffix);
-    }
-  }
-
-  void deleteSocketFile(int port) {
-    try {
-      Files.delete(getFile(port).toPath());
-    } catch (IOException e) {
-      // ignore
     }
   }
 
@@ -236,25 +192,27 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
   }
 
   @Override
-  public void close() throws RemoteException {
-    credentials = null;
+  public void close() throws IOException {
+    synchronized (AFUNIXNaming.class) {
+      credentials.clear();
 
-    if (rmiService != null) {
-      rmiService.openPorts().forEach((int port) -> {
-        deleteSocketFile(port);
-      });
+      rmiService = null;
+      closeServerSockets();
+      closeSockets();
     }
   }
 
   private AFUNIXRMIService getRmiService() throws IOException {
-    if (rmiService == null) {
-      try {
-        rmiService = naming.getRMIService();
-      } catch (NotBoundException e) {
-        throw (IOException) new IOException(e.getMessage()).initCause(e);
+    synchronized (AFUNIXNaming.class) {
+      if (rmiService == null) {
+        try {
+          rmiService = naming.getRMIService();
+        } catch (NotBoundException e) {
+          throw (IOException) new IOException(e.getMessage()).initCause(e);
+        }
       }
+      return rmiService;
     }
-    return rmiService;
   }
 
   protected int newPort() throws IOException {
@@ -262,7 +220,6 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
   }
 
   protected void returnPort(int port) throws IOException {
-    deleteSocketFile(port);
     getRmiService().returnPort(port);
   }
 
@@ -276,7 +233,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
       ass.bind(addr);
 
       if (port >= AFUNIXRMIPorts.AF_PORT_BASE) {
-        ass.addCloseable(new PortCloseable(port - AFUNIXRMIPorts.AF_PORT_BASE));
+        ass.addCloseable(new ServerSocketCloseable(ass, port));
       }
       return ass;
     }
@@ -287,25 +244,73 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     }
 
     final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(getFile(port), port);
-    AFUNIXServerSocket socket = AFUNIXServerSocket.bindOn(addr);
-    socket.addCloseable(new PortCloseable(port - AFUNIXRMIPorts.AF_PORT_BASE));
+    AFUNIXServerSocket socket = AFUNIXServerSocket.newInstance();
+    socket.setReuseAddress(true);
+    socket.bind(addr);
+    socket.addCloseable(new ServerSocketCloseable(socket, port));
     return socket;
   }
 
-  private final class PortCloseable implements Closeable {
+  private void closeServerSockets() throws IOException {
+    Map<Integer, AFUNIXServerSocket> map;
+    synchronized (openServerSockets) {
+      map = new HashMap<>(openServerSockets);
+    }
+    IOException ex = null;
+    for (Map.Entry<Integer, AFUNIXServerSocket> en : map.entrySet()) {
+      try {
+        en.getValue().close();
+      } catch (ShutdownException e) {
+        // ignore
+      } catch (IOException e) {
+        if (ex == null) {
+          ex = e;
+        } else {
+          ex.addSuppressed(e);
+        }
+      }
+    }
+    synchronized (openServerSockets) {
+      openServerSockets.clear();
+    }
+    if (ex != null) {
+      throw ex;
+    }
+  }
+
+  private void closeSockets() {
+    Set<AFUNIXSocket> set;
+    synchronized (openSockets) {
+      set = new HashSet<>(openSockets);
+    }
+    for (AFUNIXSocket socket : set) {
+      try {
+        socket.close();
+      } catch (IOException e) {
+        // ignore
+      }
+    }
+    synchronized (openSockets) {
+      openSockets.clear();
+    }
+  }
+
+  private final class ServerSocketCloseable implements Closeable {
     private final int port;
 
-    private PortCloseable(int port) {
-      synchronized (openServerPorts) {
-        openServerPorts.set(port);
-      }
+    @SuppressWarnings("resource")
+    private ServerSocketCloseable(AFUNIXServerSocket socket, int port) {
       this.port = port;
+      synchronized (openServerSockets) {
+        openServerSockets.put(port, socket);
+      }
     }
 
+    @SuppressWarnings("resource")
     @Override
     public void close() throws IOException {
-      synchronized (openServerPorts) {
-        openServerPorts.clear(port);
+      synchronized (openServerSockets) {
+        openServerSockets.remove(port);
       }
     }
   }
@@ -359,18 +364,6 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
             ";prefix=" + socketPrefix + ";suffix=" + socketSuffix) + "]";
   }
 
-  @Override
-  public void onRuntimeShutdown(Thread thread) {
-    if (!thread.equals(Thread.currentThread()) || !(thread instanceof ShutdownThread)) {
-      throw new IllegalStateException("Illegal caller");
-    }
-    try {
-      close();
-    } catch (IOException e) {
-      // ignore
-    }
-  }
-
   AFUNIXSocketCredentials peerCredentialsFor(RemotePeerInfo data) {
     synchronized (credentials) {
       return credentials.get(new HostAndPort(data.host, data.port));
@@ -420,8 +413,8 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     if (port < AFUNIXRMIPorts.AF_PORT_BASE) {
       return false;
     }
-    synchronized (openServerPorts) {
-      return openServerPorts.get(port - AFUNIXRMIPorts.AF_PORT_BASE);
+    synchronized (openServerSockets) {
+      return openServerSockets.containsKey(port);
     }
   }
 }

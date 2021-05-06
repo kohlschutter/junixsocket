@@ -22,10 +22,10 @@ import java.io.Serializable;
 import java.net.Socket;
 import java.rmi.server.RMIClientSocketFactory;
 
-import org.newsclub.net.unix.AFUNIXSocket;
-
 /**
- * An {@link AFUNIXSocket}-compatible implementation of {@link RMIClientSocketFactory}.
+ * An implementation of {@link RMIClientSocketFactory}.
+ * 
+ * * @see AFUNIXRMISocketFactory where we deal with AF_UNIX sockets.
  */
 public final class DefaultRMIClientSocketFactory implements RMIClientSocketFactory, Serializable {
   private static final long serialVersionUID = 1L;

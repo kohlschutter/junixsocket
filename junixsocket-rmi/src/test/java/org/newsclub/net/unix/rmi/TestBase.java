@@ -25,35 +25,35 @@ import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.RemoteObject;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 // must remain public until SUREFIRE-1909 is fixed
-public class TestBase {
+public class TestBase extends ShutdownHookTestBase {
   private static final String TEST_SERVICE_NAME = TestService.class.getName();
-  private static AFUNIXNaming naming;
-  private static Registry registry;
-  private static TestServiceImpl testService;
+  private AFUNIXNaming naming;
+  private TestServiceImpl testService;
 
   protected TestBase() {
+    super();
   }
 
+  @BeforeEach
   @SuppressWarnings("resource")
-  @BeforeAll
-  public static void setupClass() throws IOException, AlreadyBoundException {
+  public void setUp() throws IOException, AlreadyBoundException {
     // NOTE: for testing. You'd probably want to use AFUNIXNaming.getInstance()
     naming = AFUNIXNaming.newPrivateInstance();
 
     // Create registry
-    registry = naming.createRegistry();
+    Registry registry = naming.createRegistry();
 
     // Create and bind service
     testService = new TestServiceImpl(naming.getSocketFactory());
     registry.bind(TEST_SERVICE_NAME, RemoteObject.toStub(testService));
   }
 
-  @AfterAll
-  public static void tearDownClass() throws IOException, NotBoundException {
+  @AfterEach
+  public void tearDown() throws IOException {
     testService.close();
     naming.shutdownRegistry();
   }

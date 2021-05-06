@@ -18,6 +18,8 @@
 package org.newsclub.net.unix.rmi;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simplifies handling shutdown hooks.
@@ -25,9 +27,8 @@ import java.lang.ref.WeakReference;
  * @author Christian Kohlschütter
  */
 final class ShutdownHookSupport {
-  private ShutdownHookSupport() {
-    throw new UnsupportedOperationException("No instances");
-  }
+  private static final List<Thread> HOOKS = ("true".equals(System.getProperty(
+      "org.newsclub.net.unix.rmi.collect-shutdown-hooks", "false"))) ? new ArrayList<>() : null;
 
   /**
    * Registers a shutdown hook to be executed upon Runtime shutdown.
@@ -35,9 +36,31 @@ final class ShutdownHookSupport {
    * NOTE: Only a weak reference to the hook is stored.
    * 
    * @param hook The hook to register.
+   * @return The thread, to be used with #removeShutdownHook
    */
-  public static void addWeakShutdownHook(ShutdownHook hook) {
-    Runtime.getRuntime().addShutdownHook(new ShutdownThread(new WeakReference<>(hook)));
+  public static Thread addWeakShutdownHook(ShutdownHook hook) {
+    Thread t = new ShutdownThread(new WeakReference<>(hook));
+    Runtime.getRuntime().addShutdownHook(t);
+    if (HOOKS != null) {
+      synchronized (HOOKS) {
+        HOOKS.add(t);
+      }
+    }
+    return t;
+  }
+
+  // only for unit testing
+  static void runHooks() {
+    if (HOOKS != null) {
+      List<Thread> list;
+      synchronized (HOOKS) {
+        list = new ArrayList<>(HOOKS);
+        HOOKS.clear();
+      }
+      for (Thread t : list) {
+        t.run();
+      }
+    }
   }
 
   /**
@@ -56,8 +79,9 @@ final class ShutdownHookSupport {
      * </code>
      * 
      * @param thread The current Thread.
+     * @throws Exception Most likely ignored
      */
-    void onRuntimeShutdown(Thread thread);
+    void onRuntimeShutdown(Thread thread) throws Exception;
   }
 
   /**
@@ -76,8 +100,13 @@ final class ShutdownHookSupport {
     @Override
     public void run() {
       ShutdownHook hook = ref.get();
-      if (hook != null) {
-        hook.onRuntimeShutdown(this);
+      ref.clear();
+      try {
+        if (hook != null) {
+          hook.onRuntimeShutdown(this);
+        }
+      } catch (Exception e) {
+        // ignore
       }
     }
   }

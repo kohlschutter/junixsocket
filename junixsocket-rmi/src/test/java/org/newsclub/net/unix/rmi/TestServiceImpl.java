@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix.rmi;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileDescriptor;
@@ -132,7 +134,10 @@ public class TestServiceImpl implements TestService, Closeable {
 
   @Override
   public AFUNIXSocketCredentials remotePeerCredentials() {
-    return AFUNIXSocketCredentials.remotePeerCredentials();
+    AFUNIXSocketCredentials creds = AFUNIXSocketCredentials.remotePeerCredentials();
+    AFUNIXSocketCredentials credsRpi = RemotePeerInfo.remotePeerCredentials();
+    assertEquals(creds, credsRpi);
+    return creds;
   }
 
   @SuppressWarnings("unchecked")
