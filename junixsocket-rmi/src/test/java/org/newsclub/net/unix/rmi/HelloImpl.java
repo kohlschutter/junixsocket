@@ -18,9 +18,6 @@
 package org.newsclub.net.unix.rmi;
 
 import java.io.IOException;
-import java.util.Objects;
-
-import org.newsclub.net.unix.AFUNIXSocketCredentials;
 
 /**
  * The implementation of the very simple {@link Hello} service.

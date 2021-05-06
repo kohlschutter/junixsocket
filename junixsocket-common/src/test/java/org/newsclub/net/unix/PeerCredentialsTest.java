@@ -58,6 +58,7 @@ public class PeerCredentialsTest extends SocketTestBase {
           try {
             sema.acquire();
           } catch (InterruptedException e) {
+            // ignore
           }
         }
       }; AFUNIXSocket socket = connectToServer()) {

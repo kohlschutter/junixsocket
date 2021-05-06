@@ -21,6 +21,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Simplifies handling shutdown hooks.
  * 
@@ -50,6 +52,7 @@ final class ShutdownHookSupport {
   }
 
   // only for unit testing
+  @SuppressFBWarnings({"RU_INVOKE_RUN"})
   static void runHooks() {
     if (HOOKS != null) {
       List<Thread> list;
@@ -58,7 +61,7 @@ final class ShutdownHookSupport {
         HOOKS.clear();
       }
       for (Thread t : list) {
-        t.run();
+        t.run(); // NOPMD -- code coverage fails if we call .start()
       }
     }
   }
