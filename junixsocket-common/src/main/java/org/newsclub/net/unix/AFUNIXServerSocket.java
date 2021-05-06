@@ -203,15 +203,20 @@ public class AFUNIXServerSocket extends ServerSocket {
         }
       }
     }
+
+    IOException ex = null;
     try {
       closeables.close(superException);
     } finally {
       if (endpoint != null && endpoint.hasFilename()) {
         File f = endpoint.getFile();
         if (!f.delete() && f.exists()) {
-          throw new IOException("Could not delete socket file after close: " + f);
+          ex = new IOException("Could not delete socket file after close: " + f);
         }
       }
+    }
+    if (ex != null) {
+      throw ex;
     }
   }
 
