@@ -36,7 +36,6 @@ public class TcpNoDelayTest extends SocketTestBase {
 
       @Override
       protected void handleConnection(final AFUNIXSocket sock) throws IOException {
-        stopAcceptingConnections();
       }
 
       @Override
@@ -68,7 +67,7 @@ public class TcpNoDelayTest extends SocketTestBase {
         }
       }
     } finally {
-      Files.delete(getSocketFile().toPath());
+      Files.deleteIfExists(getSocketFile().toPath());
     }
   }
 
@@ -78,7 +77,6 @@ public class TcpNoDelayTest extends SocketTestBase {
 
       @Override
       protected void handleConnection(final AFUNIXSocket sock) throws IOException {
-        stopAcceptingConnections();
       }
 
       @Override
@@ -101,7 +99,7 @@ public class TcpNoDelayTest extends SocketTestBase {
       }
 
     } finally {
-      Files.delete(getSocketFile().toPath());
+      Files.deleteIfExists(getSocketFile().toPath());
     }
   }
 }

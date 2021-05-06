@@ -17,10 +17,14 @@
  */
 package org.newsclub.net.unix;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
@@ -43,15 +47,16 @@ public class SoTimeoutTest extends SocketTestBase {
    */
   @Test
   public void issue14Fail() throws Exception {
+    Semaphore sema = new Semaphore(0);
     try (ServerThread serverThread = new ServerThread() {
 
       @Override
       protected void handleConnection(final AFUNIXSocket socket) throws IOException {
-        stopAcceptingConnections();
+        socket.close();
+        sema.release();
       }
     }; AFUNIXSocket sock = connectToServer()) {
-      // Sometimes this test would pass, so let's sleep for a moment
-      Thread.yield();
+      sema.acquire();
 
       try {
         sock.setSoTimeout((int) TimeUnit.SECONDS.toMillis(12));
@@ -69,6 +74,7 @@ public class SoTimeoutTest extends SocketTestBase {
    */
   @Test
   public void issue14Pass() throws Exception {
+    Semaphore sema = new Semaphore(0);
     try (ServerThread serverThread = new ServerThread() {
 
       @Override
@@ -77,12 +83,21 @@ public class SoTimeoutTest extends SocketTestBase {
         // client
         try (InputStream inputStream = sock.getInputStream()) {
           inputStream.read();
-        } finally {
-          stopAcceptingConnections();
+          sema.acquire();
+        } catch (InterruptedException | IOException e) {
+          // ignore
         }
       }
     }; AFUNIXSocket sock = connectToServer()) {
-      sock.setSoTimeout((int) TimeUnit.SECONDS.toMillis(12));
+      assertTrue(sock.isConnected());
+      assertFalse(sock.isClosed());
+      try {
+        sock.setSoTimeout((int) TimeUnit.SECONDS.toMillis(12));
+      } catch (IOException e) {
+        e.printStackTrace();
+        throw e;
+      }
+      sema.release();
     }
   }
 }

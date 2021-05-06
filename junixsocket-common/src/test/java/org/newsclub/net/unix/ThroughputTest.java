@@ -90,8 +90,6 @@ public class ThroughputTest extends SocketTestBase {
             outputStream.write(buf, 0, read);
           }
         }
-
-        stopAcceptingConnections();
       }
     }) {
 

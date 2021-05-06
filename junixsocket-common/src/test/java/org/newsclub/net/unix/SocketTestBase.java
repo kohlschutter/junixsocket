@@ -134,12 +134,15 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     public void shutdown() throws IOException {
       stopAcceptingConnections();
       if (serverSocket != null) {
+        onServerSocketClose();
         serverSocket.close();
       }
     }
 
     /**
      * Callback used to handle a connection call.
+     * 
+     * After returning from this call, the socket is closed.
      * 
      * Use {@link #stopAcceptingConnections()} to stop accepting new calls.
      * 
@@ -151,6 +154,12 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     /**
      * Called from within {@link #handleConnection(AFUNIXSocket)} to tell the server to no longer
      * accept new calls and to terminate the server thread.
+     * 
+     * Note that this will lead to existing client connections to be closed.
+     * 
+     * If you want to deny new connections but finish your work on the client side (in another
+     * thread), then please use semaphores etc. to ensure reaching a safe state before calling this
+     * method.
      */
     protected void stopAcceptingConnections() {
       loop.set(false);
@@ -185,19 +194,8 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     public final void run() {
       try {
         loop.set(true);
-        try { // NOPMD: ignore UseTryWithResources warning
-          while (loop.get()) {
-            acceptAndHandleConnection();
-          }
-        } finally {
-          onServerSocketClose();
-          if (serverSocket != null) {
-            try {
-              serverSocket.close();
-            } catch (IOException e) {
-              // ignore
-            }
-          }
+        while (loop.get()) {
+          acceptAndHandleConnection();
         }
       } catch (IOException e) {
         if (!loop.get()) {

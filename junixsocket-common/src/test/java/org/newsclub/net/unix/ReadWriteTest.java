@@ -99,8 +99,6 @@ public class ReadWriteTest extends SocketTestBase {
         int numReceived = in.read(buf);
         assertEquals(1, numReceived);
         assertEquals(buf[0], DATA.length);
-
-        stopAcceptingConnections();
       }
     }
   }
@@ -123,8 +121,6 @@ public class ReadWriteTest extends SocketTestBase {
         assertEquals(DATA.length, dataLength);
 
         assertEquals(-1, in.read());
-
-        stopAcceptingConnections();
       }
     }
   }

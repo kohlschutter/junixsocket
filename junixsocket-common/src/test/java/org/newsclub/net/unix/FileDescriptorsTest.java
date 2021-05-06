@@ -280,7 +280,7 @@ public class FileDescriptorsTest extends SocketTestBase {
           assertEquals("WORLD!", new String(buf, 0, numRead, "UTF-8"));
         }
       } finally {
-        Files.delete(tmpFile.toPath());
+        Files.deleteIfExists(tmpFile.toPath());
       }
     });
   }
@@ -333,7 +333,7 @@ public class FileDescriptorsTest extends SocketTestBase {
           assertEquals("ORLD!", new String(buf, 0, numRead, "UTF-8"));
         }
       } finally {
-        Files.delete(tmpFile.toPath());
+        Files.deleteIfExists(tmpFile.toPath());
       }
     });
   }

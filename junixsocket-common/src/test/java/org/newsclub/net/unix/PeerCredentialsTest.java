@@ -22,8 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Semaphore;
 
 import org.junit.jupiter.api.Test;
 
@@ -46,39 +48,45 @@ public class PeerCredentialsTest extends SocketTestBase {
       final CompletableFuture<AFUNIXSocketCredentials> clientCredsFuture =
           new CompletableFuture<>();
 
+      Semaphore sema = new Semaphore(0);
       try (ServerThread serverThread = new ServerThread() {
 
         @Override
         protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           AFUNIXSocketCredentials clientCreds = socket.getPeerCredentials();
           clientCredsFuture.complete(clientCreds);
-
-          stopAcceptingConnections();
+          try {
+            sema.acquire();
+          } catch (InterruptedException e) {
+          }
         }
       }; AFUNIXSocket socket = connectToServer()) {
-        AFUNIXSocketCredentials serverCreds = socket.getPeerCredentials();
-        AFUNIXSocketCredentials clientCreds = clientCredsFuture.get();
+        try (InputStream in = socket.getInputStream()) {
+          AFUNIXSocketCredentials serverCreds = socket.getPeerCredentials();
+          AFUNIXSocketCredentials clientCreds = clientCredsFuture.get();
+          sema.release();
 
-        assertEquals(clientCreds, serverCreds,
-            "Since our tests run in the same process, the peer credentials must be identical");
-        assertEquals(clientCreds.toString(), serverCreds.toString(),
-            "Since our tests run in the same process, the peer credentials must be identical");
-        assertEquals(clientCreds.getGid(), serverCreds.getGid(),
-            "Since our tests run in the same process, the peer credentials must be identical");
-        assertArrayEquals(clientCreds.getGids(), serverCreds.getGids(),
-            "Since our tests run in the same process, the peer credentials must be identical");
-        assertEquals(clientCreds.getUid(), serverCreds.getUid(),
-            "Since our tests run in the same process, the peer credentials must be identical");
-        assertEquals(clientCreds.getPid(), serverCreds.getPid(),
-            "Since our tests run in the same process, the peer credentials must be identical");
-        assertEquals(clientCreds.getUUID(), serverCreds.getUUID(),
-            "Since our tests run in the same process, the peer credentials must be identical");
+          assertEquals(clientCreds, serverCreds,
+              "Since our tests run in the same process, the peer credentials must be identical");
+          assertEquals(clientCreds.toString(), serverCreds.toString(),
+              "Since our tests run in the same process, the peer credentials must be identical");
+          assertEquals(clientCreds.getGid(), serverCreds.getGid(),
+              "Since our tests run in the same process, the peer credentials must be identical");
+          assertArrayEquals(clientCreds.getGids(), serverCreds.getGids(),
+              "Since our tests run in the same process, the peer credentials must be identical");
+          assertEquals(clientCreds.getUid(), serverCreds.getUid(),
+              "Since our tests run in the same process, the peer credentials must be identical");
+          assertEquals(clientCreds.getPid(), serverCreds.getPid(),
+              "Since our tests run in the same process, the peer credentials must be identical");
+          assertEquals(clientCreds.getUUID(), serverCreds.getUUID(),
+              "Since our tests run in the same process, the peer credentials must be identical");
 
-        if (clientCreds.getPid() == -1) {
-          // PID information is unvailable on this platform
-        } else {
-          assertEquals(ProcessUtil.getPid(), clientCreds.getPid(),
-              "The returned PID must be the one of our process");
+          if (clientCreds.getPid() == -1) {
+            // PID information is unvailable on this platform
+          } else {
+            assertEquals(ProcessUtil.getPid(), clientCreds.getPid(),
+                "The returned PID must be the one of our process");
+          }
         }
       }
     });

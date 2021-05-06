@@ -70,7 +70,7 @@ public class EndOfFileTest {
     }
 
     if (socketFile != null) {
-      Files.delete(socketFile.toPath());
+      Files.deleteIfExists(socketFile.toPath());
     }
 
     if (executor != null) {
