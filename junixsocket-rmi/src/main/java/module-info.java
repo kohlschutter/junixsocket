@@ -4,4 +4,5 @@ module org.newsclub.net.unix.rmi {
   requires org.newsclub.net.unix.server;
 
   exports org.newsclub.net.unix.rmi;
+  requires static com.kohlschutter.annotations.compiletime;
 }
