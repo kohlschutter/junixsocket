@@ -156,8 +156,8 @@ public class TestServiceImpl implements TestService, Closeable {
   }
 
   @Override
-  public <T extends RemoteCloseableThing> void remoteCloseableThingResetNumberOfCloseCalls(Class<T> klass)
-      throws IOException {
+  public <T extends RemoteCloseableThing> void remoteCloseableThingResetNumberOfCloseCalls(
+      Class<T> klass) throws IOException {
     if (klass.equals(NotCloseable.class)) {
       testNotCloseableImpl.resetCount();
     } else if (klass.equals(IsCloseable.class)) {

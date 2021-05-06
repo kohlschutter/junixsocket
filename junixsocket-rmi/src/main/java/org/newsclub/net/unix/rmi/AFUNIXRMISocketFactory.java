@@ -110,7 +110,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
   // only to be called from the constructor
   private void closeUponRuntimeShutdown() {
     ShutdownHookSupport.addWeakShutdownHook(new ShutdownHook() {
-      
+
       @Override
       public void onRuntimeShutdown(Thread thread) {
         try {
