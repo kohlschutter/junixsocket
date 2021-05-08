@@ -7,5 +7,9 @@ import java.net.SocketImpl;
  * 
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 abstract class SocketImplShim extends SocketImpl {
+  protected SocketImplShim() {
+    super();
+  }
 }
