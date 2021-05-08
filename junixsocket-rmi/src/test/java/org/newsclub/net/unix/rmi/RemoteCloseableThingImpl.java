@@ -47,7 +47,7 @@ abstract class RemoteCloseableThingImpl implements RemoteCloseableThing {
   }
 
   static class NotCloseableImpl extends RemoteCloseableThingImpl implements
-      org.newsclub.net.unix.rmi.RemoteCloseableThing.NotCloseable {
+      RemoteCloseableThing.NotCloseable {
     private static final long serialVersionUID = 1L;
 
     public NotCloseableImpl() throws RemoteException {
