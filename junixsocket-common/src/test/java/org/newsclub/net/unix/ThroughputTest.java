@@ -28,6 +28,7 @@ import java.net.StandardProtocolFamily;
 import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.security.SecureRandom;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -60,7 +61,7 @@ public class ThroughputTest extends SocketTestBase {
       "org.newsclub.net.unix.throughput-test.payload-size", 8192);
   private static final int NUM_SECONDS = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.seconds", 1);
-  private final Random random = new Random();
+  private static final Random RANDOM = new SecureRandom();
 
   public ThroughputTest() throws IOException {
     super();
@@ -114,7 +115,7 @@ public class ThroughputTest extends SocketTestBase {
 
             int read; // limited by net.local.stream.recvspace / sendspace etc.
             while (remaining > 0 && (read = inputStream.read(buf, offset, remaining)) >= 0) {
-              int pos = random.nextInt(read) + offset;
+              int pos = RANDOM.nextInt(read) + offset;
               if ((buf[pos] & 0xFF) != (pos % 256)) {
                 throw new IllegalStateException("Unexpected response from read: value@pos " + pos
                     + "=" + (buf[pos] & 0xFF) + " != " + (pos % 256));
@@ -228,7 +229,7 @@ public class ThroughputTest extends SocketTestBase {
             readTotal += read;
           }
 
-          int pos = random.nextInt(bb.limit());
+          int pos = RANDOM.nextInt(bb.limit());
           if ((bb.get(pos) & 0xFF) != (pos % 256)) {
             throw new IllegalStateException("Unexpected response from read");
           }
