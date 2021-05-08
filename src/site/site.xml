@@ -20,28 +20,31 @@
   <bannerLeft>
     <name>junixsocket — Unix Domain Sockets for Java</name>
     <!-- <name>${project.name}</name> -->
-    <!-- <src>https://project-website.example/images/project-logo.png</src> 
+    <!-- <src>https://project-website.example/images/project-logo.png</src>
       <href>https://project-website.example/</href> -->
   </bannerLeft>
-  
+
   <edit>${project.scm.url}</edit>
 
   <body>
     <!-- <menu ref="parent" /> -->
-    
+
     <menu name="Overview">
       <item name="Welcome" href="index.html" />
       <item name="New &amp; Noteworthy" href="changelog.html" />
       <item name="Quick Start" href="quickstart.html" />
       <item name="Compatibility" href="compatibility.html" />
-      <item name="Add junixsocket to your project" href="dependency.html" />
+      <item name="Add junixsocket to your project"
+        href="dependency.html" />
       <item name="FAQ" href="faq.html" />
     </menu>
 
     <menu name="Demo Code">
       <item name="Command line demos" href="demo.html" />
-      <item name="Source reference" href="junixsocket-demo/xref/index.html" />
-      <item name="Sending file descriptors" href="filedescriptors.html" />
+      <item name="Source reference"
+        href="junixsocket-demo/xref/index.html" />
+      <item name="Sending file descriptors"
+        href="filedescriptors.html" />
       <item name="Peer credentials" href="peercreds.html" />
     </menu>
 
@@ -49,11 +52,17 @@
       <item name="Developing junixsocket" href="development.html" />
       <item name="Unix Sockets Reference" href="unixsockets.html" />
       <item name="Custom architectures" href="customarch.html" />
-      <item name="Cross-Compiling with crossclang" href="crosscomp.html" />
+      <item name="Cross-Compiling with crossclang"
+        href="crosscomp.html" />
       <item name="Developing with Eclipse" href="eclipse.html" />
       <item name="Release Instructions" href="release.html" />
     </menu>
-    
+
+    <menu name="Reference">
+      <item name="Code Coverage"
+        href="junixsocket-codecoverage/jacoco-aggregate/index.html" />
+    </menu>
+
     <menu ref="modules" />
     <menu ref="reports" />
   </body>
