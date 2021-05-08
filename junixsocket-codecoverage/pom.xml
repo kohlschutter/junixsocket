@@ -15,7 +15,7 @@
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
     <kohlschutter.parent.directory>${project.parent.parent.basedir}</kohlschutter.parent.directory>
-    <deploy.skip>true</deploy.skip>
+    <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
   </properties>
 
