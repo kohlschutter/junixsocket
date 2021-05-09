@@ -62,19 +62,22 @@ public final class RemoteFileOutput extends RemoteFileDescriptorBase<FileOutputS
    * @return The FileOutputStream.
    * @throws IOException if the operation fails.
    */
-  public synchronized FileOutputStream asFileOutputStream() throws IOException {
-    if (resource != null) {
-      return resource;
-    }
+  public FileOutputStream asFileOutputStream() throws IOException {
     if ((getMagicValue() & RemoteFileDescriptorBase.BIT_WRITABLE) == 0) {
       throw new IOException("FileDescriptor is not writable");
     }
-    return (this.resource = new FileOutputStream(getFileDescriptor()) {
-      @Override
-      public synchronized void close() throws IOException {
-        RemoteFileOutput.this.close();
-        super.close();
+
+    return resource.accumulateAndGet(null, (prev, x) -> {
+      if (prev != null) {
+        return prev;
       }
+      return new FileOutputStream(getFileDescriptor()) {
+        @Override
+        public synchronized void close() throws IOException {
+          RemoteFileOutput.this.close();
+          super.close();
+        }
+      };
     });
   }
 }

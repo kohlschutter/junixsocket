@@ -62,22 +62,25 @@ public final class RemoteFileInput extends RemoteFileDescriptorBase<FileInputStr
    * @return The FileInputStream.
    * @throws IOException if the operation fails.
    */
-  public synchronized FileInputStream asFileInputStream() throws IOException {
-    if (resource != null) {
-      return resource;
-    }
+  public FileInputStream asFileInputStream() throws IOException {
     if ((getMagicValue() & RemoteFileDescriptorBase.BIT_READABLE) == 0) {
       throw new IOException("FileDescriptor is not readable");
     }
-    return (this.resource = new FileInputStream(getFileDescriptor()) {
-      @Override
-      public void close() throws IOException {
-        super.close();
 
-        synchronized (RemoteFileInput.this) {
-          RemoteFileInput.this.close();
-        }
+    return resource.accumulateAndGet(null, (prev, x) -> {
+      if (prev != null) {
+        return prev;
       }
+      return new FileInputStream(getFileDescriptor()) {
+        @Override
+        public void close() throws IOException {
+          super.close();
+
+          synchronized (RemoteFileInput.this) {
+            RemoteFileInput.this.close();
+          }
+        }
+      };
     });
   }
 }

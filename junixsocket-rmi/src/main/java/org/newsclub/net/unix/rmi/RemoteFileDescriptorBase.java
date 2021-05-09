@@ -25,12 +25,16 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.security.SecureRandom;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
@@ -59,16 +63,18 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
   protected static final int BIT_WRITABLE = 1 << 1;
 
   private static final long serialVersionUID = 1L;
-  private static final Random RANDOM = new Random();
+  private static final Random RANDOM = new SecureRandom();
+
+  private final AtomicReference<AFUNIXSocket> remoteServer = new AtomicReference<>();
 
   /**
-   * An optional, closeable resource that is related to this instance. If non-null, this will be
-   * closed upon {@link #close()}.
+   * An optional, closeable resource that is related to this instance. If the reference is non-null,
+   * this will be closed upon {@link #close()}.
    * 
    * For unidirectional implementations, this could be the corresponding input/output stream. For
    * bidirectional implementations (e.g., a Socket, Pipe, etc.), this should close both directions.
    */
-  protected transient T resource;
+  protected final transient AtomicReference<T> resource = new AtomicReference<>();
 
   private int magicValue;
   private FileDescriptor fd;
@@ -84,13 +90,14 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
 
   RemoteFileDescriptorBase(AFUNIXRMISocketFactory socketFactory, T stream, FileDescriptor fd,
       int magicValue) {
-    this.resource = stream;
+    this.resource.set(stream);
     this.socketFactory = socketFactory;
     this.fd = fd;
     this.magicValue = magicValue;
   }
 
   @Override
+  @SuppressWarnings("PMD.ExceptionAsFlowControl")
   public final void writeExternal(ObjectOutput objOut) throws IOException {
     if (fd == null || !fd.valid()) {
       throw new IOException("No or invalid file descriptor");
@@ -107,11 +114,29 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
         @Override
         protected void doServeSocket(Socket socket) throws IOException {
           AFUNIXSocket unixSocket = (AFUNIXSocket) socket;
-          try (DataOutputStream out = new DataOutputStream(socket.getOutputStream())) {
+          try (DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+              InputStream in = socket.getInputStream();) {
             unixSocket.setOutboundFileDescriptors(fd);
             out.writeInt(randomValue);
+
+            try {
+              socket.setSoTimeout(CONNECT_TIMEOUT);
+            } catch (IOException e) {
+              // ignore
+            }
+
+            // This call blocks until the remote is done with the file descriptor, or we time out.
+            int response = in.read();
+            if (response != 1) {
+              if (response == -1) {
+                // EOF, remote terminated
+              } else {
+                throw new IOException("Unexpected response: " + response);
+              }
+            }
+          } finally {
+            stop();
           }
-          stop();
         }
 
         @Override
@@ -136,6 +161,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
     objOut.flush();
   }
 
+  @SuppressWarnings("resource")
   @Override
   public final void readExternal(ObjectInput objIn) throws IOException, ClassNotFoundException {
     Object obj = objIn.readObject();
@@ -156,30 +182,34 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
 
     int port = objIn.readInt();
     FileDescriptor[] descriptors;
-    try (Socket sock = socketFactory.createSocket("", port); //
-        AFUNIXSocket socket = (AFUNIXSocket) sock) {
-      try {
-        socket.setSoTimeout(CONNECT_TIMEOUT);
-      } catch (IOException e) { // NOPMD
-        // ignore
-        // FIXME: spurious IOExceptions ("socket closed) on Solaris only; ignoring them for now
-      }
-      try (DataInputStream in1 = new DataInputStream(socket.getInputStream())) {
-        socket.ensureAncillaryReceiveBufferSize(128);
 
-        int random = in1.readInt();
+    AFUNIXSocket socket = (AFUNIXSocket) socketFactory.createSocket("", port);
+    if (remoteServer.getAndSet(socket) != null) {
+      throw new IllegalStateException("remoteServer was not null");
+    }
 
-        if (random != randomValue) {
-          throw new IOException("Invalid socket connection");
-        }
-        descriptors = socket.getReceivedFileDescriptors();
+    try {
+      socket.setSoTimeout(CONNECT_TIMEOUT);
+    } catch (IOException e) {
+      // ignore
+    }
+
+    try (DataInputStream in1 = new DataInputStream(socket.getInputStream())) {
+      socket.ensureAncillaryReceiveBufferSize(128);
+
+      int random = in1.readInt();
+
+      if (random != randomValue) {
+        throw new IOException("Invalid socket connection");
       }
+      descriptors = socket.getReceivedFileDescriptors();
+
+      if (descriptors == null || descriptors.length != 1) {
+        throw new IOException("Did not receive exactly 1 file descriptor but "
+            + (descriptors == null ? 0 : descriptors.length));
+      }
+      this.fd = descriptors[0];
     }
-    if (descriptors == null || descriptors.length != 1) {
-      throw new IOException("Did not receive exactly 1 file descriptor but " + (descriptors == null
-          ? 0 : descriptors.length));
-    }
-    this.fd = descriptors[0];
   }
 
   /**
@@ -207,11 +237,19 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
     return magicValue;
   }
 
+  @SuppressWarnings("resource")
   @Override
-  public synchronized void close() throws IOException {
-    T c = this.resource;
+  public void close() throws IOException {
+    AFUNIXSocket remoteSocket = remoteServer.getAndSet(null);
+    if (remoteSocket != null) {
+      try (OutputStream out = remoteSocket.getOutputStream()) {
+        out.write(1);
+      }
+      remoteSocket.close();
+    }
+
+    T c = this.resource.getAndSet(null);
     if (c != null) {
-      this.resource = null;
       if (c instanceof Closeable) {
         ((Closeable) c).close();
       }
