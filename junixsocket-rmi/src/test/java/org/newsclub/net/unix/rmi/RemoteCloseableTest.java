@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.rmi.NoSuchObjectException;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.rmi.RemoteCloseableThing.IsCloseable;
 import org.newsclub.net.unix.rmi.RemoteCloseableThing.NotCloseable;
@@ -82,6 +83,8 @@ public class RemoteCloseableTest extends TestBase {
 
     try (RemoteCloseable<? extends NotCloseable> remoteCloseable = svc.remoteCloseable(
         NotCloseable.class)) {
+      @SuppressWarnings("null")
+      @NonNull
       RemoteCloseableThing testNotCloseable = remoteCloseable.get();
       Objects.requireNonNull(testNotCloseable.toString());
       assertEquals(0, svc.remoteCloseableThingNumberOfCloseCalls(NotCloseable.class));

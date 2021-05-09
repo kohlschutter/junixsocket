@@ -248,6 +248,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
       remoteSocket.close();
     }
 
+    @SuppressWarnings("null")
     T c = this.resource.getAndSet(null);
     if (c != null) {
       if (c instanceof Closeable) {
