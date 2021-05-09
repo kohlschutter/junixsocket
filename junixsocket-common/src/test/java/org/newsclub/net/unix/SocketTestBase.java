@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Some base functionality for socket tests.
@@ -194,6 +194,7 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     public final void run() {
       try {
         loop.set(true);
+        onServerReady();
         while (loop.get()) {
           acceptAndHandleConnection();
         }
@@ -207,6 +208,12 @@ public class SocketTestBase { // NOTE: needs to be public for junit
       } finally {
         sema.release();
       }
+    }
+
+    /**
+     * Called right before starting the accept loop.
+     */
+    protected void onServerReady() {
     }
 
     /**

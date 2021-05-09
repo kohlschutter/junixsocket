@@ -1,5 +1,10 @@
 package org.newsclub.net.unix;
 
+import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
+
+import com.kohlschutter.testutil.AvailabilityRequirement;
+
 /**
  * Tests the {@code Socket#getOption(SocketOption)} API available since Java 9.
  * 
@@ -9,4 +14,17 @@ package org.newsclub.net.unix;
  * @author Christian Kohlschütter
  */
 public class StandardSocketOptionsTest {
+  @Test
+  @AvailabilityRequirement(classes = {"java.lang.ProcessHandle"}, //
+      message = "This test requires Java 9 or later")
+  public void testUnconnectedServerSocketOptions() throws Exception {
+    throw new TestAbortedException();
+  }
+
+  @Test
+  @AvailabilityRequirement(classes = {"java.lang.ProcessHandle"}, //
+      message = "This test requires Java 9 or later")
+  public void testSocketOptions() throws Exception {
+    throw new TestAbortedException();
+  }
 }

@@ -3,13 +3,22 @@ package org.newsclub.net.unix;
 import java.net.SocketImpl;
 
 /**
- * A shim that is filled with additional overrides in Java 9+ (and therefore empty in Java 7/8).
+ * A shim that is filled with Java version-specific overrides. This variant is for Java 7 and 8.
  * 
  * @author Christian Kohlschütter
  */
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 abstract class SocketImplShim extends SocketImpl {
   protected SocketImplShim() {
     super();
+  }
+
+  @SuppressWarnings("all")
+  @Override
+  protected final void finalize() {
+    try {
+      close();
+    } catch (Exception e) {
+      // nothing that can be done here
+    }
   }
 }

@@ -36,7 +36,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * The Java-part of the {@link AFUNIXSocket} implementation.
@@ -50,14 +52,10 @@ class AFUNIXSocketImpl extends SocketImplShim {
   private static final int SHUT_RD_WR = 2;
   private static final ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate(0);
 
-  private AFUNIXSocketAddress socketAddress;
+  private final SocketCleanableState cleanableState;
 
-  /**
-   * We keep track of the server's inode to detect when another server connects to our address.
-   */
-  private long inode = -1;
-  private volatile boolean closed = false;
-  private volatile boolean bound = false;
+  private final AtomicBoolean closed = new AtomicBoolean(false);
+  private final AtomicBoolean bound = new AtomicBoolean(false);
   private boolean connected = false;
 
   private volatile boolean closedInputStream = false;
@@ -66,8 +64,6 @@ class AFUNIXSocketImpl extends SocketImplShim {
   private final AFUNIXInputStream in = newInputStream();
   private final AFUNIXOutputStream out = newOutputStream();
 
-  private final AtomicInteger pendingAccepts = new AtomicInteger(0);
-
   private boolean reuseAddr = true;
 
   private ByteBuffer ancillaryReceiveBuffer = EMPTY_BUFFER;
@@ -75,15 +71,113 @@ class AFUNIXSocketImpl extends SocketImplShim {
       new LinkedList<FileDescriptor[]>());
   private int[] pendingFileDescriptors = null;
 
-  private final Map<FileDescriptor, Integer> closeableFileDescriptors = Collections.synchronizedMap(
-      new HashMap<FileDescriptor, Integer>());
-
   private int timeout = 0;
+
+  /**
+   * When the {@link AFUNIXSocketImpl} becomes unreachable (but not yet closed), we must ensure that
+   * the underlying socket and all related file descriptors are closed.
+   *
+   * @author Christian Kohlschütter
+   */
+  private static class SocketCleanableState extends CleanableState {
+    private final FileDescriptor fd = new FileDescriptor();
+    private final AtomicInteger pendingAccepts = new AtomicInteger(0);
+    private final Map<FileDescriptor, Integer> openReceivedFileDescriptors = Collections
+        .synchronizedMap(new HashMap<FileDescriptor, Integer>());
+
+    /**
+     * We keep track of the server's inode to detect when another server connects to our address.
+     */
+    private final AtomicLong inode = new AtomicLong(-1);
+
+    private AFUNIXSocketAddress socketAddress;
+
+    private SocketCleanableState(AFUNIXSocketImpl observed) {
+      super(observed);
+    }
+
+    @Override
+    protected void doClean() {
+      if (fd != null && fd.valid()) {
+        try {
+          doClose();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+      closeReceivedFileDescriptors();
+    }
+
+    private void incPendingAccepts() throws SocketException {
+      if (pendingAccepts.incrementAndGet() >= Integer.MAX_VALUE) {
+        throw new SocketException("Too many pending accepts");
+      }
+    }
+
+    private void decPendingAccepts() throws SocketException {
+      pendingAccepts.decrementAndGet();
+    }
+
+    private void doClose() throws IOException {
+      NativeUnixSocket.shutdown(fd, SHUT_RD_WR);
+
+      if (socketAddress != null && socketAddress.getBytes() != null && inode.get() >= 0) {
+        unblockAccepts();
+      }
+
+      NativeUnixSocket.close(fd);
+    }
+
+    /**
+     * Unblock other threads that are currently waiting on accept, simply by connecting to the
+     * socket.
+     */
+    private void unblockAccepts() {
+      while (pendingAccepts.get() > 0) {
+        try {
+          FileDescriptor tmpFd = new FileDescriptor();
+
+          try {
+            NativeUnixSocket.connect(socketAddress.getBytes(), tmpFd, inode.get());
+          } catch (IOException e) {
+            // there's nothing more we can do to unlock these accepts
+            // (e.g., SocketException: No such file or directory)
+            return;
+          }
+          try {
+            NativeUnixSocket.shutdown(tmpFd, SHUT_RD_WR);
+          } catch (Exception e) {
+            // ignore
+          }
+          try {
+            NativeUnixSocket.close(tmpFd);
+          } catch (Exception e) {
+            // ignore
+          }
+        } catch (Exception e) {
+          // ignore
+        }
+      }
+    }
+
+    private void closeReceivedFileDescriptors() {
+      synchronized (openReceivedFileDescriptors) {
+        for (FileDescriptor desc : openReceivedFileDescriptors.keySet()) {
+          try {
+            NativeUnixSocket.close(desc);
+          } catch (Exception e) {
+            // ignore
+          }
+        }
+      }
+    }
+  }
 
   protected AFUNIXSocketImpl() {
     super();
-    this.fd = new FileDescriptor();
     this.address = InetAddress.getLoopbackAddress();
+    this.cleanableState = new SocketCleanableState(this);
+    this.fd = cleanableState.fd;
   }
 
   protected AFUNIXInputStream newInputStream() {
@@ -99,68 +193,53 @@ class AFUNIXSocketImpl extends SocketImplShim {
   }
 
   boolean isBound() {
-    return bound;
+    return bound.get();
   }
 
-  // NOTE: This prevents a file descriptor leak
-  // see conversation in https://github.com/kohlschutter/junixsocket/pull/29
-  @SuppressWarnings("all")
-  @Override
-  protected final void finalize() {
-    try {
-      // prevent socket file descriptor leakage
-      close();
-    } catch (Throwable t) {
-      // nothing that can be done here
-    }
-
-    // Also close all file descriptors that we've received over the wire
-    try {
-      synchronized (closeableFileDescriptors) {
-        for (FileDescriptor fd : closeableFileDescriptors.keySet()) {
-          NativeUnixSocket.close(fd);
-        }
-      }
-    } catch (Throwable t) {
-      // nothing that can be done here
-    }
+  private boolean isClosed() {
+    return closed.get();
   }
 
   @Override
   protected void accept(SocketImpl socket) throws IOException {
     FileDescriptor fdesc = validFdOrException();
 
+    AFUNIXSocketAddress socketAddress = cleanableState.socketAddress;
+
     final AFUNIXSocketImpl si = (AFUNIXSocketImpl) socket;
     try {
-      if (pendingAccepts.incrementAndGet() >= Integer.MAX_VALUE) {
-        throw new SocketException("Too many pending accepts");
-      } else {
-        if (!bound || closed) {
-          throw new SocketException("Socket is closed");
-        }
-
-        NativeUnixSocket.accept(socketAddress.getBytes(), fdesc, si.fd, inode, this.timeout);
-        if (!bound || closed) {
-          try {
-            NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
-          } catch (Exception e) {
-            // ignore
-          }
-          try {
-            NativeUnixSocket.close(si.fd);
-          } catch (Exception e) {
-            // ignore
-          }
-          throw new SocketException("Socket is closed");
-        }
+      cleanableState.incPendingAccepts();
+      if (!isBound() || isClosed()) {
+        throw new SocketException("Socket is closed");
       }
+
+      NativeUnixSocket.accept(socketAddress.getBytes(), fdesc, si.fd, cleanableState.inode.get(),
+          this.timeout);
+      if (!isBound() || isClosed()) {
+        try {
+          NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
+        } catch (Exception e) {
+          // ignore
+        }
+        try {
+          NativeUnixSocket.close(si.fd);
+        } catch (Exception e) {
+          // ignore
+        }
+        throw new SocketException("Socket is closed");
+      }
+
     } finally {
-      pendingAccepts.decrementAndGet();
+      cleanableState.decPendingAccepts();
     }
-    si.socketAddress = socketAddress;
+    si.setSocketAddress(socketAddress);
     si.connected = true;
     si.port = socketAddress.getPort();
     si.address = socketAddress.getAddress();
+  }
+
+  private void setSocketAddress(AFUNIXSocketAddress socketAddress) {
+    this.cleanableState.socketAddress = socketAddress;
   }
 
   @Override
@@ -176,13 +255,14 @@ class AFUNIXSocketImpl extends SocketImplShim {
     if (!(addr instanceof AFUNIXSocketAddress)) {
       throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
     }
+    AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
 
-    this.socketAddress = (AFUNIXSocketAddress) addr;
+    this.setSocketAddress(socketAddress);
     this.address = socketAddress.getAddress();
 
-    this.inode = NativeUnixSocket.bind(socketAddress.getBytes(), fd, options);
+    cleanableState.inode.set(NativeUnixSocket.bind(socketAddress.getBytes(), fd, options));
     validFdOrException();
-    bound = true;
+    bound.set(true);
     this.localport = socketAddress.getPort();
   }
 
@@ -198,54 +278,10 @@ class AFUNIXSocketImpl extends SocketImplShim {
     }
   }
 
-  /**
-   * Unblock other threads that are currently waiting on accept, simply by connecting to the socket.
-   */
-  private void unblockAccepts() {
-    while (pendingAccepts.get() > 0) {
-      try {
-        FileDescriptor tmpFd = new FileDescriptor();
-
-        try {
-          NativeUnixSocket.connect(socketAddress.getBytes(), tmpFd, inode);
-        } catch (IOException e) {
-          // there's nothing more we can do to unlock these accepts
-          // (e.g., SocketException: No such file or directory)
-          return;
-        }
-        try {
-          NativeUnixSocket.shutdown(tmpFd, SHUT_RD_WR);
-        } catch (Exception e) {
-          // ignore
-        }
-        try {
-          NativeUnixSocket.close(tmpFd);
-        } catch (Exception e) {
-          // ignore
-        }
-      } catch (Exception e) {
-        // ignore
-      }
-    }
-  }
-
   @Override
-  protected final synchronized void close() throws IOException {
-    boolean wasBound = bound;
-    bound = false;
-
-    FileDescriptor fdesc = validFd();
-    if (fdesc != null) {
-      NativeUnixSocket.shutdown(fdesc, SHUT_RD_WR);
-
-      closed = true;
-      if (wasBound && socketAddress != null && socketAddress.getBytes() != null && inode >= 0) {
-        unblockAccepts();
-      }
-
-      NativeUnixSocket.close(fdesc);
-    }
-    closed = true;
+  protected final void close() throws IOException {
+    closed.set(true);
+    cleanableState.runCleaner();
   }
 
   @Override
@@ -265,7 +301,8 @@ class AFUNIXSocketImpl extends SocketImplShim {
     if (!(addr instanceof AFUNIXSocketAddress)) {
       throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
     }
-    this.socketAddress = (AFUNIXSocketAddress) addr;
+    AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
+    setSocketAddress(socketAddress);
     NativeUnixSocket.connect(socketAddress.getBytes(), fd, -1);
     validFdOrException();
     this.address = socketAddress.getAddress();
@@ -280,7 +317,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   @Override
   protected InputStream getInputStream() throws IOException {
-    if (!connected && !bound) {
+    if (!connected && !isBound()) {
       throw new IOException("Not connected/not bound");
     }
     validFdOrException();
@@ -289,7 +326,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   @Override
   protected OutputStream getOutputStream() throws IOException {
-    if (!connected && !bound) {
+    if (!connected && !isBound()) {
       throw new IOException("Not connected/not bound");
     }
     validFdOrException();
@@ -458,7 +495,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
   }
 
   private synchronized FileDescriptor validFd() {
-    if (closed) {
+    if (isClosed()) {
       return null;
     }
     FileDescriptor descriptor = this.fd;
@@ -472,8 +509,8 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   @Override
   public String toString() {
-    return super.toString() + "[fd=" + fd + "; addr=" + this.socketAddress + "; connected="
-        + connected + "; bound=" + bound + "]";
+    return super.toString() + "[fd=" + fd + "; addr=" + this.cleanableState.socketAddress
+        + "; connected=" + connected + "; bound=" + bound + "]";
   }
 
   private static int expectInteger(Object value) throws SocketException {
@@ -498,7 +535,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   @Override
   public Object getOption(int optID) throws SocketException {
-    if (closed) {
+    if (isClosed()) {
       throw new SocketException("Socket is closed");
     }
     if (optID == SocketOptions.SO_REUSEADDR) {
@@ -532,7 +569,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   @Override
   public void setOption(int optID, Object value) throws SocketException {
-    if (closed) {
+    if (isClosed()) {
       throw new SocketException("Socket is closed");
     }
     if (optID == SocketOptions.SO_REUSEADDR) {
@@ -699,14 +736,14 @@ class AFUNIXSocketImpl extends SocketImplShim {
       NativeUnixSocket.initFD(fdesc, fds[i]);
       descriptors[i] = fdesc;
 
-      closeableFileDescriptors.put(fdesc, fds[i]);
+      cleanableState.openReceivedFileDescriptors.put(fdesc, fds[i]);
 
       @SuppressWarnings("resource")
       final Closeable cleanup = new Closeable() {
 
         @Override
         public void close() throws IOException {
-          closeableFileDescriptors.remove(fdesc);
+          cleanableState.openReceivedFileDescriptors.remove(fdesc);
         }
       };
       NativeUnixSocket.attachCloseable(fdesc, cleanup);

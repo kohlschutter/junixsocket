@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A shim that is filled with additional overrides in Java 9+ (and therefore empty in Java 7/8).
+ * A shim that is filled with Java version-specific overrides. This variant is for Java 9 and above.
  * 
  * @author Christian Kohlschütter
  */
