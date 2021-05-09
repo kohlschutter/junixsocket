@@ -105,7 +105,7 @@ public class FinalizeTest extends SocketTestBase {
 
       assertEquals(linesBefore - 1, linesAfter,
           "Our unix socket file handle should have been cleared out");
-      process.destroyForcibly();
+      process.destroy();
       process.waitFor();
     } catch (ExecutionException e) {
       throw ExceptionUtil.unwrapExecutionException(e);
@@ -117,13 +117,6 @@ public class FinalizeTest extends SocketTestBase {
 
   private Process launchServerProcess(String socketPath) throws IOException {
     return new ForkedVM() {
-      @Override
-      protected void onJavaOption(String option) {
-        if (!option.startsWith("-javaagent")) {
-          super.onJavaOption(option);
-        }
-      }
-
       @Override
       protected void onJavaMainClass(String arg) {
         super.onJavaOption("-Dtest.junixsocket.socket=" + socketPath);

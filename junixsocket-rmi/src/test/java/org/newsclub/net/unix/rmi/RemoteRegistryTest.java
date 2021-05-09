@@ -199,13 +199,6 @@ public class RemoteRegistryTest {
     private Process launchRegistryProcess() throws IOException {
       return new ForkedVM() {
         @Override
-        protected void onJavaOption(String option) {
-          if (!option.startsWith("-javaagent")) {
-            super.onJavaOption(option);
-          }
-        }
-
-        @Override
         protected void onJavaMainClass(String arg) {
           super.onJavaOption("-Drmitest.junixsocket.socket-dir=" + socketDir.getPath());
           super.onJavaOption("-Drmitest.junixsocket.create-registry=true");
