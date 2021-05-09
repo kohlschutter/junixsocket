@@ -37,10 +37,6 @@ import org.junit.jupiter.api.Test;
 public class AcceptTimeoutTest extends SocketTestBase {
   private static final int TIMING_INACCURACY_MILLIS = 1000;
 
-  public AcceptTimeoutTest() throws IOException {
-    super();
-  }
-
   @Test
   public void testCatchTimeout() throws Exception {
     final int timeoutMillis = 500;

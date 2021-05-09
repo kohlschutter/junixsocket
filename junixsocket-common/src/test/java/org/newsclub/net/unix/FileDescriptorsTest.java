@@ -43,10 +43,6 @@ import org.junit.jupiter.api.Test;
 @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_FILE_DESCRIPTORS)
 // CPD-OFF - Skip code-duplication checks
 public class FileDescriptorsTest extends SocketTestBase {
-  public FileDescriptorsTest() throws IOException {
-    super();
-  }
-
   @Test
   public void testSendRecvFileDescriptors() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {

@@ -26,10 +26,6 @@ import java.nio.file.Files;
 import org.junit.jupiter.api.Test;
 
 public class TcpNoDelayTest extends SocketTestBase {
-  public TcpNoDelayTest() throws IOException {
-    super();
-  }
-
   @Test
   public void testStrictImpl() throws Exception {
     try (ServerThread serverThread = new ServerThread() {

@@ -40,8 +40,12 @@ public class SocketTestBase { // NOTE: needs to be public for junit
   private final AFUNIXSocketAddress serverAddress;
   private Exception caller = new Exception();
 
-  protected SocketTestBase() throws IOException {
-    this.serverAddress = new AFUNIXSocketAddress(SOCKET_FILE);
+  protected SocketTestBase() {
+    try {
+      this.serverAddress = new AFUNIXSocketAddress(SOCKET_FILE);
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
   }
 
   @BeforeEach

@@ -35,6 +35,7 @@ public class AFUNIXSocketCapabilityCondition implements ExecutionCondition {
 
     Optional<AnnotatedElement> element = context.getElement();
     if (element.isPresent()) {
+      @SuppressWarnings("null")
       AFUNIXSocketCapabilityRequirement requirement = element.get().getAnnotation(
           AFUNIXSocketCapabilityRequirement.class);
       if (requirement != null) {

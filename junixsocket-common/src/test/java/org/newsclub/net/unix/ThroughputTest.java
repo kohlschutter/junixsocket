@@ -63,10 +63,6 @@ public class ThroughputTest extends SocketTestBase {
       "org.newsclub.net.unix.throughput-test.seconds", 1);
   private static final Random RANDOM = new SecureRandom();
 
-  public ThroughputTest() throws IOException {
-    super();
-  }
-
   private static byte[] createTestData(int size) {
     byte[] buf = new byte[size];
     for (int i = 0; i < buf.length; i++) {

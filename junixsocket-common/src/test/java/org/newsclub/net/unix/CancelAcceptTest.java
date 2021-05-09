@@ -36,10 +36,6 @@ import org.junit.jupiter.api.Test;
 public class CancelAcceptTest extends SocketTestBase {
   private boolean serverSocketClosed = false;
 
-  public CancelAcceptTest() throws IOException {
-    super();
-  }
-
   @Test
   public void issue6test1() throws Exception {
     serverSocketClosed = false;

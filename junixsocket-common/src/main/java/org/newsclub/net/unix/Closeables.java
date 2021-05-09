@@ -83,6 +83,7 @@ public final class Closeables implements Closeable {
   private static final class HardReference<V> extends WeakReference<V> {
     private final V strongRef;
 
+    @SuppressWarnings("null")
     private HardReference(final V referent) {
       super(null);
       this.strongRef = referent;

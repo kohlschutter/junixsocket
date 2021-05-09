@@ -32,10 +32,6 @@ public class AvailableTest extends SocketTestBase {
   private static final int BYTES_SENT = 23;
   private static final int TIME_TO_SLEEP = 100;
 
-  public AvailableTest() throws IOException {
-    super();
-  }
-
   private void receiveBytes(final Socket sock, final int expected) throws IOException {
     @SuppressWarnings("resource")
     final InputStream in = sock.getInputStream();

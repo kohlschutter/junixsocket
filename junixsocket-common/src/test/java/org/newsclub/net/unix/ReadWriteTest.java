@@ -38,10 +38,6 @@ import org.junit.jupiter.api.Test;
 public class ReadWriteTest extends SocketTestBase {
   private static final byte[] DATA = {-127, -2, -1, 0, 1, 2, 127, 1, 2, 4, 8, 16, 31};
 
-  public ReadWriteTest() throws IOException {
-    super();
-  }
-
   @Test
   public void testReceiveWithByteArraySendWithByteArray() {
     assertTimeout(Duration.ofSeconds(2), () -> {

@@ -38,10 +38,6 @@ import com.kohlschutter.util.ProcessUtil;
  */
 @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_PEER_CREDENTIALS)
 public class PeerCredentialsTest extends SocketTestBase {
-  public PeerCredentialsTest() throws IOException {
-    super();
-  }
-
   @Test
   public void testSameProcess() throws Exception {
     assertTimeout(Duration.ofSeconds(10), () -> {

@@ -35,10 +35,6 @@ import org.junit.jupiter.api.Test;
  * @see <a href="http://code.google.com/p/junixsocket/issues/detail?id=14">Issue 14</a>
  */
 public class SoTimeoutTest extends SocketTestBase {
-  public SoTimeoutTest() throws IOException {
-    super();
-  }
-
   /**
    * Triggers a case where {@link Socket#setSoTimeout(int)} fails on some platforms: when the socket
    * is closed.

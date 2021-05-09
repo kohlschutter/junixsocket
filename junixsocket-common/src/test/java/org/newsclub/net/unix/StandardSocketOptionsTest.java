@@ -52,10 +52,6 @@ import com.kohlschutter.testutil.SoftAssertions;
 public class StandardSocketOptionsTest extends SocketTestBase {
   private SoftAssertions softAssertions;
 
-  public StandardSocketOptionsTest() throws IOException {
-    super();
-  }
-
   @BeforeEach
   public void beforeEach() {
     softAssertions = new SoftAssertions();
@@ -134,6 +130,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
       this.sock = sock;
     }
 
+    @SuppressWarnings("null")
     @Override
     public void close() throws AssertionError, IOException {
       Set<SocketOption<?>> sockSupportedOptions = supportedOptions();
