@@ -35,8 +35,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 import org.junit.jupiter.engine.JupiterTestEngine;
 import org.junit.jupiter.engine.discovery.DiscoverySelectorResolver;
@@ -110,52 +111,33 @@ public class Selftest {
     st.checkSupported();
     st.checkCapabilities();
 
-    st.runTests("junixsocket-common", new String[] {
-        "org.newsclub.net.unix.AcceptTimeoutTest", //
-        "org.newsclub.net.unix.AFUNIXSocketAddressTest", //
-        "org.newsclub.net.unix.AFUNIXSocketTest", //
-        "org.newsclub.net.unix.AvailableTest", //
-        "org.newsclub.net.unix.BufferOverflowTest", //
-        "org.newsclub.net.unix.CancelAcceptTest", //
-        "org.newsclub.net.unix.EndOfFileJavaTest", //
-        "org.newsclub.net.unix.EndOfFileTest", //
-        "org.newsclub.net.unix.FileDescriptorsTest", //
-        "org.newsclub.net.unix.PeerCredentialsTest", //
-        "org.newsclub.net.unix.ReadWriteTest", //
-        "org.newsclub.net.unix.ServerSocketCloseTest", //
-        "org.newsclub.net.unix.SoTimeoutTest", //
-        "org.newsclub.net.unix.StandardSocketOptionsTest", //
-        "org.newsclub.net.unix.TcpNoDelayTest", //
-        "org.newsclub.net.unix.ThroughputTest",//
-    });
-
-    st.runTests("junixsocket-rmi", new String[] {
-        "org.newsclub.net.unix.rmi.RemoteFileDescriptorTest", //
-    });
+    for (Entry<String, Class<?>[]> en : new SelftestProvider().tests().entrySet()) {
+      st.runTests(en.getKey(), en.getValue());
+    }
 
     st.dumpResults();
     System.exit(st.isFail() ? 1 : 0); // NOPMD
   }
 
   public void printExplanation() throws IOException {
-    out.println("junixsocket selftest");
-    out.println();
     out.println(
         "This program determines whether junixsocket is supported on the current platform.");
     out.println("The final line should say whether the selftest passed or failed.");
+    out.println();
     out.println(
         "If the selftest failed, please visit https://github.com/kohlschutter/junixsocket/issues");
     out.println("and file a new bug report with the output below.");
     out.println();
-    out.println("selftest version " + AFUNIXSocket.getVersion());
+    out.println("junixsocket selftest version " + AFUNIXSocket.getVersion());
     out.println();
   }
 
   public void dumpSystemProperties() {
     out.println("System properties:");
     out.println();
-    for (Object key : new TreeSet<>(System.getProperties().keySet())) {
-      String value = System.getProperty(key.toString());
+    for (Map.Entry<Object, Object> en : new TreeMap<>(System.getProperties()).entrySet()) {
+      String key = String.valueOf(en.getKey());
+      String value = String.valueOf(en.getValue());
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < value.length(); i++) {
         char c = value.charAt(i);
@@ -317,9 +299,9 @@ public class Selftest {
    * Runs the given test classes for the specified module.
    * 
    * @param module The module name.
-   * @param classesToTest The classes to test.
+   * @param testClasses The test classes.
    */
-  public void runTests(String module, String[] classesToTest) {
+  public void runTests(String module, Class<?>[] testClasses) {
     out.println("Testing \"" + module + "\"...");
 
     Object summary;
@@ -332,12 +314,13 @@ public class Selftest {
       options.setAnsiColorOutputDisabled(true);
       options.setTheme(Theme.ASCII);
 
-      List<String> list = new ArrayList<>(classesToTest.length);
-      for (String className : classesToTest) {
-        if (classesToTest == null || classesToTest.length == 0) {
+      List<String> list = new ArrayList<>(testClasses.length);
+      for (Class<?> testClass : testClasses) {
+        if (testClass == null) {
           // ignore
           continue;
         }
+        String className = testClass.getName();
         if (Boolean.valueOf(System.getProperty("selftest.skip." + className, "false"))) {
           out.println("Skipping test class " + className + "; skipped by request");
           withIssues = true;
