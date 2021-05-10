@@ -102,7 +102,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
         try {
           doClose();
         } catch (IOException e) {
-          e.printStackTrace();
+          // ignore
         }
       }
       closeReceivedFileDescriptors();

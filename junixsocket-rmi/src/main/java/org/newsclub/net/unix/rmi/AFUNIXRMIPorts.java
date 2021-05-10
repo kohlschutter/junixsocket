@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix.rmi;
 
+import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGeneratedReport;
+
 /**
  * Contains some default ports used by junixsocket for RMI-over-AFUNIX.
  * 
@@ -56,6 +58,7 @@ final class AFUNIXRMIPorts {
    */
   static final int PLAIN_FILE_SOCKET = Integer.MAX_VALUE;
 
+  @ExcludeFromCodeCoverageGeneratedReport
   private AFUNIXRMIPorts() {
     throw new UnsupportedOperationException("No instances");
   }

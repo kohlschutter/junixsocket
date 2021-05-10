@@ -17,7 +17,10 @@
  */
 package org.newsclub.lib.junixsocket.custom;
 
+import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGeneratedReport;
+
 public final class NarMetadata {
+  @ExcludeFromCodeCoverageGeneratedReport
   private NarMetadata() {
     throw new IllegalStateException("No instances");
   }

@@ -1,4 +1,4 @@
-@SuppressWarnings("module")
+@SuppressWarnings("module") //
 module org.newsclub.net.unix.demo {
   requires org.newsclub.net.unix;
   requires org.newsclub.net.unix.server;
@@ -7,6 +7,7 @@ module org.newsclub.net.unix.demo {
   requires java.sql;
   requires transitive org.newsclub.net.unix.rmi;
   requires nanohttpd;
+  requires static com.kohlschutter.annotations.compiletime;
 
   exports org.newsclub.net.unix.demo.rmi.services to java.rmi;
   exports org.newsclub.net.unix.demo.rmi.fd to java.rmi;

@@ -29,11 +29,13 @@ import java.util.function.Function;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
+import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGeneratedReport;
+
 /**
  * Just a helper class to simplify controlling the demo from the command line.
  */
 public final class DemoHelper {
-
+  @ExcludeFromCodeCoverageGeneratedReport
   private DemoHelper() {
     throw new IllegalStateException("No instances");
   }

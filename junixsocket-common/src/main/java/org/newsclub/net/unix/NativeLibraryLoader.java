@@ -63,6 +63,7 @@ final class NativeLibraryLoader implements Closeable {
   }
 
   public static String getJunixsocketVersion() throws IOException {
+    // NOTE: This can't easily be tested from within the junixsocket-common Maven build
     return getArtifactVersion(AFUNIXSocket.class, "junixsocket-common");
   }
 

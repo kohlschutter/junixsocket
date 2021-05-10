@@ -17,23 +17,25 @@
  */
 package org.newsclub.net.unix.rmi;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
+import org.newsclub.net.unix.AFUNIXSocket;
 
 /**
- * Provides references to all "junixsocket-rmi" tests that should be included in
- * junixsocket-selftest.
+ * Tests whether we can get the junixsocket version (which is encoded in a properties file).
+ * 
+ * This can't easily be tested from within the Maven build for junixsocket-common, which is why we
+ * have it in junixsocket-rmi.
  * 
  * @author Christian Kohlschütter
  */
-public class SelftestProvider {
-  public Map<String, Class<?>[]> tests() {
-    Map<String, Class<?>[]> tests = new LinkedHashMap<>();
-    tests.put("junixsocket-rmi", new Class<?>[] { //
-        RemoteFileDescriptorTest.class, //
-        JunixsocketVersionTest.class, //
-    });
-
-    return tests;
+public class JunixsocketVersionTest {
+  @Test
+  public void testVersion() throws Exception {
+    String version = AFUNIXSocket.getVersion();
+    assertNotNull(version);
+    assertNotEquals("", version);
   }
 }

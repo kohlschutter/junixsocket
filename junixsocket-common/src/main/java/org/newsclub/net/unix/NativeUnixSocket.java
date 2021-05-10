@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
+import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGeneratedReport;
+
 /**
  * JNI connector to native JNI C code.
  * 
@@ -31,6 +33,7 @@ import java.nio.ByteBuffer;
 final class NativeUnixSocket {
   private static boolean loaded;
 
+  @ExcludeFromCodeCoverageGeneratedReport
   private NativeUnixSocket() {
     throw new UnsupportedOperationException("No instances");
   }

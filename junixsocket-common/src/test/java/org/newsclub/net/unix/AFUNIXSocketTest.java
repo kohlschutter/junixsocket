@@ -46,6 +46,13 @@ public class AFUNIXSocketTest {
   @Test
   public void testVersion() throws Exception {
     assertNotEquals("", AFUNIXSocket.getVersion());
+    // see junixsocket-rmi JunixSocketVersionTest
+  }
+
+  @Test
+  public void testSupported() throws Exception {
+    assertTrue(AFUNIXSocket.isSupported());
+    assertTrue(AFUNIXServerSocket.isSupported());
   }
 
   @Test

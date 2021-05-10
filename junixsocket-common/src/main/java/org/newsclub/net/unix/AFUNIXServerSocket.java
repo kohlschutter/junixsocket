@@ -102,10 +102,6 @@ public class AFUNIXServerSocket extends ServerSocket {
     return socket;
   }
 
-  AFUNIXSocketImpl getImplementation() {
-    return implementation;
-  }
-
   /**
    * Returns a new, <em>unbound</em> AF_UNIX {@link ServerSocket} that will always bind to the given
    * address, regardless of any socket address used in a call to <code>bind</code>.
@@ -172,10 +168,7 @@ public class AFUNIXServerSocket extends ServerSocket {
 
   @Override
   public String toString() {
-    if (!isBound()) {
-      return "AFUNIXServerSocket[unbound]";
-    }
-    return "AFUNIXServerSocket[" + boundEndpoint.toString() + "]";
+    return "AFUNIXServerSocket[" + (isBound() ? boundEndpoint.toString() : "unbound") + "]";
   }
 
   @Override
