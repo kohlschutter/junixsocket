@@ -19,10 +19,12 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketException;
 import java.nio.charset.Charset;
 
 import org.junit.jupiter.api.Test;
@@ -58,12 +60,17 @@ public final class AFUNIXSocketAddressTest {
 
   @Test
   public void testAbstractNamespace() throws Exception {
-    AFUNIXSocketAddress address = AFUNIXSocketAddress.inAbstractNamespace("test");
-    byte[] addressBytes = {0, 't', 'e', 's', 't'};
+    AFUNIXSocketAddress address = AFUNIXSocketAddress.inAbstractNamespace("test\n\u000b\u0000");
+    byte[] addressBytes = {0, 't', 'e', 's', 't', '\n', '\u000b', '\u0000'};
     assertArrayEquals(addressBytes, address.getPathAsBytes());
     assertEquals(0, address.getPort());
-    assertEquals("@test", address.getPath());
-    assertEquals("org.newsclub.net.unix.AFUNIXSocketAddress[port=0;path=@test]", address
-        .toString());
+    assertEquals("@test..@", address.getPath());
+    assertEquals("org.newsclub.net.unix.AFUNIXSocketAddress[port=0;path=\\x00test\\x0a\\x0b\\x00]",
+        address.toString());
+  }
+
+  @Test
+  public void testEmptyAddress() throws Exception {
+    assertThrows(SocketException.class, () -> new AFUNIXSocketAddress(new byte[0]));
   }
 }

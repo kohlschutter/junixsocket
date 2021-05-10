@@ -192,7 +192,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @see #getPathAsBytes()
    */
   public String getPath() {
-    byte[] by = bytes;
+    byte[] by = bytes.clone();
     for (int i = 0; i < by.length; i++) {
       byte b = by[i];
       if (b == 0) {
