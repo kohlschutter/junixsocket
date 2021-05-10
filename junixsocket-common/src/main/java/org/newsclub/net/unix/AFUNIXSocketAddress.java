@@ -193,11 +193,14 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    */
   public String getPath() {
     byte[] by = bytes.clone();
+    boolean asciiOnly = (by[0] == 0);
     for (int i = 0; i < by.length; i++) {
       byte b = by[i];
       if (b == 0) {
         by[i] = '@';
-      } else if (b < 32 || b == 127) {
+      } else if ((b >= 32 || (!asciiOnly && b < 0)) && b != 127 && (!asciiOnly || b < 127)) {
+        // print as-is
+      } else {
         by[i] = '.';
       }
     }

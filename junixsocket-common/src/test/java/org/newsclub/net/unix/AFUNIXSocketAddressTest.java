@@ -19,10 +19,13 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketException;
 import java.nio.charset.Charset;
@@ -60,17 +63,31 @@ public final class AFUNIXSocketAddressTest {
 
   @Test
   public void testAbstractNamespace() throws Exception {
-    AFUNIXSocketAddress address = AFUNIXSocketAddress.inAbstractNamespace("test\n\u000b\u0000");
-    byte[] addressBytes = {0, 't', 'e', 's', 't', '\n', '\u000b', '\u0000'};
+    AFUNIXSocketAddress address = AFUNIXSocketAddress.inAbstractNamespace(
+        "test\n\u000b\u0000\u007f");
+    byte[] addressBytes = {0, 't', 'e', 's', 't', '\n', '\u000b', '\u0000', '\u007f'};
     assertArrayEquals(addressBytes, address.getPathAsBytes());
     assertEquals(0, address.getPort());
-    assertEquals("@test..@", address.getPath());
-    assertEquals("org.newsclub.net.unix.AFUNIXSocketAddress[port=0;path=\\x00test\\x0a\\x0b\\x00]",
+    assertEquals("@test..@.", address.getPath());
+    assertEquals(
+        "org.newsclub.net.unix.AFUNIXSocketAddress[port=0;path=\\x00test\\x0a\\x0b\\x00\\x7f]",
         address.toString());
+    assertTrue(address.isInAbstractNamespace());
+    assertFalse(address.hasFilename());
+    assertThrows(FileNotFoundException.class, () -> address.getFile());
   }
 
   @Test
   public void testEmptyAddress() throws Exception {
     assertThrows(SocketException.class, () -> new AFUNIXSocketAddress(new byte[0]));
+  }
+
+  @Test
+  public void testByteConstructor() throws Exception {
+    assertEquals("@", new AFUNIXSocketAddress(new byte[] {0}).getPath());
+    assertEquals("@..", new AFUNIXSocketAddress(new byte[] {0, (byte) 128, (byte) 255}).getPath());
+    assertEquals("ü", new AFUNIXSocketAddress("ü".getBytes(Charset.defaultCharset())).getPath());
+    assertEquals(new File("ü"), new AFUNIXSocketAddress(new File("ü")).getFile());
+    assertEquals("ü", new AFUNIXSocketAddress(new File("ü")).getPath());
   }
 }
