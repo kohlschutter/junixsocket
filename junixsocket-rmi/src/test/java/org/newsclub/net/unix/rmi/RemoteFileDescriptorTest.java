@@ -58,6 +58,15 @@ public class RemoteFileDescriptorTest extends TestBase {
     }
   }
 
+  @Test
+  public void testRemoteStdoutNoop() throws Exception {
+    TestService svc = lookupTestService();
+
+    try (RemoteFileDescriptor stdout = svc.stdout()) {
+      // not doing anything here should trigger descriptor cleanup in RemoteFileDescriptor#close
+    }
+  }
+
   @SuppressWarnings("resource")
   @Test
   public void testWriteAndReadHello() throws Exception {
