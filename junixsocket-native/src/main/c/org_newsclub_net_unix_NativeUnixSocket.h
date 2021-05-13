@@ -7,6 +7,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#undef org_newsclub_net_unix_NativeUnixSocket_SOCK_STREAM
+#define org_newsclub_net_unix_NativeUnixSocket_SOCK_STREAM 1L
+#undef org_newsclub_net_unix_NativeUnixSocket_SOCK_DGRAM
+#define org_newsclub_net_unix_NativeUnixSocket_SOCK_DGRAM 2L
+#undef org_newsclub_net_unix_NativeUnixSocket_SOCK_SEQPACKET
+#define org_newsclub_net_unix_NativeUnixSocket_SOCK_SEQPACKET 5L
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    init
@@ -137,11 +143,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImp
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    setCreated
- * Signature: (Lorg/newsclub/net/unix/AFUNIXSocket;)V
+ * Method:    createSocket
+ * Signature: (Ljava/io/FileDescriptor;I)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreated
-  (JNIEnv *, jclass, jobject);
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_createSocket
+  (JNIEnv *, jclass, jobject, jint);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -157,14 +163,6 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setConnected
  * Signature: (Lorg/newsclub/net/unix/AFUNIXSocket;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBound
-  (JNIEnv *, jclass, jobject);
-
-/*
- * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    setCreatedServer
- * Signature: (Lorg/newsclub/net/unix/AFUNIXServerSocket;)V
- */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setCreatedServer
   (JNIEnv *, jclass, jobject);
 
 /*

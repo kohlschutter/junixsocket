@@ -25,6 +25,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Implementation of an AF_UNIX domain socket.
@@ -36,27 +37,17 @@ public final class AFUNIXSocket extends Socket {
 
   private static Integer capabilities = null;
 
-  AFUNIXSocketImpl impl;
+  private AFUNIXSocketImpl impl;
   AFUNIXSocketAddress addr;
 
   private final AFUNIXSocketFactory socketFactory;
   private final Closeables closeables = new Closeables();
+  private final AtomicBoolean created = new AtomicBoolean(false);
 
   private AFUNIXSocket(final AFUNIXSocketImpl impl, AFUNIXSocketFactory factory)
       throws IOException {
     super(impl);
     this.socketFactory = factory;
-    if (factory == null) {
-      setIsCreated();
-    }
-  }
-
-  private void setIsCreated() throws IOException {
-    try {
-      NativeUnixSocket.setCreated(this);
-    } catch (LinkageError e) {
-      throw new IOException("Couldn't load native library", e);
-    }
   }
 
   /**
@@ -151,7 +142,7 @@ public final class AFUNIXSocket extends Socket {
 
     endpoint = preprocessSocketAddress(endpoint);
 
-    impl.connect(endpoint, timeout);
+    getAFImpl().connect(endpoint, timeout);
     this.addr = (AFUNIXSocketAddress) endpoint;
     NativeUnixSocket.setBound(this);
     NativeUnixSocket.setConnected(this);
@@ -379,5 +370,16 @@ public final class AFUNIXSocket extends Socket {
     }
 
     return (AFUNIXSocketAddress) endpoint;
+  }
+
+  AFUNIXSocketImpl getAFImpl() {
+    if (created.compareAndSet(false, true)) {
+      try {
+        getSoTimeout(); // trigger create via java.net.Socket
+      } catch (SocketException e) {
+        // ignore
+      }
+    }
+    return impl;
   }
 }

@@ -92,7 +92,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
     private AFUNIXSocketAddress socketAddress;
 
-    private SocketCleanableState(AFUNIXSocketImpl observed) {
+    private SocketCleanableState(AFUNIXSocketImpl observed) throws IOException {
       super(observed);
     }
 
@@ -138,6 +138,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
           FileDescriptor tmpFd = new FileDescriptor();
 
           try {
+            NativeUnixSocket.createSocket(tmpFd, NativeUnixSocket.SOCK_STREAM);
             NativeUnixSocket.connect(socketAddress.getBytes(), tmpFd, inode.get());
           } catch (IOException e) {
             // there's nothing more we can do to unlock these accepts
@@ -173,7 +174,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
     }
   }
 
-  protected AFUNIXSocketImpl() {
+  protected AFUNIXSocketImpl() throws IOException {
     super();
     this.address = InetAddress.getLoopbackAddress();
     this.cleanableState = new SocketCleanableState(this);
@@ -203,16 +204,15 @@ class AFUNIXSocketImpl extends SocketImplShim {
   @Override
   protected void accept(SocketImpl socket) throws IOException {
     FileDescriptor fdesc = validFdOrException();
+    if (!isBound() || isClosed()) {
+      throw new SocketException("Socket is closed");
+    }
 
     AFUNIXSocketAddress socketAddress = cleanableState.socketAddress;
 
     final AFUNIXSocketImpl si = (AFUNIXSocketImpl) socket;
     try {
       cleanableState.incPendingAccepts();
-      if (!isBound() || isClosed()) {
-        throw new SocketException("Socket is closed");
-      }
-
       NativeUnixSocket.accept(socketAddress.getBytes(), fdesc, si.fd, cleanableState.inode.get(),
           this.timeout);
       if (!isBound() || isClosed()) {
@@ -228,7 +228,6 @@ class AFUNIXSocketImpl extends SocketImplShim {
         }
         throw new SocketException("Socket is closed");
       }
-
     } finally {
       cleanableState.decPendingAccepts();
     }
@@ -313,6 +312,11 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   @Override
   protected void create(boolean stream) throws IOException {
+    if (isClosed()) {
+      throw new SocketException("Already closed");
+    }
+    NativeUnixSocket.createSocket(fd, stream ? NativeUnixSocket.SOCK_STREAM
+        : NativeUnixSocket.SOCK_DGRAM);
   }
 
   @Override
@@ -641,6 +645,10 @@ class AFUNIXSocketImpl extends SocketImplShim {
    * {@link Socket#setTcpNoDelay(boolean)}.
    */
   static final class Lenient extends AFUNIXSocketImpl {
+    protected Lenient() throws IOException {
+      super();
+    }
+
     @Override
     public void setOption(int optID, Object value) throws SocketException {
       try {

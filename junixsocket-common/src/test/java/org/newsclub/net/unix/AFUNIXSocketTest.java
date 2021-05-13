@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -52,7 +53,6 @@ public class AFUNIXSocketTest {
   @Test
   public void testSupported() throws Exception {
     assertTrue(AFUNIXSocket.isSupported());
-    assertTrue(AFUNIXServerSocket.isSupported());
   }
 
   @Test
@@ -158,6 +158,14 @@ public class AFUNIXSocketTest {
       // We don't check socket status, so these calls are perfectly fine for unconnected sockets.
       assertNull(sock.getReceivedFileDescriptors());
       sock.clearReceivedFileDescriptors();
+    }
+  }
+
+  @Test
+  public void testUnconnectedSocket() throws IOException {
+    try (Socket socket = AFUNIXSocket.newInstance()) {
+      assertTrue(socket.getReceiveBufferSize() > 0);
+      assertTrue(socket.getSendBufferSize() > 0);
     }
   }
 }

@@ -48,8 +48,11 @@ public class SoTimeoutTest extends SocketTestBase {
 
       @Override
       protected void handleConnection(final AFUNIXSocket socket) throws IOException {
-        socket.close();
-        sema.release();
+        try {
+          socket.close();
+        } finally {
+          sema.release();
+        }
       }
     }; AFUNIXSocket sock = connectToServer()) {
       sema.acquire();
@@ -92,8 +95,9 @@ public class SoTimeoutTest extends SocketTestBase {
       } catch (IOException e) {
         e.printStackTrace();
         throw e;
+      } finally {
+        sema.release();
       }
-      sema.release();
     }
   }
 }

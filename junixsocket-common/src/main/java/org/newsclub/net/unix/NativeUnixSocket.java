@@ -33,6 +33,10 @@ import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGenerated
 final class NativeUnixSocket {
   private static boolean loaded;
 
+  static final int SOCK_STREAM = 1;
+  static final int SOCK_DGRAM = 2;
+  static final int SOCK_SEQPACKET = 5;
+
   @ExcludeFromCodeCoverageGeneratedReport
   private NativeUnixSocket() {
     throw new UnsupportedOperationException("No instances");
@@ -118,13 +122,11 @@ final class NativeUnixSocket {
   static native void initServerImpl(final AFUNIXServerSocket serverSocket,
       final AFUNIXSocketImpl impl) throws IOException;
 
-  static native void setCreated(final AFUNIXSocket socket);
+  static native void createSocket(FileDescriptor fdesc, int type) throws IOException;
 
   static native void setConnected(final AFUNIXSocket socket);
 
   static native void setBound(final AFUNIXSocket socket);
-
-  static native void setCreatedServer(final AFUNIXServerSocket socket);
 
   static native void setBoundServer(final AFUNIXServerSocket socket);
 

@@ -230,6 +230,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
       port = newPort();
       final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(getFile(port), port);
       final AnonymousServerSocket ass = new AnonymousServerSocket(port);
+      ass.setDeleteOnClose(true);
       ass.bind(addr);
 
       if (port >= AFUNIXRMIPorts.AF_PORT_BASE) {
@@ -245,6 +246,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
 
     final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(getFile(port), port);
     AFUNIXServerSocket socket = AFUNIXServerSocket.newInstance();
+    socket.setDeleteOnClose(true);
     socket.setReuseAddress(true);
     socket.bind(addr);
     socket.addCloseable(new ServerSocketCloseable(socket, port));

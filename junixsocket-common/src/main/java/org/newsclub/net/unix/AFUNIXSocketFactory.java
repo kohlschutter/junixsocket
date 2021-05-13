@@ -151,9 +151,9 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
   }
 
   /**
-   * A socket factory that handles a custom hostname ("junixsocket.localhost", by default, and
-   * configured by the system property &quot;org.newsclub.net.unix.socket.hostname&quot;),
-   * forwarding all other requests to the fallback {@link SocketFactory}.
+   * A socket factory that handles a custom hostname ("localhost", by default, and configured by the
+   * system property &quot;org.newsclub.net.unix.socket.hostname&quot;), forwarding all other
+   * requests to the fallback {@link SocketFactory}.
    * 
    * The socket path is configured through an argument passed by to the constructor.
    * 

@@ -24,6 +24,7 @@ import java.net.ServerSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The server part of an AF_UNIX domain socket.
@@ -34,6 +35,8 @@ public class AFUNIXServerSocket extends ServerSocket {
   private final AFUNIXSocketImpl implementation;
   private AFUNIXSocketAddress boundEndpoint;
   private final Closeables closeables = new Closeables();
+  private final AtomicBoolean created = new AtomicBoolean(false);
+  private final AtomicBoolean deleteOnClose = new AtomicBoolean(true);
 
   /**
    * Constructs a new, unconnected instance.
@@ -46,8 +49,6 @@ public class AFUNIXServerSocket extends ServerSocket {
     NativeUnixSocket.initServerImpl(this, implementation);
 
     setReuseAddress(true);
-
-    NativeUnixSocket.setCreatedServer(this);
   }
 
   /**
@@ -78,7 +79,7 @@ public class AFUNIXServerSocket extends ServerSocket {
    * Returns a new AF_UNIX {@link ServerSocket} that is bound to the given path.
    * 
    * @param path The path to bind to.
-   * @param deleteOnClose If {@code true}, the socket will be deleted upon {@link #close}.
+   * @param deleteOnClose If {@code true}, the socket file will be deleted upon {@link #close}.
    * @return The new, bound {@link AFUNIXServerSocket}.
    * @throws IOException if the operation fails.
    */
@@ -91,13 +92,14 @@ public class AFUNIXServerSocket extends ServerSocket {
    * Returns a new AF_UNIX {@link ServerSocket} that is bound to the given path.
    * 
    * @param path The path to bind to.
-   * @param deleteOnClose If {@code true}, the socket will be deleted upon {@link #close}.
+   * @param deleteOnClose If {@code true}, the socket file will be deleted upon {@link #close}.
    * @return The new, bound {@link AFUNIXServerSocket}.
    * @throws IOException if the operation fails.
    */
   public static AFUNIXServerSocket bindOn(final Path path, boolean deleteOnClose)
       throws IOException {
     AFUNIXServerSocket socket = newInstance();
+    socket.setDeleteOnClose(true);
     socket.bind(new AFUNIXSocketAddress(path));
     return socket;
   }
@@ -129,12 +131,13 @@ public class AFUNIXServerSocket extends ServerSocket {
     if (isBound()) {
       throw new SocketException("Already bound");
     }
+
     if (!(endpoint instanceof AFUNIXSocketAddress)) {
-      throw new IOException("Can only bind to endpoints of type " + AFUNIXSocketAddress.class
-          .getName());
+      throw new IllegalArgumentException("Can only bind to endpoints of type "
+          + AFUNIXSocketAddress.class.getName());
     }
 
-    implementation.bind(endpoint, getReuseAddress() ? -1 : 0);
+    getAFImpl().bind(endpoint, getReuseAddress() ? -1 : 0);
     boundEndpoint = (AFUNIXSocketAddress) endpoint;
 
     implementation.listen(backlog);
@@ -156,7 +159,7 @@ public class AFUNIXServerSocket extends ServerSocket {
       throw new SocketException("Socket is closed");
     }
     AFUNIXSocket as = newSocketInstance();
-    implementation.accept(as.impl);
+    implementation.accept(as.getAFImpl());
     as.addr = boundEndpoint;
     NativeUnixSocket.setConnected(as);
     return as;
@@ -201,7 +204,7 @@ public class AFUNIXServerSocket extends ServerSocket {
     try {
       closeables.close(superException);
     } finally {
-      if (endpoint != null && endpoint.hasFilename()) {
+      if (endpoint != null && endpoint.hasFilename() && isDeleteOnClose()) {
         File f = endpoint.getFile();
         if (!f.delete() && f.exists()) {
           ex = new IOException("Could not delete socket file after close: " + f);
@@ -251,5 +254,40 @@ public class AFUNIXServerSocket extends ServerSocket {
       return -1;
     }
     return boundEndpoint.getPort();
+  }
+
+  /**
+   * Checks if this {@link AFUNIXServerSocket}'s file should be removed upon {@link #close()}.
+   * 
+   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
+   * namespace).
+   * 
+   * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
+   */
+  public boolean isDeleteOnClose() {
+    return deleteOnClose.get();
+  }
+
+  /**
+   * Enables/disables deleting this {@link AFUNIXServerSocket}'s file upon {@link #close()}.
+   * 
+   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
+   * namespace).
+   * 
+   * @param b Enabled if {@code true}.
+   */
+  public void setDeleteOnClose(boolean b) {
+    deleteOnClose.set(b);
+  }
+
+  AFUNIXSocketImpl getAFImpl() {
+    if (created.compareAndSet(false, true)) {
+      try {
+        getSoTimeout(); // trigger create via java.net.Socket
+      } catch (IOException e) {
+        // ignore
+      }
+    }
+    return implementation;
   }
 }
