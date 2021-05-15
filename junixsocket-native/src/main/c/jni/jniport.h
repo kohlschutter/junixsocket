@@ -33,7 +33,7 @@ typedef __int64 jlong;
 
 #else
 
-#define JNIEXPORT 
+#define JNIEXPORT __attribute__((visibility ("default")))
 
 typedef signed char jbyte;
 typedef long long jlong;
