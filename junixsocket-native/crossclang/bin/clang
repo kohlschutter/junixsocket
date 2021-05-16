@@ -101,6 +101,8 @@ while [ $# -gt 0 ]; do
       -Xcrossclang-ld64-sdk-version ) ld64_sdk_version="$1"; shift ; skipArg=1 ;;
       # -index-store-path ) shift ; skipArg=1 ;; # if you're hitting this, set "Enable Index-While-Building Functionality=No" in Xcode build settings instead
       -filelist ) fileList="$1" ; shift; skipArg=1 ;;
+      -current_version ) shift ; skipArg=1 ;;
+      -compatibility_version ) shift ; skipArg=1 ;;
       -o ) hasO=1; skipArg=1 ;;
       *.cc ) looksLikeCPP=1 ;;
       *.cpp ) looksLikeCPP=1 ;;
