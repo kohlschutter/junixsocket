@@ -71,8 +71,8 @@ outputStripLibPrefix=0
 
 llvmName=llvm
 fileList=
-ld64_sdk_version=10.9
-
+# ld64_sdk_version=10.9
+ld64_sdk_version=
 while [ $# -gt 0 ]; do
   v="$1"
   shift
