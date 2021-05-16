@@ -71,19 +71,27 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    disconnect
+ * Signature: (Ljava/io/FileDescriptor;)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_disconnect
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    read
- * Signature: (Lorg/newsclub/net/unix/AFUNIXSocketImpl;Ljava/io/FileDescriptor;[BIILjava/nio/ByteBuffer;)I
+ * Signature: (Ljava/io/FileDescriptor;[BIILorg/newsclub/net/unix/AncillaryDataSupport;)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read
-  (JNIEnv *, jclass, jobject, jobject, jbyteArray, jint, jint, jobject);
+  (JNIEnv *, jclass, jobject, jbyteArray, jint, jint, jobject);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    write
- * Signature: (Lorg/newsclub/net/unix/AFUNIXSocketImpl;Ljava/io/FileDescriptor;[BII[I)I
+ * Signature: (Ljava/io/FileDescriptor;[BIILorg/newsclub/net/unix/AncillaryDataSupport;)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write
-  (JNIEnv *, jclass, jobject, jobject, jbyteArray, jint, jint, jintArray);
+  (JNIEnv *, jclass, jobject, jbyteArray, jint, jint, jobject);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket

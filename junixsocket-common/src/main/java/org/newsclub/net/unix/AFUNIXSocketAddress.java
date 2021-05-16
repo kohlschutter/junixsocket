@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -40,13 +41,23 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
   private final byte[] bytes;
 
   /**
+   * Just a marker for "don't bind" (checked with ==).
+   */
+  static final AFUNIXSocketAddress INTERNAL_DONT_BIND = new AFUNIXSocketAddress();
+
+  private AFUNIXSocketAddress() {
+    super(0);
+    this.bytes = new byte[0];
+  }
+
+  /**
    * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
    * given file.
    * 
    * @param socketFile The socket to connect to.
-   * @throws IOException if the operation fails.
+   * @throws SocketException if the operation fails.
    */
-  public AFUNIXSocketAddress(final File socketFile) throws IOException {
+  public AFUNIXSocketAddress(final File socketFile) throws SocketException {
     this(socketFile, 0);
   }
 
@@ -56,9 +67,9 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * 
    * @param socketFile The socket to connect to.
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
-   * @throws IOException if the operation fails.
+   * @throws SocketException if the operation fails.
    */
-  public AFUNIXSocketAddress(final File socketFile, int port) throws IOException {
+  public AFUNIXSocketAddress(final File socketFile, int port) throws SocketException {
     this(socketFile.getPath().getBytes(Charset.defaultCharset()), port);
   }
 
@@ -67,9 +78,9 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * given path.
    * 
    * @param socketPath The socket to connect to.
-   * @throws IOException if the operation fails.
+   * @throws SocketException if the operation fails.
    */
-  public AFUNIXSocketAddress(final Path socketPath) throws IOException {
+  public AFUNIXSocketAddress(final Path socketPath) throws SocketException {
     this(socketPath, 0);
   }
 
@@ -79,9 +90,9 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * 
    * @param socketPath The socket to connect to.
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
-   * @throws IOException if the operation fails.
+   * @throws SocketException if the operation fails.
    */
-  public AFUNIXSocketAddress(final Path socketPath, int port) throws IOException {
+  public AFUNIXSocketAddress(final Path socketPath, int port) throws SocketException {
     this(socketPath.toString().getBytes(Charset.defaultCharset()), port);
   }
 
@@ -93,10 +104,10 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * namespace is to be used. This feature is not available on all target platforms.
    * 
    * @param socketAddress The socket address (as bytes).
-   * @throws IOException if the operation fails.
+   * @throws SocketException if the operation fails.
    * @see AFUNIXSocketAddress#inAbstractNamespace(String)
    */
-  public AFUNIXSocketAddress(final byte[] socketAddress) throws IOException {
+  public AFUNIXSocketAddress(final byte[] socketAddress) throws SocketException {
     this(socketAddress, 0);
   }
 
@@ -109,10 +120,10 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    *
    * @param socketAddress The socket address (as bytes).
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
-   * @throws IOException if the operation fails.
+   * @throws SocketException if the operation fails.
    * @see AFUNIXSocketAddress#inAbstractNamespace(String,int)
    */
-  public AFUNIXSocketAddress(final byte[] socketAddress, int port) throws IOException {
+  public AFUNIXSocketAddress(final byte[] socketAddress, int port) throws SocketException {
     super(InetAddress.getLoopbackAddress(), 0);
     if (port != 0) {
       NativeUnixSocket.setPort1(this, port);
@@ -134,9 +145,9 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * 
    * @param name The identifier in the abstract namespace, without trailing zero or @.
    * @return The address.
-   * @throws IOException if the operation fails.
+   * @throws SocketException if the operation fails.
    */
-  public static AFUNIXSocketAddress inAbstractNamespace(String name) throws IOException {
+  public static AFUNIXSocketAddress inAbstractNamespace(String name) throws SocketException {
     return inAbstractNamespace(name, 0);
   }
 
@@ -150,9 +161,10 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @param name The identifier in the abstract namespace, without trailing zero or @.
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
    * @return The address.
-   * @throws IOException if the operation fails.
+   * @throws SocketException if the operation fails.
    */
-  public static AFUNIXSocketAddress inAbstractNamespace(String name, int port) throws IOException {
+  public static AFUNIXSocketAddress inAbstractNamespace(String name, int port)
+      throws SocketException {
     byte[] bytes = name.getBytes(Charset.defaultCharset());
     byte[] addr = new byte[bytes.length + 1];
     System.arraycopy(bytes, 0, addr, 1, bytes.length);
@@ -249,5 +261,34 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
       throw new FileNotFoundException("Socket is in abstract namespace");
     }
     return new File(new String(bytes, Charset.defaultCharset()));
+  }
+
+  static AFUNIXSocketAddress preprocessSocketAddress(SocketAddress endpoint,
+      AFUNIXSocketFactory socketFactory) throws SocketException {
+    if (!(endpoint instanceof AFUNIXSocketAddress)) {
+      if (socketFactory != null) {
+        if (endpoint instanceof InetSocketAddress) {
+          InetSocketAddress isa = (InetSocketAddress) endpoint;
+
+          String hostname = isa.getHostString();
+          if (socketFactory.isHostnameSupported(hostname)) {
+            try {
+              endpoint = socketFactory.addressFromHost(hostname, isa.getPort());
+            } catch (SocketException e) {
+              throw e;
+            } catch (IOException e) {
+              throw (SocketException) new SocketException(e.getMessage()).initCause(e);
+            }
+          }
+        }
+      }
+    }
+
+    if (!(endpoint instanceof AFUNIXSocketAddress)) {
+      throw new IllegalArgumentException("Can only connect to endpoints of type "
+          + AFUNIXSocketAddress.class.getName() + ", got: " + endpoint);
+    }
+
+    return (AFUNIXSocketAddress) endpoint;
   }
 }

@@ -29,16 +29,8 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketImpl;
 import java.net.SocketOptions;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * The Java-part of the {@link AFUNIXSocket} implementation.
@@ -50,11 +42,10 @@ class AFUNIXSocketImpl extends SocketImplShim {
   private static final int SHUT_RD = 0;
   private static final int SHUT_WR = 1;
   private static final int SHUT_RD_WR = 2;
-  private static final ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate(0);
 
-  private final SocketCleanableState cleanableState;
+  private final SocketState state;
+  private final AncillaryDataSupport ancillaryDataSupport = new AncillaryDataSupport();
 
-  private final AtomicBoolean closed = new AtomicBoolean(false);
   private final AtomicBoolean bound = new AtomicBoolean(false);
   private boolean connected = false;
 
@@ -66,11 +57,6 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   private boolean reuseAddr = true;
 
-  private ByteBuffer ancillaryReceiveBuffer = EMPTY_BUFFER;
-  private final List<FileDescriptor[]> receivedFileDescriptors = Collections.synchronizedList(
-      new LinkedList<FileDescriptor[]>());
-  private int[] pendingFileDescriptors = null;
-
   private int timeout = 0;
 
   /**
@@ -79,33 +65,11 @@ class AFUNIXSocketImpl extends SocketImplShim {
    *
    * @author Christian Kohlschütter
    */
-  private static class SocketCleanableState extends CleanableState {
-    private final FileDescriptor fd = new FileDescriptor();
+  private static class SocketState extends SocketStateBase {
     private final AtomicInteger pendingAccepts = new AtomicInteger(0);
-    private final Map<FileDescriptor, Integer> openReceivedFileDescriptors = Collections
-        .synchronizedMap(new HashMap<FileDescriptor, Integer>());
 
-    /**
-     * We keep track of the server's inode to detect when another server connects to our address.
-     */
-    private final AtomicLong inode = new AtomicLong(-1);
-
-    private AFUNIXSocketAddress socketAddress;
-
-    private SocketCleanableState(AFUNIXSocketImpl observed) throws IOException {
-      super(observed);
-    }
-
-    @Override
-    protected void doClean() {
-      if (fd != null && fd.valid()) {
-        try {
-          doClose();
-        } catch (IOException e) {
-          // ignore
-        }
-      }
-      closeReceivedFileDescriptors();
+    private SocketState(AFUNIXSocketImpl observed, Closeable additionalCloseable) {
+      super(observed, additionalCloseable);
     }
 
     private void incPendingAccepts() throws SocketException {
@@ -118,21 +82,16 @@ class AFUNIXSocketImpl extends SocketImplShim {
       pendingAccepts.decrementAndGet();
     }
 
-    private void doClose() throws IOException {
-      NativeUnixSocket.shutdown(fd, SHUT_RD_WR);
-
-      if (socketAddress != null && socketAddress.getBytes() != null && inode.get() >= 0) {
-        unblockAccepts();
-      }
-
-      NativeUnixSocket.close(fd);
-    }
-
     /**
      * Unblock other threads that are currently waiting on accept, simply by connecting to the
      * socket.
      */
-    private void unblockAccepts() {
+    @Override
+    protected void unblockAccepts() {
+      if (socketAddress == null || socketAddress.getBytes() == null || inode.get() < 0) {
+        return;
+      }
+
       while (pendingAccepts.get() > 0) {
         try {
           FileDescriptor tmpFd = new FileDescriptor();
@@ -160,25 +119,13 @@ class AFUNIXSocketImpl extends SocketImplShim {
         }
       }
     }
-
-    private void closeReceivedFileDescriptors() {
-      synchronized (openReceivedFileDescriptors) {
-        for (FileDescriptor desc : openReceivedFileDescriptors.keySet()) {
-          try {
-            NativeUnixSocket.close(desc);
-          } catch (Exception e) {
-            // ignore
-          }
-        }
-      }
-    }
   }
 
-  protected AFUNIXSocketImpl() throws IOException {
+  protected AFUNIXSocketImpl() throws SocketException {
     super();
     this.address = InetAddress.getLoopbackAddress();
-    this.cleanableState = new SocketCleanableState(this);
-    this.fd = cleanableState.fd;
+    this.state = new SocketState(this, ancillaryDataSupport);
+    this.fd = state.fd;
   }
 
   protected AFUNIXInputStream newInputStream() {
@@ -198,22 +145,22 @@ class AFUNIXSocketImpl extends SocketImplShim {
   }
 
   private boolean isClosed() {
-    return closed.get();
+    return state.isClosed();
   }
 
   @Override
   protected void accept(SocketImpl socket) throws IOException {
-    FileDescriptor fdesc = validFdOrException();
+    FileDescriptor fdesc = state.validFdOrException();
     if (!isBound() || isClosed()) {
       throw new SocketException("Socket is closed");
     }
 
-    AFUNIXSocketAddress socketAddress = cleanableState.socketAddress;
+    AFUNIXSocketAddress socketAddress = state.socketAddress;
 
     final AFUNIXSocketImpl si = (AFUNIXSocketImpl) socket;
     try {
-      cleanableState.incPendingAccepts();
-      NativeUnixSocket.accept(socketAddress.getBytes(), fdesc, si.fd, cleanableState.inode.get(),
+      state.incPendingAccepts();
+      NativeUnixSocket.accept(socketAddress.getBytes(), fdesc, si.fd, state.inode.get(),
           this.timeout);
       if (!isBound() || isClosed()) {
         try {
@@ -229,7 +176,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
         throw new SocketException("Socket is closed");
       }
     } finally {
-      cleanableState.decPendingAccepts();
+      state.decPendingAccepts();
     }
     si.setSocketAddress(socketAddress);
     si.connected = true;
@@ -238,12 +185,12 @@ class AFUNIXSocketImpl extends SocketImplShim {
   }
 
   private void setSocketAddress(AFUNIXSocketAddress socketAddress) {
-    this.cleanableState.socketAddress = socketAddress;
+    this.state.socketAddress = socketAddress;
   }
 
   @Override
   protected int available() throws IOException {
-    FileDescriptor fdesc = validFdOrException();
+    FileDescriptor fdesc = state.validFdOrException();
     return NativeUnixSocket.available(fdesc);
   }
 
@@ -259,8 +206,8 @@ class AFUNIXSocketImpl extends SocketImplShim {
     this.setSocketAddress(socketAddress);
     this.address = socketAddress.getAddress();
 
-    cleanableState.inode.set(NativeUnixSocket.bind(socketAddress.getBytes(), fd, options));
-    validFdOrException();
+    state.inode.set(NativeUnixSocket.bind(socketAddress.getBytes(), fd, options));
+    state.validFdOrException();
     bound.set(true);
     this.localport = socketAddress.getPort();
   }
@@ -279,8 +226,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   @Override
   protected final void close() throws IOException {
-    closed.set(true);
-    cleanableState.runCleaner();
+    state.runCleaner();
   }
 
   @Override
@@ -303,7 +249,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
     AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
     setSocketAddress(socketAddress);
     NativeUnixSocket.connect(socketAddress.getBytes(), fd, -1);
-    validFdOrException();
+    state.validFdOrException();
     this.address = socketAddress.getAddress();
     this.port = socketAddress.getPort();
     this.localport = 0;
@@ -324,7 +270,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
     if (!connected && !isBound()) {
       throw new IOException("Not connected/not bound");
     }
-    validFdOrException();
+    state.validFdOrException();
     return in;
   }
 
@@ -333,13 +279,13 @@ class AFUNIXSocketImpl extends SocketImplShim {
     if (!connected && !isBound()) {
       throw new IOException("Not connected/not bound");
     }
-    validFdOrException();
+    state.validFdOrException();
     return out;
   }
 
   @Override
   protected void listen(int backlog) throws IOException {
-    FileDescriptor fdesc = validFdOrException();
+    FileDescriptor fdesc = state.validFdOrException();
     if (backlog <= 0) {
       backlog = 50;
     }
@@ -366,26 +312,24 @@ class AFUNIXSocketImpl extends SocketImplShim {
       if (streamClosed) {
         throw new IOException("This InputStream has already been closed.");
       }
-      FileDescriptor fdesc = validFdOrException();
+      FileDescriptor fdesc = state.validFdOrException();
       if (len == 0) {
         return 0;
       } else if (off < 0 || len < 0 || (len > buf.length - off)) {
         throw new IndexOutOfBoundsException();
       }
 
-      return NativeUnixSocket.read(AFUNIXSocketImpl.this, fdesc, buf, off, len,
-          ancillaryReceiveBuffer);
+      return NativeUnixSocket.read(fdesc, buf, off, len, ancillaryDataSupport);
     }
 
     @Override
     public int read() throws IOException {
-      FileDescriptor fdesc = validFdOrException();
+      FileDescriptor fdesc = state.validFdOrException();
 
       if (eofReached) {
         return -1;
       }
-      int byteRead = NativeUnixSocket.read(AFUNIXSocketImpl.this, fdesc, null, 0, 1,
-          ancillaryReceiveBuffer);
+      int byteRead = NativeUnixSocket.read(fdesc, null, 0, 1, ancillaryDataSupport);
       if (byteRead < 0) {
         eofReached = true;
         return -1;
@@ -397,7 +341,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
     @Override
     public synchronized void close() throws IOException {
       streamClosed = true;
-      FileDescriptor fdesc = validFd();
+      FileDescriptor fdesc = state.validFd();
       if (fdesc != null) {
         NativeUnixSocket.shutdown(fdesc, SHUT_RD);
       }
@@ -432,17 +376,15 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
     @Override
     public void write(int oneByte) throws IOException {
-      FileDescriptor fdesc = validFdOrException();
+      FileDescriptor fdesc = state.validFdOrException();
 
       int written;
       do {
-        written = NativeUnixSocket.write(AFUNIXSocketImpl.this, fdesc, null, oneByte, 1,
-            pendingFileDescriptors);
+        written = NativeUnixSocket.write(fdesc, null, oneByte, 1, ancillaryDataSupport);
         if (written != 0) {
           break;
         }
       } while (checkWriteInterruptedException(0));
-      pendingFileDescriptors = null;
     }
 
     @Override
@@ -453,7 +395,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
       if (len < 0 || off < 0 || len > buf.length - off) {
         throw new IndexOutOfBoundsException();
       }
-      FileDescriptor fdesc = validFdOrException();
+      FileDescriptor fdesc = state.validFdOrException();
       if (len == 0) {
         return;
       }
@@ -461,12 +403,9 @@ class AFUNIXSocketImpl extends SocketImplShim {
       int writtenTotal = 0;
 
       do {
-        final int written = NativeUnixSocket.write(AFUNIXSocketImpl.this, fdesc, buf, off, len,
-            pendingFileDescriptors);
+        final int written = NativeUnixSocket.write(fdesc, buf, off, len, ancillaryDataSupport);
         if (written < 0) {
           throw new IOException("Unspecific error while writing");
-        } else if (written > 0) {
-          pendingFileDescriptors = null;
         }
 
         len -= written;
@@ -481,7 +420,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
         return;
       }
       streamClosed = true;
-      FileDescriptor fdesc = validFd();
+      FileDescriptor fdesc = state.validFd();
       if (fdesc != null) {
         NativeUnixSocket.shutdown(fdesc, SHUT_WR);
       }
@@ -490,31 +429,10 @@ class AFUNIXSocketImpl extends SocketImplShim {
     }
   }
 
-  private FileDescriptor validFdOrException() throws SocketException {
-    FileDescriptor fdesc = validFd();
-    if (fdesc == null) {
-      throw new SocketException("Not open");
-    }
-    return fdesc;
-  }
-
-  private synchronized FileDescriptor validFd() {
-    if (isClosed()) {
-      return null;
-    }
-    FileDescriptor descriptor = this.fd;
-    if (descriptor != null) {
-      if (descriptor.valid()) {
-        return descriptor;
-      }
-    }
-    return null;
-  }
-
   @Override
   public String toString() {
-    return super.toString() + "[fd=" + fd + "; addr=" + this.cleanableState.socketAddress
-        + "; connected=" + connected + "; bound=" + bound + "]";
+    return super.toString() + "[fd=" + fd + "; addr=" + this.state.socketAddress + "; connected="
+        + connected + "; bound=" + bound + "]";
   }
 
   private static int expectInteger(Object value) throws SocketException {
@@ -546,7 +464,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
       return reuseAddr;
     }
 
-    FileDescriptor fdesc = validFdOrException();
+    FileDescriptor fdesc = state.validFdOrException();
     try {
       switch (optID) {
         case SocketOptions.SO_KEEPALIVE:
@@ -581,7 +499,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
       return;
     }
 
-    FileDescriptor fdesc = validFdOrException();
+    FileDescriptor fdesc = state.validFdOrException();
     try {
       switch (optID) {
         case SocketOptions.SO_LINGER:
@@ -624,7 +542,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   @Override
   protected void shutdownInput() throws IOException {
-    FileDescriptor fdesc = validFd();
+    FileDescriptor fdesc = state.validFd();
     if (fdesc != null) {
       NativeUnixSocket.shutdown(fdesc, SHUT_RD);
     }
@@ -632,7 +550,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   @Override
   protected void shutdownOutput() throws IOException {
-    FileDescriptor fdesc = validFd();
+    FileDescriptor fdesc = state.validFd();
     if (fdesc != null) {
       NativeUnixSocket.shutdown(fdesc, SHUT_WR);
     }
@@ -645,7 +563,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
    * {@link Socket#setTcpNoDelay(boolean)}.
    */
   static final class Lenient extends AFUNIXSocketImpl {
-    protected Lenient() throws IOException {
+    protected Lenient() throws SocketException {
       super();
     }
 
@@ -683,100 +601,37 @@ class AFUNIXSocketImpl extends SocketImplShim {
     return NativeUnixSocket.peerCredentials(fd, new AFUNIXSocketCredentials());
   }
 
-  int getAncillaryReceiveBufferSize() {
-    return ancillaryReceiveBuffer.capacity();
-  }
-
-  void setAncillaryReceiveBufferSize(int size) {
-    if (size == ancillaryReceiveBuffer.capacity()) {
-      return;
-    }
-    this.ancillaryReceiveBuffer = size <= 0 ? EMPTY_BUFFER : ByteBuffer.allocateDirect(size);
-  }
-
-  public final void ensureAncillaryReceiveBufferSize(int minSize) {
-    if (minSize <= 0) {
-      return;
-    }
-    if (ancillaryReceiveBuffer.capacity() < minSize) {
-      setAncillaryReceiveBufferSize(minSize);
-    }
-  }
-
   public final FileDescriptor[] getReceivedFileDescriptors() {
-    if (receivedFileDescriptors.isEmpty()) {
-      return null;
-    }
-    List<FileDescriptor[]> copy = new ArrayList<>(receivedFileDescriptors);
-    if (copy.isEmpty()) {
-      return null;
-    }
-    receivedFileDescriptors.removeAll(copy);
-    int count = 0;
-    for (FileDescriptor[] fds : copy) {
-      count += fds.length;
-    }
-    if (count == 0) {
-      return null;
-    }
-    FileDescriptor[] oneArray = new FileDescriptor[count];
-    int offset = 0;
-    for (FileDescriptor[] fds : copy) {
-      System.arraycopy(fds, 0, oneArray, offset, fds.length);
-      offset += fds.length;
-    }
-    return oneArray;
+    return ancillaryDataSupport.getReceivedFileDescriptors();
   }
 
   public final void clearReceivedFileDescriptors() {
-    receivedFileDescriptors.clear();
+    ancillaryDataSupport.clearReceivedFileDescriptors();
   }
 
   // called from native code
   final void receiveFileDescriptors(int[] fds) throws IOException {
-    if (fds == null || fds.length == 0) {
-      return;
-    }
-    final int fdsLength = fds.length;
-    FileDescriptor[] descriptors = new FileDescriptor[fdsLength];
-    for (int i = 0; i < fdsLength; i++) {
-      final FileDescriptor fdesc = new FileDescriptor();
-      NativeUnixSocket.initFD(fdesc, fds[i]);
-      descriptors[i] = fdesc;
-
-      cleanableState.openReceivedFileDescriptors.put(fdesc, fds[i]);
-
-      @SuppressWarnings("resource")
-      final Closeable cleanup = new Closeable() {
-
-        @Override
-        public void close() throws IOException {
-          cleanableState.openReceivedFileDescriptors.remove(fdesc);
-        }
-      };
-      NativeUnixSocket.attachCloseable(fdesc, cleanup);
-    }
-
-    this.receivedFileDescriptors.add(descriptors);
+    ancillaryDataSupport.receiveFileDescriptors(fds);
   }
 
   // called from native code, too (but only with null)
   final void setOutboundFileDescriptors(int... fds) {
-    this.pendingFileDescriptors = (fds == null || fds.length == 0) ? null : fds;
+    ancillaryDataSupport.setOutboundFileDescriptors(fds);
   }
 
   public final void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
-    final int[] fds;
-    if (fdescs == null || fdescs.length == 0) {
-      fds = null;
-    } else {
-      final int numFdescs = fdescs.length;
-      fds = new int[numFdescs];
-      for (int i = 0; i < numFdescs; i++) {
-        FileDescriptor fdesc = fdescs[i];
-        fds[i] = NativeUnixSocket.getFD(fdesc);
-      }
-    }
-    this.setOutboundFileDescriptors(fds);
+    ancillaryDataSupport.setOutboundFileDescriptors(fdescs);
+  }
+
+  int getAncillaryReceiveBufferSize() {
+    return ancillaryDataSupport.getAncillaryReceiveBufferSize();
+  }
+
+  void setAncillaryReceiveBufferSize(int size) {
+    ancillaryDataSupport.setAncillaryReceiveBufferSize(size);
+  }
+
+  void ensureAncillaryReceiveBufferSize(int minSize) {
+    ancillaryDataSupport.ensureAncillaryReceiveBufferSize(minSize);
   }
 }

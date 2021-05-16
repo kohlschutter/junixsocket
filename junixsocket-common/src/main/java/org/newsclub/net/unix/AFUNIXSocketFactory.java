@@ -21,8 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URLDecoder;
-import java.net.UnknownHostException;
 import java.util.Objects;
 
 import javax.net.SocketFactory;
@@ -46,14 +46,15 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
    * @param host The hostname
    * @param port The port, or 0.
    * @return The {@link AFUNIXSocketAddress}
-   * @throws IOException If there was a problem converting the hostname
+   * @throws SocketException If there was a problem converting the hostname
    * @throws NullPointerException If host was {@code null}.
    */
-  protected abstract AFUNIXSocketAddress addressFromHost(String host, int port) throws IOException;
+  protected abstract AFUNIXSocketAddress addressFromHost(String host, int port)
+      throws SocketException;
 
   /**
    * Checks whether the given hostname is supported by this socket factory. If not, calls to
-   * createSocket will cause an UnknownHostException.
+   * createSocket will cause a {@link SocketException}.
    * 
    * @param host The host to check.
    * @return {@code true} if supported.
@@ -64,7 +65,7 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
 
   /**
    * Checks whether the given {@link InetAddress} is supported by this socket factory. If not, calls
-   * to createSocket will cause an UnknownHostException.
+   * to createSocket will cause a {@link SocketException}.
    * 
    * By default, this only checks the hostname part of the address via
    * {@link #isHostnameSupported(String)}.
@@ -77,14 +78,14 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
   }
 
   @Override
-  public Socket createSocket() throws IOException {
+  public Socket createSocket() throws SocketException {
     return AFUNIXSocket.newInstance(this);
   }
 
   @Override
-  public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
+  public Socket createSocket(String host, int port) throws IOException {
     if (!isHostnameSupported(host)) {
-      throw new UnknownHostException();
+      throw new SocketException("Unsupported hostname");
     }
     if (port < 0) {
       throw new IllegalArgumentException("Illegal port");
@@ -96,9 +97,9 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
 
   @Override
   public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
-      throws IOException, UnknownHostException {
+      throws IOException {
     if (!isHostnameSupported(host)) {
-      throw new UnknownHostException();
+      throw new SocketException("Unsupported hostname");
     }
     if (localPort < 0) {
       throw new IllegalArgumentException("Illegal local port");
@@ -110,11 +111,11 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
   @Override
   public Socket createSocket(InetAddress address, int port) throws IOException {
     if (!isInetAddressSupported(address)) {
-      throw new UnknownHostException();
+      throw new SocketException("Unsupported address");
     }
     String hostname = address.getHostName();
     if (!isHostnameSupported(hostname)) {
-      throw new UnknownHostException();
+      throw new SocketException("Unsupported hostname");
     }
     return createSocket(hostname, port);
   }
@@ -123,7 +124,7 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
   public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
       throws IOException {
     if (!isInetAddressSupported(address)) {
-      throw new UnknownHostException();
+      throw new SocketException("Unsupported address");
     }
     if (localPort < 0) {
       throw new IllegalArgumentException("Illegal local port");
@@ -178,7 +179,7 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
     }
 
     @Override
-    protected AFUNIXSocketAddress addressFromHost(String host, int port) throws IOException {
+    protected AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
       return new AFUNIXSocketAddress(socketFile, port);
     }
   }
@@ -198,7 +199,7 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
     private static final String PROP_SOCKET_DEFAULT = "org.newsclub.net.unix.socket.default";
 
     @Override
-    protected AFUNIXSocketAddress addressFromHost(String host, int port) throws IOException {
+    protected AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
       String path = System.getProperty(PROP_SOCKET_DEFAULT);
       if (path == null || path.isEmpty()) {
         throw new IllegalStateException("Property not configured: " + PROP_SOCKET_DEFAULT);
@@ -244,17 +245,17 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
     }
 
     @Override
-    protected AFUNIXSocketAddress addressFromHost(String host, int port) throws IOException {
+    protected AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
       host = stripBrackets(host);
       if (host.startsWith(FILE_SCHEME_PREFIX_ENCODED)) {
         try {
           host = URLDecoder.decode(host, "UTF-8");
         } catch (Exception e) {
-          throw (UnknownHostException) new UnknownHostException().initCause(e);
+          throw (SocketException) new SocketException().initCause(e);
         }
       }
       if (!host.startsWith(FILE_SCHEME_PREFIX)) {
-        throw new UnknownHostException();
+        throw new SocketException("Unsupported scheme");
       }
 
       String path = host.substring(FILE_SCHEME_PREFIX.length());
@@ -262,10 +263,10 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
         path = path.substring(FILE_SCHEME_LOCALHOST.length());
       }
       if (path.isEmpty()) {
-        throw new UnknownHostException("Path is empty");
+        throw new SocketException("Path is empty");
       }
       if (!path.startsWith("/")) {
-        throw new UnknownHostException("Path must be absolute: " + path);
+        throw new SocketException("Path must be absolute");
       }
 
       File socketFile = new File(path);

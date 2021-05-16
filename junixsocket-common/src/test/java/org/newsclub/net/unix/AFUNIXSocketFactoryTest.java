@@ -24,7 +24,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 
 import org.junit.jupiter.api.Test;
 
@@ -49,11 +48,11 @@ public class AFUNIXSocketFactoryTest {
         socket.connect(new InetSocketAddress("", 0));
       });
 
-      assertThrows(UnknownHostException.class, () -> {
+      assertThrows(SocketException.class, () -> {
         // file:// has an empty path component
         socket.connect(new InetSocketAddress("file://", 0));
       });
-      assertThrows(UnknownHostException.class, () -> {
+      assertThrows(SocketException.class, () -> {
         // file://not-absolute is not an absolute path (three slashes needed)
         socket.connect(new InetSocketAddress("file://not-absolute", 0));
       });
@@ -79,61 +78,61 @@ public class AFUNIXSocketFactoryTest {
   public void testURISchemeCeateSocketWithInvalidHostname() throws Exception {
     AFUNIXSocketFactory.URIScheme factory = new AFUNIXSocketFactory.URIScheme();
 
-    assertThrows(UnknownHostException.class, () -> {
+    assertThrows(SocketException.class, () -> {
       // We don't support empty hosts
       try (Socket sock = factory.createSocket("", 0)) {
         // not reached
       }
     });
-    assertThrows(UnknownHostException.class, () -> {
+    assertThrows(SocketException.class, () -> {
       // We don't support empty hosts
       try (Socket sock = factory.createSocket("", 0, null, 0)) {
         // not reached
       }
     });
-    assertThrows(UnknownHostException.class, () -> {
+    assertThrows(SocketException.class, () -> {
       // We don't support IP addresses
       try (Socket sock = factory.createSocket(InetAddress.getByName(""), 0)) {
         // not reached
       }
     });
-    assertThrows(UnknownHostException.class, () -> {
+    assertThrows(SocketException.class, () -> {
       // We don't support IP addresses
       try (Socket sock = factory.createSocket(InetAddress.getLoopbackAddress(), 0, null, 0)) {
         // not reached
       }
     });
-    assertThrows(UnknownHostException.class, () -> {
+    assertThrows(SocketException.class, () -> {
       // file:// has an empty path component
       try (Socket sock = factory.createSocket("file:", 0)) {
         // not reached
       }
     });
-    assertThrows(UnknownHostException.class, () -> {
+    assertThrows(SocketException.class, () -> {
       // file:// has an empty path component
       try (Socket sock = factory.createSocket("file:/", 0)) {
         // not reached
       }
     });
-    assertThrows(UnknownHostException.class, () -> {
+    assertThrows(SocketException.class, () -> {
       // file:// has an empty path component
       try (Socket sock = factory.createSocket("file://", 0)) {
         // not reached
       }
     });
-    assertThrows(UnknownHostException.class, () -> {
+    assertThrows(SocketException.class, () -> {
       // file://not-absolute is not an absolute path (three slashes needed)
       try (Socket sock = factory.createSocket("file://not-absolute", 0)) {
         // not reached
       }
     });
-    assertThrows(UnknownHostException.class, () -> {
+    assertThrows(SocketException.class, () -> {
       // incomplete
       try (Socket sock = factory.createSocket("[", 0)) {
         // not reached
       }
     });
-    assertThrows(UnknownHostException.class, () -> {
+    assertThrows(SocketException.class, () -> {
       // encoded; incomplete trailing escape
       try (Socket sock = factory.createSocket("file%3A%2F%2F%", 0)) {
         // not reached

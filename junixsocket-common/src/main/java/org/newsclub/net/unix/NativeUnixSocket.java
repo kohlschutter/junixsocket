@@ -21,7 +21,7 @@ import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.ByteBuffer;
+import java.net.SocketException;
 
 import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGeneratedReport;
 
@@ -73,37 +73,36 @@ final class NativeUnixSocket {
   static native void connect(final byte[] socketAddr, final FileDescriptor fd, long inode)
       throws IOException;
 
+  static native void disconnect(final FileDescriptor fd) throws IOException;
+
   /**
    * Reads data from an {@link AFUNIXSocketImpl}.
    * 
-   * @param afunixSocketImpl The socket.
    * @param fd The corresponding file descriptor.
    * @param buf The buffer to read into, or {@code null} if a single byte should be read.
    * @param off The buffer offset.
    * @param len The maximum number of bytes to read. Must be 1 if {@code buf} is {@code null}.
-   * @param ancillaryReceiveBuffer An optional buffer for ancillary data.
+   * @param ancillaryDataSupport The ancillary data support instance, or {@code null}.
    * @return The number of bytes read, -1 if nothing could be read, or the byte itself iff
    *         {@code buf} was {@code null}.
    * @throws IOException upon error.
    */
-  static native int read(AFUNIXSocketImpl afunixSocketImpl, final FileDescriptor fd, byte[] buf,
-      int off, int len, ByteBuffer ancillaryReceiveBuffer) throws IOException;
+  static native int read(final FileDescriptor fd, byte[] buf, int off, int len,
+      AncillaryDataSupport ancillaryDataSupport) throws IOException;
 
   /**
    * Writes data to an {@link AFUNIXSocketImpl}.
    * 
-   * @param afunixSocketImpl The socket.
    * @param fd The corresponding file descriptor.
    * @param buf The buffer to write from, or {@code null} if a single byte should be written.
    * @param off The buffer offset, or the byte to write if {@code buf} is {@code null}.
    * @param len The number of bytes to write. Must be 1 if {@code buf} is {@code null}.
-   * @param fileDescriptors An optional array of file descriptors that should be sent as ancillary
-   *          data, or {@code null}.
+   * @param ancillaryDataSupport The ancillary data support instance, or {@code null}.
    * @return The number of bytes written (which could be 0).
    * @throws IOException upon error.
    */
-  static native int write(AFUNIXSocketImpl afunixSocketImpl, final FileDescriptor fd, byte[] buf,
-      int off, int len, int[] fileDescriptors) throws IOException;
+  static native int write(final FileDescriptor fd, byte[] buf, int off, int len,
+      AncillaryDataSupport ancillaryDataSupport) throws IOException;
 
   static native void close(final FileDescriptor fd) throws IOException;
 
@@ -140,7 +139,7 @@ final class NativeUnixSocket {
 
   static native int maxAddressLength();
 
-  static void setPort1(AFUNIXSocketAddress addr, int port) throws IOException {
+  static void setPort1(AFUNIXSocketAddress addr, int port) throws SocketException {
     if (port < 0) {
       throw new IllegalArgumentException("port out of range:" + port);
     }
@@ -150,7 +149,7 @@ final class NativeUnixSocket {
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
-      throw new IOException("Could not set port", e);
+      throw (SocketException) new SocketException("Could not set port").initCause(e);
     }
   }
 

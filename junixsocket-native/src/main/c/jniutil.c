@@ -1,0 +1,117 @@
+/*
+ * junixsocket
+ *
+ * Copyright 2009-2021 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "config.h"
+#include "jniutil.h"
+
+#include "exceptions.h"
+
+void handleFieldNotFound(JNIEnv *env, jobject instance, char *fieldName)
+{
+
+    jmethodID classMethodId = (*env)->GetMethodID(env,
+                                                  (*env)->GetObjectClass(env, instance), "getClass",
+                                                  "()Ljava/lang/Class;");
+    jobject classObject = (*env)->CallObjectMethod(env, instance,
+                                                   classMethodId);
+
+    jmethodID methodId = (*env)->GetMethodID(env,
+                                             (*env)->GetObjectClass(env, classObject), "getSimpleName",
+                                             "()Ljava/lang/String;");
+    jstring className = (jstring)(*env)->CallObjectMethod(env, classObject,
+                                                          methodId);
+    const char* classNameStr = (*env)->GetStringUTFChars(env, className, NULL);
+    if(classNameStr == NULL) {
+        return; // OOME
+    }
+
+#define handleFieldNotFound_error_message_template "Cannot find '%s' in class %s"
+    size_t buflen = strlen(handleFieldNotFound_error_message_template) + strlen(fieldName) + strlen(classNameStr);
+    char *message = calloc(1, buflen);
+    CK_IGNORE_USED_BUT_MARKED_UNUSED_BEGIN
+    snprintf(message, buflen, handleFieldNotFound_error_message_template, fieldName, classNameStr);
+    CK_IGNORE_USED_BUT_MARKED_UNUSED_END
+    (*env)->ReleaseStringUTFChars(env, className, classNameStr);
+
+    _throwException(env, kExceptionSocketException, message);
+    free(message);
+}
+
+void callObjectSetter(JNIEnv *env, jobject instance, char *methodName,
+                             char *methodSignature, jobject value)
+{
+    jclass instanceClass = (*env)->GetObjectClass(env, instance);
+    if(instanceClass == NULL) {
+        return;
+    }
+
+    jmethodID methodId = (*env)->GetMethodID(env, instanceClass, methodName,
+                                             methodSignature);
+    if(methodId == NULL) {
+        handleFieldNotFound(env, instance, methodName);
+        return;
+    }
+
+    __attribute__((aligned(8))) jobject array[] = {value};
+    (*env)->CallObjectMethodA(env, instance, methodId, (jvalue*)array);
+}
+
+void setObjectFieldValue(JNIEnv *env, jobject instance, char *fieldName,
+                                char *fieldType, jobject value)
+{
+    jclass instanceClass = (*env)->GetObjectClass(env, instance);
+    if(instanceClass == NULL) {
+        return;
+    }
+    jfieldID fieldID = (*env)->GetFieldID(env, instanceClass, fieldName,
+                                          fieldType);
+    if(fieldID == NULL) {
+        handleFieldNotFound(env, instance, fieldName);
+        return;
+    }
+    (*env)->SetObjectField(env, instance, fieldID, value);
+}
+
+void setObjectFieldValueIfPossible(JNIEnv *env, jobject instance, char *fieldName,
+                                          char *fieldType, jobject value)
+{
+    jclass instanceClass = (*env)->GetObjectClass(env, instance);
+    if(instanceClass == NULL) {
+        return;
+    }
+    jfieldID fieldID = (*env)->GetFieldID(env, instanceClass, fieldName,
+                                          fieldType);
+    if(fieldID == NULL) {
+        // ignore
+        (*env)->ExceptionClear(env);
+        return;
+    }
+    (*env)->SetObjectField(env, instance, fieldID, value);
+}
+
+void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
+                              jlong value)
+{
+    jclass instanceClass = (*env)->GetObjectClass(env, instance);
+    jfieldID fieldID = (*env)->GetFieldID(env, instanceClass, fieldName, "J");
+    if(fieldID == NULL) {
+        handleFieldNotFound(env, instance, fieldName);
+        return;
+    }
+    (*env)->SetLongField(env, instance, fieldID, value);
+}

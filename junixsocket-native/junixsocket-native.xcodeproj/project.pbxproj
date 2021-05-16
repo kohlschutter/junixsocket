@@ -31,66 +31,510 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		432EF190261AD60200F4A583 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
-		432EF191261AD60200F4A583 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
-		432EF192261AD60200F4A583 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
-		432EF193261AD60200F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		432EF195261AD60200F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
-		432EF19F261AD6D700F4A583 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
-		432EF1A0261AD6D700F4A583 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
-		432EF1A1261AD6D700F4A583 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
-		432EF1A2261AD6D700F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		432EF1A4261AD6D700F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
-		432EF1AE261AD9FB00F4A583 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
-		432EF1AF261AD9FB00F4A583 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
-		432EF1B0261AD9FB00F4A583 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
-		432EF1B1261AD9FB00F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		432EF1B3261AD9FB00F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
-		432EF1BD261ADB5500F4A583 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
-		432EF1BE261ADB5500F4A583 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
-		432EF1BF261ADB5500F4A583 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
-		432EF1C0261ADB5500F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		432EF1C2261ADB5500F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
-		432EF1CA261ADD6B00F4A583 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
-		432EF1CB261ADD6B00F4A583 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
-		432EF1CC261ADD6B00F4A583 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
-		432EF1CD261ADD6B00F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		432EF1CF261ADD6B00F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
-		432EF1DB261ADDD400F4A583 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
-		432EF1DC261ADDD400F4A583 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
-		432EF1DD261ADDD400F4A583 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
-		432EF1DE261ADDD400F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		432EF1E0261ADDD400F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
-		432EF1EA261ADE4900F4A583 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
-		432EF1EB261ADE4900F4A583 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
-		432EF1EC261ADE4900F4A583 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
-		432EF1ED261ADE4900F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		432EF1EF261ADE4900F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
-		432EF1F9261ADEDD00F4A583 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
-		432EF1FA261ADEDD00F4A583 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
-		432EF1FB261ADEDD00F4A583 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
-		432EF1FC261ADEDD00F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		432EF1FE261ADEDD00F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
-		432EF208261AE29200F4A583 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
-		432EF209261AE29200F4A583 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
-		432EF20A261AE29200F4A583 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
-		432EF20B261AE29200F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		432EF20D261AE29200F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
-		43663ED8261AECC400CEED08 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
-		43663ED9261AECC400CEED08 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
-		43663EDA261AECC400CEED08 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
-		43663EDB261AECC400CEED08 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		43663EDD261AECC400CEED08 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
-		43C5FB73261AC3700088E301 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
-		43C5FB74261AC3700088E301 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
-		43C5FB75261AC3700088E301 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
-		43C5FB76261AC3700088E301 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		43C5FB78261AC3700088E301 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
-		43D436C1261A5657002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */ = {isa = PBXBuildFile; fileRef = 43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */; };
-		43D436C2261A5659002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		43D436C6261A5680002D0C12 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C4261A5680002D0C12 /* jni.h */; };
-		43D436C7261A5680002D0C12 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436C5261A5680002D0C12 /* jniport.h */; };
-		43D436CC261A5C2D002D0C12 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 43D436CB261A5C2D002D0C12 /* ckmacros.h */; };
+		430233C72650AB4E00823167 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		430233C82650AB4E00823167 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		430233C92650AB4E00823167 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		430233CA2650AB4E00823167 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		430233CB2650AB4E00823167 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		430233CC2650AB4E00823167 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		430233CD2650AB4E00823167 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		430233CE2650AB4E00823167 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		430233CF2650AB4E00823167 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		430233D02650AB4E00823167 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		430233D12650AB4E00823167 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		430233D22650AB4E00823167 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		430233D32650AB4E00823167 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		430233D42650AB4E00823167 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		430233D52650AB4E00823167 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		430233D62650AB4E00823167 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		430233D72650AB4E00823167 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		430233D82650AB4E00823167 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		430233D92650AB4E00823167 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		430233DA2650AB4E00823167 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		430233DB2650AB4E00823167 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		430233DC2650AB4E00823167 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		430233DD2650AB4E00823167 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		430233DE2650AB4E00823167 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		430233DF2650AB4E00823167 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		430233E02650AB4E00823167 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		430233E12650AB4E00823167 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		430233E22650AB4E00823167 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		430233E32650AB4E00823167 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		430233E42650AB4E00823167 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		430233E52650AB4E00823167 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		430233E62650AB4E00823167 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		430233E72650AB4E00823167 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		430233E82650AB4E00823167 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		430233E92650AB4E00823167 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		430233EA2650AB4E00823167 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		430233EB2650AB4E00823167 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		430233EC2650AB4E00823167 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		430233ED2650AB4E00823167 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		430233EE2650AB4E00823167 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		430233EF2650AB4E00823167 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		430233F02650AB4E00823167 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		430233F12650AB4E00823167 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		430233F22650AB4E00823167 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		430233F32650AB4E00823167 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		430233F42650AB4E00823167 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		430233F52650AB4E00823167 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		430233F62650AB4E00823167 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		430233F72650AB4E00823167 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		430233F82650AB4E00823167 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		430233F92650AB4E00823167 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		430233FA2650AB4E00823167 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		430233FB2650AB4E00823167 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		430233FC2650AB4E00823167 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		430233FD2650AB4E00823167 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		430233FE2650AB4E00823167 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		430233FF2650AB4E00823167 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		430234002650AB4E00823167 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		430234012650AB4E00823167 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		430234022650AB4E00823167 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		430234032650AB4E00823167 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		430234042650AB4E00823167 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		430234052650AB4E00823167 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		430234062650AB4E00823167 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		430234072650AB4E00823167 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		430234082650AB4E00823167 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		430234092650AB4E00823167 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		4302340A2650AB4E00823167 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		4302340B2650AB4E00823167 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		4302340C2650AB4E00823167 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		4302340D2650AB4E00823167 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		4302340E2650AB4E00823167 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		4302340F2650AB4E00823167 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		430234102650AB4E00823167 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		430234112650AB4E00823167 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		430234122650AB4E00823167 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		430234132650AB4E00823167 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		430234142650AB4E00823167 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		430234152650AB4E00823167 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		430234162650AB4E00823167 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		430234172650AB4E00823167 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		430234182650AB4E00823167 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		430234192650AB4E00823167 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		4302341A2650AB4E00823167 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		4302341B2650AB4E00823167 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		4302341C2650AB4E00823167 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		4302341D2650AB4E00823167 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		4302341E2650AB4E00823167 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		4302341F2650AB4E00823167 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		430234202650AB4E00823167 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		430234212650AB4E00823167 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		430234222650AB4E00823167 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		430234232650AB4E00823167 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		430234242650AB4E00823167 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		430234252650AB4E00823167 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		430234262650AB4E00823167 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		430234272650AB4E00823167 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		430234282650AB4E00823167 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		430234292650AB4E00823167 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		4302342A2650AB4E00823167 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		4302342B2650AB4E00823167 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		4302342C2650AB4E00823167 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		4302342D2650AB4E00823167 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		4302342E2650AB4E00823167 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		4302342F2650AB4E00823167 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		430234302650AB4E00823167 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		430234312650AB4E00823167 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		430234322650AB4E00823167 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		430234332650AB4E00823167 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		430234342650AB4E00823167 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		430234352650AB4E00823167 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		430234362650AB4E00823167 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		430234372650AB4E00823167 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		430234382650AB4E00823167 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		430234392650AB4E00823167 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		4302343A2650AB4E00823167 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		4302343B2650AB4E00823167 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		4302343C2650AB4E00823167 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		4302343D2650AB4E00823167 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		4302343E2650AB4E00823167 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		4302343F2650AB4E00823167 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		430234402650AB4E00823167 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		430234412650AB4E00823167 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		430234422650AB4E00823167 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		430234432650AB4E00823167 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		430234442650AB4E00823167 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		430234452650AB4E00823167 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		430234462650AB4E00823167 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		430234472650AB4E00823167 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		430234482650AB4E00823167 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		430234492650AB4E00823167 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		4302344A2650AB4E00823167 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		4302344B2650AB4E00823167 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		4302344C2650AB4E00823167 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		4302344D2650AB4E00823167 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		4302344E2650AB4E00823167 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		4302344F2650AB4E00823167 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		430234502650AB4E00823167 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		430234512650AB4E00823167 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		430234522650AB4E00823167 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		430234532650AB4E00823167 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		430234542650AB4E00823167 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		430234552650AB4E00823167 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		430234562650AB4E00823167 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		430234572650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		430234582650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		430234592650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		4302345A2650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		4302345B2650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		4302345C2650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		4302345D2650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		4302345E2650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		4302345F2650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		430234602650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		430234612650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		430234622650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		430234632650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		430234642650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		430234652650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		430234662650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		430234672650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		430234682650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		430234692650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		4302346A2650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		4302346B2650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		4302346C2650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		4302346D2650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		4302346E2650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		4302346F2650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		430234702650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		430234712650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		430234722650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		430234732650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		430234742650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		430234752650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		430234762650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		430234772650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		430234782650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		430234792650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		4302347A2650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		4302347B2650AB4E00823167 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		4302347C2650AB4E00823167 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		4302347D2650AB4E00823167 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		4302347E2650AB4E00823167 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		4302347F2650AB4E00823167 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		430234802650AB4E00823167 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		430234812650AB4E00823167 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		430234822650AB4E00823167 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		430234832650AB4E00823167 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		430234842650AB4E00823167 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		430234852650AB4E00823167 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		430234862650AB4E00823167 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		430234872650AB4E00823167 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		430234882650AB4E00823167 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		430234892650AB4E00823167 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		4302348A2650AB4E00823167 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		4302348B2650AB4E00823167 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		4302348C2650AB4E00823167 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		4302348D2650AB4E00823167 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		4302348E2650AB4E00823167 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		4302348F2650AB4E00823167 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		430234902650AB4E00823167 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		430234912650AB4E00823167 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		430234922650AB4E00823167 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		430234932650AB4E00823167 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		430234942650AB4E00823167 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		430234952650AB4E00823167 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		430234962650AB4E00823167 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		430234972650AB4E00823167 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		430234982650AB4E00823167 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		430234992650AB4E00823167 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		4302349A2650AB4E00823167 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		4302349B2650AB4E00823167 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		4302349C2650AB4E00823167 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		4302349D2650AB4E00823167 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		4302349E2650AB4E00823167 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		4302349F2650AB4E00823167 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		430234A02650AB4E00823167 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		430234A12650AB4E00823167 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		430234A22650AB4E00823167 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		430234A32650AB4E00823167 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		430234A42650AB4E00823167 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		430234A52650AB4E00823167 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		430234A62650AB4E00823167 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		430234A72650AB4E00823167 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		430234A82650AB4E00823167 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		430234A92650AB4E00823167 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		430234AA2650AB4E00823167 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		430234AB2650AB4E00823167 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		430234AC2650AB4E00823167 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		430234AD2650AB4E00823167 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		430234AE2650AB4E00823167 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		430234AF2650AB4E00823167 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		430234B02650AB4E00823167 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		430234B12650AB4E00823167 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		430234B22650AB4E00823167 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		430234B32650AB4E00823167 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		430234B42650AB4E00823167 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		430234B52650AB4E00823167 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		430234B62650AB4E00823167 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		430234B72650AB4E00823167 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		430234B82650AB4E00823167 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		430234B92650AB4E00823167 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		430234BA2650AB4E00823167 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		430234BB2650AB4E00823167 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		430234BC2650AB4E00823167 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		430234BD2650AB4E00823167 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		430234BE2650AB4E00823167 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		430234BF2650AB4E00823167 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		430234C02650AB4E00823167 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		430234C12650AB4E00823167 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		430234C22650AB4E00823167 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		430234C32650AB4E00823167 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		430234C42650AB4E00823167 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		430234C52650AB4E00823167 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		430234C62650AB4E00823167 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		430234C72650AB4E00823167 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		430234C82650AB4E00823167 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		430234C92650AB4E00823167 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		430234CA2650AB4E00823167 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		430234CB2650AB4E00823167 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		430234CC2650AB4E00823167 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		430234CD2650AB4E00823167 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		430234CE2650AB4E00823167 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		430234CF2650AB4F00823167 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		430234D02650AB4F00823167 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		430234D12650AB4F00823167 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		430234D22650AB4F00823167 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		430234D32650AB4F00823167 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		430234D42650AB4F00823167 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		430234D52650AB4F00823167 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		430234D62650AB4F00823167 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		430234D72650AB4F00823167 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		430234D82650AB4F00823167 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		430234D92650AB4F00823167 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		430234DA2650AB4F00823167 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		430234DB2650AB4F00823167 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		430234DC2650AB4F00823167 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		430234DD2650AB4F00823167 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		430234DE2650AB4F00823167 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		430234DF2650AB4F00823167 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		430234E02650AB4F00823167 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		430234E12650AB4F00823167 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		430234E22650AB4F00823167 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		430234E32650AB4F00823167 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		430234E42650AB4F00823167 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		430234E52650AB4F00823167 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		430234E62650AB4F00823167 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		430234E72650AB4F00823167 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		430234E82650AB4F00823167 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		430234E92650AB4F00823167 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		430234EA2650AB4F00823167 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		430234EB2650AB4F00823167 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		430234EC2650AB4F00823167 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		430234ED2650AB4F00823167 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		430234EE2650AB4F00823167 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		430234EF2650AB4F00823167 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		430234F02650AB4F00823167 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		430234F12650AB4F00823167 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		430234F22650AB4F00823167 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		430234F32650AB4F00823167 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		430234F42650AB4F00823167 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		430234F52650AB4F00823167 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		430234F62650AB4F00823167 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		430234F72650AB4F00823167 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		430234F82650AB4F00823167 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		430234F92650AB4F00823167 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		430234FA2650AB4F00823167 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		430234FB2650AB4F00823167 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		430234FC2650AB4F00823167 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		430234FD2650AB4F00823167 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		430234FE2650AB4F00823167 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		430235172650AB4F00823167 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		430235182650AB4F00823167 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		430235192650AB4F00823167 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		4302351A2650AB4F00823167 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		4302351B2650AB4F00823167 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		4302351C2650AB4F00823167 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		4302351D2650AB4F00823167 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		4302351E2650AB4F00823167 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		4302351F2650AB4F00823167 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		430235202650AB4F00823167 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		430235212650AB4F00823167 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		430235222650AB4F00823167 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		430235232650AB4F00823167 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		430235242650AB4F00823167 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		430235252650AB4F00823167 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		430235262650AB4F00823167 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		430235272650AB4F00823167 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		430235282650AB4F00823167 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		430235292650AB4F00823167 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		4302352A2650AB4F00823167 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		4302352B2650AB4F00823167 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		4302352C2650AB4F00823167 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		4302352D2650AB4F00823167 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		4302352E2650AB4F00823167 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		4302352F2650AB4F00823167 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		430235302650AB4F00823167 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		430235312650AB4F00823167 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		430235322650AB4F00823167 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		430235332650AB4F00823167 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		430235342650AB4F00823167 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		430235352650AB4F00823167 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		430235362650AB4F00823167 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		430235372650AB4F00823167 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		430235382650AB4F00823167 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		430235392650AB4F00823167 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		4302353A2650AB4F00823167 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		4302353B2650AB4F00823167 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		4302353C2650AB4F00823167 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		4302353D2650AB4F00823167 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		4302353E2650AB4F00823167 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		4302353F2650AB4F00823167 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		430235402650AB4F00823167 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		430235412650AB4F00823167 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		430235422650AB4F00823167 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		430235432650AB4F00823167 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		430235442650AB4F00823167 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		430235452650AB4F00823167 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		430235462650AB4F00823167 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		430235472650AB4F00823167 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		430235482650AB4F00823167 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		430235492650AB4F00823167 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		4302354A2650AB4F00823167 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		4302354B2650AB4F00823167 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		4302354C2650AB4F00823167 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		4302354D2650AB4F00823167 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		4302354E2650AB4F00823167 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		4302354F2650AB4F00823167 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		430235502650AB4F00823167 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		430235512650AB4F00823167 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		430235522650AB4F00823167 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		430235532650AB4F00823167 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		430235542650AB4F00823167 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		430235552650AB4F00823167 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		430235562650AB4F00823167 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		430235572650AB4F00823167 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		430235582650AB4F00823167 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		430235592650AB4F00823167 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		4302355A2650AB4F00823167 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		4302355B2650AB4F00823167 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		4302355C2650AB4F00823167 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		4302355D2650AB4F00823167 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		4302355E2650AB4F00823167 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		4302355F2650AB4F00823167 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		430235602650AB4F00823167 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		430235612650AB4F00823167 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		430235622650AB4F00823167 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		430235632650AB4F00823167 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		430235642650AB4F00823167 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		430235652650AB4F00823167 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		430235662650AB4F00823167 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		430235672650AB4F00823167 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		430235682650AB4F00823167 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		430235692650AB4F00823167 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		4302356A2650AB4F00823167 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		4302356B2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		4302356C2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		4302356D2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		4302356E2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		4302356F2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		430235702650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		430235712650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		430235722650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		430235732650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		430235742650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		430235752650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		430235762650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		430235772650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		430235782650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		430235792650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		4302357A2650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		4302357B2650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		4302357C2650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		4302357D2650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		4302357E2650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		4302357F2650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		430235802650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		430235812650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		430235822650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		430235832650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		430235842650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		430235852650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		430235862650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		430235872650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		430235882650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		430235892650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		4302358A2650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		4302358B2650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		4302358C2650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		4302358D2650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		4302358E2650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		4302358F2650AB4F00823167 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		430235902650AB4F00823167 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		430235912650AB4F00823167 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		430235922650AB4F00823167 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		430235932650AB4F00823167 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		430235942650AB4F00823167 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		430235952650AB4F00823167 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		430235962650AB4F00823167 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		430235972650AB4F00823167 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		430235982650AB4F00823167 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		430235992650AB4F00823167 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		4302359A2650AB4F00823167 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		4302359B2650AB4F00823167 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		4302359C2650AB4F00823167 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		4302359D2650AB4F00823167 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		4302359E2650AB4F00823167 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		4302359F2650AB4F00823167 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		430235A02650AB4F00823167 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		430235A12650AB4F00823167 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		430235A22650AB4F00823167 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		430235A32650AB4F00823167 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		430235A42650AB4F00823167 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		430235A52650AB4F00823167 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		430235A62650AB4F00823167 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		430235A72650AB4F00823167 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		430235A82650AB4F00823167 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		430235A92650AB4F00823167 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		430235AA2650AB4F00823167 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		430235AB2650AB4F00823167 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		430235AC2650AB4F00823167 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		430235AD2650AB4F00823167 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		430235AE2650AB4F00823167 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		430235AF2650AB4F00823167 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		430235B02650AB4F00823167 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		430235B12650AB4F00823167 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		430235B22650AB4F00823167 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		430235B32650AB4F00823167 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		430235B42650AB4F00823167 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		430235B52650AB4F00823167 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		430235B62650AB4F00823167 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		430235B72650AB4F00823167 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		430235B82650AB4F00823167 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		430235B92650AB4F00823167 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		430235BA2650AB4F00823167 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		430235BB2650AB4F00823167 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		430235BC2650AB4F00823167 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		430235BD2650AB4F00823167 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		430235BE2650AB4F00823167 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		430235C22650AC3200823167 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		430235C32650AC3200823167 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		430235C42650AC3200823167 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		430235C52650AC3200823167 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		430235C62650AC3200823167 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		430235C72650AC3200823167 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		430235C82650AC3200823167 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		430235C92650AC3200823167 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		430235CA2650AC3200823167 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		430235CB2650AC3200823167 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		430235CC2650AC3200823167 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		430235CD2650AC3200823167 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		430235CE2650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		430235CF2650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		430235D02650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		430235D12650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		430235D22650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		430235D32650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		430235D42650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		430235D52650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		430235D62650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		430235D72650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		430235D82650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		430235D92650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -174,6 +618,48 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4302339C2650AB4900823167 /* address.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = address.c; path = src/main/c/address.c; sourceTree = "<group>"; };
+		4302339D2650AB4900823167 /* socketoptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = socketoptions.h; path = src/main/c/socketoptions.h; sourceTree = "<group>"; };
+		4302339E2650AB4900823167 /* accept.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = accept.c; path = src/main/c/accept.c; sourceTree = "<group>"; };
+		4302339F2650AB4900823167 /* bind.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bind.h; path = src/main/c/bind.h; sourceTree = "<group>"; };
+		430233A02650AB4900823167 /* config.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = config.c; path = src/main/c/config.c; sourceTree = "<group>"; };
+		430233A12650AB4900823167 /* jniutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jniutil.h; path = src/main/c/jniutil.h; sourceTree = "<group>"; };
+		430233A22650AB4900823167 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = src/main/c/config.h; sourceTree = "<group>"; };
+		430233A32650AB4900823167 /* jniutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = jniutil.c; path = src/main/c/jniutil.c; sourceTree = "<group>"; };
+		430233A42650AB4900823167 /* capabilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = capabilities.h; path = src/main/c/capabilities.h; sourceTree = "<group>"; };
+		430233A52650AB4900823167 /* ancillary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ancillary.c; path = src/main/c/ancillary.c; sourceTree = "<group>"; };
+		430233A62650AB4A00823167 /* receive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = receive.h; path = src/main/c/receive.h; sourceTree = "<group>"; };
+		430233A72650AB4A00823167 /* connect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = connect.h; path = src/main/c/connect.h; sourceTree = "<group>"; };
+		430233A82650AB4A00823167 /* exceptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = exceptions.h; path = src/main/c/exceptions.h; sourceTree = "<group>"; };
+		430233A92650AB4A00823167 /* poll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = poll.h; path = src/main/c/poll.h; sourceTree = "<group>"; };
+		430233AA2650AB4A00823167 /* send.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = send.h; path = src/main/c/send.h; sourceTree = "<group>"; };
+		430233AB2650AB4A00823167 /* receive.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = receive.c; path = src/main/c/receive.c; sourceTree = "<group>"; };
+		430233AC2650AB4A00823167 /* filedescriptors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = filedescriptors.h; path = src/main/c/filedescriptors.h; sourceTree = "<group>"; };
+		430233AD2650AB4A00823167 /* reflection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reflection.h; path = src/main/c/reflection.h; sourceTree = "<group>"; };
+		430233AE2650AB4A00823167 /* credentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = credentials.h; path = src/main/c/credentials.h; sourceTree = "<group>"; };
+		430233AF2650AB4B00823167 /* listen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = listen.c; path = src/main/c/listen.c; sourceTree = "<group>"; };
+		430233B02650AB4B00823167 /* capabilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = capabilities.c; path = src/main/c/capabilities.c; sourceTree = "<group>"; };
+		430233B12650AB4B00823167 /* listen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = listen.h; path = src/main/c/listen.h; sourceTree = "<group>"; };
+		430233B22650AB4B00823167 /* send.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = send.c; path = src/main/c/send.c; sourceTree = "<group>"; };
+		430233B32650AB4B00823167 /* init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = init.c; path = src/main/c/init.c; sourceTree = "<group>"; };
+		430233B42650AB4B00823167 /* socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = socket.h; path = src/main/c/socket.h; sourceTree = "<group>"; };
+		430233B52650AB4B00823167 /* socketoptions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = socketoptions.c; path = src/main/c/socketoptions.c; sourceTree = "<group>"; };
+		430233B92650AB4C00823167 /* address.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = address.h; path = src/main/c/address.h; sourceTree = "<group>"; };
+		430233BA2650AB4C00823167 /* reflection.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = reflection.c; path = src/main/c/reflection.c; sourceTree = "<group>"; };
+		430233BB2650AB4C00823167 /* accept.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = accept.h; path = src/main/c/accept.h; sourceTree = "<group>"; };
+		430233BC2650AB4C00823167 /* connect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = connect.c; path = src/main/c/connect.c; sourceTree = "<group>"; };
+		430233BD2650AB4C00823167 /* exceptions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = exceptions.c; path = src/main/c/exceptions.c; sourceTree = "<group>"; };
+		430233BE2650AB4D00823167 /* init.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = init.h; path = src/main/c/init.h; sourceTree = "<group>"; };
+		430233BF2650AB4D00823167 /* ckmacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ckmacros.h; path = src/main/c/ckmacros.h; sourceTree = "<group>"; };
+		430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = org_newsclub_net_unix_NativeUnixSocket.h; path = src/main/c/org_newsclub_net_unix_NativeUnixSocket.h; sourceTree = "<group>"; };
+		430233C12650AB4D00823167 /* poll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = poll.c; path = src/main/c/poll.c; sourceTree = "<group>"; };
+		430233C22650AB4D00823167 /* socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = socket.c; path = src/main/c/socket.c; sourceTree = "<group>"; };
+		430233C32650AB4D00823167 /* bind.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bind.c; path = src/main/c/bind.c; sourceTree = "<group>"; };
+		430233C42650AB4E00823167 /* filedescriptors.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = filedescriptors.c; path = src/main/c/filedescriptors.c; sourceTree = "<group>"; };
+		430233C52650AB4E00823167 /* ancillary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ancillary.h; path = src/main/c/ancillary.h; sourceTree = "<group>"; };
+		430233C62650AB4E00823167 /* credentials.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = credentials.c; path = src/main/c/credentials.c; sourceTree = "<group>"; };
+		430235C02650AC3200823167 /* jni.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jni.h; sourceTree = "<group>"; };
+		430235C12650AC3200823167 /* jniport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jniport.h; sourceTree = "<group>"; };
 		432EF19A261AD60200F4A583 /* libjunixsocket-aarch64-linux-gnu.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-aarch64-linux-gnu.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF1A9261AD6D700F4A583 /* libjunixsocket-x86_64-w64-mingw32.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-w64-mingw32.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF1B8261AD9FB00F4A583 /* libjunixsocket-i386-pc-solaris2.11_m64.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-i386-pc-solaris2.11_m64.so"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -185,12 +671,7 @@
 		432EF212261AE29200F4A583 /* libjunixsocket-x86_64-apple-darwin18.2.0.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-apple-darwin18.2.0.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43663EE2261AECC400CEED08 /* libjunixsocket-default.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-default.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43C5FB7D261AC3700088E301 /* libjunixsocket-arm64-apple-macos11.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-arm64-apple-macos11.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
-		43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = org_newsclub_net_unix_NativeUnixSocket.c; path = src/main/c/org_newsclub_net_unix_NativeUnixSocket.c; sourceTree = "<group>"; };
-		43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = org_newsclub_net_unix_NativeUnixSocket.h; path = src/main/c/org_newsclub_net_unix_NativeUnixSocket.h; sourceTree = "<group>"; };
 		43D436BC261A564C002D0C12 /* libjunixsocket-x86_64-alpine-linux-musl.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-alpine-linux-musl.so"; sourceTree = BUILT_PRODUCTS_DIR; };
-		43D436C4261A5680002D0C12 /* jni.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jni.h; sourceTree = "<group>"; };
-		43D436C5261A5680002D0C12 /* jniport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jniport.h; sourceTree = "<group>"; };
-		43D436CB261A5C2D002D0C12 /* ckmacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ckmacros.h; path = src/main/c/ckmacros.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -281,13 +762,84 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		430233992650AB0400823167 /* Build Essentials */ = {
+			isa = PBXGroup;
+			children = (
+				430233BF2650AB4D00823167 /* ckmacros.h */,
+				430233A02650AB4900823167 /* config.c */,
+				430233A22650AB4900823167 /* config.h */,
+				430233A32650AB4900823167 /* jniutil.c */,
+				430233A12650AB4900823167 /* jniutil.h */,
+				430235BF2650AC3200823167 /* jni */,
+			);
+			name = "Build Essentials";
+			sourceTree = "<group>";
+		};
+		4302339A2650AB1400823167 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */,
+			);
+			name = API;
+			sourceTree = "<group>";
+		};
+		4302339B2650AB1F00823167 /* Implementation */ = {
+			isa = PBXGroup;
+			children = (
+				4302339E2650AB4900823167 /* accept.c */,
+				430233BB2650AB4C00823167 /* accept.h */,
+				4302339C2650AB4900823167 /* address.c */,
+				430233B92650AB4C00823167 /* address.h */,
+				430233A52650AB4900823167 /* ancillary.c */,
+				430233C52650AB4E00823167 /* ancillary.h */,
+				430233C32650AB4D00823167 /* bind.c */,
+				4302339F2650AB4900823167 /* bind.h */,
+				430233B02650AB4B00823167 /* capabilities.c */,
+				430233A42650AB4900823167 /* capabilities.h */,
+				430233BC2650AB4C00823167 /* connect.c */,
+				430233A72650AB4A00823167 /* connect.h */,
+				430233C62650AB4E00823167 /* credentials.c */,
+				430233AE2650AB4A00823167 /* credentials.h */,
+				430233BD2650AB4C00823167 /* exceptions.c */,
+				430233A82650AB4A00823167 /* exceptions.h */,
+				430233C42650AB4E00823167 /* filedescriptors.c */,
+				430233AC2650AB4A00823167 /* filedescriptors.h */,
+				430233B32650AB4B00823167 /* init.c */,
+				430233BE2650AB4D00823167 /* init.h */,
+				430233AF2650AB4B00823167 /* listen.c */,
+				430233B12650AB4B00823167 /* listen.h */,
+				430233C12650AB4D00823167 /* poll.c */,
+				430233A92650AB4A00823167 /* poll.h */,
+				430233AB2650AB4A00823167 /* receive.c */,
+				430233A62650AB4A00823167 /* receive.h */,
+				430233BA2650AB4C00823167 /* reflection.c */,
+				430233AD2650AB4A00823167 /* reflection.h */,
+				430233B22650AB4B00823167 /* send.c */,
+				430233AA2650AB4A00823167 /* send.h */,
+				430233C22650AB4D00823167 /* socket.c */,
+				430233B42650AB4B00823167 /* socket.h */,
+				430233B52650AB4B00823167 /* socketoptions.c */,
+				4302339D2650AB4900823167 /* socketoptions.h */,
+			);
+			name = Implementation;
+			sourceTree = "<group>";
+		};
+		430235BF2650AC3200823167 /* jni */ = {
+			isa = PBXGroup;
+			children = (
+				430235C02650AC3200823167 /* jni.h */,
+				430235C12650AC3200823167 /* jniport.h */,
+			);
+			name = jni;
+			path = src/main/c/jni;
+			sourceTree = "<group>";
+		};
 		43D436AF261A55D0002D0C12 = {
 			isa = PBXGroup;
 			children = (
-				43D436CB261A5C2D002D0C12 /* ckmacros.h */,
-				43D436B7261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h */,
-				43D436B6261A5605002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c */,
-				43D436C3261A5680002D0C12 /* jni */,
+				430233992650AB0400823167 /* Build Essentials */,
+				4302339B2650AB1F00823167 /* Implementation */,
+				4302339A2650AB1400823167 /* API */,
 				43D436BD261A564C002D0C12 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -311,16 +863,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		43D436C3261A5680002D0C12 /* jni */ = {
-			isa = PBXGroup;
-			children = (
-				43D436C4261A5680002D0C12 /* jni.h */,
-				43D436C5261A5680002D0C12 /* jniport.h */,
-			);
-			name = jni;
-			path = src/main/c/jni;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -328,10 +870,29 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF190261AD60200F4A583 /* jniport.h in Headers */,
-				432EF191261AD60200F4A583 /* ckmacros.h in Headers */,
-				432EF192261AD60200F4A583 /* jni.h in Headers */,
-				432EF193261AD60200F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430235C32650AC3200823167 /* jni.h in Headers */,
+				430235A82650AB4F00823167 /* ancillary.h in Headers */,
+				430235542650AB4F00823167 /* init.h in Headers */,
+				430234702650AB4E00823167 /* send.h in Headers */,
+				430234C42650AB4E00823167 /* listen.h in Headers */,
+				430234102650AB4E00823167 /* config.h in Headers */,
+				4302344C2650AB4E00823167 /* connect.h in Headers */,
+				430234042650AB4E00823167 /* jniutil.h in Headers */,
+				430233D42650AB4E00823167 /* socketoptions.h in Headers */,
+				430234882650AB4E00823167 /* filedescriptors.h in Headers */,
+				430234582650AB4E00823167 /* exceptions.h in Headers */,
+				430234282650AB4E00823167 /* capabilities.h in Headers */,
+				4302356C2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430234E82650AB4F00823167 /* socket.h in Headers */,
+				430235602650AB4F00823167 /* ckmacros.h in Headers */,
+				430235182650AB4F00823167 /* address.h in Headers */,
+				430234642650AB4E00823167 /* poll.h in Headers */,
+				430235302650AB4F00823167 /* accept.h in Headers */,
+				430234942650AB4E00823167 /* reflection.h in Headers */,
+				430235CF2650AC3200823167 /* jniport.h in Headers */,
+				430234402650AB4E00823167 /* receive.h in Headers */,
+				430234A02650AB4E00823167 /* credentials.h in Headers */,
+				430233EC2650AB4E00823167 /* bind.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,10 +900,29 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF19F261AD6D700F4A583 /* jniport.h in Headers */,
-				432EF1A0261AD6D700F4A583 /* ckmacros.h in Headers */,
-				432EF1A1261AD6D700F4A583 /* jni.h in Headers */,
-				432EF1A2261AD6D700F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430235CD2650AC3200823167 /* jni.h in Headers */,
+				430235B22650AB4F00823167 /* ancillary.h in Headers */,
+				4302355E2650AB4F00823167 /* init.h in Headers */,
+				4302347A2650AB4E00823167 /* send.h in Headers */,
+				430234CE2650AB4E00823167 /* listen.h in Headers */,
+				4302341A2650AB4E00823167 /* config.h in Headers */,
+				430234562650AB4E00823167 /* connect.h in Headers */,
+				4302340E2650AB4E00823167 /* jniutil.h in Headers */,
+				430233DE2650AB4E00823167 /* socketoptions.h in Headers */,
+				430234922650AB4E00823167 /* filedescriptors.h in Headers */,
+				430234622650AB4E00823167 /* exceptions.h in Headers */,
+				430234322650AB4E00823167 /* capabilities.h in Headers */,
+				430235762650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430234F22650AB4F00823167 /* socket.h in Headers */,
+				4302356A2650AB4F00823167 /* ckmacros.h in Headers */,
+				430235222650AB4F00823167 /* address.h in Headers */,
+				4302346E2650AB4E00823167 /* poll.h in Headers */,
+				4302353A2650AB4F00823167 /* accept.h in Headers */,
+				4302349E2650AB4E00823167 /* reflection.h in Headers */,
+				430235D92650AC3200823167 /* jniport.h in Headers */,
+				4302344A2650AB4E00823167 /* receive.h in Headers */,
+				430234AA2650AB4E00823167 /* credentials.h in Headers */,
+				430233F62650AB4E00823167 /* bind.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,10 +930,29 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1AE261AD9FB00F4A583 /* jniport.h in Headers */,
-				432EF1AF261AD9FB00F4A583 /* ckmacros.h in Headers */,
-				432EF1B0261AD9FB00F4A583 /* jni.h in Headers */,
-				432EF1B1261AD9FB00F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430235C62650AC3200823167 /* jni.h in Headers */,
+				430235AB2650AB4F00823167 /* ancillary.h in Headers */,
+				430235572650AB4F00823167 /* init.h in Headers */,
+				430234732650AB4E00823167 /* send.h in Headers */,
+				430234C72650AB4E00823167 /* listen.h in Headers */,
+				430234132650AB4E00823167 /* config.h in Headers */,
+				4302344F2650AB4E00823167 /* connect.h in Headers */,
+				430234072650AB4E00823167 /* jniutil.h in Headers */,
+				430233D72650AB4E00823167 /* socketoptions.h in Headers */,
+				4302348B2650AB4E00823167 /* filedescriptors.h in Headers */,
+				4302345B2650AB4E00823167 /* exceptions.h in Headers */,
+				4302342B2650AB4E00823167 /* capabilities.h in Headers */,
+				4302356F2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430234EB2650AB4F00823167 /* socket.h in Headers */,
+				430235632650AB4F00823167 /* ckmacros.h in Headers */,
+				4302351B2650AB4F00823167 /* address.h in Headers */,
+				430234672650AB4E00823167 /* poll.h in Headers */,
+				430235332650AB4F00823167 /* accept.h in Headers */,
+				430234972650AB4E00823167 /* reflection.h in Headers */,
+				430235D22650AC3200823167 /* jniport.h in Headers */,
+				430234432650AB4E00823167 /* receive.h in Headers */,
+				430234A32650AB4E00823167 /* credentials.h in Headers */,
+				430233EF2650AB4E00823167 /* bind.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,10 +960,29 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1BD261ADB5500F4A583 /* jniport.h in Headers */,
-				432EF1BE261ADB5500F4A583 /* ckmacros.h in Headers */,
-				432EF1BF261ADB5500F4A583 /* jni.h in Headers */,
-				432EF1C0261ADB5500F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430235C92650AC3200823167 /* jni.h in Headers */,
+				430235AE2650AB4F00823167 /* ancillary.h in Headers */,
+				4302355A2650AB4F00823167 /* init.h in Headers */,
+				430234762650AB4E00823167 /* send.h in Headers */,
+				430234CA2650AB4E00823167 /* listen.h in Headers */,
+				430234162650AB4E00823167 /* config.h in Headers */,
+				430234522650AB4E00823167 /* connect.h in Headers */,
+				4302340A2650AB4E00823167 /* jniutil.h in Headers */,
+				430233DA2650AB4E00823167 /* socketoptions.h in Headers */,
+				4302348E2650AB4E00823167 /* filedescriptors.h in Headers */,
+				4302345E2650AB4E00823167 /* exceptions.h in Headers */,
+				4302342E2650AB4E00823167 /* capabilities.h in Headers */,
+				430235722650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430234EE2650AB4F00823167 /* socket.h in Headers */,
+				430235662650AB4F00823167 /* ckmacros.h in Headers */,
+				4302351E2650AB4F00823167 /* address.h in Headers */,
+				4302346A2650AB4E00823167 /* poll.h in Headers */,
+				430235362650AB4F00823167 /* accept.h in Headers */,
+				4302349A2650AB4E00823167 /* reflection.h in Headers */,
+				430235D52650AC3200823167 /* jniport.h in Headers */,
+				430234462650AB4E00823167 /* receive.h in Headers */,
+				430234A62650AB4E00823167 /* credentials.h in Headers */,
+				430233F22650AB4E00823167 /* bind.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,10 +990,29 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1CA261ADD6B00F4A583 /* jniport.h in Headers */,
-				432EF1CB261ADD6B00F4A583 /* ckmacros.h in Headers */,
-				432EF1CC261ADD6B00F4A583 /* jni.h in Headers */,
-				432EF1CD261ADD6B00F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430235CC2650AC3200823167 /* jni.h in Headers */,
+				430235B12650AB4F00823167 /* ancillary.h in Headers */,
+				4302355D2650AB4F00823167 /* init.h in Headers */,
+				430234792650AB4E00823167 /* send.h in Headers */,
+				430234CD2650AB4E00823167 /* listen.h in Headers */,
+				430234192650AB4E00823167 /* config.h in Headers */,
+				430234552650AB4E00823167 /* connect.h in Headers */,
+				4302340D2650AB4E00823167 /* jniutil.h in Headers */,
+				430233DD2650AB4E00823167 /* socketoptions.h in Headers */,
+				430234912650AB4E00823167 /* filedescriptors.h in Headers */,
+				430234612650AB4E00823167 /* exceptions.h in Headers */,
+				430234312650AB4E00823167 /* capabilities.h in Headers */,
+				430235752650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430234F12650AB4F00823167 /* socket.h in Headers */,
+				430235692650AB4F00823167 /* ckmacros.h in Headers */,
+				430235212650AB4F00823167 /* address.h in Headers */,
+				4302346D2650AB4E00823167 /* poll.h in Headers */,
+				430235392650AB4F00823167 /* accept.h in Headers */,
+				4302349D2650AB4E00823167 /* reflection.h in Headers */,
+				430235D82650AC3200823167 /* jniport.h in Headers */,
+				430234492650AB4E00823167 /* receive.h in Headers */,
+				430234A92650AB4E00823167 /* credentials.h in Headers */,
+				430233F52650AB4E00823167 /* bind.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,10 +1020,29 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1DB261ADDD400F4A583 /* jniport.h in Headers */,
-				432EF1DC261ADDD400F4A583 /* ckmacros.h in Headers */,
-				432EF1DD261ADDD400F4A583 /* jni.h in Headers */,
-				432EF1DE261ADDD400F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430235C72650AC3200823167 /* jni.h in Headers */,
+				430235AC2650AB4F00823167 /* ancillary.h in Headers */,
+				430235582650AB4F00823167 /* init.h in Headers */,
+				430234742650AB4E00823167 /* send.h in Headers */,
+				430234C82650AB4E00823167 /* listen.h in Headers */,
+				430234142650AB4E00823167 /* config.h in Headers */,
+				430234502650AB4E00823167 /* connect.h in Headers */,
+				430234082650AB4E00823167 /* jniutil.h in Headers */,
+				430233D82650AB4E00823167 /* socketoptions.h in Headers */,
+				4302348C2650AB4E00823167 /* filedescriptors.h in Headers */,
+				4302345C2650AB4E00823167 /* exceptions.h in Headers */,
+				4302342C2650AB4E00823167 /* capabilities.h in Headers */,
+				430235702650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430234EC2650AB4F00823167 /* socket.h in Headers */,
+				430235642650AB4F00823167 /* ckmacros.h in Headers */,
+				4302351C2650AB4F00823167 /* address.h in Headers */,
+				430234682650AB4E00823167 /* poll.h in Headers */,
+				430235342650AB4F00823167 /* accept.h in Headers */,
+				430234982650AB4E00823167 /* reflection.h in Headers */,
+				430235D32650AC3200823167 /* jniport.h in Headers */,
+				430234442650AB4E00823167 /* receive.h in Headers */,
+				430234A42650AB4E00823167 /* credentials.h in Headers */,
+				430233F02650AB4E00823167 /* bind.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,10 +1050,29 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1EA261ADE4900F4A583 /* jniport.h in Headers */,
-				432EF1EB261ADE4900F4A583 /* ckmacros.h in Headers */,
-				432EF1EC261ADE4900F4A583 /* jni.h in Headers */,
-				432EF1ED261ADE4900F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430235C82650AC3200823167 /* jni.h in Headers */,
+				430235AD2650AB4F00823167 /* ancillary.h in Headers */,
+				430235592650AB4F00823167 /* init.h in Headers */,
+				430234752650AB4E00823167 /* send.h in Headers */,
+				430234C92650AB4E00823167 /* listen.h in Headers */,
+				430234152650AB4E00823167 /* config.h in Headers */,
+				430234512650AB4E00823167 /* connect.h in Headers */,
+				430234092650AB4E00823167 /* jniutil.h in Headers */,
+				430233D92650AB4E00823167 /* socketoptions.h in Headers */,
+				4302348D2650AB4E00823167 /* filedescriptors.h in Headers */,
+				4302345D2650AB4E00823167 /* exceptions.h in Headers */,
+				4302342D2650AB4E00823167 /* capabilities.h in Headers */,
+				430235712650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430234ED2650AB4F00823167 /* socket.h in Headers */,
+				430235652650AB4F00823167 /* ckmacros.h in Headers */,
+				4302351D2650AB4F00823167 /* address.h in Headers */,
+				430234692650AB4E00823167 /* poll.h in Headers */,
+				430235352650AB4F00823167 /* accept.h in Headers */,
+				430234992650AB4E00823167 /* reflection.h in Headers */,
+				430235D42650AC3200823167 /* jniport.h in Headers */,
+				430234452650AB4E00823167 /* receive.h in Headers */,
+				430234A52650AB4E00823167 /* credentials.h in Headers */,
+				430233F12650AB4E00823167 /* bind.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -405,10 +1080,29 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1F9261ADEDD00F4A583 /* jniport.h in Headers */,
-				432EF1FA261ADEDD00F4A583 /* ckmacros.h in Headers */,
-				432EF1FB261ADEDD00F4A583 /* jni.h in Headers */,
-				432EF1FC261ADEDD00F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430235C52650AC3200823167 /* jni.h in Headers */,
+				430235AA2650AB4F00823167 /* ancillary.h in Headers */,
+				430235562650AB4F00823167 /* init.h in Headers */,
+				430234722650AB4E00823167 /* send.h in Headers */,
+				430234C62650AB4E00823167 /* listen.h in Headers */,
+				430234122650AB4E00823167 /* config.h in Headers */,
+				4302344E2650AB4E00823167 /* connect.h in Headers */,
+				430234062650AB4E00823167 /* jniutil.h in Headers */,
+				430233D62650AB4E00823167 /* socketoptions.h in Headers */,
+				4302348A2650AB4E00823167 /* filedescriptors.h in Headers */,
+				4302345A2650AB4E00823167 /* exceptions.h in Headers */,
+				4302342A2650AB4E00823167 /* capabilities.h in Headers */,
+				4302356E2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430234EA2650AB4F00823167 /* socket.h in Headers */,
+				430235622650AB4F00823167 /* ckmacros.h in Headers */,
+				4302351A2650AB4F00823167 /* address.h in Headers */,
+				430234662650AB4E00823167 /* poll.h in Headers */,
+				430235322650AB4F00823167 /* accept.h in Headers */,
+				430234962650AB4E00823167 /* reflection.h in Headers */,
+				430235D12650AC3200823167 /* jniport.h in Headers */,
+				430234422650AB4E00823167 /* receive.h in Headers */,
+				430234A22650AB4E00823167 /* credentials.h in Headers */,
+				430233EE2650AB4E00823167 /* bind.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,10 +1110,29 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF208261AE29200F4A583 /* jniport.h in Headers */,
-				432EF209261AE29200F4A583 /* ckmacros.h in Headers */,
-				432EF20A261AE29200F4A583 /* jni.h in Headers */,
-				432EF20B261AE29200F4A583 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430235CB2650AC3200823167 /* jni.h in Headers */,
+				430235B02650AB4F00823167 /* ancillary.h in Headers */,
+				4302355C2650AB4F00823167 /* init.h in Headers */,
+				430234782650AB4E00823167 /* send.h in Headers */,
+				430234CC2650AB4E00823167 /* listen.h in Headers */,
+				430234182650AB4E00823167 /* config.h in Headers */,
+				430234542650AB4E00823167 /* connect.h in Headers */,
+				4302340C2650AB4E00823167 /* jniutil.h in Headers */,
+				430233DC2650AB4E00823167 /* socketoptions.h in Headers */,
+				430234902650AB4E00823167 /* filedescriptors.h in Headers */,
+				430234602650AB4E00823167 /* exceptions.h in Headers */,
+				430234302650AB4E00823167 /* capabilities.h in Headers */,
+				430235742650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430234F02650AB4F00823167 /* socket.h in Headers */,
+				430235682650AB4F00823167 /* ckmacros.h in Headers */,
+				430235202650AB4F00823167 /* address.h in Headers */,
+				4302346C2650AB4E00823167 /* poll.h in Headers */,
+				430235382650AB4F00823167 /* accept.h in Headers */,
+				4302349C2650AB4E00823167 /* reflection.h in Headers */,
+				430235D72650AC3200823167 /* jniport.h in Headers */,
+				430234482650AB4E00823167 /* receive.h in Headers */,
+				430234A82650AB4E00823167 /* credentials.h in Headers */,
+				430233F42650AB4E00823167 /* bind.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,10 +1140,29 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43663ED8261AECC400CEED08 /* jniport.h in Headers */,
-				43663ED9261AECC400CEED08 /* ckmacros.h in Headers */,
-				43663EDA261AECC400CEED08 /* jni.h in Headers */,
-				43663EDB261AECC400CEED08 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430235C22650AC3200823167 /* jni.h in Headers */,
+				430235A72650AB4F00823167 /* ancillary.h in Headers */,
+				430235532650AB4F00823167 /* init.h in Headers */,
+				4302346F2650AB4E00823167 /* send.h in Headers */,
+				430234C32650AB4E00823167 /* listen.h in Headers */,
+				4302340F2650AB4E00823167 /* config.h in Headers */,
+				4302344B2650AB4E00823167 /* connect.h in Headers */,
+				430234032650AB4E00823167 /* jniutil.h in Headers */,
+				430233D32650AB4E00823167 /* socketoptions.h in Headers */,
+				430234872650AB4E00823167 /* filedescriptors.h in Headers */,
+				430234572650AB4E00823167 /* exceptions.h in Headers */,
+				430234272650AB4E00823167 /* capabilities.h in Headers */,
+				4302356B2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430234E72650AB4F00823167 /* socket.h in Headers */,
+				4302355F2650AB4F00823167 /* ckmacros.h in Headers */,
+				430235172650AB4F00823167 /* address.h in Headers */,
+				430234632650AB4E00823167 /* poll.h in Headers */,
+				4302352F2650AB4F00823167 /* accept.h in Headers */,
+				430234932650AB4E00823167 /* reflection.h in Headers */,
+				430235CE2650AC3200823167 /* jniport.h in Headers */,
+				4302343F2650AB4E00823167 /* receive.h in Headers */,
+				4302349F2650AB4E00823167 /* credentials.h in Headers */,
+				430233EB2650AB4E00823167 /* bind.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -438,10 +1170,29 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43C5FB73261AC3700088E301 /* jniport.h in Headers */,
-				43C5FB74261AC3700088E301 /* ckmacros.h in Headers */,
-				43C5FB75261AC3700088E301 /* jni.h in Headers */,
-				43C5FB76261AC3700088E301 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430235C42650AC3200823167 /* jni.h in Headers */,
+				430235A92650AB4F00823167 /* ancillary.h in Headers */,
+				430235552650AB4F00823167 /* init.h in Headers */,
+				430234712650AB4E00823167 /* send.h in Headers */,
+				430234C52650AB4E00823167 /* listen.h in Headers */,
+				430234112650AB4E00823167 /* config.h in Headers */,
+				4302344D2650AB4E00823167 /* connect.h in Headers */,
+				430234052650AB4E00823167 /* jniutil.h in Headers */,
+				430233D52650AB4E00823167 /* socketoptions.h in Headers */,
+				430234892650AB4E00823167 /* filedescriptors.h in Headers */,
+				430234592650AB4E00823167 /* exceptions.h in Headers */,
+				430234292650AB4E00823167 /* capabilities.h in Headers */,
+				4302356D2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430234E92650AB4F00823167 /* socket.h in Headers */,
+				430235612650AB4F00823167 /* ckmacros.h in Headers */,
+				430235192650AB4F00823167 /* address.h in Headers */,
+				430234652650AB4E00823167 /* poll.h in Headers */,
+				430235312650AB4F00823167 /* accept.h in Headers */,
+				430234952650AB4E00823167 /* reflection.h in Headers */,
+				430235D02650AC3200823167 /* jniport.h in Headers */,
+				430234412650AB4E00823167 /* receive.h in Headers */,
+				430234A12650AB4E00823167 /* credentials.h in Headers */,
+				430233ED2650AB4E00823167 /* bind.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,10 +1200,29 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43D436C7261A5680002D0C12 /* jniport.h in Headers */,
-				43D436CC261A5C2D002D0C12 /* ckmacros.h in Headers */,
-				43D436C6261A5680002D0C12 /* jni.h in Headers */,
-				43D436C2261A5659002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430235CA2650AC3200823167 /* jni.h in Headers */,
+				430235AF2650AB4F00823167 /* ancillary.h in Headers */,
+				4302355B2650AB4F00823167 /* init.h in Headers */,
+				430234772650AB4E00823167 /* send.h in Headers */,
+				430234CB2650AB4E00823167 /* listen.h in Headers */,
+				430234172650AB4E00823167 /* config.h in Headers */,
+				430234532650AB4E00823167 /* connect.h in Headers */,
+				4302340B2650AB4E00823167 /* jniutil.h in Headers */,
+				430233DB2650AB4E00823167 /* socketoptions.h in Headers */,
+				4302348F2650AB4E00823167 /* filedescriptors.h in Headers */,
+				4302345F2650AB4E00823167 /* exceptions.h in Headers */,
+				4302342F2650AB4E00823167 /* capabilities.h in Headers */,
+				430235732650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				430234EF2650AB4F00823167 /* socket.h in Headers */,
+				430235672650AB4F00823167 /* ckmacros.h in Headers */,
+				4302351F2650AB4F00823167 /* address.h in Headers */,
+				4302346B2650AB4E00823167 /* poll.h in Headers */,
+				430235372650AB4F00823167 /* accept.h in Headers */,
+				4302349B2650AB4E00823167 /* reflection.h in Headers */,
+				430235D62650AC3200823167 /* jniport.h in Headers */,
+				430234472650AB4E00823167 /* receive.h in Headers */,
+				430234A72650AB4E00823167 /* credentials.h in Headers */,
+				430233F32650AB4E00823167 /* bind.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -714,7 +1484,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF195261AD60200F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+				4302359C2650AB4F00823167 /* filedescriptors.c in Sources */,
+				430235902650AB4F00823167 /* bind.c in Sources */,
+				430233C82650AB4E00823167 /* address.c in Sources */,
+				430234D02650AB4F00823167 /* send.c in Sources */,
+				430235842650AB4F00823167 /* socket.c in Sources */,
+				4302353C2650AB4F00823167 /* connect.c in Sources */,
+				430234B82650AB4E00823167 /* capabilities.c in Sources */,
+				430234F42650AB4F00823167 /* socketoptions.c in Sources */,
+				430235782650AB4F00823167 /* poll.c in Sources */,
+				4302347C2650AB4E00823167 /* receive.c in Sources */,
+				4302341C2650AB4E00823167 /* jniutil.c in Sources */,
+				430234DC2650AB4F00823167 /* init.c in Sources */,
+				430233F82650AB4E00823167 /* config.c in Sources */,
+				430235B42650AB4F00823167 /* credentials.c in Sources */,
+				430235482650AB4F00823167 /* exceptions.c in Sources */,
+				430235242650AB4F00823167 /* reflection.c in Sources */,
+				430234AC2650AB4E00823167 /* listen.c in Sources */,
+				430234342650AB4E00823167 /* ancillary.c in Sources */,
+				430233E02650AB4E00823167 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -722,7 +1510,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1A4261AD6D700F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+				430235A62650AB4F00823167 /* filedescriptors.c in Sources */,
+				4302359A2650AB4F00823167 /* bind.c in Sources */,
+				430233D22650AB4E00823167 /* address.c in Sources */,
+				430234DA2650AB4F00823167 /* send.c in Sources */,
+				4302358E2650AB4F00823167 /* socket.c in Sources */,
+				430235462650AB4F00823167 /* connect.c in Sources */,
+				430234C22650AB4E00823167 /* capabilities.c in Sources */,
+				430234FE2650AB4F00823167 /* socketoptions.c in Sources */,
+				430235822650AB4F00823167 /* poll.c in Sources */,
+				430234862650AB4E00823167 /* receive.c in Sources */,
+				430234262650AB4E00823167 /* jniutil.c in Sources */,
+				430234E62650AB4F00823167 /* init.c in Sources */,
+				430234022650AB4E00823167 /* config.c in Sources */,
+				430235BE2650AB4F00823167 /* credentials.c in Sources */,
+				430235522650AB4F00823167 /* exceptions.c in Sources */,
+				4302352E2650AB4F00823167 /* reflection.c in Sources */,
+				430234B62650AB4E00823167 /* listen.c in Sources */,
+				4302343E2650AB4E00823167 /* ancillary.c in Sources */,
+				430233EA2650AB4E00823167 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -730,7 +1536,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1B3261AD9FB00F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+				4302359F2650AB4F00823167 /* filedescriptors.c in Sources */,
+				430235932650AB4F00823167 /* bind.c in Sources */,
+				430233CB2650AB4E00823167 /* address.c in Sources */,
+				430234D32650AB4F00823167 /* send.c in Sources */,
+				430235872650AB4F00823167 /* socket.c in Sources */,
+				4302353F2650AB4F00823167 /* connect.c in Sources */,
+				430234BB2650AB4E00823167 /* capabilities.c in Sources */,
+				430234F72650AB4F00823167 /* socketoptions.c in Sources */,
+				4302357B2650AB4F00823167 /* poll.c in Sources */,
+				4302347F2650AB4E00823167 /* receive.c in Sources */,
+				4302341F2650AB4E00823167 /* jniutil.c in Sources */,
+				430234DF2650AB4F00823167 /* init.c in Sources */,
+				430233FB2650AB4E00823167 /* config.c in Sources */,
+				430235B72650AB4F00823167 /* credentials.c in Sources */,
+				4302354B2650AB4F00823167 /* exceptions.c in Sources */,
+				430235272650AB4F00823167 /* reflection.c in Sources */,
+				430234AF2650AB4E00823167 /* listen.c in Sources */,
+				430234372650AB4E00823167 /* ancillary.c in Sources */,
+				430233E32650AB4E00823167 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -738,7 +1562,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1C2261ADB5500F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+				430235A22650AB4F00823167 /* filedescriptors.c in Sources */,
+				430235962650AB4F00823167 /* bind.c in Sources */,
+				430233CE2650AB4E00823167 /* address.c in Sources */,
+				430234D62650AB4F00823167 /* send.c in Sources */,
+				4302358A2650AB4F00823167 /* socket.c in Sources */,
+				430235422650AB4F00823167 /* connect.c in Sources */,
+				430234BE2650AB4E00823167 /* capabilities.c in Sources */,
+				430234FA2650AB4F00823167 /* socketoptions.c in Sources */,
+				4302357E2650AB4F00823167 /* poll.c in Sources */,
+				430234822650AB4E00823167 /* receive.c in Sources */,
+				430234222650AB4E00823167 /* jniutil.c in Sources */,
+				430234E22650AB4F00823167 /* init.c in Sources */,
+				430233FE2650AB4E00823167 /* config.c in Sources */,
+				430235BA2650AB4F00823167 /* credentials.c in Sources */,
+				4302354E2650AB4F00823167 /* exceptions.c in Sources */,
+				4302352A2650AB4F00823167 /* reflection.c in Sources */,
+				430234B22650AB4E00823167 /* listen.c in Sources */,
+				4302343A2650AB4E00823167 /* ancillary.c in Sources */,
+				430233E62650AB4E00823167 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -746,7 +1588,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1CF261ADD6B00F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+				430235A52650AB4F00823167 /* filedescriptors.c in Sources */,
+				430235992650AB4F00823167 /* bind.c in Sources */,
+				430233D12650AB4E00823167 /* address.c in Sources */,
+				430234D92650AB4F00823167 /* send.c in Sources */,
+				4302358D2650AB4F00823167 /* socket.c in Sources */,
+				430235452650AB4F00823167 /* connect.c in Sources */,
+				430234C12650AB4E00823167 /* capabilities.c in Sources */,
+				430234FD2650AB4F00823167 /* socketoptions.c in Sources */,
+				430235812650AB4F00823167 /* poll.c in Sources */,
+				430234852650AB4E00823167 /* receive.c in Sources */,
+				430234252650AB4E00823167 /* jniutil.c in Sources */,
+				430234E52650AB4F00823167 /* init.c in Sources */,
+				430234012650AB4E00823167 /* config.c in Sources */,
+				430235BD2650AB4F00823167 /* credentials.c in Sources */,
+				430235512650AB4F00823167 /* exceptions.c in Sources */,
+				4302352D2650AB4F00823167 /* reflection.c in Sources */,
+				430234B52650AB4E00823167 /* listen.c in Sources */,
+				4302343D2650AB4E00823167 /* ancillary.c in Sources */,
+				430233E92650AB4E00823167 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -754,7 +1614,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1E0261ADDD400F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+				430235A02650AB4F00823167 /* filedescriptors.c in Sources */,
+				430235942650AB4F00823167 /* bind.c in Sources */,
+				430233CC2650AB4E00823167 /* address.c in Sources */,
+				430234D42650AB4F00823167 /* send.c in Sources */,
+				430235882650AB4F00823167 /* socket.c in Sources */,
+				430235402650AB4F00823167 /* connect.c in Sources */,
+				430234BC2650AB4E00823167 /* capabilities.c in Sources */,
+				430234F82650AB4F00823167 /* socketoptions.c in Sources */,
+				4302357C2650AB4F00823167 /* poll.c in Sources */,
+				430234802650AB4E00823167 /* receive.c in Sources */,
+				430234202650AB4E00823167 /* jniutil.c in Sources */,
+				430234E02650AB4F00823167 /* init.c in Sources */,
+				430233FC2650AB4E00823167 /* config.c in Sources */,
+				430235B82650AB4F00823167 /* credentials.c in Sources */,
+				4302354C2650AB4F00823167 /* exceptions.c in Sources */,
+				430235282650AB4F00823167 /* reflection.c in Sources */,
+				430234B02650AB4E00823167 /* listen.c in Sources */,
+				430234382650AB4E00823167 /* ancillary.c in Sources */,
+				430233E42650AB4E00823167 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -762,7 +1640,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1EF261ADE4900F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+				430235A12650AB4F00823167 /* filedescriptors.c in Sources */,
+				430235952650AB4F00823167 /* bind.c in Sources */,
+				430233CD2650AB4E00823167 /* address.c in Sources */,
+				430234D52650AB4F00823167 /* send.c in Sources */,
+				430235892650AB4F00823167 /* socket.c in Sources */,
+				430235412650AB4F00823167 /* connect.c in Sources */,
+				430234BD2650AB4E00823167 /* capabilities.c in Sources */,
+				430234F92650AB4F00823167 /* socketoptions.c in Sources */,
+				4302357D2650AB4F00823167 /* poll.c in Sources */,
+				430234812650AB4E00823167 /* receive.c in Sources */,
+				430234212650AB4E00823167 /* jniutil.c in Sources */,
+				430234E12650AB4F00823167 /* init.c in Sources */,
+				430233FD2650AB4E00823167 /* config.c in Sources */,
+				430235B92650AB4F00823167 /* credentials.c in Sources */,
+				4302354D2650AB4F00823167 /* exceptions.c in Sources */,
+				430235292650AB4F00823167 /* reflection.c in Sources */,
+				430234B12650AB4E00823167 /* listen.c in Sources */,
+				430234392650AB4E00823167 /* ancillary.c in Sources */,
+				430233E52650AB4E00823167 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -770,7 +1666,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF1FE261ADEDD00F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+				4302359E2650AB4F00823167 /* filedescriptors.c in Sources */,
+				430235922650AB4F00823167 /* bind.c in Sources */,
+				430233CA2650AB4E00823167 /* address.c in Sources */,
+				430234D22650AB4F00823167 /* send.c in Sources */,
+				430235862650AB4F00823167 /* socket.c in Sources */,
+				4302353E2650AB4F00823167 /* connect.c in Sources */,
+				430234BA2650AB4E00823167 /* capabilities.c in Sources */,
+				430234F62650AB4F00823167 /* socketoptions.c in Sources */,
+				4302357A2650AB4F00823167 /* poll.c in Sources */,
+				4302347E2650AB4E00823167 /* receive.c in Sources */,
+				4302341E2650AB4E00823167 /* jniutil.c in Sources */,
+				430234DE2650AB4F00823167 /* init.c in Sources */,
+				430233FA2650AB4E00823167 /* config.c in Sources */,
+				430235B62650AB4F00823167 /* credentials.c in Sources */,
+				4302354A2650AB4F00823167 /* exceptions.c in Sources */,
+				430235262650AB4F00823167 /* reflection.c in Sources */,
+				430234AE2650AB4E00823167 /* listen.c in Sources */,
+				430234362650AB4E00823167 /* ancillary.c in Sources */,
+				430233E22650AB4E00823167 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -778,7 +1692,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				432EF20D261AE29200F4A583 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+				430235A42650AB4F00823167 /* filedescriptors.c in Sources */,
+				430235982650AB4F00823167 /* bind.c in Sources */,
+				430233D02650AB4E00823167 /* address.c in Sources */,
+				430234D82650AB4F00823167 /* send.c in Sources */,
+				4302358C2650AB4F00823167 /* socket.c in Sources */,
+				430235442650AB4F00823167 /* connect.c in Sources */,
+				430234C02650AB4E00823167 /* capabilities.c in Sources */,
+				430234FC2650AB4F00823167 /* socketoptions.c in Sources */,
+				430235802650AB4F00823167 /* poll.c in Sources */,
+				430234842650AB4E00823167 /* receive.c in Sources */,
+				430234242650AB4E00823167 /* jniutil.c in Sources */,
+				430234E42650AB4F00823167 /* init.c in Sources */,
+				430234002650AB4E00823167 /* config.c in Sources */,
+				430235BC2650AB4F00823167 /* credentials.c in Sources */,
+				430235502650AB4F00823167 /* exceptions.c in Sources */,
+				4302352C2650AB4F00823167 /* reflection.c in Sources */,
+				430234B42650AB4E00823167 /* listen.c in Sources */,
+				4302343C2650AB4E00823167 /* ancillary.c in Sources */,
+				430233E82650AB4E00823167 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -786,7 +1718,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43663EDD261AECC400CEED08 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+				4302359B2650AB4F00823167 /* filedescriptors.c in Sources */,
+				4302358F2650AB4F00823167 /* bind.c in Sources */,
+				430233C72650AB4E00823167 /* address.c in Sources */,
+				430234CF2650AB4F00823167 /* send.c in Sources */,
+				430235832650AB4F00823167 /* socket.c in Sources */,
+				4302353B2650AB4F00823167 /* connect.c in Sources */,
+				430234B72650AB4E00823167 /* capabilities.c in Sources */,
+				430234F32650AB4F00823167 /* socketoptions.c in Sources */,
+				430235772650AB4F00823167 /* poll.c in Sources */,
+				4302347B2650AB4E00823167 /* receive.c in Sources */,
+				4302341B2650AB4E00823167 /* jniutil.c in Sources */,
+				430234DB2650AB4F00823167 /* init.c in Sources */,
+				430233F72650AB4E00823167 /* config.c in Sources */,
+				430235B32650AB4F00823167 /* credentials.c in Sources */,
+				430235472650AB4F00823167 /* exceptions.c in Sources */,
+				430235232650AB4F00823167 /* reflection.c in Sources */,
+				430234AB2650AB4E00823167 /* listen.c in Sources */,
+				430234332650AB4E00823167 /* ancillary.c in Sources */,
+				430233DF2650AB4E00823167 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -794,7 +1744,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43C5FB78261AC3700088E301 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+				4302359D2650AB4F00823167 /* filedescriptors.c in Sources */,
+				430235912650AB4F00823167 /* bind.c in Sources */,
+				430233C92650AB4E00823167 /* address.c in Sources */,
+				430234D12650AB4F00823167 /* send.c in Sources */,
+				430235852650AB4F00823167 /* socket.c in Sources */,
+				4302353D2650AB4F00823167 /* connect.c in Sources */,
+				430234B92650AB4E00823167 /* capabilities.c in Sources */,
+				430234F52650AB4F00823167 /* socketoptions.c in Sources */,
+				430235792650AB4F00823167 /* poll.c in Sources */,
+				4302347D2650AB4E00823167 /* receive.c in Sources */,
+				4302341D2650AB4E00823167 /* jniutil.c in Sources */,
+				430234DD2650AB4F00823167 /* init.c in Sources */,
+				430233F92650AB4E00823167 /* config.c in Sources */,
+				430235B52650AB4F00823167 /* credentials.c in Sources */,
+				430235492650AB4F00823167 /* exceptions.c in Sources */,
+				430235252650AB4F00823167 /* reflection.c in Sources */,
+				430234AD2650AB4E00823167 /* listen.c in Sources */,
+				430234352650AB4E00823167 /* ancillary.c in Sources */,
+				430233E12650AB4E00823167 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -802,7 +1770,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43D436C1261A5657002D0C12 /* org_newsclub_net_unix_NativeUnixSocket.c in Sources */,
+				430235A32650AB4F00823167 /* filedescriptors.c in Sources */,
+				430235972650AB4F00823167 /* bind.c in Sources */,
+				430233CF2650AB4E00823167 /* address.c in Sources */,
+				430234D72650AB4F00823167 /* send.c in Sources */,
+				4302358B2650AB4F00823167 /* socket.c in Sources */,
+				430235432650AB4F00823167 /* connect.c in Sources */,
+				430234BF2650AB4E00823167 /* capabilities.c in Sources */,
+				430234FB2650AB4F00823167 /* socketoptions.c in Sources */,
+				4302357F2650AB4F00823167 /* poll.c in Sources */,
+				430234832650AB4E00823167 /* receive.c in Sources */,
+				430234232650AB4E00823167 /* jniutil.c in Sources */,
+				430234E32650AB4F00823167 /* init.c in Sources */,
+				430233FF2650AB4E00823167 /* config.c in Sources */,
+				430235BB2650AB4F00823167 /* credentials.c in Sources */,
+				4302354F2650AB4F00823167 /* exceptions.c in Sources */,
+				4302352B2650AB4F00823167 /* reflection.c in Sources */,
+				430234B32650AB4E00823167 /* listen.c in Sources */,
+				4302343B2650AB4E00823167 /* ancillary.c in Sources */,
+				430233E72650AB4E00823167 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1396,13 +2382,18 @@
 				COMPILER_INDEX_STORE_ENABLE = NO;
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_PREFIX = "libjunixsocket-";
+				GCC_CW_ASM_SYNTAX = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_ENABLE_PASCAL_STRINGS = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = src/main/c/jni;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-fno-strict-overflow",
 					"-finline-functions",
+					"-fwrapv",
 				);
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
@@ -1434,12 +2425,17 @@
 				COMPILER_INDEX_STORE_ENABLE = NO;
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_PREFIX = "libjunixsocket-";
+				GCC_CW_ASM_SYNTAX = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_ENABLE_PASCAL_STRINGS = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = src/main/c/jni;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-fno-strict-overflow",
 					"-finline-functions",
+					"-fwrapv",
 				);
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;

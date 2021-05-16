@@ -21,7 +21,6 @@ import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
@@ -45,7 +44,7 @@ public final class AFUNIXSocket extends Socket {
   private final AtomicBoolean created = new AtomicBoolean(false);
 
   private AFUNIXSocket(final AFUNIXSocketImpl impl, AFUNIXSocketFactory factory)
-      throws IOException {
+      throws SocketException {
     super(impl);
     this.socketFactory = factory;
   }
@@ -65,7 +64,7 @@ public final class AFUNIXSocket extends Socket {
     return newInstance(null);
   }
 
-  static AFUNIXSocket newInstance(AFUNIXSocketFactory factory) throws IOException {
+  static AFUNIXSocket newInstance(AFUNIXSocketFactory factory) throws SocketException {
     final AFUNIXSocketImpl impl = new AFUNIXSocketImpl.Lenient();
     AFUNIXSocket instance = new AFUNIXSocket(impl, factory);
     instance.impl = impl;
@@ -114,7 +113,7 @@ public final class AFUNIXSocket extends Socket {
     if (isBound()) {
       throw new SocketException("Already bound");
     }
-    preprocessSocketAddress(bindpoint);
+    AFUNIXSocketAddress.preprocessSocketAddress(bindpoint, socketFactory);
     throw new SocketException("Use AFUNIXServerSocket#bind or #bindOn");
   }
 
@@ -140,7 +139,7 @@ public final class AFUNIXSocket extends Socket {
       throw new SocketException("Socket is closed");
     }
 
-    endpoint = preprocessSocketAddress(endpoint);
+    endpoint = AFUNIXSocketAddress.preprocessSocketAddress(endpoint, socketFactory);
 
     getAFImpl().connect(endpoint, timeout);
     this.addr = (AFUNIXSocketAddress) endpoint;
@@ -348,28 +347,6 @@ public final class AFUNIXSocket extends Socket {
       System.out.flush();
       System.out.println(AFUNIXSocket.supports(cap));
     }
-  }
-
-  private AFUNIXSocketAddress preprocessSocketAddress(SocketAddress endpoint) throws IOException {
-    if (!(endpoint instanceof AFUNIXSocketAddress)) {
-      if (socketFactory != null) {
-        if (endpoint instanceof InetSocketAddress) {
-          InetSocketAddress isa = (InetSocketAddress) endpoint;
-
-          String hostname = isa.getHostString();
-          if (socketFactory.isHostnameSupported(hostname)) {
-            endpoint = socketFactory.addressFromHost(hostname, isa.getPort());
-          }
-        }
-      }
-    }
-
-    if (!(endpoint instanceof AFUNIXSocketAddress)) {
-      throw new IllegalArgumentException("Can only connect to endpoints of type "
-          + AFUNIXSocketAddress.class.getName() + ", got: " + endpoint);
-    }
-
-    return (AFUNIXSocketAddress) endpoint;
   }
 
   AFUNIXSocketImpl getAFImpl() {

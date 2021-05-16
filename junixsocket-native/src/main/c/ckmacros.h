@@ -1,10 +1,23 @@
-//
-//  devmacros.h
-//  junixsocket-native
-//
+/*
+ * junixsocket
+ *
+ * Copyright 2009-2021 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-#ifndef devmacros_h
-#define devmacros_h
+#ifndef ckmacros_h
+#define ckmacros_h
 
 #if __clang__
 #   define CK_IGNORE_UNUSED_MACROS_BEGIN \
@@ -87,9 +100,17 @@ _Pragma("clang diagnostic pop")
 
 #define CK_UNUSED __attribute__((__unused__))
 
+#if __clang || !defined(_WIN32)
+#  define CK_VISIBILITY_INTERNAL __attribute__((visibility("internal")))
+#else
+#  define CK_VISIBILITY_INTERNAL
+#endif
+
 /**
  * Marks arguments as "potentially unused" (depending on source configuration).
  */
 #define CK_ARGUMENT_POTENTIALLY_UNUSED(X) (void)(X)
 
-#endif /* devmacros_h */
+#define CK_UNREACHABLE_CODE do { if((true))abort(); } while(0);
+
+#endif /* ckmacros_h */
