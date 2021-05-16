@@ -23,9 +23,18 @@ import java.net.ServerSocket;
 
 import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.demo.okhttp.OkHttpClientDemo;
 
 import fi.iki.elonen.NanoHTTPD;
 
+/**
+ * Creates a {@link NanoHTTPD} server, bound to {@code /tmp/junixsocket-http-server.sock}.
+ * 
+ * Http requests on that socket should return "Hello world".
+ * 
+ * @author Christian Kohlschütter
+ * @see OkHttpClientDemo
+ */
 public class NanoHttpdServerDemo extends NanoHTTPD {
 
   public NanoHttpdServerDemo(AFUNIXSocketAddress socketAddress) throws IOException {
@@ -38,7 +47,7 @@ public class NanoHttpdServerDemo extends NanoHTTPD {
       }
     });
     System.out.println("Address: " + socketAddress);
-    System.out.println("Try:  curl --unix-socket " + socketAddress.getPath()
+    System.out.println("Try: curl --unix-socket " + socketAddress.getPath()
         + " http://localhost/");
   }
 
