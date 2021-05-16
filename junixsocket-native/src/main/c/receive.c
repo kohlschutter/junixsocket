@@ -23,6 +23,7 @@
 #include "filedescriptors.h"
 #include "ancillary.h"
 #include "jniutil.h"
+#include "poll.h"
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
