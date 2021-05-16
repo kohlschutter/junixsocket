@@ -57,11 +57,18 @@ public class OkHttpClientDemo {
 
     Request request = new Request.Builder().url("http://localhost/").build();
     try (Response response = client.newCall(request).execute()) {
-      try (ResponseBody body = response.body()) {
-        if (body != null) {
-          try (InputStream in = body.byteStream()) {
-            IOUtil.transferAllBytes(in, System.out);
-          }
+
+      // NOTE: Spotbugs can't make its mind up:
+      // If we use a try-with-resources statement here, it either
+      // returns NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE
+      // or RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE
+      @SuppressWarnings("resource")
+      ResponseBody body = response.body();
+      if (body != null) {
+        try (InputStream in = body.byteStream()) {
+          IOUtil.transferAllBytes(in, System.out);
+        } finally {
+          body.close();
         }
       }
     }
