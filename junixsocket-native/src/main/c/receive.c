@@ -72,15 +72,13 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
     ssize_t count;
 
     socklen_t controlLen;
-    jobject ancBuf;
 #if !defined(junixsocket_have_ancillary)
     ancSupp = NULL;
-#endif
+#else
+    jobject ancBuf;
 
     if(ancSupp != NULL) {
-        jclass ancSuppClass = (*env)->GetObjectClass(env, ancSupp);
-        jfieldID fieldID = (*env)->GetFieldID(env, ancSuppClass, "ancillaryReceiveBuffer", "Ljava/nio/ByteBuffer;");
-        ancBuf = (*env)->GetObjectField(env, ancSupp, fieldID);
+        ancBuf = (*env)->GetObjectField(env, ancSupp, getFieldID_ancillaryReceiveBuffer());
 
         if(ancBuf != NULL) {
             controlLen = (socklen_t)(*env)->GetDirectBufferCapacity(env, ancBuf);
@@ -91,6 +89,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
         controlLen = 0;
         ancBuf = NULL;
     }
+#endif
 
 #if !defined(junixsocket_have_ancillary)
     if(true) {

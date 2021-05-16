@@ -20,6 +20,7 @@
 #include "init.h"
 
 #include "exceptions.h"
+#include "ancillary.h"
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -39,6 +40,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init(
         return;
     }
 #endif
+
+#if defined(junixsocket_have_ancillary)
+    init_ancillary(env);
+#endif
 }
 
 /*
@@ -47,9 +52,16 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init(
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy(
-                                                                           JNIEnv *env CK_UNUSED, jclass clazz CK_UNUSED)
+                                                                           JNIEnv *env, jclass clazz CK_UNUSED)
 {
+    CK_ARGUMENT_POTENTIALLY_UNUSED(env);
+    
 #if defined(_WIN32)
     WSACleanup();
 #endif
+
+#if defined(junixsocket_have_ancillary)
+    destroy_ancillary(env);
+#endif
+
 }

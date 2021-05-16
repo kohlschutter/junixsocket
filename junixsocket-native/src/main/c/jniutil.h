@@ -34,4 +34,7 @@ CK_VISIBILITY_INTERNAL void setObjectFieldValueIfPossible(JNIEnv *env, jobject i
 CK_VISIBILITY_INTERNAL void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
                        jlong value);
 
+CK_VISIBILITY_INTERNAL jclass findClassAndGlobalRef(JNIEnv *env, char *className);
+CK_VISIBILITY_INTERNAL void releaseClassGlobalRef(JNIEnv *env, jclass klazz);
+
 #endif /* jniutil_h */

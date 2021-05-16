@@ -38,6 +38,7 @@ CK_IGNORE_UNUSED_MACROS_END
 #  define _POSIX_SOURCE
 #endif
 
+#include <stddef.h>
 #include <errno.h>
 #include <sys/param.h>
 #include <fcntl.h>

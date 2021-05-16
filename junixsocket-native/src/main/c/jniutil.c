@@ -115,3 +115,19 @@ void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
     }
     (*env)->SetLongField(env, instance, fieldID, value);
 }
+
+jclass findClassAndGlobalRef(JNIEnv *env, char *className) {
+    jclass clazz = (*env)->FindClass(env, className);
+    if (clazz) {
+        return (*env)->NewGlobalRef(env, clazz);
+    } else {
+        fprintf(stderr, "(junixsocket) Could not find class %s", className);
+        return NULL;
+    }
+}
+void releaseClassGlobalRef(JNIEnv *env, jclass klazz) {
+    if (klazz) {
+        (*env)->DeleteGlobalRef(env, klazz);
+        klazz = NULL;
+    }
+}

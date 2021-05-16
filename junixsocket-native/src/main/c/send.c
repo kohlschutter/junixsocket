@@ -69,9 +69,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 
     char *control = NULL;
     if(ancSupp != NULL) {
-        jclass ancSuppClass = (*env)->GetObjectClass(env, ancSupp);
-        jfieldID pendingFileDescriptorsFieldID = (*env)->GetFieldID(env, ancSuppClass, "pendingFileDescriptors", "[I");
-        jintArray ancFds = (*env)->GetObjectField(env, ancSupp, pendingFileDescriptorsFieldID);
+        jintArray ancFds = (*env)->GetObjectField(env, ancSupp, getFieldID_pendingFileDescriptors());
         if(ancFds != NULL) {
 
             jsize ancFdsLen = (*env)->GetArrayLength(env, ancFds);
@@ -99,7 +97,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 
             msg.msg_controllen = controlLen;
 
-            (*env)->SetObjectField(env, ancSupp, pendingFileDescriptorsFieldID, NULL);
+            (*env)->SetObjectField(env, ancSupp, getFieldID_pendingFileDescriptors(), NULL);
 
         }
     }

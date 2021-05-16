@@ -17,8 +17,9 @@
  */
 
 #include "config.h"
-
 #include "ancillary.h"
+
+#include "jniutil.h"
 
 #if defined(junixsocket_have_ancillary)
 
@@ -38,5 +39,27 @@ struct cmsghdr* junixsocket_CMSG_NXTHDR (struct msghdr *mhdr, struct cmsghdr *cm
     return NULL;
 }
 #endif
+
+static jclass class_ancillaryDataSupport;
+static jfieldID fieldID_ancillaryReceiveBuffer;
+static jfieldID fieldId_pendingFileDescriptors;
+
+jfieldID getFieldID_ancillaryReceiveBuffer() {
+    return fieldID_ancillaryReceiveBuffer;
+}
+jfieldID getFieldID_pendingFileDescriptors() {
+    return fieldId_pendingFileDescriptors;
+}
+
+void init_ancillary(JNIEnv *env) {
+    class_ancillaryDataSupport = findClassAndGlobalRef(env, "Lorg/newsclub/net/unix/AncillaryDataSupport;");
+    fieldID_ancillaryReceiveBuffer = (*env)->GetFieldID(env, class_ancillaryDataSupport, "ancillaryReceiveBuffer", "Ljava/nio/ByteBuffer;");
+    fieldId_pendingFileDescriptors = (*env)->GetFieldID(env, class_ancillaryDataSupport, "pendingFileDescriptors", "[I");
+}
+void destroy_ancillary(JNIEnv *env) {
+    releaseClassGlobalRef(env, class_ancillaryDataSupport);
+    fieldID_ancillaryReceiveBuffer = NULL;
+    fieldId_pendingFileDescriptors = NULL;
+}
 
 #endif
