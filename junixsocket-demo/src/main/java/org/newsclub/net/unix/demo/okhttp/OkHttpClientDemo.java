@@ -58,8 +58,10 @@ public class OkHttpClientDemo {
     Request request = new Request.Builder().url("http://localhost/").build();
     try (Response response = client.newCall(request).execute()) {
       try (ResponseBody body = response.body()) {
-        try (InputStream in = body.byteStream()) {
-          IOUtil.transferAllBytes(in, System.out);
+        if (body != null) {
+          try (InputStream in = body.byteStream()) {
+            IOUtil.transferAllBytes(in, System.out);
+          }
         }
       }
     }
