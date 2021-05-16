@@ -13,6 +13,7 @@
 			buildPhases = (
 			);
 			dependencies = (
+				430235DB2650CCCD00823167 /* PBXTargetDependency */,
 				432EF19C261AD6AF00F4A583 /* PBXTargetDependency */,
 				432EF18D261AD52A00F4A583 /* PBXTargetDependency */,
 				432EF205261AE01000F4A583 /* PBXTargetDependency */,
@@ -538,6 +539,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		430235DA2650CCCD00823167 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43D436B0261A55D0002D0C12 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 43663ED6261AECC400CEED08;
+			remoteInfo = default;
+		};
 		432EF18A261AD52800F4A583 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 43D436B0261A55D0002D0C12 /* Project object */;
@@ -669,7 +677,7 @@
 		432EF1F4261ADE4900F4A583 /* libjunixsocket-riscv64-redhat-linux.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-riscv64-redhat-linux.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF203261ADEDD00F4A583 /* libjunixsocket-armv6--linux-gnueabihf.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-armv6--linux-gnueabihf.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF212261AE29200F4A583 /* libjunixsocket-x86_64-apple-darwin18.2.0.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-apple-darwin18.2.0.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
-		43663EE2261AECC400CEED08 /* libjunixsocket-default.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-default.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		43663EE2261AECC400CEED08 /* libjunixsocket-current.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-current.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43C5FB7D261AC3700088E301 /* libjunixsocket-arm64-apple-macos11.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-arm64-apple-macos11.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43D436BC261A564C002D0C12 /* libjunixsocket-x86_64-alpine-linux-musl.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-alpine-linux-musl.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -838,8 +846,8 @@
 			isa = PBXGroup;
 			children = (
 				430233992650AB0400823167 /* Build Essentials */,
-				4302339B2650AB1F00823167 /* Implementation */,
 				4302339A2650AB1400823167 /* API */,
+				4302339B2650AB1F00823167 /* Implementation */,
 				43D436BD261A564C002D0C12 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -858,7 +866,7 @@
 				432EF1F4261ADE4900F4A583 /* libjunixsocket-riscv64-redhat-linux.so */,
 				432EF203261ADEDD00F4A583 /* libjunixsocket-armv6--linux-gnueabihf.so */,
 				432EF212261AE29200F4A583 /* libjunixsocket-x86_64-apple-darwin18.2.0.dylib */,
-				43663EE2261AECC400CEED08 /* libjunixsocket-default.dylib */,
+				43663EE2261AECC400CEED08 /* libjunixsocket-current.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1382,9 +1390,9 @@
 			productReference = 432EF212261AE29200F4A583 /* libjunixsocket-x86_64-apple-darwin18.2.0.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
-		43663ED6261AECC400CEED08 /* default */ = {
+		43663ED6261AECC400CEED08 /* current */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 43663EDF261AECC400CEED08 /* Build configuration list for PBXNativeTarget "default" */;
+			buildConfigurationList = 43663EDF261AECC400CEED08 /* Build configuration list for PBXNativeTarget "current" */;
 			buildPhases = (
 				43663ED7261AECC400CEED08 /* Headers */,
 				43663EDC261AECC400CEED08 /* Sources */,
@@ -1394,9 +1402,9 @@
 			);
 			dependencies = (
 			);
-			name = default;
+			name = current;
 			productName = "junixsocket-native";
-			productReference = 43663EE2261AECC400CEED08 /* libjunixsocket-default.dylib */;
+			productReference = 43663EE2261AECC400CEED08 /* libjunixsocket-current.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 		43C5FB71261AC3700088E301 /* arm64-apple-macos11 */ = {
@@ -1462,7 +1470,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				43663ED6261AECC400CEED08 /* default */,
+				43663ED6261AECC400CEED08 /* current */,
 				432EF186261AD52100F4A583 /* All Architectures */,
 				432EF18E261AD60200F4A583 /* aarch64-linux-gnu */,
 				43C5FB71261AC3700088E301 /* arm64-apple-macos11 */,
@@ -1795,6 +1803,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		430235DB2650CCCD00823167 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 43663ED6261AECC400CEED08 /* current */;
+			targetProxy = 430235DA2650CCCD00823167 /* PBXContainerItemProxy */;
+		};
 		432EF18B261AD52800F4A583 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 43D436BB261A564C002D0C12 /* x86_64-alpine-linux-musl */;
@@ -1883,6 +1896,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -1905,6 +1919,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -1927,6 +1942,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-lWs2_32",
@@ -1952,6 +1968,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-lWs2_32",
@@ -1978,6 +1995,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-m64",
@@ -2003,6 +2021,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-m64",
@@ -2027,8 +2046,10 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-fno-lto",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
@@ -2049,8 +2070,10 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-fno-lto",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
@@ -2071,6 +2094,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -2093,6 +2117,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -2115,6 +2140,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -2137,6 +2163,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -2161,6 +2188,7 @@
 					"-mabi=lp64d",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-Xcrossclang-llvm-name",
@@ -2187,6 +2215,7 @@
 					"-mabi=lp64d",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-Xcrossclang-llvm-name",
@@ -2211,6 +2240,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -2233,6 +2263,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -2248,12 +2279,14 @@
 				EXECUTABLE_EXTENSION = dylib;
 				LD_DEPENDENCY_INFO_FILE = "";
 				LD_LTO_OBJECT_FILE = "";
+				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-Xcrossclang-ld64-sdk-version",
@@ -2271,12 +2304,14 @@
 				EXECUTABLE_EXTENSION = dylib;
 				LD_DEPENDENCY_INFO_FILE = "";
 				LD_LTO_OBJECT_FILE = "";
+				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-Xcrossclang-ld64-sdk-version",
@@ -2290,7 +2325,7 @@
 		43663EE0261AECC400CEED08 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CROSSCLANG_TARGET = default;
+				CROSSCLANG_TARGET = current;
 				EXECUTABLE_EXTENSION = dylib;
 				LD_DEPENDENCY_INFO_FILE = "";
 				LD_LTO_OBJECT_FILE = "";
@@ -2300,6 +2335,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -2311,7 +2347,7 @@
 		43663EE1261AECC400CEED08 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CROSSCLANG_TARGET = default;
+				CROSSCLANG_TARGET = current;
 				EXECUTABLE_EXTENSION = dylib;
 				LD_DEPENDENCY_INFO_FILE = "";
 				LD_LTO_OBJECT_FILE = "";
@@ -2321,6 +2357,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -2342,6 +2379,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -2363,6 +2401,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -2395,7 +2434,9 @@
 					"-finline-functions",
 					"-fwrapv",
 					"-Werror-implicit-function-declaration",
+					"-flto",
 				);
+				OTHER_LDFLAGS = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
 				WARNING_CFLAGS = (
@@ -2438,7 +2479,9 @@
 					"-finline-functions",
 					"-fwrapv",
 					"-Werror-implicit-function-declaration",
+					"-flto",
 				);
+				OTHER_LDFLAGS = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
 				WARNING_CFLAGS = (
@@ -2472,6 +2515,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-nostartfiles",
@@ -2496,6 +2540,7 @@
 					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-nostartfiles",
@@ -2599,7 +2644,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		43663EDF261AECC400CEED08 /* Build configuration list for PBXNativeTarget "default" */ = {
+		43663EDF261AECC400CEED08 /* Build configuration list for PBXNativeTarget "current" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				43663EE0261AECC400CEED08 /* Debug */,

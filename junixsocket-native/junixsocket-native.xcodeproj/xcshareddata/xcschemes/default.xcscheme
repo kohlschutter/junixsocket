@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "43663ED6261AECC400CEED08"
-               BuildableName = "libjunixsocket-default.dylib"
-               BlueprintName = "default"
+               BuildableName = "libjunixsocket-current.dylib"
+               BlueprintName = "current"
                ReferencedContainer = "container:junixsocket-native.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -51,8 +51,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "43663ED6261AECC400CEED08"
-            BuildableName = "libjunixsocket-default.dylib"
-            BlueprintName = "default"
+            BuildableName = "libjunixsocket-current.dylib"
+            BlueprintName = "current"
             ReferencedContainer = "container:junixsocket-native.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
