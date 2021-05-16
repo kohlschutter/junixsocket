@@ -108,8 +108,9 @@ public class SocketTestBase { // NOTE: needs to be public for junit
   protected abstract class ServerThread extends Thread implements AutoCloseable {
     private final AFUNIXServerSocket serverSocket;
     private volatile Exception exception = null;
+    private volatile Error error = null;
     private final AtomicBoolean loop = new AtomicBoolean(true);
-    private final Semaphore sema = new Semaphore(0);
+    private final Semaphore sema = new Semaphore(1);
 
     @SuppressFBWarnings("SC_START_IN_CTOR")
     protected ServerThread() throws IOException {
@@ -197,18 +198,21 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     @Override
     public final void run() {
       try {
+        sema.acquire();
         loop.set(true);
         onServerReady();
         while (loop.get()) {
           acceptAndHandleConnection();
         }
-      } catch (IOException e) {
+      } catch (Exception e) {
         if (!loop.get()) {
           // ignore
         } else if (handleException(e) != ExceptionHandlingDecision.IGNORE) {
           e.addSuppressed(caller);
           exception = e;
         }
+      } catch (Error e) {
+        error = e;
       } finally {
         sema.release();
       }
@@ -229,6 +233,9 @@ public class SocketTestBase { // NOTE: needs to be public for junit
      */
     public void checkException() throws Exception {
       sema.acquire();
+      if (error != null) {
+        throw error;
+      }
       if (exception != null) {
         throw exception;
       }
