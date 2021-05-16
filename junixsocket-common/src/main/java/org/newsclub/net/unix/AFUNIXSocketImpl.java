@@ -614,11 +614,6 @@ class AFUNIXSocketImpl extends SocketImplShim {
     ancillaryDataSupport.receiveFileDescriptors(fds);
   }
 
-  // called from native code, too (but only with null)
-  final void setOutboundFileDescriptors(int... fds) {
-    ancillaryDataSupport.setOutboundFileDescriptors(fds);
-  }
-
   public final void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
     ancillaryDataSupport.setOutboundFileDescriptors(fdescs);
   }

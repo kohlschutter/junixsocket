@@ -269,12 +269,16 @@ public final class AFUNIXSocket extends Socket {
    * Sets a list of {@link FileDescriptor}s that should be sent as an ancillary message along with
    * the next write.
    * 
-   * NOTE: There can only be one set of file descriptors active until the write completes.
+   * Important: There can only be one set of file descriptors active until the write completes. The
+   * socket also needs to be connected for this operation to succeed.
    * 
    * @param fdescs The file descriptors, or {@code null} if none.
    * @throws IOException if the operation fails.
    */
   public void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
+    if (fdescs != null && fdescs.length > 0 && !isConnected()) {
+      throw new SocketException("Not connected");
+    }
     impl.setOutboundFileDescriptors(fdescs);
   }
 
