@@ -28,6 +28,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 class AncillaryDataSupport implements Closeable {
   private static final ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate(0);
 
@@ -37,10 +39,11 @@ class AncillaryDataSupport implements Closeable {
   private final List<FileDescriptor[]> receivedFileDescriptors = Collections.synchronizedList(
       new LinkedList<FileDescriptor[]>());
   
-  // used from native code
+  // referenced from native code
   protected ByteBuffer ancillaryReceiveBuffer = EMPTY_BUFFER;
   
-  // used from native code
+  // referenced from native code
+  @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
   protected int[] pendingFileDescriptors = null;
 
   int getAncillaryReceiveBufferSize() {
@@ -120,7 +123,6 @@ class AncillaryDataSupport implements Closeable {
     return oneArray;
   }
 
-  // called from native code (only to clear)
   void setOutboundFileDescriptors(int[] fds) {
     this.pendingFileDescriptors = (fds == null || fds.length == 0) ? null : fds;
   }

@@ -19,7 +19,6 @@ package org.newsclub.net.unix;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -276,8 +275,6 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
               endpoint = socketFactory.addressFromHost(hostname, isa.getPort());
             } catch (SocketException e) {
               throw e;
-            } catch (IOException e) {
-              throw (SocketException) new SocketException(e.getMessage()).initCause(e);
             }
           }
         }
