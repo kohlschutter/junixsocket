@@ -35,8 +35,7 @@ socklen_t initSu(JNIEnv * env, struct sockaddr_un *su, jbyteArray addr) {
         return 0;
     }
 
-    const char* socketFile = (char*)(void*)(*env)->GetByteArrayElements(env,
-                                                                        addr, NULL);
+    const char* socketFile = (char*)(void*)(*env)->GetByteArrayElements(env, addr, NULL);
     if(socketFile == NULL) {
         return 0; // OOME
     }
@@ -66,10 +65,9 @@ socklen_t initSu(JNIEnv * env, struct sockaddr_un *su, jbyteArray addr) {
  * Method:    maxAddressLength
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_maxAddressLength(
-                                                                                    JNIEnv * env CK_UNUSED, jclass clazz CK_UNUSED)
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_maxAddressLength
+(JNIEnv * env CK_UNUSED, jclass clazz CK_UNUSED)
 {
-    struct sockaddr_un su;
+    static struct sockaddr_un su;
     return sizeof(su.sun_path);
 }
-

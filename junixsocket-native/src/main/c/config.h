@@ -194,4 +194,6 @@ typedef unsigned long socklen_t; /* 64-bits */
 #  endif
 #endif
 
+#include "org_newsclub_net_unix_NativeUnixSocket.h"
+
 #endif /* config_h */
