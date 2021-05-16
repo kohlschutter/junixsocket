@@ -155,11 +155,12 @@ public class AFUNIXServerSocket extends ServerSocket {
 
   @Override
   public AFUNIXSocket accept() throws IOException {
-    if (isClosed()) {
-      throw new SocketException("Socket is closed");
-    }
     AFUNIXSocket as = newSocketInstance();
     implementation.accept(as.getAFImpl());
+    if (isClosed()) {
+      // We may have connected to the socket to unblock it
+      throw new SocketException("Socket is closed");
+    }
     as.addr = boundEndpoint;
     NativeUnixSocket.setConnected(as);
     return as;
