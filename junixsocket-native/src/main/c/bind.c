@@ -148,30 +148,27 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
                 continue;
             }
 
-            int errnum = 0;
+            errno = 0;
 
             // if the given file exists, but is not a socket, ENOTSOCK is returned
             // if access is denied, EACCESS is returned
             do {
                 ret = connect(serverHandle, (struct sockaddr *)&su, suLength);
-            } while(ret == -1 && (errnum = socket_errno) == EINTR);
+            } while(ret == -1 && (errno = socket_errno) == EINTR);
 
             if(ret == 0) {
                 // if we can successfully connect, the address is in use
-                errnum = EADDRINUSE;
-                if(!reuse) {
-                    myErr = EADDRINUSE;
-                }
-            } else if(errnum == ENOENT) {
+                errno = EADDRINUSE;
+            } else if(errno == ENOENT) {
                 continue;
             }
 
             if(ret == 0
                || (ret == -1
-                   && (errnum == ECONNREFUSED || errnum == EADDRINUSE))) {
+                   && (errno == ECONNREFUSED || errno == EADDRINUSE))) {
                 // assume existing socket file
 
-                if(reuse || errnum == ECONNREFUSED) {
+                if(reuse || errno == ECONNREFUSED) {
                     // either reuse existing socket, or take over a no longer working socket
                     if(su.sun_path[0] == 0) {
                         // no need to unlink in the abstract namespace
@@ -180,8 +177,6 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
                         if(errno == ENOENT) {
                             continue;
                         }
-
-                        myErr = errno;
                     } else {
                         continue;
                     }
@@ -189,7 +184,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
             }
         }
 
-        _throwErrnumException(env, myErr, NULL);
+        _throwErrnumException(env, errno, NULL);
         return -1;
     }
 

@@ -58,7 +58,7 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
     }
     final File socketFile = new File(sock);
 
-    this.rawSocket = AFUNIXSocket.connectTo(new AFUNIXSocketAddress(socketFile));
+    this.rawSocket = AFUNIXSocket.connectTo(AFUNIXSocketAddress.of(socketFile));
     this.sslSocket = rawSocket;
     return (T) rawSocket;
   }

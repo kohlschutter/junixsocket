@@ -144,7 +144,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
       return cf.createSocket(host, port);
     }
 
-    final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(getFile(port), port);
+    final AFUNIXSocketAddress addr = AFUNIXSocketAddress.of(getFile(port), port);
 
     final AFUNIXSocket socket = AFUNIXSocket.newInstance();
     socket.connect(addr);
@@ -228,7 +228,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
   public ServerSocket createServerSocket(int port) throws IOException {
     if (port == 0) {
       port = newPort();
-      final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(getFile(port), port);
+      final AFUNIXSocketAddress addr = AFUNIXSocketAddress.of(getFile(port), port);
       final AnonymousServerSocket ass = new AnonymousServerSocket(port);
       ass.setDeleteOnClose(true);
       ass.bind(addr);
@@ -244,7 +244,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
       return sf.createServerSocket(port);
     }
 
-    final AFUNIXSocketAddress addr = new AFUNIXSocketAddress(getFile(port), port);
+    final AFUNIXSocketAddress addr = AFUNIXSocketAddress.of(getFile(port), port);
     AFUNIXServerSocket socket = AFUNIXServerSocket.newInstance();
     socket.setDeleteOnClose(true);
     socket.setReuseAddress(true);

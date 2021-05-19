@@ -100,7 +100,7 @@ public class AFUNIXServerSocket extends ServerSocket {
       throws IOException {
     AFUNIXServerSocket socket = newInstance();
     socket.setDeleteOnClose(true);
-    socket.bind(new AFUNIXSocketAddress(path));
+    socket.bind(AFUNIXSocketAddress.of(path));
     return socket;
   }
 
@@ -161,8 +161,8 @@ public class AFUNIXServerSocket extends ServerSocket {
       // We may have connected to the socket to unblock it
       throw new SocketException("Socket is closed");
     }
+    as.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT);
     as.addr = boundEndpoint;
-    NativeUnixSocket.setConnected(as);
     return as;
   }
 

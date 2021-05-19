@@ -536,6 +536,30 @@
 		430235D72650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
 		430235D82650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
 		430235D92650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		430235DE2651B79A00823167 /* datagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235DC2651B79A00823167 /* datagram.h */; };
+		430235DF2651B79A00823167 /* datagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235DC2651B79A00823167 /* datagram.h */; };
+		430235E02651B79A00823167 /* datagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235DC2651B79A00823167 /* datagram.h */; };
+		430235E12651B79A00823167 /* datagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235DC2651B79A00823167 /* datagram.h */; };
+		430235E22651B79A00823167 /* datagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235DC2651B79A00823167 /* datagram.h */; };
+		430235E32651B79A00823167 /* datagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235DC2651B79A00823167 /* datagram.h */; };
+		430235E42651B79A00823167 /* datagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235DC2651B79A00823167 /* datagram.h */; };
+		430235E52651B79A00823167 /* datagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235DC2651B79A00823167 /* datagram.h */; };
+		430235E62651B79A00823167 /* datagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235DC2651B79A00823167 /* datagram.h */; };
+		430235E72651B79A00823167 /* datagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235DC2651B79A00823167 /* datagram.h */; };
+		430235E82651B79A00823167 /* datagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235DC2651B79A00823167 /* datagram.h */; };
+		430235E92651B79A00823167 /* datagram.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235DC2651B79A00823167 /* datagram.h */; };
+		430235EA2651B79A00823167 /* datagram.c in Sources */ = {isa = PBXBuildFile; fileRef = 430235DD2651B79A00823167 /* datagram.c */; };
+		430235EB2651B79A00823167 /* datagram.c in Sources */ = {isa = PBXBuildFile; fileRef = 430235DD2651B79A00823167 /* datagram.c */; };
+		430235EC2651B79A00823167 /* datagram.c in Sources */ = {isa = PBXBuildFile; fileRef = 430235DD2651B79A00823167 /* datagram.c */; };
+		430235ED2651B79A00823167 /* datagram.c in Sources */ = {isa = PBXBuildFile; fileRef = 430235DD2651B79A00823167 /* datagram.c */; };
+		430235EE2651B79A00823167 /* datagram.c in Sources */ = {isa = PBXBuildFile; fileRef = 430235DD2651B79A00823167 /* datagram.c */; };
+		430235EF2651B79A00823167 /* datagram.c in Sources */ = {isa = PBXBuildFile; fileRef = 430235DD2651B79A00823167 /* datagram.c */; };
+		430235F02651B79A00823167 /* datagram.c in Sources */ = {isa = PBXBuildFile; fileRef = 430235DD2651B79A00823167 /* datagram.c */; };
+		430235F12651B79A00823167 /* datagram.c in Sources */ = {isa = PBXBuildFile; fileRef = 430235DD2651B79A00823167 /* datagram.c */; };
+		430235F22651B79A00823167 /* datagram.c in Sources */ = {isa = PBXBuildFile; fileRef = 430235DD2651B79A00823167 /* datagram.c */; };
+		430235F32651B79A00823167 /* datagram.c in Sources */ = {isa = PBXBuildFile; fileRef = 430235DD2651B79A00823167 /* datagram.c */; };
+		430235F42651B79A00823167 /* datagram.c in Sources */ = {isa = PBXBuildFile; fileRef = 430235DD2651B79A00823167 /* datagram.c */; };
+		430235F52651B79A00823167 /* datagram.c in Sources */ = {isa = PBXBuildFile; fileRef = 430235DD2651B79A00823167 /* datagram.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -668,6 +692,8 @@
 		430233C62650AB4E00823167 /* credentials.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = credentials.c; path = src/main/c/credentials.c; sourceTree = "<group>"; };
 		430235C02650AC3200823167 /* jni.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jni.h; sourceTree = "<group>"; };
 		430235C12650AC3200823167 /* jniport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jniport.h; sourceTree = "<group>"; };
+		430235DC2651B79A00823167 /* datagram.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = datagram.h; path = src/main/c/datagram.h; sourceTree = "<group>"; };
+		430235DD2651B79A00823167 /* datagram.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = datagram.c; path = src/main/c/datagram.c; sourceTree = "<group>"; };
 		432EF19A261AD60200F4A583 /* libjunixsocket-aarch64-linux-gnu.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-aarch64-linux-gnu.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF1A9261AD6D700F4A583 /* libjunixsocket-x86_64-w64-mingw32.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-w64-mingw32.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF1B8261AD9FB00F4A583 /* libjunixsocket-i386-pc-solaris2.11_m64.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-i386-pc-solaris2.11_m64.so"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -808,6 +834,8 @@
 				430233A72650AB4A00823167 /* connect.h */,
 				430233C62650AB4E00823167 /* credentials.c */,
 				430233AE2650AB4A00823167 /* credentials.h */,
+				430235DC2651B79A00823167 /* datagram.h */,
+				430235DD2651B79A00823167 /* datagram.c */,
 				430233BD2650AB4C00823167 /* exceptions.c */,
 				430233A82650AB4A00823167 /* exceptions.h */,
 				430233C42650AB4E00823167 /* filedescriptors.c */,
@@ -879,6 +907,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430235C32650AC3200823167 /* jni.h in Headers */,
+				430235DF2651B79A00823167 /* datagram.h in Headers */,
 				430235A82650AB4F00823167 /* ancillary.h in Headers */,
 				430235542650AB4F00823167 /* init.h in Headers */,
 				430234702650AB4E00823167 /* send.h in Headers */,
@@ -909,6 +938,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430235CD2650AC3200823167 /* jni.h in Headers */,
+				430235E92651B79A00823167 /* datagram.h in Headers */,
 				430235B22650AB4F00823167 /* ancillary.h in Headers */,
 				4302355E2650AB4F00823167 /* init.h in Headers */,
 				4302347A2650AB4E00823167 /* send.h in Headers */,
@@ -939,6 +969,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430235C62650AC3200823167 /* jni.h in Headers */,
+				430235E22651B79A00823167 /* datagram.h in Headers */,
 				430235AB2650AB4F00823167 /* ancillary.h in Headers */,
 				430235572650AB4F00823167 /* init.h in Headers */,
 				430234732650AB4E00823167 /* send.h in Headers */,
@@ -969,6 +1000,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430235C92650AC3200823167 /* jni.h in Headers */,
+				430235E52651B79A00823167 /* datagram.h in Headers */,
 				430235AE2650AB4F00823167 /* ancillary.h in Headers */,
 				4302355A2650AB4F00823167 /* init.h in Headers */,
 				430234762650AB4E00823167 /* send.h in Headers */,
@@ -999,6 +1031,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430235CC2650AC3200823167 /* jni.h in Headers */,
+				430235E82651B79A00823167 /* datagram.h in Headers */,
 				430235B12650AB4F00823167 /* ancillary.h in Headers */,
 				4302355D2650AB4F00823167 /* init.h in Headers */,
 				430234792650AB4E00823167 /* send.h in Headers */,
@@ -1029,6 +1062,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430235C72650AC3200823167 /* jni.h in Headers */,
+				430235E32651B79A00823167 /* datagram.h in Headers */,
 				430235AC2650AB4F00823167 /* ancillary.h in Headers */,
 				430235582650AB4F00823167 /* init.h in Headers */,
 				430234742650AB4E00823167 /* send.h in Headers */,
@@ -1059,6 +1093,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430235C82650AC3200823167 /* jni.h in Headers */,
+				430235E42651B79A00823167 /* datagram.h in Headers */,
 				430235AD2650AB4F00823167 /* ancillary.h in Headers */,
 				430235592650AB4F00823167 /* init.h in Headers */,
 				430234752650AB4E00823167 /* send.h in Headers */,
@@ -1089,6 +1124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430235C52650AC3200823167 /* jni.h in Headers */,
+				430235E12651B79A00823167 /* datagram.h in Headers */,
 				430235AA2650AB4F00823167 /* ancillary.h in Headers */,
 				430235562650AB4F00823167 /* init.h in Headers */,
 				430234722650AB4E00823167 /* send.h in Headers */,
@@ -1119,6 +1155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430235CB2650AC3200823167 /* jni.h in Headers */,
+				430235E72651B79A00823167 /* datagram.h in Headers */,
 				430235B02650AB4F00823167 /* ancillary.h in Headers */,
 				4302355C2650AB4F00823167 /* init.h in Headers */,
 				430234782650AB4E00823167 /* send.h in Headers */,
@@ -1149,6 +1186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430235C22650AC3200823167 /* jni.h in Headers */,
+				430235DE2651B79A00823167 /* datagram.h in Headers */,
 				430235A72650AB4F00823167 /* ancillary.h in Headers */,
 				430235532650AB4F00823167 /* init.h in Headers */,
 				4302346F2650AB4E00823167 /* send.h in Headers */,
@@ -1179,6 +1217,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430235C42650AC3200823167 /* jni.h in Headers */,
+				430235E02651B79A00823167 /* datagram.h in Headers */,
 				430235A92650AB4F00823167 /* ancillary.h in Headers */,
 				430235552650AB4F00823167 /* init.h in Headers */,
 				430234712650AB4E00823167 /* send.h in Headers */,
@@ -1209,6 +1248,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				430235CA2650AC3200823167 /* jni.h in Headers */,
+				430235E62651B79A00823167 /* datagram.h in Headers */,
 				430235AF2650AB4F00823167 /* ancillary.h in Headers */,
 				4302355B2650AB4F00823167 /* init.h in Headers */,
 				430234772650AB4E00823167 /* send.h in Headers */,
@@ -1500,6 +1540,7 @@
 				4302353C2650AB4F00823167 /* connect.c in Sources */,
 				430234B82650AB4E00823167 /* capabilities.c in Sources */,
 				430234F42650AB4F00823167 /* socketoptions.c in Sources */,
+				430235EB2651B79A00823167 /* datagram.c in Sources */,
 				430235782650AB4F00823167 /* poll.c in Sources */,
 				4302347C2650AB4E00823167 /* receive.c in Sources */,
 				4302341C2650AB4E00823167 /* jniutil.c in Sources */,
@@ -1526,6 +1567,7 @@
 				430235462650AB4F00823167 /* connect.c in Sources */,
 				430234C22650AB4E00823167 /* capabilities.c in Sources */,
 				430234FE2650AB4F00823167 /* socketoptions.c in Sources */,
+				430235F52651B79A00823167 /* datagram.c in Sources */,
 				430235822650AB4F00823167 /* poll.c in Sources */,
 				430234862650AB4E00823167 /* receive.c in Sources */,
 				430234262650AB4E00823167 /* jniutil.c in Sources */,
@@ -1552,6 +1594,7 @@
 				4302353F2650AB4F00823167 /* connect.c in Sources */,
 				430234BB2650AB4E00823167 /* capabilities.c in Sources */,
 				430234F72650AB4F00823167 /* socketoptions.c in Sources */,
+				430235EE2651B79A00823167 /* datagram.c in Sources */,
 				4302357B2650AB4F00823167 /* poll.c in Sources */,
 				4302347F2650AB4E00823167 /* receive.c in Sources */,
 				4302341F2650AB4E00823167 /* jniutil.c in Sources */,
@@ -1578,6 +1621,7 @@
 				430235422650AB4F00823167 /* connect.c in Sources */,
 				430234BE2650AB4E00823167 /* capabilities.c in Sources */,
 				430234FA2650AB4F00823167 /* socketoptions.c in Sources */,
+				430235F12651B79A00823167 /* datagram.c in Sources */,
 				4302357E2650AB4F00823167 /* poll.c in Sources */,
 				430234822650AB4E00823167 /* receive.c in Sources */,
 				430234222650AB4E00823167 /* jniutil.c in Sources */,
@@ -1604,6 +1648,7 @@
 				430235452650AB4F00823167 /* connect.c in Sources */,
 				430234C12650AB4E00823167 /* capabilities.c in Sources */,
 				430234FD2650AB4F00823167 /* socketoptions.c in Sources */,
+				430235F42651B79A00823167 /* datagram.c in Sources */,
 				430235812650AB4F00823167 /* poll.c in Sources */,
 				430234852650AB4E00823167 /* receive.c in Sources */,
 				430234252650AB4E00823167 /* jniutil.c in Sources */,
@@ -1630,6 +1675,7 @@
 				430235402650AB4F00823167 /* connect.c in Sources */,
 				430234BC2650AB4E00823167 /* capabilities.c in Sources */,
 				430234F82650AB4F00823167 /* socketoptions.c in Sources */,
+				430235EF2651B79A00823167 /* datagram.c in Sources */,
 				4302357C2650AB4F00823167 /* poll.c in Sources */,
 				430234802650AB4E00823167 /* receive.c in Sources */,
 				430234202650AB4E00823167 /* jniutil.c in Sources */,
@@ -1656,6 +1702,7 @@
 				430235412650AB4F00823167 /* connect.c in Sources */,
 				430234BD2650AB4E00823167 /* capabilities.c in Sources */,
 				430234F92650AB4F00823167 /* socketoptions.c in Sources */,
+				430235F02651B79A00823167 /* datagram.c in Sources */,
 				4302357D2650AB4F00823167 /* poll.c in Sources */,
 				430234812650AB4E00823167 /* receive.c in Sources */,
 				430234212650AB4E00823167 /* jniutil.c in Sources */,
@@ -1682,6 +1729,7 @@
 				4302353E2650AB4F00823167 /* connect.c in Sources */,
 				430234BA2650AB4E00823167 /* capabilities.c in Sources */,
 				430234F62650AB4F00823167 /* socketoptions.c in Sources */,
+				430235ED2651B79A00823167 /* datagram.c in Sources */,
 				4302357A2650AB4F00823167 /* poll.c in Sources */,
 				4302347E2650AB4E00823167 /* receive.c in Sources */,
 				4302341E2650AB4E00823167 /* jniutil.c in Sources */,
@@ -1708,6 +1756,7 @@
 				430235442650AB4F00823167 /* connect.c in Sources */,
 				430234C02650AB4E00823167 /* capabilities.c in Sources */,
 				430234FC2650AB4F00823167 /* socketoptions.c in Sources */,
+				430235F32651B79A00823167 /* datagram.c in Sources */,
 				430235802650AB4F00823167 /* poll.c in Sources */,
 				430234842650AB4E00823167 /* receive.c in Sources */,
 				430234242650AB4E00823167 /* jniutil.c in Sources */,
@@ -1734,6 +1783,7 @@
 				4302353B2650AB4F00823167 /* connect.c in Sources */,
 				430234B72650AB4E00823167 /* capabilities.c in Sources */,
 				430234F32650AB4F00823167 /* socketoptions.c in Sources */,
+				430235EA2651B79A00823167 /* datagram.c in Sources */,
 				430235772650AB4F00823167 /* poll.c in Sources */,
 				4302347B2650AB4E00823167 /* receive.c in Sources */,
 				4302341B2650AB4E00823167 /* jniutil.c in Sources */,
@@ -1760,6 +1810,7 @@
 				4302353D2650AB4F00823167 /* connect.c in Sources */,
 				430234B92650AB4E00823167 /* capabilities.c in Sources */,
 				430234F52650AB4F00823167 /* socketoptions.c in Sources */,
+				430235EC2651B79A00823167 /* datagram.c in Sources */,
 				430235792650AB4F00823167 /* poll.c in Sources */,
 				4302347D2650AB4E00823167 /* receive.c in Sources */,
 				4302341D2650AB4E00823167 /* jniutil.c in Sources */,
@@ -1786,6 +1837,7 @@
 				430235432650AB4F00823167 /* connect.c in Sources */,
 				430234BF2650AB4E00823167 /* capabilities.c in Sources */,
 				430234FB2650AB4F00823167 /* socketoptions.c in Sources */,
+				430235F22651B79A00823167 /* datagram.c in Sources */,
 				4302357F2650AB4F00823167 /* poll.c in Sources */,
 				430234832650AB4E00823167 /* receive.c in Sources */,
 				430234232650AB4E00823167 /* jniutil.c in Sources */,
@@ -2452,6 +2504,8 @@
 					"-Wno-c++11-extensions",
 					"-Wno-c++98-compat",
 					"-Wno-empty-translation-unit",
+					"-Wno-gnu-empty-initializer",
+					"-Werror-implicit-function-declaration",
 				);
 			};
 			name = Debug;
@@ -2497,6 +2551,8 @@
 					"-Wno-c++11-extensions",
 					"-Wno-c++98-compat",
 					"-Wno-empty-translation-unit",
+					"-Wno-gnu-empty-initializer",
+					"-Werror-implicit-function-declaration",
 				);
 			};
 			name = Release;

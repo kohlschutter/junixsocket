@@ -170,7 +170,7 @@ public final class DemoHelper {
       return new InetSocketAddress(hostname, port);
     } else {
       // assume unix socket file name
-      return new AFUNIXSocketAddress(new File(socketName));
+      return AFUNIXSocketAddress.of(new File(socketName));
     }
   }
 

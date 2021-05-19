@@ -141,10 +141,13 @@ public final class AFUNIXSocket extends Socket {
 
     endpoint = AFUNIXSocketAddress.preprocessSocketAddress(endpoint, socketFactory);
 
+    if (!isBound()) {
+      super.bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);
+    }
+    super.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT, timeout);
+
     getAFImpl().connect(endpoint, timeout);
     this.addr = (AFUNIXSocketAddress) endpoint;
-    NativeUnixSocket.setBound(this);
-    NativeUnixSocket.setConnected(this);
   }
 
   @Override

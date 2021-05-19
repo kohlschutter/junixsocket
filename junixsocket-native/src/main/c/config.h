@@ -180,6 +180,7 @@ typedef unsigned long socklen_t; /* 64-bits */
 // Windows requires us fetching errno for socket-related errors
 #if defined(_WIN32)
 #  define socket_errno (errno = WSAGetLastError())
+#  define ssize_t int
 #else
 #  define socket_errno errno
 #endif
@@ -192,6 +193,12 @@ typedef unsigned long socklen_t; /* 64-bits */
 #    define memcpy memmove
 #    define stat(...) __xstat(1, __VA_ARGS__)
 #  endif
+#endif
+
+#if defined(MSG_DONTWAIT)
+#  define junixsocket_have_MSG_DONTWAIT 1
+#else
+#  define junixsocket_have_MSG_DONTWAIT 0
 #endif
 
 #include "org_newsclub_net_unix_NativeUnixSocket.h"

@@ -20,6 +20,7 @@
 #include "address.h"
 
 #include "exceptions.h"
+#include "filedescriptors.h"
 
 /**
  * Initializes a sockaddr_un given a byte[] address, returning the socklen,
@@ -70,4 +71,57 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_maxAddressLen
 {
     static struct sockaddr_un su;
     return sizeof(su.sun_path);
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    sockname
+ * Signature: (Ljava/io/FileDescriptor;Z)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockname
+(JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jboolean peerName) {
+    int handle = _getFD(env, fd);
+
+    struct sockaddr_un addr = {};
+
+    socklen_t len = sizeof(struct sockaddr_un);
+    int ret;
+    if (peerName) {
+        ret = getpeername(handle, (struct sockaddr *)&addr, &len);
+    } else {
+        ret = getsockname(handle, (struct sockaddr *)&addr, &len);
+    }
+    if(ret != 0) {
+        int errnum = socket_errno;
+        _throwErrnumException(env, errnum, fd);
+        return NULL;
+    }
+
+    if(len > (socklen_t)sizeof(struct sockaddr_un)) {
+        _throwException(env, kExceptionSocketException,
+                        peerName ? "peer name too long" : "socket name too long");
+        return NULL;
+    }
+
+    // FIXME SUN_LEN?
+    len -= 1;
+#if defined(junixsocket_have_sun_len)
+    len -= 1;
+#endif
+
+    jboolean allZeros = true;
+    for(socklen_t i=0; i<len; i++) {
+        if(addr.sun_path[i] != 0) {
+            allZeros = false;
+            break;
+        }
+    }
+    if(allZeros) {
+        return NULL;
+    }
+
+    jbyteArray array = (*env)->NewByteArray(env, len);
+    (*env)->SetByteArrayRegion(env, array, 0, len, (jbyte*)addr.sun_path);
+
+    return array;
 }

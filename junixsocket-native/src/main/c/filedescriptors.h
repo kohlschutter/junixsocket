@@ -21,8 +21,11 @@
 
 #include "config.h"
 
-CK_VISIBILITY_INTERNAL int _getFD(JNIEnv * env, jobject fd);
-CK_VISIBILITY_INTERNAL void _initFD(JNIEnv * env, jobject fd, int handle);
-CK_VISIBILITY_INTERNAL int _closeFd(JNIEnv * env, jobject fd, int handle);
+void init_filedescriptors(JNIEnv *env);
+void destroy_filedescriptors(JNIEnv *env);
+
+int _getFD(JNIEnv * env, jobject fd);
+void _initFD(JNIEnv * env, jobject fd, int handle);
+int _closeFd(JNIEnv * env, jobject fd, int handle);
 
 #endif /* filedescriptors_h */

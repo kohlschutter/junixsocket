@@ -51,7 +51,7 @@ public class ServerSocketCloseTest {
   private void testUnblockAccepts(int timeout) throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
       File socketFile = SocketTestBase.initSocketFile();
-      try (AFUNIXServerSocket serverSocket = AFUNIXServerSocket.bindOn(new AFUNIXSocketAddress(
+      try (AFUNIXServerSocket serverSocket = AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.of(
           socketFile))) {
         serverSocket.setSoTimeout(timeout);
 
@@ -90,7 +90,7 @@ public class ServerSocketCloseTest {
         serverSocket.close();
 
         threadPool.shutdown();
-        threadPool.awaitTermination(500, TimeUnit.MILLISECONDS);
+        threadPool.awaitTermination(1, TimeUnit.SECONDS);
 
         assertEquals(0, threadPool.getActiveCount(), "There should be no pending accepts");
       }

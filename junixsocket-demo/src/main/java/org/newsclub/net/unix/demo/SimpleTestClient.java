@@ -41,7 +41,7 @@ public class SimpleTestClient {
 
     try (AFUNIXSocket sock = AFUNIXSocket.newInstance()) {
       try {
-        sock.connect(new AFUNIXSocketAddress(socketFile));
+        sock.connect(AFUNIXSocketAddress.of(socketFile));
       } catch (SocketException e) {
         System.out.println("Cannot connect to server. Have you started it?");
         System.out.println();

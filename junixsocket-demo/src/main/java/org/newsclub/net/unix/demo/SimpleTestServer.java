@@ -48,7 +48,7 @@ public final class SimpleTestServer {
 
     try (AFUNIXServerSocket server = AFUNIXServerSocket.newInstance()) {
       // server.setReuseAddress(false);
-      server.bind(new AFUNIXSocketAddress(socketFile));
+      server.bind(AFUNIXSocketAddress.of(socketFile));
       System.out.println("server: " + server);
 
       while (!Thread.interrupted()) {

@@ -21,4 +21,6 @@
 
 #include "config.h"
 
+ssize_t sendmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struct sockaddr_un *sendTo, socklen_t sendToLen, jobject ancSupp);
+
 #endif /* send_h */

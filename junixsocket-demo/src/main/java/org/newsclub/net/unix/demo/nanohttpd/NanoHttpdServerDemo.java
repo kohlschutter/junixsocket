@@ -47,13 +47,12 @@ public class NanoHttpdServerDemo extends NanoHTTPD {
       }
     });
     System.out.println("Address: " + socketAddress);
-    System.out.println("Try: curl --unix-socket " + socketAddress.getPath()
-        + " http://localhost/");
+    System.out.println("Try: curl --unix-socket " + socketAddress.getPath() + " http://localhost/");
   }
 
   public static void main(String[] args) throws IOException {
     new NanoHttpdServerDemo( //
-        new AFUNIXSocketAddress(new File("/tmp/junixsocket-http-server.sock")) //
+        AFUNIXSocketAddress.of(new File("/tmp/junixsocket-http-server.sock")) //
     ).start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
   }
 

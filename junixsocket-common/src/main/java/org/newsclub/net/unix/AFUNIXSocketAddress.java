@@ -18,7 +18,9 @@
 package org.newsclub.net.unix;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -26,6 +28,7 @@ import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Describes an {@link InetSocketAddress} that actually uses AF_UNIX sockets instead of AF_INET.
@@ -35,19 +38,17 @@ import java.util.Locale;
  * 
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.ShortMethodName")
 public final class AFUNIXSocketAddress extends InetSocketAddress {
   private static final long serialVersionUID = 1L;
   private final byte[] bytes;
 
   /**
-   * Just a marker for "don't bind" (checked with ==).
+   * Just a marker for "don't actually bind" (checked with "=="). Used in combination with a
+   * superclass' bind method, which should trigger "setBound()", etc.
    */
-  static final AFUNIXSocketAddress INTERNAL_DONT_BIND = new AFUNIXSocketAddress();
-
-  private AFUNIXSocketAddress() {
-    super(0);
-    this.bytes = new byte[0];
-  }
+  static final AFUNIXSocketAddress INTERNAL_DUMMY_BIND = new AFUNIXSocketAddress(0);
+  static final AFUNIXSocketAddress INTERNAL_DUMMY_CONNECT = new AFUNIXSocketAddress(1);
 
   /**
    * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
@@ -55,6 +56,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * 
    * @param socketFile The socket to connect to.
    * @throws SocketException if the operation fails.
+   * @deprecated Use {@link AFUNIXSocketAddress#of(File)} instead.
    */
   public AFUNIXSocketAddress(final File socketFile) throws SocketException {
     this(socketFile, 0);
@@ -67,32 +69,10 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @param socketFile The socket to connect to.
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
    * @throws SocketException if the operation fails.
+   * @deprecated Use {@link AFUNIXSocketAddress#of(File, int)} instead.
    */
   public AFUNIXSocketAddress(final File socketFile, int port) throws SocketException {
     this(socketFile.getPath().getBytes(Charset.defaultCharset()), port);
-  }
-
-  /**
-   * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
-   * given path.
-   * 
-   * @param socketPath The socket to connect to.
-   * @throws SocketException if the operation fails.
-   */
-  public AFUNIXSocketAddress(final Path socketPath) throws SocketException {
-    this(socketPath, 0);
-  }
-
-  /**
-   * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
-   * given path, assigning the given port to it.
-   * 
-   * @param socketPath The socket to connect to.
-   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
-   * @throws SocketException if the operation fails.
-   */
-  public AFUNIXSocketAddress(final Path socketPath, int port) throws SocketException {
-    this(socketPath.toString().getBytes(Charset.defaultCharset()), port);
   }
 
   /**
@@ -105,6 +85,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @param socketAddress The socket address (as bytes).
    * @throws SocketException if the operation fails.
    * @see AFUNIXSocketAddress#inAbstractNamespace(String)
+   * @deprecated Use {@link #of(byte[])} instead.
    */
   public AFUNIXSocketAddress(final byte[] socketAddress) throws SocketException {
     this(socketAddress, 0);
@@ -121,10 +102,25 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
    * @throws SocketException if the operation fails.
    * @see AFUNIXSocketAddress#inAbstractNamespace(String,int)
+   * @deprecated Use {@link #of(byte[], int)} instead.
    */
   public AFUNIXSocketAddress(final byte[] socketAddress, int port) throws SocketException {
-    super(InetAddress.getLoopbackAddress(), 0);
-    if (port != 0) {
+    this(port, socketAddress);
+  }
+
+  private AFUNIXSocketAddress(int port, final byte[] socketAddress) throws SocketException {
+    /*
+     * Initializing the superclass with an unresolved hostname helps us pass the #equals and
+     * #hashCode checks, which unfortunately are declared final in InetSocketAddress.
+     * 
+     * Using a resolved address (with the address bit initialized) would be ideal, but resolved
+     * addresses can only be IPv4 or IPv6 (at least as of Java 16 and earlier).
+     */
+    super(AFUNIXInetAddress.createUnresolvedHostname(socketAddress), 0);
+    if (port < -1) {
+      throw new IllegalArgumentException("port out of range");
+    }
+    if (port > 0) {
       NativeUnixSocket.setPort1(this, port);
     }
 
@@ -133,6 +129,135 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
     }
 
     this.bytes = socketAddress.clone();
+  }
+
+  private AFUNIXSocketAddress(int port) {
+    super(InetAddress.getLoopbackAddress(), port);
+    this.bytes = new byte[0];
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * file.
+   * 
+   * @param socketFile The socket to connect to.
+   * @throws SocketException if the operation fails.
+   */
+  public static AFUNIXSocketAddress of(final File socketFile) throws SocketException {
+    return of(socketFile, 0);
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * file, assigning the given port to it.
+   * 
+   * @param socketFile The socket to connect to.
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @throws SocketException if the operation fails.
+   */
+  public static AFUNIXSocketAddress of(final File socketFile, int port) throws SocketException {
+    return new AFUNIXSocketAddress(port, socketFile.getPath().getBytes(Charset.defaultCharset()));
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * byte sequence.
+   * 
+   * NOTE: By specifying a byte array that starts with a zero byte, you indicate that the abstract
+   * namespace is to be used. This feature is not available on all target platforms.
+   * 
+   * @param socketAddress The socket address (as bytes).
+   * @throws SocketException if the operation fails.
+   * @see AFUNIXSocketAddress#inAbstractNamespace(String)
+   */
+  public static AFUNIXSocketAddress of(final byte[] socketAddress) throws SocketException {
+    return new AFUNIXSocketAddress(0, socketAddress);
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * byte sequence, assigning the given port to it.
+   * 
+   * NOTE: By specifying a byte array that starts with a zero byte, you indicate that the abstract
+   * namespace is to be used. This feature is not available on all target platforms.
+   *
+   * @param socketAddress The socket address (as bytes).
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @throws SocketException if the operation fails.
+   * @see AFUNIXSocketAddress#inAbstractNamespace(String,int)
+   */
+  public static AFUNIXSocketAddress of(final byte[] socketAddress, int port)
+      throws SocketException {
+    return new AFUNIXSocketAddress(port, socketAddress);
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * path.
+   * 
+   * @param socketPath The socket to connect to.
+   * @throws SocketException if the operation fails.
+   */
+  public static AFUNIXSocketAddress of(final Path socketPath) throws SocketException {
+    return of(socketPath, 0);
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * path, assigning the given port to it.
+   * 
+   * @param socketPath The socket to connect to.
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @throws SocketException if the operation fails.
+   */
+  public static AFUNIXSocketAddress of(final Path socketPath, int port) throws SocketException {
+    return new AFUNIXSocketAddress(port, socketPath.toString().getBytes(Charset.defaultCharset()));
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} given a special {@link InetAddress} that encodes the
+   * byte sequence of an AF_UNIX socket address, like those returned by {@link #wrapAddress()}.
+   * 
+   * @param address The "special" {@link InetAddress}.
+   * @param port The port (use 0 for "none").
+   * @return The {@link AFUNIXSocketAddress} instance.
+   * @throws SocketException if the operation fails, for example when an unsupported address is
+   *           specified.
+   */
+  public static AFUNIXSocketAddress unwrap(InetAddress address, int port) throws SocketException {
+    Objects.requireNonNull(address);
+    return new AFUNIXSocketAddress(port, AFUNIXInetAddress.unwrapAddress(address));
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} given a generic {@link SocketAddress}.
+   * 
+   * @param address The address to unwrap.
+   * @return The {@link AFUNIXSocketAddress} instance.
+   * @throws SocketException if the operation fails, for example when an unsupported address is
+   *           specified.
+   */
+  public static AFUNIXSocketAddress unwrap(SocketAddress address) throws SocketException {
+    Objects.requireNonNull(address);
+    if (!isSupportedAddress(address)) {
+      throw new SocketException("Unsupported address");
+    }
+    return (AFUNIXSocketAddress) address;
+  }
+
+  /**
+   * Returns a "special" {@link InetAddress} that contains information about this
+   * {@link AFUNIXSocketAddress}.
+   * 
+   * IMPORTANT: This {@link InetAddress} does not properly compare (using
+   * {@link InetAddress#equals(Object)} and {@link InetAddress#hashCode()}). It should be used
+   * exclusively to circumvent existing APIs like {@link DatagramSocket} that only accept/return
+   * {@link InetAddress} and not arbitrary {@link SocketAddress} types.
+   * 
+   * @return The "special" {@link InetAddress}.
+   */
+  public InetAddress wrapAddress() {
+    return AFUNIXInetAddress.wrapAddress(bytes);
   }
 
   /**
@@ -258,6 +383,8 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
   public File getFile() throws FileNotFoundException {
     if (isInAbstractNamespace()) {
       throw new FileNotFoundException("Socket is in abstract namespace");
+    } else if (bytes.length == 0) {
+      throw new FileNotFoundException("No name");
     }
     return new File(new String(bytes, Charset.defaultCharset()));
   }
@@ -287,5 +414,55 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
     }
 
     return (AFUNIXSocketAddress) endpoint;
+  }
+
+  /**
+   * Checks if an {@link InetAddress} can be unwrapped to an {@link AFUNIXSocketAddress}.
+   * 
+   * @param addr The instance to check.
+   * @return {@code true} if so.
+   * @see #wrapAddress()
+   * @see #unwrap(InetAddress, int)
+   */
+  public static boolean isSupportedAddress(InetAddress addr) {
+    return AFUNIXInetAddress.isSupportedAddress(addr);
+  }
+
+  /**
+   * Checks if a {@link SocketAddress} can be unwrapped to an {@link AFUNIXSocketAddress}.
+   * 
+   * @param addr The instance to check.
+   * @return {@code true} if so.
+   * @see #unwrap(InetAddress, int)
+   */
+  public static boolean isSupportedAddress(SocketAddress addr) {
+    return (addr instanceof AFUNIXSocketAddress);
+  }
+
+  static InetAddress getInetAddress(FileDescriptor fdesc, boolean peerName) {
+    if (!fdesc.valid()) {
+      return null;
+    }
+    byte[] addr = NativeUnixSocket.sockname(fdesc, peerName);
+    if (addr == null) {
+      return null;
+    }
+    return AFUNIXInetAddress.wrapAddress(addr);
+  }
+
+  static AFUNIXSocketAddress getSocketAddress(FileDescriptor fdesc, boolean peerName) {
+    if (!fdesc.valid()) {
+      return null;
+    }
+    byte[] addr = NativeUnixSocket.sockname(fdesc, peerName);
+    if (addr == null) {
+      return null;
+    }
+    try {
+      // FIXME we could infer the "port" from the path if the socket factory supports that
+      return AFUNIXSocketAddress.unwrap(AFUNIXInetAddress.wrapAddress(addr), 0);
+    } catch (SocketException e) {
+      throw new IllegalStateException(e);
+    }
   }
 }

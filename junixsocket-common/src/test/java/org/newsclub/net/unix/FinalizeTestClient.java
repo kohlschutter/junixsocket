@@ -34,8 +34,8 @@ public class FinalizeTestClient {
   @SuppressWarnings("resource")
   @SuppressFBWarnings({"RV_RETURN_VALUE_IGNORED"})
   public static void main(String[] args) throws Exception {
-    AFUNIXSocket socket = AFUNIXSocket.connectTo(new AFUNIXSocketAddress(new File(System
-        .getProperty("test.junixsocket.socket", ""))));
+    AFUNIXSocket socket = AFUNIXSocket.connectTo(AFUNIXSocketAddress.of(new File(System.getProperty(
+        "test.junixsocket.socket", ""))));
     socket.getInputStream().read();
     while (true) {
       // create some pressure on GC

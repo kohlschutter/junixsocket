@@ -30,6 +30,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.security.SecureRandom;
 import java.util.Objects;
 import java.util.Random;
@@ -65,6 +66,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
   private static final long serialVersionUID = 1L;
   private static final Random RANDOM = new SecureRandom();
 
+  private final AtomicReference<DataInputStream> remoteConnection = new AtomicReference<>();
   private final AtomicReference<AFUNIXSocket> remoteServer = new AtomicReference<>();
 
   /**
@@ -164,6 +166,11 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
   @SuppressWarnings("resource")
   @Override
   public final void readExternal(ObjectInput objIn) throws IOException, ClassNotFoundException {
+    DataInputStream in1 = remoteConnection.getAndSet(null);
+    if (in1 != null) {
+      in1.close();
+    }
+
     Object obj = objIn.readObject();
     if (obj instanceof IOException) {
       IOException e = new IOException("Could not read RemoteFileDescriptor");
@@ -179,9 +186,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
       throw new IOException("Unexpected magic value: " + Integer.toHexString(magicValue));
     }
     final int randomValue = objIn.readInt();
-
     int port = objIn.readInt();
-    FileDescriptor[] descriptors;
 
     AFUNIXSocket socket = (AFUNIXSocket) socketFactory.createSocket("", port);
     if (remoteServer.getAndSet(socket) != null) {
@@ -194,22 +199,23 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
       // ignore
     }
 
-    try (DataInputStream in1 = new DataInputStream(socket.getInputStream())) {
-      socket.ensureAncillaryReceiveBufferSize(128);
+    in1 = new DataInputStream(socket.getInputStream());
+    this.remoteConnection.set(in1);
+    socket.ensureAncillaryReceiveBufferSize(128);
 
-      int random = in1.readInt();
+    int random = in1.readInt();
 
-      if (random != randomValue) {
-        throw new IOException("Invalid socket connection");
-      }
-      descriptors = socket.getReceivedFileDescriptors();
-
-      if (descriptors == null || descriptors.length != 1) {
-        throw new IOException("Did not receive exactly 1 file descriptor but "
-            + (descriptors == null ? 0 : descriptors.length));
-      }
-      this.fd = descriptors[0];
+    if (random != randomValue) {
+      throw new IOException("Invalid socket connection");
     }
+    FileDescriptor[] descriptors = socket.getReceivedFileDescriptors();
+
+    if (descriptors == null || descriptors.length != 1) {
+      throw new IOException("Did not receive exactly 1 file descriptor but " + (descriptors == null
+          ? 0 : descriptors.length));
+    }
+
+    this.fd = descriptors[0];
   }
 
   /**
@@ -240,10 +246,21 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
   @SuppressWarnings("resource")
   @Override
   public void close() throws IOException {
+    DataInputStream in1 = remoteConnection.getAndSet(null);
+    if (in1 != null) {
+      try {
+        in1.close();
+      } catch (SocketException e) {
+        // ignore
+      }
+    }
+
     AFUNIXSocket remoteSocket = remoteServer.getAndSet(null);
     if (remoteSocket != null) {
       try (OutputStream out = remoteSocket.getOutputStream()) {
         out.write(1);
+      } catch (SocketException e) {
+        // ignore
       }
       remoteSocket.close();
     }

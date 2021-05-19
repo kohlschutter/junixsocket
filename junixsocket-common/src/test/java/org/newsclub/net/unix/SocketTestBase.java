@@ -42,7 +42,7 @@ public class SocketTestBase { // NOTE: needs to be public for junit
 
   protected SocketTestBase() {
     try {
-      this.serverAddress = new AFUNIXSocketAddress(SOCKET_FILE);
+      this.serverAddress = AFUNIXSocketAddress.of(SOCKET_FILE);
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }

@@ -22,6 +22,84 @@
 #include "exceptions.h"
 #include "filedescriptors.h"
 #include "ancillary.h"
+#include "receive.h"
+
+ssize_t send_wrapper(int handle, jbyte *buf, jint length, struct sockaddr_un *sendTo, socklen_t sendToLen) {
+    ssize_t count;
+
+    do {
+        if (sendTo) {
+            count = sendto(handle, (char*)buf, length, 0, (struct sockaddr *)sendTo, sendToLen);
+        } else {
+            count = send(handle, (char*)buf, length, 0);
+        }
+    } while(count == -1 && socket_errno == EINTR);
+    return count;
+}
+
+ssize_t sendmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struct sockaddr_un *sendTo, socklen_t sendToLen, jobject ancSupp) {
+#if !defined(junixsocket_have_ancillary)
+    CK_ARGUMENT_POTENTIALLY_UNUSED(env);
+    CK_ARGUMENT_POTENTIALLY_UNUSED(ancSupp);
+    return send_wrapper(handle, buf, length, sendTo, sendToLen);
+#else
+    jintArray ancFds = ancSupp == NULL ? NULL : (*env)->GetObjectField(env, ancSupp, getFieldID_pendingFileDescriptors());
+    if (ancFds == NULL) {
+        return send_wrapper(handle, buf, length, sendTo, sendToLen);
+    }
+
+    struct iovec iov = {.iov_base = buf, .iov_len = (size_t)length};
+    struct msghdr msg = {.msg_name = (struct sockaddr*)sendTo, .msg_namelen =
+        sendToLen, .msg_iov = &iov, .msg_iovlen = 1 };
+
+    char *control = NULL;
+    if(ancFds != NULL) {
+        jsize ancFdsLen = (*env)->GetArrayLength(env, ancFds);
+        msg.msg_controllen = (socklen_t)CMSG_SPACE((socklen_t)ancFdsLen * sizeof(jint));
+        control = msg.msg_control = malloc(msg.msg_controllen);
+
+        socklen_t controlLen = 0;
+        struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
+        cmsg->cmsg_level = SOL_SOCKET;
+        cmsg->cmsg_type = SCM_RIGHTS;
+        controlLen += (cmsg->cmsg_len = (socklen_t)CMSG_LEN((socklen_t)ancFdsLen * sizeof(jint)));
+        unsigned char *data = CMSG_DATA(cmsg);
+
+        jint *ancBuf = NULL;
+        if(ancFdsLen > 0) {
+            ancBuf = (*env)->GetIntArrayElements(env, ancFds, NULL);
+            memcpy(data, ancBuf, ancFdsLen * sizeof(jint));
+            (*env)->ReleaseIntArrayElements(env, ancFds, ancBuf, 0);
+        }
+
+        cmsg = junixsocket_CMSG_NXTHDR(&msg, cmsg);
+        if(cmsg == NULL) {
+            // FIXME: not enough space in header?
+        }
+
+        msg.msg_controllen = controlLen;
+
+        (*env)->SetObjectField(env, ancSupp, getFieldID_pendingFileDescriptors(), NULL);
+    }
+
+    ssize_t count;
+
+    errno = 0;
+    do {
+        if (msg.msg_controllen == 0) {
+            count = send(handle, msg.msg_iov->iov_base, msg.msg_iov->iov_len, 0);
+        } else {
+            count = sendmsg(handle, &msg, 0);
+        }
+    } while(count == -1 && socket_errno == EINTR);
+
+    if(control) {
+        free(control);
+    }
+
+    return count;
+#endif
+}
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -62,65 +140,17 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
 
     int handle = _getFD(env, fd);
 
-#if defined(junixsocket_have_ancillary)
-    struct iovec iov = {.iov_base = buf, .iov_len = (size_t)length};
-    struct msghdr msg = {.msg_name = NULL, .msg_namelen = 0, .msg_iov = &iov,
-        .msg_iovlen = 1, };
-
-    char *control = NULL;
-    if(ancSupp != NULL) {
-        jintArray ancFds = (*env)->GetObjectField(env, ancSupp, getFieldID_pendingFileDescriptors());
-        if(ancFds != NULL) {
-
-            jsize ancFdsLen = (*env)->GetArrayLength(env, ancFds);
-            msg.msg_controllen = (socklen_t)CMSG_SPACE((socklen_t)ancFdsLen * sizeof(jint));
-            control = msg.msg_control = malloc(msg.msg_controllen);
-
-            socklen_t controlLen = 0;
-            struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
-            cmsg->cmsg_level = SOL_SOCKET;
-            cmsg->cmsg_type = SCM_RIGHTS;
-            controlLen += (cmsg->cmsg_len = (socklen_t)CMSG_LEN((socklen_t)ancFdsLen * sizeof(jint)));
-            unsigned char *data = CMSG_DATA(cmsg);
-
-            jint *ancBuf = NULL;
-            if(ancFdsLen > 0) {
-                ancBuf = (*env)->GetIntArrayElements(env, ancFds, NULL);
-                memcpy(data, ancBuf, ancFdsLen * sizeof(jint));
-                (*env)->ReleaseIntArrayElements(env, ancFds, ancBuf, 0);
-            }
-
-            cmsg = junixsocket_CMSG_NXTHDR(&msg, cmsg);
-            if(cmsg == NULL) {
-                // FIXME: not enough space in header?
-            }
-
-            msg.msg_controllen = controlLen;
-
-            (*env)->SetObjectField(env, ancSupp, getFieldID_pendingFileDescriptors(), NULL);
-
-        }
-    }
-
-    errno = 0;
     ssize_t count;
-    do {
-        count = sendmsg(handle, &msg, 0);
-    } while(count == -1 && errno == EINTR);
-    int myErr = socket_errno;
 
-    if(control) {
-        free(control);
-    }
+#if defined(junixsocket_have_ancillary)
+
+    count = sendmsg_wrapper(env, handle, buf, length, NULL, 0, ancSupp);
 
 #else
     errno = 0;
-    ssize_t count;
     do {
         count = send(handle, (char*)buf, (size_t)length, 0);
     } while(count == -1 && socket_errno == EINTR);
-
-    int myErr = errno;
 #endif
 
     free(buf);
@@ -130,7 +160,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
             return 0;
         }
 
-        _throwErrnumException(env, myErr, fd);
+        _throwErrnumException(env, errno, fd);
         return -1;
     }
 

@@ -13,6 +13,12 @@ extern "C" {
 #define org_newsclub_net_unix_NativeUnixSocket_SOCK_DGRAM 2L
 #undef org_newsclub_net_unix_NativeUnixSocket_SOCK_SEQPACKET
 #define org_newsclub_net_unix_NativeUnixSocket_SOCK_SEQPACKET 5L
+#undef org_newsclub_net_unix_NativeUnixSocket_OPT_LOOKUP_SENDER
+#define org_newsclub_net_unix_NativeUnixSocket_OPT_LOOKUP_SENDER 1L
+#undef org_newsclub_net_unix_NativeUnixSocket_OPT_PEEK
+#define org_newsclub_net_unix_NativeUnixSocket_OPT_PEEK 2L
+#undef org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING
+#define org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING 4L
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    init
@@ -36,6 +42,14 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities
   (JNIEnv *, jclass);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    sockname
+ * Signature: (Ljava/io/FileDescriptor;Z)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockname
+  (JNIEnv *, jclass, jobject, jboolean);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -95,6 +109,22 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    receiveDatagram
+ * Signature: (Ljava/io/FileDescriptor;Ljava/net/DatagramPacket;ILorg/newsclub/net/unix/AncillaryDataSupport;)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receiveDatagram
+  (JNIEnv *, jclass, jobject, jobject, jint, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    sendDatagram
+ * Signature: (Ljava/io/FileDescriptor;Ljava/net/DatagramPacket;Lorg/newsclub/net/unix/AncillaryDataSupport;)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sendDatagram
+  (JNIEnv *, jclass, jobject, jobject, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    close
  * Signature: (Ljava/io/FileDescriptor;)V
  */
@@ -144,7 +174,7 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    initServerImpl
- * Signature: (Lorg/newsclub/net/unix/AFUNIXServerSocket;Lorg/newsclub/net/unix/AFUNIXSocketImpl;)V
+ * Signature: (Ljava/net/ServerSocket;Lorg/newsclub/net/unix/AFUNIXSocketImpl;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImpl
   (JNIEnv *, jclass, jobject, jobject);
@@ -168,7 +198,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setConnected
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    setBound
- * Signature: (Lorg/newsclub/net/unix/AFUNIXSocket;)V
+ * Signature: (Ljava/lang/Object;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setBound
   (JNIEnv *, jclass, jobject);

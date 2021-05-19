@@ -21,6 +21,8 @@
 
 #include "exceptions.h"
 #include "ancillary.h"
+#include "datagram.h"
+#include "filedescriptors.h"
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -30,8 +32,6 @@
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init(
                                                                         JNIEnv *env, jclass clazz CK_UNUSED)
 {
-    CK_ARGUMENT_POTENTIALLY_UNUSED(env);
-
 #if defined(_WIN32)
     WSADATA wsaData;
     int ret = WSAStartup(MAKEWORD(2,2), &wsaData);
@@ -41,9 +41,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init(
     }
 #endif
 
+    init_filedescriptors(env);
 #if defined(junixsocket_have_ancillary)
     init_ancillary(env);
 #endif
+    init_datagram(env);
 }
 
 /*
@@ -54,14 +56,13 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init(
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy(
                                                                            JNIEnv *env, jclass clazz CK_UNUSED)
 {
-    CK_ARGUMENT_POTENTIALLY_UNUSED(env);
-    
 #if defined(_WIN32)
     WSACleanup();
 #endif
 
+    destroy_filedescriptors(env);
 #if defined(junixsocket_have_ancillary)
     destroy_ancillary(env);
 #endif
-
+    destroy_datagram(env);
 }

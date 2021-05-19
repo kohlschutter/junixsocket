@@ -40,26 +40,26 @@ struct cmsghdr* junixsocket_CMSG_NXTHDR (struct msghdr *mhdr, struct cmsghdr *cm
 }
 #endif
 
-static jclass class_ancillaryDataSupport;
-static jfieldID fieldID_ancillaryReceiveBuffer;
-static jfieldID fieldId_pendingFileDescriptors;
+static jclass class_AncillaryDataSupport = NULL;
+static jfieldID fieldID_ancillaryReceiveBuffer = NULL;
+static jfieldID fieldID_pendingFileDescriptors = NULL;
 
 jfieldID getFieldID_ancillaryReceiveBuffer() {
     return fieldID_ancillaryReceiveBuffer;
 }
 jfieldID getFieldID_pendingFileDescriptors() {
-    return fieldId_pendingFileDescriptors;
+    return fieldID_pendingFileDescriptors;
 }
 
 void init_ancillary(JNIEnv *env) {
-    class_ancillaryDataSupport = findClassAndGlobalRef(env, "Lorg/newsclub/net/unix/AncillaryDataSupport;");
-    fieldID_ancillaryReceiveBuffer = (*env)->GetFieldID(env, class_ancillaryDataSupport, "ancillaryReceiveBuffer", "Ljava/nio/ByteBuffer;");
-    fieldId_pendingFileDescriptors = (*env)->GetFieldID(env, class_ancillaryDataSupport, "pendingFileDescriptors", "[I");
+    class_AncillaryDataSupport = findClassAndGlobalRef(env, "org/newsclub/net/unix/AncillaryDataSupport");
+    fieldID_ancillaryReceiveBuffer = (*env)->GetFieldID(env, class_AncillaryDataSupport, "ancillaryReceiveBuffer", "Ljava/nio/ByteBuffer;");
+    fieldID_pendingFileDescriptors = (*env)->GetFieldID(env, class_AncillaryDataSupport, "pendingFileDescriptors", "[I");
 }
 void destroy_ancillary(JNIEnv *env) {
-    releaseClassGlobalRef(env, class_ancillaryDataSupport);
+    releaseClassGlobalRef(env, class_AncillaryDataSupport);
     fieldID_ancillaryReceiveBuffer = NULL;
-    fieldId_pendingFileDescriptors = NULL;
+    fieldID_pendingFileDescriptors = NULL;
 }
 
 #endif

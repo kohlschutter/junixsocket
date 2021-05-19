@@ -17,7 +17,7 @@
  */
 package org.newsclub.net.unix.rmi;
 
-import java.io.Closeable;
+import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,8 +28,7 @@ import java.io.ObjectInput;
  * 
  * @author Christian Kohlschütter
  */
-public final class RemoteFileOutput extends RemoteFileDescriptorBase<FileOutputStream> implements
-    Closeable {
+public final class RemoteFileOutput extends RemoteFileDescriptorBase<FileOutputStream>  {
   private static final long serialVersionUID = 1L;
 
   /**
@@ -71,7 +70,11 @@ public final class RemoteFileOutput extends RemoteFileDescriptorBase<FileOutputS
       if (prev != null) {
         return prev;
       }
-      return new FileOutputStream(getFileDescriptor()) {
+      FileDescriptor fd = getFileDescriptor();
+      if (!fd.valid()) {
+        throw new IllegalStateException("Invalid file descriptor");
+      }
+      return new FileOutputStream(fd) {
         @Override
         public synchronized void close() throws IOException {
           RemoteFileOutput.this.close();

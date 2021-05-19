@@ -56,7 +56,7 @@ public class BufferOverflowTest {
     this.socketFile = SocketTestBase.initSocketFile();
 
     server = AFUNIXServerSocket.newInstance();
-    server.bind(new AFUNIXSocketAddress(socketFile));
+    server.bind(AFUNIXSocketAddress.of(socketFile));
 
     executor = Executors.newFixedThreadPool(2);
   }
@@ -93,7 +93,7 @@ public class BufferOverflowTest {
 
     Thread.sleep(100);
 
-    clientSocket.connect(new AFUNIXSocketAddress(socketFile));
+    clientSocket.connect(AFUNIXSocketAddress.of(socketFile));
 
     Socket serverSocket = serverAcceptFuture.get(100, TimeUnit.MILLISECONDS);
 

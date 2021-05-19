@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-#ifndef receive_h
-#define receive_h
+#ifndef datagram_h
+#define datagram_h
 
 #include "config.h"
 
-ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, jbyte *control, socklen_t controlLen, struct sockaddr_un *senderBuf, socklen_t *senderBufLen, int opt, jobject ancSupp);
+void init_datagram(JNIEnv *env);
+void destroy_datagram(JNIEnv *env);
 
-#endif /* receive_h */
+#endif /* datagram_h */

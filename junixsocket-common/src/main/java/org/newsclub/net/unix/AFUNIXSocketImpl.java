@@ -44,7 +44,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
   private static final int SHUT_RD_WR = 2;
 
   private final SocketState state;
-  private final AncillaryDataSupport ancillaryDataSupport = new AncillaryDataSupport();
+  final AncillaryDataSupport ancillaryDataSupport = new AncillaryDataSupport();
 
   private final AtomicBoolean bound = new AtomicBoolean(false);
   private boolean connected = false;
@@ -57,7 +57,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   private boolean reuseAddr = true;
 
-  private int timeout = 0;
+  private final AtomicInteger acceptTimeout = new AtomicInteger(0);
 
   /**
    * When the {@link AFUNIXSocketImpl} becomes unreachable (but not yet closed), we must ensure that
@@ -161,7 +161,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
     try {
       state.incPendingAccepts();
       NativeUnixSocket.accept(socketAddress.getBytes(), fdesc, si.fd, state.inode.get(),
-          this.timeout);
+          acceptTimeout.get());
       if (!isBound() || isClosed()) {
         try {
           NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
@@ -215,7 +215,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
   @Override
   @SuppressWarnings("hiding")
   protected void bind(InetAddress host, int port) throws IOException {
-    throw new SocketException("Cannot bind to this type of address: " + InetAddress.class);
+    // ignored
   }
 
   private void checkClose() throws IOException {
@@ -245,6 +245,9 @@ class AFUNIXSocketImpl extends SocketImplShim {
   protected void connect(SocketAddress addr, int connectTimeout) throws IOException {
     if (!(addr instanceof AFUNIXSocketAddress)) {
       throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
+    }
+    if (addr == AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT) {
+      return;
     }
     AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
     setSocketAddress(socketAddress);
@@ -465,27 +468,35 @@ class AFUNIXSocketImpl extends SocketImplShim {
     }
 
     FileDescriptor fdesc = state.validFdOrException();
+    return getOptionDefault(fdesc, optID, acceptTimeout);
+  }
+
+  static Object getOptionDefault(FileDescriptor fdesc, int optID, AtomicInteger acceptTimeout)
+      throws SocketException {
     try {
       switch (optID) {
         case SocketOptions.SO_KEEPALIVE:
         case SocketOptions.TCP_NODELAY:
           return NativeUnixSocket.getSocketOptionInt(fdesc, optID) != 0 ? true : false;
         case SocketOptions.SO_TIMEOUT:
-          return Math.max(timeout, Math.max(NativeUnixSocket.getSocketOptionInt(fdesc, 0x1005),
-              NativeUnixSocket.getSocketOptionInt(fdesc, 0x1006)));
+          return Math.max((acceptTimeout == null ? 0 : acceptTimeout.get()), Math.max(
+              NativeUnixSocket.getSocketOptionInt(fdesc, 0x1005), NativeUnixSocket
+                  .getSocketOptionInt(fdesc, 0x1006)));
         case SocketOptions.SO_LINGER:
         case SocketOptions.SO_RCVBUF:
         case SocketOptions.SO_SNDBUF:
           return NativeUnixSocket.getSocketOptionInt(fdesc, optID);
         case SocketOptions.IP_TOS:
           return 0;
+        case SocketOptions.SO_BINDADDR:
+          return AFUNIXSocketAddress.getInetAddress(fdesc, false);
         default:
           throw new SocketException("Unsupported option: " + optID);
       }
     } catch (final SocketException e) {
       throw e;
     } catch (final Exception e) {
-      throw (SocketException) new SocketException("Error while getting option").initCause(e);
+      throw (SocketException) new SocketException("Could not get option").initCause(e);
     }
   }
 
@@ -500,6 +511,11 @@ class AFUNIXSocketImpl extends SocketImplShim {
     }
 
     FileDescriptor fdesc = state.validFdOrException();
+    setOptionDefault(fdesc, optID, value, acceptTimeout);
+  }
+
+  static void setOptionDefault(FileDescriptor fdesc, int optID, Object value,
+      AtomicInteger acceptTimeout) throws SocketException {
     try {
       switch (optID) {
         case SocketOptions.SO_LINGER:
@@ -514,11 +530,15 @@ class AFUNIXSocketImpl extends SocketImplShim {
           }
           NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectInteger(value));
           return;
-        case SocketOptions.SO_TIMEOUT:
-          this.timeout = expectInteger(value);
+        case SocketOptions.SO_TIMEOUT: {
+          int timeout = expectInteger(value);
           NativeUnixSocket.setSocketOptionInt(fdesc, 0x1005, timeout);
           NativeUnixSocket.setSocketOptionInt(fdesc, 0x1006, timeout);
+          if (acceptTimeout != null) {
+            acceptTimeout.set(timeout);
+          }
           return;
+        }
         case SocketOptions.SO_RCVBUF:
         case SocketOptions.SO_SNDBUF:
           NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectInteger(value));
@@ -601,20 +621,19 @@ class AFUNIXSocketImpl extends SocketImplShim {
     return NativeUnixSocket.peerCredentials(fd, new AFUNIXSocketCredentials());
   }
 
-  public final FileDescriptor[] getReceivedFileDescriptors() {
+  final FileDescriptor[] getReceivedFileDescriptors() {
     return ancillaryDataSupport.getReceivedFileDescriptors();
   }
 
-  public final void clearReceivedFileDescriptors() {
+  final void clearReceivedFileDescriptors() {
     ancillaryDataSupport.clearReceivedFileDescriptors();
   }
 
-  // called from native code
   final void receiveFileDescriptors(int[] fds) throws IOException {
     ancillaryDataSupport.receiveFileDescriptors(fds);
   }
 
-  public final void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
+  final void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
     ancillaryDataSupport.setOutboundFileDescriptors(fdescs);
   }
 

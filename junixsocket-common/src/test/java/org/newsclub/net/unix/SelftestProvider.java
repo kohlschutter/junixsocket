@@ -31,6 +31,7 @@ public class SelftestProvider {
     Map<String, Class<?>[]> tests = new LinkedHashMap<>();
     tests.put("junixsocket-common", new Class<?>[] {
         AcceptTimeoutTest.class, //
+        AFUNIXInetAddressTest.class, //
         AFUNIXSocketAddressTest.class, //
         AFUNIXSocketTest.class, //
         AvailableTest.class, //

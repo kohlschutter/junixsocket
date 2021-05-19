@@ -20,6 +20,8 @@ package org.newsclub.net.unix;
 import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -36,6 +38,10 @@ final class NativeUnixSocket {
   static final int SOCK_STREAM = 1;
   static final int SOCK_DGRAM = 2;
   static final int SOCK_SEQPACKET = 5;
+
+  static final int OPT_LOOKUP_SENDER = 1;
+  static final int OPT_PEEK = 2;
+  static final int OPT_NON_BLOCKING = 4;
 
   @ExcludeFromCodeCoverageGeneratedReport
   private NativeUnixSocket() {
@@ -61,6 +67,8 @@ final class NativeUnixSocket {
   static native void destroy() throws Exception;
 
   static native int capabilities();
+
+  static native byte[] sockname(FileDescriptor fd, boolean peer);
 
   static native long bind(final byte[] socketAddr, final FileDescriptor fd, final int options)
       throws IOException;
@@ -104,6 +112,12 @@ final class NativeUnixSocket {
   static native int write(final FileDescriptor fd, byte[] buf, int off, int len,
       AncillaryDataSupport ancillaryDataSupport) throws IOException;
 
+  static native int receiveDatagram(final FileDescriptor fd, DatagramPacket dp, int options,
+      AncillaryDataSupport ancillaryDataSupport) throws IOException;
+
+  static native void sendDatagram(final FileDescriptor fd, DatagramPacket dp,
+      AncillaryDataSupport ancillaryDataSupport) throws IOException;
+
   static native void close(final FileDescriptor fd) throws IOException;
 
   static native void shutdown(final FileDescriptor fd, int mode) throws IOException;
@@ -118,16 +132,10 @@ final class NativeUnixSocket {
   static native AFUNIXSocketCredentials peerCredentials(FileDescriptor fd,
       AFUNIXSocketCredentials creds) throws IOException;
 
-  static native void initServerImpl(final AFUNIXServerSocket serverSocket,
-      final AFUNIXSocketImpl impl) throws IOException;
+  static native void initServerImpl(final ServerSocket serverSocket, final AFUNIXSocketImpl impl)
+      throws IOException;
 
   static native void createSocket(FileDescriptor fdesc, int type) throws IOException;
-
-  static native void setConnected(final AFUNIXSocket socket);
-
-  static native void setBound(final AFUNIXSocket socket);
-
-  static native void setBoundServer(final AFUNIXServerSocket socket);
 
   static native void setPort(final AFUNIXSocketAddress addr, int port);
 

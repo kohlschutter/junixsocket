@@ -20,14 +20,28 @@
 #include "filedescriptors.h"
 
 #include "exceptions.h"
+#include "jniutil.h"
+
+static jclass class_FileDescriptor = NULL;
+static jfieldID fieldID_fd = NULL;
+
+void init_filedescriptors(JNIEnv *env) {
+    class_FileDescriptor = findClassAndGlobalRef(env, "java/io/FileDescriptor");
+    fieldID_fd = (*env)->GetFieldID(env, class_FileDescriptor, "fd", "I");
+}
+
+void destroy_filedescriptors(JNIEnv *env) {
+    releaseClassGlobalRef(env, class_FileDescriptor);
+    fieldID_fd = NULL;
+}
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    getFD
  * Signature: (Ljava/io/FileDescriptor;)I
  */
-JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getFD(
-                                                                         JNIEnv *env, jclass clazz CK_UNUSED, jobject fd)
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocketunwrap
+ (JNIEnv *env, jclass clazz CK_UNUSED, jobject fd)
 {
     return _getFD(env, fd);
 }
@@ -37,34 +51,30 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getFD(
  * Method:    initFD
  * Signature: (Ljava/io/FileDescriptor;I)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initFD(
-                                                                          JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jint handle)
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initFD
+ (JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jint handle)
 {
     _initFD(env, fd, handle);
 }
 
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    getFD
+ * Signature: (Ljava/io/FileDescriptor;)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getFD
+ (JNIEnv *env, jclass clazz CK_UNUSED, jobject fd) {
+     return _getFD(env, fd);
+ }
+
 int _getFD(JNIEnv * env, jobject fd)
 {
-    jclass fileDescriptorClass = (*env)->GetObjectClass(env, fd);
-    jfieldID fdField = (*env)->GetFieldID(env, fileDescriptorClass, "fd", "I");
-    if(fdField == NULL) {
-        _throwException(env, kExceptionSocketException,
-                        "Cannot find field \"fd\" in java.io.FileDescriptor. Unsupported JVM?");
-        return 0;
-    }
-    return (*env)->GetIntField(env, fd, fdField);
+    return (*env)->GetIntField(env, fd, fieldID_fd);
 }
 
 void _initFD(JNIEnv * env, jobject fd, int handle)
 {
-    jclass fileDescriptorClass = (*env)->GetObjectClass(env, fd);
-    jfieldID fdField = (*env)->GetFieldID(env, fileDescriptorClass, "fd", "I");
-    if(fdField == NULL) {
-        _throwException(env, kExceptionSocketException,
-                        "Cannot find field \"fd\" in java.io.FileDescriptor. Unsupported JVM?");
-        return;
-    }
-    (*env)->SetIntField(env, fd, fdField, handle);
+    (*env)->SetIntField(env, fd, fieldID_fd, handle);
 }
 
 // Close a file descriptor. fd object and numeric handle must either be identical,
@@ -114,8 +124,8 @@ int _closeFd(JNIEnv * env, jobject fd, int handle)
  * Method:    close
  * Signature: (Ljava/io/FileDescriptor;)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close(
-                                                                         JNIEnv * env, jclass clazz CK_UNUSED, jobject fd)
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close
+ (JNIEnv * env, jclass clazz CK_UNUSED, jobject fd)
 {
     if(fd == NULL) {
         _throwException(env, kExceptionNullPointerException, "fd");
@@ -138,8 +148,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close(
  * Method:    shutdown
  * Signature: (Ljava/io/FileDescriptor;I)V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shutdown(
-                                                                            JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jint mode)
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shutdown
+(JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jint mode)
 {
     int handle = _getFD(env, fd);
     int ret = shutdown(handle, mode);

@@ -54,7 +54,7 @@ public class EndOfFileTest {
   public void setUp() throws IOException {
     server = AFUNIXServerSocket.newInstance();
     this.socketFile = SocketTestBase.initSocketFile();
-    server.bind(new AFUNIXSocketAddress(socketFile));
+    server.bind(AFUNIXSocketAddress.of(socketFile));
 
     executor = Executors.newFixedThreadPool(2);
   }
@@ -91,7 +91,7 @@ public class EndOfFileTest {
 
     Thread.sleep(100);
 
-    clientSocket.connect(new AFUNIXSocketAddress(socketFile));
+    clientSocket.connect(AFUNIXSocketAddress.of(socketFile));
 
     Socket serverSocket = serverAcceptFuture.get(100, TimeUnit.MILLISECONDS);
 

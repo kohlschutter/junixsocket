@@ -180,7 +180,7 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
 
     @Override
     protected AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
-      return new AFUNIXSocketAddress(socketFile, port);
+      return AFUNIXSocketAddress.of(socketFile, port);
     }
   }
 
@@ -206,7 +206,7 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
       }
       File socketFile = new File(path);
 
-      return new AFUNIXSocketAddress(socketFile, port);
+      return AFUNIXSocketAddress.of(socketFile, port);
     }
   }
 
@@ -270,7 +270,7 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
       }
 
       File socketFile = new File(path);
-      return new AFUNIXSocketAddress(socketFile, port);
+      return AFUNIXSocketAddress.of(socketFile, port);
     }
   }
 }
