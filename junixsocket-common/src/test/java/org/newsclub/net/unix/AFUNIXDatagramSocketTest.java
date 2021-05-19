@@ -22,16 +22,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
+
+import static org.newsclub.net.unix.SocketTestBase.newTempFile;
 
 public class AFUNIXDatagramSocketTest {
   private static void assertUnconnectedDatagramSocket(AFUNIXDatagramSocket ds) {
@@ -78,18 +81,10 @@ public class AFUNIXDatagramSocketTest {
     assertEquals(0, dp.getPort());
   }
 
-  private static File tmpSocketFile() throws IOException {
-    File file = File.createTempFile("jutmp", ".sock");
-    file.delete();
-    return file;
-  }
-
   @Test
   public void testBindConnect() throws SocketException, IOException, InterruptedException {
-    AFUNIXSocketAddress.class.toString();
-    AFUNIXSocketAddress ds1Addr = AFUNIXSocketAddress.of(tmpSocketFile());
-    AFUNIXSocketAddress ds2Addr = AFUNIXSocketAddress.of(tmpSocketFile());
-
+    AFUNIXSocketAddress ds1Addr = AFUNIXSocketAddress.of(newTempFile());
+    AFUNIXSocketAddress ds2Addr = AFUNIXSocketAddress.of(newTempFile());
     assertNotEquals(ds1Addr, ds2Addr);
 
     try (AFUNIXDatagramSocket ds1 = AFUNIXDatagramSocket.newInstance();
@@ -135,6 +130,55 @@ public class AFUNIXDatagramSocketTest {
 
       ds2.close();
       assertClosedDatagramSocket(ds2);
+    }
+  }
+
+  @Test
+  public void testPeek() throws Exception {
+    AFUNIXSocketAddress ds2Addr = AFUNIXSocketAddress.of(newTempFile());
+
+    try (AFUNIXDatagramSocket ds1 = AFUNIXDatagramSocket.newInstance();
+        AFUNIXDatagramSocket ds2 = AFUNIXDatagramSocket.newInstance();) {
+      ds2.bind(ds2Addr);
+      DatagramPacket dp1 = //
+          AFUNIXDatagramUtil.datagramWithCapacityAndPayload(1024, "Hello".getBytes(
+              StandardCharsets.UTF_8));
+      dp1.setAddress(ds2Addr.wrapAddress());
+      ds1.send(dp1);
+      DatagramPacket dp2 = AFUNIXDatagramUtil.datagramWithCapacity(1024);
+      ds2.peek(dp2);
+      assertEquals("Hello", new String(dp2.getData(), dp2.getOffset(), dp2.getLength(),
+          StandardCharsets.UTF_8));
+      DatagramPacket dp3 = AFUNIXDatagramUtil.datagramWithCapacity(1024);
+      ds2.receive(dp3);
+      assertEquals("Hello", new String(dp3.getData(), dp3.getOffset(), dp3.getLength(),
+          StandardCharsets.UTF_8));
+    }
+  }
+
+  @Test
+  public void testReadTimeout() throws Exception {
+    AFUNIXSocketAddress dsAddr = AFUNIXSocketAddress.of(newTempFile());
+
+    try (AFUNIXDatagramSocket ds = AFUNIXDatagramSocket.newInstance()) {
+      ds.setSoTimeout(50);
+      ds.bind(dsAddr);
+      assertThrows(SocketTimeoutException.class, () -> {
+        ds.receive(AFUNIXDatagramUtil.datagramWithCapacity(64));
+      });
+    }
+  }
+
+  @Test
+  public void testPeekTimeout() throws Exception {
+    AFUNIXSocketAddress dsAddr = AFUNIXSocketAddress.of(newTempFile());
+
+    try (AFUNIXDatagramSocket ds = AFUNIXDatagramSocket.newInstance()) {
+      ds.setSoTimeout(50);
+      ds.bind(dsAddr);
+      assertThrows(SocketTimeoutException.class, () -> {
+        ds.peek(AFUNIXDatagramUtil.datagramWithCapacity(64));
+      });
     }
   }
 }

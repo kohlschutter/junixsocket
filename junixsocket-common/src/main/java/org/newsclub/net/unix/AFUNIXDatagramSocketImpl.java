@@ -119,8 +119,12 @@ public class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
 
   @Override
   protected void receive(DatagramPacket p) throws IOException {
+    recv(p, 0);
+  }
+
+  private void recv(DatagramPacket p, int options) throws IOException {
     FileDescriptor fdesc = state.validFdOrException();
-    NativeUnixSocket.receiveDatagram(fdesc, p, 0, ancillaryDataSupport);
+    NativeUnixSocket.receiveDatagram(fdesc, p, options, ancillaryDataSupport);
     p.setPort(0);
   }
 
@@ -137,8 +141,7 @@ public class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
 
   @Override
   protected int peekData(DatagramPacket p) throws IOException {
-    NativeUnixSocket.receiveDatagram(fd, p, NativeUnixSocket.OPT_PEEK, ancillaryDataSupport);
-    p.setPort(0);
+    recv(p, NativeUnixSocket.OPT_PEEK);
     return 0;
   }
 
@@ -200,5 +203,9 @@ public class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
 
     FileDescriptor fdesc = state.validFdOrException();
     AFUNIXSocketImpl.setOptionDefault(fdesc, optID, value, null);
+  }
+
+  AFUNIXSocketCredentials getPeerCredentials() throws IOException {
+    return NativeUnixSocket.peerCredentials(fd, new AFUNIXSocketCredentials());
   }
 }

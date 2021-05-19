@@ -49,6 +49,26 @@ public final class AFUNIXDatagramSocket extends DatagramSocket {
     throw new IllegalArgumentException("Cannot connect to InetAddress");
   }
 
+  /**
+   * Reads the next received packet without actually removing it from the queue.
+   * 
+   * In other words, once a packet is received, calling this method multiple times in a row will not
+   * have further effects on the packet contents.
+   * 
+   * This call still blocks until at least one packet has been received and added to the queue.
+   * 
+   * @param p The packet.
+   * @throws IOException on error.
+   */
+  public void peek(DatagramPacket p) throws IOException {
+    synchronized (p) {
+      if (isClosed()) {
+        throw new SocketException("Socket is closed");
+      }
+      getAFImpl().peekData(p);
+    }
+  }
+
   @Override
   public void send(DatagramPacket p) throws IOException {
     synchronized (p) {
@@ -63,7 +83,7 @@ public final class AFUNIXDatagramSocket extends DatagramSocket {
   }
 
   @Override
-  public void connect(SocketAddress addr) throws SocketException {
+  public synchronized void connect(SocketAddress addr) throws SocketException {
     if (!isBound()) {
       bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);
     }
@@ -247,5 +267,30 @@ public final class AFUNIXDatagramSocket extends DatagramSocket {
       throw new SocketException("Not connected");
     }
     ancillaryDataSupport.setOutboundFileDescriptors(fdescs);
+  }
+
+  /**
+   * Returns {@code true} if there are pending file descriptors to be sent as part of an ancillary
+   * message.
+   * 
+   * @return {@code true} if there are file descriptors pending.
+   */
+  public boolean hasOutboundFileDescriptors() {
+    return ancillaryDataSupport.hasOutboundFileDescriptors();
+  }
+
+  /**
+   * Retrieves the "peer credentials" for this connection.
+   *
+   * These credentials may be useful to authenticate the other end of the socket (client or server).
+   *
+   * @return The peer's credentials.
+   * @throws IOException If there was an error returning these credentials.
+   */
+  public AFUNIXSocketCredentials getPeerCredentials() throws IOException {
+    if (isClosed() || !isConnected()) {
+      throw new SocketException("Not connected");
+    }
+    return impl.getPeerCredentials();
   }
 }

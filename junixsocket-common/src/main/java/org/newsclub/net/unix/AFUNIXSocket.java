@@ -285,6 +285,16 @@ public final class AFUNIXSocket extends Socket {
     impl.setOutboundFileDescriptors(fdescs);
   }
 
+  /**
+   * Returns {@code true} if there are pending file descriptors to be sent as part of an ancillary
+   * message.
+   * 
+   * @return {@code true} if there are file descriptors pending.
+   */
+  public boolean hasOutboundFileDescriptors() {
+    return impl.hasOutboundFileDescriptors();
+  }
+
   private static synchronized int getCapabilities() {
     if (capabilities == null) {
       if (!isSupported()) {

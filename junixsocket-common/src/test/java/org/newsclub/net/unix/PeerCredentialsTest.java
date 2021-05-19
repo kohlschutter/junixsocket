@@ -23,10 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.DatagramPacket;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import com.kohlschutter.util.ProcessUtil;
@@ -38,8 +41,11 @@ import com.kohlschutter.util.ProcessUtil;
  */
 @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_PEER_CREDENTIALS)
 public class PeerCredentialsTest extends SocketTestBase {
+  private static AFUNIXSocketCredentials credsSockets = null;
+  private static AFUNIXSocketCredentials credsDatagramSockets = null;
+
   @Test
-  public void testSameProcess() throws Exception {
+  public void testSocketsSameProcess() throws Exception {
     assertTimeout(Duration.ofSeconds(10), () -> {
       final CompletableFuture<AFUNIXSocketCredentials> clientCredsFuture =
           new CompletableFuture<>();
@@ -61,6 +67,7 @@ public class PeerCredentialsTest extends SocketTestBase {
         try (InputStream in = socket.getInputStream()) {
           AFUNIXSocketCredentials serverCreds = socket.getPeerCredentials();
           AFUNIXSocketCredentials clientCreds = clientCredsFuture.get();
+
           sema.release();
 
           assertEquals(clientCreds, serverCreds,
@@ -84,8 +91,79 @@ public class PeerCredentialsTest extends SocketTestBase {
             assertEquals(ProcessUtil.getPid(), clientCreds.getPid(),
                 "The returned PID must be the one of our process");
           }
+
+          System.out.println(checkCredentialFeatures(clientCreds));
+          credsSockets = clientCreds;
         }
       }
     });
+  }
+
+  private static String checkCredentialFeatures(AFUNIXSocketCredentials creds) {
+    StringBuilder sb = new StringBuilder();
+    if (creds.getPid() != -1) {
+      sb.append("[pid] ");
+    } else {
+      sb.append(" pid  ");
+    }
+    if (creds.getUid() != -1) {
+      sb.append("[uid] ");
+    } else {
+      sb.append(" uid  ");
+    }
+    if (creds.getGid() != -1) {
+      sb.append("[gid] ");
+    } else {
+      sb.append(" gid  ");
+    }
+    if (creds.getGids() != null && creds.getGids().length > 0) {
+      sb.append("[additional gids] ");
+    } else {
+      sb.append(" additional gids  ");
+    }
+    if (creds.getUUID() != null) {
+      sb.append("[uuid] ");
+    } else {
+      sb.append(" uuid  ");
+    }
+    sb.setLength(sb.length() - 1);
+
+    return sb.toString();
+  }
+
+  @Test
+  public void testDatagramSocket() throws Exception {
+    AFUNIXSocketAddress ds1Addr = AFUNIXSocketAddress.of(newTempFile());
+    AFUNIXSocketAddress ds2Addr = AFUNIXSocketAddress.of(newTempFile());
+
+    try (AFUNIXDatagramSocket ds1 = AFUNIXDatagramSocket.newInstance();
+        AFUNIXDatagramSocket ds2 = AFUNIXDatagramSocket.newInstance();) {
+
+      ds1.bind(ds1Addr);
+      ds2.bind(ds2Addr);
+      ds1.connect(ds2Addr);
+      ds2.connect(ds1Addr);
+
+      DatagramPacket dp = AFUNIXDatagramUtil.datagramWithCapacityAndPayload("Hello".getBytes(
+          StandardCharsets.UTF_8));
+      ds2.send(dp);
+      dp = AFUNIXDatagramUtil.datagramWithCapacity(1024);
+      ds1.peek(dp);
+
+      AFUNIXSocketCredentials pc1 = ds1.getPeerCredentials();
+      AFUNIXSocketCredentials pc2 = ds2.getPeerCredentials();
+
+      assertEquals(pc1, pc2);
+      System.out.println(checkCredentialFeatures(pc1));
+      credsDatagramSockets = pc1;
+    }
+  }
+
+  @AfterAll
+  public static void testSameCreds() {
+    if (credsSockets != null && credsDatagramSockets != null) {
+      assertEquals(credsSockets, credsDatagramSockets,
+          "The credentials received via Socket and via DatagramSocket should be the same");
+    }
   }
 }

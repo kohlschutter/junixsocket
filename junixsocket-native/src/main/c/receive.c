@@ -54,14 +54,37 @@ ssize_t recv_wrapper(int handle, jbyte *buf, jint length, struct sockaddr_un *se
     return count;
 }
 
-ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, jbyte *control, socklen_t controlLen, struct sockaddr_un *senderBuf, socklen_t *senderBufLen, int opt, jobject ancSupp) {
+ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struct sockaddr_un *senderBuf, socklen_t *senderBufLen, int opt, jobject ancSupp) {
 #if !defined(junixsocket_have_ancillary)
     CK_ARGUMENT_POTENTIALLY_UNUSED(env);
     CK_ARGUMENT_POTENTIALLY_UNUSED(ancSupp);
-    CK_ARGUMENT_POTENTIALLY_UNUSED(control);
-    CK_ARGUMENT_POTENTIALLY_UNUSED(controlLen);
     return recv_wrapper(handle, buf, length, senderBuf, senderBufLen, opt);
 #else
+
+    socklen_t controlLen;
+    jobject ancBuf;
+    if(ancSupp == NULL) {
+        controlLen = 0;
+        ancBuf = NULL;
+    } else {
+        ancBuf = (*env)->GetObjectField(env, ancSupp, getFieldID_ancillaryReceiveBuffer());
+
+        if(ancBuf != NULL) {
+            controlLen = (socklen_t)(*env)->GetDirectBufferCapacity(env, ancBuf);
+        } else {
+            controlLen = 0;
+        }
+    }
+
+    jbyte *control;
+#if defined(junixsocket_have_ancillary)
+    control = ancBuf == NULL ? NULL : (*env)->GetDirectBufferAddress(env, ancBuf);
+#else
+    control = NULL;
+#endif
+
+
+
     if (control == NULL || controlLen == 0 || ancSupp == NULL) {
         return recv_wrapper(handle, buf, length, senderBuf, senderBufLen, opt);
     }
@@ -187,36 +210,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 
     ssize_t count;
 
-    socklen_t controlLen;
-#if !defined(junixsocket_have_ancillary)
-    ancSupp = NULL;
-    controlLen = 0;
-#else
-    jobject ancBuf;
-
-    if(ancSupp != NULL) {
-        ancBuf = (*env)->GetObjectField(env, ancSupp, getFieldID_ancillaryReceiveBuffer());
-
-        if(ancBuf != NULL) {
-            controlLen = (socklen_t)(*env)->GetDirectBufferCapacity(env, ancBuf);
-        } else {
-            controlLen = 0;
-        }
-    } else {
-        controlLen = 0;
-        ancBuf = NULL;
-    }
-#endif
-
-    int flags = 0;
-
-    jbyte *control;
-#if defined(junixsocket_have_ancillary)
-    control = ancBuf == NULL ? NULL : (*env)->GetDirectBufferAddress(env, ancBuf);
-#else
-    control = NULL;
-#endif
-    count = recvmsg_wrapper(env, handle, buf, length, control, controlLen, NULL, 0, flags, ancSupp);
+    int opt = 0;
+    count = recvmsg_wrapper(env, handle, buf, length, NULL, 0, opt, ancSupp);
 
     jint returnValue;
     if(count < 0) {

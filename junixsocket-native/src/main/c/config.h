@@ -160,6 +160,7 @@ typedef unsigned long socklen_t; /* 64-bits */
 #  define junixsocket_use_poll_for_read
 #  include <sys/ucred.h>
 #  include <sys/poll.h>
+#  include <sys/user.h>
 #  if !defined(SOL_LOCAL)
 #    define SOL_LOCAL               0
 #  endif

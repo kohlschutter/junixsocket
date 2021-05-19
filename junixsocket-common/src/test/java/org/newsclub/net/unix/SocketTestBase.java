@@ -62,23 +62,26 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     return serverAddress;
   }
 
-  static File initSocketFile() {
+  static File newTempFile() {
+    return newTempFile(null);
+  }
+
+  private static File newTempFile(String name) {
     File f;
-    String explicitFile = System.getProperty("org.newsclub.net.unix.testsocket");
-    if (explicitFile != null) {
-      f = new File(explicitFile);
-    } else {
-      try {
-        f = File.createTempFile("jutest", ".sock");
-        f.deleteOnExit(); // always delete on exit to clean-up sockets created under that name
-      } catch (IOException e) {
-        throw new IllegalStateException("Can't create temporary file", e);
-      }
+    try {
+      f = (name == null) ? File.createTempFile("jutest", ".sock") : new File(name);
+      f.deleteOnExit(); // always delete on exit to clean-up sockets created under that name
+    } catch (IOException e) {
+      throw new IllegalStateException("Can't create temporary file", e);
     }
     if (!f.delete()) {
       throw new IllegalStateException("Could not delete temporary file that we just created: " + f);
     }
     return f;
+  }
+
+  static File initSocketFile() {
+    return newTempFile(System.getProperty("org.newsclub.net.unix.testsocket"));
   }
 
   protected File getSocketFile() {

@@ -76,6 +76,9 @@ public final class AFUNIXSocketCredentials implements Serializable {
   /**
    * Returns all "gid" values (group IDs), or {@code null} if they could not be retrieved.
    * 
+   * Note that this list may be incomplete (only the primary gid may be returned), but it is
+   * guaranteed that the first one in the list is the primary gid as returned by {@link #getGid()}.
+   * 
    * @return The gids, or null.
    */
   public long[] getGids() {

@@ -18,8 +18,10 @@
 package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -28,12 +30,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.DatagramPacket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import com.kohlschutter.util.IOUtil;
 
 /**
  * Tests sending and receiving file descriptors.
@@ -50,9 +56,11 @@ public class FileDescriptorsTest extends SocketTestBase {
         @Override
         protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           socket.setOutboundFileDescriptors(FileDescriptor.out, FileDescriptor.err);
+          assertTrue(socket.hasOutboundFileDescriptors());
           try (OutputStream outputStream = socket.getOutputStream()) {
             outputStream.write("HELLO".getBytes("UTF-8"));
           }
+          assertFalse(socket.hasOutboundFileDescriptors());
 
           stopAcceptingConnections();
         }
@@ -332,5 +340,48 @@ public class FileDescriptorsTest extends SocketTestBase {
         Files.deleteIfExists(tmpFile.toPath());
       }
     });
+  }
+
+  @Test
+  public void testDatagramSocket() throws Exception {
+    AFUNIXSocketAddress ds1Addr = AFUNIXSocketAddress.of(newTempFile());
+    AFUNIXSocketAddress ds2Addr = AFUNIXSocketAddress.of(newTempFile());
+
+    try (AFUNIXDatagramSocket ds1 = AFUNIXDatagramSocket.newInstance();
+        AFUNIXDatagramSocket ds2 = AFUNIXDatagramSocket.newInstance();) {
+      ds1.setAncillaryReceiveBufferSize(1024);
+      ds2.setAncillaryReceiveBufferSize(1024);
+
+      ds1.bind(ds1Addr);
+      ds2.bind(ds2Addr);
+      ds1.connect(ds2Addr);
+      ds2.connect(ds1Addr);
+
+      File tmpOut = newTempFile();
+      FileOutputStream fos = new FileOutputStream(tmpOut);
+      ds1.setOutboundFileDescriptors(fos.getFD());
+      DatagramPacket dp = AFUNIXDatagramUtil.datagramWithCapacity(64);
+      assertTrue(ds1.hasOutboundFileDescriptors());
+      ds1.send(dp);
+      assertFalse(ds1.hasOutboundFileDescriptors());
+      ds2.receive(dp);
+      FileDescriptor[] fds = ds2.getReceivedFileDescriptors();
+      assertEquals(1, fds.length);
+
+      try (FileOutputStream fos2 = new FileOutputStream(fds[0])) {
+        fos.write("Hello".getBytes(StandardCharsets.UTF_8));
+        // closing the received file descriptor will not close the original one ...
+      }
+
+      // ... which is why we can append the data here
+      fos.write("World".getBytes(StandardCharsets.UTF_8));
+      fos.close();
+
+      try (FileInputStream fin = new FileInputStream(tmpOut)) {
+        String text = new String(IOUtil.readAllBytes(fin), StandardCharsets.UTF_8);
+        // ... and the final output will contain both parts
+        assertEquals("HelloWorld", text);
+      }
+    }
   }
 }

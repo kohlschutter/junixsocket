@@ -636,6 +636,10 @@ class AFUNIXSocketImpl extends SocketImplShim {
   final void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
     ancillaryDataSupport.setOutboundFileDescriptors(fdescs);
   }
+  
+  final boolean hasOutboundFileDescriptors() {
+    return ancillaryDataSupport.hasOutboundFileDescriptors();
+  }
 
   int getAncillaryReceiveBufferSize() {
     return ancillaryDataSupport.getAncillaryReceiveBufferSize();

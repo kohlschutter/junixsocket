@@ -38,10 +38,10 @@ class AncillaryDataSupport implements Closeable {
 
   private final List<FileDescriptor[]> receivedFileDescriptors = Collections.synchronizedList(
       new LinkedList<FileDescriptor[]>());
-  
+
   // referenced from native code
   protected ByteBuffer ancillaryReceiveBuffer = EMPTY_BUFFER;
-  
+
   // referenced from native code
   @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
   protected int[] pendingFileDescriptors = null;
@@ -125,6 +125,10 @@ class AncillaryDataSupport implements Closeable {
 
   void setOutboundFileDescriptors(int[] fds) {
     this.pendingFileDescriptors = (fds == null || fds.length == 0) ? null : fds;
+  }
+
+  boolean hasOutboundFileDescriptors() {
+    return this.pendingFileDescriptors != null;
   }
 
   void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {

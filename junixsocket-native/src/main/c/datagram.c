@@ -110,7 +110,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receiveDatagr
 #if defined(junixsocket_use_poll_for_read)
      int ret = pollWithTimeout(env, fd, pkt.handle, 0);
      if(ret < 1) {
-         return 0;
+         _throwErrnumException(env, ETIMEDOUT, NULL);
+         return -1;
      }
 #endif
 
@@ -124,7 +125,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receiveDatagr
 
      ssize_t count;
 
-     count = recvmsg_wrapper(env, pkt.handle, buf, pkt.length, NULL, 0, &senderBuf, &senderBufLen, opt, ancSupp);
+     count = recvmsg_wrapper(env, pkt.handle, buf, pkt.length, &senderBuf, &senderBufLen, opt, ancSupp);
 
      // if we receive messages from an unbound socket, the "sender" may be just a bunch of zeros.
      jboolean allZeros = true;
@@ -200,9 +201,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sendDatagram
              sendTo = malloc(sizeof(struct sockaddr_un));
              sendToLen = initSu(env, sendTo, byteArray);
              if(sendToLen == 0) {
-//                 count = -1;
-//                 _throwException(env, kExceptionSocketException, "Illegal datagram address");
-//                 goto end;
+                 count = -1;
+                 _throwException(env, kExceptionSocketException, "Illegal datagram address");
+                 goto end;
              }
          }
      }

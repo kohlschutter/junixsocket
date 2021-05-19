@@ -21,6 +21,6 @@
 
 #include "config.h"
 
-ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, jbyte *control, socklen_t controlLen, struct sockaddr_un *senderBuf, socklen_t *senderBufLen, int opt, jobject ancSupp);
+ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struct sockaddr_un *senderBuf, socklen_t *senderBufLen, int opt, jobject ancSupp);
 
 #endif /* receive_h */
