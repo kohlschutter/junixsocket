@@ -131,18 +131,14 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
     int len = p.getLength();
     FileDescriptor fdesc = state.validFdOrException();
 
-    int count;
+    ByteBuffer datagramPacketBuffer = getThreadLocalDirectByteBuffer(len);
+    len = Math.min(len, datagramPacketBuffer.capacity());
 
-    ByteBuffer datagramPacketBuffer = DATAGRAMPACKET_BUFFER_TL.get();
-    if (datagramPacketBuffer == null || len > datagramPacketBuffer.capacity()) {
-      datagramPacketBuffer = ByteBuffer.allocateDirect(len);
-      DATAGRAMPACKET_BUFFER_TL.set(datagramPacketBuffer);
-    }
     ByteBuffer socketAddressBuffer = AFUNIXSocketAddress.SOCKETADDRESS_BUFFER_TL.get();
 
-    count = NativeUnixSocket.receive(fdesc, datagramPacketBuffer, len, socketAddressBuffer, options,
-        ancillaryDataSupport);
-    if (count > len) {
+    int count = NativeUnixSocket.receive(fdesc, datagramPacketBuffer, len, socketAddressBuffer,
+        options, ancillaryDataSupport);
+    if (count > len || count < 0) {
       throw new IllegalStateException();
     }
     datagramPacketBuffer.limit(count);
@@ -153,6 +149,15 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
 
     p.setAddress(AFUNIXSocketAddress.ofInternal(socketAddressBuffer).getInetAddress());
     p.setPort(0);
+  }
+
+  private ByteBuffer getThreadLocalDirectByteBuffer(int capacity) {
+    ByteBuffer datagramPacketBuffer = DATAGRAMPACKET_BUFFER_TL.get();
+    if (datagramPacketBuffer == null || capacity > datagramPacketBuffer.capacity()) {
+      datagramPacketBuffer = ByteBuffer.allocateDirect(capacity);
+      DATAGRAMPACKET_BUFFER_TL.set(datagramPacketBuffer);
+    }
+    return datagramPacketBuffer;
   }
 
   @Override
@@ -182,7 +187,7 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
 
   @Override
   protected int peek(InetAddress i) throws IOException {
-    throw new IOException("Unsupported operation");
+    throw new SocketException("Unsupported operation");
   }
 
   @Override

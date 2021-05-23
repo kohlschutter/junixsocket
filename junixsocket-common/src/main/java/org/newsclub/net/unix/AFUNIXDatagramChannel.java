@@ -24,23 +24,28 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.SocketOption;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.MembershipKey;
+import java.util.Set;
 
 /**
  * A {@link DatagramChannel} implementation that works with AF_UNIX Unix domain sockets.
  * 
  * @author Christian Kohlschütter
  */
-public final class AFUNIXDatagramChannel extends DatagramChannelShim implements
-    AFUNIXSocketExtensions {
+public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUNIXSocketExtensions {
+
+  private final AFUNIXDatagramSocket afSocket;
+
   AFUNIXDatagramChannel(AFUNIXDatagramSocket socket) {
-    super(AFUNIXSelectorProvider.getInstance(), socket);
+    super(AFUNIXSelectorProvider.getInstance());
+    this.afSocket = socket;
   }
 
-  AFUNIXDatagramSocket getSocket() {
-    return socket;
+  AFUNIXDatagramSocket getAFSocket() {
+    return afSocket;
   }
 
   @Override
@@ -56,55 +61,55 @@ public final class AFUNIXDatagramChannel extends DatagramChannelShim implements
 
   @Override
   public DatagramChannel bind(SocketAddress local) throws IOException {
-    socket.bind(local);
+    afSocket.bind(local);
     return this;
   }
 
   @Override
   public DatagramSocket socket() {
-    return socket;
+    return afSocket;
   }
 
   @Override
   public boolean isConnected() {
-    return socket.isConnected();
+    return afSocket.isConnected();
   }
 
   @Override
   public DatagramChannel connect(SocketAddress remote) throws IOException {
-    socket.connect(remote);
+    afSocket.connect(remote);
     return this;
   }
 
   @Override
   public DatagramChannel disconnect() throws IOException {
-    socket.disconnect();
+    afSocket.disconnect();
     return this;
   }
 
   @Override
   public SocketAddress getRemoteAddress() throws IOException {
-    return socket.getRemoteSocketAddress();
+    return afSocket.getRemoteSocketAddress();
   }
 
   @Override
   public SocketAddress getLocalAddress() throws IOException {
-    return socket.getLocalSocketAddress();
+    return afSocket.getLocalSocketAddress();
   }
 
   @Override
   public SocketAddress receive(ByteBuffer dst) throws IOException {
-    return socket.getAFImpl().receive(dst);
+    return afSocket.getAFImpl().receive(dst);
   }
 
   @Override
   public int send(ByteBuffer src, SocketAddress target) throws IOException {
-    return socket.getAFImpl().send(src, target);
+    return afSocket.getAFImpl().send(src, target);
   }
 
   @Override
   public int read(ByteBuffer dst) throws IOException {
-    return socket.getAFImpl().read(dst);
+    return afSocket.getAFImpl().read(dst);
   }
 
   @Override
@@ -118,7 +123,7 @@ public final class AFUNIXDatagramChannel extends DatagramChannelShim implements
 
   @Override
   public int write(ByteBuffer src) throws IOException {
-    return socket.getAFImpl().write(src);
+    return afSocket.getAFImpl().write(src);
   }
 
   @Override
@@ -132,7 +137,7 @@ public final class AFUNIXDatagramChannel extends DatagramChannelShim implements
 
   @Override
   protected void implCloseSelectableChannel() throws IOException {
-    getSocket().close();
+    getAFSocket().close();
   }
 
   @Override
@@ -142,12 +147,12 @@ public final class AFUNIXDatagramChannel extends DatagramChannelShim implements
 
   @Override
   public FileDescriptor[] getReceivedFileDescriptors() throws IOException {
-    return socket.getReceivedFileDescriptors();
+    return afSocket.getReceivedFileDescriptors();
   }
 
   @Override
   public void clearReceivedFileDescriptors() {
-    socket.clearReceivedFileDescriptors();
+    afSocket.clearReceivedFileDescriptors();
   }
 
   @Override
@@ -155,31 +160,58 @@ public final class AFUNIXDatagramChannel extends DatagramChannelShim implements
     if (fdescs != null && fdescs.length > 0 && !isConnected()) {
       throw new SocketException("Not connected");
     }
-    socket.setOutboundFileDescriptors(fdescs);
+    afSocket.setOutboundFileDescriptors(fdescs);
   }
 
   @Override
   public boolean hasOutboundFileDescriptors() {
-    return socket.hasOutboundFileDescriptors();
+    return afSocket.hasOutboundFileDescriptors();
   }
 
   @Override
   public AFUNIXSocketCredentials getPeerCredentials() throws IOException {
-    return socket.getPeerCredentials();
+    return afSocket.getPeerCredentials();
   }
 
   @Override
   public int getAncillaryReceiveBufferSize() {
-    return socket.getAncillaryReceiveBufferSize();
+    return afSocket.getAncillaryReceiveBufferSize();
   }
 
   @Override
   public void setAncillaryReceiveBufferSize(int size) {
-    socket.setAncillaryReceiveBufferSize(size);
+    afSocket.setAncillaryReceiveBufferSize(size);
   }
 
   @Override
   public void ensureAncillaryReceiveBufferSize(int minSize) {
-    socket.ensureAncillaryReceiveBufferSize(minSize);
+    afSocket.ensureAncillaryReceiveBufferSize(minSize);
+  }
+
+  @Override
+  public <T> DatagramChannel setOption(SocketOption<T> name, T value) throws IOException {
+    Integer optionId = SocketOptionsMapper.resolve(name);
+    if (optionId == null) {
+      throw new UnsupportedOperationException("unsupported option");
+    } else {
+      afSocket.getAFImpl().setOption(optionId.intValue(), value);
+    }
+    return this;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> T getOption(SocketOption<T> name) throws IOException {
+    Integer optionId = SocketOptionsMapper.resolve(name);
+    if (optionId == null) {
+      throw new UnsupportedOperationException("unsupported option");
+    } else {
+      return (T) afSocket.getAFImpl().getOption(optionId.intValue());
+    }
+  }
+
+  @Override
+  public Set<SocketOption<?>> supportedOptions() {
+    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;
   }
 }
