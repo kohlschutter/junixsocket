@@ -17,22 +17,27 @@
  */
 package org.newsclub.net.unix;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.DatagramPacket;
 import java.net.ProtocolFamily;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.net.StandardProtocolFamily;
 import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.security.SecureRandom;
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.jupiter.api.Test;
 
@@ -72,7 +77,7 @@ public class ThroughputTest extends SocketTestBase {
   }
 
   @Test
-  public void testAFUnixSocket() throws Exception {
+  public void testJUnixSocket() throws Exception {
     assumeTrue(ENABLED > 0, "Throughput tests are disabled");
     assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
     try (ServerThread serverThread = new ServerThread() {
@@ -237,4 +242,152 @@ public class ThroughputTest extends SocketTestBase {
       }
     }
   }
+
+  @Test
+  public void testJUnixSocketDatagramPacket() throws Exception {
+    AFUNIXSocketAddress dsAddr = AFUNIXSocketAddress.of(SocketTestBase.newTempFile());
+    AFUNIXSocketAddress dcAddr = AFUNIXSocketAddress.of(SocketTestBase.newTempFile());
+    assertNotEquals(dsAddr, dcAddr);
+
+    try (AFUNIXDatagramSocket ds = AFUNIXDatagramSocket.newInstance();
+        AFUNIXDatagramSocket dc = AFUNIXDatagramSocket.newInstance()) {
+      ds.bind(dsAddr);
+      dc.bind(dcAddr);
+      dc.connect(dsAddr);
+
+      // FIXME investigate why we need to add a few more bytes (82) than the payload
+      // the receiver blocks otherwise (not exactly the struct socket_addr_un).
+      // smells like some TCP/IP overhead ... (?)
+      ds.setReceiveBufferSize(PAYLOAD_SIZE + 82);
+
+      AtomicBoolean keepRunning = new AtomicBoolean(true);
+      Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+        keepRunning.set(false);
+      }, NUM_SECONDS, TimeUnit.SECONDS);
+
+      AtomicLong readTotal = new AtomicLong();
+      long sentTotal = 0;
+
+      new Thread() {
+        final DatagramPacket dp = new DatagramPacket(new byte[PAYLOAD_SIZE], PAYLOAD_SIZE);
+
+        @Override
+        public void run() {
+          try {
+            while (!Thread.interrupted()) {
+              ds.receive(dp);
+              int read = dp.getLength();
+              if (read != PAYLOAD_SIZE) {
+                throw new IOException("Unexpected response length: " + read);
+              }
+              readTotal.addAndGet(dp.getLength());
+            }
+          } catch (SocketException e) {
+            if (keepRunning.get()) {
+              e.printStackTrace();
+            }
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+      }.start();
+
+      long time = System.currentTimeMillis();
+
+      DatagramPacket dp = new DatagramPacket(new byte[PAYLOAD_SIZE], PAYLOAD_SIZE);
+      byte[] data = dp.getData();
+      for (int i = 0; i < data.length; i++) {
+        data[i] = (byte) i;
+      }
+
+      while (keepRunning.get()) {
+        dc.send(dp);
+        sentTotal += PAYLOAD_SIZE;
+      }
+      time = System.currentTimeMillis() - time;
+      ds.close(); // terminate server
+
+      long readTotal0 = readTotal.get();
+
+      System.out.println("ThroughputTest (junixsocket DatagramPacket): " + ((1000f * readTotal0
+          / time) / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE + "; " + String
+              .format(Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0
+                  / (float) sentTotal))));
+    }
+
+  }
+
+  @SuppressWarnings("resource")
+  @Test
+  public void testJUnixSocketDatagramChannel() throws Exception {
+    AFUNIXSocketAddress dsAddr = AFUNIXSocketAddress.of(SocketTestBase.newTempFile());
+    AFUNIXSocketAddress dcAddr = AFUNIXSocketAddress.of(SocketTestBase.newTempFile());
+    assertNotEquals(dsAddr, dcAddr);
+
+    try (AFUNIXDatagramChannel ds = AFUNIXDatagramSocket.newInstance().getChannel();
+        AFUNIXDatagramChannel dc = AFUNIXDatagramSocket.newInstance().getChannel()) {
+      ds.bind(dsAddr);
+      dc.bind(dcAddr).connect(dsAddr);
+
+      // FIXME investigate why we need to add a few more bytes (82) than the payload
+      // the receiver blocks otherwise (not exactly the struct socket_addr_un).
+      // smells like some TCP/IP overhead ... (?)
+      ds.getSocket().setReceiveBufferSize(PAYLOAD_SIZE + 82);
+
+      AtomicBoolean keepRunning = new AtomicBoolean(true);
+      Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+        keepRunning.set(false);
+      }, NUM_SECONDS, TimeUnit.SECONDS);
+
+      AtomicLong readTotal = new AtomicLong();
+      long sentTotal = 0;
+
+      new Thread() {
+        @Override
+        public void run() {
+          final ByteBuffer receiveBuffer = ByteBuffer.allocateDirect(PAYLOAD_SIZE);
+          try {
+            while (!Thread.interrupted()) {
+              int read = ds.read(receiveBuffer);
+              receiveBuffer.rewind();
+              if (read != PAYLOAD_SIZE) {
+                throw new IOException("Unexpected response length: " + read);
+              }
+              readTotal.addAndGet(read);
+            }
+          } catch (SocketException e) {
+            if (keepRunning.get()) {
+              e.printStackTrace();
+            }
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+      }.start();
+
+      long time = System.currentTimeMillis();
+
+      final ByteBuffer sendBuffer = ByteBuffer.allocateDirect(PAYLOAD_SIZE);
+
+      while (keepRunning.get()) {
+        int written = dc.write(sendBuffer);
+        if (written != PAYLOAD_SIZE && written != 0) {
+          throw new IOException("Unexpected written length: " + written);
+        }
+
+        sentTotal += PAYLOAD_SIZE;
+        sendBuffer.rewind();
+      }
+      time = System.currentTimeMillis() - time;
+      ds.close(); // terminate server
+
+      long readTotal0 = readTotal.get();
+
+      System.out.println("ThroughputTest (junixsocket DatagramChannel): " + ((1000f * readTotal0
+          / time) / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE + "; " + String
+              .format(Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0
+                  / (float) sentTotal))));
+    }
+  }
+
 }

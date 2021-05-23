@@ -358,24 +358,24 @@ public class FileDescriptorsTest extends SocketTestBase {
       ds2.connect(ds1Addr);
 
       File tmpOut = newTempFile();
-      FileOutputStream fos = new FileOutputStream(tmpOut);
-      ds1.setOutboundFileDescriptors(fos.getFD());
-      DatagramPacket dp = AFUNIXDatagramUtil.datagramWithCapacity(64);
-      assertTrue(ds1.hasOutboundFileDescriptors());
-      ds1.send(dp);
-      assertFalse(ds1.hasOutboundFileDescriptors());
-      ds2.receive(dp);
-      FileDescriptor[] fds = ds2.getReceivedFileDescriptors();
-      assertEquals(1, fds.length);
+      try (FileOutputStream fos = new FileOutputStream(tmpOut)) {
+        ds1.setOutboundFileDescriptors(fos.getFD());
+        DatagramPacket dp = AFUNIXDatagramUtil.datagramWithCapacity(64);
+        assertTrue(ds1.hasOutboundFileDescriptors());
+        ds1.send(dp);
+        assertFalse(ds1.hasOutboundFileDescriptors());
+        ds2.receive(dp);
+        FileDescriptor[] fds = ds2.getReceivedFileDescriptors();
+        assertEquals(1, fds.length);
 
-      try (FileOutputStream fos2 = new FileOutputStream(fds[0])) {
-        fos.write("Hello".getBytes(StandardCharsets.UTF_8));
-        // closing the received file descriptor will not close the original one ...
+        try (FileOutputStream fos2 = new FileOutputStream(fds[0])) {
+          fos.write("Hello".getBytes(StandardCharsets.UTF_8));
+          // closing the received file descriptor will not close the original one ...
+        }
+
+        // ... which is why we can append the data here
+        fos.write("World".getBytes(StandardCharsets.UTF_8));
       }
-
-      // ... which is why we can append the data here
-      fos.write("World".getBytes(StandardCharsets.UTF_8));
-      fos.close();
 
       try (FileInputStream fin = new FileInputStream(tmpOut)) {
         String text = new String(IOUtil.readAllBytes(fin), StandardCharsets.UTF_8);

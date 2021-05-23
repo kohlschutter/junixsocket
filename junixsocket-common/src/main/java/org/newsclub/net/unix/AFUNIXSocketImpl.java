@@ -246,7 +246,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
     if (!(addr instanceof AFUNIXSocketAddress)) {
       throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
     }
-    if (addr == AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT) {
+    if (addr == AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT) { // NOPMD
       return;
     }
     AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
@@ -636,7 +636,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
   final void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
     ancillaryDataSupport.setOutboundFileDescriptors(fdescs);
   }
-  
+
   final boolean hasOutboundFileDescriptors() {
     return ancillaryDataSupport.hasOutboundFileDescriptors();
   }

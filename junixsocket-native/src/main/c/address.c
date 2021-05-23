@@ -21,6 +21,7 @@
 
 #include "exceptions.h"
 #include "filedescriptors.h"
+#include "jniutil.h"
 
 /**
  * Initializes a sockaddr_un given a byte[] address, returning the socklen,
@@ -48,12 +49,12 @@ socklen_t initSu(JNIEnv * env, struct sockaddr_un *su, jbyteArray addr) {
     (*env)->ReleaseByteArrayElements(env, addr, (jbyte*)(void*)socketFile, 0);
     socketFile = NULL;
 
-#ifdef junixsocket_have_sun_len
+#if defined(junixsocket_have_sun_len)
     su->sun_len = (unsigned char)(sizeof(*su) - sizeof(su->sun_path) + addrLen);
 #endif
 
     socklen_t suLength = (socklen_t)(addrLen + sizeof(su->sun_family)
-#ifdef junixsocket_have_sun_len
+#if defined(junixsocket_have_sun_len)
                                      + sizeof(su->sun_len)
 #endif
                                      );
@@ -71,6 +72,62 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_maxAddressLen
 {
     static struct sockaddr_un su;
     return sizeof(su.sun_path);
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    sockAddrUnLength
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrUnLength
+(JNIEnv * env CK_UNUSED, jclass clazz CK_UNUSED)
+{
+    return sizeof(struct sockaddr_un);
+}
+
+// Either we have sun_len (and we can skip the null byte), or we add the null byte at the end
+#define SUN_NAME_MAX_LEN (socklen_t)(sizeof(struct sockaddr_un) - 2)
+
+static jbyteArray sockAddrUnToBytes(JNIEnv *env, struct sockaddr_un *addr) {
+    socklen_t len;
+#if defined(junixsocket_have_sun_len)
+    len = SUN_NAME_MAX_LEN;
+    if(addr->sun_len < len) {
+        len = addr->sun_len;
+    }
+#else
+    len = SUN_NAME_MAX_LEN;
+#endif
+    int terminator = -1;
+    jboolean firstZero = (addr->sun_path[0] == 0);
+    jboolean allZeros = firstZero;
+
+    for(socklen_t i=1; i<=len; i++) {
+        char *c = addr->sun_path[i];
+        if(c == 0) {
+            if(terminator == -1) {
+                terminator = i;
+                len = i;
+            }
+        } else {
+            if(firstZero || terminator == -1) {
+                allZeros = false;
+            }
+        }
+    }
+
+    if(allZeros) {
+        len = 0;
+    }
+
+    if(len == 0) {
+        return NULL;
+    }
+
+    jbyteArray array = (*env)->NewByteArray(env, len);
+    (*env)->SetByteArrayRegion(env, array, 0, len, (jbyte*)addr->sun_path);
+
+    return array;
 }
 
 /*
@@ -103,25 +160,55 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
         return NULL;
     }
 
-    // FIXME SUN_LEN?
-    len -= 1;
-#if defined(junixsocket_have_sun_len)
-    len -= 1;
-#endif
+    return sockAddrUnToBytes(env, &addr);
+}
 
-    jboolean allZeros = true;
-    for(socklen_t i=0; i<len; i++) {
-        if(addr.sun_path[i] != 0) {
-            allZeros = false;
-            break;
-        }
-    }
-    if(allZeros) {
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    sockAddrUnToBytes
+ * Signature: (Ljava/nio/ByteBuffer;)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrUnToBytes
+(JNIEnv *env, jclass clazz CK_UNUSED, jobject directByteBuf) {
+    struct jni_direct_byte_buffer_ref directByteBufRef =
+    getDirectByteBufferRef (env, directByteBuf, sizeof(struct sockaddr_un));
+    if(directByteBufRef.size <= 0) {
+        _throwException(env, kExceptionSocketException, "Invalid byte buffer");
         return NULL;
     }
 
-    jbyteArray array = (*env)->NewByteArray(env, len);
-    (*env)->SetByteArrayRegion(env, array, 0, len, (jbyte*)addr.sun_path);
+    struct sockaddr_un *addr = (struct sockaddr_un *)directByteBufRef.buf;
+    return sockAddrUnToBytes(env, addr);
+}
 
-    return array;
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    bytesToSockAddrUn
+ * Signature: (Ljava/nio/ByteBuffer;[B)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAddrUn
+(JNIEnv *env, jclass clazz CK_UNUSED, jobject directByteBuf, jbyteArray addressBytes) {
+    struct jni_direct_byte_buffer_ref directByteBufRef =
+    getDirectByteBufferRef (env, directByteBuf, sizeof(struct sockaddr_un));
+    if(directByteBufRef.size <= 0) {
+        _throwException(env, kExceptionSocketException, "Invalid byte buffer");
+        return;
+    }
+
+    jlong len = addressBytes == NULL ? 0 : (*env)->GetArrayLength(env, addressBytes);
+    if (len > directByteBufRef.size) {
+        _throwException(env, kExceptionSocketException, "Byte array is too large");
+        return;
+    }
+
+    struct sockaddr_un *addr = (struct sockaddr_un *)directByteBufRef.buf;
+    memset(directByteBufRef.buf, 0, sizeof(struct sockaddr_un));
+    addr->sun_family = AF_UNIX;
+
+    if (len > 0) {
+#if defined(junixsocket_have_sun_len)
+        addr->sun_len = (len >= SUN_NAME_MAX_LEN) ? SUN_NAME_MAX_LEN : len + 1; // including zero byte
+#endif
+        (*env)->GetByteArrayRegion(env, addressBytes, 0, len, (signed char*)addr->sun_path);
+    }
 }

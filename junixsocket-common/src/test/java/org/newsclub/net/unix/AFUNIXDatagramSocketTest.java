@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.newsclub.net.unix.SocketTestBase.newTempFile;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -33,8 +34,6 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
-
-import static org.newsclub.net.unix.SocketTestBase.newTempFile;
 
 public class AFUNIXDatagramSocketTest {
   private static void assertUnconnectedDatagramSocket(AFUNIXDatagramSocket ds) {

@@ -20,7 +20,6 @@ package org.newsclub.net.unix;
 import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
@@ -31,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 
  * @author Christian Kohlschütter
  */
-public final class AFUNIXSocket extends Socket {
+public final class AFUNIXSocket extends Socket implements AFUNIXSocketExtensions {
   static String loadedLibrary; // set by NativeLibraryLoader
 
   private static Integer capabilities = null;
@@ -198,14 +197,7 @@ public final class AFUNIXSocket extends Socket {
     return loadedLibrary;
   }
 
-  /**
-   * Retrieves the "peer credentials" for this connection.
-   *
-   * These credentials may be useful to authenticate the other end of the socket (client or server).
-   *
-   * @return The peer's credentials.
-   * @throws IOException If there was an error returning these credentials.
-   */
+  @Override
   public AFUNIXSocketCredentials getPeerCredentials() throws IOException {
     if (isClosed() || !isConnected()) {
       throw new SocketException("Not connected");
@@ -218,66 +210,32 @@ public final class AFUNIXSocket extends Socket {
     return super.isClosed() || (isConnected() && !impl.getFD().valid());
   }
 
-  /**
-   * Returns the size of the receive buffer for ancillary messages (in bytes).
-   * 
-   * @return The size.
-   */
+  @Override
   public int getAncillaryReceiveBufferSize() {
     return impl.getAncillaryReceiveBufferSize();
   }
 
-  /**
-   * Sets the size of the receive buffer for ancillary messages (in bytes).
-   * 
-   * To disable handling ancillary messages, set it to 0 (default).
-   * 
-   * @param size The size.
-   */
+  @Override
   public void setAncillaryReceiveBufferSize(int size) {
     impl.setAncillaryReceiveBufferSize(size);
   }
 
-  /**
-   * Ensures a minimum ancillary receive buffer size.
-   * 
-   * @param minSize The minimum size (in bytes).
-   */
+  @Override
   public void ensureAncillaryReceiveBufferSize(int minSize) {
     impl.ensureAncillaryReceiveBufferSize(minSize);
   }
 
-  /**
-   * Retrieves an array of incoming {@link FileDescriptor}s that were sent as ancillary messages,
-   * along with a call to {@link InputStream#read()}, etc.
-   * 
-   * NOTE: Another call to this method will not return the same file descriptors again (most likely,
-   * {@code null} will be returned).
-   * 
-   * @return The file descriptors, or {@code null} if none were available.
-   * @throws IOException if the operation fails.
-   */
+  @Override
   public FileDescriptor[] getReceivedFileDescriptors() throws IOException {
     return impl.getReceivedFileDescriptors();
   }
 
-  /**
-   * Clears the queue of incoming {@link FileDescriptor}s that were sent as ancillary messages.
-   */
+  @Override
   public void clearReceivedFileDescriptors() {
     impl.clearReceivedFileDescriptors();
   }
 
-  /**
-   * Sets a list of {@link FileDescriptor}s that should be sent as an ancillary message along with
-   * the next write.
-   * 
-   * Important: There can only be one set of file descriptors active until the write completes. The
-   * socket also needs to be connected for this operation to succeed.
-   * 
-   * @param fdescs The file descriptors, or {@code null} if none.
-   * @throws IOException if the operation fails.
-   */
+  @Override
   public void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
     if (fdescs != null && fdescs.length > 0 && !isConnected()) {
       throw new SocketException("Not connected");
@@ -285,12 +243,7 @@ public final class AFUNIXSocket extends Socket {
     impl.setOutboundFileDescriptors(fdescs);
   }
 
-  /**
-   * Returns {@code true} if there are pending file descriptors to be sent as part of an ancillary
-   * message.
-   * 
-   * @return {@code true} if there are file descriptors pending.
-   */
+  @Override
   public boolean hasOutboundFileDescriptors() {
     return impl.hasOutboundFileDescriptors();
   }

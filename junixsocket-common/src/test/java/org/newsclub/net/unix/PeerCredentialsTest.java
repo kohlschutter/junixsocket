@@ -92,8 +92,8 @@ public class PeerCredentialsTest extends SocketTestBase {
                 "The returned PID must be the one of our process");
           }
 
-          System.out.println(checkCredentialFeatures(clientCreds));
-          credsSockets = clientCreds;
+          System.out.println(" (streams) : " + checkCredentialFeatures(clientCreds));
+          setCredsSockets(clientCreds);
         }
       }
     });
@@ -148,19 +148,28 @@ public class PeerCredentialsTest extends SocketTestBase {
           StandardCharsets.UTF_8));
       ds2.send(dp);
       dp = AFUNIXDatagramUtil.datagramWithCapacity(1024);
-      ds1.peek(dp);
 
+      ds1.receive(dp);
       AFUNIXSocketCredentials pc1 = ds1.getPeerCredentials();
+
       AFUNIXSocketCredentials pc2 = ds2.getPeerCredentials();
 
       assertEquals(pc1, pc2);
-      System.out.println(checkCredentialFeatures(pc1));
-      credsDatagramSockets = pc1;
+      System.out.println("(datagrams): " + checkCredentialFeatures(pc1));
+      setCredsDatagramSockets(pc1);
     }
   }
 
+  private static void setCredsSockets(AFUNIXSocketCredentials creds) {
+    credsSockets = creds;
+  }
+
+  private static void setCredsDatagramSockets(AFUNIXSocketCredentials creds) {
+    credsDatagramSockets = creds;
+  }
+
   @AfterAll
-  public static void testSameCreds() {
+  public static void ensureSameCreds() {
     if (credsSockets != null && credsDatagramSockets != null) {
       assertEquals(credsSockets, credsDatagramSockets,
           "The credentials received via Socket and via DatagramSocket should be the same");

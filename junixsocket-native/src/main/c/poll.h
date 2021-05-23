@@ -24,6 +24,7 @@
 #if defined(junixsocket_use_poll_for_accept) || defined(junixsocket_use_poll_for_read)
 
 jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout);
+jint pollWithMillis(int handle, uint64_t millis);
 
 #endif
 

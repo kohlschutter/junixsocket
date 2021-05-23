@@ -20,10 +20,10 @@ package org.newsclub.net.unix;
 import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 
 import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGeneratedReport;
 
@@ -112,11 +112,13 @@ final class NativeUnixSocket {
   static native int write(final FileDescriptor fd, byte[] buf, int off, int len,
       AncillaryDataSupport ancillaryDataSupport) throws IOException;
 
-  static native int receiveDatagram(final FileDescriptor fd, DatagramPacket dp, int options,
-      AncillaryDataSupport ancillaryDataSupport) throws IOException;
+  static native int receive(final FileDescriptor fd, ByteBuffer directBuffer, int length,
+      ByteBuffer directSocketAddressOut, int options, AncillaryDataSupport ancillaryDataSupport)
+      throws IOException;
 
-  static native void sendDatagram(final FileDescriptor fd, DatagramPacket dp,
-      AncillaryDataSupport ancillaryDataSupport) throws IOException;
+  static native int send(final FileDescriptor fd, ByteBuffer directBuffer, int length,
+      ByteBuffer directSocketAddress, int options, AncillaryDataSupport ancillaryDataSupport)
+      throws IOException;
 
   static native void close(final FileDescriptor fd) throws IOException;
 
@@ -146,6 +148,12 @@ final class NativeUnixSocket {
   static native void attachCloseable(FileDescriptor fdsec, Closeable closeable);
 
   static native int maxAddressLength();
+
+  static native int sockAddrUnLength();
+
+  static native byte[] sockAddrUnToBytes(ByteBuffer sockAddrDirect);
+
+  static native void bytesToSockAddrUn(ByteBuffer sockAddrDirectBuf, byte[] address);
 
   static void setPort1(AFUNIXSocketAddress addr, int port) throws SocketException {
     if (port < 0) {

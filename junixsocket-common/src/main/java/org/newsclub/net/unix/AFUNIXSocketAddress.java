@@ -25,9 +25,12 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -41,7 +44,20 @@ import java.util.Objects;
 @SuppressWarnings("PMD.ShortMethodName")
 public final class AFUNIXSocketAddress extends InetSocketAddress {
   private static final long serialVersionUID = 1L;
+
+  private static final int SOCKADDR_UN_LENGTH = NativeUnixSocket.sockAddrUnLength();
+  private static final Map<ByteBuffer, AFUNIXSocketAddress> ADDRESS_CACHE = new HashMap<>();
+
   private final byte[] bytes;
+  private InetAddress inetAddress = null; // only created on demand
+
+  static final ThreadLocal<ByteBuffer> SOCKETADDRESS_BUFFER_TL = new ThreadLocal<ByteBuffer>() {
+
+    @Override
+    protected ByteBuffer initialValue() {
+      return AFUNIXSocketAddress.newSockAddrUnDirectBuffer();
+    }
+  };
 
   /**
    * Just a marker for "don't actually bind" (checked with "=="). Used in combination with a
@@ -141,6 +157,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * file.
    * 
    * @param socketFile The socket to connect to.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(final File socketFile) throws SocketException {
@@ -153,10 +170,11 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * 
    * @param socketFile The socket to connect to.
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(final File socketFile, int port) throws SocketException {
-    return new AFUNIXSocketAddress(port, socketFile.getPath().getBytes(Charset.defaultCharset()));
+    return of(socketFile.getPath().getBytes(Charset.defaultCharset()), port);
   }
 
   /**
@@ -167,11 +185,12 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * namespace is to be used. This feature is not available on all target platforms.
    * 
    * @param socketAddress The socket address (as bytes).
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws SocketException if the operation fails.
    * @see AFUNIXSocketAddress#inAbstractNamespace(String)
    */
   public static AFUNIXSocketAddress of(final byte[] socketAddress) throws SocketException {
-    return new AFUNIXSocketAddress(0, socketAddress);
+    return of(socketAddress, 0);
   }
 
   /**
@@ -183,12 +202,39 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    *
    * @param socketAddress The socket address (as bytes).
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws SocketException if the operation fails.
    * @see AFUNIXSocketAddress#inAbstractNamespace(String,int)
    */
   public static AFUNIXSocketAddress of(final byte[] socketAddress, int port)
       throws SocketException {
-    return new AFUNIXSocketAddress(port, socketAddress);
+    AFUNIXSocketAddress instance;
+
+    if (port == -1) {
+      port = 0;
+    }
+    if (port != 0) {
+      return new AFUNIXSocketAddress(port, socketAddress);
+    }
+
+    synchronized (AFUNIXSocketAddress.class) {
+      ByteBuffer direct = SOCKETADDRESS_BUFFER_TL.get();
+      NativeUnixSocket.bytesToSockAddrUn(direct, socketAddress);
+
+      direct.rewind();
+      direct.limit(SOCKADDR_UN_LENGTH);
+
+      instance = ADDRESS_CACHE.get(direct);
+      if (instance == null) {
+        instance = new AFUNIXSocketAddress(port, socketAddress);
+
+        ByteBuffer key = newSockAddrUnKeyBuffer();
+        key.put(direct);
+        ADDRESS_CACHE.put(key, instance);
+      }
+    }
+
+    return instance;
   }
 
   /**
@@ -196,6 +242,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * path.
    * 
    * @param socketPath The socket to connect to.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(final Path socketPath) throws SocketException {
@@ -208,10 +255,11 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * 
    * @param socketPath The socket to connect to.
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(final Path socketPath, int port) throws SocketException {
-    return new AFUNIXSocketAddress(port, socketPath.toString().getBytes(Charset.defaultCharset()));
+    return of(socketPath.toString().getBytes(Charset.defaultCharset()), port);
   }
 
   /**
@@ -238,11 +286,46 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    *           specified.
    */
   public static AFUNIXSocketAddress unwrap(SocketAddress address) throws SocketException {
+    // FIXME: add support for UnixDomainSocketAddress
     Objects.requireNonNull(address);
     if (!isSupportedAddress(address)) {
       throw new SocketException("Unsupported address");
     }
     return (AFUNIXSocketAddress) address;
+  }
+
+  /**
+   * Returns the plain bytes (as returned by {@link #getBytes()}) of an AF_UNIX socket address.
+   * 
+   * @param address The address to unwrap.
+   * @return The address bytes (the length trimmed to the address's length).
+   * @throws SocketException if the operation fails, for example when an unsupported address is
+   *           specified.
+   */
+  static byte[] unwrapAddress(SocketAddress address) throws SocketException {
+    // FIXME: add support for UnixDomainSocketAddress
+    Objects.requireNonNull(address);
+    if (!isSupportedAddress(address)) {
+      throw new SocketException("Unsupported address");
+    }
+    return ((AFUNIXSocketAddress) address).getBytes();
+  }
+
+  static void unwrapAddressDirectBufferInternal(ByteBuffer socketAddressBuffer,
+      SocketAddress address) throws SocketException {
+    byte[] addr = unwrapAddress(address);
+    NativeUnixSocket.bytesToSockAddrUn(socketAddressBuffer, addr);
+  }
+
+  static AFUNIXSocketAddress ofInternal(ByteBuffer socketAddressBuffer) throws SocketException {
+    synchronized (AFUNIXSocketAddress.class) {
+      AFUNIXSocketAddress address = ADDRESS_CACHE.get(socketAddressBuffer);
+      if (address != null) {
+        return address;
+      } else {
+        return of(NativeUnixSocket.sockAddrUnToBytes(socketAddressBuffer));
+      }
+    }
   }
 
   /**
@@ -464,5 +547,20 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
     } catch (SocketException e) {
       throw new IllegalStateException(e);
     }
+  }
+
+  static ByteBuffer newSockAddrUnDirectBuffer() {
+    return ByteBuffer.allocateDirect(SOCKADDR_UN_LENGTH);
+  }
+
+  static ByteBuffer newSockAddrUnKeyBuffer() {
+    return ByteBuffer.allocate(SOCKADDR_UN_LENGTH);
+  }
+
+  synchronized InetAddress getInetAddress() {
+    if (inetAddress == null) {
+      inetAddress = AFUNIXInetAddress.wrapAddress(bytes);
+    }
+    return inetAddress;
   }
 }

@@ -23,29 +23,44 @@
 #include "filedescriptors.h"
 #include "ancillary.h"
 #include "receive.h"
+#include "jniutil.h"
 
-ssize_t send_wrapper(int handle, jbyte *buf, jint length, struct sockaddr_un *sendTo, socklen_t sendToLen) {
+static jboolean sleepForRetryWriting() {
+    usleep(1000); // 1 ms
+    return true;
+}
+
+ssize_t send_wrapper(int handle, jbyte *buf, jint length, struct sockaddr_un *sendTo, socklen_t sendToLen, int opt) {
     ssize_t count;
 
     do {
-        if (sendTo) {
+        errno = 0;
+        if (sendTo != NULL) {
             count = sendto(handle, (char*)buf, length, 0, (struct sockaddr *)sendTo, sendToLen);
         } else {
             count = send(handle, (char*)buf, length, 0);
         }
-    } while(count == -1 && socket_errno == EINTR);
+        // on macOS/BSD, send seems to not block if the send buffer is full, so we have to handle ENOBUFS
+    } while(count == -1 && (socket_errno == EINTR ||
+                            (
+                             errno == ENOBUFS
+                             && (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) == 0
+                             && sleepForRetryWriting()
+                             )
+                            ));
     return count;
 }
 
-ssize_t sendmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struct sockaddr_un *sendTo, socklen_t sendToLen, jobject ancSupp) {
+ssize_t sendmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struct sockaddr_un *sendTo, socklen_t sendToLen, int opt, jobject ancSupp) {
 #if !defined(junixsocket_have_ancillary)
     CK_ARGUMENT_POTENTIALLY_UNUSED(env);
     CK_ARGUMENT_POTENTIALLY_UNUSED(ancSupp);
-    return send_wrapper(handle, buf, length, sendTo, sendToLen);
+    return send_wrapper(handle, buf, length, sendTo, sendToLen, opt);
 #else
+
     jintArray ancFds = ancSupp == NULL ? NULL : (*env)->GetObjectField(env, ancSupp, getFieldID_pendingFileDescriptors());
     if (ancFds == NULL) {
-        return send_wrapper(handle, buf, length, sendTo, sendToLen);
+        return send_wrapper(handle, buf, length, sendTo, sendToLen, opt);
     }
 
     struct iovec iov = {.iov_base = buf, .iov_len = (size_t)length};
@@ -91,7 +106,13 @@ ssize_t sendmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
         } else {
             count = sendmsg(handle, &msg, 0);
         }
-    } while(count == -1 && socket_errno == EINTR);
+    } while(count == -1 && (socket_errno == EINTR ||
+                            (
+                             errno == ENOBUFS
+                             && (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) == 0
+                             && sleepForRetryWriting()
+                             )
+                            ));
 
     if(control) {
         free(control);
@@ -143,8 +164,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
     ssize_t count;
 
 #if defined(junixsocket_have_ancillary)
-
-    count = sendmsg_wrapper(env, handle, buf, length, NULL, 0, ancSupp);
+    count = sendmsg_wrapper(env, handle, buf, length, NULL, 0, 0, ancSupp);
 
 #else
     errno = 0;
@@ -165,4 +185,54 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
     }
 
     return (jint)count;
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    send
+ * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;ILjava/nio/ByteBuffer;ILorg/newsclub/net/unix/AncillaryDataSupport;)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_send
+(JNIEnv *env, jclass clazz CK_UNUSED, jobject fd, jobject buffer, jint length, jobject addressBuffer, jint opt, jobject ancSupp) {
+    int handle = _getFD(env, fd);
+    if (handle <= 0) {
+        _throwException(env, kExceptionSocketException, "Socket closed");
+        return 0;
+    }
+
+    struct jni_direct_byte_buffer_ref dataBufferRef =
+    getDirectByteBufferRef (env, buffer, 0);
+    if(dataBufferRef.size == -1) {
+        _throwException(env, kExceptionSocketException, "Cannot get buffer");
+        return -1;
+    } else if(dataBufferRef.buf == NULL) {
+        _throwException(env, kExceptionNullPointerException, "buffer");
+        return -1;
+    }
+    if(dataBufferRef.size < length) {
+        length = dataBufferRef.size;
+    }
+
+    struct jni_direct_byte_buffer_ref addressBufferRef =
+    getDirectByteBufferRef (env, addressBuffer, sizeof(struct sockaddr_un));
+    if(addressBufferRef.size == -1) {
+        _throwException(env, kExceptionSocketException, "Cannot get addressBuffer");
+        return -1;
+    }
+
+    struct sockaddr_un *sendTo = (struct sockaddr_un *)(addressBufferRef.buf);
+    socklen_t sendToLen = addressBufferRef.size;
+
+    int ret = sendmsg_wrapper(env, handle, dataBufferRef.buf, length, sendTo, sendToLen, opt, ancSupp);
+
+    if(ret < 0) {
+        ret = 0;
+        if(errno != EAGAIN && errno != EWOULDBLOCK && (errno != ENOBUFS || (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) == 0 )) {
+            if(!(*env)->ExceptionCheck(env)) {
+                _throwErrnumException(env, errno, fd);
+            }
+        }
+    }
+
+    return ret;
 }

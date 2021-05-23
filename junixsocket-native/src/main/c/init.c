@@ -21,7 +21,6 @@
 
 #include "exceptions.h"
 #include "ancillary.h"
-#include "datagram.h"
 #include "filedescriptors.h"
 
 /*
@@ -45,7 +44,6 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init(
 #if defined(junixsocket_have_ancillary)
     init_ancillary(env);
 #endif
-    init_datagram(env);
 }
 
 /*
@@ -64,5 +62,4 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy(
 #if defined(junixsocket_have_ancillary)
     destroy_ancillary(env);
 #endif
-    destroy_datagram(env);
 }

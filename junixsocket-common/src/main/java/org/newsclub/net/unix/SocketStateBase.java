@@ -81,6 +81,7 @@ abstract class SocketStateBase extends CleanableState {
   protected FileDescriptor validFdOrException() throws SocketException {
     FileDescriptor fdesc = validFd();
     if (fdesc == null) {
+      closed.set(true);
       throw new SocketException("Not open");
     }
     return fdesc;

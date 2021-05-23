@@ -39,6 +39,7 @@ jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
 #else
     struct timeval optVal;
 #endif
+
     socklen_t optLen = sizeof(optVal);
     int ret = getsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, WIN32_NEEDS_CHARP &optVal, &optLen);
 
@@ -62,6 +63,14 @@ jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
         millis = (uint64_t)timeout;
     }
 
+    ret = pollWithMillis(handle, millis);
+    if(ret == -1) {
+        _throwErrnumException(env, errno, NULL);
+    }
+    return ret;
+}
+
+jint pollWithMillis(int handle, uint64_t millis) {
     if(millis <= 0) {
         return 1;
     }
@@ -82,9 +91,10 @@ jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
     struct timespec timeEnd;
 
     if(clock_gettime(CLOCK_MONOTONIC, &timeEnd) == -1) {
-        _throwErrnumException(env, errno, NULL);
         return -1;
     }
+
+    int ret;
 
     while (millisRemaining > 0) {
         // FIXME: should this be in a loop to ensure the timeout condition is met?
@@ -105,6 +115,7 @@ jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
 #  else
         ret = poll(fds, 1, pollTime);
 #  endif
+
         if(ret == 1) {
             if((pfd.revents & (POLLERR | POLLHUP | POLLNVAL)) == 0) {
                 break;
@@ -115,7 +126,6 @@ jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
         }
         int errnum = socket_errno;
         if(clock_gettime(CLOCK_MONOTONIC, &timeEnd) == -1) {
-            _throwErrnumException(env, errnum, NULL);
             return -1;
         }
         int elapsed = (int)(timespecToMillis(&timeEnd) - timespecToMillis(&timeStart));
@@ -137,7 +147,6 @@ jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
             if(errnum == ETIMEDOUT) {
                 return 0;
             } else {
-                _throwErrnumException(env, errnum, fd);
                 return -1;
             }
         }
@@ -145,7 +154,6 @@ jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
 
     return 1;
 }
-
 #endif
 
 /*

@@ -19,7 +19,6 @@ package org.newsclub.net.unix;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -28,11 +27,17 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public final class AFUNIXDatagramSocket extends DatagramSocket {
+/**
+ * A {@link DatagramSocket} implementation that works with AF_UNIX Unix domain sockets.
+ * 
+ * @author Christian Kohlschütter
+ */
+public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIXSocketExtensions {
   private final AFUNIXDatagramSocketImpl impl;
   private final AncillaryDataSupport ancillaryDataSupport;
   private final AtomicBoolean created = new AtomicBoolean(false);
   private final AtomicBoolean deleteOnClose = new AtomicBoolean(true);
+  private final AFUNIXDatagramChannel channel = new AFUNIXDatagramChannel(this);
 
   private AFUNIXDatagramSocket(final AFUNIXDatagramSocketImpl impl) throws IOException {
     super(impl);
@@ -106,10 +111,13 @@ public final class AFUNIXDatagramSocket extends DatagramSocket {
   }
 
   @Override
-  public synchronized void close() {
+  public void close() {
+    // IMPORTANT This method must not be synchronized on "this",
+    // otherwise we can't unblock a pending read
     if (isClosed()) {
       return;
     }
+    getAFImpl().close();
     boolean wasBound = isBound();
     if (wasBound && deleteOnClose.get()) {
       InetAddress addr = getLocalAddress();
@@ -191,7 +199,7 @@ public final class AFUNIXDatagramSocket extends DatagramSocket {
     deleteOnClose.set(b);
   }
 
-  private AFUNIXDatagramSocketImpl getAFImpl() {
+  AFUNIXDatagramSocketImpl getAFImpl() {
     if (created.compareAndSet(false, true)) {
       try {
         getSoTimeout(); // trigger create via java.net.Socket
@@ -202,66 +210,32 @@ public final class AFUNIXDatagramSocket extends DatagramSocket {
     return impl;
   }
 
-  /**
-   * Returns the size of the receive buffer for ancillary messages (in bytes).
-   * 
-   * @return The size.
-   */
+  @Override
   public int getAncillaryReceiveBufferSize() {
     return ancillaryDataSupport.getAncillaryReceiveBufferSize();
   }
 
-  /**
-   * Sets the size of the receive buffer for ancillary messages (in bytes).
-   * 
-   * To disable handling ancillary messages, set it to 0 (default).
-   * 
-   * @param size The size.
-   */
+  @Override
   public void setAncillaryReceiveBufferSize(int size) {
     ancillaryDataSupport.setAncillaryReceiveBufferSize(size);
   }
 
-  /**
-   * Ensures a minimum ancillary receive buffer size.
-   * 
-   * @param minSize The minimum size (in bytes).
-   */
+  @Override
   public void ensureAncillaryReceiveBufferSize(int minSize) {
     ancillaryDataSupport.ensureAncillaryReceiveBufferSize(minSize);
   }
 
-  /**
-   * Retrieves an array of incoming {@link FileDescriptor}s that were sent as ancillary messages,
-   * along with a call to {@link InputStream#read()}, etc.
-   * 
-   * NOTE: Another call to this method will not return the same file descriptors again (most likely,
-   * {@code null} will be returned).
-   * 
-   * @return The file descriptors, or {@code null} if none were available.
-   * @throws IOException if the operation fails.
-   */
+  @Override
   public FileDescriptor[] getReceivedFileDescriptors() throws IOException {
     return ancillaryDataSupport.getReceivedFileDescriptors();
   }
 
-  /**
-   * Clears the queue of incoming {@link FileDescriptor}s that were sent as ancillary messages.
-   */
+  @Override
   public void clearReceivedFileDescriptors() {
     ancillaryDataSupport.clearReceivedFileDescriptors();
   }
 
-  /**
-   * Sets a list of {@link FileDescriptor}s that should be sent as an ancillary message along with
-   * the next write.
-   * 
-   * Important: There can only be one set of file descriptors active until the write completes. The
-   * socket also needs to be connected for this operation to succeed.
-   * 
-   * @param fdescs The file descriptors, or {@code null} if none.
-   * @throws IOException if the operation fails.
-   */
+  @Override
   public void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
     if (fdescs != null && fdescs.length > 0 && !isConnected()) {
       throw new SocketException("Not connected");
@@ -269,28 +243,26 @@ public final class AFUNIXDatagramSocket extends DatagramSocket {
     ancillaryDataSupport.setOutboundFileDescriptors(fdescs);
   }
 
-  /**
-   * Returns {@code true} if there are pending file descriptors to be sent as part of an ancillary
-   * message.
-   * 
-   * @return {@code true} if there are file descriptors pending.
-   */
+  @Override
   public boolean hasOutboundFileDescriptors() {
     return ancillaryDataSupport.hasOutboundFileDescriptors();
   }
 
-  /**
-   * Retrieves the "peer credentials" for this connection.
-   *
-   * These credentials may be useful to authenticate the other end of the socket (client or server).
-   *
-   * @return The peer's credentials.
-   * @throws IOException If there was an error returning these credentials.
-   */
+  @Override
   public AFUNIXSocketCredentials getPeerCredentials() throws IOException {
     if (isClosed() || !isConnected()) {
       throw new SocketException("Not connected");
     }
     return impl.getPeerCredentials();
+  }
+
+  @Override
+  public boolean isClosed() {
+    return super.isClosed() || getAFImpl().isClosed();
+  }
+
+  @Override
+  public AFUNIXDatagramChannel getChannel() {
+    return channel;
   }
 }

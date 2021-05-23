@@ -33,7 +33,6 @@ static int optToFlags(jint opt) {
     return flags;
 }
 
-
 ssize_t recv_wrapper(int handle, jbyte *buf, jint length, struct sockaddr_un *senderBuf, socklen_t *senderBufLen, int opt) {
 
     int flags = optToFlags(opt);
@@ -45,11 +44,7 @@ ssize_t recv_wrapper(int handle, jbyte *buf, jint length, struct sockaddr_un *se
         } else {
             count = recv(handle, (char*)buf, length, flags);
         }
-    } while(count == (ssize_t)-1 &&
-            (socket_errno == EINTR
-             || ((errno == EAGAIN || errno == EWOULDBLOCK) &&
-                 (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) == 0)
-             ));
+    } while(count == (ssize_t)-1 && (socket_errno == EINTR));
 
     return count;
 }
@@ -83,8 +78,6 @@ ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
     control = NULL;
 #endif
 
-
-
     if (control == NULL || controlLen == 0 || ancSupp == NULL) {
         return recv_wrapper(handle, buf, length, senderBuf, senderBufLen, opt);
     }
@@ -99,13 +92,7 @@ ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
 
     do {
         count = recvmsg(handle, &msg, flags);
-    } while(count == (ssize_t)-1 &&
-            (socket_errno == EINTR
-#if junixsocket_have_MSG_DONTWAIT
-             || ((errno == EAGAIN || errno == EWOULDBLOCK) &&
-                 (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) == 0)
-#endif
-             ));
+    } while(count == (ssize_t)-1 && (socket_errno == EINTR));
 
     if (senderBufLen != 0) {
         *senderBufLen = msg.msg_namelen;
@@ -232,4 +219,60 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 
     free(buf);
     return returnValue;
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    receive
+ * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;ILjava/nio/ByteBuffer;ILorg/newsclub/net/unix/AncillaryDataSupport;)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
+(JNIEnv *env, jclass clazz CK_UNUSED, jobject fd, jobject buffer, jint length, jobject addressBuffer, jint opt, jobject ancSupp) {
+
+    int handle = _getFD(env, fd);
+    if (handle <= 0) {
+        _throwException(env, kExceptionSocketException, "Socket closed");
+        return -1;
+    }
+
+    struct jni_direct_byte_buffer_ref dataBufferRef =
+    getDirectByteBufferRef (env, buffer, 0);
+    if(dataBufferRef.size == -1) {
+        _throwException(env, kExceptionSocketException, "Cannot get buffer");
+        return -1;
+    } else if(dataBufferRef.buf == NULL) {
+        _throwException(env, kExceptionNullPointerException, "buffer");
+        return -1;
+    }
+    if(dataBufferRef.size < length) {
+        length = dataBufferRef.size;
+    }
+
+
+    struct jni_direct_byte_buffer_ref addressBufferRef =
+    getDirectByteBufferRef (env, addressBuffer, sizeof(struct sockaddr_un));
+    if(addressBufferRef.size == -1) {
+        _throwException(env, kExceptionSocketException, "Cannot get addressBuffer");
+        return -1;
+    }
+
+    struct sockaddr_un *senderBuf = (struct sockaddr_un *)addressBufferRef.buf;
+    socklen_t senderBufLen = addressBufferRef.size;
+
+    ssize_t count = recvmsg_wrapper(env, handle, dataBufferRef.buf, length, senderBuf, &senderBufLen, opt, ancSupp);
+
+    // NOTE: if we receive messages from an unbound socket, the "sender" may be just a bunch of zeros.
+
+    if(count < 0) {
+        // read(2) returns -1 on error. Java throws an Exception.
+        count = -1;
+        if(!(*env)->ExceptionCheck(env)) {
+            _throwErrnumException(env, errno, fd);
+        }
+        goto end;
+    }
+
+end:
+
+    return count;
 }
