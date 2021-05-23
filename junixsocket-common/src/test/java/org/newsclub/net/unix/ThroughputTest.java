@@ -28,6 +28,7 @@ import java.net.ProtocolFamily;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.StandardProtocolFamily;
+import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
@@ -332,7 +333,7 @@ public class ThroughputTest extends SocketTestBase {
       // FIXME investigate why we need to add a few more bytes (82) than the payload
       // the receiver blocks otherwise (not exactly the struct socket_addr_un).
       // smells like some TCP/IP overhead ... (?)
-      ds.getSocket().setReceiveBufferSize(PAYLOAD_SIZE + 82);
+      ds.setOption(StandardSocketOptions.SO_RCVBUF, (PAYLOAD_SIZE + 82));
 
       AtomicBoolean keepRunning = new AtomicBoolean(true);
       Executors.newSingleThreadScheduledExecutor().schedule(() -> {

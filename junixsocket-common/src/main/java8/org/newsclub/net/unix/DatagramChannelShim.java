@@ -16,21 +16,27 @@ abstract class DatagramChannelShim extends DatagramChannel {
   }
 
   @Override
-  public <T> T getOption(SocketOption<T> name) throws IOException {
-//    return socket.getOption(name);
-    return null;
+  public <T> DatagramChannel setOption(SocketOption<T> name, T value) throws IOException {
+    Integer optionId = SocketOptionsMapper.resolve(name);
+    if (optionId != null) {
+      socket.getAFImpl().setOption(optionId.intValue(), value);
+    }
+    return this;
   }
 
-  @SuppressWarnings("resource")
+  @SuppressWarnings("unchecked")
   @Override
-  public <T> DatagramChannel setOption(SocketOption<T> name, T value) throws IOException {
-//    socket.setOption(name, value);
-    return this;
+  public <T> T getOption(SocketOption<T> name) throws IOException {
+    Integer optionId = SocketOptionsMapper.resolve(name);
+    if (optionId == null) {
+      return null;
+    } else {
+      return (T) socket.getAFImpl().getOption(optionId.intValue());
+    }
   }
 
   @Override
   public Set<SocketOption<?>> supportedOptions() {
-//    return socket.supportedOptions();
-    return null;
+    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;
   }
 }

@@ -31,7 +31,6 @@ final class AFUNIXSelectorProvider extends SelectorProvider {
 
   private AFUNIXSelectorProvider() {
     super();
-    // TODO Auto-generated constructor stub
   }
 
   public static AFUNIXSelectorProvider getInstance() {

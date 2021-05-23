@@ -20,11 +20,6 @@ package org.newsclub.net.unix;
 import java.io.IOException;
 import java.net.SocketImpl;
 import java.net.SocketOption;
-import java.net.StandardSocketOptions;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,44 +28,6 @@ import java.util.Set;
  * @author Christian Kohlschütter
  */
 abstract class SocketImplShim extends SocketImpl {
-  private static final Map<SocketOption<?>, SocketOptionAccess<?>> SOCKET_OPTIONS = new HashMap<>();
-  private static final Set<SocketOption<?>> SUPPORTED_SOCKET_OPTIONS;
-
-  static {
-    // Interesting fact of the day:
-    //
-    // The old int-optID API expects SocketException to be thrown for unknown values,
-    // and the new Java 9+ SocketOption API expects UnsupportedOperationException to be
-    // thrown.
-    //
-    // However, at least up to Java 11, the new API calls the old API under the hood
-    // (see SocketImpl), so in reality, SocketException is thrown then.
-    //
-    // In Java 15 (?), they refactored the class, and the automatic mapping no longer occurs
-    // for custom socket implementations, which means we have to roll our own mapping.
-    //
-    // As you see below, unlike Java 11's SocketImpl, our getOption/setOption implementation
-    // is not a series of chained if-statements. Instead, we have a central place where
-    // the mapping is defined using generics, maps and some Java boilerplate. I don't think
-    // it's necessarily faster but since we now have a single, central place where these mappings
-    // are defined, it feels cleaner and better to not repeat yourself.
-
-    registerSocketOption(StandardSocketOptions.SO_KEEPALIVE, SO_KEEPALIVE, true);
-    registerSocketOption(StandardSocketOptions.SO_SNDBUF, SO_SNDBUF, true);
-    registerSocketOption(StandardSocketOptions.SO_RCVBUF, SO_RCVBUF, true);
-    registerSocketOption(StandardSocketOptions.SO_REUSEADDR, SO_REUSEADDR, true);
-    registerSocketOption(StandardSocketOptions.SO_LINGER, SO_LINGER, true);
-    registerSocketOption(StandardSocketOptions.IP_TOS, IP_TOS, false);
-    registerSocketOption(StandardSocketOptions.TCP_NODELAY, TCP_NODELAY, false);
-
-    Set<SocketOption<?>> supportedOptions = new HashSet<>();
-    SOCKET_OPTIONS.forEach((opt, access) -> {
-      if (access.isSupported()) {
-        supportedOptions.add(opt);
-      }
-    });
-    SUPPORTED_SOCKET_OPTIONS = Collections.unmodifiableSet(supportedOptions);
-  }
 
   protected SocketImplShim() {
     super();
@@ -78,57 +35,27 @@ abstract class SocketImplShim extends SocketImpl {
 
   @Override
   protected <T> void setOption(SocketOption<T> name, T value) throws IOException {
-    @SuppressWarnings("unchecked")
-    SocketOptionAccess<T> access = (SocketOptionAccess<T>) SOCKET_OPTIONS.get(name);
-    if (access == null) {
+    Integer optionId = SocketOptionsMapper.resolve(name);
+    if (optionId == null) {
       super.setOption(name, value);
     } else {
-      access.setOption(this, value);
+      setOption(optionId, value);
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   protected <T> T getOption(SocketOption<T> name) throws IOException {
-    @SuppressWarnings("unchecked")
-    SocketOptionAccess<T> access = (SocketOptionAccess<T>) SOCKET_OPTIONS.get(name);
-    if (access == null) {
+    Integer optionId = SocketOptionsMapper.resolve(name);
+    if (optionId == null) {
       return super.getOption(name);
     } else {
-      return access.getOption(this);
+      return (T) getOption(optionId);
     }
   }
 
   @Override
   protected Set<SocketOption<?>> supportedOptions() {
-    return SUPPORTED_SOCKET_OPTIONS;
-  }
-
-  private static <T> void registerSocketOption(SocketOption<T> option, int socketOptionsId,
-      boolean supported) {
-    SOCKET_OPTIONS.put(option, new SocketOptionAccess<T>() {
-      @SuppressWarnings("unchecked")
-      @Override
-      public T getOption(SocketImplShim impl) throws IOException {
-        return (T) impl.getOption(socketOptionsId);
-      }
-
-      @Override
-      public void setOption(SocketImplShim impl, T val) throws IOException {
-        impl.setOption(socketOptionsId, val);
-      }
-
-      @Override
-      public boolean isSupported() {
-        return supported;
-      }
-    });
-  }
-
-  private interface SocketOptionAccess<T> {
-    T getOption(SocketImplShim impl) throws IOException;
-
-    void setOption(SocketImplShim impl, T val) throws IOException;
-
-    boolean isSupported();
+    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;
   }
 }
