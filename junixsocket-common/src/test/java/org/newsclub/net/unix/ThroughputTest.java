@@ -315,12 +315,20 @@ public class ThroughputTest extends SocketTestBase {
               .format(Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0
                   / (float) sentTotal))));
     }
+  }
 
+  @Test
+  public void testJUnixSocketDatagramChannel() throws Exception {
+    testJUnixSocketDatagramChannel(false);
+  }
+
+  @Test
+  public void testJUnixSocketDatagramChannelDirect() throws Exception {
+    testJUnixSocketDatagramChannel(true);
   }
 
   @SuppressWarnings("resource")
-  @Test
-  public void testJUnixSocketDatagramChannel() throws Exception {
+  private void testJUnixSocketDatagramChannel(boolean direct) throws Exception {
     AFUNIXSocketAddress dsAddr = AFUNIXSocketAddress.of(SocketTestBase.newTempFile());
     AFUNIXSocketAddress dcAddr = AFUNIXSocketAddress.of(SocketTestBase.newTempFile());
     assertNotEquals(dsAddr, dcAddr);
@@ -346,7 +354,8 @@ public class ThroughputTest extends SocketTestBase {
       new Thread() {
         @Override
         public void run() {
-          final ByteBuffer receiveBuffer = ByteBuffer.allocateDirect(PAYLOAD_SIZE);
+          final ByteBuffer receiveBuffer = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE)
+              : ByteBuffer.allocate(PAYLOAD_SIZE);
           try {
             while (!Thread.interrupted()) {
               int read = ds.read(receiveBuffer);
@@ -368,7 +377,8 @@ public class ThroughputTest extends SocketTestBase {
 
       long time = System.currentTimeMillis();
 
-      final ByteBuffer sendBuffer = ByteBuffer.allocateDirect(PAYLOAD_SIZE);
+      final ByteBuffer sendBuffer = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE) : ByteBuffer
+          .allocate(PAYLOAD_SIZE);
 
       while (keepRunning.get()) {
         int written = dc.write(sendBuffer);
@@ -384,10 +394,10 @@ public class ThroughputTest extends SocketTestBase {
 
       long readTotal0 = readTotal.get();
 
-      System.out.println("ThroughputTest (junixsocket DatagramChannel): " + ((1000f * readTotal0
-          / time) / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE + "; " + String
-              .format(Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0
-                  / (float) sentTotal))));
+      System.out.println("ThroughputTest (junixsocket DatagramChannel direct=" + direct + "): "
+          + ((1000f * readTotal0 / time) / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE
+          + "; " + String.format(Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0
+              / (float) sentTotal))));
     }
   }
 
