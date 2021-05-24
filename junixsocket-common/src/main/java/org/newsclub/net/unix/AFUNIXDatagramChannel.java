@@ -109,7 +109,7 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
 
   @Override
   public int read(ByteBuffer dst) throws IOException {
-    return afSocket.getAFImpl().read(dst);
+    return afSocket.getAFImpl().read(dst, null);
   }
 
   @Override

@@ -33,6 +33,9 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
   private static final ThreadLocal<ByteBuffer> DATAGRAMPACKET_BUFFER_TL =
       new ThreadLocal<ByteBuffer>();
 
+  private static final int DATAGRAMPACKET_BUFFER_MIN_CAPACITY = 8192;
+  private static final int DATAGRAMPACKET_BUFFER_MAX_CAPACITY = 1 * 1024 * 1024;
+
   private final DatagramSocketState state;
   final AncillaryDataSupport ancillaryDataSupport = new AncillaryDataSupport();
 
@@ -152,11 +155,17 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
   }
 
   private ByteBuffer getThreadLocalDirectByteBuffer(int capacity) {
+    if (capacity > DATAGRAMPACKET_BUFFER_MAX_CAPACITY) {
+      capacity = DATAGRAMPACKET_BUFFER_MAX_CAPACITY;
+    } else if (capacity < DATAGRAMPACKET_BUFFER_MIN_CAPACITY) {
+      capacity = DATAGRAMPACKET_BUFFER_MIN_CAPACITY;
+    }
     ByteBuffer datagramPacketBuffer = DATAGRAMPACKET_BUFFER_TL.get();
     if (datagramPacketBuffer == null || capacity > datagramPacketBuffer.capacity()) {
       datagramPacketBuffer = ByteBuffer.allocateDirect(capacity);
       DATAGRAMPACKET_BUFFER_TL.set(datagramPacketBuffer);
     }
+    datagramPacketBuffer.clear();
     return datagramPacketBuffer;
   }
 
@@ -261,26 +270,41 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
   }
 
   SocketAddress receive(ByteBuffer dst) throws IOException {
-    int options = 0;
-    FileDescriptor fdesc = state.validFdOrException();
     ByteBuffer socketAddressBuffer = AFUNIXSocketAddress.SOCKETADDRESS_BUFFER_TL.get();
-    NativeUnixSocket.receive(fdesc, dst, dst.remaining(), socketAddressBuffer, options,
-        ancillaryDataSupport);
-    return AFUNIXSocketAddress.ofInternal(socketAddressBuffer);
+    int read = read(dst, socketAddressBuffer);
+    if (read > 0) {
+      return AFUNIXSocketAddress.ofInternal(socketAddressBuffer);
+    } else {
+      return null;
+    }
   }
 
-  public int read(ByteBuffer dst) throws IOException {
+  int read(ByteBuffer dst, ByteBuffer socketAddressBuffer) throws IOException {
     int remaining = dst.remaining();
     if (remaining == 0) {
       return 0;
     }
     int options = 0;
     FileDescriptor fdesc = state.validFdOrException();
-    int pos = dst.position();
-    int count = NativeUnixSocket.receive(fdesc, dst, remaining, null, options,
+
+    ByteBuffer buf;
+    if (dst.isDirect()) {
+      buf = dst;
+    } else {
+      buf = getThreadLocalDirectByteBuffer(remaining);
+      remaining = buf.remaining();
+    }
+
+    int count = NativeUnixSocket.receive(fdesc, buf, remaining, socketAddressBuffer, options,
         ancillaryDataSupport);
-    if (count >= 0) {
-      dst.position(pos + count);
+    if (buf != dst) { // NOPMD
+      dst.limit(count);
+      buf.put(dst);
+    } else {
+      if (count < 0) {
+        throw new IllegalStateException();
+      }
+      dst.position(dst.position() + count);
     }
     return count;
   }
@@ -299,10 +323,23 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
     // and don't retry (which would slow things down quite a bit)
     final int options = NativeUnixSocket.OPT_NON_BLOCKING;
 
-    int written = NativeUnixSocket.send(fdesc, src, src.remaining(), addressTo, options,
+    int remaining = src.remaining();
+
+    int pos = src.position();
+    ByteBuffer buf;
+    if (src.isDirect()) {
+      buf = src;
+    } else {
+      buf = getThreadLocalDirectByteBuffer(remaining);
+      remaining = buf.remaining();
+      buf.put(src);
+      buf.position(0);
+    }
+
+    int written = NativeUnixSocket.send(fdesc, buf, remaining, addressTo, options,
         ancillaryDataSupport);
     if (written > 0) {
-      src.position(src.position() + written);
+      src.position(pos + written);
     }
 
     return written;
