@@ -92,43 +92,40 @@ public class PeerCredentialsTest extends SocketTestBase {
                 "The returned PID must be the one of our process");
           }
 
-          System.out.println(" (streams) : " + checkCredentialFeatures(clientCreds));
           setCredsSockets(clientCreds);
         }
       }
     });
   }
 
-  private static String checkCredentialFeatures(AFUNIXSocketCredentials creds) {
-    StringBuilder sb = new StringBuilder();
-    if (creds.getPid() != -1) {
-      sb.append("[pid] ");
-    } else {
-      sb.append(" pid  ");
-    }
-    if (creds.getUid() != -1) {
-      sb.append("[uid] ");
-    } else {
-      sb.append(" uid  ");
-    }
-    if (creds.getGid() != -1) {
-      sb.append("[gid] ");
-    } else {
-      sb.append(" gid  ");
-    }
-    if (creds.getGids() != null && creds.getGids().length > 0) {
-      sb.append("[additional gids] ");
-    } else {
-      sb.append(" additional gids  ");
-    }
-    if (creds.getUUID() != null) {
-      sb.append("[uuid] ");
-    } else {
-      sb.append(" uuid  ");
-    }
-    sb.setLength(sb.length() - 1);
+  private static void checkCredentialFeatures(StringBuilder sbYes, StringBuilder sbNo, String key,
+      boolean supported) {
+    ((supported) ? sbYes : sbNo).append(' ').append(key);
+  }
 
-    return sb.toString();
+  private static void checkCredentialFeatures(AFUNIXSocketCredentials creds) {
+    StringBuilder sbYes = new StringBuilder(32);
+    StringBuilder sbNo = new StringBuilder(32);
+
+    checkCredentialFeatures(sbYes, sbNo, "pid", (creds.getPid() != -1));
+    checkCredentialFeatures(sbYes, sbNo, "uid", (creds.getUid() != -1));
+    checkCredentialFeatures(sbYes, sbNo, "gid", (creds.getGid() != -1));
+    checkCredentialFeatures(sbYes, sbNo, "additional_gids", (creds.getGids() != null && creds
+        .getGids().length > 0));
+    checkCredentialFeatures(sbYes, sbNo, "uuid", (creds.getUUID() != null));
+
+    System.out.print("Supported credentials:  ");
+    if (sbYes.length() == 0) {
+      System.out.println(" (none)");
+    } else {
+      System.out.println(sbYes);
+    }
+    System.out.print("Unsupported credentials:");
+    if (sbNo.length() == 0) {
+      System.out.println(" (none)");
+    } else {
+      System.out.println(sbNo);
+    }
   }
 
   @Test
@@ -155,7 +152,6 @@ public class PeerCredentialsTest extends SocketTestBase {
       AFUNIXSocketCredentials pc2 = ds2.getPeerCredentials();
 
       assertEquals(pc1, pc2);
-      System.out.println("(datagrams): " + checkCredentialFeatures(pc1));
       setCredsDatagramSockets(pc1);
     }
   }
@@ -173,6 +169,7 @@ public class PeerCredentialsTest extends SocketTestBase {
     if (credsSockets != null && credsDatagramSockets != null) {
       assertEquals(credsSockets, credsDatagramSockets,
           "The credentials received via Socket and via DatagramSocket should be the same");
+      checkCredentialFeatures(credsSockets);
     }
   }
 }
