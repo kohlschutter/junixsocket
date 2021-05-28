@@ -90,7 +90,7 @@ public class ServerSocketCloseTest {
         serverSocket.close();
 
         threadPool.shutdown();
-        threadPool.awaitTermination(1, TimeUnit.SECONDS);
+        threadPool.awaitTermination(5, TimeUnit.SECONDS);
 
         assertEquals(0, threadPool.getActiveCount(), "There should be no pending accepts");
       }

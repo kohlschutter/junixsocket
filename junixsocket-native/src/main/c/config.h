@@ -166,13 +166,11 @@ typedef unsigned long socklen_t; /* 64-bits */
 #  endif
 #endif
 
-#if defined(junixsocket_use_poll_for_accept) || defined(junixsocket_use_poll_for_read)
-#  if !defined(_WIN32)
-#    include <poll.h>
-#  endif
-#  include <limits.h>
-#  include <time.h>
+#if !defined(_WIN32)
+#  include <poll.h>
 #endif
+#include <limits.h>
+#include <time.h>
 
 #if defined(LOCAL_PEEREUUID)
 #  include <uuid/uuid.h>

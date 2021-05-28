@@ -120,8 +120,9 @@ public class AFUNIXDatagramSocketTest {
       dp2.setAddress(ds1Addr.wrapAddress());
       ds2.send(dp2);
 
-      dp1.setLength(0); // setting this before "receive" doesn't matter
+      dp1.setLength(100); // maximum package length
       ds1.receive(dp1);
+      assertEquals(12, dp1.getLength());
       assertEquals(ds2Addr.wrapAddress(), dp1.getAddress());
 
       ds1.close();

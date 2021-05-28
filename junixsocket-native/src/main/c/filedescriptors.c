@@ -163,3 +163,44 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shutdown
         return;
     }
 }
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    configureBlocking
+ * Signature: (Ljava/io/FileDescriptor;Z)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_configureBlocking
+ (JNIEnv *env, jclass clazz CK_UNUSED, jobject fd, jboolean blocking) {
+     int handle = _getFD(env, fd);
+#if defined(_WIN32)
+     u_long mode = blocking ? 0 : 1;
+     if(ioctlsocket(handle, FIONBIO, &mode) != NO_ERROR) {
+         _throwErrnumException(env, socket_errno, NULL);
+     }
+#else
+     int flags = fcntl(handle, F_GETFL);
+     if(flags == -1) {
+         _throwErrnumException(env, socket_errno, NULL);
+         return;
+     }
+
+     int ret = fcntl(handle, F_SETFL, blocking ? flags &~ O_NONBLOCK :  flags | O_NONBLOCK);
+     if(ret == -1) {
+         _throwErrnumException(env, socket_errno, NULL);
+     }
+#endif
+ }
+
+jboolean checkNonBlocking(int handle, int errnum) {
+#if defined(_WIN32)
+    CK_ARGUMENT_POTENTIALLY_UNUSED(handle);
+    return errnum == WSAEWOULDBLOCK;
+#else
+    if (errnum == EAGAIN) {
+        int flags = fcntl(handle, F_GETFL);
+        return (flags != -1 && (flags & O_NONBLOCK));
+    } else {
+        return false;
+    }
+#endif
+}

@@ -41,6 +41,7 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSocketExtensions
   private final AFUNIXSocketFactory socketFactory;
   private final Closeables closeables = new Closeables();
   private final AtomicBoolean created = new AtomicBoolean(false);
+  private final AFUNIXSocketChannel channel = new AFUNIXSocketChannel(this);
 
   private AFUNIXSocket(final AFUNIXSocketImpl impl, AFUNIXSocketFactory factory)
       throws SocketException {
@@ -128,6 +129,10 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSocketExtensions
 
   @Override
   public void connect(SocketAddress endpoint, int timeout) throws IOException {
+    connect0(endpoint, timeout);
+  }
+
+  boolean connect0(SocketAddress endpoint, int timeout) throws IOException {
     if (endpoint == null) {
       throw new IllegalArgumentException("connect: The address can't be null");
     }
@@ -141,12 +146,21 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSocketExtensions
     endpoint = AFUNIXSocketAddress.preprocessSocketAddress(endpoint, socketFactory);
 
     if (!isBound()) {
-      super.bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);
+      internalDummyBind();
     }
-    super.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT, timeout);
 
-    getAFImpl().connect(endpoint, timeout);
+    boolean success = getAFImpl().connect0(endpoint, timeout);
+    internalDummyConnect();
     this.addr = (AFUNIXSocketAddress) endpoint;
+    return success;
+  }
+
+  void internalDummyConnect() throws IOException {
+    super.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT, 0);
+  }
+
+  void internalDummyBind() throws IOException {
+    super.bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);
   }
 
   @Override
@@ -329,4 +343,10 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSocketExtensions
     }
     return impl;
   }
+
+  @Override
+  public AFUNIXSocketChannel getChannel() {
+    return channel;
+  }
+
 }

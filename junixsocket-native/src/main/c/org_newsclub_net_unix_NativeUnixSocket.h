@@ -19,6 +19,8 @@ extern "C" {
 #define org_newsclub_net_unix_NativeUnixSocket_OPT_PEEK 2L
 #undef org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING
 #define org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING 4L
+#undef org_newsclub_net_unix_NativeUnixSocket_OPT_NON_SOCKET
+#define org_newsclub_net_unix_NativeUnixSocket_OPT_NON_SOCKET 8L
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    init
@@ -70,17 +72,17 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    accept
- * Signature: ([BLjava/io/FileDescriptor;Ljava/io/FileDescriptor;JI)V
+ * Signature: ([BLjava/io/FileDescriptor;Ljava/io/FileDescriptor;JI)Z
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
   (JNIEnv *, jclass, jbyteArray, jobject, jobject, jlong, jint);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    connect
- * Signature: ([BLjava/io/FileDescriptor;J)V
+ * Signature: ([BLjava/io/FileDescriptor;J)Z
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
   (JNIEnv *, jclass, jbyteArray, jobject, jlong);
 
 /*
@@ -110,18 +112,18 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    receive
- * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;ILjava/nio/ByteBuffer;ILorg/newsclub/net/unix/AncillaryDataSupport;)I
+ * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;IILjava/nio/ByteBuffer;ILorg/newsclub/net/unix/AncillaryDataSupport;)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
-  (JNIEnv *, jclass, jobject, jobject, jint, jobject, jint, jobject);
+  (JNIEnv *, jclass, jobject, jobject, jint, jint, jobject, jint, jobject);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    send
- * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;ILjava/nio/ByteBuffer;ILorg/newsclub/net/unix/AncillaryDataSupport;)I
+ * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;IILjava/nio/ByteBuffer;ILorg/newsclub/net/unix/AncillaryDataSupport;)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_send
-  (JNIEnv *, jclass, jobject, jobject, jint, jobject, jint, jobject);
+  (JNIEnv *, jclass, jobject, jobject, jint, jint, jobject, jint, jobject);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -258,6 +260,38 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAd
  */
 JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_currentRMISocket
   (JNIEnv *, jclass);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    initPipe
+ * Signature: (Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initPipe
+  (JNIEnv *, jclass, jobject, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    poll
+ * Signature: (Lorg/newsclub/net/unix/AFUNIXSelector/PollFd;I)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
+  (JNIEnv *, jclass, jobject, jint);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    configureBlocking
+ * Signature: (Ljava/io/FileDescriptor;Z)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_configureBlocking
+  (JNIEnv *, jclass, jobject, jboolean);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    socketPair
+ * Signature: (ILjava/io/FileDescriptor;Ljava/io/FileDescriptor;)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
+  (JNIEnv *, jclass, jint, jobject, jobject);
 
 #ifdef __cplusplus
 }

@@ -188,18 +188,18 @@
 		430234602650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
 		430234612650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
 		430234622650AB4E00823167 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
-		430234632650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
-		430234642650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
-		430234652650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
-		430234662650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
-		430234672650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
-		430234682650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
-		430234692650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
-		4302346A2650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
-		4302346B2650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
-		4302346C2650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
-		4302346D2650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
-		4302346E2650AB4E00823167 /* poll.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* poll.h */; };
+		430234632650AB4E00823167 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		430234642650AB4E00823167 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		430234652650AB4E00823167 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		430234662650AB4E00823167 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		430234672650AB4E00823167 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		430234682650AB4E00823167 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		430234692650AB4E00823167 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		4302346A2650AB4E00823167 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		4302346B2650AB4E00823167 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		4302346C2650AB4E00823167 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		4302346D2650AB4E00823167 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		4302346E2650AB4E00823167 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
 		4302346F2650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
 		430234702650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
 		430234712650AB4E00823167 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
@@ -440,18 +440,18 @@
 		430235742650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
 		430235752650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
 		430235762650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
-		430235772650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
-		430235782650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
-		430235792650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
-		4302357A2650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
-		4302357B2650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
-		4302357C2650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
-		4302357D2650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
-		4302357E2650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
-		4302357F2650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
-		430235802650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
-		430235812650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
-		430235822650AB4F00823167 /* poll.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* poll.c */; };
+		430235772650AB4F00823167 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		430235782650AB4F00823167 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		430235792650AB4F00823167 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		4302357A2650AB4F00823167 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		4302357B2650AB4F00823167 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		4302357C2650AB4F00823167 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		4302357D2650AB4F00823167 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		4302357E2650AB4F00823167 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		4302357F2650AB4F00823167 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		430235802650AB4F00823167 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		430235812650AB4F00823167 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		430235822650AB4F00823167 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
 		430235832650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
 		430235842650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
 		430235852650AB4F00823167 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
@@ -536,6 +536,54 @@
 		430235D72650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
 		430235D82650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
 		430235D92650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		43B3DF83265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43B3DF84265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43B3DF85265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43B3DF86265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43B3DF87265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43B3DF88265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43B3DF89265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43B3DF8A265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43B3DF8B265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43B3DF8C265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43B3DF8D265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43B3DF8E265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43B3DF8F265EEC930024822F /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43B3DF90265EEC930024822F /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43B3DF91265EEC930024822F /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43B3DF92265EEC930024822F /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43B3DF93265EEC930024822F /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43B3DF94265EEC930024822F /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43B3DF95265EEC930024822F /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43B3DF96265EEC930024822F /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43B3DF97265EEC930024822F /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43B3DF98265EEC930024822F /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43B3DF99265EEC930024822F /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43B3DF9A265EEC930024822F /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43B3DFB7266082000024822F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43B3DFB8266082000024822F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43B3DFB9266082000024822F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43B3DFBA266082000024822F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43B3DFBB266082000024822F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43B3DFBC266082000024822F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43B3DFBD266082000024822F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43B3DFBE266082000024822F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43B3DFBF266082000024822F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43B3DFC0266082000024822F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43B3DFC1266082000024822F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43B3DFC2266082000024822F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43B3DFC3266082000024822F /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		43B3DFC4266082000024822F /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		43B3DFC5266082000024822F /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		43B3DFC6266082000024822F /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		43B3DFC7266082000024822F /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		43B3DFC8266082000024822F /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		43B3DFC9266082000024822F /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		43B3DFCA266082000024822F /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		43B3DFCB266082000024822F /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		43B3DFCC266082000024822F /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		43B3DFCD266082000024822F /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		43B3DFCE266082000024822F /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -639,7 +687,7 @@
 		430233A62650AB4A00823167 /* receive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = receive.h; path = src/main/c/receive.h; sourceTree = "<group>"; };
 		430233A72650AB4A00823167 /* connect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = connect.h; path = src/main/c/connect.h; sourceTree = "<group>"; };
 		430233A82650AB4A00823167 /* exceptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = exceptions.h; path = src/main/c/exceptions.h; sourceTree = "<group>"; };
-		430233A92650AB4A00823167 /* poll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = poll.h; path = src/main/c/poll.h; sourceTree = "<group>"; };
+		430233A92650AB4A00823167 /* polling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = polling.h; path = src/main/c/polling.h; sourceTree = "<group>"; };
 		430233AA2650AB4A00823167 /* send.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = send.h; path = src/main/c/send.h; sourceTree = "<group>"; };
 		430233AB2650AB4A00823167 /* receive.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = receive.c; path = src/main/c/receive.c; sourceTree = "<group>"; };
 		430233AC2650AB4A00823167 /* filedescriptors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = filedescriptors.h; path = src/main/c/filedescriptors.h; sourceTree = "<group>"; };
@@ -660,7 +708,7 @@
 		430233BE2650AB4D00823167 /* init.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = init.h; path = src/main/c/init.h; sourceTree = "<group>"; };
 		430233BF2650AB4D00823167 /* ckmacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ckmacros.h; path = src/main/c/ckmacros.h; sourceTree = "<group>"; };
 		430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = org_newsclub_net_unix_NativeUnixSocket.h; path = src/main/c/org_newsclub_net_unix_NativeUnixSocket.h; sourceTree = "<group>"; };
-		430233C12650AB4D00823167 /* poll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = poll.c; path = src/main/c/poll.c; sourceTree = "<group>"; };
+		430233C12650AB4D00823167 /* polling.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = polling.c; path = src/main/c/polling.c; sourceTree = "<group>"; };
 		430233C22650AB4D00823167 /* socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = socket.c; path = src/main/c/socket.c; sourceTree = "<group>"; };
 		430233C32650AB4D00823167 /* bind.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bind.c; path = src/main/c/bind.c; sourceTree = "<group>"; };
 		430233C42650AB4E00823167 /* filedescriptors.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = filedescriptors.c; path = src/main/c/filedescriptors.c; sourceTree = "<group>"; };
@@ -678,6 +726,10 @@
 		432EF203261ADEDD00F4A583 /* libjunixsocket-armv6--linux-gnueabihf.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-armv6--linux-gnueabihf.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF212261AE29200F4A583 /* libjunixsocket-x86_64-apple-darwin18.2.0.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-apple-darwin18.2.0.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43663EE2261AECC400CEED08 /* libjunixsocket-current.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-current.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		43B3DF81265EEC930024822F /* pipe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pipe.h; path = src/main/c/pipe.h; sourceTree = "<group>"; };
+		43B3DF82265EEC930024822F /* pipe.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = pipe.c; path = src/main/c/pipe.c; sourceTree = "<group>"; };
+		43B3DFB5266082000024822F /* socketpair.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = socketpair.c; path = src/main/c/socketpair.c; sourceTree = "<group>"; };
+		43B3DFB6266082000024822F /* socketpair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = socketpair.h; path = src/main/c/socketpair.h; sourceTree = "<group>"; };
 		43C5FB7D261AC3700088E301 /* libjunixsocket-arm64-apple-macos11.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-arm64-apple-macos11.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43D436BC261A564C002D0C12 /* libjunixsocket-x86_64-alpine-linux-musl.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-alpine-linux-musl.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -816,8 +868,10 @@
 				430233BE2650AB4D00823167 /* init.h */,
 				430233AF2650AB4B00823167 /* listen.c */,
 				430233B12650AB4B00823167 /* listen.h */,
-				430233C12650AB4D00823167 /* poll.c */,
-				430233A92650AB4A00823167 /* poll.h */,
+				43B3DF81265EEC930024822F /* pipe.h */,
+				43B3DF82265EEC930024822F /* pipe.c */,
+				430233C12650AB4D00823167 /* polling.c */,
+				430233A92650AB4A00823167 /* polling.h */,
 				430233AB2650AB4A00823167 /* receive.c */,
 				430233A62650AB4A00823167 /* receive.h */,
 				430233BA2650AB4C00823167 /* reflection.c */,
@@ -828,6 +882,8 @@
 				430233B42650AB4B00823167 /* socket.h */,
 				430233B52650AB4B00823167 /* socketoptions.c */,
 				4302339D2650AB4900823167 /* socketoptions.h */,
+				43B3DFB5266082000024822F /* socketpair.c */,
+				43B3DFB6266082000024822F /* socketpair.h */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -880,10 +936,12 @@
 			files = (
 				430235C32650AC3200823167 /* jni.h in Headers */,
 				430235A82650AB4F00823167 /* ancillary.h in Headers */,
+				43B3DF84265EEC930024822F /* pipe.h in Headers */,
 				430235542650AB4F00823167 /* init.h in Headers */,
 				430234702650AB4E00823167 /* send.h in Headers */,
 				430234C42650AB4E00823167 /* listen.h in Headers */,
 				430234102650AB4E00823167 /* config.h in Headers */,
+				43B3DFC4266082000024822F /* socketpair.h in Headers */,
 				4302344C2650AB4E00823167 /* connect.h in Headers */,
 				430234042650AB4E00823167 /* jniutil.h in Headers */,
 				430233D42650AB4E00823167 /* socketoptions.h in Headers */,
@@ -894,7 +952,7 @@
 				430234E82650AB4F00823167 /* socket.h in Headers */,
 				430235602650AB4F00823167 /* ckmacros.h in Headers */,
 				430235182650AB4F00823167 /* address.h in Headers */,
-				430234642650AB4E00823167 /* poll.h in Headers */,
+				430234642650AB4E00823167 /* polling.h in Headers */,
 				430235302650AB4F00823167 /* accept.h in Headers */,
 				430234942650AB4E00823167 /* reflection.h in Headers */,
 				430235CF2650AC3200823167 /* jniport.h in Headers */,
@@ -910,10 +968,12 @@
 			files = (
 				430235CD2650AC3200823167 /* jni.h in Headers */,
 				430235B22650AB4F00823167 /* ancillary.h in Headers */,
+				43B3DF8E265EEC930024822F /* pipe.h in Headers */,
 				4302355E2650AB4F00823167 /* init.h in Headers */,
 				4302347A2650AB4E00823167 /* send.h in Headers */,
 				430234CE2650AB4E00823167 /* listen.h in Headers */,
 				4302341A2650AB4E00823167 /* config.h in Headers */,
+				43B3DFCE266082000024822F /* socketpair.h in Headers */,
 				430234562650AB4E00823167 /* connect.h in Headers */,
 				4302340E2650AB4E00823167 /* jniutil.h in Headers */,
 				430233DE2650AB4E00823167 /* socketoptions.h in Headers */,
@@ -924,7 +984,7 @@
 				430234F22650AB4F00823167 /* socket.h in Headers */,
 				4302356A2650AB4F00823167 /* ckmacros.h in Headers */,
 				430235222650AB4F00823167 /* address.h in Headers */,
-				4302346E2650AB4E00823167 /* poll.h in Headers */,
+				4302346E2650AB4E00823167 /* polling.h in Headers */,
 				4302353A2650AB4F00823167 /* accept.h in Headers */,
 				4302349E2650AB4E00823167 /* reflection.h in Headers */,
 				430235D92650AC3200823167 /* jniport.h in Headers */,
@@ -940,10 +1000,12 @@
 			files = (
 				430235C62650AC3200823167 /* jni.h in Headers */,
 				430235AB2650AB4F00823167 /* ancillary.h in Headers */,
+				43B3DF87265EEC930024822F /* pipe.h in Headers */,
 				430235572650AB4F00823167 /* init.h in Headers */,
 				430234732650AB4E00823167 /* send.h in Headers */,
 				430234C72650AB4E00823167 /* listen.h in Headers */,
 				430234132650AB4E00823167 /* config.h in Headers */,
+				43B3DFC7266082000024822F /* socketpair.h in Headers */,
 				4302344F2650AB4E00823167 /* connect.h in Headers */,
 				430234072650AB4E00823167 /* jniutil.h in Headers */,
 				430233D72650AB4E00823167 /* socketoptions.h in Headers */,
@@ -954,7 +1016,7 @@
 				430234EB2650AB4F00823167 /* socket.h in Headers */,
 				430235632650AB4F00823167 /* ckmacros.h in Headers */,
 				4302351B2650AB4F00823167 /* address.h in Headers */,
-				430234672650AB4E00823167 /* poll.h in Headers */,
+				430234672650AB4E00823167 /* polling.h in Headers */,
 				430235332650AB4F00823167 /* accept.h in Headers */,
 				430234972650AB4E00823167 /* reflection.h in Headers */,
 				430235D22650AC3200823167 /* jniport.h in Headers */,
@@ -970,10 +1032,12 @@
 			files = (
 				430235C92650AC3200823167 /* jni.h in Headers */,
 				430235AE2650AB4F00823167 /* ancillary.h in Headers */,
+				43B3DF8A265EEC930024822F /* pipe.h in Headers */,
 				4302355A2650AB4F00823167 /* init.h in Headers */,
 				430234762650AB4E00823167 /* send.h in Headers */,
 				430234CA2650AB4E00823167 /* listen.h in Headers */,
 				430234162650AB4E00823167 /* config.h in Headers */,
+				43B3DFCA266082000024822F /* socketpair.h in Headers */,
 				430234522650AB4E00823167 /* connect.h in Headers */,
 				4302340A2650AB4E00823167 /* jniutil.h in Headers */,
 				430233DA2650AB4E00823167 /* socketoptions.h in Headers */,
@@ -984,7 +1048,7 @@
 				430234EE2650AB4F00823167 /* socket.h in Headers */,
 				430235662650AB4F00823167 /* ckmacros.h in Headers */,
 				4302351E2650AB4F00823167 /* address.h in Headers */,
-				4302346A2650AB4E00823167 /* poll.h in Headers */,
+				4302346A2650AB4E00823167 /* polling.h in Headers */,
 				430235362650AB4F00823167 /* accept.h in Headers */,
 				4302349A2650AB4E00823167 /* reflection.h in Headers */,
 				430235D52650AC3200823167 /* jniport.h in Headers */,
@@ -1000,10 +1064,12 @@
 			files = (
 				430235CC2650AC3200823167 /* jni.h in Headers */,
 				430235B12650AB4F00823167 /* ancillary.h in Headers */,
+				43B3DF8D265EEC930024822F /* pipe.h in Headers */,
 				4302355D2650AB4F00823167 /* init.h in Headers */,
 				430234792650AB4E00823167 /* send.h in Headers */,
 				430234CD2650AB4E00823167 /* listen.h in Headers */,
 				430234192650AB4E00823167 /* config.h in Headers */,
+				43B3DFCD266082000024822F /* socketpair.h in Headers */,
 				430234552650AB4E00823167 /* connect.h in Headers */,
 				4302340D2650AB4E00823167 /* jniutil.h in Headers */,
 				430233DD2650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1014,7 +1080,7 @@
 				430234F12650AB4F00823167 /* socket.h in Headers */,
 				430235692650AB4F00823167 /* ckmacros.h in Headers */,
 				430235212650AB4F00823167 /* address.h in Headers */,
-				4302346D2650AB4E00823167 /* poll.h in Headers */,
+				4302346D2650AB4E00823167 /* polling.h in Headers */,
 				430235392650AB4F00823167 /* accept.h in Headers */,
 				4302349D2650AB4E00823167 /* reflection.h in Headers */,
 				430235D82650AC3200823167 /* jniport.h in Headers */,
@@ -1030,10 +1096,12 @@
 			files = (
 				430235C72650AC3200823167 /* jni.h in Headers */,
 				430235AC2650AB4F00823167 /* ancillary.h in Headers */,
+				43B3DF88265EEC930024822F /* pipe.h in Headers */,
 				430235582650AB4F00823167 /* init.h in Headers */,
 				430234742650AB4E00823167 /* send.h in Headers */,
 				430234C82650AB4E00823167 /* listen.h in Headers */,
 				430234142650AB4E00823167 /* config.h in Headers */,
+				43B3DFC8266082000024822F /* socketpair.h in Headers */,
 				430234502650AB4E00823167 /* connect.h in Headers */,
 				430234082650AB4E00823167 /* jniutil.h in Headers */,
 				430233D82650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1044,7 +1112,7 @@
 				430234EC2650AB4F00823167 /* socket.h in Headers */,
 				430235642650AB4F00823167 /* ckmacros.h in Headers */,
 				4302351C2650AB4F00823167 /* address.h in Headers */,
-				430234682650AB4E00823167 /* poll.h in Headers */,
+				430234682650AB4E00823167 /* polling.h in Headers */,
 				430235342650AB4F00823167 /* accept.h in Headers */,
 				430234982650AB4E00823167 /* reflection.h in Headers */,
 				430235D32650AC3200823167 /* jniport.h in Headers */,
@@ -1060,10 +1128,12 @@
 			files = (
 				430235C82650AC3200823167 /* jni.h in Headers */,
 				430235AD2650AB4F00823167 /* ancillary.h in Headers */,
+				43B3DF89265EEC930024822F /* pipe.h in Headers */,
 				430235592650AB4F00823167 /* init.h in Headers */,
 				430234752650AB4E00823167 /* send.h in Headers */,
 				430234C92650AB4E00823167 /* listen.h in Headers */,
 				430234152650AB4E00823167 /* config.h in Headers */,
+				43B3DFC9266082000024822F /* socketpair.h in Headers */,
 				430234512650AB4E00823167 /* connect.h in Headers */,
 				430234092650AB4E00823167 /* jniutil.h in Headers */,
 				430233D92650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1074,7 +1144,7 @@
 				430234ED2650AB4F00823167 /* socket.h in Headers */,
 				430235652650AB4F00823167 /* ckmacros.h in Headers */,
 				4302351D2650AB4F00823167 /* address.h in Headers */,
-				430234692650AB4E00823167 /* poll.h in Headers */,
+				430234692650AB4E00823167 /* polling.h in Headers */,
 				430235352650AB4F00823167 /* accept.h in Headers */,
 				430234992650AB4E00823167 /* reflection.h in Headers */,
 				430235D42650AC3200823167 /* jniport.h in Headers */,
@@ -1090,10 +1160,12 @@
 			files = (
 				430235C52650AC3200823167 /* jni.h in Headers */,
 				430235AA2650AB4F00823167 /* ancillary.h in Headers */,
+				43B3DF86265EEC930024822F /* pipe.h in Headers */,
 				430235562650AB4F00823167 /* init.h in Headers */,
 				430234722650AB4E00823167 /* send.h in Headers */,
 				430234C62650AB4E00823167 /* listen.h in Headers */,
 				430234122650AB4E00823167 /* config.h in Headers */,
+				43B3DFC6266082000024822F /* socketpair.h in Headers */,
 				4302344E2650AB4E00823167 /* connect.h in Headers */,
 				430234062650AB4E00823167 /* jniutil.h in Headers */,
 				430233D62650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1104,7 +1176,7 @@
 				430234EA2650AB4F00823167 /* socket.h in Headers */,
 				430235622650AB4F00823167 /* ckmacros.h in Headers */,
 				4302351A2650AB4F00823167 /* address.h in Headers */,
-				430234662650AB4E00823167 /* poll.h in Headers */,
+				430234662650AB4E00823167 /* polling.h in Headers */,
 				430235322650AB4F00823167 /* accept.h in Headers */,
 				430234962650AB4E00823167 /* reflection.h in Headers */,
 				430235D12650AC3200823167 /* jniport.h in Headers */,
@@ -1120,10 +1192,12 @@
 			files = (
 				430235CB2650AC3200823167 /* jni.h in Headers */,
 				430235B02650AB4F00823167 /* ancillary.h in Headers */,
+				43B3DF8C265EEC930024822F /* pipe.h in Headers */,
 				4302355C2650AB4F00823167 /* init.h in Headers */,
 				430234782650AB4E00823167 /* send.h in Headers */,
 				430234CC2650AB4E00823167 /* listen.h in Headers */,
 				430234182650AB4E00823167 /* config.h in Headers */,
+				43B3DFCC266082000024822F /* socketpair.h in Headers */,
 				430234542650AB4E00823167 /* connect.h in Headers */,
 				4302340C2650AB4E00823167 /* jniutil.h in Headers */,
 				430233DC2650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1134,7 +1208,7 @@
 				430234F02650AB4F00823167 /* socket.h in Headers */,
 				430235682650AB4F00823167 /* ckmacros.h in Headers */,
 				430235202650AB4F00823167 /* address.h in Headers */,
-				4302346C2650AB4E00823167 /* poll.h in Headers */,
+				4302346C2650AB4E00823167 /* polling.h in Headers */,
 				430235382650AB4F00823167 /* accept.h in Headers */,
 				4302349C2650AB4E00823167 /* reflection.h in Headers */,
 				430235D72650AC3200823167 /* jniport.h in Headers */,
@@ -1150,10 +1224,12 @@
 			files = (
 				430235C22650AC3200823167 /* jni.h in Headers */,
 				430235A72650AB4F00823167 /* ancillary.h in Headers */,
+				43B3DF83265EEC930024822F /* pipe.h in Headers */,
 				430235532650AB4F00823167 /* init.h in Headers */,
 				4302346F2650AB4E00823167 /* send.h in Headers */,
 				430234C32650AB4E00823167 /* listen.h in Headers */,
 				4302340F2650AB4E00823167 /* config.h in Headers */,
+				43B3DFC3266082000024822F /* socketpair.h in Headers */,
 				4302344B2650AB4E00823167 /* connect.h in Headers */,
 				430234032650AB4E00823167 /* jniutil.h in Headers */,
 				430233D32650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1164,7 +1240,7 @@
 				430234E72650AB4F00823167 /* socket.h in Headers */,
 				4302355F2650AB4F00823167 /* ckmacros.h in Headers */,
 				430235172650AB4F00823167 /* address.h in Headers */,
-				430234632650AB4E00823167 /* poll.h in Headers */,
+				430234632650AB4E00823167 /* polling.h in Headers */,
 				4302352F2650AB4F00823167 /* accept.h in Headers */,
 				430234932650AB4E00823167 /* reflection.h in Headers */,
 				430235CE2650AC3200823167 /* jniport.h in Headers */,
@@ -1180,10 +1256,12 @@
 			files = (
 				430235C42650AC3200823167 /* jni.h in Headers */,
 				430235A92650AB4F00823167 /* ancillary.h in Headers */,
+				43B3DF85265EEC930024822F /* pipe.h in Headers */,
 				430235552650AB4F00823167 /* init.h in Headers */,
 				430234712650AB4E00823167 /* send.h in Headers */,
 				430234C52650AB4E00823167 /* listen.h in Headers */,
 				430234112650AB4E00823167 /* config.h in Headers */,
+				43B3DFC5266082000024822F /* socketpair.h in Headers */,
 				4302344D2650AB4E00823167 /* connect.h in Headers */,
 				430234052650AB4E00823167 /* jniutil.h in Headers */,
 				430233D52650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1194,7 +1272,7 @@
 				430234E92650AB4F00823167 /* socket.h in Headers */,
 				430235612650AB4F00823167 /* ckmacros.h in Headers */,
 				430235192650AB4F00823167 /* address.h in Headers */,
-				430234652650AB4E00823167 /* poll.h in Headers */,
+				430234652650AB4E00823167 /* polling.h in Headers */,
 				430235312650AB4F00823167 /* accept.h in Headers */,
 				430234952650AB4E00823167 /* reflection.h in Headers */,
 				430235D02650AC3200823167 /* jniport.h in Headers */,
@@ -1210,10 +1288,12 @@
 			files = (
 				430235CA2650AC3200823167 /* jni.h in Headers */,
 				430235AF2650AB4F00823167 /* ancillary.h in Headers */,
+				43B3DF8B265EEC930024822F /* pipe.h in Headers */,
 				4302355B2650AB4F00823167 /* init.h in Headers */,
 				430234772650AB4E00823167 /* send.h in Headers */,
 				430234CB2650AB4E00823167 /* listen.h in Headers */,
 				430234172650AB4E00823167 /* config.h in Headers */,
+				43B3DFCB266082000024822F /* socketpair.h in Headers */,
 				430234532650AB4E00823167 /* connect.h in Headers */,
 				4302340B2650AB4E00823167 /* jniutil.h in Headers */,
 				430233DB2650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1224,7 +1304,7 @@
 				430234EF2650AB4F00823167 /* socket.h in Headers */,
 				430235672650AB4F00823167 /* ckmacros.h in Headers */,
 				4302351F2650AB4F00823167 /* address.h in Headers */,
-				4302346B2650AB4E00823167 /* poll.h in Headers */,
+				4302346B2650AB4E00823167 /* polling.h in Headers */,
 				430235372650AB4F00823167 /* accept.h in Headers */,
 				4302349B2650AB4E00823167 /* reflection.h in Headers */,
 				430235D62650AC3200823167 /* jniport.h in Headers */,
@@ -1497,15 +1577,17 @@
 				430233C82650AB4E00823167 /* address.c in Sources */,
 				430234D02650AB4F00823167 /* send.c in Sources */,
 				430235842650AB4F00823167 /* socket.c in Sources */,
+				43B3DF90265EEC930024822F /* pipe.c in Sources */,
 				4302353C2650AB4F00823167 /* connect.c in Sources */,
 				430234B82650AB4E00823167 /* capabilities.c in Sources */,
 				430234F42650AB4F00823167 /* socketoptions.c in Sources */,
-				430235782650AB4F00823167 /* poll.c in Sources */,
+				430235782650AB4F00823167 /* polling.c in Sources */,
 				4302347C2650AB4E00823167 /* receive.c in Sources */,
 				4302341C2650AB4E00823167 /* jniutil.c in Sources */,
 				430234DC2650AB4F00823167 /* init.c in Sources */,
 				430233F82650AB4E00823167 /* config.c in Sources */,
 				430235B42650AB4F00823167 /* credentials.c in Sources */,
+				43B3DFB8266082000024822F /* socketpair.c in Sources */,
 				430235482650AB4F00823167 /* exceptions.c in Sources */,
 				430235242650AB4F00823167 /* reflection.c in Sources */,
 				430234AC2650AB4E00823167 /* listen.c in Sources */,
@@ -1523,15 +1605,17 @@
 				430233D22650AB4E00823167 /* address.c in Sources */,
 				430234DA2650AB4F00823167 /* send.c in Sources */,
 				4302358E2650AB4F00823167 /* socket.c in Sources */,
+				43B3DF9A265EEC930024822F /* pipe.c in Sources */,
 				430235462650AB4F00823167 /* connect.c in Sources */,
 				430234C22650AB4E00823167 /* capabilities.c in Sources */,
 				430234FE2650AB4F00823167 /* socketoptions.c in Sources */,
-				430235822650AB4F00823167 /* poll.c in Sources */,
+				430235822650AB4F00823167 /* polling.c in Sources */,
 				430234862650AB4E00823167 /* receive.c in Sources */,
 				430234262650AB4E00823167 /* jniutil.c in Sources */,
 				430234E62650AB4F00823167 /* init.c in Sources */,
 				430234022650AB4E00823167 /* config.c in Sources */,
 				430235BE2650AB4F00823167 /* credentials.c in Sources */,
+				43B3DFC2266082000024822F /* socketpair.c in Sources */,
 				430235522650AB4F00823167 /* exceptions.c in Sources */,
 				4302352E2650AB4F00823167 /* reflection.c in Sources */,
 				430234B62650AB4E00823167 /* listen.c in Sources */,
@@ -1549,15 +1633,17 @@
 				430233CB2650AB4E00823167 /* address.c in Sources */,
 				430234D32650AB4F00823167 /* send.c in Sources */,
 				430235872650AB4F00823167 /* socket.c in Sources */,
+				43B3DF93265EEC930024822F /* pipe.c in Sources */,
 				4302353F2650AB4F00823167 /* connect.c in Sources */,
 				430234BB2650AB4E00823167 /* capabilities.c in Sources */,
 				430234F72650AB4F00823167 /* socketoptions.c in Sources */,
-				4302357B2650AB4F00823167 /* poll.c in Sources */,
+				4302357B2650AB4F00823167 /* polling.c in Sources */,
 				4302347F2650AB4E00823167 /* receive.c in Sources */,
 				4302341F2650AB4E00823167 /* jniutil.c in Sources */,
 				430234DF2650AB4F00823167 /* init.c in Sources */,
 				430233FB2650AB4E00823167 /* config.c in Sources */,
 				430235B72650AB4F00823167 /* credentials.c in Sources */,
+				43B3DFBB266082000024822F /* socketpair.c in Sources */,
 				4302354B2650AB4F00823167 /* exceptions.c in Sources */,
 				430235272650AB4F00823167 /* reflection.c in Sources */,
 				430234AF2650AB4E00823167 /* listen.c in Sources */,
@@ -1575,15 +1661,17 @@
 				430233CE2650AB4E00823167 /* address.c in Sources */,
 				430234D62650AB4F00823167 /* send.c in Sources */,
 				4302358A2650AB4F00823167 /* socket.c in Sources */,
+				43B3DF96265EEC930024822F /* pipe.c in Sources */,
 				430235422650AB4F00823167 /* connect.c in Sources */,
 				430234BE2650AB4E00823167 /* capabilities.c in Sources */,
 				430234FA2650AB4F00823167 /* socketoptions.c in Sources */,
-				4302357E2650AB4F00823167 /* poll.c in Sources */,
+				4302357E2650AB4F00823167 /* polling.c in Sources */,
 				430234822650AB4E00823167 /* receive.c in Sources */,
 				430234222650AB4E00823167 /* jniutil.c in Sources */,
 				430234E22650AB4F00823167 /* init.c in Sources */,
 				430233FE2650AB4E00823167 /* config.c in Sources */,
 				430235BA2650AB4F00823167 /* credentials.c in Sources */,
+				43B3DFBE266082000024822F /* socketpair.c in Sources */,
 				4302354E2650AB4F00823167 /* exceptions.c in Sources */,
 				4302352A2650AB4F00823167 /* reflection.c in Sources */,
 				430234B22650AB4E00823167 /* listen.c in Sources */,
@@ -1601,15 +1689,17 @@
 				430233D12650AB4E00823167 /* address.c in Sources */,
 				430234D92650AB4F00823167 /* send.c in Sources */,
 				4302358D2650AB4F00823167 /* socket.c in Sources */,
+				43B3DF99265EEC930024822F /* pipe.c in Sources */,
 				430235452650AB4F00823167 /* connect.c in Sources */,
 				430234C12650AB4E00823167 /* capabilities.c in Sources */,
 				430234FD2650AB4F00823167 /* socketoptions.c in Sources */,
-				430235812650AB4F00823167 /* poll.c in Sources */,
+				430235812650AB4F00823167 /* polling.c in Sources */,
 				430234852650AB4E00823167 /* receive.c in Sources */,
 				430234252650AB4E00823167 /* jniutil.c in Sources */,
 				430234E52650AB4F00823167 /* init.c in Sources */,
 				430234012650AB4E00823167 /* config.c in Sources */,
 				430235BD2650AB4F00823167 /* credentials.c in Sources */,
+				43B3DFC1266082000024822F /* socketpair.c in Sources */,
 				430235512650AB4F00823167 /* exceptions.c in Sources */,
 				4302352D2650AB4F00823167 /* reflection.c in Sources */,
 				430234B52650AB4E00823167 /* listen.c in Sources */,
@@ -1627,15 +1717,17 @@
 				430233CC2650AB4E00823167 /* address.c in Sources */,
 				430234D42650AB4F00823167 /* send.c in Sources */,
 				430235882650AB4F00823167 /* socket.c in Sources */,
+				43B3DF94265EEC930024822F /* pipe.c in Sources */,
 				430235402650AB4F00823167 /* connect.c in Sources */,
 				430234BC2650AB4E00823167 /* capabilities.c in Sources */,
 				430234F82650AB4F00823167 /* socketoptions.c in Sources */,
-				4302357C2650AB4F00823167 /* poll.c in Sources */,
+				4302357C2650AB4F00823167 /* polling.c in Sources */,
 				430234802650AB4E00823167 /* receive.c in Sources */,
 				430234202650AB4E00823167 /* jniutil.c in Sources */,
 				430234E02650AB4F00823167 /* init.c in Sources */,
 				430233FC2650AB4E00823167 /* config.c in Sources */,
 				430235B82650AB4F00823167 /* credentials.c in Sources */,
+				43B3DFBC266082000024822F /* socketpair.c in Sources */,
 				4302354C2650AB4F00823167 /* exceptions.c in Sources */,
 				430235282650AB4F00823167 /* reflection.c in Sources */,
 				430234B02650AB4E00823167 /* listen.c in Sources */,
@@ -1653,15 +1745,17 @@
 				430233CD2650AB4E00823167 /* address.c in Sources */,
 				430234D52650AB4F00823167 /* send.c in Sources */,
 				430235892650AB4F00823167 /* socket.c in Sources */,
+				43B3DF95265EEC930024822F /* pipe.c in Sources */,
 				430235412650AB4F00823167 /* connect.c in Sources */,
 				430234BD2650AB4E00823167 /* capabilities.c in Sources */,
 				430234F92650AB4F00823167 /* socketoptions.c in Sources */,
-				4302357D2650AB4F00823167 /* poll.c in Sources */,
+				4302357D2650AB4F00823167 /* polling.c in Sources */,
 				430234812650AB4E00823167 /* receive.c in Sources */,
 				430234212650AB4E00823167 /* jniutil.c in Sources */,
 				430234E12650AB4F00823167 /* init.c in Sources */,
 				430233FD2650AB4E00823167 /* config.c in Sources */,
 				430235B92650AB4F00823167 /* credentials.c in Sources */,
+				43B3DFBD266082000024822F /* socketpair.c in Sources */,
 				4302354D2650AB4F00823167 /* exceptions.c in Sources */,
 				430235292650AB4F00823167 /* reflection.c in Sources */,
 				430234B12650AB4E00823167 /* listen.c in Sources */,
@@ -1679,15 +1773,17 @@
 				430233CA2650AB4E00823167 /* address.c in Sources */,
 				430234D22650AB4F00823167 /* send.c in Sources */,
 				430235862650AB4F00823167 /* socket.c in Sources */,
+				43B3DF92265EEC930024822F /* pipe.c in Sources */,
 				4302353E2650AB4F00823167 /* connect.c in Sources */,
 				430234BA2650AB4E00823167 /* capabilities.c in Sources */,
 				430234F62650AB4F00823167 /* socketoptions.c in Sources */,
-				4302357A2650AB4F00823167 /* poll.c in Sources */,
+				4302357A2650AB4F00823167 /* polling.c in Sources */,
 				4302347E2650AB4E00823167 /* receive.c in Sources */,
 				4302341E2650AB4E00823167 /* jniutil.c in Sources */,
 				430234DE2650AB4F00823167 /* init.c in Sources */,
 				430233FA2650AB4E00823167 /* config.c in Sources */,
 				430235B62650AB4F00823167 /* credentials.c in Sources */,
+				43B3DFBA266082000024822F /* socketpair.c in Sources */,
 				4302354A2650AB4F00823167 /* exceptions.c in Sources */,
 				430235262650AB4F00823167 /* reflection.c in Sources */,
 				430234AE2650AB4E00823167 /* listen.c in Sources */,
@@ -1705,15 +1801,17 @@
 				430233D02650AB4E00823167 /* address.c in Sources */,
 				430234D82650AB4F00823167 /* send.c in Sources */,
 				4302358C2650AB4F00823167 /* socket.c in Sources */,
+				43B3DF98265EEC930024822F /* pipe.c in Sources */,
 				430235442650AB4F00823167 /* connect.c in Sources */,
 				430234C02650AB4E00823167 /* capabilities.c in Sources */,
 				430234FC2650AB4F00823167 /* socketoptions.c in Sources */,
-				430235802650AB4F00823167 /* poll.c in Sources */,
+				430235802650AB4F00823167 /* polling.c in Sources */,
 				430234842650AB4E00823167 /* receive.c in Sources */,
 				430234242650AB4E00823167 /* jniutil.c in Sources */,
 				430234E42650AB4F00823167 /* init.c in Sources */,
 				430234002650AB4E00823167 /* config.c in Sources */,
 				430235BC2650AB4F00823167 /* credentials.c in Sources */,
+				43B3DFC0266082000024822F /* socketpair.c in Sources */,
 				430235502650AB4F00823167 /* exceptions.c in Sources */,
 				4302352C2650AB4F00823167 /* reflection.c in Sources */,
 				430234B42650AB4E00823167 /* listen.c in Sources */,
@@ -1731,15 +1829,17 @@
 				430233C72650AB4E00823167 /* address.c in Sources */,
 				430234CF2650AB4F00823167 /* send.c in Sources */,
 				430235832650AB4F00823167 /* socket.c in Sources */,
+				43B3DF8F265EEC930024822F /* pipe.c in Sources */,
 				4302353B2650AB4F00823167 /* connect.c in Sources */,
 				430234B72650AB4E00823167 /* capabilities.c in Sources */,
 				430234F32650AB4F00823167 /* socketoptions.c in Sources */,
-				430235772650AB4F00823167 /* poll.c in Sources */,
+				430235772650AB4F00823167 /* polling.c in Sources */,
 				4302347B2650AB4E00823167 /* receive.c in Sources */,
 				4302341B2650AB4E00823167 /* jniutil.c in Sources */,
 				430234DB2650AB4F00823167 /* init.c in Sources */,
 				430233F72650AB4E00823167 /* config.c in Sources */,
 				430235B32650AB4F00823167 /* credentials.c in Sources */,
+				43B3DFB7266082000024822F /* socketpair.c in Sources */,
 				430235472650AB4F00823167 /* exceptions.c in Sources */,
 				430235232650AB4F00823167 /* reflection.c in Sources */,
 				430234AB2650AB4E00823167 /* listen.c in Sources */,
@@ -1757,15 +1857,17 @@
 				430233C92650AB4E00823167 /* address.c in Sources */,
 				430234D12650AB4F00823167 /* send.c in Sources */,
 				430235852650AB4F00823167 /* socket.c in Sources */,
+				43B3DF91265EEC930024822F /* pipe.c in Sources */,
 				4302353D2650AB4F00823167 /* connect.c in Sources */,
 				430234B92650AB4E00823167 /* capabilities.c in Sources */,
 				430234F52650AB4F00823167 /* socketoptions.c in Sources */,
-				430235792650AB4F00823167 /* poll.c in Sources */,
+				430235792650AB4F00823167 /* polling.c in Sources */,
 				4302347D2650AB4E00823167 /* receive.c in Sources */,
 				4302341D2650AB4E00823167 /* jniutil.c in Sources */,
 				430234DD2650AB4F00823167 /* init.c in Sources */,
 				430233F92650AB4E00823167 /* config.c in Sources */,
 				430235B52650AB4F00823167 /* credentials.c in Sources */,
+				43B3DFB9266082000024822F /* socketpair.c in Sources */,
 				430235492650AB4F00823167 /* exceptions.c in Sources */,
 				430235252650AB4F00823167 /* reflection.c in Sources */,
 				430234AD2650AB4E00823167 /* listen.c in Sources */,
@@ -1783,15 +1885,17 @@
 				430233CF2650AB4E00823167 /* address.c in Sources */,
 				430234D72650AB4F00823167 /* send.c in Sources */,
 				4302358B2650AB4F00823167 /* socket.c in Sources */,
+				43B3DF97265EEC930024822F /* pipe.c in Sources */,
 				430235432650AB4F00823167 /* connect.c in Sources */,
 				430234BF2650AB4E00823167 /* capabilities.c in Sources */,
 				430234FB2650AB4F00823167 /* socketoptions.c in Sources */,
-				4302357F2650AB4F00823167 /* poll.c in Sources */,
+				4302357F2650AB4F00823167 /* polling.c in Sources */,
 				430234832650AB4E00823167 /* receive.c in Sources */,
 				430234232650AB4E00823167 /* jniutil.c in Sources */,
 				430234E32650AB4F00823167 /* init.c in Sources */,
 				430233FF2650AB4E00823167 /* config.c in Sources */,
 				430235BB2650AB4F00823167 /* credentials.c in Sources */,
+				43B3DFBF266082000024822F /* socketpair.c in Sources */,
 				4302354F2650AB4F00823167 /* exceptions.c in Sources */,
 				4302352B2650AB4F00823167 /* reflection.c in Sources */,
 				430234B32650AB4E00823167 /* listen.c in Sources */,
@@ -2246,6 +2350,22 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Weverything",
+					"-Wno-reserved-id-macro",
+					"-Wno-undef",
+					"-Wno-cast-qual",
+					"-Wno-disabled-macro-expansion",
+					"-Wno-language-extension-token",
+					"-Wno-gnu-auto-type",
+					"-Wno-c++11-extensions",
+					"-Wno-c++98-compat",
+					"-Wno-empty-translation-unit",
+					"-Wno-gnu-empty-initializer",
+					"-Werror-implicit-function-declaration",
+				);
 			};
 			name = Debug;
 		};
@@ -2269,6 +2389,22 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Weverything",
+					"-Wno-reserved-id-macro",
+					"-Wno-undef",
+					"-Wno-cast-qual",
+					"-Wno-disabled-macro-expansion",
+					"-Wno-language-extension-token",
+					"-Wno-gnu-auto-type",
+					"-Wno-c++11-extensions",
+					"-Wno-c++98-compat",
+					"-Wno-empty-translation-unit",
+					"-Wno-gnu-empty-initializer",
+					"-Werror-implicit-function-declaration",
+				);
 			};
 			name = Release;
 		};
@@ -2454,6 +2590,7 @@
 					"-Wno-empty-translation-unit",
 					"-Wno-gnu-empty-initializer",
 					"-Werror-implicit-function-declaration",
+					"-Wint-conversion",
 				);
 			};
 			name = Debug;
@@ -2501,6 +2638,7 @@
 					"-Wno-empty-translation-unit",
 					"-Wno-gnu-empty-initializer",
 					"-Werror-implicit-function-declaration",
+					"-Wint-conversion",
 				);
 			};
 			name = Release;

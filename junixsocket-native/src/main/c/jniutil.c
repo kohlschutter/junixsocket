@@ -132,9 +132,9 @@ void releaseClassGlobalRef(JNIEnv *env, jclass klazz) {
     }
 }
 
-struct jni_direct_byte_buffer_ref getDirectByteBufferRef(JNIEnv *env, jobject byteBuffer, size_t minSizeExpected) {
+struct jni_direct_byte_buffer_ref getDirectByteBufferRef(JNIEnv *env, jobject byteBuffer, size_t offset, size_t minSizeExpected) {
     jbyte *buf = (byteBuffer == NULL) ? NULL : (*env)->GetDirectBufferAddress(env, byteBuffer);
-    jlong capacity = byteBuffer == NULL ? 0 : (socklen_t)(*env)->GetDirectBufferCapacity(env, byteBuffer);
+    jlong capacity = byteBuffer == NULL ? 0 : (socklen_t)((*env)->GetDirectBufferCapacity(env, byteBuffer) - offset);
 
     if(capacity < (jlong)minSizeExpected) {
         buf = NULL;
@@ -142,7 +142,7 @@ struct jni_direct_byte_buffer_ref getDirectByteBufferRef(JNIEnv *env, jobject by
     }
 
     struct jni_direct_byte_buffer_ref ref = {
-        .buf = buf,
+        .buf = buf + offset,
         .size = capacity
     };
 

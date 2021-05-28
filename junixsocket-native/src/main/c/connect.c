@@ -26,20 +26,20 @@
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    connect
- * Signature: ([BLjava/io/FileDescriptor;J)V
+ * Signature: ([BLjava/io/FileDescriptor;J)Z
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
                                                                            JNIEnv * env, jclass clazz CK_UNUSED, jbyteArray addr, jobject fd,
                                                                            jlong expectedInode)
 {
     struct sockaddr_un su;
     socklen_t suLength = initSu(env, &su, addr);
-    if(suLength == 0) return;
+    if(suLength == 0) return false;
 
     int socketHandle = _getFD(env, fd);
     if(socketHandle <= 0) {
         _throwException(env, kExceptionSocketException, "Socket closed");
-        return;
+        return false;
     }
 
     if(expectedInode > 0) {
@@ -53,7 +53,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
             if(statInode != (ino_t)expectedInode) {
                 // inode mismatch -> someone else took over this socket address
                 _throwErrnumException(env, ECONNABORTED, NULL);
-                return;
+                return false;
             }
         }
     }
@@ -67,10 +67,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
 
     if(ret == -1) {
         _throwErrnumException(env, myErr, NULL);
-        return;
+        return false;
     }
 
     _initFD(env, fd, socketHandle);
+    return true;
 }
 
 /*

@@ -81,6 +81,11 @@ public interface AFUNIXSocketExtensions {
    * Important: There can only be one set of file descriptors active until the write completes. The
    * socket also needs to be connected for this operation to succeed.
    * 
+   * It is also important to know that there may be an upper limit imposed by the operation system
+   * as to how many file descriptors can be sent at once. Linux, for example, may support up to 253.
+   * If the number of file descriptors exceeds the limit, an exception may be thrown when sending
+   * data along with the ancillary message containing the file descriptors.
+   * 
    * @param fdescs The file descriptors, or {@code null} if none.
    * @throws IOException if the operation fails.
    */
@@ -98,8 +103,12 @@ public interface AFUNIXSocketExtensions {
    * Retrieves the "peer credentials" for this connection.
    *
    * These credentials may be useful to authenticate the other end of the socket (client or server).
+   * 
+   * Depending on the socket/connection/environment, you may not receive any or all credentials. For
+   * example, on Linux, {@link AFUNIXDatagramSocket} and {@link AFUNIXDatagramChannel} may not be
+   * able to retrieve credentials at all.
    *
-   * @return The peer's credentials.
+   * @return The peer's credentials, or {@code null} if they couldn't be retrieved.
    * @throws IOException If there was an error returning these credentials.
    */
   AFUNIXSocketCredentials getPeerCredentials() throws IOException;

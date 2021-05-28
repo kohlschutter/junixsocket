@@ -16,18 +16,19 @@
  * limitations under the License.
  */
 
-#ifndef filedescriptors_h
-#define filedescriptors_h
+#ifndef poll_h
+#define poll_h
 
 #include "config.h"
 
-void init_filedescriptors(JNIEnv *env);
-void destroy_filedescriptors(JNIEnv *env);
+void init_poll(JNIEnv *env);
+void destroy_poll(JNIEnv *env);
 
-int _getFD(JNIEnv * env, jobject fd);
-void _initFD(JNIEnv * env, jobject fd, int handle);
-int _closeFd(JNIEnv * env, jobject fd, int handle);
+#if defined(junixsocket_use_poll_for_accept) || defined(junixsocket_use_poll_for_read)
 
-jboolean checkNonBlocking(int handle, int errnum);
+jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout);
+jint pollWithMillis(int handle, uint64_t millis);
 
-#endif /* filedescriptors_h */
+#endif
+
+#endif /* poll_h */

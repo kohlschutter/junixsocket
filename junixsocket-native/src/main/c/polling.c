@@ -17,10 +17,60 @@
  */
 
 #include "config.h"
-#include "poll.h"
+#include "polling.h"
 
 #include "exceptions.h"
 #include "filedescriptors.h"
+#include "jniutil.h"
+
+static jclass class_PollFd = NULL;
+static jfieldID fieldID_fds = NULL;
+static jfieldID fieldID_ops = NULL;
+static jfieldID fieldID_rops = NULL;
+
+void init_poll(JNIEnv *env) {
+    class_PollFd = findClassAndGlobalRef(env, "org/newsclub/net/unix/AFUNIXSelector$PollFd");
+    fieldID_fds = (*env)->GetFieldID(env, class_PollFd, "fds", "[Ljava/io/FileDescriptor;");
+    fieldID_ops = (*env)->GetFieldID(env, class_PollFd, "ops", "[I");
+    fieldID_rops = (*env)->GetFieldID(env, class_PollFd, "rops", "[I");
+}
+
+void destroy_poll(JNIEnv *env) {
+    releaseClassGlobalRef(env, class_PollFd);
+    fieldID_fds = NULL;
+    fieldID_ops = NULL;
+    fieldID_rops = NULL;
+}
+
+static const int OP_READ = (1<<0);
+static const int OP_WRITE = (1<<2);
+static const int OP_CONNECT = (1<<3);
+static const int OP_ACCEPT = (1<<4);
+
+static int opToEvent(int op) {
+    int event = 0;
+    if((op & OP_READ) || (op & OP_ACCEPT)) {
+        event |= POLLIN;
+    }
+    if((op & OP_WRITE) || (op & OP_CONNECT)) {
+        event |= POLLOUT;
+    }
+    return event;
+}
+
+static int eventToOp(int event) {
+    int op = 0;
+    if((event & POLLIN)) {
+        op |= (OP_READ | OP_ACCEPT); // will be masked accordingly later
+    }
+    if((event & POLLOUT)) {
+        op |= (OP_WRITE | OP_CONNECT); // will be masked accordingly later
+    }
+    if((event & POLLHUP)) {
+        // FIXME should we set op to 0?
+    }
+    return op;
+}
 
 #if defined(junixsocket_use_poll_for_accept) || defined(junixsocket_use_poll_for_read)
 
@@ -183,4 +233,60 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available(
     }
 
     return count;
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    poll
+ * Signature: (Lorg/newsclub/net/unix/AFUNIXSelector/PollFd;I)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
+(JNIEnv *env, jclass clazz CK_UNUSED, jobject pollFdObj, jint timeout) {
+    if(pollFdObj == NULL) {
+        return 0;
+    }
+
+    jobject fdsObj = (*env)->GetObjectField(env, pollFdObj, fieldID_fds);
+    jsize nfds = (*env)->GetArrayLength(env, fdsObj);
+    if(nfds == 0) {
+        return 0;
+    }
+
+    jintArray opsObj = (*env)->GetObjectField(env, pollFdObj, fieldID_ops);
+    jintArray ropsObj = (*env)->GetObjectField(env, pollFdObj, fieldID_rops);
+
+    struct pollfd* pollFd = calloc(nfds, sizeof(struct pollfd));
+
+    jint *buf = calloc(nfds, sizeof(jint));
+    (*env)->GetIntArrayRegion(env, opsObj, 0, nfds, buf);
+    for(int i=0;i<nfds;i++) {
+        pollFd[i].events = opToEvent(buf[i]);
+    }
+
+    for(int i=0; i<nfds;i++) {
+        jobject fdObj = (*env)->GetObjectArrayElement(env, fdsObj, i);
+        int fd = _getFD(env, fdObj);
+        pollFd[i].fd = fd;
+    }
+
+#if defined(_WIN32)
+    int ret = WSAPoll(pollFd, nfds, timeout);
+#else
+    int ret = poll(pollFd, nfds, timeout);
+#endif
+    if(ret == -1) {
+        ret = 0;
+        _throwSockoptErrnumException(env, socket_errno, NULL);
+        goto end;
+    }
+
+    for(int i=0; i<nfds;i++) {
+        buf[i] &= eventToOp(pollFd[i].revents);
+    }
+    (*env)->SetIntArrayRegion(env, ropsObj, 0, nfds, buf);
+
+end:
+    free(buf);
+    free(pollFd);
+    return ret;
 }

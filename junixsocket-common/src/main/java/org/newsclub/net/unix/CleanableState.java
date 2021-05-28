@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.lang.ref.Cleaner;
 
 /**
@@ -47,7 +49,7 @@ import java.lang.ref.Cleaner;
  * 
  * @author Christian Kohlschütter
  */
-abstract class CleanableState {
+abstract class CleanableState implements Closeable {
   private static final Cleaner CLEANER = Cleaner.create();
   private final Cleaner.Cleanable cleanable;
 
@@ -74,4 +76,9 @@ abstract class CleanableState {
    * Performs the actual cleanup.
    */
   protected abstract void doClean();
+
+  @Override
+  public final void close() throws IOException {
+    runCleaner();
+  }
 }

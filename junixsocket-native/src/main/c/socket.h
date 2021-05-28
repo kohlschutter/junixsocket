@@ -21,4 +21,6 @@
 
 #include "config.h"
 
+int sockTypeToNative(JNIEnv *env, int type);
+
 #endif /* socket_h */

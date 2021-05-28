@@ -22,6 +22,7 @@
 #include "exceptions.h"
 #include "ancillary.h"
 #include "filedescriptors.h"
+#include "polling.h"
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -40,10 +41,12 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init(
     }
 #endif
 
+    init_exceptions(env);
     init_filedescriptors(env);
 #if defined(junixsocket_have_ancillary)
     init_ancillary(env);
 #endif
+    init_poll(env);
 }
 
 /*
@@ -58,8 +61,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy(
     WSACleanup();
 #endif
 
+    destroy_exceptions(env);
     destroy_filedescriptors(env);
 #if defined(junixsocket_have_ancillary)
     destroy_ancillary(env);
 #endif
+    destroy_poll(env);
 }

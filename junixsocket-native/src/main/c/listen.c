@@ -38,4 +38,3 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_listen(
         return;
     }
 }
-

@@ -26,19 +26,27 @@ import java.util.Map;
  * 
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 public class SelftestProvider {
   public Map<String, Class<?>[]> tests() {
     Map<String, Class<?>[]> tests = new LinkedHashMap<>();
     tests.put("junixsocket-common", new Class<?>[] {
         AcceptTimeoutTest.class, //
+        AFUNIXDatagramSocketTest.class, //
         AFUNIXInetAddressTest.class, //
+        AFUNIXPipeTest.class, //
+        AFUNIXSelectorTest.class, //
+        AFUNIXServerSocketTest.class, //
         AFUNIXSocketAddressTest.class, //
+        AFUNIXSocketChannelTest.class, //
+        AFUNIXSocketFactoryTest.class, //
         AFUNIXSocketTest.class, //
         AvailableTest.class, //
         BufferOverflowTest.class, //
         CancelAcceptTest.class, //
         EndOfFileJavaTest.class, //
         EndOfFileTest.class, //
+        // FinalizeTest.class, //
         FileDescriptorsTest.class, //
         PeerCredentialsTest.class, //
         ReadWriteTest.class, //

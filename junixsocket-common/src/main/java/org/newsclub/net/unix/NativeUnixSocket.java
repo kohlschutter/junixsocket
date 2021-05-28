@@ -25,6 +25,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 
+import org.newsclub.net.unix.AFUNIXSelector.PollFd;
+
 import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGeneratedReport;
 
 /**
@@ -42,6 +44,7 @@ final class NativeUnixSocket {
   static final int OPT_LOOKUP_SENDER = 1;
   static final int OPT_PEEK = 2;
   static final int OPT_NON_BLOCKING = 4;
+  static final int OPT_NON_SOCKET = 8;
 
   @ExcludeFromCodeCoverageGeneratedReport
   private NativeUnixSocket() {
@@ -75,10 +78,10 @@ final class NativeUnixSocket {
 
   static native void listen(final FileDescriptor fd, final int backlog) throws IOException;
 
-  static native void accept(final byte[] socketAddr, final FileDescriptor fdServer,
+  static native boolean accept(final byte[] socketAddr, final FileDescriptor fdServer,
       final FileDescriptor fd, long inode, int timeout) throws IOException;
 
-  static native void connect(final byte[] socketAddr, final FileDescriptor fd, long inode)
+  static native boolean connect(final byte[] socketAddr, final FileDescriptor fd, long inode)
       throws IOException;
 
   static native void disconnect(final FileDescriptor fd) throws IOException;
@@ -112,11 +115,11 @@ final class NativeUnixSocket {
   static native int write(final FileDescriptor fd, byte[] buf, int off, int len,
       AncillaryDataSupport ancillaryDataSupport) throws IOException;
 
-  static native int receive(final FileDescriptor fd, ByteBuffer directBuffer, int length,
+  static native int receive(final FileDescriptor fd, ByteBuffer directBuffer, int offset, int length,
       ByteBuffer directSocketAddressOut, int options, AncillaryDataSupport ancillaryDataSupport)
       throws IOException;
 
-  static native int send(final FileDescriptor fd, ByteBuffer directBuffer, int length,
+  static native int send(final FileDescriptor fd, ByteBuffer directBuffer, int offset, int length,
       ByteBuffer directSocketAddress, int options, AncillaryDataSupport ancillaryDataSupport)
       throws IOException;
 
@@ -170,4 +173,12 @@ final class NativeUnixSocket {
   }
 
   static native Socket currentRMISocket();
+
+  static native void initPipe(FileDescriptor source, FileDescriptor sink) throws IOException;
+
+  static native int poll(PollFd pollFd, int timeout);
+
+  static native void configureBlocking(FileDescriptor fd, boolean blocking) throws IOException;
+
+  static native void socketPair(int type, FileDescriptor fd, FileDescriptor fd2);
 }

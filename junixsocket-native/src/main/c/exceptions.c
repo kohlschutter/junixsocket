@@ -19,27 +19,49 @@
 #include "config.h"
 #include "exceptions.h"
 
+#include "jniutil.h"
 #include "filedescriptors.h"
 
 // NOTE: The exceptions must all be either inherit from IOException or RuntimeException/Error
-static const char *kExceptionClasses[kExceptionMaxExcl] = {
+static char *kExceptionClassnames[kExceptionMaxExcl] = {
     "java/net/SocketException", // kExceptionSocketException
     "java/net/SocketTimeoutException", // kExceptionSocketTimeoutException
     "java/lang/IndexOutOfBoundsException", // kExceptionIndexOutOfBoundsException
-    "java/lang/IllegalStateException" // kExceptionIllegalStateException
-    "java/lang/NullPointerException" // kExceptionNullPointerException
+    "java/lang/IllegalStateException", // kExceptionIllegalStateException
+    "java/lang/NullPointerException", // kExceptionNullPointerException
 };
+
+static jclass *kExceptionClasses;
+
+static jmethodID *kExceptionConstructors;
+
+void init_exceptions(JNIEnv *env) {
+    kExceptionClasses = malloc(sizeof(jclass) * kExceptionMaxExcl);
+    kExceptionConstructors = malloc(sizeof(jmethodID) * kExceptionMaxExcl);
+
+    for (int i=0; i<kExceptionMaxExcl; i++) {
+        jclass exc = findClassAndGlobalRef(env, kExceptionClassnames[i]);
+        kExceptionClasses[i] = exc;
+        kExceptionConstructors[i] = (*env)->GetMethodID(env, exc, "<init>",
+                                                        "(Ljava/lang/String;)V");
+    }
+}
+
+void destroy_exceptions(JNIEnv *env) {
+    for (int i=0; i<kExceptionMaxExcl; i++) {
+        releaseClassGlobalRef(env, kExceptionClasses[i]);
+    }
+    free(kExceptionConstructors);
+    free(kExceptionClasses);
+}
 
 void _throwException(JNIEnv* env, ExceptionType exceptionType, char* message)
 {
     if((int)exceptionType < 0 || exceptionType >= kExceptionMaxExcl) {
         exceptionType = kExceptionIllegalStateException;
     }
-    const char *exceptionClass = kExceptionClasses[exceptionType];
-
-    jclass exc = (*env)->FindClass(env, exceptionClass);
-    jmethodID constr = (*env)->GetMethodID(env, exc, "<init>",
-                                           "(Ljava/lang/String;)V");
+    jclass exc = kExceptionClasses[exceptionType];
+    jmethodID constr = kExceptionConstructors[exceptionType];
 
     jstring str;
     if(message == NULL) {

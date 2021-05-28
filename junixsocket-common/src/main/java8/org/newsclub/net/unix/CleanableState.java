@@ -1,8 +1,10 @@
 package org.newsclub.net.unix;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-abstract class CleanableState {
+abstract class CleanableState implements Closeable {
   private final AtomicBoolean clean = new AtomicBoolean(false);
 
   @SuppressWarnings("PMD.UnusedFormalParameter")
@@ -26,4 +28,9 @@ abstract class CleanableState {
   }
 
   protected abstract void doClean();
+
+  @Override
+  public final void close() throws IOException {
+    runCleaner();
+  }
 }

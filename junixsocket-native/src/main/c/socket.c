@@ -23,6 +23,19 @@
 #include "filedescriptors.h"
 #include "exceptions.h"
 
+int sockTypeToNative(JNIEnv *env, int type) {
+    switch(type) {
+        case org_newsclub_net_unix_NativeUnixSocket_SOCK_STREAM:
+            return SOCK_STREAM;
+        case org_newsclub_net_unix_NativeUnixSocket_SOCK_DGRAM:
+            return SOCK_DGRAM;
+        case org_newsclub_net_unix_NativeUnixSocket_SOCK_SEQPACKET:
+            return SOCK_SEQPACKET;
+        default:
+            _throwException(env, kExceptionSocketException, "Illegal type");
+            return -1;
+    }
+}
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    createSocket
@@ -37,19 +50,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_createSocket
         return;
     }
 
-    switch(type) {
-        case org_newsclub_net_unix_NativeUnixSocket_SOCK_STREAM:
-            type = SOCK_STREAM;
-            break;
-        case org_newsclub_net_unix_NativeUnixSocket_SOCK_DGRAM:
-            type = SOCK_DGRAM;
-            break;
-        case org_newsclub_net_unix_NativeUnixSocket_SOCK_SEQPACKET:
-            type = SOCK_SEQPACKET;
-            break;
-        default:
-            _throwException(env, kExceptionSocketException, "Illegal type");
-            return;
+    type = sockTypeToNative(env, type);
+    if(type == -1) {
+        return;
     }
 
     handle = socket(PF_UNIX, type, 0);

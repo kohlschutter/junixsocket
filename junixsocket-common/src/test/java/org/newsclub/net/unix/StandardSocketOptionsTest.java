@@ -69,7 +69,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
         TestState<ServerSocket> state = new TestStateServerSocket(sock);) {
 
       // supported
-      state.testSocketOption(StandardSocketOptions.SO_RCVBUF, null, 1024, 1024);
+      state.testSocketOption(StandardSocketOptions.SO_RCVBUF, null, 1024, null);
       state.testSocketOption(StandardSocketOptions.SO_REUSEADDR, null, true, true);
 
       // unsupported; throws an exception
@@ -104,8 +104,8 @@ public class StandardSocketOptionsTest extends SocketTestBase {
         protected void handleConnection(AFUNIXSocket sock) throws IOException {
           try (TestState<Socket> state = new TestStateSocket(sock)) {
             state.testSocketOption(StandardSocketOptions.SO_REUSEADDR, null, true, true);
-            state.testSocketOption(StandardSocketOptions.SO_RCVBUF, null, 4096, 4096);
-            state.testSocketOption(StandardSocketOptions.SO_SNDBUF, null, 4096, 4096);
+            state.testSocketOption(StandardSocketOptions.SO_RCVBUF, null, 8192, null);
+            state.testSocketOption(StandardSocketOptions.SO_SNDBUF, null, 8192, null);
             state.testSocketOption(StandardSocketOptions.SO_LINGER, null, 123, 123);
             state.testSocketOption(StandardSocketOptions.SO_KEEPALIVE, null, true, true);
             try (OutputStream out = sock.getOutputStream()) {

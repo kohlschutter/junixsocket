@@ -52,6 +52,6 @@ struct jni_direct_byte_buffer_ref {
  * If the requirement cannot be met because the byteBuffer specified was NULL, it is guaranteed that both
  * .BUF==NULL and .capacity==0.
  */
-CK_VISIBILITY_INTERNAL struct jni_direct_byte_buffer_ref getDirectByteBufferRef(JNIEnv *env, jobject byteBuffer, size_t minSizeExpected);
+CK_VISIBILITY_INTERNAL struct jni_direct_byte_buffer_ref getDirectByteBufferRef(JNIEnv *env, jobject byteBuffer, size_t offset, size_t minSizeExpected);
 
 #endif /* jniutil_h */

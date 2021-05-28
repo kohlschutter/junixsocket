@@ -49,7 +49,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
             "We should roughly get the same timeout back that we set before, but was "
                 + actualTimeout + " instead of " + timeoutMillis);
         try (AFUNIXSocket socket = sock.accept()) {
-          fail("Did not receive " + SocketTimeoutException.class.getName());
+          fail("Did not receive " + SocketTimeoutException.class.getName() + "; socket=" + socket);
         } catch (SocketException | SocketTimeoutException e) {
           // expected
           time = System.currentTimeMillis() - time;

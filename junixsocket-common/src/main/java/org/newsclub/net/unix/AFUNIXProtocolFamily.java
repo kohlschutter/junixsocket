@@ -15,17 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.newsclub.net.unix;
 
-#ifndef poll_h
-#define poll_h
+import java.net.ProtocolFamily;
 
-#include "config.h"
-
-#if defined(junixsocket_use_poll_for_accept) || defined(junixsocket_use_poll_for_read)
-
-jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout);
-jint pollWithMillis(int handle, uint64_t millis);
-
-#endif
-
-#endif /* poll_h */
+/**
+ * Describes the protocol families supported by junixsocket.
+ * 
+ * @author Christian Kohlschütter
+ */
+public enum AFUNIXProtocolFamily implements ProtocolFamily {
+  /**
+   * Unix domain (Local) interprocess communication.
+   */
+  UNIX
+}

@@ -37,6 +37,7 @@ public class AFUNIXServerSocket extends ServerSocket {
   private final Closeables closeables = new Closeables();
   private final AtomicBoolean created = new AtomicBoolean(false);
   private final AtomicBoolean deleteOnClose = new AtomicBoolean(true);
+  private final AFUNIXServerSocketChannel channel = new AFUNIXServerSocketChannel(this);
 
   /**
    * Constructs a new, unconnected instance.
@@ -156,10 +157,14 @@ public class AFUNIXServerSocket extends ServerSocket {
   @Override
   public AFUNIXSocket accept() throws IOException {
     AFUNIXSocket as = newSocketInstance();
-    implementation.accept(as.getAFImpl());
+    boolean success = implementation.accept0(as.getAFImpl());
     if (isClosed()) {
       // We may have connected to the socket to unblock it
       throw new SocketException("Socket is closed");
+    }
+    if (!success) {
+      // non-blocking socket, nothing to accept
+      return null;
     }
     as.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT);
     as.addr = boundEndpoint;
@@ -290,5 +295,10 @@ public class AFUNIXServerSocket extends ServerSocket {
       }
     }
     return implementation;
+  }
+
+  @Override
+  public AFUNIXServerSocketChannel getChannel() {
+    return channel;
   }
 }

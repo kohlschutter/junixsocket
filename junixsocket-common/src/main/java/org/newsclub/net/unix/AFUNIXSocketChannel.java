@@ -19,55 +19,69 @@ package org.newsclub.net.unix;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
+import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketOption;
 import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
-import java.nio.channels.MembershipKey;
+import java.nio.channels.SocketChannel;
 import java.util.Set;
 
-/**
- * A {@link DatagramChannel} implementation that works with AF_UNIX Unix domain sockets.
- * 
- * @author Christian Kohlschütter
- */
-public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUNIXSocketExtensions {
-  private final AFUNIXDatagramSocket afSocket;
+public final class AFUNIXSocketChannel extends SocketChannel implements AFUNIXSocketExtensions {
+  private final AFUNIXSocket afSocket;
 
-  AFUNIXDatagramChannel(AFUNIXDatagramSocket socket) {
+  AFUNIXSocketChannel(AFUNIXSocket socket) {
     super(AFUNIXSelectorProvider.getInstance());
     this.afSocket = socket;
   }
 
-  AFUNIXDatagramSocket getAFSocket() {
-    return afSocket;
-  }
-
-  // CPD-OFF
-
+  @SuppressWarnings("unchecked")
   @Override
-  public MembershipKey join(InetAddress group, NetworkInterface interf) throws IOException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public MembershipKey join(InetAddress group, NetworkInterface interf, InetAddress source)
-      throws IOException {
-    throw new UnsupportedOperationException();
+  public <T> T getOption(SocketOption<T> name) throws IOException {
+    Integer optionId = SocketOptionsMapper.resolve(name);
+    if (optionId == null) {
+      throw new UnsupportedOperationException("unsupported option");
+    } else {
+      return (T) afSocket.getAFImpl().getOption(optionId.intValue());
+    }
   }
 
   @Override
-  public DatagramChannel bind(SocketAddress local) throws IOException {
+  public <T> SocketChannel setOption(SocketOption<T> name, T value) throws IOException {
+    Integer optionId = SocketOptionsMapper.resolve(name);
+    if (optionId == null) {
+      throw new UnsupportedOperationException("unsupported option");
+    } else {
+      afSocket.getAFImpl().setOption(optionId.intValue(), value);
+    }
+    return this;
+  }
+
+  @Override
+  public Set<SocketOption<?>> supportedOptions() {
+    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;
+  }
+
+  @Override
+  public SocketChannel bind(SocketAddress local) throws IOException {
     afSocket.bind(local);
     return this;
   }
 
   @Override
-  public DatagramSocket socket() {
+  public SocketChannel shutdownInput() throws IOException {
+    afSocket.getAFImpl().shutdownInput();
+    return this;
+  }
+
+  @Override
+  public SocketChannel shutdownOutput() throws IOException {
+    afSocket.getAFImpl().shutdownOutput();
+    return this;
+  }
+
+  @Override
+  public Socket socket() {
     return afSocket;
   }
 
@@ -77,35 +91,26 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
   }
 
   @Override
-  public DatagramChannel connect(SocketAddress remote) throws IOException {
-    afSocket.connect(remote);
-    return this;
+  public boolean isConnectionPending() {
+    return false;
   }
 
   @Override
-  public DatagramChannel disconnect() throws IOException {
-    afSocket.disconnect();
-    return this;
+  public boolean connect(SocketAddress remote) throws IOException {
+    return afSocket.connect0(remote, 0);
+  }
+
+  @Override
+  public boolean finishConnect() throws IOException {
+    if (isConnected()) {
+      return true;
+    }
+    return isConnected();
   }
 
   @Override
   public SocketAddress getRemoteAddress() throws IOException {
     return afSocket.getRemoteSocketAddress();
-  }
-
-  @Override
-  public SocketAddress getLocalAddress() throws IOException {
-    return afSocket.getLocalSocketAddress();
-  }
-
-  @Override
-  public SocketAddress receive(ByteBuffer dst) throws IOException {
-    return afSocket.getAFImpl().receive(dst);
-  }
-
-  @Override
-  public int send(ByteBuffer src, SocketAddress target) throws IOException {
-    return afSocket.getAFImpl().send(src, target);
   }
 
   @Override
@@ -123,11 +128,6 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
   }
 
   @Override
-  public int write(ByteBuffer src) throws IOException {
-    return afSocket.getAFImpl().write(src);
-  }
-
-  @Override
   public long write(ByteBuffer[] srcs, int offset, int length) throws IOException {
     if (length == 0) {
       return 0;
@@ -137,8 +137,18 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
   }
 
   @Override
+  public int write(ByteBuffer src) throws IOException {
+    return afSocket.getAFImpl().write(src);
+  }
+
+  @Override
+  public SocketAddress getLocalAddress() throws IOException {
+    return afSocket.getLocalSocketAddress();
+  }
+
+  @Override
   protected void implCloseSelectableChannel() throws IOException {
-    getAFSocket().close();
+    afSocket.close();
   }
 
   @Override
@@ -187,33 +197,6 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
   @Override
   public void ensureAncillaryReceiveBufferSize(int minSize) {
     afSocket.ensureAncillaryReceiveBufferSize(minSize);
-  }
-
-  @Override
-  public <T> DatagramChannel setOption(SocketOption<T> name, T value) throws IOException {
-    Integer optionId = SocketOptionsMapper.resolve(name);
-    if (optionId == null) {
-      throw new UnsupportedOperationException("unsupported option");
-    } else {
-      afSocket.getAFImpl().setOption(optionId.intValue(), value);
-    }
-    return this;
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public <T> T getOption(SocketOption<T> name) throws IOException {
-    Integer optionId = SocketOptionsMapper.resolve(name);
-    if (optionId == null) {
-      throw new UnsupportedOperationException("unsupported option");
-    } else {
-      return (T) afSocket.getAFImpl().getOption(optionId.intValue());
-    }
-  }
-
-  @Override
-  public Set<SocketOption<?>> supportedOptions() {
-    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;
   }
 
   AFUNIXSocketCore getAFCore() {

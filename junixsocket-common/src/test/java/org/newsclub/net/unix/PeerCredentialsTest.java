@@ -166,10 +166,12 @@ public class PeerCredentialsTest extends SocketTestBase {
 
   @AfterAll
   public static void ensureSameCreds() {
-    if (credsSockets != null && credsDatagramSockets != null) {
-      assertEquals(credsSockets, credsDatagramSockets,
-          "The credentials received via Socket and via DatagramSocket should be the same");
+    if (credsSockets != null) {
       checkCredentialFeatures(credsSockets);
+      if (credsDatagramSockets != null) {
+        assertEquals(credsSockets, credsDatagramSockets,
+            "The credentials received via Socket and via DatagramSocket should be the same");
+      }
     }
   }
 }

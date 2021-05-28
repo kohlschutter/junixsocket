@@ -17,7 +17,6 @@
  */
 package org.newsclub.net.unix;
 
-import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -29,33 +28,13 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 
 final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
-  @SuppressWarnings("PMD.UseDiamondOperator") // not in Java 7
-  private static final ThreadLocal<ByteBuffer> DATAGRAMPACKET_BUFFER_TL =
-      new ThreadLocal<ByteBuffer>();
-
-  private static final int DATAGRAMPACKET_BUFFER_MIN_CAPACITY = 8192;
-  private static final int DATAGRAMPACKET_BUFFER_MAX_CAPACITY = 1 * 1024 * 1024;
-
-  private final DatagramSocketState state;
+  private final AFUNIXSocketCore core;
   final AncillaryDataSupport ancillaryDataSupport = new AncillaryDataSupport();
-
-  /**
-   * When the {@link AFUNIXSocketImpl} becomes unreachable (but not yet closed), we must ensure that
-   * the underlying socket and all related file descriptors are closed.
-   *
-   * @author Christian Kohlschütter
-   */
-  private static class DatagramSocketState extends SocketStateBase {
-    private DatagramSocketState(AFUNIXDatagramSocketImpl observed, Closeable additionalCloseable)
-        throws IOException {
-      super(observed, additionalCloseable);
-    }
-  }
 
   AFUNIXDatagramSocketImpl() throws IOException {
     super();
-    this.state = new DatagramSocketState(this, ancillaryDataSupport);
-    this.fd = state.fd;
+    this.core = new AFUNIXSocketCore(this, ancillaryDataSupport);
+    this.fd = core.fd;
   }
 
   @Override
@@ -74,7 +53,7 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
 
   @Override
   protected void close() {
-    state.runCleaner();
+    core.runCleaner();
   }
 
   @Override
@@ -98,13 +77,17 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
     }
   }
 
+  AFUNIXSocketCore getCore() {
+    return core;
+  }
+
   @Override
   protected FileDescriptor getFileDescriptor() {
-    return state.fd;
+    return core.fd;
   }
 
   boolean isClosed() {
-    return state.isClosed();
+    return core.isClosed();
   }
 
   @Override
@@ -132,14 +115,14 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
 
   private void recv(DatagramPacket p, int options) throws IOException {
     int len = p.getLength();
-    FileDescriptor fdesc = state.validFdOrException();
+    FileDescriptor fdesc = core.validFdOrException();
 
-    ByteBuffer datagramPacketBuffer = getThreadLocalDirectByteBuffer(len);
+    ByteBuffer datagramPacketBuffer = core.getThreadLocalDirectByteBuffer(len);
     len = Math.min(len, datagramPacketBuffer.capacity());
 
     ByteBuffer socketAddressBuffer = AFUNIXSocketAddress.SOCKETADDRESS_BUFFER_TL.get();
 
-    int count = NativeUnixSocket.receive(fdesc, datagramPacketBuffer, len, socketAddressBuffer,
+    int count = NativeUnixSocket.receive(fdesc, datagramPacketBuffer, 0, len, socketAddressBuffer,
         options, ancillaryDataSupport);
     if (count > len || count < 0) {
       throw new IllegalStateException();
@@ -154,21 +137,6 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
     p.setPort(0);
   }
 
-  private ByteBuffer getThreadLocalDirectByteBuffer(int capacity) {
-    if (capacity > DATAGRAMPACKET_BUFFER_MAX_CAPACITY) {
-      capacity = DATAGRAMPACKET_BUFFER_MAX_CAPACITY;
-    } else if (capacity < DATAGRAMPACKET_BUFFER_MIN_CAPACITY) {
-      capacity = DATAGRAMPACKET_BUFFER_MIN_CAPACITY;
-    }
-    ByteBuffer datagramPacketBuffer = DATAGRAMPACKET_BUFFER_TL.get();
-    if (datagramPacketBuffer == null || capacity > datagramPacketBuffer.capacity()) {
-      datagramPacketBuffer = ByteBuffer.allocateDirect(capacity);
-      DATAGRAMPACKET_BUFFER_TL.set(datagramPacketBuffer);
-    }
-    datagramPacketBuffer.clear();
-    return datagramPacketBuffer;
-  }
-
   @Override
   protected void send(DatagramPacket p) throws IOException {
     InetAddress addr = p.getAddress();
@@ -180,17 +148,13 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
         NativeUnixSocket.bytesToSockAddrUn(sendToBuf, addrBytes);
       }
     }
-    FileDescriptor fdesc = state.validFdOrException();
+    FileDescriptor fdesc = core.validFdOrException();
 
-    ByteBuffer datagramPacketBuffer = DATAGRAMPACKET_BUFFER_TL.get();
     int len = p.getLength();
-    if (datagramPacketBuffer == null || len > datagramPacketBuffer.capacity()) {
-      datagramPacketBuffer = ByteBuffer.allocateDirect(len);
-      DATAGRAMPACKET_BUFFER_TL.set(datagramPacketBuffer);
-    }
+    ByteBuffer datagramPacketBuffer = core.getThreadLocalDirectByteBuffer(len);
     datagramPacketBuffer.clear();
     datagramPacketBuffer.put(p.getData(), p.getOffset(), p.getLength());
-    NativeUnixSocket.send(fdesc, datagramPacketBuffer, len, sendToBuf,
+    NativeUnixSocket.send(fdesc, datagramPacketBuffer, 0, len, sendToBuf,
         NativeUnixSocket.OPT_NON_BLOCKING, ancillaryDataSupport);
   }
 
@@ -251,7 +215,7 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
       throw new SocketException("Socket is closed");
     }
 
-    FileDescriptor fdesc = state.validFdOrException();
+    FileDescriptor fdesc = core.validFdOrException();
     return AFUNIXSocketImpl.getOptionDefault(fdesc, optID, null);
   }
 
@@ -261,7 +225,7 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
       throw new SocketException("Socket is closed");
     }
 
-    FileDescriptor fdesc = state.validFdOrException();
+    FileDescriptor fdesc = core.validFdOrException();
     AFUNIXSocketImpl.setOptionDefault(fdesc, optID, value, null);
   }
 
@@ -270,82 +234,18 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
   }
 
   SocketAddress receive(ByteBuffer dst) throws IOException {
-    ByteBuffer socketAddressBuffer = AFUNIXSocketAddress.SOCKETADDRESS_BUFFER_TL.get();
-    int read = read(dst, socketAddressBuffer);
-    if (read > 0) {
-      return AFUNIXSocketAddress.ofInternal(socketAddressBuffer);
-    } else {
-      return null;
-    }
-  }
-
-  int read(ByteBuffer dst, ByteBuffer socketAddressBuffer) throws IOException {
-    int remaining = dst.remaining();
-    if (remaining == 0) {
-      return 0;
-    }
-    int options = 0;
-    FileDescriptor fdesc = state.validFdOrException();
-
-    ByteBuffer buf;
-    if (dst.isDirect()) {
-      buf = dst;
-    } else {
-      buf = getThreadLocalDirectByteBuffer(remaining);
-      remaining = buf.remaining();
-    }
-
-    int count = NativeUnixSocket.receive(fdesc, buf, remaining, socketAddressBuffer, options,
-        ancillaryDataSupport);
-    if (buf != dst) { // NOPMD
-      dst.limit(count);
-      buf.put(dst);
-    } else {
-      if (count < 0) {
-        throw new IllegalStateException();
-      }
-      dst.position(dst.position() + count);
-    }
-    return count;
+    return core.receive(dst);
   }
 
   int send(ByteBuffer src, SocketAddress target) throws IOException {
-    FileDescriptor fdesc = state.validFdOrException();
-    ByteBuffer addressTo;
-    if (target == null) {
-      addressTo = null;
-    } else {
-      addressTo = AFUNIXSocketAddress.SOCKETADDRESS_BUFFER_TL.get();
-      AFUNIXSocketAddress.unwrapAddressDirectBufferInternal(addressTo, target);
-    }
-
-    // accept "send buffer overflow" as packet loss
-    // and don't retry (which would slow things down quite a bit)
-    final int options = NativeUnixSocket.OPT_NON_BLOCKING;
-
-    int remaining = src.remaining();
-
-    int pos = src.position();
-    ByteBuffer buf;
-    if (src.isDirect()) {
-      buf = src;
-    } else {
-      buf = getThreadLocalDirectByteBuffer(remaining);
-      remaining = buf.remaining();
-      buf.put(src);
-      buf.position(0);
-    }
-
-    int written = NativeUnixSocket.send(fdesc, buf, remaining, addressTo, options,
-        ancillaryDataSupport);
-    if (written > 0) {
-      src.position(pos + written);
-    }
-
-    return written;
+    return core.write(src, target, 0);
   }
 
-  public int write(ByteBuffer src) throws IOException {
-    return send(src, null);
+  int read(ByteBuffer dst, ByteBuffer socketAddressBuffer) throws IOException {
+    return core.read(dst, socketAddressBuffer, 0);
+  }
+
+  int write(ByteBuffer src) throws IOException {
+    return core.write(src);
   }
 }

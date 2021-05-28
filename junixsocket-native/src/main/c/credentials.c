@@ -35,7 +35,7 @@ static int ucredFromPid(pid_t pid, struct xucred* cr)
         errno = EINVAL;
         return -1;
     }
-    struct kinfo_proc process = {};
+    struct kinfo_proc process = {0};
     size_t bufSize = sizeof(struct kinfo_proc);
 
     int path[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PID, pid};
@@ -175,11 +175,15 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
     {
         struct ucred cr;
         socklen_t len = sizeof(cr);
-        if(getsockopt(fd, SOL_SOCKET, SO_PEERCRED, &cr, &len) < 0) {
+        if(getsockopt(fd, SOL_SOCKET, SO_PEERCRED, &cr, &len) != 0) {
             if(socket_errno != EINVAL && errno != EOPNOTSUPP) {
                 _throwErrnumException(env, socket_errno, NULL);
                 return NULL;
             }
+        } else if((int)cr.uid == -1 && (int)cr.gid == -1 && cr.pid == 0) {
+            // On Linux, getting peer credentials from datagram sockets may fail
+            // without actually returning -1 on getsockopt.
+            return NULL;
         } else {
             jlongArray gidArray = (*env)->NewLongArray(env, 1);
             jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);

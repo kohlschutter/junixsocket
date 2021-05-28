@@ -36,8 +36,13 @@ public enum AFUNIXSocketCapability {
   /** Socket supports passing file descriptors via ancillary messages. */
   CAPABILITY_FILE_DESCRIPTORS(2), //
 
-  /** Socket addressing supports the abstract namespace (Linux/Windows). */
-  CAPABILITY_ABSTRACT_NAMESPACE(3);
+  /** Socket addressing supports the abstract namespace (Linux). */
+  CAPABILITY_ABSTRACT_NAMESPACE(3),
+
+  /** A pair of interconnected sockets can be created (not on Windows yet). */
+  CAPABILITY_SOCKETPAIR(4),
+
+  ; // end of list
 
   private final int bitmask;
 

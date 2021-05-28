@@ -103,9 +103,9 @@ static jbyteArray sockAddrUnToBytes(JNIEnv *env, struct sockaddr_un *addr) {
     jboolean allZeros = firstZero;
 
     for(socklen_t i=1; i<=len; i++) {
-        char *c = addr->sun_path[i];
+        char c = addr->sun_path[i];
         if(c == 0) {
-            if(terminator == -1) {
+            if(!firstZero && terminator == -1) {
                 terminator = i;
                 len = i;
             }
@@ -139,7 +139,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
 (JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jboolean peerName) {
     int handle = _getFD(env, fd);
 
-    struct sockaddr_un addr = {};
+    struct sockaddr_un addr = {0};
 
     socklen_t len = sizeof(struct sockaddr_un);
     int ret;
@@ -171,7 +171,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
 JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrUnToBytes
 (JNIEnv *env, jclass clazz CK_UNUSED, jobject directByteBuf) {
     struct jni_direct_byte_buffer_ref directByteBufRef =
-    getDirectByteBufferRef (env, directByteBuf, sizeof(struct sockaddr_un));
+    getDirectByteBufferRef (env, directByteBuf, 0, sizeof(struct sockaddr_un));
     if(directByteBufRef.size <= 0) {
         _throwException(env, kExceptionSocketException, "Invalid byte buffer");
         return NULL;
@@ -189,7 +189,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAdd
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAddrUn
 (JNIEnv *env, jclass clazz CK_UNUSED, jobject directByteBuf, jbyteArray addressBytes) {
     struct jni_direct_byte_buffer_ref directByteBufRef =
-    getDirectByteBufferRef (env, directByteBuf, sizeof(struct sockaddr_un));
+    getDirectByteBufferRef (env, directByteBuf, 0, sizeof(struct sockaddr_un));
     if(directByteBufRef.size <= 0) {
         _throwException(env, kExceptionSocketException, "Invalid byte buffer");
         return;

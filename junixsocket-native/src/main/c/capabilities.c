@@ -26,6 +26,7 @@ static int CAPABILITY_PEER_CREDENTIALS = (1 << 0);
 static int CAPABILITY_ANCILLARY_MESSAGES = (1 << 1);
 static int CAPABILITY_FILE_DESCRIPTORS = (1 << 2);
 static int CAPABILITY_ABSTRACT_NAMESPACE = (1 << 3);
+static int CAPABILITY_SOCKETPAIR = (1 << 4);
 #pragma GCC diagnostic pop
 
 /*
@@ -50,6 +51,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
 
 #if defined(_WIN32) || defined(__linux__)
     capabilities |= CAPABILITY_ABSTRACT_NAMESPACE;
+#endif
+
+#if !defined(_WIN32)
+    capabilities |= CAPABILITY_SOCKETPAIR;
 #endif
 
     return capabilities;

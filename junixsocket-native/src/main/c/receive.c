@@ -23,7 +23,7 @@
 #include "filedescriptors.h"
 #include "ancillary.h"
 #include "jniutil.h"
-#include "poll.h"
+#include "polling.h"
 
 static int optToFlags(jint opt) {
     int flags = 0;
@@ -41,6 +41,9 @@ ssize_t recv_wrapper(int handle, jbyte *buf, jint length, struct sockaddr_un *se
     do {
         if (senderBuf != NULL) {
             count = recvfrom(handle, (char*)buf, length, flags, (struct sockaddr *)senderBuf, senderBufLen);
+        } else if((opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_SOCKET) != 0 && flags == 0) {
+            // "read" can be used with pipes, too.
+            count = read(handle, (char*)buf, length);
         } else {
             count = recv(handle, (char*)buf, length, flags);
         }
@@ -224,10 +227,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    receive
- * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;ILjava/nio/ByteBuffer;ILorg/newsclub/net/unix/AncillaryDataSupport;)I
+ * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;IILjava/nio/ByteBuffer;ILorg/newsclub/net/unix/AncillaryDataSupport;)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
-(JNIEnv *env, jclass clazz CK_UNUSED, jobject fd, jobject buffer, jint length, jobject addressBuffer, jint opt, jobject ancSupp) {
+(JNIEnv *env, jclass clazz CK_UNUSED, jobject fd, jobject buffer, jint offset, jint length, jobject addressBuffer, jint opt, jobject ancSupp) {
 
     int handle = _getFD(env, fd);
     if (handle <= 0) {
@@ -236,7 +239,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
     }
 
     struct jni_direct_byte_buffer_ref dataBufferRef =
-    getDirectByteBufferRef (env, buffer, 0);
+    getDirectByteBufferRef (env, buffer, offset, 0);
     if(dataBufferRef.size == -1) {
         _throwException(env, kExceptionSocketException, "Cannot get buffer");
         return -1;
@@ -250,7 +253,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
 
 
     struct jni_direct_byte_buffer_ref addressBufferRef =
-    getDirectByteBufferRef (env, addressBuffer, sizeof(struct sockaddr_un));
+    getDirectByteBufferRef (env, addressBuffer, 0, sizeof(struct sockaddr_un));
     if(addressBufferRef.size == -1) {
         _throwException(env, kExceptionSocketException, "Cannot get addressBuffer");
         return -1;
@@ -263,13 +266,17 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
 
     // NOTE: if we receive messages from an unbound socket, the "sender" may be just a bunch of zeros.
 
-    if(count < 0) {
-        // read(2) returns -1 on error. Java throws an Exception.
-        count = -1;
-        if(!(*env)->ExceptionCheck(env)) {
-            _throwErrnumException(env, errno, fd);
+    if(count == -1) {
+        count = 0;
+        if(checkNonBlocking(handle, errno)) {
+             // no data on non-blocking socket
+        } else {
+            // read(2) returns -1 on error. Java throws an Exception.
+            if(!(*env)->ExceptionCheck(env)) {
+                _throwErrnumException(env, errno, fd);
+            }
+            goto end;
         }
-        goto end;
     }
 
 end:

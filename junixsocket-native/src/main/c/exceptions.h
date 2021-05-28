@@ -30,10 +30,13 @@ typedef enum {
     kExceptionMaxExcl
 } ExceptionType;
 
-CK_VISIBILITY_INTERNAL void _throwException(JNIEnv* env, ExceptionType exceptionType, char* message);
+void init_exceptions(JNIEnv *env);
+void destroy_exceptions(JNIEnv *env);
 
-CK_VISIBILITY_INTERNAL void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose);
+void _throwException(JNIEnv* env, ExceptionType exceptionType, char* message);
 
-CK_VISIBILITY_INTERNAL void _throwSockoptErrnumException(JNIEnv* env, int errnum, jobject fd);
+void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose);
+
+void _throwSockoptErrnumException(JNIEnv* env, int errnum, jobject fd);
 
 #endif /* exceptions_h */

@@ -137,6 +137,20 @@ public class ThroughputTest extends SocketTestBase {
   }
 
   @Test
+  public void testSocketChannel() throws Exception {
+    assumeTrue(ENABLED > 0, "Throughput tests are disabled");
+    assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
+    runTestSocketChannel(false);
+  }
+
+  @Test
+  public void testSocketChannelDirectBuffer() throws Exception {
+    assumeTrue(ENABLED > 0, "Throughput tests are disabled");
+    assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
+    runTestSocketChannel(true);
+  }
+
+  @Test
   @AvailabilityRequirement(classes = {"java.net.UnixDomainSocketAddress"}, //
       message = "This test requires Java 16 or later")
   public void testJEP380() throws Exception {
@@ -166,18 +180,41 @@ public class ThroughputTest extends SocketTestBase {
       return;
     }
 
+    ServerSocketChannel ssc;
+    // We use reflection so we can compile on older Java versions
+    try {
+      ssc = (ServerSocketChannel) ServerSocketChannel.class.getMethod("open", ProtocolFamily.class)
+          .invoke(null, StandardProtocolFamily.valueOf("UNIX"));
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
+
+    runTestSocketChannel("JEP380", sa, ssc, () -> SocketChannel.open(sa), direct);
+  }
+
+  @FunctionalInterface
+  interface SupplierWithException<T, E extends Exception> {
+    T get() throws E;
+  }
+
+  private void runTestSocketChannel(boolean direct) throws Exception {
+    final SocketAddress sa = getServerAddress();
+
+    AFUNIXSelectorProvider sp = AFUNIXSelectorProvider.getInstance();
+    AFUNIXServerSocketChannel ssc = sp.openServerSocketChannel();
+
+    runTestSocketChannel("junixsocket SocketChannel", sa, ssc, () -> sp.openSocketChannel(sa),
+        direct);
+  }
+
+  private void runTestSocketChannel(String implId, SocketAddress sa, ServerSocketChannel ssc,
+      SupplierWithException<SocketChannel, IOException> sscSupp, boolean direct) throws Exception {
+    final AtomicBoolean keepRunning = new AtomicBoolean(true);
+
     try (ServerThread serverThread = new ServerThread() {
-      ServerSocketChannel ssc;
 
       @Override
       protected AFUNIXServerSocket startServer() throws IOException {
-        // We use reflection so we can compile on older Java versions
-        try {
-          ssc = (ServerSocketChannel) ServerSocketChannel.class.getMethod("open",
-              ProtocolFamily.class).invoke(null, StandardProtocolFamily.valueOf("UNIX"));
-        } catch (Exception e) {
-          throw new IllegalStateException(e);
-        }
         ssc.bind(sa);
 
         return null;
@@ -194,10 +231,18 @@ public class ThroughputTest extends SocketTestBase {
         ByteBuffer bb = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE) : ByteBuffer.allocate(
             PAYLOAD_SIZE);
         try (SocketChannel sc = ssc.accept()) {
-          while (sc.read(bb) >= 0) {
-            bb.flip();
-            sc.write(bb);
-            bb.flip();
+          try {
+            while (sc.read(bb) >= 0) {
+              bb.flip();
+              sc.write(bb);
+              bb.flip();
+            }
+          } catch (SocketException e) {
+            if (keepRunning.get()) {
+              throw e;
+            } else {
+              // broken pipe is expected here
+            }
           }
         }
       }
@@ -208,12 +253,11 @@ public class ThroughputTest extends SocketTestBase {
       }
     }) {
 
-      AtomicBoolean keepRunning = new AtomicBoolean(true);
       Executors.newSingleThreadScheduledExecutor().schedule(() -> {
         keepRunning.set(false);
       }, NUM_SECONDS, TimeUnit.SECONDS);
 
-      try (SocketChannel sc = SocketChannel.open(sa)) {
+      try (SocketChannel sc = sscSupp.get()) {
         ByteBuffer bb = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE) : ByteBuffer.allocate(
             PAYLOAD_SIZE);
         bb.put(createTestData(PAYLOAD_SIZE));
@@ -238,8 +282,8 @@ public class ThroughputTest extends SocketTestBase {
 
         }
         time = System.currentTimeMillis() - time;
-        System.out.println("ThroughputTest (JEP380 direct=" + direct + "): " + ((1000f * readTotal
-            / time) / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE);
+        System.out.println("ThroughputTest (" + implId + " direct=" + direct + "): " + ((1000f
+            * readTotal / time) / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE);
       }
     }
   }
@@ -278,7 +322,7 @@ public class ThroughputTest extends SocketTestBase {
             while (!Thread.interrupted()) {
               ds.receive(dp);
               int read = dp.getLength();
-              if (read != PAYLOAD_SIZE) {
+              if (read != PAYLOAD_SIZE && read != 0) {
                 throw new IOException("Unexpected response length: " + read);
               }
               readTotal.addAndGet(dp.getLength());
@@ -360,7 +404,7 @@ public class ThroughputTest extends SocketTestBase {
             while (!Thread.interrupted()) {
               int read = ds.read(receiveBuffer);
               receiveBuffer.rewind();
-              if (read != PAYLOAD_SIZE) {
+              if (read != PAYLOAD_SIZE && read != 0) {
                 throw new IOException("Unexpected response length: " + read);
               }
               readTotal.addAndGet(read);

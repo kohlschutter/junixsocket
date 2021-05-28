@@ -22,14 +22,14 @@
 #include "exceptions.h"
 #include "filedescriptors.h"
 #include "address.h"
-#include "poll.h"
+#include "polling.h"
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    accept
- * Signature: ([BLjava/io/FileDescriptor;Ljava/io/FileDescriptor;JI)V
+ * Signature: ([BLjava/io/FileDescriptor;Ljava/io/FileDescriptor;JI)Z
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
                                                                           JNIEnv * env, jclass clazz CK_UNUSED, jbyteArray addr, jobject fdServer,
                                                                           jobject fd, jlong expectedInode, int timeout)
 {
@@ -37,7 +37,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
 
     struct sockaddr_un su;
     socklen_t suLength = initSu(env, &su, addr);
-    if(suLength == 0) return;
+    if(suLength == 0) return false;
 
     int serverHandle = _getFD(env, fdServer);
 
@@ -54,7 +54,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
                 _closeFd(env, fdServer, serverHandle);
                 _throwErrnumException(env,
                                       ECONNABORTED, NULL);
-                return;
+                return false;
             }
         }
     }
@@ -64,9 +64,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
         int ret = pollWithTimeout(env, fdServer, serverHandle, timeout);
         if(ret == 0) {
             _throwErrnumException(env, ETIMEDOUT, fdServer);
-            return;
+            return false;
         } else if(ret < 0) {
-            return;
+            return false;
         }
     }
 #endif
@@ -77,10 +77,14 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
         socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
     } while(socketHandle == -1 && (errnum = socket_errno) == EINTR);
     if(socketHandle < 0) {
-        _throwErrnumException(env, errnum, fdServer);
-        return;
+        if(errnum == EAGAIN && checkNonBlocking(serverHandle, errnum)) {
+            // non-blocking socket, nothing to accept
+        } else {
+            _throwErrnumException(env, errnum, fdServer);
+        }
+        return false;
     }
 
     _initFD(env, fd, socketHandle);
-    return;
+    return true;
 }
