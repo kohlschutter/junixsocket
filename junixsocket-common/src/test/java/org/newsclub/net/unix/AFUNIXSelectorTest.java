@@ -43,8 +43,7 @@ public class AFUNIXSelectorTest {
     assertFalse(as.isBlocking());
   }
 
-  private static void assertSelect(int expected, Selector sel, boolean block)
-      throws IOException {
+  private static void assertSelect(int expected, Selector sel, boolean block) throws IOException {
     assertEquals(expected, sel.selectNow());
     if (block) {
       assertEquals(expected, sel.select(1));

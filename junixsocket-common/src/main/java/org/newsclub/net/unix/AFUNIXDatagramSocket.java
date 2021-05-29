@@ -274,7 +274,7 @@ public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIX
   public AFUNIXDatagramChannel getChannel() {
     return channel;
   }
-  
+
   @Override
   public FileDescriptor getFileDescriptor() throws IOException {
     return impl.getFileDescriptor();

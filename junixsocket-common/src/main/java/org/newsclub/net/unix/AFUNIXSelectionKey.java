@@ -70,7 +70,7 @@ final class AFUNIXSelectionKey extends SelectionKey {
     sel.remove(this);
     cancelNoRemove();
   }
-  
+
   void cancelNoRemove() {
     if (!cancelled.compareAndSet(false, true) || !chann.isOpen()) {
       return;

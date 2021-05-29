@@ -28,7 +28,7 @@ import java.io.ObjectInput;
  * 
  * @author Christian Kohlschütter
  */
-public final class RemoteFileOutput extends RemoteFileDescriptorBase<FileOutputStream>  {
+public final class RemoteFileOutput extends RemoteFileDescriptorBase<FileOutputStream> {
   private static final long serialVersionUID = 1L;
 
   /**
