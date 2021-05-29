@@ -30,6 +30,7 @@ import java.nio.channels.Selector;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
@@ -107,6 +108,6 @@ public class AFUNIXSelectorTest {
     }.start();
 
     selector.wakeup();
-    assertEquals(0, cf.get());
+    assertEquals(0, cf.get(5, TimeUnit.SECONDS));
   }
 }

@@ -17,18 +17,24 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.net.SocketOption;
 import java.nio.channels.ServerSocketChannel;
 import java.util.Set;
 
-public final class AFUNIXServerSocketChannel extends ServerSocketChannel {
+public final class AFUNIXServerSocketChannel extends ServerSocketChannel implements
+    FileDescriptorAccess {
   private final AFUNIXServerSocket afSocket;
 
   AFUNIXServerSocketChannel(AFUNIXServerSocket socket) {
     super(AFUNIXSelectorProvider.getInstance());
     this.afSocket = socket;
+  }
+
+  public static AFUNIXServerSocketChannel open() throws IOException {
+    return AFUNIXSelectorProvider.provider().openServerSocketChannel();
   }
 
   @SuppressWarnings("unchecked")
@@ -59,7 +65,7 @@ public final class AFUNIXServerSocketChannel extends ServerSocketChannel {
   }
 
   @Override
-  public ServerSocketChannel bind(SocketAddress local, int backlog) throws IOException {
+  public AFUNIXServerSocketChannel bind(SocketAddress local, int backlog) throws IOException {
     afSocket.bind(local, backlog);
     return this;
   }
@@ -92,5 +98,10 @@ public final class AFUNIXServerSocketChannel extends ServerSocketChannel {
 
   AFUNIXSocketCore getAFCore() {
     return afSocket.getAFImpl().getCore();
+  }
+
+  @Override
+  public FileDescriptor getFileDescriptor() throws IOException {
+    return afSocket.getFileDescriptor();
   }
 }

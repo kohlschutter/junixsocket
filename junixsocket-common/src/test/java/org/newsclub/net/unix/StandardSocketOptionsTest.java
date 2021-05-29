@@ -84,7 +84,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
       state.testSocketOption(StandardSocketOptions.TCP_NODELAY, null, true, null);
       state.testSocketOption(StandardSocketOptions.SO_SNDBUF, null, 4096, null);
       state.testSocketOption(StandardSocketOptions.SO_LINGER, null, 123, null);
-      state.testSocketOption(StandardSocketOptions.SO_KEEPALIVE, null, true, null);
+      state.testSocketOption(StandardSocketOptions.SO_KEEPALIVE, null, null, null);
       // Make sure we acknowledge them as "covered" nevertheless
       state.coveredSupportedOptions.addAll(Set.of(StandardSocketOptions.TCP_NODELAY,
           StandardSocketOptions.SO_SNDBUF, StandardSocketOptions.SO_LINGER,
@@ -106,8 +106,8 @@ public class StandardSocketOptionsTest extends SocketTestBase {
             state.testSocketOption(StandardSocketOptions.SO_REUSEADDR, null, true, true);
             state.testSocketOption(StandardSocketOptions.SO_RCVBUF, null, 8192, null);
             state.testSocketOption(StandardSocketOptions.SO_SNDBUF, null, 8192, null);
-            state.testSocketOption(StandardSocketOptions.SO_LINGER, null, 123, 123);
-            state.testSocketOption(StandardSocketOptions.SO_KEEPALIVE, null, true, true);
+            state.testSocketOption(StandardSocketOptions.SO_LINGER, null, 123, null);
+            state.testSocketOption(StandardSocketOptions.SO_KEEPALIVE, null, true, null);
             try (OutputStream out = sock.getOutputStream()) {
               out.write(0xAF);
             }
@@ -121,6 +121,9 @@ public class StandardSocketOptionsTest extends SocketTestBase {
       }
     });
   }
+
+  private static final Set<SocketOption<?>> IGNORABLE_OPTIONS = Set.of(StandardSocketOptions.IP_TOS,
+      StandardSocketOptions.TCP_NODELAY, StandardSocketOptions.SO_KEEPALIVE);
 
   abstract class TestState<S extends Closeable> implements Closeable {
     protected final S sock;
@@ -136,8 +139,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
       Set<SocketOption<?>> sockSupportedOptions = supportedOptions();
 
       // Ignore these -- they're a standard option we have to silently "support" (by doing nothing)
-      coveredSupportedOptions.remove(StandardSocketOptions.IP_TOS);
-      coveredSupportedOptions.remove(StandardSocketOptions.TCP_NODELAY);
+      coveredSupportedOptions.removeAll(IGNORABLE_OPTIONS);
 
       for (SocketOption<?> opt : sockSupportedOptions) {
         if (!coveredSupportedOptions.contains(opt)) {
@@ -161,7 +163,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
           return getOption(option);
         });
         if (oldValExpected != null) {
-          assertEquals(oldValExpected, prevVal);
+          assertEquals(oldValExpected, prevVal, () -> "Unexpected old value for " + option);
         }
         try {
           assertEquals(sock, checkUnsupported(option, unsupportedIsNotAFailure, () -> {
@@ -172,7 +174,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
             return getOption(option);
           });
           if (newValExpected != null) {
-            assertEquals(newValExpected, newVal);
+            assertEquals(newValExpected, newVal, () -> "Unexpected new value for " + option);
           }
         } finally {
           // make sure to set old val again after the test

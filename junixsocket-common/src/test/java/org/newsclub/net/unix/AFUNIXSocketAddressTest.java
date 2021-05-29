@@ -57,10 +57,18 @@ public final class AFUNIXSocketAddressTest {
   @Test
   public void testPath() throws Exception {
     // as of junixsocket 2.4.0, a different canonical path doesn't matter
-    assertEquals("/tmp/whatever", AFUNIXSocketAddress.of(new File("/tmp/whatever")).getPath());
-    assertEquals("whatever", AFUNIXSocketAddress.of(new File("whatever")).getPath());
-    assertArrayEquals("/tmp/whatever".getBytes(Charset.defaultCharset()), AFUNIXSocketAddress.of(
-        new File("/tmp/whatever")).getPathAsBytes());
+    assertEquals("/tmp/whatever", AFUNIXSocketAddress.of(new File("/tmp/whatever")).getPath()
+        .replace(File.separatorChar, '/'));
+    assertEquals("whatever", AFUNIXSocketAddress.of(new File("whatever")).getPath().replace(
+        File.separatorChar, '/'));
+
+    byte[] bytes = AFUNIXSocketAddress.of(new File("/tmp/whatever")).getPathAsBytes();
+    for (int i = 0; i < bytes.length; i++) {
+      if (bytes[i] == (byte) File.separatorChar) {
+        bytes[i] = '/';
+      }
+    }
+    assertArrayEquals("/tmp/whatever".getBytes(Charset.defaultCharset()), bytes);
   }
 
   @Test

@@ -215,6 +215,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available(
                                                                              JNIEnv * env, jclass clazz CK_UNUSED, jobject fd)
 {
     int handle = _getFD(env, fd);
+    if (handle <= 0) {
+        _throwException(env, kExceptionSocketException, "Socket closed");
+        return 0;
+    }
 
     // the following would actually block and keep the peek'ed byte in the buffer
     //ssize_t count = recv(handle, &buf, 1, MSG_PEEK);
@@ -281,6 +285,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
     }
 
     for(int i=0; i<nfds;i++) {
+        // FIXME check for POLLERR?
         buf[i] &= eventToOp(pollFd[i].revents);
     }
     (*env)->SetIntArrayRegion(env, ropsObj, 0, nfds, buf);

@@ -35,6 +35,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 
+@AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_DATAGRAMS)
 public class AFUNIXDatagramSocketTest {
   private static void assertUnconnectedDatagramSocket(AFUNIXDatagramSocket ds) {
     assertFalse(ds.isClosed());
@@ -177,7 +178,8 @@ public class AFUNIXDatagramSocketTest {
       ds.setSoTimeout(50);
       ds.bind(dsAddr);
       assertThrows(SocketTimeoutException.class, () -> {
-        ds.peek(AFUNIXDatagramUtil.datagramWithCapacity(64));
+        DatagramPacket dp = AFUNIXDatagramUtil.datagramWithCapacity(64);
+        ds.peek(dp);
       });
     }
   }

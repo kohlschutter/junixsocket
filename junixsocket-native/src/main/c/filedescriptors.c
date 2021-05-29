@@ -175,7 +175,24 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_configureBloc
 #if defined(_WIN32)
      u_long mode = blocking ? 0 : 1;
      if(ioctlsocket(handle, FIONBIO, &mode) != NO_ERROR) {
-         _throwErrnumException(env, socket_errno, NULL);
+         if(socket_errno == WSAENOTSOCK) {
+             CK_IGNORE_CAST_BEGIN
+             HANDLE h = (HANDLE)_get_osfhandle(handle);
+             CK_IGNORE_CAST_END
+
+             if(handle) {
+                 mode = blocking ? PIPE_WAIT : PIPE_NOWAIT;
+                 if(SetNamedPipeHandleState(h, (void*)&mode, NULL, NULL) == 0) {
+                     _throwErrnumException(env, errno, NULL);
+                     return;
+                 }
+             } else {
+                 _throwErrnumException(env, errno, NULL);
+             }
+         } else {
+             _throwErrnumException(env, errno, NULL);
+             return;
+         }
      }
 #else
      int flags = fcntl(handle, F_GETFL);
@@ -194,9 +211,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_configureBloc
 jboolean checkNonBlocking(int handle, int errnum) {
 #if defined(_WIN32)
     CK_ARGUMENT_POTENTIALLY_UNUSED(handle);
-    return errnum == WSAEWOULDBLOCK;
+    return errnum == 0 || errnum == WSAEWOULDBLOCK || errnum == 232 /* named pipes may return this? */;
 #else
-    if (errnum == EAGAIN) {
+    if (errnum == EWOULDBLOCK || errnum == EAGAIN || errnum == EINPROGRESS) {
         int flags = fcntl(handle, F_GETFL);
         return (flags != -1 && (flags & O_NONBLOCK));
     } else {
@@ -204,3 +221,4 @@ jboolean checkNonBlocking(int handle, int errnum) {
     }
 #endif
 }
+

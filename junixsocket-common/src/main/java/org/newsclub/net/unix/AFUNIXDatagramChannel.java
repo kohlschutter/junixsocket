@@ -19,9 +19,9 @@ package org.newsclub.net.unix;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.ProtocolFamily;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketOption;
@@ -35,7 +35,8 @@ import java.util.Set;
  * 
  * @author Christian Kohlschütter
  */
-public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUNIXSocketExtensions {
+public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUNIXSomeSocket,
+    AFUNIXSocketExtensions {
   private final AFUNIXDatagramSocket afSocket;
 
   AFUNIXDatagramChannel(AFUNIXDatagramSocket socket) {
@@ -45,6 +46,14 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
 
   AFUNIXDatagramSocket getAFSocket() {
     return afSocket;
+  }
+
+  public static AFUNIXDatagramChannel open() throws IOException {
+    return AFUNIXSelectorProvider.provider().openDatagramChannel();
+  }
+
+  public static AFUNIXDatagramChannel open(ProtocolFamily family) throws IOException {
+    return AFUNIXSelectorProvider.provider().openDatagramChannel(family);
   }
 
   // CPD-OFF
@@ -61,13 +70,13 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
   }
 
   @Override
-  public DatagramChannel bind(SocketAddress local) throws IOException {
+  public AFUNIXDatagramChannel bind(SocketAddress local) throws IOException {
     afSocket.bind(local);
     return this;
   }
 
   @Override
-  public DatagramSocket socket() {
+  public AFUNIXDatagramSocket socket() {
     return afSocket;
   }
 
@@ -77,29 +86,29 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
   }
 
   @Override
-  public DatagramChannel connect(SocketAddress remote) throws IOException {
+  public AFUNIXDatagramChannel connect(SocketAddress remote) throws IOException {
     afSocket.connect(remote);
     return this;
   }
 
   @Override
-  public DatagramChannel disconnect() throws IOException {
+  public AFUNIXDatagramChannel disconnect() throws IOException {
     afSocket.disconnect();
     return this;
   }
 
   @Override
-  public SocketAddress getRemoteAddress() throws IOException {
+  public AFUNIXSocketAddress getRemoteAddress() throws IOException {
     return afSocket.getRemoteSocketAddress();
   }
 
   @Override
-  public SocketAddress getLocalAddress() throws IOException {
+  public AFUNIXSocketAddress getLocalAddress() throws IOException {
     return afSocket.getLocalSocketAddress();
   }
 
   @Override
-  public SocketAddress receive(ByteBuffer dst) throws IOException {
+  public AFUNIXSocketAddress receive(ByteBuffer dst) throws IOException {
     return afSocket.getAFImpl().receive(dst);
   }
 
@@ -190,7 +199,7 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
   }
 
   @Override
-  public <T> DatagramChannel setOption(SocketOption<T> name, T value) throws IOException {
+  public <T> AFUNIXDatagramChannel setOption(SocketOption<T> name, T value) throws IOException {
     Integer optionId = SocketOptionsMapper.resolve(name);
     if (optionId == null) {
       throw new UnsupportedOperationException("unsupported option");
@@ -218,5 +227,10 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
 
   AFUNIXSocketCore getAFCore() {
     return afSocket.getAFImpl().getCore();
+  }
+
+  @Override
+  public FileDescriptor getFileDescriptor() throws IOException {
+    return afSocket.getFileDescriptor();
   }
 }

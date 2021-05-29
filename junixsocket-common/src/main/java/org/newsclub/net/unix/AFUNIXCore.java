@@ -136,6 +136,11 @@ class AFUNIXCore extends CleanableState {
   }
 
   int write(ByteBuffer src, SocketAddress target, int options) throws IOException {
+    int remaining = src.remaining();
+    if (remaining == 0) {
+      return 0;
+    }
+
     FileDescriptor fdesc = validFdOrException();
     ByteBuffer addressTo;
     if (target == null) {
@@ -148,8 +153,6 @@ class AFUNIXCore extends CleanableState {
     // accept "send buffer overflow" as packet loss
     // and don't retry (which would slow things down quite a bit)
     options |= NativeUnixSocket.OPT_NON_BLOCKING;
-
-    int remaining = src.remaining();
 
     ByteBuffer buf;
     if (src.isDirect()) {

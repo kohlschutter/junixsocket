@@ -32,14 +32,16 @@ public final class AFUNIXPipe extends Pipe {
   private final AFUNIXCore sinkCore;
   private final SourceChannel sourceChannel;
   private final SinkChannel sinkChannel;
+  private final int options;
 
-  AFUNIXPipe(AFUNIXSelectorProvider provider) throws IOException {
+  AFUNIXPipe(AFUNIXSelectorProvider provider, boolean selectable) throws IOException {
     super();
 
     this.sourceCore = new AFUNIXCore(this);
     this.sinkCore = new AFUNIXCore(this);
 
-    NativeUnixSocket.initPipe(sourceCore.fd, sinkCore.fd);
+    boolean isSocket = NativeUnixSocket.initPipe(sourceCore.fd, sinkCore.fd, selectable);
+    this.options = isSocket ? 0 : NativeUnixSocket.OPT_NON_SOCKET;
 
     this.sourceChannel = new SourceChannel(provider) {
 
@@ -58,7 +60,7 @@ public final class AFUNIXPipe extends Pipe {
 
       @Override
       public int read(ByteBuffer dst) throws IOException {
-        return sourceCore.read(dst, null, NativeUnixSocket.OPT_NON_SOCKET);
+        return sourceCore.read(dst, null, options);
       }
 
       @Override
@@ -89,7 +91,7 @@ public final class AFUNIXPipe extends Pipe {
 
       @Override
       public int write(ByteBuffer src) throws IOException {
-        return sinkCore.write(src, null, NativeUnixSocket.OPT_NON_SOCKET);
+        return sinkCore.write(src, null, options);
       }
 
       @Override
@@ -102,6 +104,10 @@ public final class AFUNIXPipe extends Pipe {
         sinkCore.close();
       }
     };
+  }
+
+  public static AFUNIXPipe open() throws IOException {
+    return AFUNIXSelectorProvider.provider().openPipe();
   }
 
   @Override

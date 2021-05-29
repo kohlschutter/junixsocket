@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Defines certain methods that all junixsocket socket implementations share and extend beyond the
- * standard socket API.
+ * Defines certain methods that all junixsocket AF_UNIX socket implementations share and extend
+ * beyond the standard socket API.
  * 
  * The set of features include methods to support working with ancillary messages (such as file
  * descriptors) as well as socket credentials.

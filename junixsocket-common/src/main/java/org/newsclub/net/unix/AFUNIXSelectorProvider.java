@@ -22,8 +22,6 @@ import java.net.ProtocolFamily;
 import java.net.SocketAddress;
 import java.nio.channels.spi.AbstractSelector;
 import java.nio.channels.spi.SelectorProvider;
-import java.util.AbstractMap;
-import java.util.Map;
 
 public final class AFUNIXSelectorProvider extends SelectorProvider {
   private static final AFUNIXSelectorProvider INSTANCE = new AFUNIXSelectorProvider();
@@ -41,19 +39,31 @@ public final class AFUNIXSelectorProvider extends SelectorProvider {
   }
 
   @SuppressWarnings("resource")
-  public Map.Entry<AFUNIXSocketChannel, AFUNIXSocketChannel> openSocketChannelPair()
-      throws IOException {
-    AFUNIXSocket s1 = AFUNIXSocket.newInstance();
-    AFUNIXSocket s2 = AFUNIXSocket.newInstance();
+  public AFUNIXSocketPair<AFUNIXSocketChannel> openSocketChannelPair() throws IOException {
+    AFUNIXSocketChannel s1 = openSocketChannel();
+    AFUNIXSocketChannel s2 = openSocketChannel();
 
-    NativeUnixSocket.socketPair(NativeUnixSocket.SOCK_STREAM, s1.getAFImpl().getCore().fd, s2
-        .getAFImpl().getCore().fd);
+    NativeUnixSocket.socketPair(NativeUnixSocket.SOCK_STREAM, s1.getAFCore().fd, s2.getAFCore().fd);
 
-    s1.internalDummyConnect();
-    s2.internalDummyConnect();
+    s1.socket().internalDummyConnect();
+    s2.socket().internalDummyConnect();
 
-    return new AbstractMap.SimpleImmutableEntry<AFUNIXSocketChannel, AFUNIXSocketChannel>(s1
-        .getChannel(), s2.getChannel());
+    return new AFUNIXSocketPair<AFUNIXSocketChannel>(s1, s2);
+  }
+
+  @SuppressWarnings("resource")
+  public AFUNIXSocketPair<AFUNIXDatagramChannel> openDatagramChannelPair() throws IOException {
+    AFUNIXDatagramChannel s1 = openDatagramChannel(AFUNIXProtocolFamily.UNIX);
+    AFUNIXDatagramChannel s2 = openDatagramChannel(AFUNIXProtocolFamily.UNIX);
+
+    NativeUnixSocket.socketPair(NativeUnixSocket.SOCK_STREAM, s1.getAFCore().fd, s2.getAFCore().fd);
+
+    s1.socket().internalDummyBind();
+    s2.socket().internalDummyBind();
+    s1.socket().internalDummyConnect();
+    s2.socket().internalDummyConnect();
+
+    return new AFUNIXSocketPair<AFUNIXDatagramChannel>(s1, s2);
   }
 
   @Override
@@ -71,7 +81,11 @@ public final class AFUNIXSelectorProvider extends SelectorProvider {
 
   @Override
   public AFUNIXPipe openPipe() throws IOException {
-    return new AFUNIXPipe(this);
+    return new AFUNIXPipe(this, false);
+  }
+
+  public AFUNIXPipe openSelectablePipe() throws IOException {
+    return new AFUNIXPipe(this, true);
   }
 
   @Override

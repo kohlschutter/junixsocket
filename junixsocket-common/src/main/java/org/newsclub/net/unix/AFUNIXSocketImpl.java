@@ -498,6 +498,12 @@ class AFUNIXSocketImpl extends SocketImplShim {
     try {
       switch (optID) {
         case SocketOptions.SO_KEEPALIVE:
+          try {
+            return NativeUnixSocket.getSocketOptionInt(fdesc, optID) != 0 ? true : false;
+          } catch (SocketException e) {
+            // ignore
+            return false;
+          }
         case SocketOptions.TCP_NODELAY:
           return NativeUnixSocket.getSocketOptionInt(fdesc, optID) != 0 ? true : false;
         case SocketOptions.SO_TIMEOUT:
@@ -566,6 +572,12 @@ class AFUNIXSocketImpl extends SocketImplShim {
           NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectInteger(value));
           return;
         case SocketOptions.SO_KEEPALIVE:
+          try {
+            NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectBoolean(value));
+          } catch (SocketException e) {
+            // ignore
+          }
+          return;
         case SocketOptions.TCP_NODELAY:
           NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectBoolean(value));
           return;
@@ -689,5 +701,10 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   int write(ByteBuffer src) throws IOException {
     return core.write(src);
+  }
+
+  @Override
+  protected FileDescriptor getFileDescriptor() {
+    return core.fd;
   }
 }

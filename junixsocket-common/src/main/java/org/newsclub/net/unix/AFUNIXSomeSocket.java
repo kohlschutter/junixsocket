@@ -17,16 +17,14 @@
  */
 package org.newsclub.net.unix;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.Closeable;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(AFUNIXSocketCapabilityCondition.class)
-public @interface AFUNIXSocketCapabilityRequirement {
-  AFUNIXSocketCapability[] value();
+/**
+ * Marker interface that combines {@link AFUNIXSocketChannel}, {@link AFUNIXSocket},
+ * {@link AFUNIXDatagramChannel} and {@link AFUNIXDatagramSocket}.
+ * 
+ * @author Christian Kohlschütter
+ * @see AFUNIXSocketPair
+ */
+public interface AFUNIXSomeSocket extends Closeable, FileDescriptorAccess {
 }

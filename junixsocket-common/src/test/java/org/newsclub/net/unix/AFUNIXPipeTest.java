@@ -18,6 +18,7 @@
 package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -27,27 +28,38 @@ import java.nio.channels.Pipe.SourceChannel;
 import org.junit.jupiter.api.Test;
 
 public class AFUNIXPipeTest {
-
   @Test
   public void testPipe() throws IOException {
+    testPipe0(false);
+  }
+
+  @Test
+  public void testSelectablePipe() throws IOException {
+    testPipe0(true);
+  }
+
+  private void testPipe0(boolean selectable) throws IOException {
     ByteBuffer out = ByteBuffer.allocate(4);
     out.putInt(0x04030201);
     out.flip();
     ByteBuffer in = ByteBuffer.allocate(4);
 
-    AFUNIXPipe pipe = AFUNIXSelectorProvider.getInstance().openPipe();
+    AFUNIXSelectorProvider provider = AFUNIXSelectorProvider.provider();
+    AFUNIXPipe pipe = selectable ? provider.openSelectablePipe() : provider.openPipe();
     try (SinkChannel sink = pipe.sink(); //
         SourceChannel source = pipe.source()) {
 
-      source.configureBlocking(false);
-      assertEquals(0, source.read(in));
-      source.configureBlocking(true);
+      // source.configureBlocking(false);
+      // assertEquals(0, source.read(in));
+      // source.configureBlocking(true);
 
       sink.write(out);
-      source.read(in);
+      int nRead;
+      do {
+        nRead = source.read(in);
+      } while (nRead == 0);
       in.flip();
       assertEquals(0x04030201, in.getInt());
     }
   }
-
 }

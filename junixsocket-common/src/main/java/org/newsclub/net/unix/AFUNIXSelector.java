@@ -56,7 +56,7 @@ final class AFUNIXSelector extends AbstractSelector {
     AFUNIXPipe selectorPipe;
     synchronized (AFUNIXSelector.class) {
       if (sharedSelectorPipe == null) {
-        sharedSelectorPipe = AFUNIXSelectorProvider.getInstance().openPipe();
+        sharedSelectorPipe = AFUNIXSelectorProvider.getInstance().openSelectablePipe();
         sharedSelectorPipePollFd = new PollFd(sharedSelectorPipe.sourceFD());
       }
       selectorPipe = sharedSelectorPipe;
@@ -220,8 +220,12 @@ final class AFUNIXSelector extends AbstractSelector {
     final AFUNIXSelectionKey[] keys;
 
     private PollFd(FileDescriptor pipeSourceFd) {
+      this(pipeSourceFd, SelectionKey.OP_READ);
+    }
+
+    PollFd(FileDescriptor pipeSourceFd, int op) {
       this.fds = new FileDescriptor[] {pipeSourceFd};
-      this.ops = new int[] {SelectionKey.OP_READ};
+      this.ops = new int[] {op};
       this.rops = new int[1];
       this.keys = null;
     }

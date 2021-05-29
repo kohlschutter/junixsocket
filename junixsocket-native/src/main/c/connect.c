@@ -58,16 +58,21 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
         }
     }
 
-    int myErr = errno;
+    int errnum = errno;
 
     int ret;
     do {
         ret = connect(socketHandle, (struct sockaddr *)&su, suLength);
-    } while(ret == -1 && (myErr = socket_errno) == EINTR);
+    } while(ret == -1 && (errnum = socket_errno) == EINTR);
 
     if(ret == -1) {
-        _throwErrnumException(env, myErr, NULL);
-        return false;
+        if(checkNonBlocking(socketHandle, errnum)) {
+            // non-blocking connect
+            return false;
+        } else {
+            _throwErrnumException(env, errnum, NULL);
+            return false;
+        }
     }
 
     _initFD(env, fd, socketHandle);
@@ -104,3 +109,63 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_disconnect
     }
     return;
 }
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    finishConnect
+ * Signature: (Ljava/io/FileDescriptor;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_finishConnect
+ (JNIEnv *env, jclass clazz CK_UNUSED, jobject fd) {
+     int socketHandle = _getFD(env, fd);
+     if(socketHandle <= 0) {
+         _throwException(env, kExceptionSocketException, "Socket closed");
+         return false;
+     }
+
+     jboolean success = false;
+
+     struct pollfd* pollFd = calloc(1, sizeof(struct pollfd));
+     pollFd[0].fd = socketHandle;
+     pollFd[0].events = POLLOUT;
+
+#if defined(_WIN32)
+     int ret = WSAPoll(pollFd, 1, 0);
+#else
+     int ret = poll(pollFd, 1, 0);
+#endif
+     if(ret < 0) {
+         _throwSockoptErrnumException(env, socket_errno, NULL);
+         goto end;
+     } else if(ret == 0) {
+         goto end;
+     }
+
+     int result = 0;
+     socklen_t resultLen = sizeof(result);
+     ret = getsockopt(socketHandle, SOL_SOCKET, SO_ERROR, (void*)&result, &resultLen);
+     if(ret != 0) {
+         if (socket_errno == EINPROGRESS) {
+             goto end;
+         }
+         _throwSockoptErrnumException(env, socket_errno, NULL);
+         goto end;
+     } else if(result != 0) {
+         _throwSockoptErrnumException(env, result, NULL);
+         goto end;
+     }
+
+     struct sockaddr_un addr = {0};
+
+     socklen_t addrSize = sizeof(struct sockaddr_un);
+     ret = getpeername(socketHandle, (struct sockaddr *)&addr, &addrSize);
+     if(ret != 0) {
+         // not connected, ignore error
+         goto end;
+     }
+
+     success = true;
+ end:
+     free(pollFd);
+     return success;
+ }

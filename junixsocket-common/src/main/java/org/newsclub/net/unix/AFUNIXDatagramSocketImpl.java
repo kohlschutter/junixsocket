@@ -233,7 +233,7 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
     return NativeUnixSocket.peerCredentials(fd, new AFUNIXSocketCredentials());
   }
 
-  SocketAddress receive(ByteBuffer dst) throws IOException {
+  AFUNIXSocketAddress receive(ByteBuffer dst) throws IOException {
     return core.receive(dst);
   }
 

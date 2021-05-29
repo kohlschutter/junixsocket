@@ -54,7 +54,7 @@ final class SocketOptionsMapper {
     // it's necessarily faster but since we now have a single, central place where these mappings
     // are defined, it feels cleaner and better to not repeat yourself.
 
-    registerSocketOption(StandardSocketOptions.SO_KEEPALIVE, SocketOptions.SO_KEEPALIVE, true);
+    registerSocketOption(StandardSocketOptions.SO_KEEPALIVE, SocketOptions.SO_KEEPALIVE, false);
     registerSocketOption(StandardSocketOptions.SO_SNDBUF, SocketOptions.SO_SNDBUF, true);
     registerSocketOption(StandardSocketOptions.SO_RCVBUF, SocketOptions.SO_RCVBUF, true);
     registerSocketOption(StandardSocketOptions.SO_REUSEADDR, SocketOptions.SO_REUSEADDR, true);

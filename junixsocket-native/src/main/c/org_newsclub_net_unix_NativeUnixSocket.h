@@ -87,6 +87,14 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    finishConnect
+ * Signature: (Ljava/io/FileDescriptor;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_finishConnect
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    disconnect
  * Signature: (Ljava/io/FileDescriptor;)V
  */
@@ -264,10 +272,10 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_currentRMI
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    initPipe
- * Signature: (Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;)V
+ * Signature: (Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;Z)Z
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initPipe
-  (JNIEnv *, jclass, jobject, jobject);
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initPipe
+  (JNIEnv *, jclass, jobject, jobject, jboolean);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket

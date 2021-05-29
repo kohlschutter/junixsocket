@@ -26,7 +26,8 @@ static int CAPABILITY_PEER_CREDENTIALS = (1 << 0);
 static int CAPABILITY_ANCILLARY_MESSAGES = (1 << 1);
 static int CAPABILITY_FILE_DESCRIPTORS = (1 << 2);
 static int CAPABILITY_ABSTRACT_NAMESPACE = (1 << 3);
-static int CAPABILITY_SOCKETPAIR = (1 << 4);
+static int CAPABILITY_DATAGRAMS = (1 << 4);
+static int CAPABILITY_NATIVE_SOCKETPAIR = (1 << 5);
 #pragma GCC diagnostic pop
 
 /*
@@ -49,12 +50,16 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
     capabilities |= CAPABILITY_FILE_DESCRIPTORS;
 #endif
 
-#if defined(_WIN32) || defined(__linux__)
+#if defined(__linux__)
+    // despite earlier claims [1], they're not supported in Windows 10 (yet) [2]
+    // [1] https://devblogs.microsoft.com/commandline/af_unix-comes-to-windows/
+    // [2] https://github.com/microsoft/WSL/issues/4240
     capabilities |= CAPABILITY_ABSTRACT_NAMESPACE;
 #endif
 
 #if !defined(_WIN32)
-    capabilities |= CAPABILITY_SOCKETPAIR;
+    capabilities |= CAPABILITY_DATAGRAMS;
+    capabilities |= CAPABILITY_NATIVE_SOCKETPAIR;
 #endif
 
     return capabilities;

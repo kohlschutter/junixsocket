@@ -227,6 +227,12 @@ public class ThroughputTest extends SocketTestBase {
       }
 
       @Override
+      protected void onServerSocketClose() {
+        keepRunning.set(false);
+        super.onServerSocketClose();
+      }
+
+      @Override
       protected void acceptAndHandleConnection() throws IOException {
         ByteBuffer bb = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE) : ByteBuffer.allocate(
             PAYLOAD_SIZE);
@@ -288,6 +294,7 @@ public class ThroughputTest extends SocketTestBase {
     }
   }
 
+  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_DATAGRAMS)
   @Test
   public void testJUnixSocketDatagramPacket() throws Exception {
     AFUNIXSocketAddress dsAddr = AFUNIXSocketAddress.of(SocketTestBase.newTempFile());
@@ -362,16 +369,17 @@ public class ThroughputTest extends SocketTestBase {
   }
 
   @Test
+  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_DATAGRAMS)
   public void testJUnixSocketDatagramChannel() throws Exception {
     testJUnixSocketDatagramChannel(false);
   }
 
   @Test
+  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_DATAGRAMS)
   public void testJUnixSocketDatagramChannelDirect() throws Exception {
     testJUnixSocketDatagramChannel(true);
   }
 
-  @SuppressWarnings("resource")
   private void testJUnixSocketDatagramChannel(boolean direct) throws Exception {
     AFUNIXSocketAddress dsAddr = AFUNIXSocketAddress.of(SocketTestBase.newTempFile());
     AFUNIXSocketAddress dcAddr = AFUNIXSocketAddress.of(SocketTestBase.newTempFile());

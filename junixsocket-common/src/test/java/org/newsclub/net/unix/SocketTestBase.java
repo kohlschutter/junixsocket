@@ -23,6 +23,7 @@ import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.AfterAll;
@@ -174,6 +175,7 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     }
 
     protected void onServerSocketClose() {
+      stopAcceptingConnections();
     }
 
     public ServerSocket getServerSocket() {
@@ -193,15 +195,36 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     }
 
     protected void acceptAndHandleConnection() throws IOException {
+      boolean acceptSuccess = false;
+      sema.release();
       try (AFUNIXSocket sock = serverSocket.accept()) {
+        try {
+          sema.acquire();
+        } catch (InterruptedException e) {
+          throw (InterruptedIOException) new InterruptedIOException(e.getMessage()).initCause(e);
+        }
+        acceptSuccess = true;
+
         handleConnection(sock);
+      } catch (IOException e) {
+        if (!acceptSuccess) {
+          // ignore: connection closed before accept could complete
+          if (serverSocket.isClosed()) {
+            stopAcceptingConnections();
+          }
+        } else {
+          throw e;
+        }
+      } finally {
+        if (acceptSuccess) {
+          sema.release();
+        }
       }
     }
 
     @Override
     public final void run() {
       try {
-        sema.acquire();
         loop.set(true);
         onServerReady();
         while (loop.get()) {
@@ -216,8 +239,6 @@ public class SocketTestBase { // NOTE: needs to be public for junit
         }
       } catch (Error e) {
         error = e;
-      } finally {
-        sema.release();
       }
     }
 
@@ -235,12 +256,15 @@ public class SocketTestBase { // NOTE: needs to be public for junit
      * @throws Exception upon error.
      */
     public void checkException() throws Exception {
-      sema.acquire();
+      boolean serverStillRunning = !sema.tryAcquire(30, TimeUnit.SECONDS);
       if (error != null) {
         throw error;
       }
       if (exception != null) {
         throw exception;
+      }
+      if (serverStillRunning) {
+        throw new IllegalStateException("SocketTestBase server still running after 30 seconds");
       }
     }
   }

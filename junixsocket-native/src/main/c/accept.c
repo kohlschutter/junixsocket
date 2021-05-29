@@ -76,8 +76,9 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
     do {
         socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
     } while(socketHandle == -1 && (errnum = socket_errno) == EINTR);
-    if(socketHandle < 0) {
-        if(errnum == EAGAIN && checkNonBlocking(serverHandle, errnum)) {
+    
+    if(socketHandle == -1) {
+        if(checkNonBlocking(serverHandle, errnum)) {
             // non-blocking socket, nothing to accept
         } else {
             _throwErrnumException(env, errnum, fdServer);

@@ -84,6 +84,8 @@ final class NativeUnixSocket {
   static native boolean connect(final byte[] socketAddr, final FileDescriptor fd, long inode)
       throws IOException;
 
+  static native boolean finishConnect(FileDescriptor fd) throws IOException;
+
   static native void disconnect(final FileDescriptor fd) throws IOException;
 
   /**
@@ -115,9 +117,9 @@ final class NativeUnixSocket {
   static native int write(final FileDescriptor fd, byte[] buf, int off, int len,
       AncillaryDataSupport ancillaryDataSupport) throws IOException;
 
-  static native int receive(final FileDescriptor fd, ByteBuffer directBuffer, int offset, int length,
-      ByteBuffer directSocketAddressOut, int options, AncillaryDataSupport ancillaryDataSupport)
-      throws IOException;
+  static native int receive(final FileDescriptor fd, ByteBuffer directBuffer, int offset,
+      int length, ByteBuffer directSocketAddressOut, int options,
+      AncillaryDataSupport ancillaryDataSupport) throws IOException;
 
   static native int send(final FileDescriptor fd, ByteBuffer directBuffer, int offset, int length,
       ByteBuffer directSocketAddress, int options, AncillaryDataSupport ancillaryDataSupport)
@@ -174,7 +176,8 @@ final class NativeUnixSocket {
 
   static native Socket currentRMISocket();
 
-  static native void initPipe(FileDescriptor source, FileDescriptor sink) throws IOException;
+  static native boolean initPipe(FileDescriptor source, FileDescriptor sink, boolean selectable)
+      throws IOException;
 
   static native int poll(PollFd pollFd, int timeout);
 

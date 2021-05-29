@@ -106,6 +106,10 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
                 buflen);
     }
 #elif defined(_WIN32)
+    if(errnum == 232) {
+        // Windows may throw this error code. "Connection reset by peer"
+        errnum = ECONNRESET;
+    }
     if(errnum >= 10000) {
         // winsock error
         FormatMessage (FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,

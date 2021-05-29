@@ -39,8 +39,16 @@ public enum AFUNIXSocketCapability {
   /** Socket addressing supports the abstract namespace (Linux). */
   CAPABILITY_ABSTRACT_NAMESPACE(3),
 
-  /** A pair of interconnected sockets can be created (not on Windows yet). */
-  CAPABILITY_SOCKETPAIR(4),
+  /** Support for AF_UNIX datagrams (not on Windows yet). */
+  CAPABILITY_DATAGRAMS(4),
+
+  /**
+   * A pair of interconnected sockets can be created natively.
+   * 
+   * This currently not possible on Windows, but instead emulated via anonymous AF_INET ports when
+   * you use {@link AFUNIXSocketPair}.
+   */
+  CAPABILITY_NATIVE_SOCKETPAIR(5),
 
   ; // end of list
 

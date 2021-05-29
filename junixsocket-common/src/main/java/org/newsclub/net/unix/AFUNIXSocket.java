@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 
  * @author Christian Kohlschütter
  */
-public final class AFUNIXSocket extends Socket implements AFUNIXSocketExtensions {
+public final class AFUNIXSocket extends Socket implements AFUNIXSomeSocket, AFUNIXSocketExtensions {
   static String loadedLibrary; // set by NativeLibraryLoader
 
   private static Integer capabilities = null;
@@ -349,4 +349,27 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSocketExtensions
     return channel;
   }
 
+  @Override
+  public synchronized AFUNIXSocketAddress getRemoteSocketAddress() {
+    if (!isConnected()) {
+      return null;
+    }
+    return AFUNIXSocketAddress.getSocketAddress(getAFImpl().getFileDescriptor(), true);
+  }
+
+  @Override
+  public AFUNIXSocketAddress getLocalSocketAddress() {
+    if (isClosed()) {
+      return null;
+    }
+    if (!isBound()) {
+      return null;
+    }
+    return AFUNIXSocketAddress.getSocketAddress(getAFImpl().getFileDescriptor(), false);
+  }
+
+  @Override
+  public FileDescriptor getFileDescriptor() throws IOException {
+    return impl.getFileDescriptor();
+  }
 }

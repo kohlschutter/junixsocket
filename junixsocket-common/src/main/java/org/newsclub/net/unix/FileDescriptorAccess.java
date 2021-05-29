@@ -17,16 +17,14 @@
  */
 package org.newsclub.net.unix;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.FileDescriptor;
+import java.io.IOException;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(AFUNIXSocketCapabilityCondition.class)
-public @interface AFUNIXSocketCapabilityRequirement {
-  AFUNIXSocketCapability[] value();
+/**
+ * Something that has a {@link FileDescriptor}.
+ * 
+ * @author Christian Kohlschütter
+ */
+public interface FileDescriptorAccess {
+  FileDescriptor getFileDescriptor() throws IOException;
 }

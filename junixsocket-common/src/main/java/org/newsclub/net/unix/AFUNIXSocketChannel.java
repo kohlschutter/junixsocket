@@ -19,20 +19,43 @@ package org.newsclub.net.unix;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketOption;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public final class AFUNIXSocketChannel extends SocketChannel implements AFUNIXSocketExtensions {
+public final class AFUNIXSocketChannel extends SocketChannel implements AFUNIXSomeSocket,
+    AFUNIXSocketExtensions {
   private final AFUNIXSocket afSocket;
+  private final AtomicBoolean connectPending = new AtomicBoolean(false);
 
   AFUNIXSocketChannel(AFUNIXSocket socket) {
     super(AFUNIXSelectorProvider.getInstance());
     this.afSocket = socket;
+  }
+
+  public static AFUNIXSocketChannel open() throws IOException {
+    return AFUNIXSelectorProvider.provider().openSocketChannel();
+  }
+
+  public static AFUNIXSocketChannel open(SocketAddress remote) throws IOException {
+    @SuppressWarnings("resource")
+    AFUNIXSocketChannel sc = open();
+    try {
+      sc.connect(remote);
+    } catch (Throwable x) { // NOPMD
+      try {
+        sc.close();
+      } catch (Throwable suppressed) { // NOPMD
+        x.addSuppressed(suppressed);
+      }
+      throw x;
+    }
+    assert sc.isConnected();
+    return sc;
   }
 
   @SuppressWarnings("unchecked")
@@ -47,7 +70,7 @@ public final class AFUNIXSocketChannel extends SocketChannel implements AFUNIXSo
   }
 
   @Override
-  public <T> SocketChannel setOption(SocketOption<T> name, T value) throws IOException {
+  public <T> AFUNIXSocketChannel setOption(SocketOption<T> name, T value) throws IOException {
     Integer optionId = SocketOptionsMapper.resolve(name);
     if (optionId == null) {
       throw new UnsupportedOperationException("unsupported option");
@@ -63,53 +86,69 @@ public final class AFUNIXSocketChannel extends SocketChannel implements AFUNIXSo
   }
 
   @Override
-  public SocketChannel bind(SocketAddress local) throws IOException {
+  public AFUNIXSocketChannel bind(SocketAddress local) throws IOException {
     afSocket.bind(local);
     return this;
   }
 
   @Override
-  public SocketChannel shutdownInput() throws IOException {
+  public AFUNIXSocketChannel shutdownInput() throws IOException {
     afSocket.getAFImpl().shutdownInput();
     return this;
   }
 
   @Override
-  public SocketChannel shutdownOutput() throws IOException {
+  public AFUNIXSocketChannel shutdownOutput() throws IOException {
     afSocket.getAFImpl().shutdownOutput();
     return this;
   }
 
   @Override
-  public Socket socket() {
+  public AFUNIXSocket socket() {
     return afSocket;
   }
 
   @Override
   public boolean isConnected() {
-    return afSocket.isConnected();
+    boolean connected = afSocket.isConnected();
+    if (connected) {
+      connectPending.set(false);
+    }
+    return connected;
   }
 
   @Override
   public boolean isConnectionPending() {
-    return false;
+    return connectPending.get();
   }
 
   @Override
   public boolean connect(SocketAddress remote) throws IOException {
-    return afSocket.connect0(remote, 0);
+    boolean connected = afSocket.connect0(remote, 0);
+    if (!connected) {
+      connectPending.set(true);
+    }
+    return connected;
   }
 
   @Override
   public boolean finishConnect() throws IOException {
     if (isConnected()) {
       return true;
+    } else if (!isConnectionPending()) {
+      return false;
     }
-    return isConnected();
+
+    boolean connected = NativeUnixSocket.finishConnect(afSocket.getFileDescriptor())
+        || isConnected();
+    if (connected) {
+      connectPending.set(false);
+    }
+    return connected;
   }
 
   @Override
-  public SocketAddress getRemoteAddress() throws IOException {
+  public AFUNIXSocketAddress getRemoteAddress() throws IOException {
     return afSocket.getRemoteSocketAddress();
   }
 
@@ -142,7 +181,7 @@ public final class AFUNIXSocketChannel extends SocketChannel implements AFUNIXSo
   }
 
   @Override
-  public SocketAddress getLocalAddress() throws IOException {
+  public AFUNIXSocketAddress getLocalAddress() throws IOException {
     return afSocket.getLocalSocketAddress();
   }
 
@@ -202,4 +241,10 @@ public final class AFUNIXSocketChannel extends SocketChannel implements AFUNIXSo
   AFUNIXSocketCore getAFCore() {
     return afSocket.getAFImpl().getCore();
   }
+
+  @Override
+  public FileDescriptor getFileDescriptor() throws IOException {
+    return afSocket.getFileDescriptor();
+  }
+
 }

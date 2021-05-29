@@ -42,6 +42,7 @@ _Pragma("clang diagnostic pop")
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wint-to-pointer-cast\"") \
 _Pragma("clang diagnostic ignored \"-Wpointer-to-int-cast\"")
+_Pragma("clang diagnostic ignored \"-Wbad-function-cast\"")
 #   define CK_IGNORE_CAST_END \
 _Pragma("clang diagnostic pop")
 
@@ -81,8 +82,18 @@ _Pragma("clang diagnostic pop")
 #   define CK_IGNORE_SIGN_COMPARE_BEGIN
 #   define CK_IGNORE_SIGN_COMPARE_END
 
+#if __GNUC__
+#   define CK_IGNORE_CAST_BEGIN \
+_Pragma("GCC diagnostic push") \
+_Pragma("GCC diagnostic ignored \"-Wint-to-pointer-cast\"") \
+_Pragma("GCC diagnostic ignored \"-Wpointer-to-int-cast\"")
+_Pragma("GCC diagnostic ignored \"-Wbad-function-cast\"")
+#   define CK_IGNORE_CAST_END \
+_Pragma("GCC diagnostic pop")
+#else
 #   define CK_IGNORE_CAST_BEGIN
 #   define CK_IGNORE_CAST_END
+#endif
 
 #   define CK_IGNORE_USED_BUT_MARKED_UNUSED_BEGIN
 #   define CK_IGNORE_USED_BUT_MARKED_UNUSED_END

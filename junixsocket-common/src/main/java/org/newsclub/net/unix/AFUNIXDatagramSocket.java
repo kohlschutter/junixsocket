@@ -32,7 +32,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 
  * @author Christian Kohlschütter
  */
-public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIXSocketExtensions {
+public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIXSomeSocket,
+    AFUNIXSocketExtensions {
   private final AFUNIXDatagramSocketImpl impl;
   private final AncillaryDataSupport ancillaryDataSupport;
   private final AtomicBoolean created = new AtomicBoolean(false);
@@ -81,18 +82,26 @@ public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIX
         throw new SocketException("Socket is closed");
       }
       if (!isBound()) {
-        bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);
+        internalDummyBind();
       }
       getAFImpl().send(p);
     }
   }
 
+  void internalDummyConnect() throws SocketException {
+    super.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT);
+  }
+
+  void internalDummyBind() throws SocketException {
+    bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);
+  }
+
   @Override
   public synchronized void connect(SocketAddress addr) throws SocketException {
     if (!isBound()) {
-      bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);
+      internalDummyBind();
     }
-    super.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT);
+    internalDummyConnect();
     try {
       getAFImpl().connect(AFUNIXSocketAddress.preprocessSocketAddress(addr, null));
     } catch (SocketException e) {
@@ -103,7 +112,7 @@ public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIX
   }
 
   @Override
-  public synchronized SocketAddress getRemoteSocketAddress() {
+  public synchronized AFUNIXSocketAddress getRemoteSocketAddress() {
     if (!isConnected()) {
       return null;
     }
@@ -159,7 +168,7 @@ public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIX
   }
 
   @Override
-  public SocketAddress getLocalSocketAddress() {
+  public AFUNIXSocketAddress getLocalSocketAddress() {
     if (isClosed()) {
       return null;
     }
@@ -265,4 +274,10 @@ public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIX
   public AFUNIXDatagramChannel getChannel() {
     return channel;
   }
+  
+  @Override
+  public FileDescriptor getFileDescriptor() throws IOException {
+    return impl.getFileDescriptor();
+  }
+
 }

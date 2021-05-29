@@ -18,11 +18,10 @@
 package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
-import java.net.SocketException;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,15 +39,28 @@ public class AFUNIXSocketChannelTest {
     {
       AFUNIXSocketChannel sc = provider.openSocketChannel();
       sc.configureBlocking(false);
-      assertTrue(sc.connect(sa));
+      if (!sc.connect(sa)) {
+        // connect pending
+        assertTrue(sc.isConnected() || sc.isConnectionPending());
+        long now = System.currentTimeMillis();
+        do {
+          if (sc.finishConnect()) {
+            break;
+          }
+          try {
+            Thread.sleep(100);
+          } catch (InterruptedException e) {
+            break;
+          }
+          if ((System.currentTimeMillis() - now) > 1000) {
+            fail("Non-blocking connect not connected after 1s");
+            break;
+          }
+        } while (!Thread.interrupted());
+        assertTrue(sc.finishConnect());
+      }
       assertTrue(sc.isConnected());
-    }
-
-    {
-      AFUNIXSocketChannel sc = provider.openSocketChannel();
-      sc.configureBlocking(false);
-      assertThrows(SocketException.class, () -> sc.connect(sa)); // connection refused
-      assertFalse(sc.isConnected());
+      assertFalse(sc.isConnectionPending());
     }
   }
 

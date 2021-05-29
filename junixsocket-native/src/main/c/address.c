@@ -23,6 +23,9 @@
 #include "filedescriptors.h"
 #include "jniutil.h"
 
+// Either we have sun_len (and we can skip the null byte), or we add the null byte at the end
+static const socklen_t SUN_NAME_MAX_LEN = (socklen_t)(sizeof(struct sockaddr_un) - 2);
+
 /**
  * Initializes a sockaddr_un given a byte[] address, returning the socklen,
  * or 0 if an error occurred.
@@ -85,24 +88,17 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrUnLen
     return sizeof(struct sockaddr_un);
 }
 
-// Either we have sun_len (and we can skip the null byte), or we add the null byte at the end
-#define SUN_NAME_MAX_LEN (socklen_t)(sizeof(struct sockaddr_un) - 2)
-
-static jbyteArray sockAddrUnToBytes(JNIEnv *env, struct sockaddr_un *addr) {
-    socklen_t len;
+static jbyteArray sockAddrUnToBytes(JNIEnv *env, struct sockaddr_un *addr, socklen_t len) {
 #if defined(junixsocket_have_sun_len)
-    len = SUN_NAME_MAX_LEN;
     if(addr->sun_len < len) {
         len = addr->sun_len;
     }
-#else
-    len = SUN_NAME_MAX_LEN;
 #endif
     int terminator = -1;
     jboolean firstZero = (addr->sun_path[0] == 0);
     jboolean allZeros = firstZero;
 
-    for(socklen_t i=1; i<=len; i++) {
+    for(socklen_t i=1; i<len; i++) {
         char c = addr->sun_path[i];
         if(c == 0) {
             if(!firstZero && terminator == -1) {
@@ -160,7 +156,23 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
         return NULL;
     }
 
-    return sockAddrUnToBytes(env, &addr);
+    if(((struct sockaddr *)&addr)->sa_family == AF_UNIX) {
+#if defined(junixsocket_have_sun_len)
+        len -= 2;
+#else
+        len -= 1;
+#endif
+        return sockAddrUnToBytes(env, (struct sockaddr_un *)&addr, len);
+#if defined(_WIN32)
+    } else if(((struct sockaddr *)&addr)->sa_family == AF_INET) {
+        // only to support our "socketpair" workaround (which we expected to return NULL here on UNIX)
+        return NULL;
+#endif
+    } else {
+        _throwException(env, kExceptionSocketException,
+                        "Unsupported socket family");
+        return NULL;
+    }
 }
 
 /*
@@ -178,7 +190,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAdd
     }
 
     struct sockaddr_un *addr = (struct sockaddr_un *)directByteBufRef.buf;
-    return sockAddrUnToBytes(env, addr);
+    return sockAddrUnToBytes(env, addr, SUN_NAME_MAX_LEN);
 }
 
 /*

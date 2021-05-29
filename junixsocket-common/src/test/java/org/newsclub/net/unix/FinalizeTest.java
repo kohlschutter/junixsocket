@@ -82,10 +82,11 @@ public class FinalizeTest extends SocketTestBase {
             assumeTrue(linesBefore > 0);
           }
 
-          stopAcceptingConnections();
           future.complete(linesBefore);
         } catch (Exception e) {
           future.completeExceptionally(e);
+        } finally {
+          stopAcceptingConnections();
         }
       }
     }) {

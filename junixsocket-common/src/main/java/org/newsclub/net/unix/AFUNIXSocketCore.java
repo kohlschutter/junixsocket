@@ -18,7 +18,6 @@
 package org.newsclub.net.unix;
 
 import java.io.IOException;
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -52,7 +51,7 @@ class AFUNIXSocketCore extends AFUNIXCore {
   protected void unblockAccepts() {
   }
 
-  SocketAddress receive(ByteBuffer dst) throws IOException {
+  AFUNIXSocketAddress receive(ByteBuffer dst) throws IOException {
     ByteBuffer socketAddressBuffer = AFUNIXSocketAddress.SOCKETADDRESS_BUFFER_TL.get();
     int read = read(dst, socketAddressBuffer, 0);
     if (read > 0) {

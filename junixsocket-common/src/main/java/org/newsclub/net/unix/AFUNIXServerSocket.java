@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
@@ -31,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 
  * @author Christian Kohlschütter
  */
-public class AFUNIXServerSocket extends ServerSocket {
+public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAccess {
   private final AFUNIXSocketImpl implementation;
   private AFUNIXSocketAddress boundEndpoint;
   private final Closeables closeables = new Closeables();
@@ -300,5 +301,10 @@ public class AFUNIXServerSocket extends ServerSocket {
   @Override
   public AFUNIXServerSocketChannel getChannel() {
     return channel;
+  }
+
+  @Override
+  public FileDescriptor getFileDescriptor() throws IOException {
+    return implementation.getFileDescriptor();
   }
 }
