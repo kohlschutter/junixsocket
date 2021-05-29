@@ -190,7 +190,14 @@ typedef unsigned long socklen_t; /* 64-bits */
 #  else
 // This allows us to link against older glibc versions
 #    define memcpy memmove
-#    define stat(...) __xstat(1, __VA_ARGS__)
+#if defined (__aarch64__)
+#  define junixsocket_STAT_VER 0
+#elif defined (__x86_64__)
+#  define junixsocket_STAT_VER 1
+#else
+#  define junixsocket_STAT_VER 3
+#endif
+#    define stat(...) __xstat(junixsocket_STAT_VER, __VA_ARGS__)
 #  endif
 #endif
 
