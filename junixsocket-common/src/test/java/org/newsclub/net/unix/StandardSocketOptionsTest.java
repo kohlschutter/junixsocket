@@ -50,6 +50,12 @@ import com.kohlschutter.testutil.SoftAssertions;
  * @author Christian Kohlschütter
  */
 public class StandardSocketOptionsTest extends SocketTestBase {
+  private static final Set<SocketOption<?>> IGNORABLE_OPTIONS = Set.of( //
+      StandardSocketOptions.IP_TOS, //
+      StandardSocketOptions.TCP_NODELAY, //
+      StandardSocketOptions.SO_KEEPALIVE //
+  );
+
   private SoftAssertions softAssertions;
 
   @BeforeEach
@@ -121,9 +127,6 @@ public class StandardSocketOptionsTest extends SocketTestBase {
       }
     });
   }
-
-  private static final Set<SocketOption<?>> IGNORABLE_OPTIONS = Set.of(StandardSocketOptions.IP_TOS,
-      StandardSocketOptions.TCP_NODELAY, StandardSocketOptions.SO_KEEPALIVE);
 
   abstract class TestState<S extends Closeable> implements Closeable {
     protected final S sock;
