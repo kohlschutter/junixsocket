@@ -35,7 +35,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
     CK_ARGUMENT_POTENTIALLY_UNUSED(options);
 #endif
 
-    struct sockaddr_un su;
+    struct sockaddr_un su = {0};
     socklen_t suLength = initSu(env, &su, addr);
     if(suLength == 0) return -1;
 
@@ -213,11 +213,16 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
 #if !defined(_WIN32)
         int statRes = stat(su.sun_path, &fdStat);
         if(statRes == -1) {
-            myErr = errno;
-            _throwErrnumException(env, myErr, NULL);
-            return -1;
+            if (errno == EINVAL) {
+                inode = 0;
+            } else {
+                myErr = errno;
+                _throwErrnumException(env, myErr, NULL);
+                return -1;
+            }
+        } else {
+            inode = fdStat.st_ino;
         }
-        inode = fdStat.st_ino;
 #else
         inode = 0;
 #endif
