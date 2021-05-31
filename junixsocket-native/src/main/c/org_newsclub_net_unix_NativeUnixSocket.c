@@ -227,8 +227,8 @@ static const char *kExceptionClasses[kExceptionMaxExcl] = {
         "java/net/SocketException", // kExceptionSocketException
         "java/net/SocketTimeoutException", // kExceptionSocketTimeoutException
         "java/lang/IndexOutOfBoundsException", // kExceptionIndexOutOfBoundsException
-        "java/lang/IllegalStateException" // kExceptionIllegalStateException
-                "java/lang/NullPointerException" // kExceptionNullPointerException
+        "java/lang/IllegalStateException", // kExceptionIllegalStateException
+        "java/lang/NullPointerException" // kExceptionNullPointerException
         };
 
 static int _closeFd(JNIEnv * env, jobject fd, int handle);
