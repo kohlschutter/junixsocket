@@ -1,5 +1,9 @@
 # Noteworthy changes
 
+### _(2021-05-30)_ **junixsocket 2.3.4**
+
+ - Fix bind/stat on glibc-based Linux on aarch64 and RISC-V (regression from 2.3.2)
+
 ### _(2021-04-15)_ **junixsocket 2.3.3**
 
  - Add support for aarch64 on Apple Silicon Macs
