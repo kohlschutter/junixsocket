@@ -200,7 +200,16 @@ typedef unsigned long socklen_t; /* 64-bits */
 #  else
 // This allows us to link against older glibc versions
 #    define memcpy memmove
-#    define stat(...) __xstat(1, __VA_ARGS__)
+#    if !defined(_STAT_VER)
+#        if defined(__aarch64__) || defined(__riscv)
+#            define _STAT_VER 0
+#        elif defined(__x86_64__)
+#            define _STAT_VER 1
+#        else
+#            define _STAT_VER 3
+#        endif
+#    endif
+#    define stat(...) __xstat(_STAT_VER, __VA_ARGS__)
 #  endif
 #endif
 
