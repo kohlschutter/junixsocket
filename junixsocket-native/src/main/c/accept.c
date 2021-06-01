@@ -74,7 +74,14 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
     int socketHandle;
     int errnum = 0;
     do {
+#if defined(junixsocket_have_accept4)
+        socketHandle = accept4(serverHandle, (struct sockaddr *)&su, &suLength, SOCK_CLOEXEC);
+        if(socketHandle == -1 && errno == ENOSYS) {
+            socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
+        }
+#else
         socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
+#endif
     } while(socketHandle == -1 && (errnum = socket_errno) == EINTR);
     
     if(socketHandle == -1) {
@@ -85,6 +92,15 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
         }
         return false;
     }
+
+#if !defined(junixsocket_have_accept4)
+#  if defined(FD_CLOEXEC)
+    fcntl(socketHandle, F_SETFD, FD_CLOEXEC);
+#  elif defined(_WIN32)
+    HANDLE h = (HANDLE)_get_osfhandle(socketHandle);
+    SetHandleInformation(h, HANDLE_FLAG_INHERIT, 0);
+#  endif
+#endif
 
     _initFD(env, fd, socketHandle);
     return true;

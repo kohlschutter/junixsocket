@@ -106,7 +106,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
 #else
     int socket_vector[2];
 
+#if defined(junixsocket_have_socket_cloexec)
+    int ret = socketpair(AF_UNIX, type, SOCK_CLOEXEC, socket_vector);
+#else
     int ret = socketpair(AF_UNIX, type, 0, socket_vector);
+#endif
     if(ret == -1) {
         _throwErrnumException(env, socket_errno, NULL);
         return;

@@ -104,6 +104,10 @@ CK_IGNORE_UNUSED_MACROS_END
 int clock_gettime(int ignored CK_UNUSED, struct timespec *spec);
 # endif
 
+#  if !defined(WSA_FLAG_NO_HANDLE_INHERIT) // older Windows API
+#    define WSA_FLAG_NO_HANDLE_INHERIT 0x80
+#  endif
+
 #else // not windows:
 #  include <sys/ioctl.h>
 #  include <sys/socket.h>
@@ -124,6 +128,11 @@ int clock_gettime(int ignored CK_UNUSED, struct timespec *spec);
 #endif
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#if defined(SOCK_CLOEXEC)
+#define junixsocket_have_accept4
+#define junixsocket_have_socket_cloexec
 #endif
 
 // Linux
