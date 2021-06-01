@@ -35,17 +35,17 @@ import org.junit.jupiter.api.Test;
  * @author Christian Kohlschütter
  */
 public class AcceptTimeoutTest extends SocketTestBase {
-  private static final int TIMING_INACCURACY_MILLIS = 1000;
+  private static final int TIMING_INACCURACY_MILLIS = 5000;
 
   @Test
   public void testCatchTimeout() throws Exception {
-    final int timeoutMillis = 500;
+    final int timeoutMillis = 5000;
     assertTimeoutPreemptively(Duration.ofMillis(5 * timeoutMillis), () -> {
       try (AFUNIXServerSocket sock = startServer()) {
         long time = System.currentTimeMillis();
         sock.setSoTimeout(timeoutMillis);
         long actualTimeout = sock.getSoTimeout();
-        assertTrue(Math.abs(timeoutMillis - actualTimeout) <= 10,
+        assertTrue(Math.abs(timeoutMillis - actualTimeout) <= TIMING_INACCURACY_MILLIS,
             "We should roughly get the same timeout back that we set before, but was "
                 + actualTimeout + " instead of " + timeoutMillis);
         try (AFUNIXSocket socket = sock.accept()) {
@@ -64,7 +64,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
 
   @Test
   public void testTimeoutAfterDelay() throws Exception {
-    final int timeoutMillis = 500;
+    final int timeoutMillis = 5000;
     assertTimeoutPreemptively(Duration.ofMillis(2 * timeoutMillis), () -> {
       try (AFUNIXServerSocket sock = startServer()) {
         final int connectDelayMillis = 50;

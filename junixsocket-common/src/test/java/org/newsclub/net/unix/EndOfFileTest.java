@@ -93,7 +93,7 @@ public class EndOfFileTest {
 
     clientSocket.connect(AFUNIXSocketAddress.of(socketFile));
 
-    Socket serverSocket = serverAcceptFuture.get(100, TimeUnit.MILLISECONDS);
+    Socket serverSocket = serverAcceptFuture.get(5, TimeUnit.SECONDS);
 
     return new Socket[] {serverSocket, clientSocket};
   }
