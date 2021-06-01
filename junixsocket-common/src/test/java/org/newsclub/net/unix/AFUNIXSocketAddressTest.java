@@ -96,9 +96,11 @@ public final class AFUNIXSocketAddressTest {
   public void testByteConstructor() throws Exception {
     assertEquals("@", AFUNIXSocketAddress.of(new byte[] {0}).getPath());
     assertEquals("@..", AFUNIXSocketAddress.of(new byte[] {0, (byte) 128, (byte) 255}).getPath());
-    assertEquals("ü", AFUNIXSocketAddress.of("ü".getBytes(Charset.defaultCharset())).getPath());
-    assertEquals(new File("ü"), AFUNIXSocketAddress.of(new File("ü")).getFile());
-    assertEquals("ü", AFUNIXSocketAddress.of(new File("ü")).getPath());
+
+    assertEquals("abc.123", AFUNIXSocketAddress.of("abc.123".getBytes(AFUNIXSocketAddress
+        .addressCharset())).getPath());
+    assertEquals(new File("abc.123"), AFUNIXSocketAddress.of(new File("abc.123")).getFile());
+    assertEquals("abc.123", AFUNIXSocketAddress.of(new File("abc.123")).getPath());
   }
 
   @Test
