@@ -27,6 +27,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
@@ -47,6 +48,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
 
   private static final int SOCKADDR_UN_LENGTH = NativeUnixSocket.sockAddrUnLength();
   private static final Map<ByteBuffer, AFUNIXSocketAddress> ADDRESS_CACHE = new HashMap<>();
+  private static final Charset ADDRESS_CHARSET = Charset.defaultCharset();
 
   private final byte[] bytes;
   private InetAddress inetAddress = null; // only created on demand
@@ -88,7 +90,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @deprecated Use {@link AFUNIXSocketAddress#of(File, int)} instead.
    */
   public AFUNIXSocketAddress(final File socketFile, int port) throws SocketException {
-    this(socketFile.getPath().getBytes(Charset.defaultCharset()), port);
+    this(socketFile.getPath().getBytes(ADDRESS_CHARSET), port);
   }
 
   /**
@@ -174,7 +176,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(final File socketFile, int port) throws SocketException {
-    return of(socketFile.getPath().getBytes(Charset.defaultCharset()), port);
+    return of(socketFile.getPath().getBytes(ADDRESS_CHARSET), port);
   }
 
   /**
@@ -259,7 +261,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(final Path socketPath, int port) throws SocketException {
-    return of(socketPath.toString().getBytes(Charset.defaultCharset()), port);
+    return of(socketPath.toString().getBytes(ADDRESS_CHARSET), port);
   }
 
   /**
@@ -372,7 +374,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    */
   public static AFUNIXSocketAddress inAbstractNamespace(String name, int port)
       throws SocketException {
-    byte[] bytes = name.getBytes(Charset.defaultCharset());
+    byte[] bytes = name.getBytes(ADDRESS_CHARSET);
     byte[] addr = new byte[bytes.length + 1];
     System.arraycopy(bytes, 0, addr, 1, bytes.length);
     return new AFUNIXSocketAddress(addr, port);
@@ -403,27 +405,46 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
   }
 
   /**
-   * Returns the path to the UNIX domain socket, as a human-readable string.
+   * Returns the path to the UNIX domain socket, as a human-readable string using the default
+   * encoding.
    * 
-   * Zero-bytes are converted to '@', other non-printable bytes are converted to '.'
+   * For addresses in the abstract namespace, the US_ASCII encoding is used; zero-bytes are
+   * converted to '@', other non-printable bytes are converted to '.'
    * 
    * @return The path.
    * @see #getPathAsBytes()
    */
   public String getPath() {
+    if (bytes.length == 0) {
+      return "";
+    } else if (bytes[0] != 0) {
+      return new String(bytes, ADDRESS_CHARSET);
+    }
+
     byte[] by = bytes.clone();
-    boolean asciiOnly = (by[0] == 0);
     for (int i = 0; i < by.length; i++) {
       byte b = by[i];
       if (b == 0) {
         by[i] = '@';
-      } else if ((b >= 32 || (!asciiOnly && b < 0)) && b != 127 && (!asciiOnly || b < 127)) {
+      } else if (b >= 32 && b < 127) {
         // print as-is
       } else {
         by[i] = '.';
       }
     }
-    return new String(by, Charset.defaultCharset());
+    return new String(by, StandardCharsets.US_ASCII);
+  }
+
+  /**
+   * Returns the {@link Charset} used to encode/decode {@link AFUNIXSocketAddress}es.
+   * 
+   * This is usually the system default charset, unless that is {@link StandardCharsets#US_ASCII}
+   * (7-bit), in which case {@link StandardCharsets#ISO_8859_1} is used instead.
+   * 
+   * @return The charset.
+   */
+  public static Charset addressCharset() {
+    return ADDRESS_CHARSET;
   }
 
   /**
@@ -469,7 +490,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
     } else if (bytes.length == 0) {
       throw new FileNotFoundException("No name");
     }
-    return new File(new String(bytes, Charset.defaultCharset()));
+    return new File(new String(bytes, ADDRESS_CHARSET));
   }
 
   static AFUNIXSocketAddress preprocessSocketAddress(SocketAddress endpoint,
