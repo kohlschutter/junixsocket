@@ -227,6 +227,24 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
       </properties>
     </profile>
 
+    <profile>
+      <id>arch-amd64-OpenBSD</id>
+      <activation>
+        <os>
+          <arch>amd64</arch>
+          <name>OpenBSD</name>
+        </os>
+      </activation>
+      <properties>
+        <!-- Specify "junixsocket.native.aol" to override the architecture
+          AOL for this environment; see nar-maven-plugin for details -->
+        <junixsocket.native.aol>amd64-OpenBSD-clang</junixsocket.native.aol>
+        <junixsocket.native.llvm.target>current</junixsocket.native.llvm.target>
+        <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
+        <junixsocket.native.default.toolPath>${junixsocket.native.crossclang.toolPath}</junixsocket.native.default.toolPath>
+        <junixsocket.native.default.linkerName>clang</junixsocket.native.default.linkerName>
+      </properties>
+    </profile>
   </profiles>
 
   <dependencies>
