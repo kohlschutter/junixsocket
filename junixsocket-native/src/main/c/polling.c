@@ -121,8 +121,23 @@ jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
 }
 
 jint pollWithMillis(int handle, uint64_t millis) {
-    if(millis <= 0) {
+    if(millis == 0) {
+#if defined(junixsocket_accept_infinite_timeout_workaround)
+        int flags = fcntl(handle, F_GETFL);
+        if(flags != -1 && (flags & O_NONBLOCK)) {
+            return 1;
+        }
+
+        // On OpenBSD, it looks like we need to simulate "unlimited timeout" by this loop,
+        // otherwise we won't be able to disconnect any pending accepts
+        // (we could probably also just poll with -1)
+        jint ret;
+        do {
+            ret = pollWithMillis(handle, INT_MAX);
+        } while(ret == 0);
+#else
         return 1;
+#endif
     }
 
     if(millis > INT_MAX) {

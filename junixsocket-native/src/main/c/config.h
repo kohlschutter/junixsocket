@@ -180,6 +180,15 @@ extern "C" {
 typedef unsigned long socklen_t; /* 64-bits */
 #endif
 
+#if defined(__BSD_VISIBLE)
+#  if defined(__MACH__) || defined(__FreeBSD__) || defined(__NetBSD__)
+// not OpenBSD
+#  else
+// probably OpenBSD
+#  define junixsocket_accept_infinite_timeout_workaround
+#  endif
+#endif
+
 #if defined(__MACH__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__BSD_VISIBLE)
 #  define junixsocket_use_poll_for_accept
 //#define junixsocket_use_poll_interval_millis    1000
