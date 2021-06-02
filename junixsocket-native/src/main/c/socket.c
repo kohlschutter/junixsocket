@@ -57,6 +57,14 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_createSocket
 
 #if defined(junixsocket_have_socket_cloexec)
     handle = socket(AF_UNIX, type, SOCK_CLOEXEC);
+    if(handle == -1 && errno == EPROTONOSUPPORT) {
+        handle = socket(AF_UNIX, type, 0);
+        if(handle > 0) {
+#  if defined(FD_CLOEXEC)
+            fcntl(handle, F_SETFD, FD_CLOEXEC); // best effort
+#  endif
+        }
+    }
 #else
     handle = socket(AF_UNIX, type, 0);
 #endif
@@ -68,11 +76,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_createSocket
 #if !defined(junixsocket_have_accept4)
 #  if defined(FD_CLOEXEC)
     // macOS doesn't support SOCK_CLOEXEC
-    fcntl(handle, F_SETFD, FD_CLOEXEC);
+    fcntl(handle, F_SETFD, FD_CLOEXEC); // best effort
 #  elif defined(_WIN32)
     // WSASocketW does not support AF_UNIX, so we can't set this atomically like on Linux
     HANDLE h = (HANDLE)_get_osfhandle(handle);
-    SetHandleInformation(h, HANDLE_FLAG_INHERIT, 0);
+    SetHandleInformation(h, HANDLE_FLAG_INHERIT, 0); // best effort
 #  endif
 #endif
 
