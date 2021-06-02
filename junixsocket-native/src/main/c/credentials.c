@@ -226,8 +226,20 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
         socklen_t len = sizeof(cr);
         if(getsockopt(fd, SOL_SOCKET, SO_PEERCRED, &cr, &len) != 0) {
             if(socket_errno != EINVAL && errno != EOPNOTSUPP) {
-                _throwErrnumException(env, socket_errno, NULL);
-                return NULL;
+                if(errno == ENOTCONN) {
+                    int type;
+                    socklen_t typeLen = sizeof(type);
+                    if(getsockopt(fd, SOL_SOCKET, SO_TYPE, &type, &typeLen) == 0 && type == SOCK_DGRAM) {
+                        // This is OpenBSD's way of saying:
+                        // "I can't get credentials on non-connected datagram sockets"
+                    } else {
+                        _throwErrnumException(env, ENOTCONN, NULL);
+                        return NULL;
+                    }
+                } else {
+                    _throwErrnumException(env, socket_errno, NULL);
+                    return NULL;
+                }
             }
         } else if((jint)cr.uid == -1 && (jint)cr.gid == -1 && cr.pid == 0) {
             return NULL;
