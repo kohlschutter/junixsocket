@@ -27,6 +27,10 @@ CK_IGNORE_UNUSED_MACROS_BEGIN
 #define _GNU_SOURCE 1
 CK_IGNORE_UNUSED_MACROS_END
 
+#if defined(__NetBSD__) && !defined(_NETBSD_SOURCE)
+#  define _NETBSD_SOURCE
+#endif
+
 #include "jni/jni.h"
 
 #if defined(_WIN32)

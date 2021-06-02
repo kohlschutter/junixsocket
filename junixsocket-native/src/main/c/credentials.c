@@ -135,11 +135,24 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
         }
     }
 #  elif(__NetBSD__) // unless _NETBSD_SOURCE is defined
-    uid_t euid = 0;
-    gid_t egid = 0;
-    int ret = getpeereid(fd, &euid, &egid);
-    if(ret == 0) {
-        initUidGid(env, creds, -1, euid, egid);
+    jboolean peereidFallback = true;
+#    if defined(LOCAL_PEEREID)
+    {
+        struct unpcbid unp;
+        socklen_t unpLen = sizeof(struct unpcbid);
+        if(getsockopt(fd, SOL_LOCAL, LOCAL_PEEREID, &unp, &unpLen) != -1) {
+            peereidFallback = false;
+            initUidGid(env, creds, unp.unp_pid, unp.unp_euid, unp.unp_egid);
+        }
+    }
+#    endif
+    if(peereidFallback) {
+        uid_t euid = 0;
+        gid_t egid = 0;
+        int ret = getpeereid(fd, &euid, &egid);
+        if(ret == 0) {
+            initUidGid(env, creds, -1, euid, egid);
+        }
     }
 #  endif
 #  if defined(LOCAL_PEEREPID)
