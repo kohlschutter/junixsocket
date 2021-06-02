@@ -144,8 +144,12 @@ ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
             }
         } else {
 #if DEBUG
-            fprintf(stderr, "NativeUnixSocket_read: Unexpected cmsg level:%i type:%i\n", cmsg->cmsg_level, cmsg->cmsg_type);
-            fflush(stderr);
+            if(cmsg->cmsg_level == 0 && cmsg->cmsg_type == 0) {
+                continue;
+            } else {
+                fprintf(stderr, "NativeUnixSocket_read: Unexpected cmsg level:%i type:%i\n", cmsg->cmsg_level, cmsg->cmsg_type);
+                fflush(stderr);
+            }
 #endif
         }
     }
