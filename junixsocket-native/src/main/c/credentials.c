@@ -58,7 +58,6 @@ static int ucredFromPid(pid_t pid, struct xucred* cr)
 #endif
 
 #if defined(LOCAL_PEERCRED)
-
 static void initUidGidFromXucred(JNIEnv *env, jobject creds, struct xucred *cr) {
     jlongArray gidArray = (*env)->NewLongArray(env, cr->cr_ngroups);
     jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);
@@ -70,7 +69,19 @@ static void initUidGidFromXucred(JNIEnv *env, jobject creds, struct xucred *cr) 
     setLongFieldValue(env, creds, "uid", cr->cr_uid);
     setObjectFieldValue(env, creds, "gids", "[J", gidArray);
 }
+#endif
 
+#if defined(__NetBSD__) || defined(SO_PEERCRED)
+static void initUidGid(JNIEnv *env, jobject creds, jint pid, jint uid, jint gid) {
+    jlongArray gidArray = (*env)->NewLongArray(env, 1);
+    jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);
+    gids[0] = gid;
+    (*env)->ReleaseLongArrayElements(env, gidArray, gids, 0);
+
+    setLongFieldValue(env, creds, "uid", uid);
+    setLongFieldValue(env, creds, "pid", pid);
+    setObjectFieldValue(env, creds, "gids", "[J", gidArray);
+}
 #endif
 
 /*
@@ -84,7 +95,8 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
     CK_ARGUMENT_POTENTIALLY_UNUSED(env);
     CK_ARGUMENT_POTENTIALLY_UNUSED(fdesc);
 
-#if defined(LOCAL_PEERCRED) || defined(LOCAL_PEEREPID) || defined(LOCAL_PEEREUUID) ||defined(SO_PEERCRED)
+#if defined(LOCAL_PEERCRED) || defined(LOCAL_PEEREPID) || defined(LOCAL_PEEREUUID) || \
+    defined(SO_PEERCRED) || defined(__NetBSD__)
     int fd = _getFD(env, fdesc);
 
     jboolean peerCredOK = true;
@@ -121,6 +133,13 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
         if(peerCredOK) {
             initUidGidFromXucred(env, creds, &cr);
         }
+    }
+#  elif(__NetBSD__) // unless _NETBSD_SOURCE is defined
+    uid_t euid = 0;
+    gid_t egid = 0;
+    int ret = getpeereid(fd, &euid, &egid);
+    if(ret == 0) {
+        initUidGid(env, creds, -1, euid, egid);
     }
 #  endif
 #  if defined(LOCAL_PEEREPID)
@@ -180,19 +199,12 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
                 _throwErrnumException(env, socket_errno, NULL);
                 return NULL;
             }
-        } else if((int)cr.uid == -1 && (int)cr.gid == -1 && cr.pid == 0) {
+        } else if((jint)cr.uid == -1 && (jint)cr.gid == -1 && cr.pid == 0) {
             // On Linux, getting peer credentials from datagram sockets may fail
             // without actually returning -1 on getsockopt.
             return NULL;
         } else {
-            jlongArray gidArray = (*env)->NewLongArray(env, 1);
-            jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);
-            gids[0] = cr.gid;
-            (*env)->ReleaseLongArrayElements(env, gidArray, gids, 0);
-
-            setLongFieldValue(env, creds, "uid", cr.uid);
-            setLongFieldValue(env, creds, "pid", cr.pid);
-            setObjectFieldValue(env, creds, "gids", "[J", gidArray);
+            initUidGid(env, creds, (jint)cr.pid, (jint)cr.uid, (jint)cr.gid);
         }
     }
 #  endif

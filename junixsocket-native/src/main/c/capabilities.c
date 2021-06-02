@@ -19,16 +19,15 @@
 #include "config.h"
 #include "capabilities.h"
 
+CK_IGNORE_UNUSED_VARIABLE_BEGIN
 // see AFUNIXSocketCapability.java in junixsocket-common
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
 static int CAPABILITY_PEER_CREDENTIALS = (1 << 0);
 static int CAPABILITY_ANCILLARY_MESSAGES = (1 << 1);
 static int CAPABILITY_FILE_DESCRIPTORS = (1 << 2);
 static int CAPABILITY_ABSTRACT_NAMESPACE = (1 << 3);
 static int CAPABILITY_DATAGRAMS = (1 << 4);
 static int CAPABILITY_NATIVE_SOCKETPAIR = (1 << 5);
-#pragma GCC diagnostic pop
+CK_IGNORE_UNUSED_VARIABLE_END
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -41,7 +40,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
 
     int capabilities = 0;
 
-#if defined(LOCAL_PEERCRED) || defined(LOCAL_PEEREPID) || defined(LOCAL_PEEREUUID) || defined(SO_PEERCRED)
+#if defined(LOCAL_PEERCRED) || defined(LOCAL_PEEREPID) || defined(LOCAL_PEEREUUID) || \
+    defined(SO_PEERCRED) || defined(__NetBSD__)
     capabilities |= CAPABILITY_PEER_CREDENTIALS;
 #endif
 

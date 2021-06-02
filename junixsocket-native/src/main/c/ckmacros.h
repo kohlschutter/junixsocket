@@ -58,6 +58,12 @@ _Pragma("clang diagnostic ignored \"-Wunused-function\"")
 #   define CK_IGNORE_UNUSED_FUNCTION_END \
 _Pragma("clang diagnostic pop")
 
+#   define CK_IGNORE_UNUSED_VARIABLE_BEGIN \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wunused-variable\"")
+#   define CK_IGNORE_UNUSED_VARIABLE_END \
+_Pragma("clang diagnostic pop")
+
 /**
  * Wrap code with #if CK_EXCLUDED_FROM_STATIC_ANALYSIS and #endif
  * to exclude said portion from static analysis
@@ -100,6 +106,17 @@ _Pragma("GCC diagnostic pop")
 
 #   define CK_IGNORE_UNUSED_FUNCTION_BEGIN
 #   define CK_IGNORE_UNUSED_FUNCTION_END
+
+#if __GNUC__
+#   define CK_IGNORE_UNUSED_VARIABLE_BEGIN \
+_Pragma("GCC diagnostic push") \
+_Pragma("GCC diagnostic ignored \"-Wunused-variable\"")
+#   define CK_IGNORE_UNUSED_VARIABLE_END \
+_Pragma("GCC diagnostic pop")
+#else
+#   define CK_IGNORE_UNUSED_VARIABLE_BEGIN
+#   define CK_IGNORE_UNUSED_VARIABLE_END
+#endif
 
 #   define CK_EXCLUDED_FROM_STATIC_ANALYSIS 1
 
