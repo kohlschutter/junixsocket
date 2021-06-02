@@ -133,7 +133,8 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
 
     p.setLength(count);
 
-    p.setAddress(AFUNIXSocketAddress.ofInternal(socketAddressBuffer).getInetAddress());
+    AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofInternal(socketAddressBuffer);
+    p.setAddress(addr == null ? null : addr.getInetAddress());
     p.setPort(0);
   }
 

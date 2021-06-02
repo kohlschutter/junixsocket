@@ -325,7 +325,12 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
       if (address != null) {
         return address;
       } else {
-        return of(NativeUnixSocket.sockAddrUnToBytes(socketAddressBuffer));
+        byte[] sockAddrUnToBytes = NativeUnixSocket.sockAddrUnToBytes(socketAddressBuffer);
+        if (sockAddrUnToBytes == null) {
+          return null;
+        } else {
+          return of(sockAddrUnToBytes);
+        }
       }
     }
   }
