@@ -56,7 +56,7 @@ CK_IGNORE_UNUSED_MACROS_BEGIN
 #define junixsocket_have_ancillary // might be undef'ed below
 CK_IGNORE_UNUSED_MACROS_END
 
-#if !defined(uint64_t) && !defined(_INT64_TYPE) && !defined(_UINT64_T)
+#if !defined(uint64_t) && !defined(_INT64_TYPE) && !defined(_UINT64_T) && !defined(_UINT64_T_DEFINED_)
 #  ifdef _LP64
 typedef unsigned long uint64_t;
 #  else
@@ -120,6 +120,19 @@ int clock_gettime(int ignored CK_UNUSED, struct timespec *spec);
 // #  define SOCKET int
 // #  define INVALID_SOCKET -1
 #  define WIN32_NEEDS_CHARP
+#endif
+
+#if __has_include(<sys/cdefs.h>)
+#  include <sys/cdefs.h>
+#endif
+
+#if __has_include(<sys/ucred.h>)
+#  include <sys/ucred.h>
+#endif
+
+#if !defined(JUNIXSOCKET_HARDEN_CMSG_NXTHDR) && defined(__BSD_VISIBLE)
+// OpenBSD: use our harden logic to get rid of an alignment warning
+#  define JUNIXSOCKET_HARDEN_CMSG_NXTHDR 1
 #endif
 
 #include <sys/stat.h>

@@ -24,6 +24,11 @@
 #if defined(junixsocket_have_ancillary)
 
 #if JUNIXSOCKET_HARDEN_CMSG_NXTHDR
+
+#if !defined(CMSG_ALIGN)
+#  define CMSG_ALIGN(n) _ALIGN(n)
+#endif
+
 struct cmsghdr* junixsocket_CMSG_NXTHDR (struct msghdr *mhdr, struct cmsghdr *cmsg)
 {
     if((size_t)cmsg->cmsg_len >= sizeof(struct cmsghdr)) {

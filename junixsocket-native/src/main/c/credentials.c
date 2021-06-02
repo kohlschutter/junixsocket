@@ -203,7 +203,7 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
         }
     }
 #  endif
-#  if defined(SO_PEERCRED)
+#  if defined(SO_PEERCRED) && defined(__linux__)
     {
         struct ucred cr;
         socklen_t len = sizeof(cr);
@@ -215,6 +215,21 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
         } else if((jint)cr.uid == -1 && (jint)cr.gid == -1 && cr.pid == 0) {
             // On Linux, getting peer credentials from datagram sockets may fail
             // without actually returning -1 on getsockopt.
+            return NULL;
+        } else {
+            initUidGid(env, creds, (jint)cr.pid, (jint)cr.uid, (jint)cr.gid);
+        }
+    }
+#  elif defined(SO_PEERCRED) && defined(__BSD_VISIBLE)
+    {
+        struct sockpeercred cr;
+        socklen_t len = sizeof(cr);
+        if(getsockopt(fd, SOL_SOCKET, SO_PEERCRED, &cr, &len) != 0) {
+            if(socket_errno != EINVAL && errno != EOPNOTSUPP) {
+                _throwErrnumException(env, socket_errno, NULL);
+                return NULL;
+            }
+        } else if((jint)cr.uid == -1 && (jint)cr.gid == -1 && cr.pid == 0) {
             return NULL;
         } else {
             initUidGid(env, creds, (jint)cr.pid, (jint)cr.uid, (jint)cr.gid);
