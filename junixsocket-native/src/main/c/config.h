@@ -180,7 +180,7 @@ extern "C" {
 typedef unsigned long socklen_t; /* 64-bits */
 #endif
 
-#if defined(__MACH__) || defined(__FreeBSD__) || defined(__NetBSD__)
+#if defined(__MACH__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__BSD_VISIBLE)
 #  define junixsocket_use_poll_for_accept
 //#define junixsocket_use_poll_interval_millis    1000
 #  define junixsocket_use_poll_for_read
