@@ -169,8 +169,12 @@ public class PeerCredentialsTest extends SocketTestBase {
     if (credsSockets != null) {
       checkCredentialFeatures(credsSockets);
       if (credsDatagramSockets != null) {
-        assertEquals(credsSockets, credsDatagramSockets,
-            "The credentials received via Socket and via DatagramSocket should be the same");
+        if (credsDatagramSockets.isEmpty() && !credsSockets.isEmpty()) {
+          System.out.println("WARNING: No peer credentials for datagram sockets");
+        } else {
+          assertEquals(credsSockets, credsDatagramSockets,
+              "The credentials received via Socket and via DatagramSocket should be the same");
+        }
       }
     }
   }
