@@ -55,7 +55,7 @@ import com.kohlschutter.util.SystemPropertyUtil;
  * <ul>
  * <li><code>org.newsclub.net.unix.throughput-test.enabled</code> (0/1, default: 1)</li>
  * <li><code>org.newsclub.net.unix.throughput-test.payload-size</code> (bytes, e.g., 65536)</li>
- * <li><code>org.newsclub.net.unix.throughput-test.seconds</code> (default: 1)</li>
+ * <li><code>org.newsclub.net.unix.throughput-test.seconds</code> (default: 0)</li>
  * </ul>
  *
  * @author Christian Kohlschütter
@@ -64,9 +64,10 @@ public class ThroughputTest extends SocketTestBase {
   private static final int ENABLED = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.enabled", 1);
   private static final int PAYLOAD_SIZE = SystemPropertyUtil.getIntSystemProperty(
-      "org.newsclub.net.unix.throughput-test.payload-size", 8192);
+      "org.newsclub.net.unix.throughput-test.payload-size", 2048);
   private static final int NUM_SECONDS = SystemPropertyUtil.getIntSystemProperty(
-      "org.newsclub.net.unix.throughput-test.seconds", 1);
+      "org.newsclub.net.unix.throughput-test.seconds", 0);
+  private static final int NUM_MILLISECONDS = Math.max(50, NUM_SECONDS * 1000);
   private static final Random RANDOM = new SecureRandom();
 
   private static byte[] createTestData(int size) {
@@ -75,6 +76,14 @@ public class ThroughputTest extends SocketTestBase {
       buf[i] = (byte) (i % 256);
     }
     return buf;
+  }
+
+  private static void reportResults(String testType, String s) {
+    if (NUM_SECONDS == 0) {
+      // Tests are too short to be meaningful (other than for code coverage) -- do not report
+      return;
+    }
+    System.out.println("ThroughputTest (" + testType + "): " + s);
   }
 
   @Test
@@ -99,7 +108,7 @@ public class ThroughputTest extends SocketTestBase {
       AtomicBoolean keepRunning = new AtomicBoolean(true);
       Executors.newSingleThreadScheduledExecutor().schedule(() -> {
         keepRunning.set(false);
-      }, NUM_SECONDS, TimeUnit.SECONDS);
+      }, NUM_MILLISECONDS, TimeUnit.MILLISECONDS);
 
       try (AFUNIXSocket sock = connectToServer()) {
         byte[] buf = createTestData(PAYLOAD_SIZE);
@@ -129,8 +138,8 @@ public class ThroughputTest extends SocketTestBase {
           }
           time = System.currentTimeMillis() - time;
 
-          System.out.println("ThroughputTest (junixsocket byte[]): " + ((1000f * readTotal / time)
-              / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE);
+          reportResults("junixsocket byte[]", ((1000f * readTotal / time) / 1000f / 1000f)
+              + " MB/s for payload size " + PAYLOAD_SIZE);
         }
       }
     }
@@ -261,7 +270,7 @@ public class ThroughputTest extends SocketTestBase {
 
       Executors.newSingleThreadScheduledExecutor().schedule(() -> {
         keepRunning.set(false);
-      }, NUM_SECONDS, TimeUnit.SECONDS);
+      }, NUM_MILLISECONDS, TimeUnit.MILLISECONDS);
 
       try (SocketChannel sc = sscSupp.get()) {
         ByteBuffer bb = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE) : ByteBuffer.allocate(
@@ -288,8 +297,8 @@ public class ThroughputTest extends SocketTestBase {
 
         }
         time = System.currentTimeMillis() - time;
-        System.out.println("ThroughputTest (" + implId + " direct=" + direct + "): " + ((1000f
-            * readTotal / time) / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE);
+        reportResults(implId + " direct=" + direct, ((1000f * readTotal / time) / 1000f / 1000f)
+            + " MB/s for payload size " + PAYLOAD_SIZE);
       }
     }
   }
@@ -315,7 +324,7 @@ public class ThroughputTest extends SocketTestBase {
       AtomicBoolean keepRunning = new AtomicBoolean(true);
       Executors.newSingleThreadScheduledExecutor().schedule(() -> {
         keepRunning.set(false);
-      }, NUM_SECONDS, TimeUnit.SECONDS);
+      }, NUM_MILLISECONDS, TimeUnit.MILLISECONDS);
 
       AtomicLong readTotal = new AtomicLong();
       long sentTotal = 0;
@@ -361,10 +370,9 @@ public class ThroughputTest extends SocketTestBase {
 
       long readTotal0 = readTotal.get();
 
-      System.out.println("ThroughputTest (junixsocket DatagramPacket): " + ((1000f * readTotal0
-          / time) / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE + "; " + String
-              .format(Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0
-                  / (float) sentTotal))));
+      reportResults("junixsocket DatagramPacket", ((1000f * readTotal0 / time) / 1000f / 1000f)
+          + " MB/s for payload size " + PAYLOAD_SIZE + "; " + String.format(Locale.ENGLISH,
+              "%.1f%% packet loss", 100 * (1 - (readTotal0 / (float) sentTotal))));
     }
   }
 
@@ -398,7 +406,7 @@ public class ThroughputTest extends SocketTestBase {
       AtomicBoolean keepRunning = new AtomicBoolean(true);
       Executors.newSingleThreadScheduledExecutor().schedule(() -> {
         keepRunning.set(false);
-      }, NUM_SECONDS, TimeUnit.SECONDS);
+      }, NUM_MILLISECONDS, TimeUnit.MILLISECONDS);
 
       AtomicLong readTotal = new AtomicLong();
       long sentTotal = 0;
@@ -446,10 +454,9 @@ public class ThroughputTest extends SocketTestBase {
 
       long readTotal0 = readTotal.get();
 
-      System.out.println("ThroughputTest (junixsocket DatagramChannel direct=" + direct + "): "
-          + ((1000f * readTotal0 / time) / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE
-          + "; " + String.format(Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0
-              / (float) sentTotal))));
+      reportResults("junixsocket DatagramChannel direct=" + direct, ((1000f * readTotal0 / time)
+          / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE + "; " + String.format(
+              Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0 / (float) sentTotal))));
     }
   }
 
