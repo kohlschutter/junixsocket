@@ -1,5 +1,27 @@
 # Noteworthy changes
 
+### _(2021-06-xx)_ **junixsocket 2.4.0**
+
+ - New supported platforms: NetBSD and OpenBSD (AMD64-builds included by default)
+ - Add support for Datagram sockets
+ - Add support for socketpair (with IP-based emulation on Windows)
+ - Add support for non-blocking I/O
+ - Add support for Java NIO SocketChannel, DatagramChannel, ByteBuffer, Selector, Pipe, etc.
+ - Improved creation and reuse of AFUNIXSocketAddress instances
+ - Add basic support to wrap an AFUNIXSocketAddress as an InetAddress
+ - Add fast-path for single-byte read/write
+ - Significant internal code refactoring and cleanup (both Java and native C code)
+ - AFUNIXRegistry lookup can now take a timeout parameter (to coordinate between starting processes)
+ - Replaced the "finalize" logic with a custom Cleaner for Java 9 and above
+ - Fixed compatibility issue with OkHttpClient, add demo code
+ - Fixed a race condition when connecting to a registry that's just starting up.
+ - More test cases, increased unit test code coverage
+ - Improved selftest
+
+### _(2021-05-30)_ **junixsocket 2.3.4**
+
+ - Fix bind/stat on glibc-based Linux on aarch64 and RISC-V (regression from 2.3.2)
+
 ### _(2021-04-15)_ **junixsocket 2.3.3**
 
  - Add support for aarch64 on Apple Silicon Macs
