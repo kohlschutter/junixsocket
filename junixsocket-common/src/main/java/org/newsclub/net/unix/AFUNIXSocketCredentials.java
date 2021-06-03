@@ -106,7 +106,7 @@ public final class AFUNIXSocketCredentials implements Serializable {
   /**
    * Checks if neither of the possible peer credentials are set.
    * 
-   * @return @{code true} if no credentials set.
+   * @return {@code true} if no credentials set.
    */
   public boolean isEmpty() {
     return pid == -1 && uid == -1 && (gids == null || gids.length == 0) && uuid == null;
