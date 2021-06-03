@@ -2957,7 +2957,7 @@
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
-					"-Wl,--no-rosegment,--disable-new-dtags",
+					"-Wl,--no-rosegment,--disable-new-dtags,-znognustack,-znoseparate-code,-znorelro",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
@@ -2981,7 +2981,7 @@
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
-					"-Wl,--no-rosegment,--disable-new-dtags",
+					"-Wl,--no-rosegment,--disable-new-dtags,-znognustack,-znoseparate-code,-znorelro",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
