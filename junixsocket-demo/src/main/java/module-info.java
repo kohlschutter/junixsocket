@@ -8,8 +8,9 @@ module org.newsclub.net.unix.demo {
   requires java.sql;
   requires nanohttpd;
   requires okhttp3;
-  requires static com.kohlschutter.annotations.compiletime;
   requires com.kohlschutter.util;
+  requires static com.kohlschutter.annotations.compiletime;
+  requires static org.eclipse.jdt.annotation;
 
   exports org.newsclub.net.unix.demo.rmi.services to java.rmi;
   exports org.newsclub.net.unix.demo.rmi.fd to java.rmi;

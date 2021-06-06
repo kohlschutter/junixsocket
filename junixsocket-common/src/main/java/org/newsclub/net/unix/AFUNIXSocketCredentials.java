@@ -195,7 +195,6 @@ public final class AFUNIXSocketCredentials implements Serializable {
    *
    * @return The credentials, or {@code null} if unable to retrieve.
    */
-  @SuppressWarnings("resource")
   public static AFUNIXSocketCredentials remotePeerCredentials() {
     try {
       RemoteServer.getClientHost();

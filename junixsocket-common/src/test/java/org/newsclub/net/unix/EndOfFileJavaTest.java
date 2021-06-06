@@ -66,7 +66,6 @@ public class EndOfFileJavaTest extends EndOfFileTest {
     super.tearDown();
   }
 
-  @SuppressWarnings("resource")
   @Override
   Socket[] connectToServer() throws Exception {
     Socket clientSocket = new Socket();

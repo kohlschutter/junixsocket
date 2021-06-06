@@ -286,7 +286,6 @@ final class NativeLibraryLoader implements Closeable {
     throw e;
   }
 
-  @SuppressWarnings("resource")
   private List<LibraryCandidate> initLibraryCandidates(List<Throwable> suppressedThrowables) {
     List<LibraryCandidate> candidates = new ArrayList<>();
     try {
@@ -315,7 +314,6 @@ final class NativeLibraryLoader implements Closeable {
     return System.getProperty("os.arch") + "-" + System.getProperty("os.name").replaceAll(" ", "");
   }
 
-  @SuppressWarnings("resource")
   private List<LibraryCandidate> findLibraryCandidates(String artifactName,
       String libraryNameAndVersion, Class<?> providerClass) {
     String mappedName = System.mapLibraryName(libraryNameAndVersion);

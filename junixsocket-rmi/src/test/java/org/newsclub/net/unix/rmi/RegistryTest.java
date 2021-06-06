@@ -38,7 +38,6 @@ public class RegistryTest extends ShutdownHookTestBase {
     naming.shutdownRegistry();
   }
 
-  @SuppressWarnings("resource")
   @Test
   public void testExportAndBind() throws Exception {
     AFUNIXNaming naming = AFUNIXNaming.newPrivateInstance();

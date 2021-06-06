@@ -27,7 +27,6 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
  * @author Christian Kohlschütter
  */
 public final class SimpleRMIServer {
-  @SuppressWarnings("resource")
   public static void main(String[] args) throws Exception {
     AFUNIXNaming naming = AFUNIXNaming.getInstance();
     naming.createRegistry();

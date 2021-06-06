@@ -521,7 +521,6 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    * @throws RemoteException if the operation fails.
    * @throws AlreadyBoundException if there already was something bound at that name
    */
-  @SuppressWarnings("resource")
   public void exportAndBind(String name, Remote obj) throws RemoteException, AlreadyBoundException {
     exportObject(obj, getSocketFactory());
 
@@ -536,7 +535,6 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    * @param obj The object to export and bind.
    * @throws RemoteException if the operation fails.
    */
-  @SuppressWarnings("resource")
   public void exportAndRebind(String name, Remote obj) throws RemoteException {
     exportObject(obj, getSocketFactory());
 

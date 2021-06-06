@@ -63,7 +63,6 @@ public class AFUNIXSocketTest {
   @Test
   public void testCloseable() throws Exception {
     AtomicBoolean closed = new AtomicBoolean(false);
-    @SuppressWarnings("resource")
     Closeable closeable = new Closeable() {
 
       @Override

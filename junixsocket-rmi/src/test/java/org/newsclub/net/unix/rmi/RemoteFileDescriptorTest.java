@@ -67,7 +67,6 @@ public class RemoteFileDescriptorTest extends TestBase {
     }
   }
 
-  @SuppressWarnings("resource")
   @Test
   public void testWriteAndReadHello() throws Exception {
     TestService svc = lookupTestService();
@@ -93,7 +92,6 @@ public class RemoteFileDescriptorTest extends TestBase {
     }
   }
 
-  @SuppressWarnings("resource")
   @Test
   public void testFindSocketFactory() throws IOException, NotBoundException {
     TestService svc = lookupTestService();
@@ -104,7 +102,6 @@ public class RemoteFileDescriptorTest extends TestBase {
     assertEquals(namingSocketFactory(), factory);
   }
 
-  @SuppressWarnings("resource")
   @Test
   public void testReadWrite() throws IOException, NotBoundException {
     TestService svc = lookupTestService();

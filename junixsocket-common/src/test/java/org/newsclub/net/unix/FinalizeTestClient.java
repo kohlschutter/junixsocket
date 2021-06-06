@@ -31,7 +31,6 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 public class FinalizeTestClient {
-  @SuppressWarnings("resource")
   @SuppressFBWarnings({"RV_RETURN_VALUE_IGNORED"})
   public static void main(String[] args) throws Exception {
     AFUNIXSocket socket = AFUNIXSocket.connectTo(AFUNIXSocketAddress.of(new File(System.getProperty(

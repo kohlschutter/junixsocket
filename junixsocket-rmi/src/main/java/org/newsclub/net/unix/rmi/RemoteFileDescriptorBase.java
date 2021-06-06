@@ -108,7 +108,6 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
 
     int localPort;
     try {
-      @SuppressWarnings("resource")
       AFUNIXServerSocket serverSocket = (AFUNIXServerSocket) socketFactory.createServerSocket(0);
       localPort = serverSocket.getLocalPort();
 

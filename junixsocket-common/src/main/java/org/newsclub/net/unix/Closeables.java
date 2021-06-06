@@ -102,7 +102,6 @@ public final class Closeables implements Closeable {
    * @return {@code true} iff the closeable was added, {@code false} if it was {@code null} or
    *         already added before.
    */
-  @SuppressWarnings("resource")
   public synchronized boolean add(WeakReference<Closeable> closeable) {
     Closeable cl = closeable.get();
     if (cl == null) {
@@ -141,7 +140,6 @@ public final class Closeables implements Closeable {
    * @return {@code true} iff the closeable was removed, {@code fale} if it was {@code null} or not
    *         previously added.
    */
-  @SuppressWarnings("resource")
   public synchronized boolean remove(Closeable closeable) {
     if (list == null || closeable == null) {
       return false;

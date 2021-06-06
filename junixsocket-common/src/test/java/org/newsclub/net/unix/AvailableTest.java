@@ -33,7 +33,6 @@ public class AvailableTest extends SocketTestBase {
   private static final int TIME_TO_SLEEP = 100;
 
   private void receiveBytes(final Socket sock, final int expected) throws IOException {
-    @SuppressWarnings("resource")
     final InputStream in = sock.getInputStream();
 
     int toExpect = expected;
@@ -67,7 +66,6 @@ public class AvailableTest extends SocketTestBase {
   }
 
   private void sendBytes(final Socket sock) throws IOException {
-    @SuppressWarnings("resource")
     final OutputStream out = sock.getOutputStream();
     final byte[] buf = new byte[BYTES_SENT];
     for (int i = 0; i < BYTES_SENT; i++) {

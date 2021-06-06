@@ -78,7 +78,6 @@ public class EndOfFileTest {
     }
   }
 
-  @SuppressWarnings("resource")
   Socket[] connectToServer() throws Exception {
     AFUNIXSocket clientSocket = AFUNIXSocket.newInstance();
 

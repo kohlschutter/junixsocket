@@ -61,7 +61,6 @@ public class TestServiceImpl implements TestService, Closeable {
   }
 
   @Override
-  @SuppressWarnings("resource")
   public RemoteFileInput input() throws IOException {
     return new RemoteFileInput(socketFactory, new FileInputStream(tmpFile));
   }
@@ -85,7 +84,6 @@ public class TestServiceImpl implements TestService, Closeable {
   }
 
   @Override
-  @SuppressWarnings("resource")
   public RemoteFileOutput output() throws IOException {
     return new RemoteFileOutput(socketFactory, new FileOutputStream(tmpFile));
   }

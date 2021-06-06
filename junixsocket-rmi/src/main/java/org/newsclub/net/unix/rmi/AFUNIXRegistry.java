@@ -237,7 +237,6 @@ public final class AFUNIXRegistry implements Registry {
     AFUNIXNaming.unexportObject(this);
   }
 
-  @SuppressWarnings("resource")
   private void checkBound() throws RemoteException {
     boolean empty;
     synchronized (bound) {

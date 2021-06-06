@@ -282,7 +282,6 @@ public abstract class AFUNIXSocketServer {
 
         final Socket socket;
         try {
-          @SuppressWarnings("resource")
           Socket theSocket = server.accept();
           socket = theSocket;
         } catch (SocketException e) {

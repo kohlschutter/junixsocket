@@ -42,7 +42,6 @@ public class StreamServiceImpl implements StreamService, Closeable {
   public void close() throws IOException {
   }
 
-  @SuppressWarnings({"resource", "null"})
   @Override
   public RemoteCloseableImpl<RemoteFileInput> openForReading(File path) throws IOException {
     boolean permitted = mayRead(path);
@@ -51,10 +50,10 @@ public class StreamServiceImpl implements StreamService, Closeable {
       throw new AccessDeniedException("Not permitted");
     }
     FileInputStream fin = new FileInputStream(path);
-    return new RemoteCloseableImpl<>(socketFactory, new RemoteFileInput(socketFactory, fin));
+    return new RemoteCloseableImpl<RemoteFileInput>(socketFactory, new RemoteFileInput(
+        socketFactory, fin));
   }
 
-  @SuppressWarnings({"resource", "null"})
   @Override
   public RemoteCloseableImpl<RemoteFileOutput> openForWriting(File path) throws IOException {
     boolean permitted = mayWrite(path);
@@ -63,7 +62,8 @@ public class StreamServiceImpl implements StreamService, Closeable {
       throw new AccessDeniedException("Not permitted");
     }
     FileOutputStream fout = new FileOutputStream(path);
-    return new RemoteCloseableImpl<>(socketFactory, new RemoteFileOutput(socketFactory, fout));
+    return new RemoteCloseableImpl<RemoteFileOutput>(socketFactory, new RemoteFileOutput(
+        socketFactory, fout));
   }
 
   protected boolean mayRead(File path) {

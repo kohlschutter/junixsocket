@@ -156,7 +156,6 @@ public class StandardSocketOptionsTest extends SocketTestBase {
       }
     }
 
-    @SuppressWarnings("resource")
     private <T> void testSocketOption(SocketOption<T> option, T oldValExpected, T setVal,
         T newValExpected) {
       boolean unsupportedIsNotAFailure = (newValExpected == null);

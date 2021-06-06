@@ -39,7 +39,6 @@ public class TestBase extends ShutdownHookTestBase {
   }
 
   @BeforeEach
-  @SuppressWarnings("resource")
   public void setUp() throws IOException, AlreadyBoundException {
     // NOTE: for testing. You'd probably want to use AFUNIXNaming.getInstance()
     naming = AFUNIXNaming.newPrivateInstance();

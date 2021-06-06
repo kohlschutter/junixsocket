@@ -52,7 +52,6 @@ public class CancelAcceptTest extends SocketTestBase {
         serverSocketClosed = true;
       }
 
-      @SuppressWarnings("resource")
       @Override
       protected ExceptionHandlingDecision handleException(Exception e) {
         if (ignoreServerSocketClosedException.get() && e instanceof SocketException) {

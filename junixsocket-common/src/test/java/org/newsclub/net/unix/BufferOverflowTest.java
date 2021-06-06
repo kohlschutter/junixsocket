@@ -80,7 +80,6 @@ public class BufferOverflowTest {
     }
   }
 
-  @SuppressWarnings("resource")
   Socket[] connectToServer() throws Exception {
     AFUNIXSocket clientSocket = AFUNIXSocket.newInstance();
 

@@ -48,7 +48,7 @@ public class TcpNoDelayTest extends SocketTestBase {
       }
     }) {
 
-      try (@SuppressWarnings("resource")
+      try (
       AFUNIXSocket sock = connectToServer(AFUNIXSocket.newStrictInstance())) {
         boolean gotException = false;
         try {

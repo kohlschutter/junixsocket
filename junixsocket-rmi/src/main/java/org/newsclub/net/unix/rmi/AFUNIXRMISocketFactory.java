@@ -136,7 +136,6 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     return sf.socketDir.equals(socketDir);
   }
 
-  @SuppressWarnings("resource")
   @Override
   public Socket createSocket(String host, int port) throws IOException {
     final RMIClientSocketFactory cf = defaultClientFactory;
@@ -223,7 +222,6 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     getRmiService().returnPort(port);
   }
 
-  @SuppressWarnings("resource")
   @Override
   public ServerSocket createServerSocket(int port) throws IOException {
     if (port == 0) {
@@ -300,7 +298,6 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
   private final class ServerSocketCloseable implements Closeable {
     private final int port;
 
-    @SuppressWarnings("resource")
     private ServerSocketCloseable(AFUNIXServerSocket socket, int port) {
       this.port = port;
       synchronized (openServerSockets) {
@@ -308,7 +305,6 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
       }
     }
 
-    @SuppressWarnings("resource")
     @Override
     public void close() throws IOException {
       synchronized (openServerSockets) {

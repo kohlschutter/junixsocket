@@ -80,7 +80,6 @@ class AncillaryDataSupport implements Closeable {
 
       openReceivedFileDescriptors.put(fdesc, fds[i]);
 
-      @SuppressWarnings("resource")
       final Closeable cleanup = new Closeable() {
 
         @Override
