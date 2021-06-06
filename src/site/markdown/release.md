@@ -163,7 +163,7 @@ and try it on all supported platforms. The last output line should say "Selftest
   
 **IMPORTANT** Once released, it cannot be undone! Make sure you verify the staged artifact first!
   
-    mvn nexus-staging:release     
+    mvn nexus-staging:release -Prelease
 
 NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in Maven Central.
 

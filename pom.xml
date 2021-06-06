@@ -63,10 +63,10 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <junixsocket.native.aol></junixsocket.native.aol>
     <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
     <junixsocket.native.crossclang.toolPath>${project.basedir}/crossclang/bin/</junixsocket.native.crossclang.toolPath>
-    <junixsocket.native.llvm.target></junixsocket.native.llvm.target>
+    <junixsocket.native.llvm.target>default</junixsocket.native.llvm.target>
     <junixsocket.native.llvm.toolPath>${junixsocket.native.crossclang.toolPath}</junixsocket.native.llvm.toolPath>
-    <junixsocket.native.default.toolPath></junixsocket.native.default.toolPath>
-    <junixsocket.native.default.linkerName></junixsocket.native.default.linkerName>
+    <junixsocket.native.default.toolPath>${junixsocket.native.crossclang.toolPath}</junixsocket.native.default.toolPath>
+    <junixsocket.native.default.linkerName>clang</junixsocket.native.default.linkerName>
     <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
     <junixsocket.custom.arch></junixsocket.custom.arch>
 
@@ -108,6 +108,9 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
   <profiles>
     <profile>
       <id>release</id>
+      <properties>
+        <junixsocket.custom.arch></junixsocket.custom.arch>
+      </properties>
       <modules>
         <module>junixsocket-native</module>
         <module>junixsocket-native-cross</module>

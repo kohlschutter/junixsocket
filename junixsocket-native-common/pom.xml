@@ -20,6 +20,7 @@
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
     <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-jni</junixsocket.common.classifier.mac.x86_64>
     <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-jni</junixsocket.common.classifier.linux.x86_64>
+    <junixsocket.cross.default.scope>runtime</junixsocket.cross.default.scope>
   </properties>
 
   <build>
@@ -76,6 +77,7 @@
       </plugin>
     </plugins>
   </build>
+
   <profiles>
     <profile>
       <id>release</id>
@@ -89,6 +91,7 @@
         <junixsocket.cross.disabled>false</junixsocket.cross.disabled>
         <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-llvm-jni</junixsocket.common.classifier.mac.x86_64>
         <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.x86_64>
+        <junixsocket.cross.default.scope>provided</junixsocket.cross.default.scope>
       </properties>
       <dependencies>
         <dependency>
@@ -360,4 +363,16 @@
       </build>
     </profile>
   </profiles>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-native</artifactId>
+      <version>${project.version}</version>
+      <type>nar</type>
+      <classifier>default-jni</classifier>
+      <scope>${junixsocket.cross.default.scope}</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
 </project>
