@@ -56,11 +56,54 @@
       <plugin>
         <groupId>com.github.maven-nar</groupId>
         <artifactId>nar-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>init-nar-properties</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>nar-validate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <c>
+            <toolPath>${junixsocket.native.default.toolPath}</toolPath>
+          </c>
+          <linker>
+            <prefix>${junixsocket.native.default.toolPath}</prefix>
+            <toolPath></toolPath>
+            <name>${junixsocket.native.default.linkerName}</name>
+          </linker>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
         <executions>
+          <execution>
+            <id>crosscompile-default-clang</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skipInvocation>${junixsocket.cross.enabled}</skipInvocation>
+              <noLog>true</noLog>
+              <streamLogs>true</streamLogs>
+              <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+              </goals>
+              <projectsDirectory>${project.basedir}/../</projectsDirectory>
+              <pomIncludes>
+                <pomInclude>junixsocket-native-custom</pomInclude>
+              </pomIncludes>
+              <properties>
+                <junixsocket.custom.arch>${nar.aol}-jni</junixsocket.custom.arch>
+                <junixsocket.custom.shaded>default</junixsocket.custom.shaded>
+                <ignorant>${ignorant}</ignorant>
+              </properties>
+            </configuration>
+          </execution>
           <execution>
             <id>crosscompile-amd64-Windows10-clang</id>
             <goals>
@@ -726,4 +769,15 @@
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-native</artifactId>
+      <version>${project.version}</version>
+      <type>nar</type>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
 </project>

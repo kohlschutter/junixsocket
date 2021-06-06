@@ -43,7 +43,7 @@
       <artifactId>junixsocket-native-custom</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
-      <classifier>${junixsocket.custom.arch}</classifier>
+      <classifier>${junixsocket.custom.classifier}</classifier>
       <optional>true</optional>
     </dependency>
   </dependencies>

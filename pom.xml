@@ -69,6 +69,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <junixsocket.native.default.linkerName>clang</junixsocket.native.default.linkerName>
     <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
     <junixsocket.custom.arch></junixsocket.custom.arch>
+    <junixsocket.custom.classifier>default</junixsocket.custom.classifier>
 
     <kohlschutter.multirelease.java8.release>7</kohlschutter.multirelease.java8.release>
   </properties>
@@ -108,15 +109,16 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
   <profiles>
     <profile>
       <id>release</id>
-      <properties>
-        <junixsocket.custom.arch></junixsocket.custom.arch>
-      </properties>
       <modules>
         <module>junixsocket-native</module>
         <module>junixsocket-native-cross</module>
         <module>junixsocket-native-custom</module>
         <module>junixsocket-native-common</module>
       </modules>
+      <properties>
+        <junixsocket.custom.arch></junixsocket.custom.arch>
+        <junixsocket.custom.classifier></junixsocket.custom.classifier>
+      </properties>
     </profile>
     <profile>
       <id>with-native</id>
@@ -127,9 +129,14 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
       </activation>
       <modules>
         <module>junixsocket-native</module>
+        <module>junixsocket-native-cross</module>
         <module>junixsocket-native-custom</module>
         <module>junixsocket-native-common</module>
       </modules>
+      <properties>
+        <junixsocket.custom.arch></junixsocket.custom.arch>
+        <junixsocket.custom.classifier></junixsocket.custom.classifier>
+      </properties>
     </profile>
     <profile>
       <id>cross</id>

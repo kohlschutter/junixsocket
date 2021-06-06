@@ -19,10 +19,22 @@
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
     <junixsocket.custom.arch></junixsocket.custom.arch>
+    <junixsocket.custom.shaded>${junixsocket.custom.arch}</junixsocket.custom.shaded>
   </properties>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-check</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -59,10 +71,10 @@
                 </filter>
               </filters>
               <shadedArtifactAttached>true</shadedArtifactAttached>
-              <shadedClassifierName>${junixsocket.custom.arch}</shadedClassifierName>
+              <shadedClassifierName>${junixsocket.custom.shaded}</shadedClassifierName>
               <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
               <transformers>
-                <!-- maven-shade-plugin actively prevents inclusion of module-info, 
+                <!-- maven-shade-plugin actively prevents inclusion of module-info,
                   so let's force it back in -->
                 <transformer
                   implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
