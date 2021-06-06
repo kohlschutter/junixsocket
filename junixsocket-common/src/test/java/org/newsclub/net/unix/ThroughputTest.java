@@ -23,15 +23,21 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ProtocolFamily;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.StandardProtocolFamily;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.DatagramChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.SelectorProvider;
 import java.security.SecureRandom;
 import java.util.Locale;
 import java.util.Random;
@@ -40,7 +46,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import com.kohlschutter.testutil.AvailabilityRequirement;
 import com.kohlschutter.util.SystemPropertyUtil;
@@ -60,6 +68,7 @@ import com.kohlschutter.util.SystemPropertyUtil;
  *
  * @author Christian Kohlschütter
  */
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class ThroughputTest extends SocketTestBase {
   private static final int ENABLED = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.enabled", 1);
@@ -146,17 +155,17 @@ public class ThroughputTest extends SocketTestBase {
   }
 
   @Test
-  public void testSocketChannel() throws Exception {
+  public void testJUnixSocketChannel() throws Exception {
     assumeTrue(ENABLED > 0, "Throughput tests are disabled");
     assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
-    runTestSocketChannel(false);
+    runTestJUnixSocketChannel(false);
   }
 
   @Test
-  public void testSocketChannelDirectBuffer() throws Exception {
+  public void testJUnixSocketChannelDirectBuffer() throws Exception {
     assumeTrue(ENABLED > 0, "Throughput tests are disabled");
     assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
-    runTestSocketChannel(true);
+    runTestJUnixSocketChannel(true);
   }
 
   @Test
@@ -177,17 +186,20 @@ public class ThroughputTest extends SocketTestBase {
     runTestJEP380(true);
   }
 
-  private void runTestJEP380(boolean direct) throws Exception {
-    final SocketAddress sa;
+  private static SocketAddress jep380SocketAddress(String path) throws IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, SecurityException {
     try {
       // We use reflection so we can compile on older Java versions
       Class<?> klazz = Class.forName("java.net.UnixDomainSocketAddress");
-      sa = (SocketAddress) klazz.getMethod("of", String.class).invoke(null, getServerAddress()
-          .getPath());
-    } catch (ClassNotFoundException e) {
+      return (SocketAddress) klazz.getMethod("of", String.class).invoke(null, path);
+    } catch (NoSuchMethodException | ClassNotFoundException e) {
       assumeTrue(false, "java.net.UnixDomainSocketAddress (JEP 380) not supported by JVM");
-      return;
+      return null;
     }
+  }
+
+  private void runTestJEP380(boolean direct) throws Exception {
+    SocketAddress sa = jep380SocketAddress(getServerAddress().getPath());
 
     ServerSocketChannel ssc;
     // We use reflection so we can compile on older Java versions
@@ -198,7 +210,32 @@ public class ThroughputTest extends SocketTestBase {
       throw new IllegalStateException(e);
     }
 
-    runTestSocketChannel("JEP380", sa, ssc, () -> SocketChannel.open(sa), direct);
+    runTestSocketChannel("JEP380 SocketChannel", sa, ssc, () -> SocketChannel.open(sa), direct);
+  }
+
+  @Test
+  @SystemPropertyRequirement(property = "org.newsclub.net.unix.throughput-test.ip.enabled", value = "1")
+  public void testTCPLoopback() throws Exception {
+    assumeTrue(ENABLED > 0, "Throughput tests are disabled");
+    assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
+    runTestTCPLoopback(false);
+  }
+
+  @Test
+  @SystemPropertyRequirement(property = "org.newsclub.net.unix.throughput-test.ip.enabled", value = "1")
+  public void testTCPLoopbackDirectBuffer() throws Exception {
+    assumeTrue(ENABLED > 0, "Throughput tests are disabled");
+    assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
+    runTestTCPLoopback(true);
+  }
+
+  private void runTestTCPLoopback(boolean direct) throws Exception {
+    final SocketAddress sa = new InetSocketAddress(InetAddress.getLoopbackAddress(), 0);
+
+    ServerSocketChannel ssc = ServerSocketChannel.open();
+
+    runTestSocketChannel("TCP-Loopback", sa, ssc, () -> SocketChannel.open(ssc.getLocalAddress()),
+        direct);
   }
 
   @FunctionalInterface
@@ -206,7 +243,7 @@ public class ThroughputTest extends SocketTestBase {
     T get() throws E;
   }
 
-  private void runTestSocketChannel(boolean direct) throws Exception {
+  private void runTestJUnixSocketChannel(boolean direct) throws Exception {
     final SocketAddress sa = getServerAddress();
 
     AFUNIXSelectorProvider sp = AFUNIXSelectorProvider.getInstance();
@@ -393,71 +430,104 @@ public class ThroughputTest extends SocketTestBase {
     AFUNIXSocketAddress dcAddr = AFUNIXSocketAddress.of(SocketTestBase.newTempFile());
     assertNotEquals(dsAddr, dcAddr);
 
-    try (AFUNIXDatagramChannel ds = AFUNIXDatagramSocket.newInstance().getChannel();
-        AFUNIXDatagramChannel dc = AFUNIXDatagramSocket.newInstance().getChannel()) {
+    try (DatagramChannel ds = AFUNIXDatagramSocket.newInstance().getChannel();
+        DatagramChannel dc = AFUNIXDatagramSocket.newInstance().getChannel()) {
       ds.bind(dsAddr);
       dc.bind(dcAddr).connect(dsAddr);
 
-      // FIXME investigate why we need to add a few more bytes (82) than the payload
-      // the receiver blocks otherwise (not exactly the struct socket_addr_un).
-      // smells like some TCP/IP overhead ... (?)
-      ds.setOption(StandardSocketOptions.SO_RCVBUF, (PAYLOAD_SIZE + 82));
-
-      AtomicBoolean keepRunning = new AtomicBoolean(true);
-      Executors.newSingleThreadScheduledExecutor().schedule(() -> {
-        keepRunning.set(false);
-      }, NUM_MILLISECONDS, TimeUnit.MILLISECONDS);
-
-      AtomicLong readTotal = new AtomicLong();
-      long sentTotal = 0;
-
-      new Thread() {
-        @Override
-        public void run() {
-          final ByteBuffer receiveBuffer = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE)
-              : ByteBuffer.allocate(PAYLOAD_SIZE);
-          try {
-            while (!Thread.interrupted()) {
-              int read = ds.read(receiveBuffer);
-              receiveBuffer.rewind();
-              if (read != PAYLOAD_SIZE && read != 0) {
-                throw new IOException("Unexpected response length: " + read);
-              }
-              readTotal.addAndGet(read);
-            }
-          } catch (SocketException e) {
-            if (keepRunning.get()) {
-              e.printStackTrace();
-            }
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
-      }.start();
-
-      long time = System.currentTimeMillis();
-
-      final ByteBuffer sendBuffer = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE) : ByteBuffer
-          .allocate(PAYLOAD_SIZE);
-
-      while (keepRunning.get()) {
-        int written = dc.write(sendBuffer);
-        if (written != PAYLOAD_SIZE && written != 0) {
-          throw new IOException("Unexpected written length: " + written);
-        }
-
-        sentTotal += PAYLOAD_SIZE;
-        sendBuffer.rewind();
-      }
-      time = System.currentTimeMillis() - time;
-      ds.close(); // terminate server
-
-      long readTotal0 = readTotal.get();
-
-      reportResults("junixsocket DatagramChannel direct=" + direct, ((1000f * readTotal0 / time)
-          / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE + "; " + String.format(
-              Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0 / (float) sentTotal))));
+      testSocketDatagramChannel("junixsocket DatagramChannel", ds, dc, direct);
     }
   }
 
+  @Test
+  @SystemPropertyRequirement(property = "org.newsclub.net.unix.throughput-test.ip.enabled", value = "1")
+  public void testUDPLoopback() throws Exception {
+    testUDPLoopbackDatagramChannel(false);
+  }
+
+  @Test
+  @SystemPropertyRequirement(property = "org.newsclub.net.unix.throughput-test.ip.enabled", value = "1")
+  public void testUDPLoopbackDirectBuffer() throws Exception {
+    testUDPLoopbackDatagramChannel(true);
+  }
+
+  private void testUDPLoopbackDatagramChannel(boolean direct) throws Exception {
+    SocketAddress dsAddr = new InetSocketAddress(InetAddress.getLoopbackAddress(), 0);
+    SocketAddress dcAddr = new InetSocketAddress(InetAddress.getLoopbackAddress(), 0);
+
+    try (DatagramChannel ds = SelectorProvider.provider().openDatagramChannel();
+        DatagramChannel dc = SelectorProvider.provider().openDatagramChannel()) {
+      ds.bind(dsAddr);
+      dc.bind(dcAddr).connect(ds.getLocalAddress());
+      ds.connect(dc.getLocalAddress());
+
+      assertNotEquals(ds.getLocalAddress(), dc.getLocalAddress());
+
+      testSocketDatagramChannel("UDP-Loopback DatagramChannel", ds, dc, direct);
+    }
+  }
+
+  private void testSocketDatagramChannel(String id, DatagramChannel ds, DatagramChannel dc,
+      boolean direct) throws IOException {
+    // FIXME investigate why we need to add a few more bytes (82) than the payload
+    // the receiver blocks otherwise (not exactly the struct socket_addr_un).
+    // smells like some TCP/IP overhead ... (?)
+    ds.setOption(StandardSocketOptions.SO_RCVBUF, (PAYLOAD_SIZE + 82));
+
+    AtomicBoolean keepRunning = new AtomicBoolean(true);
+    Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+      keepRunning.set(false);
+    }, NUM_MILLISECONDS, TimeUnit.MILLISECONDS);
+
+    AtomicLong readTotal = new AtomicLong();
+    long sentTotal = 0;
+
+    new Thread() {
+      @Override
+      public void run() {
+        final ByteBuffer receiveBuffer = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE)
+            : ByteBuffer.allocate(PAYLOAD_SIZE);
+        try {
+          while (!Thread.interrupted()) {
+            int read = ds.read(receiveBuffer);
+            receiveBuffer.rewind();
+            if (read != PAYLOAD_SIZE && read != 0) {
+              throw new IOException("Unexpected response length: " + read);
+            }
+            readTotal.addAndGet(read);
+          }
+        } catch (ClosedChannelException | SocketException e) {
+          if (keepRunning.get()) {
+            e.printStackTrace();
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }.start();
+
+    long time = System.currentTimeMillis();
+
+    final ByteBuffer sendBuffer = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE) : ByteBuffer
+        .allocate(PAYLOAD_SIZE);
+
+    while (keepRunning.get()) {
+      int written = dc.write(sendBuffer);
+      if (written != PAYLOAD_SIZE && written != 0) {
+        throw new IOException("Unexpected written length: " + written);
+      }
+
+      sentTotal += PAYLOAD_SIZE;
+      sendBuffer.rewind();
+    }
+    time = System.currentTimeMillis() - time;
+    ds.close(); // terminate server
+
+    long readTotal0 = readTotal.get();
+
+    reportResults(id + " direct=" + direct, ((1000f * readTotal0 / time) / 1000f / 1000f)
+        + " MB/s for payload size " + PAYLOAD_SIZE + "; " + String.format(Locale.ENGLISH,
+            "%.1f%% packet loss", 100 * (1 - (readTotal0 / (float) sentTotal))));
+
+  }
 }
