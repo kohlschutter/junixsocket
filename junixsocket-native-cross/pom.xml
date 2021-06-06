@@ -62,36 +62,6 @@
         <artifactId>maven-invoker-plugin</artifactId>
         <executions>
           <execution>
-            <id>crosscompile-default-clang</id>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <skipInvocation>${junixsocket.cross.enabled}</skipInvocation>
-              <noLog>true</noLog>
-              <streamLogs>true</streamLogs>
-              <goals>
-                <goal>clean</goal>
-                <goal>install</goal>
-              </goals>
-              <projectsDirectory>${project.basedir}/../</projectsDirectory>
-              <pomIncludes>
-                <pomInclude>junixsocket-native</pomInclude>
-              </pomIncludes>
-              <profiles>
-                <profile>llvm</profile>
-              </profiles>
-              <properties>
-                <junixsocket.native.aol.llvm></junixsocket.native.aol.llvm>
-                <junixsocket.install.skip>true</junixsocket.install.skip>
-                <junixsocket.build.directory>${project.build.directory}/junixsocket-native-default</junixsocket.build.directory>
-                <junixsocket.native.llvm.target>default</junixsocket.native.llvm.target>
-                <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
-                <ignorant>${ignorant}</ignorant>
-              </properties>
-            </configuration>
-          </execution>
-          <execution>
             <id>crosscompile-amd64-Windows10-clang</id>
             <goals>
               <goal>run</goal>
@@ -526,45 +496,8 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>fix-default</id>
-            <phase>${junixsocket.cross.install-phase.default}</phase>
-            <configuration>
-              <target>
-                <move tofile="${project.build.directory}/junixsocket-native-default/junixsocket-native-default-jni.nar">
-                  <fileset dir="${project.build.directory}/junixsocket-native-default" includes="*-jni.nar" />
-                </move>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-install-plugin</artifactId>
         <executions>
-          <execution>
-            <id>install-default</id>
-            <phase>${junixsocket.cross.install-phase.default}</phase>
-            <goals>
-              <goal>install-file</goal>
-            </goals>
-            <configuration>
-              <file>${project.build.directory}/junixsocket-native-default/junixsocket-native-default-jni.nar</file>
-              <groupId>${project.groupId}</groupId>
-              <artifactId>junixsocket-native</artifactId>
-              <version>${project.version}</version>
-              <packaging>nar</packaging>
-              <classifier>default-jni</classifier>
-              <generatePom>false</generatePom>
-            </configuration>
-          </execution>
           <execution>
             <id>install-amd64-Windows10-clang</id>
             <phase>${junixsocket.cross.install-phase}</phase>
