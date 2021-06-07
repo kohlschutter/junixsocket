@@ -231,16 +231,37 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    receive
- * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;IILjava/nio/ByteBuffer;ILorg/newsclub/net/unix/AncillaryDataSupport;)I
+ * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;IILjava/nio/ByteBuffer;ILorg/newsclub/net/unix/AncillaryDataSupport;I)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
-(JNIEnv *env, jclass clazz CK_UNUSED, jobject fd, jobject buffer, jint offset, jint length, jobject addressBuffer, jint opt, jobject ancSupp) {
+(JNIEnv *env, jclass clazz CK_UNUSED, jobject fd, jobject buffer, jint offset, jint length, jobject addressBuffer, jint opt, jobject ancSupp, jint hardTimeoutMillis) {
+
+    CK_ARGUMENT_POTENTIALLY_UNUSED(hardTimeoutMillis);
 
     int handle = _getFD(env, fd);
     if (handle <= 0) {
         _throwException(env, kExceptionSocketException, "Socket closed");
         return -1;
     }
+
+#if defined(junixsocket_use_poll_for_read)
+    if (hardTimeoutMillis > 0) {
+        // This is mostly for Solaris, which seems to ignore timeouts on datagram sockets
+
+        int ret = pollWithTimeout(env, fd, handle, hardTimeoutMillis);
+        if(ret < 1) {
+            int flags = fcntl(handle, F_GETFL);
+            if (flags != -1 && (flags & O_NONBLOCK)) {
+                // non-blocking socket
+                return 0;
+            } else {
+                // timeout on blocking socket
+                _throwException(env, kExceptionSocketTimeoutException, "timeout");
+                return -1;
+            }
+        }
+    }
+#endif
 
     struct jni_direct_byte_buffer_ref dataBufferRef =
     getDirectByteBufferRef (env, buffer, offset, 0);
@@ -254,7 +275,6 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
     if(dataBufferRef.size < length) {
         length = dataBufferRef.size;
     }
-
 
     struct jni_direct_byte_buffer_ref addressBufferRef =
     getDirectByteBufferRef (env, addressBuffer, 0, sizeof(struct sockaddr_un));

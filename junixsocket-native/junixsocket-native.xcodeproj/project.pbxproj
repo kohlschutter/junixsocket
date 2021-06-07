@@ -3242,7 +3242,7 @@
 					"$(CROSSCLANG_TARGET)",
 					"$(CROSSCLANG_FLAGS)",
 					"-fPIC",
-					"-O3",
+					"-O2",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -3270,7 +3270,7 @@
 					"$(CROSSCLANG_TARGET)",
 					"$(CROSSCLANG_FLAGS)",
 					"-fPIC",
-					"-O3",
+					"-O2",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",

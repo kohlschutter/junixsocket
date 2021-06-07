@@ -120,10 +120,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    receive
- * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;IILjava/nio/ByteBuffer;ILorg/newsclub/net/unix/AncillaryDataSupport;)I
+ * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;IILjava/nio/ByteBuffer;ILorg/newsclub/net/unix/AncillaryDataSupport;I)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
-  (JNIEnv *, jclass, jobject, jobject, jint, jint, jobject, jint, jobject);
+  (JNIEnv *, jclass, jobject, jobject, jint, jint, jobject, jint, jobject, jint);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket

@@ -119,7 +119,7 @@ final class NativeUnixSocket {
 
   static native int receive(final FileDescriptor fd, ByteBuffer directBuffer, int offset,
       int length, ByteBuffer directSocketAddressOut, int options,
-      AncillaryDataSupport ancillaryDataSupport) throws IOException;
+      AncillaryDataSupport ancillaryDataSupport, int timeoutMillis) throws IOException;
 
   static native int send(final FileDescriptor fd, ByteBuffer directBuffer, int offset, int length,
       ByteBuffer directSocketAddress, int options, AncillaryDataSupport ancillaryDataSupport)

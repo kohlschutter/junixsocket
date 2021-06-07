@@ -26,10 +26,13 @@ import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicInteger;
 
 final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
   private final AFUNIXSocketCore core;
   final AncillaryDataSupport ancillaryDataSupport = new AncillaryDataSupport();
+
+  private final AtomicInteger socketTimeout = new AtomicInteger(0);
 
   AFUNIXDatagramSocketImpl() throws IOException {
     super();
@@ -121,9 +124,8 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
     len = Math.min(len, datagramPacketBuffer.capacity());
 
     ByteBuffer socketAddressBuffer = AFUNIXSocketAddress.SOCKETADDRESS_BUFFER_TL.get();
-
     int count = NativeUnixSocket.receive(fdesc, datagramPacketBuffer, 0, len, socketAddressBuffer,
-        options, ancillaryDataSupport);
+        options, ancillaryDataSupport, socketTimeout.get());
     if (count > len || count < 0) {
       throw new IllegalStateException();
     }
@@ -217,7 +219,7 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
     }
 
     FileDescriptor fdesc = core.validFdOrException();
-    return AFUNIXSocketImpl.getOptionDefault(fdesc, optID, null);
+    return AFUNIXSocketImpl.getOptionDefault(fdesc, optID, socketTimeout);
   }
 
   @Override
@@ -227,7 +229,7 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
     }
 
     FileDescriptor fdesc = core.validFdOrException();
-    AFUNIXSocketImpl.setOptionDefault(fdesc, optID, value, null);
+    AFUNIXSocketImpl.setOptionDefault(fdesc, optID, value, socketTimeout);
   }
 
   AFUNIXSocketCredentials getPeerCredentials() throws IOException {

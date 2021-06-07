@@ -57,7 +57,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   private boolean reuseAddr = true;
 
-  private final AtomicInteger acceptTimeout = new AtomicInteger(0);
+  private final AtomicInteger socketTimeout = new AtomicInteger(0);
 
   /**
    * When the {@link AFUNIXSocketImpl} becomes unreachable (but not yet closed), we must ensure that
@@ -174,7 +174,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
     try {
       core.incPendingAccepts();
       if (!NativeUnixSocket.accept(socketAddress.getBytes(), fdesc, si.fd, core.inode.get(),
-          acceptTimeout.get())) {
+          socketTimeout.get())) {
         return false;
       }
       if (!isBound() || isClosed()) {
@@ -490,7 +490,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
     }
 
     FileDescriptor fdesc = core.validFdOrException();
-    return getOptionDefault(fdesc, optID, acceptTimeout);
+    return getOptionDefault(fdesc, optID, socketTimeout);
   }
 
   static Object getOptionDefault(FileDescriptor fdesc, int optID, AtomicInteger acceptTimeout)
@@ -539,7 +539,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
     }
 
     FileDescriptor fdesc = core.validFdOrException();
-    setOptionDefault(fdesc, optID, value, acceptTimeout);
+    setOptionDefault(fdesc, optID, value, socketTimeout);
   }
 
   static void setOptionDefault(FileDescriptor fdesc, int optID, Object value,

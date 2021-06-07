@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -100,7 +101,11 @@ final class AFUNIXSelector extends AbstractSelector {
 
   @Override
   public int select() throws IOException {
-    return select0(-1);
+    try {
+      return select0(-1);
+    } catch (SocketTimeoutException e) {
+      return 0;
+    }
   }
 
   private int select0(int timeout) throws IOException {
@@ -121,7 +126,7 @@ final class AFUNIXSelector extends AbstractSelector {
           PIPE_MSG_RECEIVE_BUFFER.clear();
           int maxReceive = PIPE_MSG_RECEIVE_BUFFER.remaining();
           int bytesReceived = NativeUnixSocket.receive(pollFd.fds[0], PIPE_MSG_RECEIVE_BUFFER, 0,
-              maxReceive, null, NativeUnixSocket.OPT_NON_SOCKET, null);
+              maxReceive, null, NativeUnixSocket.OPT_NON_SOCKET, null, 0);
 
           if (bytesReceived == maxReceive) {
             // consume all pending bytes
@@ -131,7 +136,7 @@ final class AFUNIXSelector extends AbstractSelector {
                 PIPE_MSG_RECEIVE_BUFFER.clear();
                 read = NativeUnixSocket.receive(sharedSelectorPipePollFd.fds[0],
                     PIPE_MSG_RECEIVE_BUFFER, 0, maxReceive, null, NativeUnixSocket.OPT_NON_SOCKET,
-                    null);
+                    null, 0);
               }
             } while (read == maxReceive);
           }
