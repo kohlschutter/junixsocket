@@ -25,6 +25,7 @@
     <forbiddenapis.skip>true</forbiddenapis.skip>
     <checkstyle.disabled>true</checkstyle.disabled>
     <pmd.skip>true</pmd.skip>
+    <ignorant>true</ignorant>
   </properties>
 
   <build>

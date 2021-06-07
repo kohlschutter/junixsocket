@@ -27,6 +27,7 @@
     <forbiddenapis.skip>true</forbiddenapis.skip>
     <checkstyle.disabled>true</checkstyle.disabled>
     <pmd.skip>true</pmd.skip>
+    <ignorant>true</ignorant>
   </properties>
 
   <profiles>
@@ -103,6 +104,30 @@
               </pomIncludes>
               <properties>
                 <junixsocket.custom.arch>${nar.aol}-jni</junixsocket.custom.arch>
+                <junixsocket.custom.shaded>default</junixsocket.custom.shaded>
+                <ignorant>${ignorant}</ignorant>
+              </properties>
+            </configuration>
+          </execution>
+          <execution>
+            <id>crosscompile-default-clang-empty</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skipInvocation>${junixsocket.cross.disabled}</skipInvocation>
+              <noLog>true</noLog>
+              <streamLogs>true</streamLogs>
+              <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+              </goals>
+              <projectsDirectory>${project.basedir}/../</projectsDirectory>
+              <pomIncludes>
+                <pomInclude>junixsocket-native-custom</pomInclude>
+              </pomIncludes>
+              <properties>
+                <junixsocket.custom.arch></junixsocket.custom.arch>
                 <junixsocket.custom.shaded>default</junixsocket.custom.shaded>
                 <ignorant>${ignorant}</ignorant>
               </properties>
