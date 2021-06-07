@@ -162,8 +162,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
         return NULL;
     }
 
-    sa_family_t family = ((struct sockaddr *)&addr)->sa_family;
-    switch(family) {
+    switch(((struct sockaddr *)&addr)->sa_family) {
         case AF_UNIX:
 #if defined(junixsocket_have_sun_len)
         len -= 2;
