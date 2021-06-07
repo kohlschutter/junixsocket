@@ -136,14 +136,15 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
     int handle = _getFD(env, fd);
 
     struct sockaddr_un addr = {0};
-
     socklen_t len = sizeof(struct sockaddr_un);
+
     int ret;
     if (peerName) {
         ret = getpeername(handle, (struct sockaddr *)&addr, &len);
     } else {
         ret = getsockname(handle, (struct sockaddr *)&addr, &len);
     }
+
     if(ret != 0) {
         int errnum = socket_errno;
         _throwErrnumException(env, errnum, fd);
@@ -156,7 +157,14 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
         return NULL;
     }
 
-    if(((struct sockaddr *)&addr)->sa_family == AF_UNIX) {
+    if(len == 0) {
+        // hat tip: https://github.com/wahern/cqueues/blob/master/PORTING.md
+        return NULL;
+    }
+
+    sa_family_t family = ((struct sockaddr *)&addr)->sa_family;
+    switch(family) {
+        case AF_UNIX:
 #if defined(junixsocket_have_sun_len)
         len -= 2;
 #else
@@ -164,14 +172,14 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
 #endif
         return sockAddrUnToBytes(env, (struct sockaddr_un *)&addr, len);
 #if defined(_WIN32)
-    } else if(((struct sockaddr *)&addr)->sa_family == AF_INET) {
-        // only to support our "socketpair" workaround (which we expected to return NULL here on UNIX)
-        return NULL;
+        case AF_INET:
+            // only to support our "socketpair" workaround (which we expected to return NULL here on UNIX)
+            return NULL;
 #endif
-    } else {
-        _throwException(env, kExceptionSocketException,
-                        "Unsupported socket family");
-        return NULL;
+        default:
+            _throwException(env, kExceptionSocketException,
+                            "Unsupported socket family");
+            return NULL;
     }
 }
 
