@@ -215,7 +215,8 @@ public class ThroughputTest extends SocketTestBase {
   }
 
   @Test
-  @SystemPropertyRequirement(property = "org.newsclub.net.unix.throughput-test.ip.enabled", value = "1")
+  @SystemPropertyRequirement(property = "org.newsclub.net.unix.throughput-test.ip.enabled", //
+      value = "1", message = "Loopback TCP/IP testing is disabled")
   public void testTCPLoopback() throws Exception {
     assumeTrue(ENABLED > 0, "Throughput tests are disabled");
     assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
@@ -223,7 +224,8 @@ public class ThroughputTest extends SocketTestBase {
   }
 
   @Test
-  @SystemPropertyRequirement(property = "org.newsclub.net.unix.throughput-test.ip.enabled", value = "1")
+  @SystemPropertyRequirement(property = "org.newsclub.net.unix.throughput-test.ip.enabled", //
+      value = "1", message = "Loopback TCP/IP testing is disabled")
   public void testTCPLoopbackDirectBuffer() throws Exception {
     assumeTrue(ENABLED > 0, "Throughput tests are disabled");
     assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
@@ -441,13 +443,15 @@ public class ThroughputTest extends SocketTestBase {
   }
 
   @Test
-  @SystemPropertyRequirement(property = "org.newsclub.net.unix.throughput-test.ip.enabled", value = "1")
+  @SystemPropertyRequirement(property = "org.newsclub.net.unix.throughput-test.ip.enabled", //
+      value = "1", message = "Loopback UDP/IP testing is disabled")
   public void testUDPLoopback() throws Exception {
     testUDPLoopbackDatagramChannel(false);
   }
 
   @Test
-  @SystemPropertyRequirement(property = "org.newsclub.net.unix.throughput-test.ip.enabled", value = "1")
+  @SystemPropertyRequirement(property = "org.newsclub.net.unix.throughput-test.ip.enabled", //
+      value = "1", message = "Loopback UDP/IP testing is disabled")
   public void testUDPLoopbackDirectBuffer() throws Exception {
     testUDPLoopbackDatagramChannel(true);
   }
