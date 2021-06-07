@@ -107,7 +107,7 @@ public class PeerCredentialsTest extends SocketTestBase {
     StringBuilder sbYes = new StringBuilder(32);
     StringBuilder sbNo = new StringBuilder(32);
 
-    checkCredentialFeatures(sbYes, sbNo, "pid", (creds.getPid() != -1));
+    checkCredentialFeatures(sbYes, sbNo, "pid", (creds.getPid() > 0));
     checkCredentialFeatures(sbYes, sbNo, "uid", (creds.getUid() != -1));
     checkCredentialFeatures(sbYes, sbNo, "gid", (creds.getGid() != -1));
     checkCredentialFeatures(sbYes, sbNo, "additional_gids", (creds.getGids() != null && creds

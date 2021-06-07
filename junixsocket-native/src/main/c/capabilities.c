@@ -41,7 +41,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
     int capabilities = 0;
 
 #if defined(LOCAL_PEERCRED) || defined(LOCAL_PEEREPID) || defined(LOCAL_PEEREUUID) || \
-    defined(SO_PEERCRED) || defined(__NetBSD__)
+    defined(SO_PEERCRED) || defined(__NetBSD__) || defined(__sun) || defined(__sun__)
     capabilities |= CAPABILITY_PEER_CREDENTIALS;
 #endif
 

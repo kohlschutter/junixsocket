@@ -20,7 +20,11 @@
 #include "credentials.h"
 
 #if defined(LOCAL_PEEREPID)
-#include <sys/sysctl.h>
+#  include <sys/sysctl.h>
+#endif
+
+#if defined(__sun) || defined(__sun__)
+#  include <ucred.h>
 #endif
 
 #include "exceptions.h"
@@ -96,13 +100,69 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
     CK_ARGUMENT_POTENTIALLY_UNUSED(fdesc);
 
 #if defined(LOCAL_PEERCRED) || defined(LOCAL_PEEREPID) || defined(LOCAL_PEEREUUID) || \
-    defined(SO_PEERCRED) || defined(__NetBSD__)
+    defined(SO_PEERCRED) || defined(__NetBSD__) || defined(__sun) || defined(__sun__)
     int fd = _getFD(env, fdesc);
 
     jboolean peerCredOK = true;
     CK_ARGUMENT_POTENTIALLY_UNUSED(peerCredOK);
 
-#  if defined(LOCAL_PEERCRED)
+#  if defined(__sun) || defined(__sun__)
+    {
+        ucred_t *uc = NULL;
+        if (getpeerucred(fd, &uc) == -1) {
+            return NULL;
+        }
+
+        pid_t pid = ucred_getpid(uc);
+        uid_t uid = ucred_geteuid(uc);
+        gid_t gid = ucred_getegid(uc);
+
+        setLongFieldValue(env, creds, "pid", pid);
+        setLongFieldValue(env, creds, "uid", uid);
+
+        const gid_t *groups = NULL;
+        int nGroups = 0;
+        int gidIndex = -1;
+        if((nGroups = ucred_getgroups(uc, &groups)) > 0) {
+            for (int i=0;i<nGroups;i++) {
+                if(groups[i] == gid) {
+                    gidIndex = i;
+                    break;
+                }
+            }
+        }
+
+        // NOTE: We could add support for zoneIds, project Ids, bs labels, etc.
+        // just like we did for the macOS-only UUID property. However, I think this is
+        // a super-niche requirement. Please let me know if you need this functionality.
+
+        if (nGroups == 0) {
+            nGroups = 1;
+            groups = &gid;
+            gidIndex = 0;
+        } else if (gidIndex == -1) {
+            nGroups += 1;
+        }
+
+        jlongArray gidArray = (*env)->NewLongArray(env, nGroups);
+        jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);
+        if (gidIndex == -1) {
+            gids[0] = gid;
+            for (int i=0;i<nGroups;i++) {
+                gids[i + 1] = groups[i];
+            }
+        } else {
+            for (int i=0;i<nGroups;i++) {
+                gids[i] = groups[i];
+            }
+        }
+        (*env)->ReleaseLongArrayElements(env, gidArray, gids, 0);
+
+        setObjectFieldValue(env, creds, "gids", "[J", gidArray);
+
+        ucred_free(uc);
+    }
+#  elif defined(LOCAL_PEERCRED)
     struct xucred cr = {};
     {
         socklen_t len = sizeof(cr);
