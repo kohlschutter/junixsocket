@@ -209,7 +209,7 @@
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-native-custom</artifactId>
       <version>${project.version}</version>
-      <classifier>${junixsocket.custom.classifier}</classifier>
+      <classifier>default</classifier>
     </dependency>
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
