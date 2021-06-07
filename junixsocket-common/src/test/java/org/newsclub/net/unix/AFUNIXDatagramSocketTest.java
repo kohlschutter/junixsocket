@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.newsclub.net.unix.SocketTestBase.newTempFile;
 
@@ -32,6 +33,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 
@@ -161,26 +163,30 @@ public class AFUNIXDatagramSocketTest {
   public void testReadTimeout() throws Exception {
     AFUNIXSocketAddress dsAddr = AFUNIXSocketAddress.of(newTempFile());
 
-    try (AFUNIXDatagramSocket ds = AFUNIXDatagramSocket.newInstance()) {
-      ds.setSoTimeout(50);
-      ds.bind(dsAddr);
-      assertThrows(SocketTimeoutException.class, () -> {
-        ds.receive(AFUNIXDatagramUtil.datagramWithCapacity(64));
-      });
-    }
+    assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
+      try (AFUNIXDatagramSocket ds = AFUNIXDatagramSocket.newInstance()) {
+        ds.setSoTimeout(50);
+        ds.bind(dsAddr);
+        assertThrows(SocketTimeoutException.class, () -> {
+          ds.receive(AFUNIXDatagramUtil.datagramWithCapacity(64));
+        });
+      }
+    });
   }
 
   @Test
   public void testPeekTimeout() throws Exception {
     AFUNIXSocketAddress dsAddr = AFUNIXSocketAddress.of(newTempFile());
 
-    try (AFUNIXDatagramSocket ds = AFUNIXDatagramSocket.newInstance()) {
-      ds.setSoTimeout(50);
-      ds.bind(dsAddr);
-      assertThrows(SocketTimeoutException.class, () -> {
-        DatagramPacket dp = AFUNIXDatagramUtil.datagramWithCapacity(64);
-        ds.peek(dp);
-      });
-    }
+    assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
+      try (AFUNIXDatagramSocket ds = AFUNIXDatagramSocket.newInstance()) {
+        ds.setSoTimeout(50);
+        ds.bind(dsAddr);
+        assertThrows(SocketTimeoutException.class, () -> {
+          DatagramPacket dp = AFUNIXDatagramUtil.datagramWithCapacity(64);
+          ds.peek(dp);
+        });
+      }
+    });
   }
 }
