@@ -61,6 +61,7 @@ public class AFUNIXSocketPairTest {
   }
 
   @Test
+  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_DATAGRAMS)
   public void testDatagramPair() throws Exception {
     AFUNIXSocketPair<AFUNIXDatagramChannel> pair = AFUNIXSocketPair.openDatagram();
 
