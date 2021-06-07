@@ -51,6 +51,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import com.kohlschutter.testutil.AvailabilityRequirement;
+import com.kohlschutter.testutil.SystemPropertyRequirement;
 import com.kohlschutter.util.SystemPropertyUtil;
 
 /**

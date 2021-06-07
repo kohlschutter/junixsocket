@@ -40,7 +40,9 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.TestAbortedException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.CommandAvailabilityRequirement;
 import com.kohlschutter.testutil.ForkedVM;
+import com.kohlschutter.testutil.ForkedVMRequirement;
 import com.kohlschutter.util.ExceptionUtil;
 
 /**
@@ -53,6 +55,7 @@ import com.kohlschutter.util.ExceptionUtil;
  * @author Christian Kohlschütter
  */
 @CommandAvailabilityRequirement(commands = {"lsof"})
+@ForkedVMRequirement(forkSupported = true)
 public class FinalizeTest extends SocketTestBase {
   private Process process = null;
 

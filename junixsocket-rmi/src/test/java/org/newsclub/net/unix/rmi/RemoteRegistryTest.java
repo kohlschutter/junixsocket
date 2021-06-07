@@ -38,9 +38,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 
 import com.kohlschutter.testutil.ForkedVM;
+import com.kohlschutter.testutil.ForkedVMRequirement;
 import com.kohlschutter.testutil.OutputBridge;
 import com.kohlschutter.testutil.OutputBridge.ProcessStream;
 
+@ForkedVMRequirement(forkSupported = true)
 public class RemoteRegistryTest {
   @Test
   public void testRemoteRegistry() throws Exception {
