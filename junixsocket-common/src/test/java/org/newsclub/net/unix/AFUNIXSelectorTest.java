@@ -55,7 +55,7 @@ public class AFUNIXSelectorTest {
 
   @Test
   public void testNonBlockingAccept() throws IOException, InterruptedException {
-    assertTimeoutPreemptively(Duration.ofSeconds(1), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
       AFUNIXSocketAddress sa = AFUNIXSocketAddress.of(SocketTestBase.newTempFile());
 
       Selector sscSel = provider.openSelector();
