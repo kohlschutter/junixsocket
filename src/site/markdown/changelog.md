@@ -7,6 +7,7 @@
  - Add support for socketpair (with IP-based emulation on Windows)
  - Add support for non-blocking I/O
  - Add support for Java NIO SocketChannel, DatagramChannel, ByteBuffer, Selector, Pipe, etc.
+ - Add support for Peer Credentials on Solaris/Illumos
  - Improved creation and reuse of AFUNIXSocketAddress instances
  - Add basic support to wrap an AFUNIXSocketAddress as an InetAddress
  - Add fast-path for single-byte read/write
@@ -16,6 +17,7 @@
  - Fixed compatibility issue with OkHttpClient, add demo code
  - Fixed a race condition when connecting to a registry that's just starting up.
  - More test cases, increased unit test code coverage
+ - Simplified local compilation on non-macOS/Linux systems.
  - Improved selftest
 
 ### _(2021-05-30)_ **junixsocket 2.3.4**
