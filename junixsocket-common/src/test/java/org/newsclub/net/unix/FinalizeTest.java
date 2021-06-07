@@ -52,6 +52,7 @@ import com.kohlschutter.util.ExceptionUtil;
  * 
  * @author Christian Kohlschütter
  */
+@CommandAvailabilityRequirement(commands = {"lsof"})
 public class FinalizeTest extends SocketTestBase {
   private Process process = null;
 
@@ -75,7 +76,7 @@ public class FinalizeTest extends SocketTestBase {
         protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           try {
             assumeTrue(process.pid() > 0);
-            int linesBefore;
+            int linesBefore = -1;
             try (OutputStream out = socket.getOutputStream();
                 InputStream in = socket.getInputStream()) {
               linesBefore = lsofUnixSockets(process.pid());
@@ -83,9 +84,9 @@ public class FinalizeTest extends SocketTestBase {
 
               // If that's not true, we need to skip the test
               assumeTrue(linesBefore > 0);
+            } finally {
+              future.complete(linesBefore);
             }
-
-            future.complete(linesBefore);
           } catch (Exception e) {
             future.completeExceptionally(e);
           } finally {
@@ -98,19 +99,22 @@ public class FinalizeTest extends SocketTestBase {
         Integer linesBefore = future.get();
         assertNotNull(linesBefore);
 
-        int linesAfter = 0;
-        for (int i = 0; i < 10; i++) {
-          Thread.sleep(100);
-          linesAfter = lsofUnixSockets(process.pid());
-          if (linesAfter != linesBefore) {
-            break;
+        try {
+          int linesAfter = 0;
+          for (int i = 0; i < 10; i++) {
+            Thread.sleep(100);
+            linesAfter = lsofUnixSockets(process.pid());
+            if (linesAfter != linesBefore) {
+              break;
+            }
           }
-        }
 
-        assertEquals(linesBefore - 1, linesAfter,
-            "Our unix socket file handle should have been cleared out");
-        process.destroy();
-        process.waitFor();
+          assertEquals(linesBefore - 1, linesAfter,
+              "Our unix socket file handle should have been cleared out");
+        } finally {
+          process.destroy();
+          process.waitFor();
+        }
       } catch (ExecutionException e) {
         throw ExceptionUtil.unwrapExecutionException(e);
       } finally {
@@ -143,7 +147,7 @@ public class FinalizeTest extends SocketTestBase {
     Process p;
     try {
       p = Runtime.getRuntime().exec(new String[] {"lsof", "-U", "-a", "-p", String.valueOf(pid)});
-    } catch (IOException e) {
+    } catch (Exception e) {
       assumeTrue(false, e.getMessage());
       return -1;
     }
