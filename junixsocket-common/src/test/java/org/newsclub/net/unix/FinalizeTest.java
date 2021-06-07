@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -28,6 +29,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -59,61 +61,63 @@ public class FinalizeTest extends SocketTestBase {
 
   @Test
   public void testLeak() throws Exception {
-    Semaphore sema = new Semaphore(0);
-    CompletableFuture<Integer> future = new CompletableFuture<>();
+    assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+      Semaphore sema = new Semaphore(0);
+      CompletableFuture<Integer> future = new CompletableFuture<>();
 
-    try (ServerThread serverThread = new ServerThread() {
-      @Override
-      protected void onServerReady() {
-        sema.release();
-      }
+      try (ServerThread serverThread = new ServerThread() {
+        @Override
+        protected void onServerReady() {
+          sema.release();
+        }
 
-      @Override
-      protected void handleConnection(final AFUNIXSocket socket) throws IOException {
-        try {
-          assumeTrue(process.pid() > 0);
-          int linesBefore;
-          try (OutputStream out = socket.getOutputStream();
-              InputStream in = socket.getInputStream()) {
-            linesBefore = lsofUnixSockets(process.pid());
-            out.write('@');
+        @Override
+        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
+          try {
+            assumeTrue(process.pid() > 0);
+            int linesBefore;
+            try (OutputStream out = socket.getOutputStream();
+                InputStream in = socket.getInputStream()) {
+              linesBefore = lsofUnixSockets(process.pid());
+              out.write('@');
 
-            // If that's not true, we need to skip the test
-            assumeTrue(linesBefore > 0);
+              // If that's not true, we need to skip the test
+              assumeTrue(linesBefore > 0);
+            }
+
+            future.complete(linesBefore);
+          } catch (Exception e) {
+            future.completeExceptionally(e);
+          } finally {
+            stopAcceptingConnections();
           }
-
-          future.complete(linesBefore);
-        } catch (Exception e) {
-          future.completeExceptionally(e);
-        } finally {
-          stopAcceptingConnections();
         }
-      }
-    }) {
-      sema.acquire();
-      this.process = launchServerProcess(getSocketFile().getAbsolutePath());
-      Integer linesBefore = future.get();
-      assertNotNull(linesBefore);
+      }) {
+        sema.acquire();
+        this.process = launchServerProcess(getSocketFile().getAbsolutePath());
+        Integer linesBefore = future.get();
+        assertNotNull(linesBefore);
 
-      int linesAfter = 0;
-      for (int i = 0; i < 10; i++) {
-        Thread.sleep(100);
-        linesAfter = lsofUnixSockets(process.pid());
-        if (linesAfter != linesBefore) {
-          break;
+        int linesAfter = 0;
+        for (int i = 0; i < 10; i++) {
+          Thread.sleep(100);
+          linesAfter = lsofUnixSockets(process.pid());
+          if (linesAfter != linesBefore) {
+            break;
+          }
         }
-      }
 
-      assertEquals(linesBefore - 1, linesAfter,
-          "Our unix socket file handle should have been cleared out");
-      process.destroy();
-      process.waitFor();
-    } catch (ExecutionException e) {
-      throw ExceptionUtil.unwrapExecutionException(e);
-    } finally {
-      this.process.destroy();
-      this.process = null;
-    }
+        assertEquals(linesBefore - 1, linesAfter,
+            "Our unix socket file handle should have been cleared out");
+        process.destroy();
+        process.waitFor();
+      } catch (ExecutionException e) {
+        throw ExceptionUtil.unwrapExecutionException(e);
+      } finally {
+        this.process.destroy();
+        this.process = null;
+      }
+    });
   }
 
   private Process launchServerProcess(String socketPath) throws IOException {
