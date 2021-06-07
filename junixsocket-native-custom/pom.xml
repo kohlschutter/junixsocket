@@ -27,6 +27,19 @@
     <pmd.skip>true</pmd.skip>
   </properties>
 
+  <profiles>
+    <profile>
+      <activation>
+        <property>
+          <name>!junixsocket.custom.arch</name>
+        </property>
+      </activation>
+      <properties>
+        <junixsocket.custom.shaded>default</junixsocket.custom.shaded>
+      </properties>
+    </profile>
+  </profiles>
+
   <build>
     <plugins>
       <plugin>
