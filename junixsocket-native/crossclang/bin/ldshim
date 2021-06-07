@@ -36,7 +36,7 @@ while [ $# -gt 0 ]; do
         -L* )
             searchPaths+=("${v#-L}")
             ;;
-        dllcrt2.o|crt2.o|crtbegin.o|crtend.o )
+        dllcrt2.o|crt2.o|crtbegin.o|crtend.o|crtbeginS.o|crti.o|crtendS.o|crtn.o )
             if [ ! -f "$v" ]; then
                 replaceWithAbsolutePaths+=(${#linkerArgs[@]})
             fi
@@ -80,4 +80,5 @@ for i in ${replaceWithAbsolutePaths[@]}; do
     done
 done
 
+# set -x
 exec "$linkerPath" ${linkerArgs[@]}

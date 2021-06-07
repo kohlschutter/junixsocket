@@ -25,6 +25,7 @@
 				43B3E0AE266971870024822F /* PBXTargetDependency */,
 				432EF18B261AD52800F4A583 /* PBXTargetDependency */,
 				43D0E25C261AE48B008F2FFE /* PBXTargetDependency */,
+				4304A628266DFD24003BCEDF /* PBXTargetDependency */,
 				43B3E03E266730080024822F /* PBXTargetDependency */,
 				432EF1D8261ADDA000F4A583 /* PBXTargetDependency */,
 				43B3E00626660A7A0024822F /* PBXTargetDependency */,
@@ -540,6 +541,52 @@
 		430235D72650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
 		430235D82650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
 		430235D92650AC3200823167 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		4304A5F3266DFCEF003BCEDF /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		4304A5F4266DFCEF003BCEDF /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		4304A5F5266DFCEF003BCEDF /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		4304A5F6266DFCEF003BCEDF /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		4304A5F7266DFCEF003BCEDF /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		4304A5F8266DFCEF003BCEDF /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		4304A5F9266DFCEF003BCEDF /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		4304A5FA266DFCEF003BCEDF /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		4304A5FB266DFCEF003BCEDF /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		4304A5FC266DFCEF003BCEDF /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		4304A5FD266DFCEF003BCEDF /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		4304A5FE266DFCEF003BCEDF /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		4304A5FF266DFCEF003BCEDF /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		4304A600266DFCEF003BCEDF /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		4304A601266DFCEF003BCEDF /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		4304A602266DFCEF003BCEDF /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		4304A603266DFCEF003BCEDF /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		4304A604266DFCEF003BCEDF /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		4304A605266DFCEF003BCEDF /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		4304A606266DFCEF003BCEDF /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		4304A607266DFCEF003BCEDF /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		4304A608266DFCEF003BCEDF /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		4304A609266DFCEF003BCEDF /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		4304A60A266DFCEF003BCEDF /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		4304A60B266DFCEF003BCEDF /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		4304A60D266DFCEF003BCEDF /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		4304A60E266DFCEF003BCEDF /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		4304A60F266DFCEF003BCEDF /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		4304A610266DFCEF003BCEDF /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		4304A611266DFCEF003BCEDF /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		4304A612266DFCEF003BCEDF /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		4304A613266DFCEF003BCEDF /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		4304A614266DFCEF003BCEDF /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		4304A615266DFCEF003BCEDF /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		4304A616266DFCEF003BCEDF /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		4304A617266DFCEF003BCEDF /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		4304A618266DFCEF003BCEDF /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		4304A619266DFCEF003BCEDF /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		4304A61A266DFCEF003BCEDF /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		4304A61B266DFCEF003BCEDF /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		4304A61C266DFCEF003BCEDF /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		4304A61D266DFCEF003BCEDF /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		4304A61E266DFCEF003BCEDF /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		4304A61F266DFCEF003BCEDF /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		4304A620266DFCEF003BCEDF /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		4304A621266DFCEF003BCEDF /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
 		43B3DF83265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
 		43B3DF84265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
 		43B3DF85265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
@@ -782,6 +829,13 @@
 			remoteGlobalIDString = 43663ED6261AECC400CEED08;
 			remoteInfo = default;
 		};
+		4304A627266DFD24003BCEDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43D436B0261A55D0002D0C12 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4304A5F1266DFCEF003BCEDF;
+			remoteInfo = "x86_64-portbld-dragonfly6.0";
+		};
 		432EF18A261AD52800F4A583 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 43D436B0261A55D0002D0C12 /* Project object */;
@@ -932,6 +986,7 @@
 		430233C62650AB4E00823167 /* credentials.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = credentials.c; path = src/main/c/credentials.c; sourceTree = "<group>"; };
 		430235C02650AC3200823167 /* jni.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jni.h; sourceTree = "<group>"; };
 		430235C12650AC3200823167 /* jniport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jniport.h; sourceTree = "<group>"; };
+		4304A626266DFCEF003BCEDF /* libjunixsocket-x86_64-portbld-dragonfly6.0.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-portbld-dragonfly6.0.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF19A261AD60200F4A583 /* libjunixsocket-aarch64-linux-gnu.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-aarch64-linux-gnu.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF1A9261AD6D700F4A583 /* libjunixsocket-x86_64-w64-mingw32.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-w64-mingw32.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF1B8261AD9FB00F4A583 /* libjunixsocket-i386-pc-solaris2.11_m64.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-i386-pc-solaris2.11_m64.so"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -955,6 +1010,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4304A622266DFCEF003BCEDF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		432EF196261AD60200F4A583 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1175,6 +1237,7 @@
 				43B3E03C26672FD30024822F /* libjunixsocket-x86_64-unknown-linux-gnu.so */,
 				43B3E074266756540024822F /* libjunixsocket-amd64-unknown-openbsd6.9.so */,
 				43B3E0AC266971630024822F /* libjunixsocket-sparc-sun-solaris2.11.so */,
+				4304A626266DFCEF003BCEDF /* libjunixsocket-x86_64-portbld-dragonfly6.0.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1182,6 +1245,38 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		4304A5F2266DFCEF003BCEDF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4304A5F3266DFCEF003BCEDF /* jni.h in Headers */,
+				4304A5F4266DFCEF003BCEDF /* ancillary.h in Headers */,
+				4304A5F5266DFCEF003BCEDF /* pipe.h in Headers */,
+				4304A5F6266DFCEF003BCEDF /* init.h in Headers */,
+				4304A5F7266DFCEF003BCEDF /* send.h in Headers */,
+				4304A5F8266DFCEF003BCEDF /* listen.h in Headers */,
+				4304A5F9266DFCEF003BCEDF /* config.h in Headers */,
+				4304A5FA266DFCEF003BCEDF /* socketpair.h in Headers */,
+				4304A5FB266DFCEF003BCEDF /* connect.h in Headers */,
+				4304A5FC266DFCEF003BCEDF /* jniutil.h in Headers */,
+				4304A5FD266DFCEF003BCEDF /* socketoptions.h in Headers */,
+				4304A5FE266DFCEF003BCEDF /* filedescriptors.h in Headers */,
+				4304A5FF266DFCEF003BCEDF /* exceptions.h in Headers */,
+				4304A600266DFCEF003BCEDF /* capabilities.h in Headers */,
+				4304A601266DFCEF003BCEDF /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				4304A602266DFCEF003BCEDF /* socket.h in Headers */,
+				4304A603266DFCEF003BCEDF /* ckmacros.h in Headers */,
+				4304A604266DFCEF003BCEDF /* address.h in Headers */,
+				4304A605266DFCEF003BCEDF /* polling.h in Headers */,
+				4304A606266DFCEF003BCEDF /* accept.h in Headers */,
+				4304A607266DFCEF003BCEDF /* reflection.h in Headers */,
+				4304A608266DFCEF003BCEDF /* jniport.h in Headers */,
+				4304A609266DFCEF003BCEDF /* receive.h in Headers */,
+				4304A60A266DFCEF003BCEDF /* credentials.h in Headers */,
+				4304A60B266DFCEF003BCEDF /* bind.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		432EF18F261AD60200F4A583 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1697,6 +1792,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		4304A5F1266DFCEF003BCEDF /* x86_64-portbld-dragonfly6.0 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4304A623266DFCEF003BCEDF /* Build configuration list for PBXNativeTarget "x86_64-portbld-dragonfly6.0" */;
+			buildPhases = (
+				4304A5F2266DFCEF003BCEDF /* Headers */,
+				4304A60C266DFCEF003BCEDF /* Sources */,
+				4304A622266DFCEF003BCEDF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "x86_64-portbld-dragonfly6.0";
+			productName = "junixsocket-native";
+			productReference = 4304A626266DFCEF003BCEDF /* libjunixsocket-x86_64-portbld-dragonfly6.0.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 		432EF18E261AD60200F4A583 /* aarch64-linux-gnu */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 432EF197261AD60200F4A583 /* Build configuration list for PBXNativeTarget "aarch64-linux-gnu" */;
@@ -2015,11 +2127,40 @@
 				43B3DFCF26660A2D0024822F /* x86_64-unknown-netbsd9.0 */,
 				43B3E00726672FD30024822F /* x86_64-unknown-linux-gnu */,
 				43B3E077266971630024822F /* sparc-sun-solaris2.11 */,
+				4304A5F1266DFCEF003BCEDF /* x86_64-portbld-dragonfly6.0 */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4304A60C266DFCEF003BCEDF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4304A60D266DFCEF003BCEDF /* filedescriptors.c in Sources */,
+				4304A60E266DFCEF003BCEDF /* bind.c in Sources */,
+				4304A60F266DFCEF003BCEDF /* address.c in Sources */,
+				4304A610266DFCEF003BCEDF /* send.c in Sources */,
+				4304A611266DFCEF003BCEDF /* socket.c in Sources */,
+				4304A612266DFCEF003BCEDF /* pipe.c in Sources */,
+				4304A613266DFCEF003BCEDF /* connect.c in Sources */,
+				4304A614266DFCEF003BCEDF /* capabilities.c in Sources */,
+				4304A615266DFCEF003BCEDF /* socketoptions.c in Sources */,
+				4304A616266DFCEF003BCEDF /* polling.c in Sources */,
+				4304A617266DFCEF003BCEDF /* receive.c in Sources */,
+				4304A618266DFCEF003BCEDF /* jniutil.c in Sources */,
+				4304A619266DFCEF003BCEDF /* init.c in Sources */,
+				4304A61A266DFCEF003BCEDF /* config.c in Sources */,
+				4304A61B266DFCEF003BCEDF /* credentials.c in Sources */,
+				4304A61C266DFCEF003BCEDF /* socketpair.c in Sources */,
+				4304A61D266DFCEF003BCEDF /* exceptions.c in Sources */,
+				4304A61E266DFCEF003BCEDF /* reflection.c in Sources */,
+				4304A61F266DFCEF003BCEDF /* listen.c in Sources */,
+				4304A620266DFCEF003BCEDF /* ancillary.c in Sources */,
+				4304A621266DFCEF003BCEDF /* accept.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		432EF194261AD60200F4A583 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2476,6 +2617,11 @@
 			target = 43663ED6261AECC400CEED08 /* current */;
 			targetProxy = 430235DA2650CCCD00823167 /* PBXContainerItemProxy */;
 		};
+		4304A628266DFD24003BCEDF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4304A5F1266DFCEF003BCEDF /* x86_64-portbld-dragonfly6.0 */;
+			targetProxy = 4304A627266DFD24003BCEDF /* PBXContainerItemProxy */;
+		};
 		432EF18B261AD52800F4A583 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 43D436BB261A564C002D0C12 /* x86_64-alpine-linux-musl */;
@@ -2554,6 +2700,60 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		4304A624266DFCEF003BCEDF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CROSSCLANG_TARGET = "x86_64-portbld-dragonfly6.0";
+				EXECUTABLE_EXTENSION = so;
+				LD_DEPENDENCY_INFO_FILE = "";
+				LD_LTO_OBJECT_FILE = "";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CFLAGS = (
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-fPIC",
+					"-O2",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-Xcrossclang-use-ldshim",
+					"-Wl,--Xldshim-ld=ld.lld",
+					"-nostdlib",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = crossclang;
+			};
+			name = Debug;
+		};
+		4304A625266DFCEF003BCEDF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CROSSCLANG_TARGET = "x86_64-portbld-dragonfly6.0";
+				EXECUTABLE_EXTENSION = so;
+				LD_DEPENDENCY_INFO_FILE = "";
+				LD_LTO_OBJECT_FILE = "";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CFLAGS = (
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-fPIC",
+					"-O2",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-Xcrossclang-use-ldshim",
+					"-Wl,--Xldshim-ld=ld.lld",
+					"-nostdlib",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = crossclang;
+			};
+			name = Release;
+		};
 		432EF188261AD52200F4A583 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3478,6 +3678,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4304A623266DFCEF003BCEDF /* Build configuration list for PBXNativeTarget "x86_64-portbld-dragonfly6.0" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4304A624266DFCEF003BCEDF /* Debug */,
+				4304A625266DFCEF003BCEDF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		432EF187261AD52200F4A583 /* Build configuration list for PBXAggregateTarget "All Architectures" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
