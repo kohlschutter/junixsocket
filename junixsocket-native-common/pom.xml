@@ -18,8 +18,6 @@
 
   <properties>
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
-    <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-jni</junixsocket.common.classifier.mac.x86_64>
-    <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-jni</junixsocket.common.classifier.linux.x86_64>
 
     <spotbugs.disabled>true</spotbugs.disabled>
     <forbiddenapis.skip>true</forbiddenapis.skip>
@@ -94,8 +92,6 @@
       </activation>
       <properties>
         <junixsocket.cross.disabled>false</junixsocket.cross.disabled>
-        <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-llvm-jni</junixsocket.common.classifier.mac.x86_64>
-        <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.x86_64>
       </properties>
       <dependencies>
         <dependency>
@@ -111,8 +107,7 @@
           <artifactId>junixsocket-native</artifactId>
           <version>${project.version}</version>
           <type>nar</type>
-          <!-- FIXME: in order to build on Linux, change this to x86_64-MacOSX-clang-llvm-jni -->
-          <classifier>x86_64-MacOSX-clang-jni</classifier>
+          <classifier>x86_64-MacOSX-clang-llvm-jni</classifier>
           <scope>runtime</scope>
           <optional>true</optional>
         </dependency>
@@ -235,97 +230,7 @@
         </dependency>
       </dependencies>
     </profile>
-    <!-- Specify profiles to add particular nars -->
-    <!-- Example: mvn clean install -Px86_64-MacOSX-clang-jni,amd64-Linux-clang-jni -->
-    <profile>
-      <id>x86_64-MacOSX-clang-jni</id>
-      <activation>
-        <os>
-          <arch>x86_64</arch>
-          <family>mac</family>
-        </os>
-        <property>
-          <name>cross</name>
-          <value>!true</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.kohlschutter.junixsocket</groupId>
-          <artifactId>junixsocket-native</artifactId>
-          <version>${project.version}</version>
-          <type>nar</type>
-          <classifier>x86_64-MacOSX-clang-jni</classifier>
-          <scope>runtime</scope>
-          <optional>true</optional>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>aarch64-MacOSX-clang-jni</id>
-      <activation>
-        <os>
-          <arch>aarch64</arch>
-          <family>mac</family>
-        </os>
-        <property>
-          <name>cross</name>
-          <value>!true</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.kohlschutter.junixsocket</groupId>
-          <artifactId>junixsocket-native</artifactId>
-          <version>${project.version}</version>
-          <type>nar</type>
-          <classifier>aarch64-MacOSX-clang-jni</classifier>
-          <scope>runtime</scope>
-          <optional>true</optional>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>amd64-Linux-clang-jni</id>
-      <activation>
-        <os>
-          <arch>amd64</arch>
-          <name>Linux</name>
-        </os>
-        <property>
-          <name>cross</name>
-          <value>!true</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.kohlschutter.junixsocket</groupId>
-          <artifactId>junixsocket-native</artifactId>
-          <version>${project.version}</version>
-          <type>nar</type>
-          <classifier>amd64-Linux-clang-jni</classifier>
-          <scope>runtime</scope>
-          <optional>true</optional>
-        </dependency>
-      </dependencies>
-    </profile>
 
-    <profile>
-      <id>release-not-cross</id>
-      <activation>
-        <property>
-          <name>cross</name>
-          <value>false</value>
-        </property>
-      </activation>
-      <properties>
-        <junixsocket.cross.disabled>true</junixsocket.cross.disabled>
-        <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-jni</junixsocket.common.classifier.mac.x86_64>
-        <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-jni</junixsocket.common.classifier.linux.x86_64>
-      </properties>
-      <dependencies>
-      </dependencies>
-    </profile>
     <profile>
       <id>eclipse-m2e</id>
       <activation>
