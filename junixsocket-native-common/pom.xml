@@ -20,6 +20,11 @@
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
     <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-jni</junixsocket.common.classifier.mac.x86_64>
     <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-jni</junixsocket.common.classifier.linux.x86_64>
+
+    <spotbugs.disabled>true</spotbugs.disabled>
+    <forbiddenapis.skip>true</forbiddenapis.skip>
+    <checkstyle.disabled>true</checkstyle.disabled>
+    <pmd.skip>true</pmd.skip>
   </properties>
 
   <build>

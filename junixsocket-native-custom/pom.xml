@@ -20,21 +20,15 @@
     <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
     <junixsocket.custom.arch></junixsocket.custom.arch>
     <junixsocket.custom.shaded>${junixsocket.custom.arch}</junixsocket.custom.shaded>
+
+    <spotbugs.disabled>true</spotbugs.disabled>
+    <forbiddenapis.skip>true</forbiddenapis.skip>
+    <checkstyle.disabled>true</checkstyle.disabled>
+    <pmd.skip>true</pmd.skip>
   </properties>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-check</id>
-            <phase>none</phase>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>

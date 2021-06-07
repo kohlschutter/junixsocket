@@ -22,7 +22,11 @@
     <junixsocket.cross.enabled>false</junixsocket.cross.enabled>
     <junixsocket.cross.install-phase>none</junixsocket.cross.install-phase>
     <junixsocket.cross.install-phase.default>install</junixsocket.cross.install-phase.default>
-    <spotbugs.skip>true</spotbugs.skip>
+
+    <spotbugs.disabled>true</spotbugs.disabled>
+    <forbiddenapis.skip>true</forbiddenapis.skip>
+    <checkstyle.disabled>true</checkstyle.disabled>
+    <pmd.skip>true</pmd.skip>
   </properties>
 
   <profiles>
