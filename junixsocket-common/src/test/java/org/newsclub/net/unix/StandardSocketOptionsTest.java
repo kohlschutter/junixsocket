@@ -70,8 +70,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
 
   @Test
   public void testUnconnectedServerSocketOptions() throws Exception {
-    try (AFUNIXServerSocket sock = AFUNIXServerSocket.bindOn(File.createTempFile("AFUNIXSocketTest",
-        ".sock"), true); //
+    try (AFUNIXServerSocket sock = AFUNIXServerSocket.bindOn(SocketTestBase.newTempFile(), true); //
         TestState<ServerSocket> state = new TestStateServerSocket(sock);) {
 
       // supported

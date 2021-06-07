@@ -241,8 +241,7 @@ public class FileDescriptorsTest extends SocketTestBase {
 
   @Test
   public void testFileInputStream() throws Exception {
-    final File tmpFile = File.createTempFile("junixsocket", "test");
-    tmpFile.deleteOnExit();
+    final File tmpFile = SocketTestBase.newTempFile();
 
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ServerThread() {
@@ -291,8 +290,7 @@ public class FileDescriptorsTest extends SocketTestBase {
 
   @Test
   public void testFileInputStreamPartiallyConsumed() throws Exception {
-    final File tmpFile = File.createTempFile("junixsocket", "test");
-    tmpFile.deleteOnExit();
+    final File tmpFile = SocketTestBase.newTempFile();
 
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ServerThread() {
