@@ -413,6 +413,37 @@
             </configuration>
           </execution>
           <execution>
+            <id>crosscompile-amd64-DragonFlyBSD-clang</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <skipInvocation>${junixsocket.cross.disabled}</skipInvocation>
+              <noLog>true</noLog>
+              <streamLogs>true</streamLogs>
+              <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+              </goals>
+              <projectsDirectory>${project.basedir}/../</projectsDirectory>
+              <pomIncludes>
+                <pomInclude>junixsocket-native</pomInclude>
+              </pomIncludes>
+              <profiles>
+                <profile>llvm</profile>
+              </profiles>
+              <properties>
+                <junixsocket.native.aol.llvm>amd64-DragonFlyBSD-clang</junixsocket.native.aol.llvm>
+                <junixsocket.install.skip>true</junixsocket.install.skip>
+                <junixsocket.build.directory>${project.build.directory}/junixsocket-native-amd64-DragonFlyBSD-clang-llvm</junixsocket.build.directory>
+                <junixsocket.native.llvm.target>x86_64-portbld-dragonfly6.0</junixsocket.native.llvm.target>
+                <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
+                <junixsocket.common.classifier.linux.s390x>amd64-DragonFlyBSD-clang-llvm-jni</junixsocket.common.classifier.linux.s390x>
+                <ignorant>${ignorant}</ignorant>
+              </properties>
+            </configuration>
+          </execution>
+          <execution>
             <id>crosscompile-ppc64le-Linux-clang</id>
             <goals>
               <goal>run</goal>
@@ -711,6 +742,22 @@
               <version>${project.version}</version>
               <packaging>nar</packaging>
               <classifier>amd64-FreeBSD-clang-llvm-jni</classifier>
+              <generatePom>false</generatePom>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-amd64-DragonFlyBSD-clang</id>
+            <phase>${junixsocket.cross.install-phase}</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/junixsocket-native-amd64-DragonFlyBSD-clang-llvm/junixsocket-native-${project.version}-amd64-DragonFlyBSD-clang-jni.nar</file>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>junixsocket-native</artifactId>
+              <version>${project.version}</version>
+              <packaging>nar</packaging>
+              <classifier>amd64-DragonFlyBSD-clang-llvm-jni</classifier>
               <generatePom>false</generatePom>
             </configuration>
           </execution>
