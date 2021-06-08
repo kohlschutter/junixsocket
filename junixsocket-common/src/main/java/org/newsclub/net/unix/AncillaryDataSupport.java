@@ -53,8 +53,15 @@ class AncillaryDataSupport implements Closeable {
   void setAncillaryReceiveBufferSize(int size) {
     if (size == ancillaryReceiveBuffer.capacity()) {
       return;
+    } else if (size <= 0) {
+      this.ancillaryReceiveBuffer = EMPTY_BUFFER;
+    } else {
+      setAncillaryReceiveBufferSize0(Math.max(256, size));
     }
-    this.ancillaryReceiveBuffer = size <= 0 ? EMPTY_BUFFER : ByteBuffer.allocateDirect(size);
+  }
+
+  void setAncillaryReceiveBufferSize0(int size) {
+    this.ancillaryReceiveBuffer = ByteBuffer.allocateDirect(size);
   }
 
   public final void ensureAncillaryReceiveBufferSize(int minSize) {
