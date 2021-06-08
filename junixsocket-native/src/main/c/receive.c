@@ -114,6 +114,12 @@ ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
         return count;
     }
 
+    if(controlLen < sizeof(struct cmsghdr)) {
+        // DragonFlyBSD doesn't throw an exception by itself, so we have to do it.
+        _throwException(env, kExceptionSocketException, "No buffer space available");
+        return -1;
+    }
+
     for(struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg); cmsg != NULL; cmsg =
         junixsocket_CMSG_NXTHDR(&msg, cmsg)) {
         if(cmsg->cmsg_level == SOL_SOCKET
@@ -141,6 +147,9 @@ ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
 
                 callObjectSetter(env, ancSupp, "receiveFileDescriptors",
                                  "([I)V", fdArray);
+            } else if(numFds < 0) {
+                _throwException(env, kExceptionSocketException, "No buffer space available");
+                return -1;
             }
         } else {
 #if DEBUG

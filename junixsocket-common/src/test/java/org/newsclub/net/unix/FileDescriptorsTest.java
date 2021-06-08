@@ -216,21 +216,38 @@ public class FileDescriptorsTest extends SocketTestBase {
         @Override
         protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           socket.setOutboundFileDescriptors(FileDescriptor.out, FileDescriptor.err);
+          assertTrue(socket.hasOutboundFileDescriptors());
 
           // NOTE: send an arbitrary byte — we can't send fds without any in-band data
           try (OutputStream outputStream = socket.getOutputStream()) {
             outputStream.write(123);
           }
 
+          assertFalse(socket.hasOutboundFileDescriptors());
+
           stopAcceptingConnections();
         }
       };
           AFUNIXSocket socket = connectToServer();
           InputStream inputStream = socket.getInputStream()) {
-        socket.setAncillaryReceiveBufferSize(13);
+        // using this call directly to get a really small buffer
+        socket.getAFImpl().ancillaryDataSupport.setAncillaryReceiveBufferSize0(13);
         try {
           assertEquals(123, inputStream.read());
-          Assertions.fail("Expected a \"No buffer space available\" SocketException");
+          FileDescriptor[] fds = socket.getReceivedFileDescriptors();
+          if (fds != null) {
+            if (fds.length == 2) {
+              // space was sufficient
+            } else if (fds.length == 1) {
+              // Not all operating systems throw a "No buffer space available" message
+              System.err.println(
+                  "WARNING: Not all file descriptors were received");
+            } else {
+              assertEquals(2, fds.length, "Received wrong number of file descriptors");
+            }
+          } else {
+            Assertions.fail("Expected a \"No buffer space available\" SocketException");
+          }
         } catch (SocketException e) {
           // expected
         }
