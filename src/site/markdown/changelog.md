@@ -2,7 +2,7 @@
 
 ### _(2021-06-xx)_ **junixsocket 2.4.0**
 
- - New supported platforms: NetBSD and OpenBSD (AMD64-builds included by default)
+ - New supported platforms: NetBSD, OpenBSD, DragonFlyBSD (AMD64-builds included by default)
  - Add support for Datagram sockets
  - Add support for socketpair (with IP-based emulation on Windows)
  - Add support for non-blocking I/O
