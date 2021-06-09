@@ -2709,6 +2709,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -2736,6 +2737,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -2779,6 +2781,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -2802,6 +2805,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -2825,17 +2829,20 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
-					"-fPIC",
+					"-Xcrossclang-use-gcc=x86_64-w64-mingw32-gcc",
 				);
 				OTHER_LDFLAGS = (
-					"$(inherited)",
+					"$(inheritedx)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-lWs2_32",
 					"-lAdvApi32",
 					"-lMswsock",
+					"-Xcrossclang-use-gcc=x86_64-w64-mingw32-gcc",
+					"-Xcrossclang-output-strip-lib-prefix",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
@@ -2851,17 +2858,20 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
-					"-fPIC",
+					"-Xcrossclang-use-gcc=x86_64-w64-mingw32-gcc",
 				);
 				OTHER_LDFLAGS = (
-					"$(inherited)",
+					"$(inheritedx)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-lWs2_32",
 					"-lAdvApi32",
 					"-lMswsock",
+					"-Xcrossclang-use-gcc=x86_64-w64-mingw32-gcc",
+					"-Xcrossclang-output-strip-lib-prefix",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
@@ -2877,10 +2887,10 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-m64",
-					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -2903,10 +2913,10 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-m64",
-					"-fPIC",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -2929,6 +2939,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -2953,6 +2964,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -2977,6 +2989,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3000,6 +3013,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3023,6 +3037,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3046,6 +3061,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3069,6 +3085,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3096,6 +3113,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3123,6 +3141,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3134,22 +3153,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-					"-Weverything",
-					"-Wno-reserved-id-macro",
-					"-Wno-undef",
-					"-Wno-cast-qual",
-					"-Wno-disabled-macro-expansion",
-					"-Wno-language-extension-token",
-					"-Wno-gnu-auto-type",
-					"-Wno-c++11-extensions",
-					"-Wno-c++98-compat",
-					"-Wno-empty-translation-unit",
-					"-Wno-gnu-empty-initializer",
-					"-Werror-implicit-function-declaration",
-				);
 			};
 			name = Debug;
 		};
@@ -3162,6 +3165,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3173,22 +3177,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-					"-Weverything",
-					"-Wno-reserved-id-macro",
-					"-Wno-undef",
-					"-Wno-cast-qual",
-					"-Wno-disabled-macro-expansion",
-					"-Wno-language-extension-token",
-					"-Wno-gnu-auto-type",
-					"-Wno-c++11-extensions",
-					"-Wno-c++98-compat",
-					"-Wno-empty-translation-unit",
-					"-Wno-gnu-empty-initializer",
-					"-Werror-implicit-function-declaration",
-				);
 			};
 			name = Release;
 		};
@@ -3202,6 +3190,7 @@
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -3227,6 +3216,7 @@
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -3251,6 +3241,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -3273,6 +3264,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -3295,6 +3287,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3319,6 +3312,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3343,6 +3337,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3366,6 +3361,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3389,6 +3385,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3413,6 +3410,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3438,10 +3436,11 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-fno-lto",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"$(CROSSCLANG_FLAGS)",
-					"-fPIC",
 					"-O2",
 				);
 				OTHER_LDFLAGS = (
@@ -3466,10 +3465,11 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-fno-lto",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"$(CROSSCLANG_FLAGS)",
-					"-fPIC",
 					"-O2",
 				);
 				OTHER_LDFLAGS = (
@@ -3493,6 +3493,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -3515,6 +3516,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 				);
@@ -3551,8 +3553,11 @@
 					"-fno-strict-overflow",
 					"-finline-functions",
 					"-fwrapv",
-					"-Werror-implicit-function-declaration",
-					"-flto",
+					"-fno-c++-static-destructors",
+					"-Os",
+					"-fPIC",
+					"-fno-common",
+					"-fvisibility=hidden",
 				);
 				OTHER_LDFLAGS = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -3573,6 +3578,8 @@
 					"-Wno-gnu-empty-initializer",
 					"-Werror-implicit-function-declaration",
 					"-Wint-conversion",
+					"-Wno-unused-command-line-argument",
+					"-Werror-implicit-function-declaration",
 				);
 			};
 			name = Debug;
@@ -3599,8 +3606,11 @@
 					"-fno-strict-overflow",
 					"-finline-functions",
 					"-fwrapv",
-					"-Werror-implicit-function-declaration",
-					"-flto",
+					"-fno-c++-static-destructors",
+					"-Os",
+					"-fPIC",
+					"-fno-common",
+					"-fvisibility=hidden",
 				);
 				OTHER_LDFLAGS = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -3621,6 +3631,8 @@
 					"-Wno-gnu-empty-initializer",
 					"-Werror-implicit-function-declaration",
 					"-Wint-conversion",
+					"-Wno-unused-command-line-argument",
+					"-Werror-implicit-function-declaration",
 				);
 			};
 			name = Release;
@@ -3634,6 +3646,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
@@ -3659,6 +3672,7 @@
 				LD_LTO_OBJECT_FILE = "";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = (
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
