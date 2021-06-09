@@ -40,11 +40,12 @@ gccMode=0
 compiler=clang
 basename=$(basename $0)
 if [ $basename == "gcc" ]; then
-  gccMode=1
+  gccMode=2
   compiler="gcc"
 fi
 
 clangArgs=()
+gccArgs=()
 libsArgs=()
 target=""
 sdkroot=
@@ -73,6 +74,10 @@ llvmName=llvm
 fileList=
 # ld64_sdk_version=10.9
 ld64_sdk_version=
+
+skipGccArg=0
+analyze=0
+
 while [ $# -gt 0 ]; do
   v="$1"
   shift
@@ -82,13 +87,13 @@ while [ $# -gt 0 ]; do
   case "$previous" in
       -isdkroot ) sdkroot="$v" ;;
   esac
-  
+
   case "$v" in 
       -E ) needLinker=0 ;;
       -fsyntax-only ) needLinker=0 ;;
       -c ) needLinker=0 ;;
       -S ) needLinker=0 ;;
-      -bundle ) isShared=1 ;;
+      -bundle ) isShared=1 ; skipArg=1 ;;
       -dynamic ) isShared=1 ;;
       -dynamiclib ) isShared=1 ;;
       -shared ) isShared=1; hasShared=1 ;;
@@ -104,6 +109,16 @@ while [ $# -gt 0 ]; do
       -current_version ) shift ; skipArg=1 ;;
       -compatibility_version ) shift ; skipArg=1 ;;
       -o ) hasO=1; skipArg=1 ;;
+      -Weverything ) skipGccArg=1 ;;
+      -fno-c++-static-destructors ) skipGccArg=1 ;;
+      -fmacro-backtrace-limit=0 ) skipGccArg=1 ;;
+      -fdiagnostics-show-note-include-stack ) skipGccArg=1 ;;
+      -Xclang ) skipGccArg=2 ;; # has an argument
+      --analyze ) analyze=1 ;;
+      -install_name ) skipGccArg=2 ;; # has an argument
+      -iquote ) skipGccArg=2 ;; # has an argument
+      -iframework ) skipGccArg=2 ;; # has an argument
+      --serialize-diagnostics ) skipGccArg=2 ;; # has an argument
       *.cc ) looksLikeCPP=1 ;;
       *.cpp ) looksLikeCPP=1 ;;
       *.cxx ) looksLikeCPP=1 ;;
@@ -128,10 +143,31 @@ while [ $# -gt 0 ]; do
 
   if [[ "$skipArg" -eq 0 ]]; then
       clangArgs+=("$v")
+      if [[ "$skipGccArg" -le 0 ]]; then
+          gccArgs+=("$v")
+      else
+          skipGccArg=$(( $skipGccArg - 1 ))
+      fi
   fi
 
   previous="$v"
 done
+
+if [[ $analyze -gt 0 && $gccMode -gt 0 ]]; then
+    # When using the static code analyzer, switch back to clang
+    compiler=clang
+    gccMode=0
+fi
+
+if [[ $gccMode -eq 2 ]]; then
+    case "$target" in
+        ""|default|unspecified)
+            ;;
+        *)
+            compiler=clang
+            gccMode=0
+    esac
+fi
 
 clangDir=
 whichComp=$(which "$compiler" 2>/dev/null)
@@ -158,22 +194,29 @@ if [[ "$currentDir" == "$clangDir" || -z "$clangDir" ]]; then
     findOtherClang=1
 fi
 
+llvmPath=
 if [[ -z "$(which llvm-ar 2>/dev/null)" || $findOtherClang -gt 0 ]]; then
   # let's add the latest LLVM to the path
   latestLLVM=$(for f in /usr/local/Cellar/"$llvmName"/*/bin; do echo $f; done | sort -r -n | head -n 1)
   if [[ -n "$latestLLVM" && -d "$latestLLVM" ]]; then
-      export PATH="$latestLLVM:$PATH"
+      llvmPath="$latestLLVM"
   fi
+fi
+
+if [ -n "$llvmPath" ]; then
+    export PATH="$llvmPath:/usr/bin:/usr/local/bin:$PATH"
+else
+    export PATH="/usr/bin:/usr/local/bin:$PATH"
+fi
+
+if [[ $gccMode -gt 0 ]]; then
+    clangArgs=( ${gccArgs[@]} )
 fi
 
 clangDir=$(cd "$(dirname $(which $compiler))"; pwd)
 if [ "$currentDir" == "$clangDir" ]; then
-    export PATH="/usr/bin:/usr/local/bin:$PATH"
-    clangDir=$(cd "$(dirname $(which $compiler))"; pwd)
-    if [ "$currentDir" == "$clangDir" ]; then
-        echo "crossclang detected in PATH. Can't find real clang, giving up" >&2
-        exit 1
-    fi
+    echo "crossclang detected in PATH. Can't find real clang, giving up" >&2
+    exit 1
 fi
 
 output_args=()
@@ -197,7 +240,7 @@ fi
 
 if [ "$target" == "default" ]; then
     defaultFallback=1
-    if [[ $gccMode -eq 1 ]]; then
+    if [[ $gccMode -gt 0 ]]; then
       target=unspecified
     else
       target=""
@@ -205,7 +248,7 @@ if [ "$target" == "default" ]; then
 elif [ "$target" == "current" ]; then
     defaultFallback=2
     target=
-elif [[ -z "$target" && $gccMode -eq 1 ]]; then
+elif [[ -z "$target" && $gccMode -gt 0 ]]; then
     target=unspecified
 fi
 
@@ -344,7 +387,7 @@ if [[ "$target" != "unspecified" ]]; then
     triple="$target"
     if [ -n "$target_triple" ]; then
         triple="$target_triple"
-        if [[ $gccMode -eq 1 ]]; then
+        if [[ $gccMode -gt 0 ]]; then
             # do not add -target
             true
         else
@@ -358,7 +401,7 @@ if [[ "$target" != "unspecified" ]]; then
     fi
     
     for include in ${target_include_cpp_path[@]}; do
-        if [[ $gccMode -eq 1 ]]; then
+        if [[ $gccMode -gt 0 ]]; then
             isystem_decls+=("-isystem" "$sdkroot/$include")
         else
             isystem_decls+=("-cxx-isystem" "$sdkroot/$include")
@@ -448,7 +491,7 @@ if [ $needLinker -gt 0 ]; then
         ;;
         "")
             # No linker specified
-            if [ $gccMode -eq 1 ]; then
+            if [ $gccMode -gt 0 ]; then
                 # OK
                 true
             else
@@ -475,7 +518,7 @@ if [ $needLinker -gt 0 ]; then
       fi
     fi
     
-    if [[ $gccMode -eq 1 ]]; then
+    if [[ $gccMode -gt 0 ]]; then
         # ignore -fuse-ld
         true
     else
@@ -509,7 +552,7 @@ if [[ "$triple" == *"-w64-"* ]]; then
     done
     clangArgs=(${clangArgsNew[@]})
 fi
-if [[ $gccMode -eq 1 ]]; then
+if [[ $gccMode -gt 0 ]]; then
     clangArgsNew=()
     for arg in ${clangArgs[@]}; do
         case "$arg" in
