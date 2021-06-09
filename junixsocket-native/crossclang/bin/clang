@@ -35,11 +35,13 @@ PATH="$PATH":/usr/bin:/opt/homebrew/bin:/usr/local/bin
 export PATH
 
 currentDir=$(cd "$(dirname $0)"; pwd)
-clangDir=$(cd "$(dirname $(which clang))"; pwd)
-findOtherClang=0
-if [ "$currentDir" == "$clangDir" ]; then
-    # looks like we're in the PATH
-    findOtherClang=1
+
+gccMode=0
+compiler=clang
+basename=$(basename $0)
+if [ $basename == "gcc" ]; then
+  gccMode=1
+  compiler="gcc"
 fi
 
 clangArgs=()
@@ -65,8 +67,6 @@ withAndWithoutLC=0
 hasO=0
 outputFile=
 useLdShim=0
-gccMode=0
-compiler=clang
 outputStripLibPrefix=0
 
 llvmName=llvm
@@ -133,7 +133,32 @@ while [ $# -gt 0 ]; do
   previous="$v"
 done
 
-if [[ -z "$(which llvm-ar)" || $findOtherClang -gt 0 ]]; then
+clangDir=
+whichComp=$(which "$compiler" 2>/dev/null)
+[[ -n "$whichComp" ]] && clangDir=$(dirname "$whichComp")
+[[ -n "$clangDir" ]] && clangDir=$(cd "$clangDir"; pwd)
+[[ "$currentDir" == "$clangDir" ]] && clangDir=
+
+if [[ -z "$clangDir" && $gccMode -eq 0 ]]; then
+  if [[ "$target" == "default" || -z "$target" ]]; then
+    clangDir=
+    comp=$(which gcc)
+    [[ -n "$comp" ]] && clangDir=$(dirname "$comp") && clangDir=$(cd "$clangDir" && pwd)
+    if [ -n "$clangDir" ]; then
+      echo "Warning: No clang found, trying native gcc: $comp" >&2
+      gccMode=1
+      compiler="$comp"
+    fi
+  fi
+fi
+
+findOtherClang=0
+if [[ "$currentDir" == "$clangDir" || -z "$clangDir" ]]; then
+    # looks like we're in the PATH
+    findOtherClang=1
+fi
+
+if [[ -z "$(which llvm-ar 2>/dev/null)" || $findOtherClang -gt 0 ]]; then
   # let's add the latest LLVM to the path
   latestLLVM=$(for f in /usr/local/Cellar/"$llvmName"/*/bin; do echo $f; done | sort -r -n | head -n 1)
   if [[ -n "$latestLLVM" && -d "$latestLLVM" ]]; then
@@ -141,10 +166,10 @@ if [[ -z "$(which llvm-ar)" || $findOtherClang -gt 0 ]]; then
   fi
 fi
 
-clangDir=$(cd "$(dirname $(which clang))"; pwd)
+clangDir=$(cd "$(dirname $(which $compiler))"; pwd)
 if [ "$currentDir" == "$clangDir" ]; then
     export PATH="/usr/bin:/usr/local/bin:$PATH"
-    clangDir=$(cd "$(dirname $(which clang))"; pwd)
+    clangDir=$(cd "$(dirname $(which $compiler))"; pwd)
     if [ "$currentDir" == "$clangDir" ]; then
         echo "crossclang detected in PATH. Can't find real clang, giving up" >&2
         exit 1
@@ -169,9 +194,14 @@ if [ $hasFiles -eq 0 ]; then
     needLinker=0
 fi
 
+
 if [ "$target" == "default" ]; then
     defaultFallback=1
-    target=""
+    if [[ $gccMode -eq 1 ]]; then
+      target=unspecified
+    else
+      target=""
+    fi
 elif [ "$target" == "current" ]; then
     defaultFallback=2
     target=
@@ -185,7 +215,7 @@ if [[ "$target" != "unspecified" ]]; then
         if [ $defaultFallback -eq 0 ]; then
             PATH=/usr/bin:$PATH
         fi
-    
+
         target=$($(which $compiler) --version | grep "^Target: " | head -n 1)
         target=${target##* }
         if [ -z "$target" ]; then
