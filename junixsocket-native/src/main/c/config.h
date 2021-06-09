@@ -54,6 +54,7 @@ CK_IGNORE_UNUSED_MACROS_END
 CK_IGNORE_UNUSED_MACROS_BEGIN
 #define junixsocket_have_sun_len // might be undef'ed below
 #define junixsocket_have_ancillary // might be undef'ed below
+#define junixsocket_have_pipe2 // might be undef'ed below
 CK_IGNORE_UNUSED_MACROS_END
 
 #if !defined(uint64_t) && !defined(_INT64_TYPE) && !defined(_UINT64_T) && !defined(_UINT64_T_DEFINED_)
@@ -201,6 +202,10 @@ typedef unsigned long socklen_t; /* 64-bits */
 #  if !defined(SOL_LOCAL)
 #    define SOL_LOCAL               0
 #  endif
+#endif
+
+#if defined(__MACH__) || defined(__sun__)
+#undef junixsocket_have_pipe2
 #endif
 
 #if !defined(_WIN32)

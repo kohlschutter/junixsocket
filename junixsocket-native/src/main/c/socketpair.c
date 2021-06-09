@@ -110,7 +110,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
     ret = socketpair(AF_UNIX, type, SOCK_CLOEXEC, socket_vector);
     if(ret == -1 && errno == EPROTONOSUPPORT) {
         ret = socketpair(AF_UNIX, type, 0, socket_vector);
-        if(ret > 0) {
+        if(ret == 0) {
 #  if defined(FD_CLOEXEC)
             fcntl(socket_vector[0], F_SETFD, FD_CLOEXEC); // best effort
             fcntl(socket_vector[1], F_SETFD, FD_CLOEXEC); // best effort
