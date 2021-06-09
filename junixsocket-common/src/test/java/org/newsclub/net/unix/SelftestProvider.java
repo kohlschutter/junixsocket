@@ -40,6 +40,7 @@ public class SelftestProvider {
         AFUNIXSocketAddressTest.class, //
         AFUNIXSocketChannelTest.class, //
         AFUNIXSocketFactoryTest.class, //
+        AFUNIXSocketPairTest.class, //
         AFUNIXSocketTest.class, //
         AvailableTest.class, //
         BufferOverflowTest.class, //
