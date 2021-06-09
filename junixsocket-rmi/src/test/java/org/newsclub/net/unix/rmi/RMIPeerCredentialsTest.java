@@ -46,20 +46,22 @@ public class RMIPeerCredentialsTest extends TestBase {
     AFUNIXSocketCredentials clientCreds = svc.remotePeerCredentials();
     AFUNIXSocketCredentials serverCreds = RemotePeerInfo.remotePeerCredentials(svc);
 
-    assertEquals(clientCreds, serverCreds,
-        "Since our tests run in the same process, the peer credentials must be identical");
-    assertEquals(clientCreds.toString(), serverCreds.toString(),
-        "Since our tests run in the same process, the peer credentials must be identical");
-    assertEquals(clientCreds.getGid(), serverCreds.getGid(),
-        "Since our tests run in the same process, the peer credentials must be identical");
-    assertArrayEquals(clientCreds.getGids(), serverCreds.getGids(),
-        "Since our tests run in the same process, the peer credentials must be identical");
-    assertEquals(clientCreds.getUid(), serverCreds.getUid(),
-        "Since our tests run in the same process, the peer credentials must be identical");
-    assertEquals(clientCreds.getPid(), serverCreds.getPid(),
-        "Since our tests run in the same process, the peer credentials must be identical");
-    assertEquals(clientCreds.getUUID(), serverCreds.getUUID(),
-        "Since our tests run in the same process, the peer credentials must be identical");
+    if (serverCreds != AFUNIXSocketCredentials.SAME_PROCESS) {
+      assertEquals(clientCreds, serverCreds,
+          "Since our tests run in the same process, the peer credentials must be identical");
+      assertEquals(clientCreds.toString(), serverCreds.toString(),
+          "Since our tests run in the same process, the peer credentials must be identical");
+      assertEquals(clientCreds.getGid(), serverCreds.getGid(),
+          "Since our tests run in the same process, the peer credentials must be identical");
+      assertArrayEquals(clientCreds.getGids(), serverCreds.getGids(),
+          "Since our tests run in the same process, the peer credentials must be identical");
+      assertEquals(clientCreds.getUid(), serverCreds.getUid(),
+          "Since our tests run in the same process, the peer credentials must be identical");
+      assertEquals(clientCreds.getPid(), serverCreds.getPid(),
+          "Since our tests run in the same process, the peer credentials must be identical");
+      assertEquals(clientCreds.getUUID(), serverCreds.getUUID(),
+          "Since our tests run in the same process, the peer credentials must be identical");
+    }
     // CPD-ON
 
     assertNull(AFUNIXSocketCredentials.remotePeerCredentials(),
