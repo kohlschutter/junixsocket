@@ -46,7 +46,7 @@ public class RMIPeerCredentialsTest extends TestBase {
     AFUNIXSocketCredentials clientCreds = svc.remotePeerCredentials();
     AFUNIXSocketCredentials serverCreds = RemotePeerInfo.remotePeerCredentials(svc);
 
-    if (serverCreds != AFUNIXSocketCredentials.SAME_PROCESS) {
+    if (serverCreds != AFUNIXSocketCredentials.SAME_PROCESS) { // NOPMD
       assertEquals(clientCreds, serverCreds,
           "Since our tests run in the same process, the peer credentials must be identical");
       assertEquals(clientCreds.toString(), serverCreds.toString(),
