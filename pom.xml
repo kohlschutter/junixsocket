@@ -62,7 +62,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <junit.version>5.7.1</junit.version>
     <junixsocket.native.aol></junixsocket.native.aol>
     <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
-    <junixsocket.native.crossclang.toolPath>${project.basedir}/crossclang/bin/</junixsocket.native.crossclang.toolPath>
+    <junixsocket.native.crossclang.toolPath>${kohlschutter.project.base.directory}/junixsocket-native/crossclang/bin/</junixsocket.native.crossclang.toolPath>
     <junixsocket.native.llvm.target>default</junixsocket.native.llvm.target>
     <junixsocket.native.llvm.toolPath>${junixsocket.native.crossclang.toolPath}</junixsocket.native.llvm.toolPath>
     <junixsocket.native.default.toolPath>${junixsocket.native.crossclang.toolPath}</junixsocket.native.default.toolPath>
