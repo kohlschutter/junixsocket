@@ -105,11 +105,20 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
     _initFD(env, fd2, handleConnect);
 #else
     int socket_vector[2];
-
+    int ret;
 #if defined(junixsocket_have_socket_cloexec)
-    int ret = socketpair(AF_UNIX, type, SOCK_CLOEXEC, socket_vector);
+    ret = socketpair(AF_UNIX, type, SOCK_CLOEXEC, socket_vector);
+    if(ret == -1 && errno == EPROTONOSUPPORT) {
+        ret = socketpair(AF_UNIX, type, 0, socket_vector);
+        if(ret > 0) {
+#  if defined(FD_CLOEXEC)
+            fcntl(socket_vector[0], F_SETFD, FD_CLOEXEC); // best effort
+            fcntl(socket_vector[1], F_SETFD, FD_CLOEXEC); // best effort
+#  endif
+        }
+    }
 #else
-    int ret = socketpair(AF_UNIX, type, 0, socket_vector);
+    ret = socketpair(AF_UNIX, type, 0, socket_vector);
 #endif
     if(ret == -1) {
         _throwErrnumException(env, socket_errno, NULL);

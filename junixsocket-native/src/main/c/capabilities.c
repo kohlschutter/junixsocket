@@ -57,7 +57,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
     capabilities |= CAPABILITY_ABSTRACT_NAMESPACE;
 #endif
 
-#if !defined(_WIN32) //&& !defined(__sun) && !defined(__sun__)
+#if !defined(_WIN32)
     capabilities |= CAPABILITY_DATAGRAMS;
 #endif
 
