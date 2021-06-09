@@ -106,7 +106,7 @@ public class RemoteRegistryTest {
 
       @Override
       protected int shutdownAfterSecs() {
-        return 5;
+        return 30;
       }
     }) {
       AFUNIXRegistry registry = sra.getRegistry();
@@ -114,7 +114,7 @@ public class RemoteRegistryTest {
 
       assertThrows(ServerException.class, () -> sra.getRegistry().getNaming().shutdownRegistry());
 
-      assertEquals(0, sra.shutdownAndWait());
+      sra.shutdownAndWait(true);
     } catch (Exception e) {
       throw e;
     }
@@ -179,7 +179,14 @@ public class RemoteRegistryTest {
     }
 
     int shutdownAndWait() throws InterruptedException {
+      return shutdownAndWait(false);
+    }
+
+    int shutdownAndWait(boolean destroy) throws InterruptedException {
       shutdown();
+      if (destroy) {
+        registryProcess.destroy();
+      }
       return registryProcess.waitFor();
     }
 
