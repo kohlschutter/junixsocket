@@ -169,6 +169,9 @@ extern "C" {
 #undef junixsocket_have_sun_len
 #define junixsocket_use_poll_for_accept
 #define junixsocket_use_poll_for_read
+
+#undef DEBUG // prevent unresolved symbol "__iob" (triggered by referencing stderr)
+
 #endif
 
 // Tru64

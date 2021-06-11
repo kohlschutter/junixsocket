@@ -121,7 +121,9 @@ jclass findClassAndGlobalRef(JNIEnv *env, char *className) {
     if (clazz) {
         return (*env)->NewGlobalRef(env, clazz);
     } else {
+#if DEBUG
         fprintf(stderr, "(junixsocket) Could not find class %s", className);
+#endif
         return NULL;
     }
 }
