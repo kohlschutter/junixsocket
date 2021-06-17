@@ -3429,7 +3429,7 @@
 		43B3E0AA266971630024822F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CROSSCLANG_FLAGS = "-m64";
+				CROSSCLANG_FLAGS = "-m64 -mcpu=v9 -mllvm -sparc-reserve-app-registers";
 				CROSSCLANG_TARGET = "sparc-sun-solaris2.11";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3449,6 +3449,9 @@
 					"$(CROSSCLANG_TARGET)",
 					"$(CROSSCLANG_FLAGS)",
 					"-nostdlib",
+					"-lc",
+					"-lxnet",
+					"-lrt",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
@@ -3458,7 +3461,7 @@
 		43B3E0AB266971630024822F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CROSSCLANG_FLAGS = "-m64";
+				CROSSCLANG_FLAGS = "-m64 -mcpu=v9 -mllvm -sparc-reserve-app-registers";
 				CROSSCLANG_TARGET = "sparc-sun-solaris2.11";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3478,6 +3481,9 @@
 					"$(CROSSCLANG_TARGET)",
 					"$(CROSSCLANG_FLAGS)",
 					"-nostdlib",
+					"-lc",
+					"-lxnet",
+					"-lrt",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang;
