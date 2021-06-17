@@ -25,6 +25,15 @@ hints how to get it compile on your platform.
     cd junixsocket
     ( cd junixsocket-native ; mvn clean install )
 
+You may be able to add a custom entry to "aol.properties" (which is in junixsocket-native/src/main/nar).
+
+If you don't have a clang compiler installed, you may need to specify "gcc" as the compiler and linker
+via a Maven option:
+
+    mvn clean install -Djunixsocket.native.default.linkerName=gcc
+
+This for example helps to get junixsocket compile on sparcv9 Solaris.
+
 ## Step 2: Find the classifier of the native library artifact
 
 The classifier is the "AOL" identifier plus "-jni". The following script can find the available classifiers.

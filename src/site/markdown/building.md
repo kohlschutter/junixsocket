@@ -13,7 +13,7 @@ Here's how you build junixsocket from the source.
     Even though junixsocket can run on Java 8, you need Java 9 or better to build it, so we can
     support the new Java module system on newer Java versions.
  
- 3. Install a development environment so you can compile C code (e.g., llvm/clang)
+ 3. Install a development environment so you can compile C code (preferably clang/llvm).
  
     On macOS, this means installing Xcode.
     For development purposes, you may want to use the Xcode project defined in `junixsocket-native/junixsocket-native.xcodeproj`.
@@ -45,3 +45,9 @@ Here's how to make building less strict (this turns off several code quality che
 You can also build the full release version of junixsocket (which will include all cross-compile destinations) -- see the [release instructions](release.html) for details:
 
     mvn clean install -Pstrict -Prelease
+
+## Issues
+
+If you don't have clang, try compiling with gcc. You may need to specify the compiler/linker at the command line:
+
+    mvn clean install -Djunixsocket.native.default.linkerName=gcc

@@ -147,7 +147,8 @@
           <scope>runtime</scope>
           <optional>true</optional>
         </dependency>
-        <dependency>
+        <!--
+          <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>
           <artifactId>junixsocket-native</artifactId>
           <version>${project.version}</version>
@@ -155,7 +156,8 @@
           <classifier>sparcv9-SunOS-clang-llvm-jni</classifier>
           <scope>runtime</scope>
           <optional>true</optional>
-        </dependency>
+          </dependency>
+        -->
         <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>
           <artifactId>junixsocket-native</artifactId>

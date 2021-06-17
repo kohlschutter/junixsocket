@@ -319,37 +319,39 @@
               </properties>
             </configuration>
           </execution>
-          <execution>
+          <!--
+            <execution>
             <id>crosscompile-sparc-SunOS-clang</id>
             <goals>
-              <goal>run</goal>
+            <goal>run</goal>
             </goals>
             <configuration>
-              <skipInvocation>${junixsocket.cross.disabled}</skipInvocation>
-              <noLog>true</noLog>
-              <streamLogs>true</streamLogs>
-              <goals>
-                <goal>clean</goal>
-                <goal>install</goal>
-              </goals>
-              <projectsDirectory>${project.basedir}/../</projectsDirectory>
-              <pomIncludes>
-                <pomInclude>junixsocket-native</pomInclude>
-              </pomIncludes>
-              <profiles>
-                <profile>llvm</profile>
-              </profiles>
-              <properties>
-                <junixsocket.native.aol.llvm>sparcv9-SunOS-clang</junixsocket.native.aol.llvm>
-                <junixsocket.install.skip>true</junixsocket.install.skip>
-                <junixsocket.build.directory>${project.build.directory}/junixsocket-native-sparcv9-SunOS-clang-llvm</junixsocket.build.directory>
-                <junixsocket.native.llvm.target>sparc-sun-solaris2.11</junixsocket.native.llvm.target>
-                <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
-                <junixsocket.common.classifier.sunos.sparcv9>sparcv9-SunOS-clang-llvm-jni</junixsocket.common.classifier.sunos.sparcv9>
-                <ignorant>${ignorant}</ignorant>
-              </properties>
+            <skipInvocation>${junixsocket.cross.disabled}</skipInvocation>
+            <noLog>true</noLog>
+            <streamLogs>true</streamLogs>
+            <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+            </goals>
+            <projectsDirectory>${project.basedir}/../</projectsDirectory>
+            <pomIncludes>
+            <pomInclude>junixsocket-native</pomInclude>
+            </pomIncludes>
+            <profiles>
+            <profile>llvm</profile>
+            </profiles>
+            <properties>
+            <junixsocket.native.aol.llvm>sparcv9-SunOS-clang</junixsocket.native.aol.llvm>
+            <junixsocket.install.skip>true</junixsocket.install.skip>
+            <junixsocket.build.directory>${project.build.directory}/junixsocket-native-sparcv9-SunOS-clang-llvm</junixsocket.build.directory>
+            <junixsocket.native.llvm.target>sparc-sun-solaris2.11</junixsocket.native.llvm.target>
+            <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
+            <junixsocket.common.classifier.sunos.sparcv9>sparcv9-SunOS-clang-llvm-jni</junixsocket.common.classifier.sunos.sparcv9>
+            <ignorant>${ignorant}</ignorant>
+            </properties>
             </configuration>
-          </execution>
+            </execution>
+          -->
           <execution>
             <id>crosscompile-amd64-SunOS-clang</id>
             <goals>
@@ -697,22 +699,24 @@
               <generatePom>false</generatePom>
             </configuration>
           </execution>
-          <execution>
+          <!--
+            <execution>
             <id>install-sparcv9-SunOS-clang</id>
             <phase>${junixsocket.cross.install-phase}</phase>
             <goals>
-              <goal>install-file</goal>
+            <goal>install-file</goal>
             </goals>
             <configuration>
-              <file>${project.build.directory}/junixsocket-native-sparcv9-SunOS-clang-llvm/junixsocket-native-${project.version}-sparcv9-SunOS-clang-jni.nar</file>
-              <groupId>${project.groupId}</groupId>
-              <artifactId>junixsocket-native</artifactId>
-              <version>${project.version}</version>
-              <packaging>nar</packaging>
-              <classifier>sparcv9-SunOS-clang-llvm-jni</classifier>
-              <generatePom>false</generatePom>
+            <file>${project.build.directory}/junixsocket-native-sparcv9-SunOS-clang-llvm/junixsocket-native-${project.version}-sparcv9-SunOS-clang-jni.nar</file>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>junixsocket-native</artifactId>
+            <version>${project.version}</version>
+            <packaging>nar</packaging>
+            <classifier>sparcv9-SunOS-clang-llvm-jni</classifier>
+            <generatePom>false</generatePom>
             </configuration>
-          </execution>
+            </execution>
+          -->
           <execution>
             <id>install-amd64-SunOS-clang</id>
             <phase>${junixsocket.cross.install-phase}</phase>
