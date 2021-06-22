@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -105,7 +106,7 @@ public class SoTimeoutTest extends SocketTestBase {
   }
 
   @Test
-  public void testSocketTimeoutException() throws Exception {
+  public void testSocketTimeoutExceptionRead() throws Exception {
     final File tempFile = newTempFile();
     final AFUNIXSocketAddress address = AFUNIXSocketAddress.of(tempFile);
     try (AFUNIXServerSocket server = AFUNIXServerSocket.bindOn(address);
@@ -118,6 +119,27 @@ public class SoTimeoutTest extends SocketTestBase {
 
       assertThrows(SocketTimeoutException.class, () -> {
         in.read(buf);
+      });
+    } finally {
+      tempFile.delete();
+    }
+  }
+
+  @Test
+  public void testSocketTimeoutExceptionWrite() throws Exception {
+    final File tempFile = newTempFile();
+    final AFUNIXSocketAddress address = AFUNIXSocketAddress.of(tempFile);
+    try (AFUNIXServerSocket server = AFUNIXServerSocket.bindOn(address);
+        AFUNIXSocket client = AFUNIXSocket.connectTo(address)) {
+
+      final AFUNIXSocket socket = server.accept();
+      socket.setSoTimeout(500);
+      byte[] buf = new byte[socket.getSendBufferSize()];
+      OutputStream out = socket.getOutputStream();
+
+      assertThrows(SocketTimeoutException.class, () -> {
+        out.write(buf);
+        out.write(buf);
       });
     } finally {
       tempFile.delete();

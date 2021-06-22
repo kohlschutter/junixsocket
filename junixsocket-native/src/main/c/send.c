@@ -179,12 +179,12 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_write(
     free(buf);
 
     if(count == -1) {
-        if(errno == EAGAIN || errno == EWOULDBLOCK) {
+        if(checkNonBlocking(handle, errno)) {
             return 0;
+        } else {
+            _throwErrnumException(env, errno, fd);
+            return -1;
         }
-
-        _throwErrnumException(env, errno, fd);
-        return -1;
     }
 
     return (jint)count;
@@ -227,7 +227,6 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_send
     socklen_t sendToLen = addressBufferRef.size;
 
     int ret = sendmsg_wrapper(env, handle, dataBufferRef.buf, length, sendTo, sendToLen, opt, ancSupp);
-
     if(ret < 0) {
         ret = 0;
         if(socket_errno != EAGAIN && errno != EWOULDBLOCK && (errno != ENOBUFS || (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) == 0 )) {
