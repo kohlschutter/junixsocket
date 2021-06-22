@@ -202,7 +202,19 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 #if defined(junixsocket_use_poll_for_read)
     int ret = pollWithTimeout(env, fd, handle, 0);
     if(ret < 1) {
-        return -1;
+        if(ret == -1) {
+            _throwErrnumException(env, errno, fd);
+            return -1;
+        }
+        int flags = fcntl(handle, F_GETFL);
+        if (flags != -1 && (flags & O_NONBLOCK)) {
+            // non-blocking socket
+            return 0;
+        } else {
+            // timeout on blocking socket
+            _throwException(env, kExceptionSocketTimeoutException, "timeout");
+            return -1;
+        }
     }
 #endif
 
@@ -259,6 +271,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
 
         int ret = pollWithTimeout(env, fd, handle, hardTimeoutMillis);
         if(ret < 1) {
+            if(ret == -1) {
+                _throwErrnumException(env, errno, fd);
+                return -1;
+            }
             int flags = fcntl(handle, F_GETFL);
             if (flags != -1 && (flags & O_NONBLOCK)) {
                 // non-blocking socket

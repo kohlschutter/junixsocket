@@ -18,12 +18,15 @@
 package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -98,6 +101,26 @@ public class SoTimeoutTest extends SocketTestBase {
       } finally {
         sema.release();
       }
+    }
+  }
+
+  @Test
+  public void testSocketTimeoutException() throws Exception {
+    final File tempFile = newTempFile();
+    final AFUNIXSocketAddress address = AFUNIXSocketAddress.of(tempFile);
+    try (AFUNIXServerSocket server = AFUNIXServerSocket.bindOn(address);
+        AFUNIXSocket client = AFUNIXSocket.connectTo(address)) {
+
+      final AFUNIXSocket socket = server.accept();
+      socket.setSoTimeout(500);
+      byte[] buf = new byte[socket.getReceiveBufferSize()];
+      InputStream in = socket.getInputStream();
+
+      assertThrows(SocketTimeoutException.class, () -> {
+        in.read(buf);
+      });
+    } finally {
+      tempFile.delete();
     }
   }
 }
