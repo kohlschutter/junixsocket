@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Christian Kohlschütter
  */
 public final class AFUNIXSocket extends Socket implements AFUNIXSomeSocket, AFUNIXSocketExtensions {
+  @SuppressWarnings("PMD.MutableStaticState")
   static String loadedLibrary; // set by NativeLibraryLoader
 
   private static Integer capabilities = null;

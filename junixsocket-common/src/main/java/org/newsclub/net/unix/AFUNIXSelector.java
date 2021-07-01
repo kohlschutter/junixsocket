@@ -121,40 +121,47 @@ final class AFUNIXSelector extends AbstractSelector {
       end();
     }
     if (num > 0) {
-      if ((pollFd.rops[0] & SelectionKey.OP_READ) != 0) {
-        synchronized (PIPE_MSG_RECEIVE_BUFFER) {
-          PIPE_MSG_RECEIVE_BUFFER.clear();
-          int maxReceive = PIPE_MSG_RECEIVE_BUFFER.remaining();
-          int bytesReceived = NativeUnixSocket.receive(pollFd.fds[0], PIPE_MSG_RECEIVE_BUFFER, 0,
-              maxReceive, null, NativeUnixSocket.OPT_NON_SOCKET, null, 0);
-
-          if (bytesReceived == maxReceive) {
-            // consume all pending bytes
-            int read;
-            do {
-              if ((read = NativeUnixSocket.poll(sharedSelectorPipePollFd, 0)) > 0) {
-                PIPE_MSG_RECEIVE_BUFFER.clear();
-                read = NativeUnixSocket.receive(sharedSelectorPipePollFd.fds[0],
-                    PIPE_MSG_RECEIVE_BUFFER, 0, maxReceive, null, NativeUnixSocket.OPT_NON_SOCKET,
-                    null, 0);
-              }
-            } while (read == maxReceive);
-          }
-
-        }
-      }
-
-      for (int i = 1; i < pollFd.rops.length; i++) {
-        int rops = pollFd.rops[i];
-        if (rops == 0) {
-          continue;
-        }
-        AFUNIXSelectionKey key = pollFd.keys[i];
-        key.setOpsReady(rops);
-        keysSelected.add0(key);
-      }
+      consumeAllBytesAfterPoll();
+      setOpsReady();
     }
     return keysSelected.size();
+  }
+
+  private void consumeAllBytesAfterPoll() throws IOException {
+    if ((pollFd.rops[0] & SelectionKey.OP_READ) == 0) {
+      return;
+    }
+    synchronized (PIPE_MSG_RECEIVE_BUFFER) {
+      PIPE_MSG_RECEIVE_BUFFER.clear();
+      int maxReceive = PIPE_MSG_RECEIVE_BUFFER.remaining();
+      int bytesReceived = NativeUnixSocket.receive(pollFd.fds[0], PIPE_MSG_RECEIVE_BUFFER, 0,
+          maxReceive, null, NativeUnixSocket.OPT_NON_SOCKET, null, 0);
+
+      if (bytesReceived == maxReceive) {
+        // consume all pending bytes
+        int read;
+        do {
+          if ((read = NativeUnixSocket.poll(sharedSelectorPipePollFd, 0)) > 0) {
+            PIPE_MSG_RECEIVE_BUFFER.clear();
+            read = NativeUnixSocket.receive(sharedSelectorPipePollFd.fds[0],
+                PIPE_MSG_RECEIVE_BUFFER, 0, maxReceive, null, NativeUnixSocket.OPT_NON_SOCKET, null,
+                0);
+          }
+        } while (read == maxReceive);
+      }
+    }
+  }
+
+  private void setOpsReady() {
+    for (int i = 1; i < pollFd.rops.length; i++) {
+      int rops = pollFd.rops[i];
+      if (rops == 0) {
+        continue;
+      }
+      AFUNIXSelectionKey key = pollFd.keys[i];
+      key.setOpsReady(rops);
+      keysSelected.add0(key);
+    }
   }
 
   @SuppressWarnings("resource")
