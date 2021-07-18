@@ -56,7 +56,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_createSocket
     }
 
 #if defined(junixsocket_have_socket_cloexec)
-    handle = socket(AF_UNIX, type, SOCK_CLOEXEC);
+    handle = socket(AF_UNIX, type | SOCK_CLOEXEC, 0);
     if(handle == -1 && errno == EPROTONOSUPPORT) {
         handle = socket(AF_UNIX, type, 0);
         if(handle > 0) {
