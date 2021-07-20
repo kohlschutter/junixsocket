@@ -17,7 +17,10 @@
  */
 package org.newsclub.net.unix;
 
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.io.IOException;
+import java.net.BindException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -55,7 +58,12 @@ public class EndOfFileJavaTest extends EndOfFileTest {
     }
 
     server = new ServerSocket();
-    server.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), desiredPort), 1);
+    try {
+      server.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), desiredPort), 1);
+    } catch (BindException e) {
+      assumeTrue(false, "Cannot bind on new TCP loopback port at " + InetAddress
+          .getLoopbackAddress());
+    }
     port = server.getLocalPort();
     executor = Executors.newFixedThreadPool(2);
   }
