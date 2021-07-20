@@ -25,13 +25,42 @@
 static jclass class_FileDescriptor = NULL;
 static jfieldID fieldID_fd = NULL;
 
+typedef enum {
+    kFDTypeOther = 0,
+    kFDTypeOtherSocket,
+    kFDTypeOtherStreamSocket,
+    kFDTypeOtherDatagramSocket,
+    kFDTypeAFUNIXStreamSocket,
+    kFDTypeAFUNIXDatagramSocket,
+    kFDTypeMaxExcl
+} FileDescriptorType;
+
+// NOTE: The exceptions must all be either inherit from IOException or RuntimeException/Error
+static char *kFDTypeClassNames[kFDTypeMaxExcl] = {
+    "java/io/FileDescriptor",
+    "java/io/FileDescriptor",
+    "java/net/Socket",
+    "java/net/DatagramSocket",
+    "org/newsclub/net/unix/AFUNIXSocket",
+    "org/newsclub/net/unix/AFUNIXDatagramSocket",
+};
+
+static jclass *kFDTypeClasses;
+
 void init_filedescriptors(JNIEnv *env) {
-    class_FileDescriptor = findClassAndGlobalRef(env, "java/io/FileDescriptor");
+    kFDTypeClasses = malloc(sizeof(jclass) * kFDTypeMaxExcl);
+    for(int i=0; i<kFDTypeMaxExcl; i++) {
+        kFDTypeClasses[i] = findClassAndGlobalRef(env, kFDTypeClassNames[i]);
+    }
+
+    class_FileDescriptor = kFDTypeClasses[0];
     fieldID_fd = (*env)->GetFieldID(env, class_FileDescriptor, "fd", "I");
 }
 
 void destroy_filedescriptors(JNIEnv *env) {
-    releaseClassGlobalRef(env, class_FileDescriptor);
+    for(int i=0; i<kFDTypeMaxExcl; i++) {
+        releaseClassGlobalRef(env, kFDTypeClasses[i]);
+    }
     fieldID_fd = NULL;
 }
 
@@ -222,3 +251,62 @@ jboolean checkNonBlocking(int handle, int errnum) {
 #endif
 }
 
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    primaryType
+ * Signature: (Ljava/io/FileDescriptor;)Ljava/lang/Class;
+ */
+JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
+ (JNIEnv *env, jclass clazz CK_UNUSED, jobject fd) {
+     int handle = (fd == NULL) ? -1 : _getFD(env, fd);
+     if(handle <= 0) {
+         return NULL;
+     }
+
+     struct sockaddr_un addrUn = {0};
+     struct sockaddr *addr = (struct sockaddr *)&addrUn;
+     socklen_t len = sizeof(struct sockaddr_un);
+
+     int ret;
+
+     ret = getsockname(handle, addr, &len);
+     if(ret != 0) {
+         int errnum = socket_errno;
+         if(errnum == ENOTSOCK) {
+             return kFDTypeClasses[kFDTypeOther];
+         }
+         _throwErrnumException(env, errnum, fd);
+         return NULL;
+     }
+
+     int type = -1;
+     socklen_t typeLen = sizeof(type);
+     ret = getsockopt(handle, SOL_SOCKET, SO_TYPE, &type, &typeLen);
+     if(ret != 0) {
+         _throwErrnumException(env, socket_errno, fd);
+         return NULL;
+     }
+
+     // FIXME: check protocol?
+
+     switch(addr->sa_family) {
+         case AF_UNIX:
+             switch(type) {
+                 case SOCK_STREAM:
+                     return kFDTypeClasses[kFDTypeAFUNIXStreamSocket];
+                 case SOCK_DGRAM:
+                     return kFDTypeClasses[kFDTypeAFUNIXDatagramSocket];
+                 default:
+                     return kFDTypeClasses[kFDTypeOtherSocket];
+             }
+         default:
+             switch(type) {
+                 case SOCK_STREAM:
+                     return kFDTypeClasses[kFDTypeOtherStreamSocket];
+                 case SOCK_DGRAM:
+                     return kFDTypeClasses[kFDTypeOtherDatagramSocket];
+                 default:
+                     return kFDTypeClasses[kFDTypeOtherSocket];
+             }
+     }
+ }

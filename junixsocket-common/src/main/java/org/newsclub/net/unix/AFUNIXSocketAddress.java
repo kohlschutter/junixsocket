@@ -20,6 +20,7 @@ package org.newsclub.net.unix;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -67,6 +68,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    */
   static final AFUNIXSocketAddress INTERNAL_DUMMY_BIND = new AFUNIXSocketAddress(0);
   static final AFUNIXSocketAddress INTERNAL_DUMMY_CONNECT = new AFUNIXSocketAddress(1);
+  static final AFUNIXSocketAddress INTERNAL_DUMMY_DONT_CONNECT = new AFUNIXSocketAddress(2);
 
   /**
    * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
@@ -265,6 +267,40 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
   }
 
   /**
+   * Returns an {@link AFUNIXSocketAddress} that points to a temporary, non-existent but accessible
+   * path in the file system.
+   * 
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
+   * @throws IOException if the operation fails.
+   */
+  public static AFUNIXSocketAddress ofNewTempFile() throws IOException {
+    return ofNewTempPath(0);
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to a temporary, non-existent but accessible
+   * path in the file system, assigning the given port to it.
+   * 
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
+   * @throws IOException if the operation fails.
+   */
+  public static AFUNIXSocketAddress ofNewTempPath(int port) throws IOException {
+    return of(newTempPath(true), port);
+  }
+
+  static File newTempPath(boolean deleteOnExit) throws IOException {
+    File f = File.createTempFile("jux", ".sock");
+    if (deleteOnExit) {
+      f.deleteOnExit(); // always delete on exit to clean-up sockets created under that name
+    }
+    if (!f.delete() && f.exists()) {
+      throw new IOException("Could not delete temporary file that we just created: " + f);
+    }
+    return f;
+  }
+
+  /**
    * Returns an {@link AFUNIXSocketAddress} given a special {@link InetAddress} that encodes the
    * byte sequence of an AF_UNIX socket address, like those returned by {@link #wrapAddress()}.
    * 
@@ -391,6 +427,9 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
 
   private static String prettyPrint(byte[] data) {
     final int dataLength = data.length;
+    if (dataLength == 0) {
+      return "";
+    }
     StringBuilder sb = new StringBuilder(dataLength + 16);
     for (int i = 0; i < dataLength; i++) {
       byte c = data[i];
@@ -406,7 +445,9 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
 
   @Override
   public String toString() {
-    return getClass().getName() + "[port=" + getPort() + ";path=" + prettyPrint(bytes) + "]";
+    int port = getPort();
+    return getClass().getName() + "[" + (port == 0 ? "" : "port=" + port + ";") + "path="
+        + prettyPrint(bytes) + "]";
   }
 
   /**
@@ -468,7 +509,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @return {@code true} if the address is in the abstract namespace.
    */
   public boolean isInAbstractNamespace() {
-    return bytes[0] == 0;
+    return bytes.length > 0 && bytes[0] == 0;
   }
 
   /**
@@ -477,7 +518,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
    * @return {@code true} if the address has a filename.
    */
   public boolean hasFilename() {
-    return !isInAbstractNamespace();
+    return bytes.length > 0 && bytes[0] != 0;
   }
 
   /**
@@ -560,6 +601,10 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
   }
 
   static AFUNIXSocketAddress getSocketAddress(FileDescriptor fdesc, boolean peerName) {
+    return getSocketAddress(fdesc, peerName, 0);
+  }
+
+  static AFUNIXSocketAddress getSocketAddress(FileDescriptor fdesc, boolean peerName, int port) {
     if (!fdesc.valid()) {
       return null;
     }
@@ -569,7 +614,7 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
     }
     try {
       // FIXME we could infer the "port" from the path if the socket factory supports that
-      return AFUNIXSocketAddress.unwrap(AFUNIXInetAddress.wrapAddress(addr), 0);
+      return AFUNIXSocketAddress.unwrap(AFUNIXInetAddress.wrapAddress(addr), port);
     } catch (SocketException e) {
       throw new IllegalStateException(e);
     }

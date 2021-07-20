@@ -33,6 +33,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
+import com.kohlschutter.testutil.AssertUtil;
+import com.kohlschutter.util.IOUtil;
+
 /**
  * Tests {@link Socket#setSoTimeout(int)} behavior.
  * 
@@ -118,10 +121,10 @@ public class SoTimeoutTest extends SocketTestBase {
       InputStream in = socket.getInputStream();
 
       assertThrows(SocketTimeoutException.class, () -> {
-        in.read(buf);
+        AssertUtil.ignoreValue(in.read(buf));
       });
     } finally {
-      tempFile.delete();
+      IOUtil.delete(tempFile);
     }
   }
 
@@ -142,7 +145,7 @@ public class SoTimeoutTest extends SocketTestBase {
         out.write(buf);
       });
     } finally {
-      tempFile.delete();
+      IOUtil.delete(tempFile);
     }
   }
 }

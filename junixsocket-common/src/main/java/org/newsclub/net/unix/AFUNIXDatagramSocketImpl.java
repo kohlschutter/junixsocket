@@ -26,17 +26,21 @@ import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
   private final AFUNIXSocketCore core;
   final AncillaryDataSupport ancillaryDataSupport = new AncillaryDataSupport();
+  private final AtomicBoolean connected = new AtomicBoolean(false);
+  private final AtomicBoolean bound = new AtomicBoolean(false);
 
   private final AtomicInteger socketTimeout = new AtomicInteger(0);
+  private int remotePort = 0;
 
-  AFUNIXDatagramSocketImpl() throws IOException {
+  AFUNIXDatagramSocketImpl(FileDescriptor fd) throws IOException {
     super();
-    this.core = new AFUNIXSocketCore(this, ancillaryDataSupport);
+    this.core = new AFUNIXSocketCore(this, fd, ancillaryDataSupport);
     this.fd = core.fd;
   }
 
@@ -44,6 +48,8 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
   protected void create() throws SocketException {
     if (isClosed()) {
       throw new SocketException("Already closed");
+    } else if (fd.valid()) {
+      return;
     }
     try {
       NativeUnixSocket.createSocket(fd, NativeUnixSocket.SOCK_DGRAM);
@@ -69,12 +75,15 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
       return;
     }
     NativeUnixSocket.connect(socketAddress.getBytes(), fd, -1);
+    this.remotePort = socketAddress.getPort();
   }
 
   @Override
   protected void disconnect() {
     try {
       NativeUnixSocket.disconnect(fd);
+      connected.set(false);
+      this.remotePort = 0;
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -104,6 +113,7 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
     }
     try {
       NativeUnixSocket.bind(socketAddress.getBytes(), fd, 0);
+      this.localPort = socketAddress.getPort();
     } catch (SocketException e) {
       throw e;
     } catch (IOException e) {
@@ -137,7 +147,7 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
 
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofInternal(socketAddressBuffer);
     p.setAddress(addr == null ? null : addr.getInetAddress());
-    p.setPort(0);
+    p.setPort(remotePort);
   }
 
   @Override
@@ -250,5 +260,46 @@ final class AFUNIXDatagramSocketImpl extends DatagramSocketImpl {
 
   int write(ByteBuffer src) throws IOException {
     return core.write(src);
+  }
+
+  boolean isConnected() {
+    if (connected.get()) {
+      return true;
+    }
+    if (isClosed()) {
+      return false;
+    }
+    if (core.isConnected(false)) {
+      connected.set(true);
+      return true;
+    }
+    return false;
+  }
+
+  boolean isBound() {
+    if (bound.get()) {
+      return true;
+    }
+    if (isClosed()) {
+      return false;
+    }
+    if (core.isConnected(true)) {
+      bound.set(true);
+      return true;
+    }
+    return false;
+  }
+
+  void updatePorts(int local, int remote) {
+    this.localPort = local;
+    this.remotePort = remote;
+  }
+
+  AFUNIXSocketAddress getLocalSocketAddress() {
+    return AFUNIXSocketAddress.getSocketAddress(getFileDescriptor(), false, localPort);
+  }
+
+  AFUNIXSocketAddress getRemoteSocketAddress() {
+    return AFUNIXSocketAddress.getSocketAddress(getFileDescriptor(), true, remotePort);
   }
 }

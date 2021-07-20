@@ -46,6 +46,11 @@ final class NativeUnixSocket {
   static final int OPT_NON_BLOCKING = 4;
   static final int OPT_NON_SOCKET = 8;
 
+  static final int SOCKETSTATUS_INVALID = -1;
+  static final int SOCKETSTATUS_UNKNOWN = 0;
+  static final int SOCKETSTATUS_BOUND = 1;
+  static final int SOCKETSTATUS_CONNECTED = 2;
+
   @ExcludeFromCodeCoverageGeneratedReport
   private NativeUnixSocket() {
     throw new UnsupportedOperationException("No instances");
@@ -87,6 +92,10 @@ final class NativeUnixSocket {
   static native boolean finishConnect(FileDescriptor fd) throws IOException;
 
   static native void disconnect(final FileDescriptor fd) throws IOException;
+
+  static native int socketStatus(final FileDescriptor fd) throws IOException;
+
+  static native Class<?> primaryType(final FileDescriptor fd) throws IOException;
 
   /**
    * Reads data from an {@link AFUNIXSocketImpl}.

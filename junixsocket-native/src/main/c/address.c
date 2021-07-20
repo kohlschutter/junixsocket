@@ -35,9 +35,7 @@ socklen_t initSu(JNIEnv * env, struct sockaddr_un *su, jbyteArray addr) {
 
     socklen_t addrLen = (socklen_t)(*env)->GetArrayLength(env, addr);
     if((int)addrLen <= 0 || addrLen >= maxLen) {
-        _throwException(env, kExceptionSocketException,
-                        "Socket address length out of range");
-        return 0;
+        return 0; // address out of range
     }
 
     const char* socketFile = (char*)(void*)(*env)->GetByteArrayElements(env, addr, NULL);
@@ -89,6 +87,9 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrUnLen
 }
 
 static jbyteArray sockAddrUnToBytes(JNIEnv *env, struct sockaddr_un *addr, socklen_t len) {
+    if(len <= 0) {
+        return NULL;
+    }
 #if defined(junixsocket_have_sun_len)
     if(addr->sun_len < len) {
         len = addr->sun_len;
@@ -147,7 +148,9 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
 
     if(ret != 0) {
         int errnum = socket_errno;
-        _throwErrnumException(env, errnum, fd);
+        if(errnum != ENOTCONN) {
+            _throwErrnumException(env, errnum, fd);
+        }
         return NULL;
     }
 

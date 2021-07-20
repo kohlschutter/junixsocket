@@ -80,6 +80,10 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
     return afSocket;
   }
 
+  public boolean isBound() {
+    return afSocket.isBound();
+  }
+
   @Override
   public boolean isConnected() {
     return afSocket.isConnected();
@@ -232,5 +236,13 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
   @Override
   public FileDescriptor getFileDescriptor() throws IOException {
     return afSocket.getFileDescriptor();
+  }
+
+  public boolean isDeleteOnClose() {
+    return afSocket.isDeleteOnClose();
+  }
+
+  public void setDeleteOnClose(boolean b) {
+    afSocket.setDeleteOnClose(b);
   }
 }

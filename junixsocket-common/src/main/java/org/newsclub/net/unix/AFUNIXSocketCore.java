@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicLong;
@@ -36,8 +37,9 @@ class AFUNIXSocketCore extends AFUNIXCore {
 
   protected AFUNIXSocketAddress socketAddress;
 
-  protected AFUNIXSocketCore(Object observed, AncillaryDataSupport ancillaryDataSupport) {
-    super(observed, ancillaryDataSupport);
+  protected AFUNIXSocketCore(Object observed, FileDescriptor fd,
+      AncillaryDataSupport ancillaryDataSupport) {
+    super(observed, fd, ancillaryDataSupport);
   }
 
   @Override
@@ -59,5 +61,25 @@ class AFUNIXSocketCore extends AFUNIXCore {
     } else {
       return null;
     }
+  }
+
+  boolean isConnected(boolean boundOk) {
+    try {
+      if (fd.valid()) {
+        switch (NativeUnixSocket.socketStatus(fd)) {
+          case NativeUnixSocket.SOCKETSTATUS_CONNECTED:
+            return true;
+          case NativeUnixSocket.SOCKETSTATUS_BOUND:
+            if (boundOk) {
+              return true;
+            }
+            break;
+          default:
+        }
+      }
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
+    return false;
   }
 }

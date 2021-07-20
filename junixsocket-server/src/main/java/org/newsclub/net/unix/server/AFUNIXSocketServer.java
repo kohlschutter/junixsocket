@@ -247,6 +247,7 @@ public abstract class AFUNIXSocketServer {
     }
   }
 
+  @SuppressWarnings("PMD.CognitiveComplexity")
   @SuppressFBWarnings("NN_NAKED_NOTIFY")
   private void acceptLoop(ServerSocket server) throws IOException {
     long busyStartTime = 0;

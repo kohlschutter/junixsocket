@@ -39,16 +39,17 @@ class AFUNIXCore extends CleanableState {
 
   private final AtomicBoolean closed = new AtomicBoolean(false);
 
-  protected final FileDescriptor fd = new FileDescriptor();
+  protected final FileDescriptor fd;
   protected final AncillaryDataSupport ancillaryDataSupport;
 
-  protected AFUNIXCore(Object observed, AncillaryDataSupport ancillaryDataSupport) {
+  protected AFUNIXCore(Object observed, FileDescriptor fd, AncillaryDataSupport ancillaryDataSupport) {
     super(observed);
+    this.fd = (fd == null) ? new FileDescriptor() : fd;
     this.ancillaryDataSupport = ancillaryDataSupport;
   }
 
-  protected AFUNIXCore(Object observed) {
-    this(observed, null);
+  protected AFUNIXCore(Object observed, FileDescriptor fd) {
+    this(observed, fd, null);
   }
 
   @Override

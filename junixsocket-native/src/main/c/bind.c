@@ -37,7 +37,11 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
 
     struct sockaddr_un su = {0};
     socklen_t suLength = initSu(env, &su, addr);
-    if(suLength == 0) return -1;
+    if(suLength == 0) {
+        _throwException(env, kExceptionSocketException,
+                        "Socket address length out of range");
+        return -1;
+    }
 
     int serverHandle = _getFD(env, fd);
     if(serverHandle <= 0) {
@@ -129,7 +133,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
                     // socket, bind ours to the correct address, and then connect to
                     // the temporary file (to unblock the accept), and finally delete
                     // the temporary file
-                    strcpy(suTmp.sun_path, "/tmp/junixsocket.XXXXXX");
+                    strcpy(suTmp.sun_path, "/tmp/junixsocket.XXXXXX\0");
                     mkstemp(suTmp.sun_path);
 
                     int renameRet = rename(su.sun_path, suTmp.sun_path);

@@ -37,7 +37,6 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSomeSocket, AFUN
   private static Integer capabilities = null;
 
   private AFUNIXSocketImpl impl;
-  AFUNIXSocketAddress addr;
 
   private final AFUNIXSocketFactory socketFactory;
   private final Closeables closeables = new Closeables();
@@ -62,13 +61,49 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSomeSocket, AFUN
    * @throws IOException if the operation fails.
    */
   public static AFUNIXSocket newInstance() throws IOException {
-    return newInstance(null);
+    return newInstance0(null, null);
+  }
+
+  static AFUNIXSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
+      throws IOException {
+    if (!fdObj.valid()) {
+      throw new SocketException("Invalid file descriptor");
+    }
+    int status = NativeUnixSocket.socketStatus(fdObj);
+    if (status == NativeUnixSocket.SOCKETSTATUS_INVALID) {
+      throw new SocketException("Not a valid socket");
+    }
+
+    AFUNIXSocket socket = newInstance0(fdObj, (AFUNIXSocketFactory) null);
+    socket.getAFImpl().updatePorts(localPort, remotePort);
+
+    switch (status) {
+      case NativeUnixSocket.SOCKETSTATUS_CONNECTED:
+        socket.internalDummyConnect();
+        break;
+      case NativeUnixSocket.SOCKETSTATUS_BOUND:
+        socket.internalDummyBind();
+        break;
+      case NativeUnixSocket.SOCKETSTATUS_UNKNOWN:
+        break;
+      default:
+        throw new IllegalStateException("Invalid socketStatus response: " + status);
+    }
+    socket.getAFImpl().setSocketAddress(socket.getLocalSocketAddress());
+
+    return socket;
   }
 
   static AFUNIXSocket newInstance(AFUNIXSocketFactory factory) throws SocketException {
-    final AFUNIXSocketImpl impl = new AFUNIXSocketImpl.Lenient();
+    return newInstance0(null, factory);
+  }
+
+  private static AFUNIXSocket newInstance0(FileDescriptor fdObj, AFUNIXSocketFactory factory)
+      throws SocketException {
+    final AFUNIXSocketImpl impl = new AFUNIXSocketImpl.Lenient(fdObj);
     AFUNIXSocket instance = new AFUNIXSocket(impl, factory);
     instance.impl = impl;
+
     return instance;
   }
 
@@ -120,7 +155,12 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSomeSocket, AFUN
 
   @Override
   public boolean isBound() {
-    return impl.isBound() || super.isBound();
+    return super.isBound() || impl.isBound();
+  }
+
+  @Override
+  public boolean isConnected() {
+    return super.isConnected() || impl.isConnected();
   }
 
   @Override
@@ -144,32 +184,47 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSomeSocket, AFUN
       throw new SocketException("Socket is closed");
     }
 
-    endpoint = AFUNIXSocketAddress.preprocessSocketAddress(endpoint, socketFactory);
+    AFUNIXSocketAddress address = AFUNIXSocketAddress.preprocessSocketAddress(endpoint,
+        socketFactory);
 
     if (!isBound()) {
       internalDummyBind();
     }
 
-    boolean success = getAFImpl().connect0(endpoint, timeout);
+    boolean success = getAFImpl().connect0(address, timeout);
+    if (success) {
+      int port = address.getPort();
+      if (port > 0) {
+        getAFImpl().updatePorts(getLocalPort(), port);
+      }
+    }
     internalDummyConnect();
-    this.addr = (AFUNIXSocketAddress) endpoint;
     return success;
   }
 
   void internalDummyConnect() throws IOException {
-    super.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT, 0);
+    if (!isConnected()) {
+      super.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT, 0);
+    }
   }
 
   void internalDummyBind() throws IOException {
-    super.bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);
+    if (!isBound()) {
+      super.bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);
+    }
   }
 
   @Override
   public String toString() {
-    if (isConnected()) {
-      return getClass().getName() + "[fd=" + impl.getFD() + ";addr=" + addr.toString() + "]";
+    return getClass().getName() + "@" + Integer.toHexString(hashCode()) + toStringSuffix();
+  }
+
+  String toStringSuffix() {
+    if (impl.getFD().valid()) {
+      return "[local=" + getLocalSocketAddress() + ";remote=" + getRemoteSocketAddress() + "]";
+    } else {
+      return "[invalid]";
     }
-    return getClass().getName() + "[unconnected]";
   }
 
   /**
@@ -355,7 +410,7 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSomeSocket, AFUN
     if (!isConnected()) {
       return null;
     }
-    return AFUNIXSocketAddress.getSocketAddress(getAFImpl().getFileDescriptor(), true);
+    return impl.getRemoteSocketAddress();
   }
 
   @Override
@@ -363,10 +418,7 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSomeSocket, AFUN
     if (isClosed()) {
       return null;
     }
-    if (!isBound()) {
-      return null;
-    }
-    return AFUNIXSocketAddress.getSocketAddress(getAFImpl().getFileDescriptor(), false);
+    return impl.getLocalSocketAddress();
   }
 
   @Override

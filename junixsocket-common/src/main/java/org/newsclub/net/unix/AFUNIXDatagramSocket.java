@@ -34,6 +34,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIXSomeSocket,
     AFUNIXSocketExtensions {
+  private static final InetSocketAddress WILDCARD_ADDRESS = new InetSocketAddress(0);
+
   private final AFUNIXDatagramSocketImpl impl;
   private final AncillaryDataSupport ancillaryDataSupport;
   private final AtomicBoolean created = new AtomicBoolean(false);
@@ -47,7 +49,40 @@ public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIX
   }
 
   public static AFUNIXDatagramSocket newInstance() throws IOException {
-    return new AFUNIXDatagramSocket(new AFUNIXDatagramSocketImpl());
+    return new AFUNIXDatagramSocket(new AFUNIXDatagramSocketImpl((FileDescriptor) null));
+  }
+
+  static AFUNIXDatagramSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
+      throws IOException {
+    if (fdObj == null) {
+      return newInstance();
+    }
+    if (!fdObj.valid()) {
+      throw new SocketException("Invalid file descriptor");
+    }
+
+    int status = NativeUnixSocket.socketStatus(fdObj);
+    if (status == NativeUnixSocket.SOCKETSTATUS_INVALID) {
+      throw new SocketException("Not a valid socket");
+    }
+
+    AFUNIXDatagramSocket socket = new AFUNIXDatagramSocket(new AFUNIXDatagramSocketImpl(fdObj));
+    socket.getAFImpl().updatePorts(localPort, remotePort);
+
+    switch (status) {
+      case NativeUnixSocket.SOCKETSTATUS_CONNECTED:
+        socket.internalDummyConnect();
+        break;
+      case NativeUnixSocket.SOCKETSTATUS_BOUND:
+        socket.internalDummyBind();
+        break;
+      case NativeUnixSocket.SOCKETSTATUS_UNKNOWN:
+        break;
+      default:
+        throw new IllegalStateException("Invalid socketStatus response: " + status);
+    }
+
+    return socket;
   }
 
   @Override
@@ -89,7 +124,7 @@ public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIX
   }
 
   void internalDummyConnect() throws SocketException {
-    super.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT);
+    super.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_DONT_CONNECT);
   }
 
   void internalDummyBind() throws SocketException {
@@ -113,10 +148,17 @@ public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIX
 
   @Override
   public synchronized AFUNIXSocketAddress getRemoteSocketAddress() {
-    if (!isConnected()) {
-      return null;
-    }
-    return AFUNIXSocketAddress.getSocketAddress(getAFImpl().getFileDescriptor(), true);
+    return getAFImpl().getRemoteSocketAddress();
+  }
+
+  @Override
+  public boolean isConnected() {
+    return super.isConnected() || impl.isConnected();
+  }
+
+  @Override
+  public boolean isBound() {
+    return super.isBound() || impl.isBound();
   }
 
   @Override
@@ -152,13 +194,16 @@ public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIX
       throw new SocketException("Socket is closed");
     }
     if (isBound()) {
+      if (addr == AFUNIXSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD
+        return;
+      }
       throw new SocketException("already bound");
     }
-    if (addr == null) {
-      addr = new InetSocketAddress(0);
+    super.bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);
+    if (addr == null || WILDCARD_ADDRESS.equals(addr)) {
+      return;
     }
     AFUNIXSocketAddress epoint = AFUNIXSocketAddress.preprocessSocketAddress(addr, null);
-    super.bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);
     try {
       getAFImpl().bind(epoint);
     } catch (SocketException e) {
@@ -277,7 +322,6 @@ public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIX
 
   @Override
   public FileDescriptor getFileDescriptor() throws IOException {
-    return impl.getFileDescriptor();
+    return getAFImpl().getFileDescriptor();
   }
-
 }

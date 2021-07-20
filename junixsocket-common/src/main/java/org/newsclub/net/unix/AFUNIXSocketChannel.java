@@ -247,4 +247,9 @@ public final class AFUNIXSocketChannel extends SocketChannel implements AFUNIXSo
     return afSocket.getFileDescriptor();
   }
 
+  @Override
+  public String toString() {
+    return super.toString() + afSocket.toStringSuffix();
+  }
+
 }

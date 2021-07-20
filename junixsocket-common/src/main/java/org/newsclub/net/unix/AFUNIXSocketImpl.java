@@ -47,7 +47,8 @@ class AFUNIXSocketImpl extends SocketImplShim {
   final AncillaryDataSupport ancillaryDataSupport = new AncillaryDataSupport();
 
   private final AtomicBoolean bound = new AtomicBoolean(false);
-  private boolean connected = false;
+  private Boolean createType = null;
+  private final AtomicBoolean connected = new AtomicBoolean(false);
 
   private volatile boolean closedInputStream = false;
   private volatile boolean closedOutputStream = false;
@@ -68,9 +69,9 @@ class AFUNIXSocketImpl extends SocketImplShim {
   private static class AFUNIXSocketStreamCore extends AFUNIXSocketCore {
     private final AtomicInteger pendingAccepts = new AtomicInteger(0);
 
-    private AFUNIXSocketStreamCore(AFUNIXSocketImpl observed,
+    private AFUNIXSocketStreamCore(AFUNIXSocketImpl observed, FileDescriptor fd,
         AncillaryDataSupport ancillaryDataSupport) {
-      super(observed, ancillaryDataSupport);
+      super(observed, fd, ancillaryDataSupport);
     }
 
     private void incPendingAccepts() throws SocketException {
@@ -123,9 +124,13 @@ class AFUNIXSocketImpl extends SocketImplShim {
   }
 
   protected AFUNIXSocketImpl() throws SocketException {
+    this((FileDescriptor) null);
+  }
+
+  protected AFUNIXSocketImpl(FileDescriptor fdObj) throws SocketException {
     super();
     this.address = InetAddress.getLoopbackAddress();
-    this.core = new AFUNIXSocketStreamCore(this, ancillaryDataSupport);
+    this.core = new AFUNIXSocketStreamCore(this, fdObj, ancillaryDataSupport);
     this.fd = core.fd;
   }
 
@@ -141,12 +146,32 @@ class AFUNIXSocketImpl extends SocketImplShim {
     return fd;
   }
 
-  boolean isBound() {
-    return bound.get();
+  boolean isConnected() {
+    if (connected.get()) {
+      return true;
+    }
+    if (isClosed()) {
+      return false;
+    }
+    if (core.isConnected(false)) {
+      connected.set(true);
+      return true;
+    }
+    return false;
   }
 
-  boolean isConnected() {
-    return connected;
+  boolean isBound() {
+    if (bound.get()) {
+      return true;
+    }
+    if (isClosed()) {
+      return false;
+    }
+    if (core.isConnected(true)) {
+      bound.set(true);
+      return true;
+    }
+    return false;
   }
 
   AFUNIXSocketCore getCore() {
@@ -164,8 +189,10 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   protected boolean accept0(SocketImpl socket) throws IOException {
     FileDescriptor fdesc = core.validFdOrException();
-    if (!isBound() || isClosed()) {
+    if (isClosed()) {
       throw new SocketException("Socket is closed");
+    } else if (!isBound()) {
+      throw new SocketException("Socket is not bound");
     }
 
     AFUNIXSocketAddress socketAddress = core.socketAddress;
@@ -177,6 +204,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
           socketTimeout.get())) {
         return false;
       }
+
       if (!isBound() || isClosed()) {
         try {
           NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
@@ -194,15 +222,23 @@ class AFUNIXSocketImpl extends SocketImplShim {
       core.decPendingAccepts();
     }
     si.setSocketAddress(socketAddress);
-    si.connected = true;
-    si.port = socketAddress.getPort();
-    si.address = socketAddress.getAddress();
+    si.connected.set(true);
 
     return true;
   }
 
-  private void setSocketAddress(AFUNIXSocketAddress socketAddress) {
-    this.core.socketAddress = socketAddress;
+  void setSocketAddress(AFUNIXSocketAddress socketAddress) {
+    if (socketAddress == null) {
+      this.core.socketAddress = null;
+      this.address = null;
+      this.localport = -1;
+    } else {
+      this.core.socketAddress = socketAddress;
+      this.address = socketAddress.getAddress();
+      if (this.localport <= 0) {
+        this.localport = socketAddress.getPort();
+      }
+    }
   }
 
   @Override
@@ -218,15 +254,19 @@ class AFUNIXSocketImpl extends SocketImplShim {
     if (!(addr instanceof AFUNIXSocketAddress)) {
       throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
     }
+
+    bound.set(true);
+
+    if (addr == AFUNIXSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD
+      core.inode.set(0);
+      return;
+    }
+
     AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
 
     this.setSocketAddress(socketAddress);
-    this.address = socketAddress.getAddress();
-
     core.inode.set(NativeUnixSocket.bind(socketAddress.getBytes(), fd, options));
     core.validFdOrException();
-    bound.set(true);
-    this.localport = socketAddress.getPort();
   }
 
   @Override
@@ -268,16 +308,18 @@ class AFUNIXSocketImpl extends SocketImplShim {
       throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
     }
     if (addr == AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT) { // NOPMD
+      this.connected.set(true);
+      return true;
+    } else if (addr == AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT) { // NOPMD)
       return false;
     }
     AFUNIXSocketAddress socketAddress = (AFUNIXSocketAddress) addr;
-    setSocketAddress(socketAddress);
     boolean success = NativeUnixSocket.connect(socketAddress.getBytes(), fd, -1);
+    if (success) {
+      setSocketAddress(socketAddress);
+      this.connected.set(true);
+    }
     core.validFdOrException();
-    this.address = socketAddress.getAddress();
-    this.port = socketAddress.getPort();
-    this.localport = 0;
-    this.connected = success;
     return success;
   }
 
@@ -286,13 +328,24 @@ class AFUNIXSocketImpl extends SocketImplShim {
     if (isClosed()) {
       throw new SocketException("Already closed");
     }
+    if (fd.valid()) {
+      if (createType != null) {
+        if (createType.booleanValue() != stream) {
+          throw new IllegalStateException("Already created with different mode");
+        }
+      } else {
+        createType = stream;
+      }
+      return;
+    }
+    createType = stream;
     NativeUnixSocket.createSocket(fd, stream ? NativeUnixSocket.SOCK_STREAM
         : NativeUnixSocket.SOCK_DGRAM);
   }
 
   @Override
   protected InputStream getInputStream() throws IOException {
-    if (!connected && !isBound()) {
+    if (!isConnected() && !isBound()) {
       throw new IOException("Not connected/not bound");
     }
     core.validFdOrException();
@@ -301,7 +354,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   @Override
   protected OutputStream getOutputStream() throws IOException {
-    if (!connected && !isBound()) {
+    if (!isClosed() && !isBound()) {
       throw new IOException("Not connected/not bound");
     }
     core.validFdOrException();
@@ -518,6 +571,8 @@ class AFUNIXSocketImpl extends SocketImplShim {
           return 0;
         case SocketOptions.SO_BINDADDR:
           return AFUNIXSocketAddress.getInetAddress(fdesc, false);
+        case SocketOptions.SO_REUSEADDR:
+          return false;
         default:
           throw new SocketException("Unsupported option: " + optID);
       }
@@ -584,6 +639,9 @@ class AFUNIXSocketImpl extends SocketImplShim {
         case SocketOptions.IP_TOS:
           // ignore
           return;
+        case SocketOptions.SO_REUSEADDR:
+          // ignore
+          return;
         default:
           throw new SocketException("Unsupported option: " + optID);
       }
@@ -617,8 +675,8 @@ class AFUNIXSocketImpl extends SocketImplShim {
    * {@link Socket#setTcpNoDelay(boolean)}.
    */
   static final class Lenient extends AFUNIXSocketImpl {
-    protected Lenient() throws SocketException {
-      super();
+    protected Lenient(FileDescriptor fdObj) throws SocketException {
+      super(fdObj);
     }
 
     @Override
@@ -706,5 +764,28 @@ class AFUNIXSocketImpl extends SocketImplShim {
   @Override
   protected FileDescriptor getFileDescriptor() {
     return core.fd;
+  }
+
+  void updatePorts(int local, int remote) {
+    this.localport = local;
+    if (remote >= 0) {
+      this.port = remote;
+    }
+  }
+
+  AFUNIXSocketAddress getLocalSocketAddress() {
+    return AFUNIXSocketAddress.getSocketAddress(getFileDescriptor(), false, localport);
+  }
+
+  AFUNIXSocketAddress getRemoteSocketAddress() {
+    return AFUNIXSocketAddress.getSocketAddress(getFileDescriptor(), true, port);
+  }
+
+  int getLocalPort1() {
+    return localport;
+  }
+
+  int getRemotePort() {
+    return port;
   }
 }

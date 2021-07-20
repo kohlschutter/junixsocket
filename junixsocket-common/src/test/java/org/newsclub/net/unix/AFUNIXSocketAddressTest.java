@@ -80,8 +80,8 @@ public final class AFUNIXSocketAddressTest {
     assertEquals(0, address.getPort());
     assertEquals("@test..@.", address.getPath());
     assertEquals(
-        "org.newsclub.net.unix.AFUNIXSocketAddress[port=0;path=\\x00test\\x0a\\x0b\\x00\\x7f]",
-        address.toString());
+        "[path=\\x00test\\x0a\\x0b\\x00\\x7f]",
+        address.toString().replaceFirst("^.*?\\[", "["));
     assertTrue(address.isInAbstractNamespace());
     assertFalse(address.hasFilename());
     assertThrows(FileNotFoundException.class, () -> address.getFile());

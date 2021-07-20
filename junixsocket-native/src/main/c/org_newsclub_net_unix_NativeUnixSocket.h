@@ -21,6 +21,14 @@ extern "C" {
 #define org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING 4L
 #undef org_newsclub_net_unix_NativeUnixSocket_OPT_NON_SOCKET
 #define org_newsclub_net_unix_NativeUnixSocket_OPT_NON_SOCKET 8L
+#undef org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_INVALID
+#define org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_INVALID -1L
+#undef org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_UNKNOWN
+#define org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_UNKNOWN 0L
+#undef org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_BOUND
+#define org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_BOUND 1L
+#undef org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_CONNECTED
+#define org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_CONNECTED 2L
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    init
@@ -99,6 +107,22 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_finishCon
  * Signature: (Ljava/io/FileDescriptor;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_disconnect
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    socketStatus
+ * Signature: (Ljava/io/FileDescriptor;)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketStatus
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    primaryType
+ * Signature: (Ljava/io/FileDescriptor;)Ljava/lang/Class;
+ */
+JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
   (JNIEnv *, jclass, jobject);
 
 /*

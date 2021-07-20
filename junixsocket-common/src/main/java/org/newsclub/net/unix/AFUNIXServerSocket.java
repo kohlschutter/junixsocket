@@ -46,8 +46,12 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
    * @throws IOException if the operation fails.
    */
   protected AFUNIXServerSocket() throws IOException {
+    this((FileDescriptor) null);
+  }
+
+  AFUNIXServerSocket(FileDescriptor fdObj) throws IOException {
     super();
-    this.implementation = new AFUNIXSocketImpl();
+    this.implementation = new AFUNIXSocketImpl(fdObj);
     NativeUnixSocket.initServerImpl(this, implementation);
 
     setReuseAddress(true);
@@ -60,7 +64,38 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
    * @throws IOException if the operation fails.
    */
   public static AFUNIXServerSocket newInstance() throws IOException {
-    return new AFUNIXServerSocket();
+    return new AFUNIXServerSocket(null);
+  }
+
+  public static AFUNIXServerSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
+      throws IOException {
+    if (fdObj == null) {
+      return newInstance();
+    }
+
+    int status = NativeUnixSocket.socketStatus(fdObj);
+    if (!fdObj.valid() || status == NativeUnixSocket.SOCKETSTATUS_INVALID) {
+      throw new SocketException("Not a valid socket");
+    }
+    AFUNIXServerSocket socket = new AFUNIXServerSocket(fdObj);
+    socket.getAFImpl().updatePorts(localPort, remotePort);
+
+    switch (status) {
+      case NativeUnixSocket.SOCKETSTATUS_CONNECTED:
+        throw new SocketException("Not a ServerSocket");
+      case NativeUnixSocket.SOCKETSTATUS_BOUND:
+        socket.bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);
+
+        socket.setBoundEndpoint(AFUNIXSocketAddress.getSocketAddress(fdObj, false, localPort));
+        break;
+      case NativeUnixSocket.SOCKETSTATUS_UNKNOWN:
+        break;
+      default:
+        throw new IllegalStateException("Invalid socketStatus response: " + status);
+    }
+
+    socket.getAFImpl().setSocketAddress(socket.getLocalSocketAddress());
+    return socket;
   }
 
   /**
@@ -74,6 +109,24 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
   public static AFUNIXServerSocket bindOn(final AFUNIXSocketAddress addr) throws IOException {
     AFUNIXServerSocket socket = newInstance();
     socket.bind(addr);
+    return socket;
+  }
+
+  /**
+   * Returns a new AF_UNIX {@link ServerSocket} that is bound to the given
+   * {@link AFUNIXSocketAddress}.
+   * 
+   * @param addr The socket file to bind to.
+   * @param deleteOnClose If {@code true}, the socket file (if the address points to a file) will be
+   *          deleted upon {@link #close}.
+   * @return The new, bound {@link AFUNIXServerSocket}.
+   * @throws IOException if the operation fails.
+   */
+  public static AFUNIXServerSocket bindOn(final AFUNIXSocketAddress addr, boolean deleteOnClose)
+      throws IOException {
+    AFUNIXServerSocket socket = newInstance();
+    socket.bind(addr);
+    socket.setDeleteOnClose(deleteOnClose);
     return socket;
   }
 
@@ -101,7 +154,7 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
   public static AFUNIXServerSocket bindOn(final Path path, boolean deleteOnClose)
       throws IOException {
     AFUNIXServerSocket socket = newInstance();
-    socket.setDeleteOnClose(true);
+    socket.setDeleteOnClose(deleteOnClose);
     socket.bind(AFUNIXSocketAddress.of(path));
     return socket;
   }
@@ -116,7 +169,7 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
    */
   public static AFUNIXServerSocket forceBindOn(final AFUNIXSocketAddress forceAddr)
       throws IOException {
-    return new AFUNIXServerSocket() {
+    return new AFUNIXServerSocket(null) {
 
       @Override
       public void bind(SocketAddress ignored, int backlog) throws IOException {
@@ -140,7 +193,11 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
     }
 
     getAFImpl().bind(endpoint, getReuseAddress() ? -1 : 0);
-    boundEndpoint = (AFUNIXSocketAddress) endpoint;
+    setBoundEndpoint((AFUNIXSocketAddress) endpoint);
+
+    if (endpoint == AFUNIXSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD
+      return;
+    }
 
     implementation.listen(backlog);
   }
@@ -163,12 +220,14 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
       // We may have connected to the socket to unblock it
       throw new SocketException("Socket is closed");
     }
+
     if (!success) {
       // non-blocking socket, nothing to accept
       return null;
     }
     as.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT);
-    as.addr = boundEndpoint;
+    as.getAFImpl().updatePorts(getAFImpl().getLocalPort1(), getAFImpl().getRemotePort());
+
     return as;
   }
 
@@ -255,12 +314,18 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
     return boundEndpoint;
   }
 
+  void setBoundEndpoint(AFUNIXSocketAddress addr) {
+    this.boundEndpoint = addr;
+    getAFImpl().updatePorts(addr.getPort(), -1);
+  }
+
   @Override
   public int getLocalPort() {
     if (boundEndpoint == null) {
       return -1;
+    } else {
+      return getAFImpl().getLocalPort1();
     }
-    return boundEndpoint.getPort();
   }
 
   /**

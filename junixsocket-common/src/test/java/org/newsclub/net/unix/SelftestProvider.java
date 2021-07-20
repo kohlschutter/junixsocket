@@ -48,6 +48,7 @@ public class SelftestProvider {
         EndOfFileJavaTest.class, //
         EndOfFileTest.class, //
         // FinalizeTest.class, //
+        FileDescriptorCastTest.class, //
         FileDescriptorsTest.class, //
         PeerCredentialsTest.class, //
         ReadWriteTest.class, //

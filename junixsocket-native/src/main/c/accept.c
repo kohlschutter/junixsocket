@@ -36,25 +36,28 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
     CK_ARGUMENT_POTENTIALLY_UNUSED(timeout);
 
     struct sockaddr_un su;
-    socklen_t suLength = initSu(env, &su, addr);
-    if(suLength == 0) return false;
+    socklen_t suLength = 0;
 
     int serverHandle = _getFD(env, fdServer);
 
     if(expectedInode > 0) {
-        struct stat fdStat;
+        suLength = initSu(env, &su, addr);
 
-        // It's OK when the file's gone, but not OK if it refers to another inode.
-        int statRes = stat(su.sun_path, &fdStat);
-        if(statRes == 0) {
-            ino_t statInode = fdStat.st_ino;
+        if(suLength > 0 && su.sun_path[0] != 0) {
+            struct stat fdStat;
 
-            if(statInode != (ino_t)expectedInode) {
-                // inode mismatch -> someone else took over this socket address
-                _closeFd(env, fdServer, serverHandle);
-                _throwErrnumException(env,
-                                      ECONNABORTED, NULL);
-                return false;
+            // It's OK when the file's gone, but not OK if it refers to another inode.
+            int statRes = stat(su.sun_path, &fdStat);
+            if(statRes == 0) {
+                ino_t statInode = fdStat.st_ino;
+
+                if(statInode != (ino_t)expectedInode) {
+                    // inode mismatch -> someone else took over this socket address
+                    _closeFd(env, fdServer, serverHandle);
+                    _throwErrnumException(env,
+                                          ECONNABORTED, NULL);
+                    return false;
+                }
             }
         }
     }

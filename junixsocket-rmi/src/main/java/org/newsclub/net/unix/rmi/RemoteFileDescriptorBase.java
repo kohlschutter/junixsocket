@@ -39,6 +39,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
+import org.newsclub.net.unix.FileDescriptorAccess;
 import org.newsclub.net.unix.server.AFUNIXSocketServer;
 
 /**
@@ -48,7 +49,8 @@ import org.newsclub.net.unix.server.AFUNIXSocketServer;
  * @see RemoteFileInput subclass for sending {@link FileInputStream}s.
  * @see RemoteFileOutput subclass for sending {@link FileOutputStream}s.
  */
-public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Closeable {
+public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Closeable,
+    FileDescriptorAccess {
   private static final String PROP_SERVER_TIMEOUT =
       "org.newsclub.net.unix.rmi.rfd-server-timeout-millis";
   private static final String PROP_CONNECT_TIMEOUT =
@@ -225,6 +227,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
    * 
    * @return The file descriptor.
    */
+  @Override
   public final FileDescriptor getFileDescriptor() {
     return fd;
   }

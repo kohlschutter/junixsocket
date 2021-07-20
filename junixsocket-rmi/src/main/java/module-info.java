@@ -5,4 +5,5 @@ module org.newsclub.net.unix.rmi {
 
   exports org.newsclub.net.unix.rmi;
   requires static com.kohlschutter.annotations.compiletime;
+  requires static org.eclipse.jdt.annotation;
 }

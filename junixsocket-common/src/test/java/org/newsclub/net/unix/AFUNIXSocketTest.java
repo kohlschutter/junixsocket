@@ -105,7 +105,7 @@ public class AFUNIXSocketTest {
         socket.connect(new InetSocketAddress(0), 0);
       });
 
-      assertEquals("org.newsclub.net.unix.AFUNIXSocket[unconnected]", socket.toString());
+      assertEquals("[invalid]", socket.toString().replaceFirst("^.*?\\[", "["));
     }
 
     try (AFUNIXSocket socket = AFUNIXSocket.newInstance()) {

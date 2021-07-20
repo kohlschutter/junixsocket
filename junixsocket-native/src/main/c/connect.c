@@ -34,7 +34,11 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
 {
     struct sockaddr_un su;
     socklen_t suLength = initSu(env, &su, addr);
-    if(suLength == 0) return false;
+    if(suLength == 0) {
+        _throwException(env, kExceptionSocketException,
+                        "Socket address length out of range");
+        return false;
+    }
 
     int socketHandle = _getFD(env, fd);
     if(socketHandle <= 0) {
