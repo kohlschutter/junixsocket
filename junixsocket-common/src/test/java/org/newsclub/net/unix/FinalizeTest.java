@@ -157,8 +157,12 @@ public class FinalizeTest extends SocketTestBase {
     int lines = 0;
     try (BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream(), Charset
         .defaultCharset()))) {
-      while ((in.readLine()) != null) {
+      String l;
+      while ((l = in.readLine()) != null) {
         lines++;
+        if (l.contains("busybox")) {
+          assumeTrue(false, "incompatible lsof binary");
+        }
       }
     }
     assumeTrue(p.waitFor() == 0, "lsof should terminate with RC=0");
