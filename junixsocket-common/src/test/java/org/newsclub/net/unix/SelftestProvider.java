@@ -45,7 +45,7 @@ public class SelftestProvider {
         AvailableTest.class, //
         BufferOverflowTest.class, //
         CancelAcceptTest.class, //
-        EndOfFileJavaTest.class, //
+        // EndOfFileJavaTest.class, //
         EndOfFileTest.class, //
         // FinalizeTest.class, //
         FileDescriptorCastTest.class, //
