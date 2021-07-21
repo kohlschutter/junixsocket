@@ -23,4 +23,18 @@ public class SelftestTest {
   @Test
   public void testHelloWorld() throws Exception {
   }
+
+  @Test
+  public void testFoo() throws Exception {
+    // fail();
+  }
+
+  @Test
+  public void testStdout() throws Exception {
+    System.out.println("Some interrupting text");
+  }
+
+  @Test
+  public void testBar() throws Exception {
+  }
 }

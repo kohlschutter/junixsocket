@@ -22,7 +22,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -41,9 +40,6 @@ import java.util.TreeMap;
 
 import org.junit.jupiter.engine.JupiterTestEngine;
 import org.junit.jupiter.engine.discovery.DiscoverySelectorResolver;
-import org.junit.platform.console.options.CommandLineOptions;
-import org.junit.platform.console.options.Theme;
-import org.junit.platform.console.tasks.ConsoleTestExecutor;
 import org.junit.platform.engine.support.descriptor.EngineDescriptor;
 import org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
@@ -51,6 +47,7 @@ import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketCapability;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.util.ConsolePrintStream;
 
 /**
  * Performs a series of self-tests.
@@ -63,11 +60,11 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 public class Selftest {
+  private static final ConsolePrintStream out = ConsolePrintStream.wrapSystemOut();
   private static final Class<? extends Annotation> CAP_ANNOTATION_CLASS =
       getAFUNIXSocketCapabilityRequirementClass();
 
   private final Map<String, Object> results = new LinkedHashMap<>();
-  private final PrintWriter out;
   private final List<AFUNIXSocketCapability> supportedCapabilites = new ArrayList<>();
   private final List<AFUNIXSocketCapability> unsupportedCapabilites = new ArrayList<>();
   private boolean withIssues = false;
@@ -89,8 +86,7 @@ public class Selftest {
     org.newsclub.lib.junixsocket.custom.NarMetadata nmCustom;
   }
 
-  public Selftest(PrintWriter out) {
-    this.out = out;
+  public Selftest() {
   }
 
   /**
@@ -102,8 +98,7 @@ public class Selftest {
    * @throws Exception on error.
    */
   public static void main(String[] args) throws Exception {
-    Selftest st = new Selftest(new PrintWriter(new OutputStreamWriter(System.out, Charset
-        .defaultCharset()), true));
+    Selftest st = new Selftest();
 
     st.printExplanation();
     st.dumpSystemProperties();
@@ -302,7 +297,10 @@ public class Selftest {
    * @param testClasses The test classes.
    */
   public void runTests(String module, Class<?>[] testClasses) {
-    out.println("Testing \"" + module + "\"...");
+    String prefix = "Testing \"" + module + "\"... ";
+    out.markPosition();
+    out.update(prefix);
+    out.flush();
 
     Object summary;
     if (Boolean.valueOf(System.getProperty("selftest.skip." + module, "false"))) {
@@ -310,11 +308,7 @@ public class Selftest {
       withIssues = true;
       summary = null;
     } else {
-      CommandLineOptions options = new CommandLineOptions();
-      options.setAnsiColorOutputDisabled(true);
-      options.setTheme(Theme.ASCII);
-
-      List<String> list = new ArrayList<>(testClasses.length);
+      List<Class<?>> list = new ArrayList<>(testClasses.length);
       for (Class<?> testClass : testClasses) {
         if (testClass == null) {
           // ignore
@@ -325,14 +319,12 @@ public class Selftest {
           out.println("Skipping test class " + className + "; skipped by request");
           withIssues = true;
         } else if (checkIfCapabilitiesSupported(className)) {
-          list.add(className);
+          list.add(testClass);
         }
       }
 
-      options.setSelectedClasses(list);
-
       try {
-        summary = new ConsoleTestExecutor(options).execute(out);
+        summary = new SelftestExecutor(list, prefix).execute(out);
       } catch (Exception e) {
         e.printStackTrace(out);
         summary = e;
