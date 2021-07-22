@@ -39,7 +39,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
 
   @Test
   public void testCatchTimeout() throws Exception {
-    final int timeoutMillis = 5000;
+    final int timeoutMillis = 500;
     assertTimeoutPreemptively(Duration.ofMillis(5 * timeoutMillis), () -> {
       try (AFUNIXServerSocket sock = startServer()) {
         long time = System.currentTimeMillis();
