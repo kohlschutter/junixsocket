@@ -112,6 +112,8 @@ public class FinalizeTest extends SocketTestBase {
             }
           }
 
+          assumeTrue(linesAfter > 0, "lsof may fail to return anything");
+
           assertEquals(linesBefore - 1, linesAfter,
               "Our unix socket file handle should have been cleared out");
         } finally {
