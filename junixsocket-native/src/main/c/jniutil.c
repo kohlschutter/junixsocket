@@ -87,21 +87,22 @@ void setObjectFieldValue(JNIEnv *env, jobject instance, char *fieldName,
     (*env)->SetObjectField(env, instance, fieldID, value);
 }
 
-void setObjectFieldValueIfPossible(JNIEnv *env, jobject instance, char *fieldName,
+jboolean setObjectFieldValueIfPossible(JNIEnv *env, jobject instance, char *fieldName,
                                           char *fieldType, jobject value)
 {
     jclass instanceClass = (*env)->GetObjectClass(env, instance);
     if(instanceClass == NULL) {
-        return;
+        return false;
     }
     jfieldID fieldID = (*env)->GetFieldID(env, instanceClass, fieldName,
                                           fieldType);
     if(fieldID == NULL) {
         // ignore
         (*env)->ExceptionClear(env);
-        return;
+        return false;
     }
     (*env)->SetObjectField(env, instance, fieldID, value);
+    return true;
 }
 
 void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,

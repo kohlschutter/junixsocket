@@ -29,7 +29,7 @@ CK_VISIBILITY_INTERNAL void callObjectSetter(JNIEnv *env, jobject instance, char
 CK_VISIBILITY_INTERNAL void setObjectFieldValue(JNIEnv *env, jobject instance, char *fieldName,
                          char *fieldType, jobject value);
 
-CK_VISIBILITY_INTERNAL void setObjectFieldValueIfPossible(JNIEnv *env, jobject instance, char *fieldName, char *fieldType, jobject value);
+CK_VISIBILITY_INTERNAL jboolean setObjectFieldValueIfPossible(JNIEnv *env, jobject instance, char *fieldName, char *fieldType, jobject value);
 
 CK_VISIBILITY_INTERNAL void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
                        jlong value);

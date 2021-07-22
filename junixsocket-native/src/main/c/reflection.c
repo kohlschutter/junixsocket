@@ -22,6 +22,8 @@
 #include "exceptions.h"
 #include "jniutil.h"
 
+static jboolean doSetServerSocket = true;
+
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    initServerImpl
@@ -33,9 +35,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImp
     setObjectFieldValue(env, serverSocket, "impl", "Ljava/net/SocketImpl;",
                         impl);
 
-    // no longer present in Java 16
-    setObjectFieldValueIfPossible(env, impl, "serverSocket", "Ljava/net/ServerSocket;",
-                                  serverSocket);
+    if (doSetServerSocket) {
+        // no longer present in Java 16
+        doSetServerSocket = setObjectFieldValueIfPossible(env, impl, "serverSocket", "Ljava/net/ServerSocket;",
+                                      serverSocket);
+    }
 }
 
 /*
