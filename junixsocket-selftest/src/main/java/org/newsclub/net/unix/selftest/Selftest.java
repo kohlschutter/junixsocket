@@ -60,10 +60,10 @@ import com.kohlschutter.util.ConsolePrintStream;
  * @author Christian Kohlschütter
  */
 public class Selftest {
-  private static final ConsolePrintStream out = ConsolePrintStream.wrapSystemOut();
   private static final Class<? extends Annotation> CAP_ANNOTATION_CLASS =
       getAFUNIXSocketCapabilityRequirementClass();
 
+  private final ConsolePrintStream out = ConsolePrintStream.wrapSystemOut();
   private final Map<String, Object> results = new LinkedHashMap<>();
   private final List<AFUNIXSocketCapability> supportedCapabilites = new ArrayList<>();
   private final List<AFUNIXSocketCapability> unsupportedCapabilites = new ArrayList<>();
