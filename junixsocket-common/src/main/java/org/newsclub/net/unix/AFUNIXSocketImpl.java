@@ -791,16 +791,11 @@ class AFUNIXSocketImpl extends SocketImplShim {
 
   @Override
   protected InetAddress getInetAddress() {
-    InetAddress ia = super.getInetAddress();
-    if (ia == null) {
-      // NOTE: This fixes errors when FlightRecorder is enabled in Java 13 or later.
-      // JFR's SocketInputStreamInstrumentor and SocketOutputStreamInstrumentor doesn't check
-      // whether socket.getInetAddress() is non-null, and then crashes with a misleading
-      // stacktrace (wrong class/line).
-      // see jdk.jfr/jdk/jfr/internal/instrument/SocketInputStreamInstrumentor.java
+    AFUNIXSocketAddress rsa = getRemoteSocketAddress();
+    if (rsa == null) {
       return InetAddress.getLoopbackAddress();
+    } else {
+      return rsa.getInetAddress();
     }
-    return ia;
   }
-
 }
