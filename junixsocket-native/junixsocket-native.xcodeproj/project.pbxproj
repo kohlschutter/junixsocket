@@ -2838,9 +2838,9 @@
 					"$(inheritedx)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
-					"-lWs2_32",
-					"-lAdvApi32",
-					"-lMswsock",
+					"-lws2_32",
+					"-ladvapi32",
+					"-lmswsock",
 					"-Xcrossclang-use-gcc=x86_64-w64-mingw32-gcc",
 					"-Xcrossclang-output-strip-lib-prefix",
 				);
