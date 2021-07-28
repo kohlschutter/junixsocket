@@ -35,9 +35,15 @@ struct cmsghdr* junixsocket_CMSG_NXTHDR (struct msghdr *mhdr, struct cmsghdr *cm
         CK_IGNORE_CAST_ALIGN_BEGIN // false positive: CMSG_ALIGN ensures alignment
         cmsg = (struct cmsghdr*)((unsigned char*) cmsg + CMSG_ALIGN (cmsg->cmsg_len));
         if((unsigned char*)cmsg < ((unsigned char*) mhdr->msg_control + mhdr->msg_controllen)) {
+#ifdef __linux__
+            // already aligned; avoid referencing __cmsg_nxthdr, which does the same thing
+            // but may not be present on non-glibc platforms
+            return cmsg;
+#else
             CK_IGNORE_SIGN_COMPARE_BEGIN
             return CMSG_NXTHDR(mhdr, cmsg);
             CK_IGNORE_SIGN_COMPARE_END
+#endif
         }
         CK_IGNORE_CAST_ALIGN_END
     }
