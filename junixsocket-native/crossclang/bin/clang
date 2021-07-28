@@ -213,7 +213,13 @@ if [[ $gccMode -gt 0 ]]; then
     clangArgs=( ${gccArgs[@]} )
 fi
 
-clangDir=$(cd "$(dirname $(which $compiler))"; pwd)
+whichComp=$(which $compiler)
+if [[ -z "$whichComp" ]]; then
+    echo "crossclang could not find compiler $compiler in path $PATH, giving up" >&2
+    exit 1
+fi
+
+clangDir=$(cd $(dirname "$whichComp"); pwd)
 if [ "$currentDir" == "$clangDir" ]; then
     echo "crossclang detected in PATH. Can't find real clang, giving up" >&2
     exit 1
