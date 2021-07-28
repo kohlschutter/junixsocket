@@ -335,21 +335,26 @@ if [[ "$target" != "unspecified" ]]; then
             esac
 
             if [[ $tryPlatformClang -eq 1 ]]; then
-                echo "Warning: crossclang not configured for target \"$target\" -- you need to run prepare-target-sdk first. Trying native clang now." >&2
                 export PATH=/usr/bin:$PATH
                 if [[ -n "$fileList" ]]; then
                         clangArgs+=("-filelist" "$fileList")
+                fi
+                if ! (clang -v 2>&1 | grep -q "^Target: $target\$"); then
+                    echo "Warning: crossclang not configured for target \"$target\" -- you need to run prepare-target-sdk first. Trying native clang now." >&2
                 fi
                 exec clang ${output_args[@]} ${clangArgs[@]} -target "$target"
             fi
 
             echo "Error: crossclang not configured for target \"$target\" -- you need to run prepare-target-sdk first!" >&2
         elif [[ "$defaultFallback" -eq 2 ]]; then
-            echo "Warning: crossclang not configured for target \"$target\" -- you need to run prepare-target-sdk first. Trying native clang now." >&2
             export PATH=/usr/bin:$PATH
             if [[ -n "$fileList" ]]; then
                     clangArgs+=("-filelist" "$fileList")
             fi
+            if ! (clang -v 2>&1 | grep -q "^Target: $target\$"); then
+                echo "Warning: crossclang not configured for target \"$target\" -- you need to run prepare-target-sdk first. Trying native clang now." >&2
+            fi
+
             exec clang ${output_args[@]} ${clangArgs[@]} -target "$target"
         fi
     fi
