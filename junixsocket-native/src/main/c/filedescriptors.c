@@ -300,7 +300,6 @@ JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
 
      struct sockaddr_un addrUn = {0};
      struct sockaddr *addr = (struct sockaddr *)&addrUn;
-     socklen_t len = sizeof(struct sockaddr_un);
 
      int type = 0;
      socklen_t typeLen = sizeof(type);
@@ -322,6 +321,7 @@ JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
          addr->sa_family = type;
      }
 #else
+     socklen_t len = sizeof(struct sockaddr_un);
      ret = getsockname(handle, addr, &len);
      if(ret != 0) {
          int errnum = socket_errno;
