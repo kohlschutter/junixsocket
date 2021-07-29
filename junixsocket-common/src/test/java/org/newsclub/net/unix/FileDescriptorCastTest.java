@@ -124,9 +124,14 @@ public class FileDescriptorCastTest {
 
         OutputStream badOut = FileDescriptorCast.using(source.getFileDescriptor()).as(
             OutputStream.class);
-        assertThrows(IOException.class, () -> badOut.write(0x22));
+        try {
+          badOut.write(0x22);
+        } catch (IOException e) {
+          // expected but not guaranteed to be thrown
+        }
 
-        InputStream in = FileDescriptorCast.using(source.getFileDescriptor()).as(InputStream.class);
+        FileDescriptorCast fdc = FileDescriptorCast.using(source.getFileDescriptor());
+        InputStream in = fdc.as(InputStream.class);
         assertEquals(4, in.available());
         assertEquals(0xFF, in.read());
         assertEquals(0xEE, in.read());
@@ -148,6 +153,7 @@ public class FileDescriptorCastTest {
   }
 
   @Test
+  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)
   public void testSocketPair() throws Exception {
     AFUNIXSocketPair<AFUNIXSocketChannel> socketPair = AFUNIXSocketPair.open();
     AFUNIXSocketChannel sock1chan = socketPair.getSocket1();
@@ -155,10 +161,31 @@ public class FileDescriptorCastTest {
 
     assertTrue(sock1chan.isConnected());
 
-    Socket sock2 = FileDescriptorCast.using(sock2fd).as(Socket.class);
-    assertEquals(AFUNIXSocket.class, sock2.getClass());
-    assertTrue(sock2.isConnected());
-    assertEquals(sock2fd, ((AFUNIXSocket) sock2).getFileDescriptor());
+    FileDescriptorCast fdc = FileDescriptorCast.using(sock2fd);
+
+    // Limitation: When we emulate socket pairs through non AF_UNIX sockets, we currently do not
+    // support casting to Socket.class
+    assertEquals(AFUNIXSocket.supports(AFUNIXSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR), fdc
+        .isAvailable(Socket.class));
+
+    if (!AFUNIXSocket.supports(AFUNIXSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)) {
+      FileDescriptorCast.using(sock2fd).as(FileChannel.class);
+    } else {
+      Socket sock2 = FileDescriptorCast.using(sock2fd).as(Socket.class);
+      assertEquals(AFUNIXSocket.class, sock2.getClass());
+      assertTrue(sock2.isConnected());
+      assertEquals(sock2fd, ((AFUNIXSocket) sock2).getFileDescriptor());
+    }
+  }
+
+  @Test
+  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)
+  public void testSocketPairNative() throws Exception {
+    AFUNIXSocketPair<AFUNIXSocketChannel> socketPair = AFUNIXSocketPair.open();
+    AFUNIXSocketChannel sock1chan = socketPair.getSocket1();
+    FileDescriptor sock2fd = socketPair.getSocket2().getFileDescriptor();
+
+    assertTrue(sock1chan.isConnected());
 
     AFUNIXSocketChannel sock2chan = FileDescriptorCast.using(sock2fd).as(AFUNIXSocketChannel.class);
     assertEquals(sock2fd, sock2chan.getFileDescriptor());
@@ -224,6 +251,7 @@ public class FileDescriptorCastTest {
   }
 
   @Test
+  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_DATAGRAMS)
   public void testDatagramSocket() throws Exception {
     AFUNIXSocketAddress addr1 = AFUNIXSocketAddress.ofNewTempFile();
     AFUNIXSocketAddress addr2 = AFUNIXSocketAddress.ofNewTempFile();
@@ -299,6 +327,7 @@ public class FileDescriptorCastTest {
   }
 
   @Test
+  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_DATAGRAMS)
   public void testDatagramPorts() throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempPath(123);
     assertEquals(123, addr.getPort());
@@ -344,6 +373,7 @@ public class FileDescriptorCastTest {
   }
 
   @Test
+  @AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_DATAGRAMS)
   public void testDatagramFileChannel() throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempPath(123);
     try (AFUNIXDatagramChannel dc1 = AFUNIXDatagramChannel.open();
