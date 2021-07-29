@@ -135,15 +135,19 @@ public class ThroughputTest extends SocketTestBase {
             int offset = 0;
 
             int read; // limited by net.local.stream.recvspace / sendspace etc.
-            while (remaining > 0 && (read = inputStream.read(buf, offset, remaining)) >= 0) {
-              int pos = RANDOM.nextInt(read) + offset;
-              if ((buf[pos] & 0xFF) != (pos % 256)) {
-                throw new IllegalStateException("Unexpected response from read: value@pos " + pos
-                    + "=" + (buf[pos] & 0xFF) + " != " + (pos % 256));
+
+            while (keepRunning.get() && remaining > 0 && (read = inputStream.read(buf, offset,
+                remaining)) >= 0) {
+              if (read > 0) {
+                int pos = RANDOM.nextInt(read) + offset;
+                if ((buf[pos] & 0xFF) != (pos % 256)) {
+                  throw new IllegalStateException("Unexpected response from read: value@pos " + pos
+                      + "=" + (buf[pos] & 0xFF) + " != " + (pos % 256));
+                }
+                remaining -= read;
+                offset += read;
+                readTotal += read;
               }
-              remaining -= read;
-              offset += read;
-              readTotal += read;
             }
           }
           time = System.currentTimeMillis() - time;
@@ -325,7 +329,7 @@ public class ThroughputTest extends SocketTestBase {
           bb.flip();
 
           long read; // limited by net.local.stream.recvspace / sendspace etc.
-          while (remaining > 0 && (read = sc.read(bb)) >= 0) {
+          while (keepRunning.get() && remaining > 0 && (read = sc.read(bb)) >= 0) {
             remaining -= read;
             readTotal += read;
           }
