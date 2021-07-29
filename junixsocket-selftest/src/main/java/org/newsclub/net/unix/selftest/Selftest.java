@@ -302,6 +302,8 @@ public class Selftest {
     out.update(prefix);
     out.flush();
 
+    String only = System.getProperty("selftest.only", "");
+
     Object summary;
     if (Boolean.valueOf(System.getProperty("selftest.skip." + module, "false"))) {
       out.println("Skipping module " + module + "; skipped by request");
@@ -315,7 +317,18 @@ public class Selftest {
           continue;
         }
         String className = testClass.getName();
-        if (Boolean.valueOf(System.getProperty("selftest.skip." + className, "false"))) {
+        String simpleName = testClass.getSimpleName();
+
+        if (!only.isEmpty() && !only.equals(className) && !only.equals(simpleName)) {
+          continue;
+        }
+
+        String skipFullyQualifiedProp = System.getProperty("selftest.skip." + className, "");
+        boolean skipFullyQualified = !skipFullyQualifiedProp.isEmpty() && Boolean.valueOf(
+            skipFullyQualifiedProp);
+
+        if (skipFullyQualified || Boolean.valueOf(System.getProperty("selftest.skip." + simpleName,
+            "false"))) {
           out.println("Skipping test class " + className + "; skipped by request");
           withIssues = true;
         } else if (checkIfCapabilitiesSupported(className)) {
