@@ -314,9 +314,13 @@ JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
          return NULL;
      }
 
-     int type = -1;
+     int type = 0;
      socklen_t typeLen = sizeof(type);
-     ret = getsockopt(handle, SOL_SOCKET, SO_TYPE, &type, &typeLen);
+     ret = getsockopt(handle, SOL_SOCKET, SO_TYPE,
+#if defined(_WIN32)
+                    (char*)
+#endif
+                      &type, &typeLen);
      if(ret != 0) {
          _throwErrnumException(env, socket_errno, fd);
          return NULL;
@@ -356,6 +360,6 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_copyFileDescr
 {
     _initFD(env, target, _getFD(env, source));
 #if defined(_WIN32)
-    _initHandle(env, target, _getHandle(env, source));
+    _initHandle(env, target, (jlong)_getHandle(env, source));
 #endif
 }
