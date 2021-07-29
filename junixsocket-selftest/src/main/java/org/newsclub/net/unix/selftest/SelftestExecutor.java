@@ -62,6 +62,13 @@ class SelftestExecutor {
           .newTreePrintingListener(out, true, Theme.ASCII));
 
       LauncherDiscoveryRequestBuilder requestBuilder = request();
+
+      // set a hard limit for test executions
+      // https://junit.org/junit5/docs/5.7.1/api/org.junit.jupiter.api/org/junit/jupiter/api/Timeout.html
+      requestBuilder.configurationParameter(
+          "junit.jupiter.execution.timeout.testable.method.default", System.getProperty(
+              "selftest.test-timeout", "10 s"));
+
       requestBuilder.selectors(testClasses.stream().map(DiscoverySelectors::selectClass).collect(
           Collectors.toList()));
       LauncherDiscoveryRequest discoveryRequest = requestBuilder.build();
