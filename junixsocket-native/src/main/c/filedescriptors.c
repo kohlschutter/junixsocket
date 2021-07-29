@@ -302,8 +302,26 @@ JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
      struct sockaddr *addr = (struct sockaddr *)&addrUn;
      socklen_t len = sizeof(struct sockaddr_un);
 
+     int type = 0;
+     socklen_t typeLen = sizeof(type);
+
      int ret;
 
+     errno = 0;
+#if defined(__sun) || defined(__sun__)
+     // NOTE: Solaris does not set addr->sa_family for getsockname for AF_UNIX datagram sockets.
+     ret = getsockopt(handle, SOL_SOCKET, SO_DOMAIN, &type, &typeLen);
+     if(ret != 0) {
+         int errnum = socket_errno;
+         if(errnum == ENOTSOCK) {
+             return kFDTypeClasses[kFDTypeOther];
+         }
+         _throwErrnumException(env, errnum, fd);
+         return NULL;
+     } else {
+         addr->sa_family = type;
+     }
+#else
      ret = getsockname(handle, addr, &len);
      if(ret != 0) {
          int errnum = socket_errno;
@@ -313,9 +331,8 @@ JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
          _throwErrnumException(env, errnum, fd);
          return NULL;
      }
+#endif
 
-     int type = 0;
-     socklen_t typeLen = sizeof(type);
      ret = getsockopt(handle, SOL_SOCKET, SO_TYPE,
 #if defined(_WIN32)
                     (char*)
