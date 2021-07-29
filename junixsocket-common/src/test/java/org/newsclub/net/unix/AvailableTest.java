@@ -18,7 +18,7 @@
 package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,7 +82,7 @@ public class AvailableTest extends SocketTestBase {
    */
   @Test
   public void testAvailableAtClient() {
-    assertTimeout(Duration.ofSeconds(2), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ServerThread() {
 
         @Override
@@ -108,7 +108,7 @@ public class AvailableTest extends SocketTestBase {
    */
   @Test
   public void testAvailableAtServer() {
-    assertTimeout(Duration.ofSeconds(2), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
 
       try (ServerThread serverThread = new ServerThread() {
         @Override

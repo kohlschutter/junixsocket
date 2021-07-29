@@ -18,7 +18,7 @@
 package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -40,6 +40,8 @@ import java.util.concurrent.Callable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.newsclub.net.unix.SocketTestBase.ServerThread;
+import org.newsclub.net.unix.StandardSocketOptionsTest.TestState;
 
 import com.kohlschutter.testutil.SoftAssertions;
 
@@ -101,7 +103,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
 
   @Test
   public void testSocketOptions() throws Exception {
-    assertTimeout(Duration.ofSeconds(2), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ServerThread() {
 
         @Override

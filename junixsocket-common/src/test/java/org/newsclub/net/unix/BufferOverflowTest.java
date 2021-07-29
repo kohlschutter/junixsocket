@@ -18,7 +18,7 @@
 package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
@@ -101,7 +101,7 @@ public class BufferOverflowTest {
 
   @Test
   public void readOutOfBounds() throws Exception {
-    assertTimeout(Duration.ofSeconds(2), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       Socket[] sockets = connectToServer();
       try (Socket serverSocket = sockets[0]; //
           Socket clientSocket = sockets[1];) {
@@ -125,7 +125,7 @@ public class BufferOverflowTest {
 
   @Test
   public void readUpTo() throws Exception {
-    assertTimeout(Duration.ofSeconds(2), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       Socket[] sockets = connectToServer();
       try (Socket serverSocket = sockets[0]; //
           Socket clientSocket = sockets[1];) {
@@ -145,7 +145,7 @@ public class BufferOverflowTest {
 
   @Test
   public void writeOverflow() throws Exception {
-    assertTimeout(Duration.ofSeconds(2), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       Socket[] sockets = connectToServer();
       try (Socket serverSocket = sockets[0]; //
           Socket clientSocket = sockets[1];) {

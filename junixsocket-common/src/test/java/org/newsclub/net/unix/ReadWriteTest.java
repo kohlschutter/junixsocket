@@ -19,7 +19,7 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class ReadWriteTest extends SocketTestBase {
 
   @Test
   public void testReceiveWithByteArraySendWithByteArray() {
-    assertTimeout(Duration.ofSeconds(2), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ByteArrayWritingServerThread()) {
         receiveDataWithByteArray();
       }
@@ -54,7 +54,7 @@ public class ReadWriteTest extends SocketTestBase {
    */
   @Test
   public void testReceiveDataByteForByteSendWithByteArray() {
-    assertTimeout(Duration.ofSeconds(2), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ByteArrayWritingServerThread()) {
         receiveDataByteForByte();
       }
@@ -63,7 +63,7 @@ public class ReadWriteTest extends SocketTestBase {
 
   @Test
   public void testReceiveWithByteArraySendByteForByte() {
-    assertTimeout(Duration.ofSeconds(2), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ByteForByteWritingServerThread()) {
         receiveDataWithByteArray();
       }
@@ -72,7 +72,7 @@ public class ReadWriteTest extends SocketTestBase {
 
   @Test
   public void testReceiveDataByteForByteSendByteForByte() {
-    assertTimeout(Duration.ofSeconds(2), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ByteForByteWritingServerThread()) {
         receiveDataByteForByte();
       }

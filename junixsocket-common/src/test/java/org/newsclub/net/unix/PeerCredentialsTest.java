@@ -19,7 +19,7 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +46,7 @@ public class PeerCredentialsTest extends SocketTestBase {
 
   @Test
   public void testSocketsSameProcess() throws Exception {
-    assertTimeout(Duration.ofSeconds(10), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
       final CompletableFuture<AFUNIXSocketCredentials> clientCredsFuture =
           new CompletableFuture<>();
 
