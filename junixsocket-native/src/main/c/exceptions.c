@@ -79,6 +79,9 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
     switch(errnum) {
         case EAGAIN:
         case ETIMEDOUT:
+#if defined(_WIN32)
+        case WSAETIMEDOUT:
+#endif
             exceptionType = kExceptionSocketTimeoutException;
             break;
         case EPIPE:

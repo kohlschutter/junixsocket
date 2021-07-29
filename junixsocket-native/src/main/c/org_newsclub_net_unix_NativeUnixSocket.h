@@ -247,6 +247,14 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getFD
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    copyFileDescriptor
+ * Signature: (Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_copyFileDescriptor
+  (JNIEnv *, jclass, jobject, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    attachCloseable
  * Signature: (Ljava/io/FileDescriptor;Ljava/io/Closeable;)V
  */

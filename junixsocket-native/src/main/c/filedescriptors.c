@@ -25,6 +25,10 @@
 static jclass class_FileDescriptor = NULL;
 static jfieldID fieldID_fd = NULL;
 
+#if defined(_WIN32)
+static jfieldID fieldID_handle = NULL;
+#endif
+
 typedef enum {
     kFDTypeOther = 0,
     kFDTypeOtherSocket,
@@ -55,6 +59,9 @@ void init_filedescriptors(JNIEnv *env) {
 
     class_FileDescriptor = kFDTypeClasses[0];
     fieldID_fd = (*env)->GetFieldID(env, class_FileDescriptor, "fd", "I");
+#if defined(_WIN32)
+    fieldID_handle = (*env)->GetFieldID(env, class_FileDescriptor, "handle", "J");
+#endif
 }
 
 void destroy_filedescriptors(JNIEnv *env) {
@@ -62,6 +69,9 @@ void destroy_filedescriptors(JNIEnv *env) {
         releaseClassGlobalRef(env, kFDTypeClasses[i]);
     }
     fieldID_fd = NULL;
+#if defined(_WIN32)
+    fieldID_handle = NULL;
+#endif
 }
 
 /*
@@ -96,15 +106,27 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getFD
      return _getFD(env, fd);
  }
 
-int _getFD(JNIEnv * env, jobject fd)
+jint _getFD(JNIEnv * env, jobject fd)
 {
     return (*env)->GetIntField(env, fd, fieldID_fd);
 }
 
-void _initFD(JNIEnv * env, jobject fd, int handle)
+void _initFD(JNIEnv * env, jobject fd, jint handle)
 {
     (*env)->SetIntField(env, fd, fieldID_fd, handle);
 }
+
+#if defined(_WIN32)
+jlong _getHandle(JNIEnv * env, jobject fd)
+{
+    return (*env)->GetLongField(env, fd, fieldID_handle);
+}
+
+void _initHandle(JNIEnv * env, jobject fd, jlong handle)
+{
+    (*env)->SetLongField(env, fd, fieldID_handle, handle);
+}
+#endif
 
 // Close a file descriptor. fd object and numeric handle must either be identical,
 // or only one of them be valid.
@@ -127,6 +149,9 @@ int _closeFd(JNIEnv * env, jobject fd, int handle)
     (*env)->MonitorEnter(env, fd);
     int fdHandle = _getFD(env, fd);
     _initFD(env, fd, -1);
+#if defined(_WIN32)
+    _initHandle(env, fd, -1);
+#endif
     (*env)->MonitorExit(env, fd);
 
     if(handle > 0) {
@@ -258,8 +283,18 @@ jboolean checkNonBlocking(int handle, int errnum) {
  */
 JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
  (JNIEnv *env, jclass clazz CK_UNUSED, jobject fd) {
-     int handle = (fd == NULL) ? -1 : _getFD(env, fd);
+     if(fd == NULL) {
+         return NULL;
+     }
+
+     int handle = _getFD(env, fd);
      if(handle <= 0) {
+#if defined(_WIN32)
+         jlong handleWin = _getHandle(env, fd);
+         if(handleWin != -1) {
+             return kFDTypeClasses[kFDTypeOther];
+         }
+#endif
          return NULL;
      }
 
@@ -310,3 +345,17 @@ JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
              }
      }
  }
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    copyFileDescriptor
+ * Signature: (Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_copyFileDescriptor
+(JNIEnv *env, jclass clazz CK_UNUSED, jobject source, jobject target)
+{
+    _initFD(env, target, _getFD(env, source));
+#if defined(_WIN32)
+    _initHandle(env, target, _getHandle(env, source));
+#endif
+}

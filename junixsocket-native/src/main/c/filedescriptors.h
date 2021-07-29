@@ -24,9 +24,15 @@
 void init_filedescriptors(JNIEnv *env);
 void destroy_filedescriptors(JNIEnv *env);
 
-int _getFD(JNIEnv * env, jobject fd);
-void _initFD(JNIEnv * env, jobject fd, int handle);
-int _closeFd(JNIEnv * env, jobject fd, int handle);
+jint _getFD(JNIEnv *env, jobject fd);
+void _initFD(JNIEnv *env, jobject fd, jint handle);
+
+#if defined(_WIN32)
+jlong _getHandle(JNIEnv * env, jobject fd);
+void _initHandle(JNIEnv *env, jobject fd, jlong handle);
+#endif
+
+int _closeFd(JNIEnv *env, jobject fd, int handle);
 
 jboolean checkNonBlocking(int handle, int errnum);
 

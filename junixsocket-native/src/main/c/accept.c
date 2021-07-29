@@ -35,7 +35,7 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
 {
     CK_ARGUMENT_POTENTIALLY_UNUSED(timeout);
 
-    struct sockaddr_un su;
+    struct sockaddr_un su = {0};
     socklen_t suLength = 0;
 
     int serverHandle = _getFD(env, fdServer);
@@ -74,6 +74,8 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
     }
 #endif
 
+    suLength = sizeof(struct sockaddr_un);
+
     int socketHandle;
     int errnum = 0;
     do {
@@ -86,7 +88,7 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
         socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
 #endif
     } while(socketHandle == -1 && (errnum = socket_errno) == EINTR);
-    
+
     if(socketHandle == -1) {
         if(checkNonBlocking(serverHandle, errnum)) {
             // non-blocking socket, nothing to accept
@@ -97,14 +99,16 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
     }
 
 #if !defined(junixsocket_have_accept4)
-#  if defined(FD_CLOEXEC)
-    fcntl(socketHandle, F_SETFD, FD_CLOEXEC);
-#  elif defined(_WIN32)
+#  if defined(_WIN32)
     HANDLE h = (HANDLE)_get_osfhandle(socketHandle);
     SetHandleInformation(h, HANDLE_FLAG_INHERIT, 0);
+#  elif defined(FD_CLOEXEC)
+    fcntl(socketHandle, F_SETFD, FD_CLOEXEC);
 #  endif
 #endif
 
+
     _initFD(env, fd, socketHandle);
+
     return true;
 }

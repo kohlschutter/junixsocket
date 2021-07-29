@@ -63,5 +63,10 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initPipe
      _initFD(env, fdSource, fildes[0]);
      _initFD(env, fdSink, fildes[1]);
 
+#if defined(_WIN32)
+     _initHandle(env, fdSource, (HANDLE)_get_osfhandle(fildes[0]));
+     _initHandle(env, fdSink, (HANDLE)_get_osfhandle(fildes[1]));
+#endif
+
      return false;
  }

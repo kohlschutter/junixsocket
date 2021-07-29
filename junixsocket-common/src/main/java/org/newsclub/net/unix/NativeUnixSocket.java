@@ -159,6 +159,9 @@ final class NativeUnixSocket {
 
   static native int getFD(FileDescriptor fdesc) throws IOException;
 
+  static native void copyFileDescriptor(FileDescriptor source, FileDescriptor target)
+      throws IOException;
+
   static native void attachCloseable(FileDescriptor fdsec, Closeable closeable);
 
   static native int maxAddressLength();
