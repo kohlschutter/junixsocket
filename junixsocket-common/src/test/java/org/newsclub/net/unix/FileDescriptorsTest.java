@@ -55,7 +55,7 @@ public class FileDescriptorsTest extends SocketTestBase {
       try (ServerThread serverThread = new ServerThread() {
         @Override
         protected void handleConnection(final AFUNIXSocket socket) throws IOException {
-          socket.setOutboundFileDescriptors(FileDescriptor.out, FileDescriptor.err);
+          socket.setOutboundFileDescriptors(FileDescriptor.in, FileDescriptor.err);
           assertTrue(socket.hasOutboundFileDescriptors());
           try (OutputStream outputStream = socket.getOutputStream()) {
             outputStream.write("HELLO".getBytes("UTF-8"));
@@ -183,7 +183,7 @@ public class FileDescriptorsTest extends SocketTestBase {
 
         @Override
         protected void handleConnection(final AFUNIXSocket socket) throws IOException {
-          socket.setOutboundFileDescriptors(FileDescriptor.out, FileDescriptor.err);
+          socket.setOutboundFileDescriptors(FileDescriptor.in, FileDescriptor.err);
 
           // NOTE: send an arbitrary byte — we can't send fds without any in-band data
           try (OutputStream outputStream = socket.getOutputStream()) {
@@ -215,7 +215,7 @@ public class FileDescriptorsTest extends SocketTestBase {
 
         @Override
         protected void handleConnection(final AFUNIXSocket socket) throws IOException {
-          socket.setOutboundFileDescriptors(FileDescriptor.out, FileDescriptor.err);
+          socket.setOutboundFileDescriptors(FileDescriptor.in, FileDescriptor.err);
           assertTrue(socket.hasOutboundFileDescriptors());
 
           // NOTE: send an arbitrary byte — we can't send fds without any in-band data
