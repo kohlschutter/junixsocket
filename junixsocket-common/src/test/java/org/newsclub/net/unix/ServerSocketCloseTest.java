@@ -32,6 +32,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Ensures that we don't have any dangling "accept" calls after closing our ServerSocket.
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.Test;
 public class ServerSocketCloseTest {
 
   @Test
+  @Timeout(value = 60, unit = TimeUnit.SECONDS)
   public void testUnblockAcceptsWithSoTimeout() throws Exception {
     testUnblockAccepts(60 * 1000);
   }
