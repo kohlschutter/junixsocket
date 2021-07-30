@@ -170,7 +170,13 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
         // NOTE: macOS may fail here for datagrams ...
         // see below how we recover from that via ucredFromPid
         if(getsockopt(fd, SOL_LOCAL, LOCAL_PEERCRED, &cr, &len) < 0) {
-            if(socket_errno != EINVAL && errno != EOPNOTSUPP) {
+            if(socket_errno != EINVAL && errno != EOPNOTSUPP
+#if defined(__DragonFly__)
+               // sockets created with socketpair may not support LOCAL_PEERCRED
+               // https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=176419
+               && errno != ENOTCONN
+#endif
+               ) {
                 _throwErrnumException(env, errno, NULL);
                 return NULL;
             }
