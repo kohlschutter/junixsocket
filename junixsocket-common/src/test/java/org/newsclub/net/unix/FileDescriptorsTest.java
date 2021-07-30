@@ -240,8 +240,7 @@ public class FileDescriptorsTest extends SocketTestBase {
               // space was sufficient
             } else if (fds.length == 1) {
               // Not all operating systems throw a "No buffer space available" message
-              System.err.println(
-                  "WARNING: Not all file descriptors were received");
+              System.err.println("WARNING: Not all file descriptors were received");
             } else {
               assertEquals(2, fds.length, "Received wrong number of file descriptors");
             }

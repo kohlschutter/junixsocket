@@ -79,9 +79,8 @@ public final class AFUNIXSocketAddressTest {
     assertArrayEquals(addressBytes, address.getPathAsBytes());
     assertEquals(0, address.getPort());
     assertEquals("@test..@.", address.getPath());
-    assertEquals(
-        "[path=\\x00test\\x0a\\x0b\\x00\\x7f]",
-        address.toString().replaceFirst("^.*?\\[", "["));
+    assertEquals("[path=\\x00test\\x0a\\x0b\\x00\\x7f]", address.toString().replaceFirst("^.*?\\[",
+        "["));
     assertTrue(address.isInAbstractNamespace());
     assertFalse(address.hasFilename());
     assertThrows(FileNotFoundException.class, () -> address.getFile());

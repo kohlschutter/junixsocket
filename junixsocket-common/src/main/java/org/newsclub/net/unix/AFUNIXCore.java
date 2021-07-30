@@ -42,7 +42,8 @@ class AFUNIXCore extends CleanableState {
   protected final FileDescriptor fd;
   protected final AncillaryDataSupport ancillaryDataSupport;
 
-  protected AFUNIXCore(Object observed, FileDescriptor fd, AncillaryDataSupport ancillaryDataSupport) {
+  protected AFUNIXCore(Object observed, FileDescriptor fd,
+      AncillaryDataSupport ancillaryDataSupport) {
     super(observed);
     this.fd = (fd == null) ? new FileDescriptor() : fd;
     this.ancillaryDataSupport = ancillaryDataSupport;
