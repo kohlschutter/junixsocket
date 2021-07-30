@@ -54,6 +54,9 @@ import org.eclipse.jdt.annotation.NonNull;
  * OutputStream in = FileDescriptorCast.using(fd).as(OutputStream.class); 
  * </code>
  * 
+ * IMPORTANT: On some platforms (e.g., Solaris, Illumos) you may need to re-apply a read timeout
+ * (e.g., using {@link Socket#setSoTimeout(int)}) after obtaining the socket.
+ * 
  * @author Christian Kohlschütter
  */
 public final class FileDescriptorCast {

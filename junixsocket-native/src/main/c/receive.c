@@ -174,11 +174,12 @@ ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
                                                                         JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jbyteArray jbuf,
-                                                                        jint offset, jint length, jobject ancSupp)
+                                                                        jint offset, jint length, jobject ancSupp, jint hardTimeoutMillis)
 {
 #if defined(_WIN32)
     CK_ARGUMENT_POTENTIALLY_UNUSED(ancSupp);
 #endif
+    CK_ARGUMENT_POTENTIALLY_UNUSED(hardTimeoutMillis);
 
     // Performance: In order to read a single byte, simply don't specify a receive buffer.
     if(jbuf) {
@@ -200,7 +201,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
     int handle = _getFD(env, fd);
 
 #if defined(junixsocket_use_poll_for_read)
-    int ret = pollWithTimeout(env, fd, handle, 0);
+    int ret = pollWithTimeout(env, fd, handle, hardTimeoutMillis);
     if(ret < 1) {
         if(checkNonBlocking(handle, socket_errno)) {
             // non-blocking socket
@@ -264,22 +265,18 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
     }
 
 #if defined(junixsocket_use_poll_for_read)
-    if (hardTimeoutMillis > 0) {
-        // This is mostly for Solaris, which seems to ignore timeouts on datagram sockets
-
-        int ret = pollWithTimeout(env, fd, handle, hardTimeoutMillis);
-        if(ret < 1) {
-            if(checkNonBlocking(handle, socket_errno)) {
-                // non-blocking socket
-                return 0;
-            } else if(ret == -1) {
-                _throwErrnumException(env, errno, fd);
-                return -1;
-            } else {
-                // timeout on blocking socket
-                _throwException(env, kExceptionSocketTimeoutException, "timeout");
-                return -1;
-            }
+    int ret = pollWithTimeout(env, fd, handle, hardTimeoutMillis);
+    if(ret < 1) {
+        if(checkNonBlocking(handle, socket_errno)) {
+            // non-blocking socket
+            return 0;
+        } else if(ret == -1) {
+            _throwErrnumException(env, errno, fd);
+            return -1;
+        } else {
+            // timeout on blocking socket
+            _throwException(env, kExceptionSocketTimeoutException, "timeout");
+            return -1;
         }
     }
 #endif

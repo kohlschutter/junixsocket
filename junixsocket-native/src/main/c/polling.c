@@ -95,8 +95,17 @@ jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
 
     uint64_t millis = 0;
     if(ret != 0) {
-        _throwSockoptErrnumException(env, socket_errno, fd);
-        return -1;
+        if(socket_errno == ENOTSOCK) {
+#if defined(_WIN32)
+            optVal = 0;
+#else
+            optVal.tv_sec = 0;
+            optVal.tv_usec = 0;
+#endif
+        } else {
+            _throwSockoptErrnumException(env, socket_errno, fd);
+            return -1;
+        }
     }
 #if defined(_WIN32)
     if(optLen >= (socklen_t)sizeof(optVal)) {

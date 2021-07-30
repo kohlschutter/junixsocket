@@ -128,10 +128,10 @@ JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    read
- * Signature: (Ljava/io/FileDescriptor;[BIILorg/newsclub/net/unix/AncillaryDataSupport;)I
+ * Signature: (Ljava/io/FileDescriptor;[BIILorg/newsclub/net/unix/AncillaryDataSupport;I)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read
-  (JNIEnv *, jclass, jobject, jbyteArray, jint, jint, jobject);
+  (JNIEnv *, jclass, jobject, jbyteArray, jint, jint, jobject, jint);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket

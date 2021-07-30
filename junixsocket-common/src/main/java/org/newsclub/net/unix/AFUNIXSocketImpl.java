@@ -397,7 +397,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
         throw new IndexOutOfBoundsException();
       }
 
-      return NativeUnixSocket.read(fdesc, buf, off, len, ancillaryDataSupport);
+      return NativeUnixSocket.read(fdesc, buf, off, len, ancillaryDataSupport, socketTimeout.get());
     }
 
     @Override
@@ -407,7 +407,8 @@ class AFUNIXSocketImpl extends SocketImplShim {
       if (eofReached) {
         return -1;
       }
-      int byteRead = NativeUnixSocket.read(fdesc, null, 0, 1, ancillaryDataSupport);
+      int byteRead = NativeUnixSocket.read(fdesc, null, 0, 1, ancillaryDataSupport, socketTimeout
+          .get());
       if (byteRead < 0) {
         eofReached = true;
         return -1;

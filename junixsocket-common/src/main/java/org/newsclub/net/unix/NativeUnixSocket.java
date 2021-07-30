@@ -110,7 +110,7 @@ final class NativeUnixSocket {
    * @throws IOException upon error.
    */
   static native int read(final FileDescriptor fd, byte[] buf, int off, int len,
-      AncillaryDataSupport ancillaryDataSupport) throws IOException;
+      AncillaryDataSupport ancillaryDataSupport, int timeoutMillis) throws IOException;
 
   /**
    * Writes data to an {@link AFUNIXSocketImpl}.
