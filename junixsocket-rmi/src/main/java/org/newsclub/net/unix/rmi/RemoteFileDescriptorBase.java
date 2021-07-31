@@ -31,9 +31,8 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-import java.security.SecureRandom;
 import java.util.Objects;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -66,7 +65,6 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
   protected static final int BIT_WRITABLE = 1 << 1;
 
   private static final long serialVersionUID = 1L;
-  private static final Random RANDOM = new SecureRandom();
 
   private final AtomicReference<DataInputStream> remoteConnection = new AtomicReference<>();
   private final AtomicReference<AFUNIXSocket> remoteServer = new AtomicReference<>();
@@ -106,7 +104,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
     if (fd == null || !fd.valid()) {
       throw new IOException("No or invalid file descriptor");
     }
-    final int randomValue = RANDOM.nextInt();
+    final int randomValue = ThreadLocalRandom.current().nextInt();
 
     int localPort;
     try {

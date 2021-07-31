@@ -38,10 +38,9 @@ import java.nio.channels.DatagramChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
-import java.security.SecureRandom;
 import java.util.Locale;
-import java.util.Random;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -78,7 +77,6 @@ public class ThroughputTest extends SocketTestBase {
   private static final int NUM_SECONDS = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.seconds", 0);
   private static final int NUM_MILLISECONDS = Math.max(50, NUM_SECONDS * 1000);
-  private static final Random RANDOM = new SecureRandom();
 
   private static byte[] createTestData(int size) {
     byte[] buf = new byte[size];
@@ -139,7 +137,7 @@ public class ThroughputTest extends SocketTestBase {
             while (keepRunning.get() && remaining > 0 && (read = inputStream.read(buf, offset,
                 remaining)) >= 0) {
               if (read > 0) {
-                int pos = RANDOM.nextInt(read) + offset;
+                int pos = ThreadLocalRandom.current().nextInt(read) + offset;
                 if ((buf[pos] & 0xFF) != (pos % 256)) {
                   throw new IllegalStateException("Unexpected response from read: value@pos " + pos
                       + "=" + (buf[pos] & 0xFF) + " != " + (pos % 256));
@@ -334,7 +332,7 @@ public class ThroughputTest extends SocketTestBase {
             readTotal += read;
           }
 
-          int pos = RANDOM.nextInt(bb.limit());
+          int pos = ThreadLocalRandom.current().nextInt(bb.limit());
           if ((bb.get(pos) & 0xFF) != (pos % 256)) {
             throw new IllegalStateException("Unexpected response from read");
           }

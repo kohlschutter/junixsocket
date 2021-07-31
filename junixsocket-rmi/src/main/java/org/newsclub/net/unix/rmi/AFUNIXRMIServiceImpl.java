@@ -31,7 +31,10 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A very simple implementation of a {@link AFUNIXRMIService}.
@@ -47,9 +50,11 @@ final class AFUNIXRMIServiceImpl implements AFUNIXRMIService {
     this.naming = new WeakReference<>(naming);
   }
 
+  @SuppressFBWarnings("DMI_RANDOM_USED_ONLY_ONCE")
   private/* synchronized */int randomPort() {
-    final Random random = new Random();
     int maxRandom = ports.size();
+
+    Random random = ThreadLocalRandom.current();
 
     int port;
     for (int i = 0; i < 3; i++) {
