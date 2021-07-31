@@ -4,23 +4,26 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
 
 ## Why it's cool
 
-* junixsocket is a small, modular library. Install only what you need.
-* In contrast to other implementations, *junixsocket* extends the Java Sockets API (`java.net.Socket`, `java.net.SocketAddress`, etc.)
-* Supports *RMI over AF_UNIX*.
-* Database support (connect to a local database server via Unix sockets and JDBC).
-    * MySQL (provides a custom *AFUNIXDatabaseSocketFactory* for Connector/J).
-    * PostgreSQL and others (provides a generic *AFUNIXSocketFactory* with a variety of configuration options).
+* *junixsocket* is the most complete implementation of Unix Domain Sockets for the Java ecosystem.
+* Comes with pre-built native libraries for several operating systems and platforms, including
+  macOS, Linux, Windows, Solaris, FreeBSD, NetBSD, OpenBSD, DragonFlyBSD.
+* Supports all Java versions since Java 7\*.
+* Supports both the Java Socket API and NIO (`java.net.Socket`, `java.net.SocketChannel`, etc.)
+* Supports streams and datagrams.
+* Supports Remote Method Invocation (RMI) over AF_UNIX.
+* Supports JDBC database connectors (connect to a local database server via Unix sockets).
+    * Generic *AFUNIXSocketFactory* for databases like PostgreSQL
+    * Custom socket factory for MySQL Connector/J, as [recommended by Oracle](https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-unix-socket.html)
 * Supports [peer credentials](https://kohlschutter.github.io/junixsocket/peercreds.html).
 * Supports sending and receiving [file descriptors](https://kohlschutter.github.io/junixsocket/filedescriptors.html).
 * Supports the abstract namespace on Linux.
-* Supports HTTP over unix socket (using [NanoHTTPD](https://github.com/NanoHttpd/nanohttpd))
-* Supports Java 7\*, 8, 9, 10, 11, 12, 13, 14, 15, 16.
-* Comes with pre-built native libraries for several operating systems and platforms, including
-  macOS, Linux, FreeBSD, Solaris and Windows; custom libraries can be built using Maven.
-* Supports JPMS/Jigsaw modules.
+* Supports socketpair, and instantiating socket classes from file descriptors.
+* Supports HTTP over unix socket (using [NanoHTTPD](https://github.com/NanoHttpd/nanohttpd)).
+* Supports JPMS/Jigsaw modules. Modularized so you can install only what you need.
+* Provides a selftest package with 100+ tests to ensure compatibility with any target platform.
 * Apache 2.0 licensed.
 
-`*` (basic support for Java 7 only, no RMI, no Demos).
+`*` (Tested up to Java 16; Java 7 support is limited to core functionality, no RMI).
 
 ## Quick links
 
@@ -38,16 +41,6 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
     - [The RMI-over-Unix-Socket API](https://kohlschutter.github.io/junixsocket/junixsocket-rmi/apidocs/org.newsclub.net.unix.rmi/org/newsclub/net/unix/rmi/package-summary.html)
     
   * [Unix Domain Socket Reference](https://kohlschutter.github.io/junixsocket/unixsockets.html)
-
-## Feature Comparison Matrix
-
-| Project  | License | Java Sockets API | Supports MySQL | Supports RMI | Comments |
-| ------------- | --------- | ------------- | ------------- | ------------- | ------------- |
-| junixsocket | Apache 2.0 | ✅ Yes | ✅ Yes | ✅ Yes | This project |
-| [netty](https://github.com/netty/netty) | Apache 2.0 | ✅ Yes | ❌ No | ❌ No |  |
-| [JUDS](http://code.google.com/p/juds/)  | LGPL | ❌ No | ❌ No | ❌ No | |
-| J-BUDS  | LGPL | ❌ No | ❌ No | ❌ No | orphaned |
-| [gnu.net.local](http://web.archive.org/web/20060702213439/http://www.nfrese.net/software/gnu_net_local/overview.html) | GPL with Classpath exception | ❌ No | ❌ No | ❌ No | orphaned |
 
 ## Licensing
 

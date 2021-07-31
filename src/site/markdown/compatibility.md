@@ -28,6 +28,10 @@ The minimum set of supported (out of the box) platforms and processor architectu
 * Linux ppc64le (POWER 64-bit Little Endian)
 * Solaris x86 64-bit / OpenIndiana
 * Windows 10 Intel 64-bit
+* FreeBSD (amd64)
+* OpenBSD (amd64)
+* NetBSD (amd64)
+* DragonFlyBSD (amd64)
 
 Linux builds should be compatible with all major distributions, including the
 ones using musl (e.g., Alpine Linux).

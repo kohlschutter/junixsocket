@@ -1,12 +1,12 @@
 # Noteworthy changes
 
-### _(2021-06-xx)_ **junixsocket 2.4.0**
+### _(2021-07-30)_ **junixsocket 2.4.0**
 
  - New supported platforms: NetBSD, OpenBSD, DragonFlyBSD (AMD64-builds included by default)
  - Add support for Datagram sockets
+ - Add support for non-blocking I/O, Java NIO SocketChannel, DatagramChannel, ByteBuffer, Selector, Pipe, etc.
  - Add support for socketpair (with IP-based emulation on Windows)
- - Add support for non-blocking I/O
- - Add support for Java NIO SocketChannel, DatagramChannel, ByteBuffer, Selector, Pipe, etc.
+ - Add support for casting FileDescriptors to Socket, etc.
  - Add support for Peer Credentials on Solaris/Illumos
  - Improved creation and reuse of AFUNIXSocketAddress instances
  - Add basic support to wrap an AFUNIXSocketAddress as an InetAddress
