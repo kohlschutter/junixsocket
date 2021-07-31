@@ -24,6 +24,8 @@ import java.net.SocketOption;
 import java.nio.channels.ServerSocketChannel;
 import java.util.Set;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 public final class AFUNIXServerSocketChannel extends ServerSocketChannel implements
     FileDescriptorAccess {
   private final AFUNIXServerSocket afSocket;
@@ -70,6 +72,7 @@ public final class AFUNIXServerSocketChannel extends ServerSocketChannel impleme
     return this;
   }
 
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
   public AFUNIXServerSocket socket() {
     return afSocket;

@@ -24,6 +24,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Pipe;
 import java.nio.channels.spi.SelectorProvider;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A {@link Pipe}, natively implemented. Mostly to support {@link AFUNIXSelector}.
  * 
@@ -53,11 +55,13 @@ public final class AFUNIXPipe extends Pipe implements Closeable {
     return AFUNIXSelectorProvider.provider().openPipe();
   }
 
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
   public SourceChannel source() {
     return sourceChannel;
   }
 
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
   public SinkChannel sink() {
     return sinkChannel;

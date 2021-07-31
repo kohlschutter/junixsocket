@@ -25,6 +25,8 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Implementation of an AF_UNIX domain socket.
  * 
@@ -400,6 +402,7 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSomeSocket, AFUN
     return impl;
   }
 
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
   public AFUNIXSocketChannel getChannel() {
     return channel;

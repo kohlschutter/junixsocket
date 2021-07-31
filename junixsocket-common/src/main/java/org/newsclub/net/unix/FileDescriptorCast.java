@@ -34,6 +34,8 @@ import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Provides object-oriented access to file descriptors via {@link InputStream}, {@link Socket},
  * etc., depending on the file descriptor type.
@@ -314,6 +316,7 @@ public final class FileDescriptorCast {
     return cpm.classes;
   }
 
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public FileDescriptor getFileDescriptor() {
     return fdObj;
   }

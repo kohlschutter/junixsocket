@@ -27,6 +27,8 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A {@link DatagramSocket} implementation that works with AF_UNIX Unix domain sockets.
  * 
@@ -315,6 +317,7 @@ public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIX
     return super.isClosed() || getAFImpl().isClosed();
   }
 
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
   public AFUNIXDatagramChannel getChannel() {
     return channel;

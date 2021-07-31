@@ -40,8 +40,6 @@ import java.util.concurrent.Callable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.newsclub.net.unix.SocketTestBase.ServerThread;
-import org.newsclub.net.unix.StandardSocketOptionsTest.TestState;
 
 import com.kohlschutter.testutil.SoftAssertions;
 

@@ -30,6 +30,8 @@ import java.nio.channels.DatagramChannel;
 import java.nio.channels.MembershipKey;
 import java.util.Set;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A {@link DatagramChannel} implementation that works with AF_UNIX Unix domain sockets.
  * 
@@ -75,6 +77,7 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
     return this;
   }
 
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
   public AFUNIXDatagramSocket socket() {
     return afSocket;
