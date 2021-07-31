@@ -17,7 +17,6 @@
  */
 package org.newsclub.net.unix;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -114,7 +113,7 @@ public class FinalizeTest extends SocketTestBase {
 
           assumeTrue(linesAfter > 0, "lsof may fail to return anything");
 
-          assertEquals(linesBefore - 1, linesAfter,
+          assertTrue(linesAfter < linesBefore,
               "Our unix socket file handle should have been cleared out");
         } finally {
           process.destroy();
