@@ -6,23 +6,23 @@
 </head>
 <body>
 <div id="overview"><a href="../../../../../../apidocs/org/newsclub/net/unix/rmi/RemotePeerInfo.html">View Javadoc</a></div><pre>
-<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> * junixsocket</em>
-<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_javadoccomment"> * Copyright 2009-2021 Christian Kohlschütter</em>
-<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_javadoccomment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
-<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_javadoccomment"> * you may not use this file except in compliance with the License.</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_javadoccomment"> * You may obtain a copy of the License at</em>
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment"> *     <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> * Unless required by applicable law or agreed to in writing, software</em>
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> * distributed under the License is distributed on an "AS IS" BASIS,</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * See the License for the specific language governing permissions and</em>
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> * limitations under the License.</em>
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * junixsocket</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2021 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> * you may not use this file except in compliance with the License.</em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> * You may obtain a copy of the License at</em>
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment"> *     <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment"> *</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_comment"> * Unless required by applicable law or agreed to in writing, software</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_comment"> * distributed under the License is distributed on an "AS IS" BASIS,</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_comment"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_comment"> * See the License for the specific language governing permissions and</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_comment"> * limitations under the License.</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">package</strong> org.newsclub.net.unix.rmi;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
@@ -131,7 +131,7 @@
 <a class="jxr_linenumber" name="L123" href="#L123">123</a> 
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>       <a name="RemotePeerInfo" href="../../../../../org/newsclub/net/unix/rmi/RemotePeerInfo.html#RemotePeerInfo">RemotePeerInfo</a> data = eoo.data;
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>       <strong class="jxr_keyword">if</strong> ((data.socketFactory) instanceof <a name="AFUNIXRMISocketFactory" href="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#AFUNIXRMISocketFactory">AFUNIXRMISocketFactory</a>) {
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>         <a name="AFUNIXRMISocketFactor<a name="AFUNIXRMISocketFactory" href="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#AFUNIXRMISocketFactory">AFUNIXRMISocketFactory</a>./org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#AFUNIXRMISocketFactory">AFUNIXRMISocketFactory</a> sf = ((<a name="AFUNIXRMISocketFactory" href="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#AFUNIXRMISocketFactory">AFUNIXRMISocketFactory</a>) (data.socketFactory));
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>         <a name="AFUNIXRMISocketFactory" href="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#AFUNIXRMISocketFactory">AFUNIXRMISocketFactory</a> sf = ((<a name="AFUNIXRMISocketFactory" href="../../../../../org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.html#AFUNIXRMISocketFactory">AFUNIXRMISocketFactory</a>) (data.socketFactory));
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>         data.peerCredentials = sf.peerCredentialsFor(data);
 <a class="jxr_linenumber" name="L128" href="#L128">128</a> 
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>         <strong class="jxr_keyword">if</strong> (data.peerCredentials == <strong class="jxr_keyword">null</strong>) {
@@ -160,7 +160,7 @@
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> invalid = false;
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> format = -1;
 <a class="jxr_linenumber" name="L154" href="#L154">154</a> 
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>     <strong class="jxr_keyword">final</strong> <a name="RemotePeerInfo" href="../../../../../org/newsclub/net/<a name="RemotePeerInfo" href="../../../../../org/newsclub/net/unix/rmi/RemotePeerInfo.html#RemotePeerInfo">RemotePeerInfo</a>ePeerInfo.html#RemotePeerInfo">RemotePeerInfo</a> data = <strong class="jxr_keyword">new</strong> <a name="RemotePeerInfo" href="../../../../../org/newsclub/net/unix/rmi/RemotePeerInfo.html#RemotePeerInfo">RemotePeerInfo</a>();
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>     <strong class="jxr_keyword">final</strong> <a name="RemotePeerInfo" href="../../../../../org/newsclub/net/unix/rmi/RemotePeerInfo.html#RemotePeerInfo">RemotePeerInfo</a> data = <strong class="jxr_keyword">new</strong> <a name="RemotePeerInfo" href="../../../../../org/newsclub/net/unix/rmi/RemotePeerInfo.html#RemotePeerInfo">RemotePeerInfo</a>();
 <a class="jxr_linenumber" name="L156" href="#L156">156</a> 
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     <strong class="jxr_keyword">public</strong> ExtractingObjectOutput() {
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>     }

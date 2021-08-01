@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RAFChannelProvider.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">RAFChannelProvider.java</span></div><h1>RAFChannelProvider.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2021 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+/**
+ * Hack to get a readable AND writable {@link FileChannel} for a {@link FileDescriptor}.
+ * 
+ * @author Christian Kohlschütter
+ */
+final class RAFChannelProvider extends RandomAccessFile implements FileDescriptorAccess {
+  private final File tempPath;
+  private final FileDescriptor fdObj;
+<span class="fc" id="L36">  private final FileDescriptor rafFdOrig = new FileDescriptor();</span>
+<span class="fc" id="L37">  private final AtomicBoolean closed = new AtomicBoolean(false);</span>
+
+  private RAFChannelProvider(FileDescriptor fdObj) throws IOException {
+<span class="fc" id="L40">    this(fdObj, File.createTempFile(&quot;jux&quot;, &quot;.sock&quot;));</span>
+<span class="fc" id="L41">  }</span>
+
+  private RAFChannelProvider(FileDescriptor fdObj, File tempPath) throws IOException {
+<span class="fc" id="L44">    super(tempPath, &quot;rw&quot;);</span>
+<span class="fc" id="L45">    this.tempPath = tempPath;</span>
+<span class="pc bpc" id="L46" title="3 of 4 branches missed.">    if (!tempPath.delete() &amp;&amp; tempPath.exists()) {</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">      if (!tempPath.delete()) {</span>
+        // we tried our best (looking at you, Windows)
+      }
+<span class="nc" id="L50">      tempPath = new File(tempPath.getParentFile(), &quot;jux-&quot; + UUID.randomUUID().toString()</span>
+          + &quot;.sock&quot;);
+<span class="nc bnc" id="L52" title="All 2 branches missed.">      if (tempPath.exists()) {</span>
+<span class="nc" id="L53">        throw new IOException(&quot;Could not create a temporary path: &quot; + tempPath);</span>
+      }
+    }
+<span class="fc" id="L56">    tempPath.deleteOnExit();</span>
+<span class="fc" id="L57">    this.fdObj = fdObj;</span>
+
+<span class="fc" id="L59">    FileDescriptor rafFdObj = getFD();</span>
+<span class="fc" id="L60">    NativeUnixSocket.copyFileDescriptor(rafFdObj, rafFdOrig);</span>
+<span class="fc" id="L61">    NativeUnixSocket.copyFileDescriptor(fdObj, rafFdObj);</span>
+<span class="fc" id="L62">  }</span>
+
+  @Override
+  public FileDescriptor getFileDescriptor() {
+<span class="nc" id="L66">    return fdObj;</span>
+  }
+
+  @Override
+  public synchronized void close() throws IOException {
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">    if (!closed.getAndSet(true)) {</span>
+<span class="fc" id="L72">      NativeUnixSocket.copyFileDescriptor(rafFdOrig, getFD());</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">      if (!tempPath.delete()) {</span>
+        // we tried our best
+      }
+    }
+<span class="fc" id="L77">  }</span>
+
+  public static FileChannel getFileChannel(FileDescriptor fd) throws IOException {
+<span class="fc" id="L80">    return getFileChannel0(fd);</span>
+  }
+
+  @SuppressWarnings(&quot;resource&quot;)
+  private static FileChannel getFileChannel0(FileDescriptor fd) throws IOException {
+<span class="fc" id="L85">    return new RAFChannelProvider(fd).getChannel();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

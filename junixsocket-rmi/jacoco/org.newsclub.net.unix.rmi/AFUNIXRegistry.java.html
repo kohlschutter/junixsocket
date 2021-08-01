@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXRegistry.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFUNIXRegistry.java</span></div><h1>AFUNIXRegistry.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXRegistry.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFUNIXRegistry.java</span></div><h1>AFUNIXRegistry.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2021 Christian Kohlschütter
@@ -20,6 +20,7 @@ package org.newsclub.net.unix.rmi;
 import java.io.IOException;
 import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
+import java.rmi.ConnectIOException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -27,12 +28,11 @@ import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.RemoteObject;
 import java.rmi.server.RemoteServer;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownHook;
-import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownThread;
 
 /**
  * A wrapper for RMI registries, both remote and local, to allow for a clean removal of bound
@@ -40,7 +40,7 @@ import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownThread;
  * 
  * @author Christian Kohlschütter
  */
-public final class AFUNIXRegistry implements Registry, ShutdownHook {
+public final class AFUNIXRegistry implements Registry {
   final RemoteCloseable&lt;?&gt; boundCloser;
 
   private final Registry impl;
@@ -60,144 +60,214 @@ public final class AFUNIXRegistry implements Registry, ShutdownHook {
       @Override
       public void close() throws IOException {
 <span class="fc" id="L62">        AFUNIXRegistry.this.forceUnexportBound();</span>
-<span class="fc" id="L63">        AFUNIXNaming.unexportObject(this);</span>
-<span class="fc" id="L64">      }</span>
+<span class="fc" id="L63">      }</span>
     };
 
-<span class="fc" id="L67">    ShutdownHookSupport.addWeakShutdownHook(this);</span>
-<span class="fc" id="L68">  }</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">    if (isLocal()) {</span>
+<span class="fc" id="L67">      ShutdownHookSupport.addWeakShutdownHook(new ShutdownHook() {</span>
+        @Override
+        public void onRuntimeShutdown(Thread thread) {
+<span class="fc" id="L70">          forceUnexportBound();</span>
+<span class="fc" id="L71">        }</span>
+      });
+    }
+<span class="fc" id="L74">  }</span>
 
   /**
    * Returns {@code true} if the wrapped Registry instance is a locally created
    * {@link RemoteServer}.
    * 
    * @return {@code true} if wrapped instance is a locally created {@link RemoteServer}.
+   * @see #isLocal()
    */
+  @Deprecated
   public boolean isRemoteServer() {
-<span class="fc" id="L77">    return (impl instanceof RemoteServer);</span>
+<span class="nc" id="L85">    return isLocal();</span>
   }
 
-  void forceUnexportBound() {
-    final Map&lt;String, Remote&gt; map;
-<span class="fc" id="L82">    synchronized (bound) {</span>
-<span class="fc" id="L83">      map = new HashMap&lt;&gt;(bound);</span>
-<span class="fc" id="L84">      bound.clear();</span>
-<span class="fc" id="L85">    }</span>
-    try {
-<span class="fc" id="L87">      checkBound();</span>
-<span class="nc" id="L88">    } catch (RemoteException e1) {</span>
-<span class="nc" id="L89">      e1.printStackTrace();</span>
-      // ignore
-<span class="fc" id="L91">    }</span>
-<span class="fc bfc" id="L92" title="All 2 branches covered.">    for (Map.Entry&lt;String, Remote&gt; en : map.entrySet()) {</span>
-<span class="fc" id="L93">      String name = en.getKey();</span>
-<span class="fc" id="L94">      Remote obj = en.getValue();</span>
-<span class="pc bpc" id="L95" title="1 of 2 branches missed.">      if (obj == null) {</span>
-<span class="nc" id="L96">        continue;</span>
-      }
-      try {
-<span class="fc" id="L99">        naming.unexportAndUnbind(name, obj);</span>
-<span class="nc" id="L100">      } catch (RemoteException e) {</span>
-        // ignore
-<span class="fc" id="L102">      }</span>
-<span class="fc" id="L103">    }</span>
-<span class="fc" id="L104">  }</span>
-
-  Remote getInstance(String name) throws NoSuchObjectException {
-    Remote remote;
-<span class="nc" id="L108">    synchronized (bound) {</span>
-<span class="nc" id="L109">      remote = bound.get(name);</span>
-<span class="nc" id="L110">    }</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (remote == null) {</span>
-<span class="nc" id="L112">      throw new NoSuchObjectException(name);</span>
-    }
-<span class="nc" id="L114">    return remote;</span>
+  /**
+   * Returns {@code true} if the wrapped Registry instance is locally created.
+   * 
+   * @return {@code true} if wrapped instance is locally created.
+   */
+  public boolean isLocal() {
+<span class="fc" id="L94">    return (impl instanceof RemoteServer);</span>
   }
 
-  void unexport(String name) throws NoSuchObjectException {
-<span class="nc" id="L118">    UnicastRemoteObject.unexportObject(getInstance(name), true);</span>
-<span class="nc" id="L119">  }</span>
+  /**
+   * Returns the {@link AFUNIXNaming} instance responsible for this registry.
+   * 
+   * @return The {@link AFUNIXNaming} instance.
+   */
+  public AFUNIXNaming getNaming() {
+<span class="fc" id="L103">    return naming;</span>
+  }
 
   @Override
   public Remote lookup(String name) throws RemoteException, NotBoundException, AccessException {
-<span class="fc" id="L123">    return impl.lookup(name);</span>
+<span class="fc" id="L108">    return impl.lookup(name);</span>
   }
 
   @Override
   public void bind(String name, Remote obj) throws RemoteException, AlreadyBoundException,
       AccessException {
-<span class="fc" id="L129">    impl.bind(name, RemoteObject.toStub(obj));</span>
-<span class="fc" id="L130">    synchronized (bound) {</span>
-<span class="fc" id="L131">      bound.put(name, obj);</span>
-<span class="fc" id="L132">    }</span>
-<span class="fc" id="L133">    checkBound();</span>
-<span class="fc" id="L134">  }</span>
+<span class="fc" id="L114">    impl.bind(name, RemoteObject.toStub(obj));</span>
+<span class="fc" id="L115">    synchronized (bound) {</span>
+<span class="fc" id="L116">      bound.put(name, obj);</span>
+<span class="fc" id="L117">    }</span>
+<span class="fc" id="L118">    checkBound();</span>
+<span class="fc" id="L119">  }</span>
 
   @Override
   public void unbind(String name) throws RemoteException, NotBoundException, AccessException {
-<span class="fc" id="L138">    impl.unbind(name);</span>
-<span class="fc" id="L139">    synchronized (bound) {</span>
-<span class="fc" id="L140">      bound.remove(name);</span>
-<span class="fc" id="L141">    }</span>
-<span class="fc" id="L142">    checkBound();</span>
-<span class="fc" id="L143">  }</span>
+<span class="fc" id="L123">    impl.unbind(name);</span>
+<span class="fc" id="L124">    synchronized (bound) {</span>
+<span class="fc" id="L125">      bound.remove(name);</span>
+<span class="fc" id="L126">    }</span>
+<span class="fc" id="L127">    checkBound();</span>
+<span class="fc" id="L128">  }</span>
 
   @Override
   public void rebind(String name, Remote obj) throws RemoteException, AccessException {
-<span class="fc" id="L147">    impl.rebind(name, RemoteObject.toStub(obj));</span>
-<span class="fc" id="L148">    synchronized (bound) {</span>
-<span class="fc" id="L149">      bound.put(name, obj);</span>
-<span class="fc" id="L150">    }</span>
-<span class="fc" id="L151">    checkBound();</span>
-<span class="fc" id="L152">  }</span>
+<span class="fc" id="L132">    impl.rebind(name, RemoteObject.toStub(obj));</span>
+<span class="fc" id="L133">    synchronized (bound) {</span>
+<span class="fc" id="L134">      bound.put(name, obj);</span>
+<span class="fc" id="L135">    }</span>
+<span class="fc" id="L136">    checkBound();</span>
+<span class="fc" id="L137">  }</span>
 
   @Override
   public String[] list() throws RemoteException, AccessException {
-<span class="nc" id="L156">    return impl.list();</span>
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">    return impl == null ? new String[0] : impl.list();</span>
   }
 
-  @SuppressWarnings(&quot;resource&quot;)
-  private void checkBound() throws RemoteException {
-<span class="fc" id="L161">    boolean empty = false;</span>
-<span class="fc" id="L162">    synchronized (bound) {</span>
-<span class="fc" id="L163">      empty = bound.isEmpty();</span>
-<span class="fc" id="L164">    }</span>
-<span class="fc" id="L165">    synchronized (boundCloser) {</span>
-<span class="fc bfc" id="L166" title="All 2 branches covered.">      if (empty) {</span>
-<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (boundCloserExported) {</span>
-<span class="fc" id="L168">          boundCloserExported = false;</span>
+  /**
+   * Returns the remote reference bound to the specified &lt;code&gt;name&lt;/code&gt; in this registry. If the
+   * reference has not been bound yet, repeated attempts to resolve it are made until the specified
+   * time elapses.
+   *
+   * @param name the name for the remote reference to look up
+   * @param timeout The timeout value.
+   * @param unit The timeout unit.
+   *
+   * @return a reference to a remote object
+   *
+   * @throws NotBoundException if &lt;code&gt;name&lt;/code&gt; is not currently bound and couldn't be resolved
+   *           in the specified time.
+   *
+   * @throws RemoteException if remote communication with the registry failed; if exception is a
+   *           &lt;code&gt;ServerException&lt;/code&gt; containing an &lt;code&gt;AccessException&lt;/code&gt;, then the
+   *           registry denies the caller access to perform this operation
+   *
+   * @throws AccessException if this registry is local and it denies the caller access to perform
+   *           this operation
+   *
+   * @throws NullPointerException if &lt;code&gt;name&lt;/code&gt; is &lt;code&gt;null&lt;/code&gt;
+   */
+  public Remote lookup(String name, long timeout, TimeUnit unit) throws NotBoundException,
+      RemoteException {
+<span class="fc" id="L169">    long timeWait = unit.toMillis(timeout);</span>
 
-          AFUNIXRMIService service;
-          try {
-<span class="fc" id="L172">            service = naming.getRMIService();</span>
-<span class="fc" id="L173">            service.unregisterForShutdown(boundCloser);</span>
-<span class="nc" id="L174">          } catch (NoSuchObjectException | NotBoundException e) {</span>
-<span class="nc" id="L175">            return;</span>
-          } finally {
-<span class="pc" id="L177">            AFUNIXNaming.unexportObject(boundCloser);</span>
-          }
-<span class="fc" id="L179">        }</span>
-<span class="fc bfc" id="L180" title="All 2 branches covered.">      } else if (!boundCloserExported) {</span>
-<span class="fc" id="L181">        AFUNIXNaming.exportObject(boundCloser, naming.getSocketFactory());</span>
-<span class="fc" id="L182">        boundCloserExported = true;</span>
+<span class="fc" id="L171">    Exception exFirst = null;</span>
+    do {
+      try {
+<span class="fc" id="L174">        return impl.lookup(name);</span>
+<span class="fc" id="L175">      } catch (NotBoundException | ConnectIOException | NoSuchObjectException e) {</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">        if (exFirst == null) {</span>
+<span class="fc" id="L177">          exFirst = e;</span>
+        }
+      }
+
+      try {
+<span class="fc" id="L182">        Thread.sleep(Math.min(timeWait, 50));</span>
+<span class="nc" id="L183">      } catch (InterruptedException e1) {</span>
+<span class="nc" id="L184">        exFirst.addSuppressed(e1);</span>
+<span class="nc" id="L185">        break;</span>
+<span class="fc" id="L186">      }</span>
+<span class="fc" id="L187">      timeWait -= 50;</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">    } while (timeWait &gt; 0);</span>
+
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">    if (exFirst instanceof NotBoundException) {</span>
+<span class="fc" id="L191">      throw (NotBoundException) exFirst;</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">    } else if (exFirst instanceof RemoteException) {</span>
+<span class="nc" id="L193">      throw (RemoteException) exFirst;</span>
+    } else {
+<span class="nc" id="L195">      throw new RemoteException(&quot;Lookup timed out&quot;);</span>
+    }
+  }
+
+  void forceUnexportBound() {
+    final Map&lt;String, Remote&gt; map;
+<span class="fc" id="L201">    synchronized (bound) {</span>
+<span class="fc" id="L202">      map = new HashMap&lt;&gt;(bound);</span>
+<span class="fc" id="L203">      bound.clear();</span>
+<span class="fc" id="L204">    }</span>
+    try {
+<span class="fc" id="L206">      checkBound();</span>
+<span class="fc" id="L207">    } catch (RemoteException e1) {</span>
+      // ignore
+<span class="fc" id="L209">    }</span>
+<span class="fc bfc" id="L210" title="All 2 branches covered.">    for (Map.Entry&lt;String, Remote&gt; en : map.entrySet()) {</span>
+<span class="fc" id="L211">      String name = en.getKey();</span>
+<span class="fc" id="L212">      Remote obj = en.getValue();</span>
+<span class="pc bpc" id="L213" title="1 of 2 branches missed.">      if (obj == null) {</span>
+<span class="nc" id="L214">        continue;</span>
+      }
+<span class="fc" id="L216">      AFUNIXNaming.unexportObject(obj);</span>
+      try {
+<span class="nc" id="L218">        unbind(name);</span>
+<span class="fc" id="L219">      } catch (RemoteException | NotBoundException e) {</span>
+        // ignore
+<span class="nc" id="L221">      }</span>
+
+<span class="fc" id="L223">    }</span>
+    try {
+<span class="fc bfc" id="L225" title="All 2 branches covered.">      for (String list : list()) {</span>
+        try {
+<span class="fc" id="L227">          unbind(list);</span>
+<span class="nc" id="L228">        } catch (RemoteException | NotBoundException e) {</span>
+          // ignore
+<span class="fc" id="L230">        }</span>
+      }
+<span class="nc" id="L232">    } catch (RemoteException e) {</span>
+      // ignore
+<span class="fc" id="L234">    }</span>
+
+<span class="fc" id="L236">    AFUNIXNaming.unexportObject(this.impl);</span>
+<span class="fc" id="L237">    AFUNIXNaming.unexportObject(this);</span>
+<span class="fc" id="L238">  }</span>
+
+  private void checkBound() throws RemoteException {
+    boolean empty;
+<span class="fc" id="L242">    synchronized (bound) {</span>
+<span class="fc" id="L243">      empty = bound.isEmpty();</span>
+<span class="fc" id="L244">    }</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">    if (empty) {</span>
+<span class="fc bfc" id="L246" title="All 2 branches covered.">      if (boundCloserExported) {</span>
+<span class="fc" id="L247">        boundCloserExported = false;</span>
 
         AFUNIXRMIService service;
         try {
-<span class="fc" id="L186">          service = naming.getRMIService();</span>
-<span class="nc" id="L187">        } catch (NotBoundException e) {</span>
-<span class="nc" id="L188">          return;</span>
-<span class="fc" id="L189">        }</span>
-<span class="fc" id="L190">        service.registerForShutdown(boundCloser);</span>
-      }
-<span class="fc" id="L192">    }</span>
-<span class="fc" id="L193">  }</span>
+<span class="nc" id="L251">          service = naming.getRMIService(this);</span>
+<span class="nc" id="L252">          service.unregisterForShutdown(boundCloser);</span>
+<span class="nc" id="L253">        } catch (NoSuchObjectException | NotBoundException e) {</span>
+<span class="nc" id="L254">          return;</span>
+        } finally {
+<span class="fc" id="L256">          AFUNIXNaming.unexportObject(boundCloser);</span>
+        }
+<span class="nc" id="L258">      }</span>
+<span class="fc bfc" id="L259" title="All 2 branches covered.">    } else if (!boundCloserExported) {</span>
+<span class="fc" id="L260">      AFUNIXNaming.exportObject(boundCloser, naming.getSocketFactory());</span>
+<span class="fc" id="L261">      boundCloserExported = true;</span>
 
-  @Override
-  public void onRuntimeShutdown(Thread thread) {
-<span class="pc bpc" id="L197" title="3 of 6 branches missed.">    if (thread != Thread.currentThread() | !(thread instanceof ShutdownThread)) {</span>
-<span class="nc" id="L198">      throw new IllegalStateException(&quot;Illegal caller&quot;);</span>
+      AFUNIXRMIService service;
+      try {
+<span class="fc" id="L265">        service = naming.getRMIService(this);</span>
+<span class="nc" id="L266">      } catch (NotBoundException e) {</span>
+<span class="nc" id="L267">        return;</span>
+<span class="fc" id="L268">      }</span>
+<span class="fc" id="L269">      service.registerForShutdown(boundCloser);</span>
     }
-<span class="fc" id="L200">    forceUnexportBound();</span>
-<span class="fc" id="L201">  }</span>
+<span class="fc" id="L271">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

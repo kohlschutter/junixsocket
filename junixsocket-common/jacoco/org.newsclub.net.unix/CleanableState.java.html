@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CleanableState.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">CleanableState.java</span></div><h1>CleanableState.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2021 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.lang.ref.Cleaner;
+
+/**
+ * This wrapper (along with the Java 8-specific counterpart in src/main/java8) allows us to
+ * implement cleanup logic for objects that are garbage-collectable/no longer reachable.
+ * 
+ * &lt;p&gt;
+ * Usage:
+ * &lt;ol&gt;
+ * &lt;li&gt;Create a subclass of CleanableState and attach it as a private field to the object you want
+ * to be cleaned up. You may call that field {@code cleanableState}.&lt;/li&gt;
+ * &lt;li&gt;Define all resources that need to be cleaned up in this subclass (instead of the observed
+ * object itself).&lt;/li&gt;
+ * &lt;li&gt;Make sure to not refer the observed object instance itself, as that will create a reference
+ * cycle and prevent proper cleanup.&lt;/li&gt;
+ * &lt;li&gt;Implement the {@link #doClean()} method to perform all the necessary cleanup steps.&lt;/li&gt;
+ * &lt;li&gt;If the observed class implements {@code close()}, it's a good practice to have it just call
+ * {@code cleanableState.runCleaner()}.&lt;/li&gt;
+ * &lt;/ol&gt;
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Implementation details:
+ * &lt;ul&gt;
+ * &lt;li&gt;In Java 9 or later, {@link Cleaner} is used under the hood.&lt;/li&gt;
+ * &lt;li&gt;In Java 8 or earlier, {@link #finalize()} calls {@link #doClean()} directly.&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;/p&gt;
+ * 
+ * @author Christian Kohlschütter
+ */
+abstract class CleanableState implements Closeable {
+<span class="fc" id="L53">  private static final Cleaner CLEANER = Cleaner.create();</span>
+  private final Cleaner.Cleanable cleanable;
+
+  /**
+   * Creates a state object to be used as an implementation detail of the specified observed
+   * instance.
+   * 
+   * @param observed The observed instance (the outer class referencing this
+   *          {@link CleanableState}).
+   */
+<span class="fc" id="L63">  protected CleanableState(Object observed) {</span>
+<span class="fc" id="L64">    this.cleanable = CLEANER.register(observed, () -&gt; doClean());</span>
+<span class="fc" id="L65">  }</span>
+
+  /**
+   * Explicitly the cleanup code defined in {@link #doClean()}. This is best be called from a
+   * {@code close()} method in the observed class.
+   */
+  public final void runCleaner() {
+<span class="fc" id="L72">    cleanable.clean();</span>
+<span class="fc" id="L73">  }</span>
+
+  /**
+   * Performs the actual cleanup.
+   */
+  protected abstract void doClean();
+
+  @Override
+  public final void close() throws IOException {
+<span class="fc" id="L82">    runCleaner();</span>
+<span class="fc" id="L83">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

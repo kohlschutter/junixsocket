@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXServerSocketChannel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXServerSocketChannel.java</span></div><h1>AFUNIXServerSocketChannel.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2021 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.SocketAddress;
+import java.net.SocketOption;
+import java.nio.channels.ServerSocketChannel;
+import java.util.Set;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+public final class AFUNIXServerSocketChannel extends ServerSocketChannel implements
+    FileDescriptorAccess {
+  private final AFUNIXServerSocket afSocket;
+
+  AFUNIXServerSocketChannel(AFUNIXServerSocket socket) {
+<span class="fc" id="L34">    super(AFUNIXSelectorProvider.getInstance());</span>
+<span class="fc" id="L35">    this.afSocket = socket;</span>
+<span class="fc" id="L36">  }</span>
+
+  public static AFUNIXServerSocketChannel open() throws IOException {
+<span class="nc" id="L39">    return AFUNIXSelectorProvider.provider().openServerSocketChannel();</span>
+  }
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  @Override
+  public &lt;T&gt; T getOption(SocketOption&lt;T&gt; name) throws IOException {
+<span class="nc" id="L45">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">    if (optionId == null) {</span>
+<span class="nc" id="L47">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
+    } else {
+<span class="nc" id="L49">      return (T) afSocket.getAFImpl().getOption(optionId.intValue());</span>
+    }
+  }
+
+  @Override
+  public &lt;T&gt; AFUNIXServerSocketChannel setOption(SocketOption&lt;T&gt; name, T value) throws IOException {
+<span class="nc" id="L55">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">    if (optionId == null) {</span>
+<span class="nc" id="L57">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
+    } else {
+<span class="nc" id="L59">      afSocket.getAFImpl().setOption(optionId.intValue(), value);</span>
+    }
+<span class="nc" id="L61">    return this;</span>
+  }
+
+  @Override
+  public Set&lt;SocketOption&lt;?&gt;&gt; supportedOptions() {
+<span class="nc" id="L66">    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;</span>
+  }
+
+  @Override
+  public AFUNIXServerSocketChannel bind(SocketAddress local, int backlog) throws IOException {
+<span class="fc" id="L71">    afSocket.bind(local, backlog);</span>
+<span class="fc" id="L72">    return this;</span>
+  }
+
+  @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
+  @Override
+  public AFUNIXServerSocket socket() {
+<span class="nc" id="L78">    return afSocket;</span>
+  }
+
+  @Override
+  public AFUNIXSocketChannel accept() throws IOException {
+<span class="fc" id="L83">    AFUNIXSocket socket = afSocket.accept();</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">    return socket == null ? null : socket.getChannel();</span>
+  }
+
+  @Override
+  public AFUNIXSocketAddress getLocalAddress() throws IOException {
+<span class="nc" id="L89">    return afSocket.getLocalSocketAddress();</span>
+  }
+
+  @Override
+  protected void implCloseSelectableChannel() throws IOException {
+<span class="fc" id="L94">    afSocket.close();</span>
+<span class="fc" id="L95">  }</span>
+
+  @Override
+  protected void implConfigureBlocking(boolean block) throws IOException {
+<span class="fc" id="L99">    getAFCore().implConfigureBlocking(block);</span>
+<span class="fc" id="L100">  }</span>
+
+  AFUNIXSocketCore getAFCore() {
+<span class="fc" id="L103">    return afSocket.getAFImpl().getCore();</span>
+  }
+
+  @Override
+  public FileDescriptor getFileDescriptor() throws IOException {
+<span class="nc" id="L108">    return afSocket.getFileDescriptor();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

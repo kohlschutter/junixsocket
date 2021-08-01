@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXDatagramChannel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXDatagramChannel.java</span></div><h1>AFUNIXDatagramChannel.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2021 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.ProtocolFamily;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.SocketOption;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
+import java.nio.channels.MembershipKey;
+import java.util.Set;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+/**
+ * A {@link DatagramChannel} implementation that works with AF_UNIX Unix domain sockets.
+ * 
+ * @author Christian Kohlschütter
+ */
+public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUNIXSomeSocket,
+    AFUNIXSocketExtensions {
+  private final AFUNIXDatagramSocket afSocket;
+
+  AFUNIXDatagramChannel(AFUNIXDatagramSocket socket) {
+<span class="fc" id="L45">    super(AFUNIXSelectorProvider.getInstance());</span>
+<span class="fc" id="L46">    this.afSocket = socket;</span>
+<span class="fc" id="L47">  }</span>
+
+  AFUNIXDatagramSocket getAFSocket() {
+<span class="fc" id="L50">    return afSocket;</span>
+  }
+
+  public static AFUNIXDatagramChannel open() throws IOException {
+<span class="fc" id="L54">    return AFUNIXSelectorProvider.provider().openDatagramChannel();</span>
+  }
+
+  public static AFUNIXDatagramChannel open(ProtocolFamily family) throws IOException {
+<span class="nc" id="L58">    return AFUNIXSelectorProvider.provider().openDatagramChannel(family);</span>
+  }
+
+  // CPD-OFF
+
+  @Override
+  public MembershipKey join(InetAddress group, NetworkInterface interf) throws IOException {
+<span class="nc" id="L65">    throw new UnsupportedOperationException();</span>
+  }
+
+  @Override
+  public MembershipKey join(InetAddress group, NetworkInterface interf, InetAddress source)
+      throws IOException {
+<span class="nc" id="L71">    throw new UnsupportedOperationException();</span>
+  }
+
+  @Override
+  public AFUNIXDatagramChannel bind(SocketAddress local) throws IOException {
+<span class="fc" id="L76">    afSocket.bind(local);</span>
+<span class="fc" id="L77">    return this;</span>
+  }
+
+  @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
+  @Override
+  public AFUNIXDatagramSocket socket() {
+<span class="fc" id="L83">    return afSocket;</span>
+  }
+
+  public boolean isBound() {
+<span class="fc" id="L87">    return afSocket.isBound();</span>
+  }
+
+  @Override
+  public boolean isConnected() {
+<span class="fc" id="L92">    return afSocket.isConnected();</span>
+  }
+
+  @Override
+  public AFUNIXDatagramChannel connect(SocketAddress remote) throws IOException {
+<span class="fc" id="L97">    afSocket.connect(remote);</span>
+<span class="fc" id="L98">    return this;</span>
+  }
+
+  @Override
+  public AFUNIXDatagramChannel disconnect() throws IOException {
+<span class="nc" id="L103">    afSocket.disconnect();</span>
+<span class="nc" id="L104">    return this;</span>
+  }
+
+  @Override
+  public AFUNIXSocketAddress getRemoteAddress() throws IOException {
+<span class="fc" id="L109">    return afSocket.getRemoteSocketAddress();</span>
+  }
+
+  @Override
+  public AFUNIXSocketAddress getLocalAddress() throws IOException {
+<span class="fc" id="L114">    return afSocket.getLocalSocketAddress();</span>
+  }
+
+  @Override
+  public AFUNIXSocketAddress receive(ByteBuffer dst) throws IOException {
+<span class="nc" id="L119">    return afSocket.getAFImpl().receive(dst);</span>
+  }
+
+  @Override
+  public int send(ByteBuffer src, SocketAddress target) throws IOException {
+<span class="nc" id="L124">    return afSocket.getAFImpl().send(src, target);</span>
+  }
+
+  @Override
+  public int read(ByteBuffer dst) throws IOException {
+<span class="fc" id="L129">    return afSocket.getAFImpl().read(dst, null);</span>
+  }
+
+  @Override
+  public long read(ByteBuffer[] dsts, int offset, int length) throws IOException {
+<span class="nc bnc" id="L134" title="All 2 branches missed.">    if (length == 0) {</span>
+<span class="nc" id="L135">      return 0;</span>
+    }
+    // FIXME support more than one buffer for scatter-gather access
+<span class="nc" id="L138">    return read(dsts[offset]);</span>
+  }
+
+  @Override
+  public int write(ByteBuffer src) throws IOException {
+<span class="fc" id="L143">    return afSocket.getAFImpl().write(src);</span>
+  }
+
+  @Override
+  public long write(ByteBuffer[] srcs, int offset, int length) throws IOException {
+<span class="nc bnc" id="L148" title="All 2 branches missed.">    if (length == 0) {</span>
+<span class="nc" id="L149">      return 0;</span>
+    }
+    // FIXME support more than one buffer for scatter-gather access
+<span class="nc" id="L152">    return write(srcs[offset]);</span>
+  }
+
+  @Override
+  protected void implCloseSelectableChannel() throws IOException {
+<span class="fc" id="L157">    getAFSocket().close();</span>
+<span class="fc" id="L158">  }</span>
+
+  @Override
+  protected void implConfigureBlocking(boolean block) throws IOException {
+<span class="nc" id="L162">    getAFCore().implConfigureBlocking(block);</span>
+<span class="nc" id="L163">  }</span>
+
+  @Override
+  public FileDescriptor[] getReceivedFileDescriptors() throws IOException {
+<span class="nc" id="L167">    return afSocket.getReceivedFileDescriptors();</span>
+  }
+
+  @Override
+  public void clearReceivedFileDescriptors() {
+<span class="nc" id="L172">    afSocket.clearReceivedFileDescriptors();</span>
+<span class="nc" id="L173">  }</span>
+
+  @Override
+  public void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
+<span class="nc bnc" id="L177" title="All 6 branches missed.">    if (fdescs != null &amp;&amp; fdescs.length &gt; 0 &amp;&amp; !isConnected()) {</span>
+<span class="nc" id="L178">      throw new SocketException(&quot;Not connected&quot;);</span>
+    }
+<span class="nc" id="L180">    afSocket.setOutboundFileDescriptors(fdescs);</span>
+<span class="nc" id="L181">  }</span>
+
+  @Override
+  public boolean hasOutboundFileDescriptors() {
+<span class="nc" id="L185">    return afSocket.hasOutboundFileDescriptors();</span>
+  }
+
+  @Override
+  public AFUNIXSocketCredentials getPeerCredentials() throws IOException {
+<span class="fc" id="L190">    return afSocket.getPeerCredentials();</span>
+  }
+
+  @Override
+  public int getAncillaryReceiveBufferSize() {
+<span class="nc" id="L195">    return afSocket.getAncillaryReceiveBufferSize();</span>
+  }
+
+  @Override
+  public void setAncillaryReceiveBufferSize(int size) {
+<span class="nc" id="L200">    afSocket.setAncillaryReceiveBufferSize(size);</span>
+<span class="nc" id="L201">  }</span>
+
+  @Override
+  public void ensureAncillaryReceiveBufferSize(int minSize) {
+<span class="nc" id="L205">    afSocket.ensureAncillaryReceiveBufferSize(minSize);</span>
+<span class="nc" id="L206">  }</span>
+
+  @Override
+  public &lt;T&gt; AFUNIXDatagramChannel setOption(SocketOption&lt;T&gt; name, T value) throws IOException {
+<span class="fc" id="L210">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">    if (optionId == null) {</span>
+<span class="nc" id="L212">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
+    } else {
+<span class="fc" id="L214">      afSocket.getAFImpl().setOption(optionId.intValue(), value);</span>
+    }
+<span class="fc" id="L216">    return this;</span>
+  }
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  @Override
+  public &lt;T&gt; T getOption(SocketOption&lt;T&gt; name) throws IOException {
+<span class="fc" id="L222">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="pc bpc" id="L223" title="1 of 2 branches missed.">    if (optionId == null) {</span>
+<span class="nc" id="L224">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
+    } else {
+<span class="fc" id="L226">      return (T) afSocket.getAFImpl().getOption(optionId.intValue());</span>
+    }
+  }
+
+  @Override
+  public Set&lt;SocketOption&lt;?&gt;&gt; supportedOptions() {
+<span class="nc" id="L232">    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;</span>
+  }
+
+  AFUNIXSocketCore getAFCore() {
+<span class="fc" id="L236">    return afSocket.getAFImpl().getCore();</span>
+  }
+
+  @Override
+  public FileDescriptor getFileDescriptor() throws IOException {
+<span class="fc" id="L241">    return afSocket.getFileDescriptor();</span>
+  }
+
+  public boolean isDeleteOnClose() {
+<span class="nc" id="L245">    return afSocket.isDeleteOnClose();</span>
+  }
+
+  public void setDeleteOnClose(boolean b) {
+<span class="fc" id="L249">    afSocket.setDeleteOnClose(b);</span>
+<span class="fc" id="L250">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

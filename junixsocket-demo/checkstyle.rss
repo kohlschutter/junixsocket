@@ -20,19 +20,19 @@ under the License.
 <rss version="0.91">
   <channel>
     <title>junixsocket-demo - Checkstyle report</title>
-    <link>https://github.com/kohlschutter/junixsocket/junixsocket-demo</link>
+    <link>https://kohlschutter.github.io/junixsocket/junixsocket-demo/</link>
     <description>junixsocket-demo - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2009 - 2021 Kohlschütter Search Intelligence</copyright>
     <item>
-      <title>File: 29,
+      <title>File: 23,
              Errors: 0,
              Warnings: 0,
              Infos: 0
       </title>
-            <link>https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html</link>
+            <link>https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html</link>
       <description>
-        <p>Click <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -46,7 +46,7 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.client.DemoClientBase.java">org/newsclub/net/unix/demo/client/DemoClientBase.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.jdbc.PostgresDemo.java">org/newsclub/net/unix/demo/jdbc/PostgresDemo.java</a>
                 </td>
                 <td>
                   0
@@ -60,7 +60,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.rmi.HelloWorldImpl.java">org/newsclub/net/unix/demo/rmi/HelloWorldImpl.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.okhttp.OkHttpClientDemo.java">org/newsclub/net/unix/demo/okhttp/OkHttpClientDemo.java</a>
                 </td>
                 <td>
                   0
@@ -74,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.SimpleTestClient.java">org/newsclub/net/unix/demo/SimpleTestClient.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.client.DemoClientBase.java">org/newsclub/net/unix/demo/client/DemoClientBase.java</a>
                 </td>
                 <td>
                   0
@@ -88,7 +88,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.rmi.SimpleRMIClient.java">org/newsclub/net/unix/demo/rmi/SimpleRMIClient.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.server.ChargenServer.java">org/newsclub/net/unix/demo/server/ChargenServer.java</a>
                 </td>
                 <td>
                   0
@@ -102,7 +102,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.client.ReadWriteClient.java">org/newsclub/net/unix/demo/client/ReadWriteClient.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.rmi.HelloWorldImpl.java">org/newsclub/net/unix/demo/rmi/HelloWorldImpl.java</a>
                 </td>
                 <td>
                   0
@@ -116,7 +116,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.server.SendFileHandleServer.java">org/newsclub/net/unix/demo/server/SendFileHandleServer.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.SimpleTestClient.java">org/newsclub/net/unix/demo/SimpleTestClient.java</a>
                 </td>
                 <td>
                   0
@@ -130,7 +130,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.mysql.demo.AFUNIXDatabaseSocketFactoryDemo.java">org/newsclub/net/mysql/demo/AFUNIXDatabaseSocketFactoryDemo.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.rmi.SimpleRMIClient.java">org/newsclub/net/unix/demo/rmi/SimpleRMIClient.java</a>
                 </td>
                 <td>
                   0
@@ -144,7 +144,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.nanohttpd.NanoHttpdServerDemo.java">org/newsclub/net/unix/demo/nanohttpd/NanoHttpdServerDemo.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.rmi.WorldImpl.java">org/newsclub/net/unix/demo/rmi/WorldImpl.java</a>
                 </td>
                 <td>
                   0
@@ -158,7 +158,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.server.AFUNIXSocketServerDemo.java">org/newsclub/net/unix/demo/server/AFUNIXSocketServerDemo.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.server.SendFileHandleServer.java">org/newsclub/net/unix/demo/server/SendFileHandleServer.java</a>
                 </td>
                 <td>
                   0
@@ -172,7 +172,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.rmi.SimpleRMIClientActingAsServer.java">org/newsclub/net/unix/demo/rmi/SimpleRMIClientActingAsServer.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.mysql.demo.AFUNIXDatabaseSocketFactoryDemo.java">org/newsclub/net/mysql/demo/AFUNIXDatabaseSocketFactoryDemo.java</a>
                 </td>
                 <td>
                   0
@@ -186,7 +186,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.rmi.fd.StreamClient.java">org/newsclub/net/unix/demo/rmi/fd/StreamClient.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.nanohttpd.NanoHttpdServerDemo.java">org/newsclub/net/unix/demo/nanohttpd/NanoHttpdServerDemo.java</a>
                 </td>
                 <td>
                   0
@@ -200,7 +200,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.server.DemoServerBase.java">org/newsclub/net/unix/demo/server/DemoServerBase.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.server.AFUNIXSocketServerDemo.java">org/newsclub/net/unix/demo/server/AFUNIXSocketServerDemo.java</a>
                 </td>
                 <td>
                   0
@@ -214,7 +214,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.rmi.SimpleRMIServer.java">org/newsclub/net/unix/demo/rmi/SimpleRMIServer.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.rmi.SimpleRMIClientActingAsServer.java">org/newsclub/net/unix/demo/rmi/SimpleRMIClientActingAsServer.java</a>
                 </td>
                 <td>
                   0
@@ -228,7 +228,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.client.ReadFileHandleClient.java">org/newsclub/net/unix/demo/client/ReadFileHandleClient.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.rmi.fd.StreamClient.java">org/newsclub/net/unix/demo/rmi/fd/StreamClient.java</a>
                 </td>
                 <td>
                   0
@@ -242,7 +242,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.client.DemoClient.java">org/newsclub/net/unix/demo/client/DemoClient.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.rmi.fd.StreamServiceImpl.java">org/newsclub/net/unix/demo/rmi/fd/StreamServiceImpl.java</a>
                 </td>
                 <td>
                   0
@@ -256,7 +256,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.DemoHelper.java">org/newsclub/net/unix/demo/DemoHelper.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.rmi.fd.StreamServer.java">org/newsclub/net/unix/demo/rmi/fd/StreamServer.java</a>
                 </td>
                 <td>
                   0
@@ -270,7 +270,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.jdbc.PostgresDemo.java">org/newsclub/net/unix/demo/jdbc/PostgresDemo.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.server.DemoServerBase.java">org/newsclub/net/unix/demo/server/DemoServerBase.java</a>
                 </td>
                 <td>
                   0
@@ -284,7 +284,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.server.ChargenServer.java">org/newsclub/net/unix/demo/server/ChargenServer.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.rmi.SimpleRMIServer.java">org/newsclub/net/unix/demo/rmi/SimpleRMIServer.java</a>
                 </td>
                 <td>
                   0
@@ -298,7 +298,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.server.NullServer.java">org/newsclub/net/unix/demo/server/NullServer.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.client.ReadFileHandleClient.java">org/newsclub/net/unix/demo/client/ReadFileHandleClient.java</a>
                 </td>
                 <td>
                   0
@@ -312,7 +312,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.rmi.WorldImpl.java">org/newsclub/net/unix/demo/rmi/WorldImpl.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.client.DemoClient.java">org/newsclub/net/unix/demo/client/DemoClient.java</a>
                 </td>
                 <td>
                   0
@@ -326,7 +326,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.rmi.services.HelloWorld.java">org/newsclub/net/unix/demo/rmi/services/HelloWorld.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.SimpleTestServer.java">org/newsclub/net/unix/demo/SimpleTestServer.java</a>
                 </td>
                 <td>
                   0
@@ -340,7 +340,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.rmi.services.World.java">org/newsclub/net/unix/demo/rmi/services/World.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.DemoHelper.java">org/newsclub/net/unix/demo/DemoHelper.java</a>
                 </td>
                 <td>
                   0
@@ -354,91 +354,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.server.EchoServer.java">org/newsclub/net/unix/demo/server/EchoServer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.rmi.fd.StreamServiceImpl.java">org/newsclub/net/unix/demo/rmi/fd/StreamServiceImpl.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.rmi.fd.StreamServer.java">org/newsclub/net/unix/demo/rmi/fd/StreamServer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.client.ReadClient.java">org/newsclub/net/unix/demo/client/ReadClient.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.SimpleTestServer.java">org/newsclub/net/unix/demo/SimpleTestServer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.rmi.services.StreamService.java">org/newsclub/net/unix/demo/rmi/services/StreamService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-demo/checkstyle.html#org.newsclub.net.unix.demo.server.ZeroServer.java">org/newsclub/net/unix/demo/server/ZeroServer.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.rmi.services.StreamService.java">org/newsclub/net/unix/demo/rmi/services/StreamService.java</a>
                 </td>
                 <td>
                   0

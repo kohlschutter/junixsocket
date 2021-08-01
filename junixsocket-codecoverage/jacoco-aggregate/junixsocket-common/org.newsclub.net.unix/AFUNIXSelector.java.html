@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXSelector.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXSelector.java</span></div><h1>AFUNIXSelector.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2021 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.spi.AbstractSelectableChannel;
+import java.nio.channels.spi.AbstractSelector;
+import java.nio.channels.spi.SelectorProvider;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+final class AFUNIXSelector extends AbstractSelector {
+<span class="fc" id="L36">  private static AFUNIXPipe sharedSelectorPipe = null;</span>
+  private static PollFd sharedSelectorPipePollFd;
+
+<span class="fc" id="L39">  private static final ByteBuffer PIPE_MSG = ByteBuffer.allocate(1);</span>
+<span class="fc" id="L40">  private static final ByteBuffer PIPE_MSG_RECEIVE_BUFFER = ByteBuffer.allocateDirect(256);</span>
+
+<span class="fc" id="L42">  private final Set&lt;AFUNIXSelectionKey&gt; keysRegistered = new HashSet&lt;&gt;();</span>
+
+<span class="fc" id="L44">  @SuppressWarnings(&quot;unchecked&quot;)</span>
+  private final Set&lt;SelectionKey&gt; keysView =
+<span class="fc" id="L46">      (Set&lt;SelectionKey&gt;) (Set&lt;? extends SelectionKey&gt;) Collections.unmodifiableSet(keysRegistered);</span>
+
+<span class="fc" id="L48">  private PollFd pollFd = null;</span>
+
+<span class="fc" id="L50">  private final SelectionKeySet keysSelected = new SelectionKeySet();</span>
+
+  protected AFUNIXSelector(SelectorProvider provider) {
+<span class="fc" id="L53">    super(provider);</span>
+<span class="fc" id="L54">  }</span>
+
+  protected AFUNIXPipe selectorPipe() throws IOException {
+    AFUNIXPipe selectorPipe;
+<span class="fc" id="L58">    synchronized (AFUNIXSelector.class) {</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">      if (sharedSelectorPipe == null) {</span>
+<span class="fc" id="L60">        sharedSelectorPipe = AFUNIXSelectorProvider.getInstance().openSelectablePipe();</span>
+<span class="fc" id="L61">        sharedSelectorPipePollFd = new PollFd(sharedSelectorPipe.sourceFD());</span>
+      }
+<span class="fc" id="L63">      selectorPipe = sharedSelectorPipe;</span>
+<span class="fc" id="L64">    }</span>
+<span class="fc" id="L65">    return selectorPipe;</span>
+  }
+
+  @Override
+  protected SelectionKey register(AbstractSelectableChannel ch, int ops, Object att) {
+<span class="fc" id="L70">    AFUNIXSelectionKey key = new AFUNIXSelectionKey(this, ch, ops, att);</span>
+<span class="fc" id="L71">    pollFd = null;</span>
+<span class="fc" id="L72">    keysRegistered.add(key);</span>
+<span class="fc" id="L73">    return key;</span>
+  }
+
+  @Override
+  public Set&lt;SelectionKey&gt; keys() {
+<span class="fc" id="L78">    return keysView;</span>
+  }
+
+  @Override
+  public Set&lt;SelectionKey&gt; selectedKeys() {
+<span class="fc" id="L83">    return keysSelected;</span>
+  }
+
+  @Override
+  public int selectNow() throws IOException {
+<span class="fc" id="L88">    return select0(0);</span>
+  }
+
+  @Override
+  public int select(long timeout) throws IOException {
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">    if (timeout &gt; Integer.MAX_VALUE) {</span>
+<span class="nc" id="L94">      timeout = Integer.MAX_VALUE;</span>
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">    } else if (timeout &lt; 0) {</span>
+<span class="nc" id="L96">      throw new IllegalArgumentException(&quot;Timeout must not be negative&quot;);</span>
+    }
+
+<span class="fc" id="L99">    return select0((int) timeout);</span>
+  }
+
+  @Override
+  public int select() throws IOException {
+    try {
+<span class="fc" id="L105">      return select0(-1);</span>
+<span class="nc" id="L106">    } catch (SocketTimeoutException e) {</span>
+<span class="nc" id="L107">      return 0;</span>
+    }
+  }
+
+  private int select0(int timeout) throws IOException {
+<span class="fc" id="L112">    pollFd = initPollFd(pollFd);</span>
+
+<span class="fc" id="L114">    keysSelected.clear();</span>
+
+    int num;
+<span class="fc" id="L117">    begin();</span>
+    try {
+<span class="fc" id="L119">      num = NativeUnixSocket.poll(pollFd, timeout);</span>
+    } finally {
+<span class="fc" id="L121">      end();</span>
+    }
+<span class="fc bfc" id="L123" title="All 2 branches covered.">    if (num &gt; 0) {</span>
+<span class="fc" id="L124">      consumeAllBytesAfterPoll();</span>
+<span class="fc" id="L125">      setOpsReady();</span>
+    }
+<span class="fc" id="L127">    return keysSelected.size();</span>
+  }
+
+  private void consumeAllBytesAfterPoll() throws IOException {
+<span class="fc bfc" id="L131" title="All 2 branches covered.">    if ((pollFd.rops[0] &amp; SelectionKey.OP_READ) == 0) {</span>
+<span class="fc" id="L132">      return;</span>
+    }
+<span class="fc" id="L134">    synchronized (PIPE_MSG_RECEIVE_BUFFER) {</span>
+<span class="fc" id="L135">      PIPE_MSG_RECEIVE_BUFFER.clear();</span>
+<span class="fc" id="L136">      int maxReceive = PIPE_MSG_RECEIVE_BUFFER.remaining();</span>
+<span class="fc" id="L137">      int bytesReceived = NativeUnixSocket.receive(pollFd.fds[0], PIPE_MSG_RECEIVE_BUFFER, 0,</span>
+          maxReceive, null, NativeUnixSocket.OPT_NON_SOCKET, null, 0);
+
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">      if (bytesReceived == maxReceive) {</span>
+        // consume all pending bytes
+        int read;
+        do {
+<span class="nc bnc" id="L144" title="All 2 branches missed.">          if ((read = NativeUnixSocket.poll(sharedSelectorPipePollFd, 0)) &gt; 0) {</span>
+<span class="nc" id="L145">            PIPE_MSG_RECEIVE_BUFFER.clear();</span>
+<span class="nc" id="L146">            read = NativeUnixSocket.receive(sharedSelectorPipePollFd.fds[0],</span>
+                PIPE_MSG_RECEIVE_BUFFER, 0, maxReceive, null, NativeUnixSocket.OPT_NON_SOCKET, null,
+                0);
+          }
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        } while (read == maxReceive);</span>
+      }
+<span class="fc" id="L152">    }</span>
+<span class="fc" id="L153">  }</span>
+
+  private void setOpsReady() {
+<span class="fc bfc" id="L156" title="All 2 branches covered.">    for (int i = 1; i &lt; pollFd.rops.length; i++) {</span>
+<span class="fc" id="L157">      int rops = pollFd.rops[i];</span>
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">      if (rops == 0) {</span>
+<span class="nc" id="L159">        continue;</span>
+      }
+<span class="fc" id="L161">      AFUNIXSelectionKey key = pollFd.keys[i];</span>
+<span class="fc" id="L162">      key.setOpsReady(rops);</span>
+<span class="fc" id="L163">      keysSelected.add0(key);</span>
+    }
+<span class="fc" id="L165">  }</span>
+
+  @SuppressWarnings(&quot;resource&quot;)
+  private PollFd initPollFd(PollFd existingPollFd) throws IOException {
+<span class="fc bfc" id="L169" title="All 2 branches covered.">    for (Iterator&lt;AFUNIXSelectionKey&gt; it = keysRegistered.iterator(); it.hasNext();) {</span>
+<span class="fc" id="L170">      AFUNIXSelectionKey key = it.next();</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">      if (!key.getAFCore().fd.valid()) {</span>
+<span class="nc" id="L172">        key.cancelNoRemove();</span>
+<span class="nc" id="L173">        it.remove();</span>
+<span class="nc" id="L174">        existingPollFd = null;</span>
+      }
+<span class="fc" id="L176">    }</span>
+
+<span class="fc bfc" id="L178" title="All 2 branches covered.">    if (existingPollFd != null) {</span>
+<span class="fc" id="L179">      return existingPollFd;</span>
+    }
+
+<span class="fc" id="L182">    int size = keysRegistered.size() + 1;</span>
+<span class="fc" id="L183">    FileDescriptor[] fds = new FileDescriptor[size];</span>
+<span class="fc" id="L184">    int[] ops = new int[size];</span>
+
+<span class="fc" id="L186">    AFUNIXSelectionKey[] keys = new AFUNIXSelectionKey[size];</span>
+<span class="fc" id="L187">    fds[0] = selectorPipe().sourceFD();</span>
+<span class="fc" id="L188">    ops[0] = SelectionKey.OP_READ;</span>
+
+<span class="fc" id="L190">    int i = 1;</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">    for (AFUNIXSelectionKey key : keysRegistered) {</span>
+<span class="fc" id="L192">      keys[i] = key;</span>
+<span class="fc" id="L193">      fds[i] = key.getAFCore().fd;</span>
+<span class="fc" id="L194">      ops[i] = key.interestOps();</span>
+<span class="fc" id="L195">    }</span>
+<span class="fc" id="L196">    return new PollFd(keys, fds, ops);</span>
+  }
+
+  @Override
+  protected void implCloseSelector() throws IOException {
+<span class="nc" id="L201">    wakeup();</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">    for (AFUNIXSelectionKey key : keysRegistered) {</span>
+<span class="nc" id="L203">      key.cancelNoRemove();</span>
+<span class="nc" id="L204">    }</span>
+<span class="nc" id="L205">    keysRegistered.clear();</span>
+<span class="nc" id="L206">  }</span>
+
+  @Override
+  public Selector wakeup() {
+    try {
+<span class="fc" id="L211">      selectorPipe().sink().write(PIPE_MSG);</span>
+<span class="nc" id="L212">    } catch (IOException e) {</span>
+      // FIXME throw as runtimeexception?
+<span class="nc" id="L214">      e.printStackTrace();</span>
+<span class="fc" id="L215">    }</span>
+<span class="fc" id="L216">    return this;</span>
+  }
+
+  void remove(AFUNIXSelectionKey key) {
+<span class="fc" id="L220">    keysRegistered.remove(key);</span>
+<span class="fc" id="L221">    pollFd = null;</span>
+<span class="fc" id="L222">  }</span>
+
+  static final class PollFd {
+    // accessed from native code
+    final FileDescriptor[] fds;
+    // accessed from native code
+    final int[] ops;
+    // accessed from native code
+    final int[] rops;
+
+    final AFUNIXSelectionKey[] keys;
+
+    private PollFd(FileDescriptor pipeSourceFd) {
+<span class="fc" id="L235">      this(pipeSourceFd, SelectionKey.OP_READ);</span>
+<span class="fc" id="L236">    }</span>
+
+<span class="fc" id="L238">    PollFd(FileDescriptor pipeSourceFd, int op) {</span>
+<span class="fc" id="L239">      this.fds = new FileDescriptor[] {pipeSourceFd};</span>
+<span class="fc" id="L240">      this.ops = new int[] {op};</span>
+<span class="fc" id="L241">      this.rops = new int[1];</span>
+<span class="fc" id="L242">      this.keys = null;</span>
+<span class="fc" id="L243">    }</span>
+
+<span class="fc" id="L245">    private PollFd(AFUNIXSelectionKey[] keys, FileDescriptor[] fds, int[] ops) {</span>
+<span class="fc" id="L246">      this.keys = keys;</span>
+<span class="pc bpc" id="L247" title="1 of 2 branches missed.">      if (fds.length != ops.length) {</span>
+<span class="nc" id="L248">        throw new IllegalStateException();</span>
+      }
+<span class="fc" id="L250">      this.fds = fds;</span>
+<span class="fc" id="L251">      this.ops = ops;</span>
+<span class="fc" id="L252">      this.rops = new int[ops.length];</span>
+<span class="fc" id="L253">    }</span>
+  }
+
+  private static final class SelectionKeySet extends HashSet&lt;SelectionKey&gt; {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public boolean add(SelectionKey e) {
+<span class="nc" id="L261">      throw new UnsupportedOperationException();</span>
+    }
+
+    private void add0(SelectionKey e) {
+<span class="fc" id="L265">      super.add(e);</span>
+<span class="fc" id="L266">    }</span>
+
+    @Override
+    public boolean addAll(Collection&lt;? extends SelectionKey&gt; c) {
+<span class="nc" id="L270">      throw new UnsupportedOperationException();</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

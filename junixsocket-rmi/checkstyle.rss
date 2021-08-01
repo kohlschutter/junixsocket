@@ -20,19 +20,19 @@ under the License.
 <rss version="0.91">
   <channel>
     <title>junixsocket-rmi - Checkstyle report</title>
-    <link>https://github.com/kohlschutter/junixsocket/junixsocket-rmi</link>
+    <link>https://kohlschutter.github.io/junixsocket/junixsocket-rmi/</link>
     <description>junixsocket-rmi - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2009 - 2021 Kohlschütter Search Intelligence</copyright>
     <item>
-      <title>File: 17,
+      <title>File: 14,
              Errors: 0,
              Warnings: 0,
              Infos: 0
       </title>
-            <link>https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html</link>
+            <link>https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html</link>
       <description>
-        <p>Click <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -46,7 +46,7 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.RemoteFileDescriptorBase.java">org/newsclub/net/unix/rmi/RemoteFileDescriptorBase.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.RemoteFileDescriptorBase.java">org/newsclub/net/unix/rmi/RemoteFileDescriptorBase.java</a>
                 </td>
                 <td>
                   0
@@ -60,7 +60,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRMISocketFactory.java">org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRMISocketFactory.java">org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.java</a>
                 </td>
                 <td>
                   0
@@ -74,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.RemoteFileDescriptor.java">org/newsclub/net/unix/rmi/RemoteFileDescriptor.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.RemotePeerInfo.java">org/newsclub/net/unix/rmi/RemotePeerInfo.java</a>
                 </td>
                 <td>
                   0
@@ -88,7 +88,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.RemotePeerInfo.java">org/newsclub/net/unix/rmi/RemotePeerInfo.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXNaming.java">org/newsclub/net/unix/rmi/AFUNIXNaming.java</a>
                 </td>
                 <td>
                   0
@@ -102,7 +102,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXNaming.java">org/newsclub/net/unix/rmi/AFUNIXNaming.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRMIServiceImpl.java">org/newsclub/net/unix/rmi/AFUNIXRMIServiceImpl.java</a>
                 </td>
                 <td>
                   0
@@ -116,7 +116,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRMIServiceImpl.java">org/newsclub/net/unix/rmi/AFUNIXRMIServiceImpl.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXNamingRef.java">org/newsclub/net/unix/rmi/AFUNIXNamingRef.java</a>
                 </td>
                 <td>
                   0
@@ -130,7 +130,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXNamingRef.java">org/newsclub/net/unix/rmi/AFUNIXNamingRef.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRegistryAccess.java">org/newsclub/net/unix/rmi/AFUNIXRegistryAccess.java</a>
                 </td>
                 <td>
                   0
@@ -144,7 +144,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.RemoteCloseableImpl.java">org/newsclub/net/unix/rmi/RemoteCloseableImpl.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRMIService.java">org/newsclub/net/unix/rmi/AFUNIXRMIService.java</a>
                 </td>
                 <td>
                   0
@@ -158,7 +158,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRMIService.java">org/newsclub/net/unix/rmi/AFUNIXRMIService.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.DefaultRMIClientSocketFactory.java">org/newsclub/net/unix/rmi/DefaultRMIClientSocketFactory.java</a>
                 </td>
                 <td>
                   0
@@ -172,7 +172,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.DefaultRMIClientSocketFactory.java">org/newsclub/net/unix/rmi/DefaultRMIClientSocketFactory.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.DefaultRMIServerSocketFactory.java">org/newsclub/net/unix/rmi/DefaultRMIServerSocketFactory.java</a>
                 </td>
                 <td>
                   0
@@ -186,7 +186,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.RemoteFileOutput.java">org/newsclub/net/unix/rmi/RemoteFileOutput.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRegistry.java">org/newsclub/net/unix/rmi/AFUNIXRegistry.java</a>
                 </td>
                 <td>
                   0
@@ -200,7 +200,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.RemoteFileInput.java">org/newsclub/net/unix/rmi/RemoteFileInput.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.ShutdownHookSupport.java">org/newsclub/net/unix/rmi/ShutdownHookSupport.java</a>
                 </td>
                 <td>
                   0
@@ -214,7 +214,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.DefaultRMIServerSocketFactory.java">org/newsclub/net/unix/rmi/DefaultRMIServerSocketFactory.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.RemoteCloseable.java">org/newsclub/net/unix/rmi/RemoteCloseable.java</a>
                 </td>
                 <td>
                   0
@@ -228,49 +228,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRegistry.java">org/newsclub/net/unix/rmi/AFUNIXRegistry.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.ShutdownHookSupport.java">org/newsclub/net/unix/rmi/ShutdownHookSupport.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.RemoteCloseable.java">org/newsclub/net/unix/rmi/RemoteCloseable.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://github.com/kohlschutter/junixsocket/junixsocket-rmi/checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRMIPorts.java">org/newsclub/net/unix/rmi/AFUNIXRMIPorts.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRMIPorts.java">org/newsclub/net/unix/rmi/AFUNIXRMIPorts.java</a>
                 </td>
                 <td>
                   0

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXSocketCapability.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXSocketCapability.java</span></div><h1>AFUNIXSocketCapability.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXSocketCapability.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXSocketCapability.java</span></div><h1>AFUNIXSocketCapability.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2021 Christian Kohlschütter
@@ -36,17 +36,30 @@ package org.newsclub.net.unix;
   /** Socket supports passing file descriptors via ancillary messages. */
 <span class="fc" id="L37">  CAPABILITY_FILE_DESCRIPTORS(2), //</span>
 
-  /** Socket addressing supports the abstract namespace (Linux/Windows). */
-<span class="fc" id="L40">  CAPABILITY_ABSTRACT_NAMESPACE(3);</span>
+  /** Socket addressing supports the abstract namespace (Linux). */
+<span class="fc" id="L40">  CAPABILITY_ABSTRACT_NAMESPACE(3),</span>
+
+  /** Support for AF_UNIX datagrams (not on Windows yet). */
+<span class="fc" id="L43">  CAPABILITY_DATAGRAMS(4),</span>
+
+  /**
+   * A pair of interconnected sockets can be created natively.
+   * 
+   * This currently not possible on Windows, but instead emulated via anonymous AF_INET ports when
+   * you use {@link AFUNIXSocketPair}.
+   */
+<span class="fc" id="L51">  CAPABILITY_NATIVE_SOCKETPAIR(5),</span>
+
+  ; // end of list
 
   private final int bitmask;
 
-<span class="fc" id="L44">  AFUNIXSocketCapability(int bit) {</span>
-<span class="fc" id="L45">    this.bitmask = 1 &lt;&lt; bit;</span>
-<span class="fc" id="L46">  }</span>
+<span class="fc" id="L57">  AFUNIXSocketCapability(int bit) {</span>
+<span class="fc" id="L58">    this.bitmask = 1 &lt;&lt; bit;</span>
+<span class="fc" id="L59">  }</span>
 
   int getBitmask() {
-<span class="fc" id="L49">    return bitmask;</span>
+<span class="fc" id="L62">    return bitmask;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

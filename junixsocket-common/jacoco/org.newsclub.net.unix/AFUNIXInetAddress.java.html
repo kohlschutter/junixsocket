@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXInetAddress.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXInetAddress.java</span></div><h1>AFUNIXInetAddress.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2021 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.DatagramPacket;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+
+/**
+ * A workaround to create an {@link InetAddress} for an {@link AFUNIXSocketAddress}.
+ * 
+ * {@link DatagramPacket} internally requires InetAddress compatibility. Even if it pretends to
+ * accept {@link SocketAddress}es, it refuses anything other than {@link InetSocketAddress}
+ * &lt;em&gt;and&lt;/em&gt; then even stores host and port separately.
+ * 
+ * This implementation deserializes a specially crafted {@link InetAddress} with a hostname that
+ * encodes the raw bytes of an {@link AFUNIXSocketAddress}. We do this because the deserialization
+ * code path does not attempt DNS resolution (which would fail one way or another).
+ * 
+ * The hostnames we use end with &quot;.junixsocket&quot;, to distinguish them from regular hostnames.
+ * 
+ * @author Christian Kohlschütter
+ */
+<span class="nc" id="L47">class AFUNIXInetAddress {</span>
+<span class="fc" id="L48">  private static final byte[] SERIALIZED_INET_ADDRESS_START = {</span>
+      (byte) 0xac, (byte) 0xed, // STREAM_MAGIC
+      0x00, 0x05, // STREAM_VERSION
+      0x73, // TC_OBJECT
+      0x72, // TC_CLASSDESC,
+      0x00, 0x14, // length
+      'j', 'a', 'v', 'a', '.', 'n', 'e', 't', '.', //
+      'I', 'n', 'e', 't', 'A', 'd', 'd', 'r', 'e', 's', 's', // &quot;java.net.InetAddress&quot;
+
+      0x2d, (byte) 0x9b, 0x57, (byte) 0xaf, (byte) 0x9f, (byte) 0xe3, (byte) 0xeb, (byte) 0xdb, //
+      // serialVersionUID for java.net.InetAddress
+
+      0x03, // classDescFlags SC_WRITE_METHOD | SC_SERIALIZABLE
+      0x00, 0x03, // fieldCount (3)
+      'I', // int field
+      0x00, 0x07, // length (7)
+      'a', 'd', 'd', 'r', 'e', 's', 's', // &quot;address&quot;
+      'I', // int field
+      0x00, 0x06, // length (6)
+      'f', 'a', 'm', 'i', 'l', 'y', // &quot;family&quot;
+      'L', // Object field
+      0x00, 0x08, // length (8)
+      'h', 'o', 's', 't', 'N', 'a', 'm', 'e', // &quot;hostName&quot;
+      0x74, // (className1) TC_STRING
+      0x00, 0x12, // length (18)
+      'L', 'j', 'a', 'v', 'a', '/', 'l', 'a', 'n', 'g', '/', //
+      'O', 'b', 'j', 'e', 'c', 't', ';', // &quot;Ljava/lang/Object;&quot;
+      0x78, // TC_ENDBLOCKDATA,
+      0x70, // (superClassDesc) TC_NULL
+      0x7f, 0x00, 0x00, (byte) 0xaf, // &quot;address&quot; value: (int) 127.0.0.175 (0x7f0000af)
+      0x00, 0x00, 0x00, 0x01, // &quot;family&quot; value: (int) 1 (IPv4)
+      0x74, // &quot;hostName&quot; value is a TC_STRING
+      0x00, // high-byte of string length (always 0 in our case)
+      // low-byte of string length and string itself will be appended later
+      // followed by 0x78 (TC_ENDBLOCKDATA)
+  };
+
+  private static final char PREFIX = '[';
+  private static final String V1_SUFFIX = &quot;.un.junixsocket&quot;;
+
+  /**
+   * Encodes an AF_UNIX socketAddress into a string that is (somewhat) guaranteed to not be resolved
+   * by java.net code.
+   * 
+   * Implementation detail: The &quot;[&quot; prefix (with the corresponding &quot;]&quot; suffix missing from the
+   * input) should cause an early {@link UnknownHostException} be thrown, which is caught within
+   * {@link InetSocketAddress#InetSocketAddress(String, int)}, causing the hostname be marked as
+   * &quot;unresolved&quot; (without an address set).
+   * 
+   * @param socketAddress The AF_UNIX socket address.
+   * @return A string, to be used when calling
+   *         {@link InetSocketAddress#InetSocketAddress(String, int)}, etc.
+   */
+  static final String createUnresolvedHostname(byte[] socketAddress) {
+<span class="fc" id="L102">    StringBuilder sb = new StringBuilder(1 + socketAddress.length + V1_SUFFIX.length());</span>
+<span class="fc" id="L103">    sb.append(PREFIX);</span>
+<span class="fc" id="L104">    sb.append(new String(socketAddress, StandardCharsets.ISO_8859_1));</span>
+<span class="fc" id="L105">    sb.append(V1_SUFFIX);</span>
+<span class="fc" id="L106">    return sb.toString();</span>
+  }
+
+  /**
+   * Creates an InetAddress that is considered &quot;resolved&quot; internally (using a static loopback
+   * address), without actually having to resolve the address via DNS, thus still carrying the
+   * &quot;hostname&quot; field containing a hostname as returned by
+   * {@link #createUnresolvedHostname(byte[])}.
+   * 
+   * @param socketAddress The AF_UNIX socket address.
+   * @return The {@link InetAddress}.
+   */
+  static final InetAddress wrapAddress(byte[] socketAddress) {
+    // called from native code
+
+<span class="pc bpc" id="L121" title="2 of 4 branches missed.">    if (socketAddress == null || socketAddress.length == 0) {</span>
+<span class="nc" id="L122">      return null;</span>
+    }
+
+<span class="fc" id="L125">    byte[] bytes = createUnresolvedHostname(socketAddress).getBytes(StandardCharsets.UTF_8);</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">    if (bytes.length &gt; 255) {</span>
+<span class="nc" id="L127">      throw new IllegalStateException(&quot;Address too long&quot;);</span>
+    }
+<span class="fc" id="L129">    byte[] serializedData = new byte[SERIALIZED_INET_ADDRESS_START.length + 1 + bytes.length + 1];</span>
+<span class="fc" id="L130">    System.arraycopy(SERIALIZED_INET_ADDRESS_START, 0, serializedData, 0,</span>
+        SERIALIZED_INET_ADDRESS_START.length);
+<span class="fc" id="L132">    serializedData[SERIALIZED_INET_ADDRESS_START.length] = (byte) bytes.length;</span>
+<span class="fc" id="L133">    System.arraycopy(bytes, 0, serializedData, SERIALIZED_INET_ADDRESS_START.length + 1,</span>
+        bytes.length);
+<span class="fc" id="L135">    serializedData[serializedData.length - 1] = 0x78; // TC_ENDBLOCKDATA</span>
+
+<span class="fc" id="L137">    try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(serializedData))) {</span>
+<span class="fc" id="L138">      return (InetAddress) ois.readObject();</span>
+<span class="nc" id="L139">    } catch (ClassNotFoundException | IOException e) {</span>
+<span class="nc" id="L140">      throw new IllegalStateException(e);</span>
+    }
+  }
+
+  static final byte[] unwrapAddress(InetAddress addr) throws SocketException {
+    // called from native code
+
+<span class="fc bfc" id="L147" title="All 2 branches covered.">    if (!isSupportedAddress(addr)) {</span>
+<span class="fc" id="L148">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+    }
+<span class="fc" id="L150">    String hostname = addr.getHostName();</span>
+<span class="fc" id="L151">    byte[] bytes = hostname.substring(1, hostname.length() - V1_SUFFIX.length()).getBytes(</span>
+        StandardCharsets.ISO_8859_1);
+<span class="fc" id="L153">    return bytes;</span>
+  }
+
+  static boolean isSupportedAddress(InetAddress addr) {
+<span class="fc bfc" id="L157" title="All 4 branches covered.">    return (addr instanceof Inet4Address) &amp;&amp; addr.isLoopbackAddress() &amp;&amp; addr.getHostName()</span>
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">        .endsWith(V1_SUFFIX);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

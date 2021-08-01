@@ -1,3 +1,4 @@
+org.junit.platform.console.tasks
 org.newsclub.net.unix
 org.newsclub.net.unix.rmi
 org.newsclub.net.unix.selftest

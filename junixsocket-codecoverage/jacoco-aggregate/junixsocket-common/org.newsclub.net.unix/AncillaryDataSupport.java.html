@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AncillaryDataSupport.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AncillaryDataSupport.java</span></div><h1>AncillaryDataSupport.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2021 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.Closeable;
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+<span class="fc" id="L33">class AncillaryDataSupport implements Closeable {</span>
+<span class="fc" id="L34">  private static final ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate(0);</span>
+
+<span class="fc" id="L36">  protected final Map&lt;FileDescriptor, Integer&gt; openReceivedFileDescriptors = Collections</span>
+<span class="fc" id="L37">      .synchronizedMap(new HashMap&lt;FileDescriptor, Integer&gt;());</span>
+
+<span class="fc" id="L39">  private final List&lt;FileDescriptor[]&gt; receivedFileDescriptors = Collections.synchronizedList(</span>
+      new LinkedList&lt;FileDescriptor[]&gt;());
+
+  // referenced from native code
+<span class="fc" id="L43">  protected ByteBuffer ancillaryReceiveBuffer = EMPTY_BUFFER;</span>
+
+  // referenced from native code
+<span class="fc" id="L46">  @SuppressFBWarnings(&quot;URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD&quot;)</span>
+  int[] pendingFileDescriptors = null;
+
+  int getAncillaryReceiveBufferSize() {
+<span class="fc" id="L50">    return ancillaryReceiveBuffer.capacity();</span>
+  }
+
+  void setAncillaryReceiveBufferSize(int size) {
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">    if (size == ancillaryReceiveBuffer.capacity()) {</span>
+<span class="nc" id="L55">      return;</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">    } else if (size &lt;= 0) {</span>
+<span class="nc" id="L57">      this.ancillaryReceiveBuffer = EMPTY_BUFFER;</span>
+    } else {
+<span class="fc" id="L59">      setAncillaryReceiveBufferSize0(Math.max(256, size));</span>
+    }
+<span class="fc" id="L61">  }</span>
+
+  void setAncillaryReceiveBufferSize0(int size) {
+<span class="fc" id="L64">    this.ancillaryReceiveBuffer = ByteBuffer.allocateDirect(size);</span>
+<span class="fc" id="L65">  }</span>
+
+  public final void ensureAncillaryReceiveBufferSize(int minSize) {
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">    if (minSize &lt;= 0) {</span>
+<span class="nc" id="L69">      return;</span>
+    }
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">    if (ancillaryReceiveBuffer.capacity() &lt; minSize) {</span>
+<span class="fc" id="L72">      setAncillaryReceiveBufferSize(minSize);</span>
+    }
+<span class="fc" id="L74">  }</span>
+
+  // called from native code
+  void receiveFileDescriptors(int[] fds) throws IOException {
+<span class="pc bpc" id="L78" title="2 of 4 branches missed.">    if (fds == null || fds.length == 0) {</span>
+<span class="nc" id="L79">      return;</span>
+    }
+<span class="fc" id="L81">    final int fdsLength = fds.length;</span>
+<span class="fc" id="L82">    FileDescriptor[] descriptors = new FileDescriptor[fdsLength];</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">    for (int i = 0; i &lt; fdsLength; i++) {</span>
+<span class="fc" id="L84">      final FileDescriptor fdesc = new FileDescriptor();</span>
+<span class="fc" id="L85">      NativeUnixSocket.initFD(fdesc, fds[i]);</span>
+<span class="fc" id="L86">      descriptors[i] = fdesc;</span>
+
+<span class="fc" id="L88">      openReceivedFileDescriptors.put(fdesc, fds[i]);</span>
+
+<span class="fc" id="L90">      final Closeable cleanup = new Closeable() {</span>
+
+        @Override
+        public void close() throws IOException {
+<span class="fc" id="L94">          openReceivedFileDescriptors.remove(fdesc);</span>
+<span class="fc" id="L95">        }</span>
+      };
+<span class="fc" id="L97">      NativeUnixSocket.attachCloseable(fdesc, cleanup);</span>
+    }
+
+<span class="fc" id="L100">    this.receivedFileDescriptors.add(descriptors);</span>
+<span class="fc" id="L101">  }</span>
+
+  final void clearReceivedFileDescriptors() {
+<span class="fc" id="L104">    receivedFileDescriptors.clear();</span>
+<span class="fc" id="L105">  }</span>
+
+  FileDescriptor[] getReceivedFileDescriptors() {
+<span class="fc bfc" id="L108" title="All 2 branches covered.">    if (receivedFileDescriptors.isEmpty()) {</span>
+<span class="fc" id="L109">      return null;</span>
+    }
+<span class="fc" id="L111">    List&lt;FileDescriptor[]&gt; copy = new ArrayList&lt;&gt;(receivedFileDescriptors);</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">    if (copy.isEmpty()) {</span>
+<span class="nc" id="L113">      return null;</span>
+    }
+<span class="fc" id="L115">    receivedFileDescriptors.removeAll(copy);</span>
+<span class="fc" id="L116">    int count = 0;</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    for (FileDescriptor[] fds : copy) {</span>
+<span class="fc" id="L118">      count += fds.length;</span>
+<span class="fc" id="L119">    }</span>
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">    if (count == 0) {</span>
+<span class="nc" id="L121">      return null;</span>
+    }
+<span class="fc" id="L123">    FileDescriptor[] oneArray = new FileDescriptor[count];</span>
+<span class="fc" id="L124">    int offset = 0;</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">    for (FileDescriptor[] fds : copy) {</span>
+<span class="fc" id="L126">      System.arraycopy(fds, 0, oneArray, offset, fds.length);</span>
+<span class="fc" id="L127">      offset += fds.length;</span>
+<span class="fc" id="L128">    }</span>
+<span class="fc" id="L129">    return oneArray;</span>
+  }
+
+  void setOutboundFileDescriptors(int[] fds) {
+<span class="pc bpc" id="L133" title="1 of 4 branches missed.">    this.pendingFileDescriptors = (fds == null || fds.length == 0) ? null : fds;</span>
+<span class="fc" id="L134">  }</span>
+
+  boolean hasOutboundFileDescriptors() {
+<span class="fc bfc" id="L137" title="All 2 branches covered.">    return this.pendingFileDescriptors != null;</span>
+  }
+
+  void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
+    final int[] fds;
+<span class="fc bfc" id="L142" title="All 4 branches covered.">    if (fdescs == null || fdescs.length == 0) {</span>
+<span class="fc" id="L143">      fds = null;</span>
+    } else {
+<span class="fc" id="L145">      final int numFdescs = fdescs.length;</span>
+<span class="fc" id="L146">      fds = new int[numFdescs];</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">      for (int i = 0; i &lt; numFdescs; i++) {</span>
+<span class="fc" id="L148">        FileDescriptor fdesc = fdescs[i];</span>
+<span class="fc" id="L149">        fds[i] = NativeUnixSocket.getFD(fdesc);</span>
+      }
+    }
+<span class="fc" id="L152">    this.setOutboundFileDescriptors(fds);</span>
+<span class="fc" id="L153">  }</span>
+
+  @Override
+  public void close() {
+<span class="fc" id="L157">    synchronized (openReceivedFileDescriptors) {</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">      for (FileDescriptor desc : openReceivedFileDescriptors.keySet()) {</span>
+        try {
+<span class="fc" id="L160">          NativeUnixSocket.close(desc);</span>
+<span class="nc" id="L161">        } catch (Exception e) {</span>
+          // ignore
+<span class="fc" id="L163">        }</span>
+<span class="fc" id="L164">      }</span>
+<span class="fc" id="L165">    }</span>
+<span class="fc" id="L166">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

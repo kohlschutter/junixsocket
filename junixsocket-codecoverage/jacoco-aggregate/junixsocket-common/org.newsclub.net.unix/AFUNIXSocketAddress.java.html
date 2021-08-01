@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXSocketAddress.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXSocketAddress.java</span></div><h1>AFUNIXSocketAddress.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2021 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * Describes an {@link InetSocketAddress} that actually uses AF_UNIX sockets instead of AF_INET.
+ * 
+ * The ability to specify a port number is not specified by AF_UNIX sockets, but we need it
+ * sometimes, for example for RMI-over-AF_UNIX.
+ * 
+ * @author Christian Kohlschütter
+ */
+@SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
+public final class AFUNIXSocketAddress extends InetSocketAddress {
+  private static final long serialVersionUID = 1L;
+
+<span class="fc" id="L50">  private static final int SOCKADDR_UN_LENGTH = NativeUnixSocket.sockAddrUnLength();</span>
+<span class="fc" id="L51">  private static final Map&lt;ByteBuffer, AFUNIXSocketAddress&gt; ADDRESS_CACHE = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L52">  private static final Charset ADDRESS_CHARSET = Charset.defaultCharset();</span>
+
+  private final byte[] bytes;
+<span class="fc" id="L55">  private InetAddress inetAddress = null; // only created on demand</span>
+
+<span class="fc" id="L57">  static final ThreadLocal&lt;ByteBuffer&gt; SOCKETADDRESS_BUFFER_TL = new ThreadLocal&lt;ByteBuffer&gt;() {</span>
+
+    @Override
+    protected ByteBuffer initialValue() {
+<span class="fc" id="L61">      return AFUNIXSocketAddress.newSockAddrUnDirectBuffer();</span>
+    }
+  };
+
+  /**
+   * Just a marker for &quot;don't actually bind&quot; (checked with &quot;==&quot;). Used in combination with a
+   * superclass' bind method, which should trigger &quot;setBound()&quot;, etc.
+   */
+<span class="fc" id="L69">  static final AFUNIXSocketAddress INTERNAL_DUMMY_BIND = new AFUNIXSocketAddress(0);</span>
+<span class="fc" id="L70">  static final AFUNIXSocketAddress INTERNAL_DUMMY_CONNECT = new AFUNIXSocketAddress(1);</span>
+<span class="fc" id="L71">  static final AFUNIXSocketAddress INTERNAL_DUMMY_DONT_CONNECT = new AFUNIXSocketAddress(2);</span>
+
+  /**
+   * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
+   * given file.
+   * 
+   * @param socketFile The socket to connect to.
+   * @throws SocketException if the operation fails.
+   * @deprecated Use {@link AFUNIXSocketAddress#of(File)} instead.
+   */
+  public AFUNIXSocketAddress(final File socketFile) throws SocketException {
+<span class="nc" id="L82">    this(socketFile, 0);</span>
+<span class="nc" id="L83">  }</span>
+
+  /**
+   * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
+   * given file, assigning the given port to it.
+   * 
+   * @param socketFile The socket to connect to.
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @throws SocketException if the operation fails.
+   * @deprecated Use {@link AFUNIXSocketAddress#of(File, int)} instead.
+   */
+  public AFUNIXSocketAddress(final File socketFile, int port) throws SocketException {
+<span class="nc" id="L95">    this(socketFile.getPath().getBytes(ADDRESS_CHARSET), port);</span>
+<span class="nc" id="L96">  }</span>
+
+  /**
+   * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
+   * given byte sequence.
+   * 
+   * NOTE: By specifying a byte array that starts with a zero byte, you indicate that the abstract
+   * namespace is to be used. This feature is not available on all target platforms.
+   * 
+   * @param socketAddress The socket address (as bytes).
+   * @throws SocketException if the operation fails.
+   * @see AFUNIXSocketAddress#inAbstractNamespace(String)
+   * @deprecated Use {@link #of(byte[])} instead.
+   */
+  public AFUNIXSocketAddress(final byte[] socketAddress) throws SocketException {
+<span class="nc" id="L111">    this(socketAddress, 0);</span>
+<span class="nc" id="L112">  }</span>
+
+  /**
+   * Creates a new {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the
+   * given byte sequence, assigning the given port to it.
+   * 
+   * NOTE: By specifying a byte array that starts with a zero byte, you indicate that the abstract
+   * namespace is to be used. This feature is not available on all target platforms.
+   *
+   * @param socketAddress The socket address (as bytes).
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @throws SocketException if the operation fails.
+   * @see AFUNIXSocketAddress#inAbstractNamespace(String,int)
+   * @deprecated Use {@link #of(byte[], int)} instead.
+   */
+  public AFUNIXSocketAddress(final byte[] socketAddress, int port) throws SocketException {
+<span class="fc" id="L128">    this(port, socketAddress);</span>
+<span class="fc" id="L129">  }</span>
+
+  private AFUNIXSocketAddress(int port, final byte[] socketAddress) throws SocketException {
+    /*
+     * Initializing the superclass with an unresolved hostname helps us pass the #equals and
+     * #hashCode checks, which unfortunately are declared final in InetSocketAddress.
+     * 
+     * Using a resolved address (with the address bit initialized) would be ideal, but resolved
+     * addresses can only be IPv4 or IPv6 (at least as of Java 16 and earlier).
+     */
+<span class="fc" id="L139">    super(AFUNIXInetAddress.createUnresolvedHostname(socketAddress), 0);</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">    if (port &lt; -1) {</span>
+<span class="fc" id="L141">      throw new IllegalArgumentException(&quot;port out of range&quot;);</span>
+    }
+<span class="fc bfc" id="L143" title="All 2 branches covered.">    if (port &gt; 0) {</span>
+<span class="fc" id="L144">      NativeUnixSocket.setPort1(this, port);</span>
+    }
+
+<span class="fc bfc" id="L147" title="All 2 branches covered.">    if (socketAddress.length == 0) {</span>
+<span class="fc" id="L148">      throw new SocketException(&quot;Illegal address length: &quot; + socketAddress.length);</span>
+    }
+
+<span class="fc" id="L151">    this.bytes = socketAddress.clone();</span>
+<span class="fc" id="L152">  }</span>
+
+  private AFUNIXSocketAddress(int port) {
+<span class="fc" id="L155">    super(InetAddress.getLoopbackAddress(), port);</span>
+<span class="fc" id="L156">    this.bytes = new byte[0];</span>
+<span class="fc" id="L157">  }</span>
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * file.
+   * 
+   * @param socketFile The socket to connect to.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
+   * @throws SocketException if the operation fails.
+   */
+  public static AFUNIXSocketAddress of(final File socketFile) throws SocketException {
+<span class="fc" id="L168">    return of(socketFile, 0);</span>
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * file, assigning the given port to it.
+   * 
+   * @param socketFile The socket to connect to.
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
+   * @throws SocketException if the operation fails.
+   */
+  public static AFUNIXSocketAddress of(final File socketFile, int port) throws SocketException {
+<span class="fc" id="L181">    return of(socketFile.getPath().getBytes(ADDRESS_CHARSET), port);</span>
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * byte sequence.
+   * 
+   * NOTE: By specifying a byte array that starts with a zero byte, you indicate that the abstract
+   * namespace is to be used. This feature is not available on all target platforms.
+   * 
+   * @param socketAddress The socket address (as bytes).
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
+   * @throws SocketException if the operation fails.
+   * @see AFUNIXSocketAddress#inAbstractNamespace(String)
+   */
+  public static AFUNIXSocketAddress of(final byte[] socketAddress) throws SocketException {
+<span class="fc" id="L197">    return of(socketAddress, 0);</span>
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * byte sequence, assigning the given port to it.
+   * 
+   * NOTE: By specifying a byte array that starts with a zero byte, you indicate that the abstract
+   * namespace is to be used. This feature is not available on all target platforms.
+   *
+   * @param socketAddress The socket address (as bytes).
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
+   * @throws SocketException if the operation fails.
+   * @see AFUNIXSocketAddress#inAbstractNamespace(String,int)
+   */
+  public static AFUNIXSocketAddress of(final byte[] socketAddress, int port)
+      throws SocketException {
+    AFUNIXSocketAddress instance;
+
+<span class="pc bpc" id="L217" title="1 of 2 branches missed.">    if (port == -1) {</span>
+<span class="nc" id="L218">      port = 0;</span>
+    }
+<span class="fc bfc" id="L220" title="All 2 branches covered.">    if (port != 0) {</span>
+<span class="fc" id="L221">      return new AFUNIXSocketAddress(port, socketAddress);</span>
+    }
+
+<span class="fc" id="L224">    synchronized (AFUNIXSocketAddress.class) {</span>
+<span class="fc" id="L225">      ByteBuffer direct = SOCKETADDRESS_BUFFER_TL.get();</span>
+<span class="fc" id="L226">      NativeUnixSocket.bytesToSockAddrUn(direct, socketAddress);</span>
+
+<span class="fc" id="L228">      direct.rewind();</span>
+<span class="fc" id="L229">      direct.limit(SOCKADDR_UN_LENGTH);</span>
+
+<span class="fc" id="L231">      instance = ADDRESS_CACHE.get(direct);</span>
+<span class="pc bpc" id="L232" title="1 of 2 branches missed.">      if (instance == null) {</span>
+<span class="fc" id="L233">        instance = new AFUNIXSocketAddress(port, socketAddress);</span>
+
+<span class="fc" id="L235">        ByteBuffer key = newSockAddrUnKeyBuffer();</span>
+<span class="fc" id="L236">        key.put(direct);</span>
+<span class="fc" id="L237">        ADDRESS_CACHE.put(key, instance);</span>
+      }
+<span class="fc" id="L239">    }</span>
+
+<span class="fc" id="L241">    return instance;</span>
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * path.
+   * 
+   * @param socketPath The socket to connect to.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
+   * @throws SocketException if the operation fails.
+   */
+  public static AFUNIXSocketAddress of(final Path socketPath) throws SocketException {
+<span class="fc" id="L253">    return of(socketPath, 0);</span>
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * path, assigning the given port to it.
+   * 
+   * @param socketPath The socket to connect to.
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
+   * @throws SocketException if the operation fails.
+   */
+  public static AFUNIXSocketAddress of(final Path socketPath, int port) throws SocketException {
+<span class="fc" id="L266">    return of(socketPath.toString().getBytes(ADDRESS_CHARSET), port);</span>
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to a temporary, non-existent but accessible
+   * path in the file system.
+   * 
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
+   * @throws IOException if the operation fails.
+   */
+  public static AFUNIXSocketAddress ofNewTempFile() throws IOException {
+<span class="fc" id="L277">    return ofNewTempPath(0);</span>
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to a temporary, non-existent but accessible
+   * path in the file system, assigning the given port to it.
+   * 
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
+   * @throws IOException if the operation fails.
+   */
+  public static AFUNIXSocketAddress ofNewTempPath(int port) throws IOException {
+<span class="fc" id="L289">    return of(newTempPath(true), port);</span>
+  }
+
+  static File newTempPath(boolean deleteOnExit) throws IOException {
+<span class="fc" id="L293">    File f = File.createTempFile(&quot;jux&quot;, &quot;.sock&quot;);</span>
+<span class="fc bfc" id="L294" title="All 2 branches covered.">    if (deleteOnExit) {</span>
+<span class="fc" id="L295">      f.deleteOnExit(); // always delete on exit to clean-up sockets created under that name</span>
+    }
+<span class="pc bpc" id="L297" title="3 of 4 branches missed.">    if (!f.delete() &amp;&amp; f.exists()) {</span>
+<span class="nc" id="L298">      throw new IOException(&quot;Could not delete temporary file that we just created: &quot; + f);</span>
+    }
+<span class="fc" id="L300">    return f;</span>
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} given a special {@link InetAddress} that encodes the
+   * byte sequence of an AF_UNIX socket address, like those returned by {@link #wrapAddress()}.
+   * 
+   * @param address The &quot;special&quot; {@link InetAddress}.
+   * @param port The port (use 0 for &quot;none&quot;).
+   * @return The {@link AFUNIXSocketAddress} instance.
+   * @throws SocketException if the operation fails, for example when an unsupported address is
+   *           specified.
+   */
+  public static AFUNIXSocketAddress unwrap(InetAddress address, int port) throws SocketException {
+<span class="fc" id="L314">    Objects.requireNonNull(address);</span>
+<span class="fc" id="L315">    return new AFUNIXSocketAddress(port, AFUNIXInetAddress.unwrapAddress(address));</span>
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} given a generic {@link SocketAddress}.
+   * 
+   * @param address The address to unwrap.
+   * @return The {@link AFUNIXSocketAddress} instance.
+   * @throws SocketException if the operation fails, for example when an unsupported address is
+   *           specified.
+   */
+  public static AFUNIXSocketAddress unwrap(SocketAddress address) throws SocketException {
+    // FIXME: add support for UnixDomainSocketAddress
+<span class="fc" id="L328">    Objects.requireNonNull(address);</span>
+<span class="pc bpc" id="L329" title="1 of 2 branches missed.">    if (!isSupportedAddress(address)) {</span>
+<span class="nc" id="L330">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+    }
+<span class="fc" id="L332">    return (AFUNIXSocketAddress) address;</span>
+  }
+
+  /**
+   * Returns the plain bytes (as returned by {@link #getBytes()}) of an AF_UNIX socket address.
+   * 
+   * @param address The address to unwrap.
+   * @return The address bytes (the length trimmed to the address's length).
+   * @throws SocketException if the operation fails, for example when an unsupported address is
+   *           specified.
+   */
+  static byte[] unwrapAddress(SocketAddress address) throws SocketException {
+    // FIXME: add support for UnixDomainSocketAddress
+<span class="nc" id="L345">    Objects.requireNonNull(address);</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">    if (!isSupportedAddress(address)) {</span>
+<span class="nc" id="L347">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+    }
+<span class="nc" id="L349">    return ((AFUNIXSocketAddress) address).getBytes();</span>
+  }
+
+  static void unwrapAddressDirectBufferInternal(ByteBuffer socketAddressBuffer,
+      SocketAddress address) throws SocketException {
+<span class="nc" id="L354">    byte[] addr = unwrapAddress(address);</span>
+<span class="nc" id="L355">    NativeUnixSocket.bytesToSockAddrUn(socketAddressBuffer, addr);</span>
+<span class="nc" id="L356">  }</span>
+
+  static AFUNIXSocketAddress ofInternal(ByteBuffer socketAddressBuffer) throws SocketException {
+<span class="fc" id="L359">    synchronized (AFUNIXSocketAddress.class) {</span>
+<span class="fc" id="L360">      AFUNIXSocketAddress address = ADDRESS_CACHE.get(socketAddressBuffer);</span>
+<span class="fc bfc" id="L361" title="All 2 branches covered.">      if (address != null) {</span>
+<span class="fc" id="L362">        return address;</span>
+      } else {
+<span class="fc" id="L364">        byte[] sockAddrUnToBytes = NativeUnixSocket.sockAddrUnToBytes(socketAddressBuffer);</span>
+<span class="pc bpc" id="L365" title="1 of 2 branches missed.">        if (sockAddrUnToBytes == null) {</span>
+<span class="nc" id="L366">          return null;</span>
+        } else {
+<span class="fc" id="L368">          return of(sockAddrUnToBytes);</span>
+        }
+      }
+    }
+  }
+
+  /**
+   * Returns a &quot;special&quot; {@link InetAddress} that contains information about this
+   * {@link AFUNIXSocketAddress}.
+   * 
+   * IMPORTANT: This {@link InetAddress} does not properly compare (using
+   * {@link InetAddress#equals(Object)} and {@link InetAddress#hashCode()}). It should be used
+   * exclusively to circumvent existing APIs like {@link DatagramSocket} that only accept/return
+   * {@link InetAddress} and not arbitrary {@link SocketAddress} types.
+   * 
+   * @return The &quot;special&quot; {@link InetAddress}.
+   */
+  public InetAddress wrapAddress() {
+<span class="fc" id="L386">    return AFUNIXInetAddress.wrapAddress(bytes);</span>
+  }
+
+  /**
+   * Convenience method to create an {@link AFUNIXSocketAddress} in the abstract namespace.
+   * 
+   * The returned socket address will use the byte representation of this identifier (using the
+   * system's default character encoding), prefixed with a null byte (to indicate the abstract
+   * namespace is used).
+   * 
+   * @param name The identifier in the abstract namespace, without trailing zero or @.
+   * @return The address.
+   * @throws SocketException if the operation fails.
+   */
+  public static AFUNIXSocketAddress inAbstractNamespace(String name) throws SocketException {
+<span class="fc" id="L401">    return inAbstractNamespace(name, 0);</span>
+  }
+
+  /**
+   * Convenience method to create an {@link AFUNIXSocketAddress} in the abstract namespace.
+   * 
+   * The returned socket address will use the byte representation of this identifier (using the
+   * system's default character encoding), prefixed with a null byte (to indicate the abstract
+   * namespace is used).
+   * 
+   * @param name The identifier in the abstract namespace, without trailing zero or @.
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @return The address.
+   * @throws SocketException if the operation fails.
+   */
+  public static AFUNIXSocketAddress inAbstractNamespace(String name, int port)
+      throws SocketException {
+<span class="fc" id="L418">    byte[] bytes = name.getBytes(ADDRESS_CHARSET);</span>
+<span class="fc" id="L419">    byte[] addr = new byte[bytes.length + 1];</span>
+<span class="fc" id="L420">    System.arraycopy(bytes, 0, addr, 1, bytes.length);</span>
+<span class="fc" id="L421">    return new AFUNIXSocketAddress(addr, port);</span>
+  }
+
+  byte[] getBytes() {
+<span class="fc" id="L425">    return bytes; // NOPMD</span>
+  }
+
+  private static String prettyPrint(byte[] data) {
+<span class="fc" id="L429">    final int dataLength = data.length;</span>
+<span class="pc bpc" id="L430" title="1 of 2 branches missed.">    if (dataLength == 0) {</span>
+<span class="nc" id="L431">      return &quot;&quot;;</span>
+    }
+<span class="fc" id="L433">    StringBuilder sb = new StringBuilder(dataLength + 16);</span>
+<span class="fc bfc" id="L434" title="All 2 branches covered.">    for (int i = 0; i &lt; dataLength; i++) {</span>
+<span class="fc" id="L435">      byte c = data[i];</span>
+<span class="fc bfc" id="L436" title="All 4 branches covered.">      if (c &gt;= 32 &amp;&amp; c &lt; 127) {</span>
+<span class="fc" id="L437">        sb.append((char) c);</span>
+      } else {
+<span class="fc" id="L439">        sb.append(&quot;\\x&quot;);</span>
+<span class="fc" id="L440">        sb.append(String.format(Locale.ENGLISH, &quot;%02x&quot;, c));</span>
+      }
+    }
+<span class="fc" id="L443">    return sb.toString();</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="fc" id="L448">    int port = getPort();</span>
+<span class="pc bpc" id="L449" title="1 of 2 branches missed.">    return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port + &quot;;&quot;) + &quot;path=&quot;</span>
+<span class="fc" id="L450">        + prettyPrint(bytes) + &quot;]&quot;;</span>
+  }
+
+  /**
+   * Returns the path to the UNIX domain socket, as a human-readable string using the default
+   * encoding.
+   * 
+   * For addresses in the abstract namespace, the US_ASCII encoding is used; zero-bytes are
+   * converted to '@', other non-printable bytes are converted to '.'
+   * 
+   * @return The path.
+   * @see #getPathAsBytes()
+   */
+  public String getPath() {
+<span class="pc bpc" id="L464" title="1 of 2 branches missed.">    if (bytes.length == 0) {</span>
+<span class="nc" id="L465">      return &quot;&quot;;</span>
+<span class="fc bfc" id="L466" title="All 2 branches covered.">    } else if (bytes[0] != 0) {</span>
+<span class="fc" id="L467">      return new String(bytes, ADDRESS_CHARSET);</span>
+    }
+
+<span class="fc" id="L470">    byte[] by = bytes.clone();</span>
+<span class="fc bfc" id="L471" title="All 2 branches covered.">    for (int i = 0; i &lt; by.length; i++) {</span>
+<span class="fc" id="L472">      byte b = by[i];</span>
+<span class="fc bfc" id="L473" title="All 2 branches covered.">      if (b == 0) {</span>
+<span class="fc" id="L474">        by[i] = '@';</span>
+<span class="fc bfc" id="L475" title="All 4 branches covered.">      } else if (b &gt;= 32 &amp;&amp; b &lt; 127) {</span>
+        // print as-is
+      } else {
+<span class="fc" id="L478">        by[i] = '.';</span>
+      }
+    }
+<span class="fc" id="L481">    return new String(by, StandardCharsets.US_ASCII);</span>
+  }
+
+  /**
+   * Returns the {@link Charset} used to encode/decode {@link AFUNIXSocketAddress}es.
+   * 
+   * This is usually the system default charset, unless that is {@link StandardCharsets#US_ASCII}
+   * (7-bit), in which case {@link StandardCharsets#ISO_8859_1} is used instead.
+   * 
+   * @return The charset.
+   */
+  public static Charset addressCharset() {
+<span class="fc" id="L493">    return ADDRESS_CHARSET;</span>
+  }
+
+  /**
+   * Returns the path to the UNIX domain socket, as bytes.
+   * 
+   * @return The path.
+   * @see #getPath()
+   */
+  public byte[] getPathAsBytes() {
+<span class="fc" id="L503">    return this.bytes.clone();</span>
+  }
+
+  /**
+   * Checks if the address is in the abstract namespace.
+   * 
+   * @return {@code true} if the address is in the abstract namespace.
+   */
+  public boolean isInAbstractNamespace() {
+<span class="pc bpc" id="L512" title="1 of 4 branches missed.">    return bytes.length &gt; 0 &amp;&amp; bytes[0] == 0;</span>
+  }
+
+  /**
+   * Checks if the address can be resolved to a {@link File}.
+   * 
+   * @return {@code true} if the address has a filename.
+   */
+  public boolean hasFilename() {
+<span class="pc bpc" id="L521" title="1 of 4 branches missed.">    return bytes.length &gt; 0 &amp;&amp; bytes[0] != 0;</span>
+  }
+
+  /**
+   * Returns the {@link File} corresponding with this address, if possible.
+   * 
+   * A {@link FileNotFoundException} is thrown if there is no filename associated with the address,
+   * which applies to addresses in the abstract namespace, for example.
+   * 
+   * @return The filename.
+   * @throws FileNotFoundException if the address is not associated with a filename.
+   */
+  public File getFile() throws FileNotFoundException {
+<span class="fc bfc" id="L534" title="All 2 branches covered.">    if (isInAbstractNamespace()) {</span>
+<span class="fc" id="L535">      throw new FileNotFoundException(&quot;Socket is in abstract namespace&quot;);</span>
+<span class="pc bpc" id="L536" title="1 of 2 branches missed.">    } else if (bytes.length == 0) {</span>
+<span class="nc" id="L537">      throw new FileNotFoundException(&quot;No name&quot;);</span>
+    }
+<span class="fc" id="L539">    return new File(new String(bytes, ADDRESS_CHARSET));</span>
+  }
+
+  static AFUNIXSocketAddress preprocessSocketAddress(SocketAddress endpoint,
+      AFUNIXSocketFactory socketFactory) throws SocketException {
+<span class="fc bfc" id="L544" title="All 2 branches covered.">    if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
+<span class="fc bfc" id="L545" title="All 2 branches covered.">      if (socketFactory != null) {</span>
+<span class="pc bpc" id="L546" title="1 of 2 branches missed.">        if (endpoint instanceof InetSocketAddress) {</span>
+<span class="fc" id="L547">          InetSocketAddress isa = (InetSocketAddress) endpoint;</span>
+
+<span class="fc" id="L549">          String hostname = isa.getHostString();</span>
+<span class="fc bfc" id="L550" title="All 2 branches covered.">          if (socketFactory.isHostnameSupported(hostname)) {</span>
+            try {
+<span class="fc" id="L552">              endpoint = socketFactory.addressFromHost(hostname, isa.getPort());</span>
+<span class="fc" id="L553">            } catch (SocketException e) {</span>
+<span class="fc" id="L554">              throw e;</span>
+<span class="fc" id="L555">            }</span>
+          }
+        }
+      }
+    }
+
+<span class="fc bfc" id="L561" title="All 2 branches covered.">    if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
+<span class="fc" id="L562">      throw new IllegalArgumentException(&quot;Can only connect to endpoints of type &quot;</span>
+<span class="fc" id="L563">          + AFUNIXSocketAddress.class.getName() + &quot;, got: &quot; + endpoint);</span>
+    }
+
+<span class="fc" id="L566">    return (AFUNIXSocketAddress) endpoint;</span>
+  }
+
+  /**
+   * Checks if an {@link InetAddress} can be unwrapped to an {@link AFUNIXSocketAddress}.
+   * 
+   * @param addr The instance to check.
+   * @return {@code true} if so.
+   * @see #wrapAddress()
+   * @see #unwrap(InetAddress, int)
+   */
+  public static boolean isSupportedAddress(InetAddress addr) {
+<span class="fc" id="L578">    return AFUNIXInetAddress.isSupportedAddress(addr);</span>
+  }
+
+  /**
+   * Checks if a {@link SocketAddress} can be unwrapped to an {@link AFUNIXSocketAddress}.
+   * 
+   * @param addr The instance to check.
+   * @return {@code true} if so.
+   * @see #unwrap(InetAddress, int)
+   */
+  public static boolean isSupportedAddress(SocketAddress addr) {
+<span class="fc" id="L589">    return (addr instanceof AFUNIXSocketAddress);</span>
+  }
+
+  static InetAddress getInetAddress(FileDescriptor fdesc, boolean peerName) {
+<span class="pc bpc" id="L593" title="1 of 2 branches missed.">    if (!fdesc.valid()) {</span>
+<span class="nc" id="L594">      return null;</span>
+    }
+<span class="fc" id="L596">    byte[] addr = NativeUnixSocket.sockname(fdesc, peerName);</span>
+<span class="fc bfc" id="L597" title="All 2 branches covered.">    if (addr == null) {</span>
+<span class="fc" id="L598">      return null;</span>
+    }
+<span class="fc" id="L600">    return AFUNIXInetAddress.wrapAddress(addr);</span>
+  }
+
+  static AFUNIXSocketAddress getSocketAddress(FileDescriptor fdesc, boolean peerName) {
+<span class="nc" id="L604">    return getSocketAddress(fdesc, peerName, 0);</span>
+  }
+
+  static AFUNIXSocketAddress getSocketAddress(FileDescriptor fdesc, boolean peerName, int port) {
+<span class="pc bpc" id="L608" title="1 of 2 branches missed.">    if (!fdesc.valid()) {</span>
+<span class="nc" id="L609">      return null;</span>
+    }
+<span class="fc" id="L611">    byte[] addr = NativeUnixSocket.sockname(fdesc, peerName);</span>
+<span class="fc bfc" id="L612" title="All 2 branches covered.">    if (addr == null) {</span>
+<span class="fc" id="L613">      return null;</span>
+    }
+    try {
+      // FIXME we could infer the &quot;port&quot; from the path if the socket factory supports that
+<span class="fc" id="L617">      return AFUNIXSocketAddress.unwrap(AFUNIXInetAddress.wrapAddress(addr), port);</span>
+<span class="nc" id="L618">    } catch (SocketException e) {</span>
+<span class="nc" id="L619">      throw new IllegalStateException(e);</span>
+    }
+  }
+
+  static ByteBuffer newSockAddrUnDirectBuffer() {
+<span class="fc" id="L624">    return ByteBuffer.allocateDirect(SOCKADDR_UN_LENGTH);</span>
+  }
+
+  static ByteBuffer newSockAddrUnKeyBuffer() {
+<span class="fc" id="L628">    return ByteBuffer.allocate(SOCKADDR_UN_LENGTH);</span>
+  }
+
+  synchronized InetAddress getInetAddress() {
+<span class="fc bfc" id="L632" title="All 2 branches covered.">    if (inetAddress == null) {</span>
+<span class="fc" id="L633">      inetAddress = AFUNIXInetAddress.wrapAddress(bytes);</span>
+    }
+<span class="fc" id="L635">    return inetAddress;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

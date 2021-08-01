@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShutdownHookSupport.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">ShutdownHookSupport.java</span></div><h1>ShutdownHookSupport.java</h1><pre class="source lang-java linenums">/**
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShutdownHookSupport.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">ShutdownHookSupport.java</span></div><h1>ShutdownHookSupport.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2021 Christian Kohlschütter
@@ -18,16 +18,19 @@
 package org.newsclub.net.unix.rmi;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Simplifies handling shutdown hooks.
  * 
  * @author Christian Kohlschütter
  */
-final class ShutdownHookSupport {
-<span class="nc" id="L28">  private ShutdownHookSupport() {</span>
-<span class="nc" id="L29">    throw new UnsupportedOperationException(&quot;No instances&quot;);</span>
-  }
+<span class="nc" id="L31">final class ShutdownHookSupport {</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">  private static final List&lt;Thread&gt; HOOKS = (&quot;true&quot;.equals(System.getProperty(</span>
+<span class="fc" id="L33">      &quot;org.newsclub.net.unix.rmi.collect-shutdown-hooks&quot;, &quot;false&quot;))) ? new ArrayList&lt;&gt;() : null;</span>
 
   /**
    * Registers a shutdown hook to be executed upon Runtime shutdown.
@@ -35,10 +38,33 @@ final class ShutdownHookSupport {
    * NOTE: Only a weak reference to the hook is stored.
    * 
    * @param hook The hook to register.
+   * @return The thread, to be used with #removeShutdownHook
    */
-  public static void addWeakShutdownHook(ShutdownHook hook) {
-<span class="fc" id="L40">    Runtime.getRuntime().addShutdownHook(new ShutdownThread(new WeakReference&lt;&gt;(hook)));</span>
-<span class="fc" id="L41">  }</span>
+  public static Thread addWeakShutdownHook(ShutdownHook hook) {
+<span class="fc" id="L44">    Thread t = new ShutdownThread(new WeakReference&lt;&gt;(hook));</span>
+<span class="fc" id="L45">    Runtime.getRuntime().addShutdownHook(t);</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">    if (HOOKS != null) {</span>
+<span class="fc" id="L47">      synchronized (HOOKS) {</span>
+<span class="fc" id="L48">        HOOKS.add(t);</span>
+<span class="fc" id="L49">      }</span>
+    }
+<span class="fc" id="L51">    return t;</span>
+  }
+
+  // only for unit testing
+  @SuppressFBWarnings({&quot;RU_INVOKE_RUN&quot;})
+  static void runHooks() {
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">    if (HOOKS != null) {</span>
+      List&lt;Thread&gt; list;
+<span class="fc" id="L59">      synchronized (HOOKS) {</span>
+<span class="fc" id="L60">        list = new ArrayList&lt;&gt;(HOOKS);</span>
+<span class="fc" id="L61">        HOOKS.clear();</span>
+<span class="fc" id="L62">      }</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">      for (Thread t : list) {</span>
+<span class="fc" id="L64">        t.run(); // NOPMD -- code coverage fails if we call .start()</span>
+<span class="fc" id="L65">      }</span>
+    }
+<span class="fc" id="L67">  }</span>
 
   /**
    * Something that wants to be called upon Runtime shutdown.
@@ -56,8 +82,9 @@ final class ShutdownHookSupport {
      * &lt;/code&gt;
      * 
      * @param thread The current Thread.
+     * @throws Exception Most likely ignored
      */
-    void onRuntimeShutdown(Thread thread);
+    void onRuntimeShutdown(Thread thread) throws Exception;
   }
 
   /**
@@ -69,17 +96,22 @@ final class ShutdownHookSupport {
     private final WeakReference&lt;ShutdownHook&gt; ref;
 
     private ShutdownThread(WeakReference&lt;ShutdownHook&gt; ref) {
-<span class="fc" id="L72">      super();</span>
-<span class="fc" id="L73">      this.ref = ref;</span>
-<span class="fc" id="L74">    }</span>
+<span class="fc" id="L99">      super();</span>
+<span class="fc" id="L100">      this.ref = ref;</span>
+<span class="fc" id="L101">    }</span>
 
     @Override
     public void run() {
-<span class="fc" id="L78">      ShutdownHook hook = ref.get();</span>
-<span class="pc bpc" id="L79" title="1 of 2 branches missed.">      if (hook != null) {</span>
-<span class="fc" id="L80">        hook.onRuntimeShutdown(this);</span>
-      }
-<span class="fc" id="L82">    }</span>
+<span class="fc" id="L105">      ShutdownHook hook = ref.get();</span>
+<span class="fc" id="L106">      ref.clear();</span>
+      try {
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (hook != null) {</span>
+<span class="fc" id="L109">          hook.onRuntimeShutdown(this);</span>
+        }
+<span class="nc" id="L111">      } catch (Exception e) {</span>
+        // ignore
+<span class="fc" id="L113">      }</span>
+<span class="fc" id="L114">    }</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
