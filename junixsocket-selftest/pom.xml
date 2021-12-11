@@ -193,6 +193,14 @@
               <failOnViolation>true</failOnViolation>
             </configuration>
           </plugin>
+          <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- do not require test methods to be documented even if strict mode is enabled -->
+                    <failOnWarnings>false</failOnWarnings>
+                </configuration>
+          </plugin>
         </plugins>
       </build>
     </profile>
