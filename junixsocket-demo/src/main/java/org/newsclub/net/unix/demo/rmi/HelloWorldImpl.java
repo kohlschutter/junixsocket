@@ -33,6 +33,11 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
 public class HelloWorldImpl implements HelloWorld {
   private final AFUNIXNaming naming;
 
+  /**
+   * Creates a new {@link HelloWorld} implementation.
+   * 
+   * @param naming The naming instance to use.
+   */
   public HelloWorldImpl(AFUNIXNaming naming) {
     this.naming = naming;
   }

@@ -50,10 +50,25 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
     return afSocket;
   }
 
+  /**
+   * Opens a datagram channel.
+   *
+   * @return The new channel
+   * @throws IOException if an I/O error occurs
+   */
   public static AFUNIXDatagramChannel open() throws IOException {
     return AFUNIXSelectorProvider.provider().openDatagramChannel();
   }
 
+  /**
+   * Opens a datagram channel.
+   *
+   * @param family The protocol family
+   * @return A new datagram channel
+   *
+   * @throws UnsupportedOperationException if the specified protocol family is not supported
+   * @throws IOException if an I/O error occurs
+   */
   public static AFUNIXDatagramChannel open(ProtocolFamily family) throws IOException {
     return AFUNIXSelectorProvider.provider().openDatagramChannel(family);
   }
@@ -83,6 +98,11 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
     return afSocket;
   }
 
+  /**
+   * Returns the binding state of the socket.
+   * 
+   * @return true if the socket successfully bound to an address
+   */
   public boolean isBound() {
     return afSocket.isBound();
   }
@@ -241,10 +261,28 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
     return afSocket.getFileDescriptor();
   }
 
+  /**
+   * Checks if this {@link AFUNIXDatagramSocket}'s bound filename should be removed upon
+   * {@link #close()}.
+   * 
+   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
+   * namespace).
+   * 
+   * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
+   */
   public boolean isDeleteOnClose() {
     return afSocket.isDeleteOnClose();
   }
 
+  /**
+   * Enables/disables deleting this {@link AFUNIXDatagramSocket}'s bound filename upon
+   * {@link #close()}.
+   * 
+   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
+   * namespace).
+   * 
+   * @param b Enabled if {@code true}.
+   */
   public void setDeleteOnClose(boolean b) {
     afSocket.setDeleteOnClose(b);
   }

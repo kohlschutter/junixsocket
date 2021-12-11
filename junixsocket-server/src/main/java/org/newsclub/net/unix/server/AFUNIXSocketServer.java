@@ -93,10 +93,20 @@ public abstract class AFUNIXSocketServer {
     this.listenAddress = listenAddress;
   }
 
+  /**
+   * Returns the maximum number of concurrent connections.
+   * 
+   * @return The maximum number of concurrent connections.
+   */
   public int getMaxConcurrentConnections() {
     return maxConcurrentConnections;
   }
 
+  /**
+   * Sets the maximum number of concurrent connections.
+   * 
+   * @param maxConcurrentConnections The new maximum.
+   */
   public void setMaxConcurrentConnections(int maxConcurrentConnections) {
     if (connectionPool != null) {
       throw new IllegalStateException("Already configured");
@@ -104,33 +114,63 @@ public abstract class AFUNIXSocketServer {
     this.maxConcurrentConnections = maxConcurrentConnections;
   }
 
+  /**
+   * Returns the server timeout (in milliseconds).
+   * 
+   * @return The server timeout in milliseconds (0 = no timeout).
+   */
   public int getServerTimeout() {
     return serverTimeout;
   }
 
-  public void setServerTimeout(int serverTimeout) {
+  /**
+   * Sets the server timeout (in milliseconds).
+   * 
+   * @param timeout The new timeout in milliseconds (0 = no timeout).
+   */
+  public void setServerTimeout(int timeout) {
     synchronized (this) {
       if (serverSocket != null) {
         throw new IllegalStateException("Already configured");
       }
-      this.serverTimeout = serverTimeout;
+      this.serverTimeout = timeout;
     }
   }
 
+  /**
+   * Returns the socket timeout (in milliseconds).
+   * 
+   * @return The socket timeout in milliseconds (0 = no timeout).
+   */
   public int getSocketTimeout() {
     return socketTimeout;
   }
 
-  public void setSocketTimeout(int socketTimeout) {
-    this.socketTimeout = socketTimeout;
+  /**
+   * Sets the socket timeout (in milliseconds).
+   * 
+   * @param timeout The new timeout in milliseconds (0 = no timeout).
+   */
+  public void setSocketTimeout(int timeout) {
+    this.socketTimeout = timeout;
   }
 
+  /**
+   * Returns the server-busy timeout (in milliseconds).
+   * 
+   * @return The server-busy timeout in milliseconds (0 = no timeout).
+   */
   public int getServerBusyTimeout() {
     return serverBusyTimeout;
   }
 
-  public void setServerBusyTimeout(int serverFullTimeout) {
-    this.serverBusyTimeout = serverFullTimeout;
+  /**
+   * Sets the server-busy timeout (in milliseconds).
+   * 
+   * @param timeout The new timeout in milliseconds (0 = no timeout).
+   */
+  public void setServerBusyTimeout(int timeout) {
+    this.serverBusyTimeout = timeout;
   }
 
   /**
@@ -207,6 +247,13 @@ public abstract class AFUNIXSocketServer {
     }
   }
 
+  /**
+   * Returns a new server socket.
+   * 
+   * @return The new socket (an {@link AFUNIXServerSocket} if the listen address is an
+   *         {@link AFUNIXSocketAddress}).
+   * @throws IOException on error.
+   */
   protected ServerSocket newServerSocket() throws IOException {
     if (listenAddress instanceof AFUNIXSocketAddress) {
       return AFUNIXServerSocket.newInstance();

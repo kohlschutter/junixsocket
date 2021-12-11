@@ -1,3 +1,6 @@
+/**
+ * The common junixsocket classes.
+ */
 module org.newsclub.net.unix {
   exports org.newsclub.net.unix;
 

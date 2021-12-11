@@ -60,9 +60,9 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
   private static final int CONNECT_TIMEOUT = //
       parseTimeoutMillis(System.getProperty(PROP_CONNECT_TIMEOUT, "1000"), true);
 
-  protected static final int MAGIC_VALUE_MASK = 0x00FD0000;
-  protected static final int BIT_READABLE = 1 << 0;
-  protected static final int BIT_WRITABLE = 1 << 1;
+  static final int MAGIC_VALUE_MASK = 0x00FD0000;
+  static final int BIT_READABLE = 1 << 0;
+  static final int BIT_WRITABLE = 1 << 1;
 
   private static final long serialVersionUID = 1L;
 

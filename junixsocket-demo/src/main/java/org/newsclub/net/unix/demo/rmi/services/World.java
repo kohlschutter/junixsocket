@@ -20,6 +20,18 @@ package org.newsclub.net.unix.demo.rmi.services;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+/**
+ * A very simple "world" service.
+ * 
+ * @author Christian Kohlschütter
+ * @see HelloWorld
+ */
 public interface World extends Remote {
+  /**
+   * Returns "World" (or something else?).
+   * 
+   * @return "World" (usually)
+   * @throws RemoteException if the operation fails.
+   */
   String world() throws RemoteException;
 }

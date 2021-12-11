@@ -164,6 +164,11 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
   public static final class FactoryArg extends DefaultSocketHostnameSocketFactory {
     private final File socketFile;
 
+    /**
+     * Constructs a new {@link FactoryArg} factory using the given socket path.
+     * 
+     * @param socketPath The path to the socket.
+     */
     public FactoryArg(String socketPath) {
       super();
       Objects.requireNonNull(socketPath, "Socket path was null");
@@ -171,6 +176,11 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
       this.socketFile = new File(socketPath);
     }
 
+    /**
+     * Constructs a new {@link FactoryArg} factory using the given socket path.
+     * 
+     * @param file The path to the socket.
+     */
     public FactoryArg(File file) {
       super();
       Objects.requireNonNull(file, "File was null");

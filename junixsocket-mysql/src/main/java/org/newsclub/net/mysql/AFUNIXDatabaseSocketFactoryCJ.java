@@ -39,6 +39,9 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
   private AFUNIXSocket rawSocket;
   private Socket sslSocket;
 
+  /**
+   * Creates a new instance.
+   */
   public AFUNIXDatabaseSocketFactoryCJ() {
   }
 

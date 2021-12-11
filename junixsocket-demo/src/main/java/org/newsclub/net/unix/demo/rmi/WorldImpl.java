@@ -21,10 +21,19 @@ import java.rmi.RemoteException;
 
 import org.newsclub.net.unix.demo.rmi.services.World;
 
+/**
+ * The implementation of the very simple {@link World} service.
+ * 
+ * @author Christian Kohlschütter
+ */
 public class WorldImpl implements World {
-
   private final String text;
 
+  /**
+   * Creates a new {@link World} instance.
+   * 
+   * @param text The text to return upon calling {@link #world()}.
+   */
   public WorldImpl(String text) {
     this.text = text;
   }

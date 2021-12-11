@@ -139,6 +139,21 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
     return getInstance(socketDir, registryPort, null, null);
   }
 
+  /**
+   * Returns a {@link AFUNIXNaming} instance which support several socket files that can be stored
+   * under the same, given directory.
+   * 
+   * A custom "registry port" can be specified. Typically, AF-UNIX specific ports should be above
+   * {@code 100000}.
+   * 
+   * @param socketDir The directory to store sockets in.
+   * @param registryPort The registry port. Should be above {@code 100000}.
+   * @param socketPrefix A string to be inserted at the beginning of each socket filename, or
+   *          {@code null}.
+   * @param socketSuffix A string to be added at the end of each socket filename, or {@code null}.
+   * @return The instance.
+   * @throws RemoteException if the operation fails.
+   */
   public static AFUNIXNaming getInstance(File socketDir, final int registryPort,
       String socketPrefix, String socketSuffix) throws RemoteException {
     Objects.requireNonNull(socketDir);
@@ -185,6 +200,11 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
     return DEFAULT_SOCKET_DIRECTORY;
   }
 
+  /**
+   * Returns the {@link AFUNIXRMISocketFactory} associated with this instance.
+   * 
+   * @return The {@link AFUNIXRMISocketFactory}.
+   */
   public AFUNIXRMISocketFactory getSocketFactory() {
     return socketFactory;
   }
@@ -209,6 +229,11 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
     return socketFactory.getFile(registryPort);
   }
 
+  /**
+   * Returns the registry port.
+   * 
+   * @return The port.
+   */
   public int getRegistryPort() {
     return registryPort;
   }
@@ -504,10 +529,20 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
     }
   }
 
+  /**
+   * Checks if this {@link AFUNIXNaming} instance can be shut down remotely.
+   * 
+   * @return {@code true} if remote shutdown is allowed.
+   */
   public boolean isRemoteShutdownAllowed() {
     return remoteShutdownAllowed;
   }
 
+  /**
+   * Controls whether this {@link AFUNIXNaming} instance can be shut down remotely.
+   * 
+   * @param remoteShutdownAllowed {@code true} if remote shutdown is allowed.
+   */
   public void setRemoteShutdownAllowed(boolean remoteShutdownAllowed) {
     this.remoteShutdownAllowed = remoteShutdownAllowed;
   }

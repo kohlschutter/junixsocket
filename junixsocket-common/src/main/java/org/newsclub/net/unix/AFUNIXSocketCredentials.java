@@ -38,9 +38,24 @@ public final class AFUNIXSocketCredentials implements Serializable {
    */
   public static final AFUNIXSocketCredentials SAME_PROCESS = new AFUNIXSocketCredentials();
 
+  /**
+   * The PID, or -1 for "not set".
+   */
   private long pid = -1; // NOPMD -- Set in native code
+
+  /**
+   * The UID, or -1 for "not set".
+   */
   private long uid = -1; // NOPMD -- Set in native code
+
+  /**
+   * All GID values (or null for "not set"); the first being the primary one.
+   */
   private long[] gids = null;
+
+  /**
+   * The UUID, or null for "not set".
+   */
   private UUID uuid = null;
 
   AFUNIXSocketCredentials() {

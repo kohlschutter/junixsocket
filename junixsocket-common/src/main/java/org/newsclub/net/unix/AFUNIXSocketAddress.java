@@ -51,8 +51,15 @@ public final class AFUNIXSocketAddress extends InetSocketAddress {
   private static final Map<ByteBuffer, AFUNIXSocketAddress> ADDRESS_CACHE = new HashMap<>();
   private static final Charset ADDRESS_CHARSET = Charset.defaultCharset();
 
+  /**
+   * The native byte-level representation of this address.
+   */
   private final byte[] bytes;
-  private InetAddress inetAddress = null; // only created on demand
+
+  /**
+   * An {@link InetAddress}-wrapped representation of this address. Only created upon demand.
+   */
+  private InetAddress inetAddress = null;
 
   static final ThreadLocal<ByteBuffer> SOCKETADDRESS_BUFFER_TL = new ThreadLocal<ByteBuffer>() {
 

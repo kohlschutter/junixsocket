@@ -76,18 +76,47 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     closeUponRuntimeShutdown();
   }
 
+  /**
+   * Creates a new socket factory.
+   * 
+   * @param naming The {@link AFUNIXNaming} instance to use.
+   * @param socketDir The directory to store the sockets in.
+   * @throws IOException on error.
+   */
   public AFUNIXRMISocketFactory(final AFUNIXNaming naming, final File socketDir)
       throws IOException {
     this(naming, socketDir, DefaultRMIClientSocketFactory.getInstance(),
         DefaultRMIServerSocketFactory.getInstance());
   }
 
+  /**
+   * Creates a new socket factory.
+   * 
+   * @param naming The {@link AFUNIXNaming} instance to use.
+   * @param socketDir The directory to store the sockets in.
+   * @param defaultClientFactory The default {@link RMIClientSocketFactory}.
+   * @param defaultServerFactory The default {@link RMIServerSocketFactory}.
+   * @throws IOException on error.
+   */
   public AFUNIXRMISocketFactory(final AFUNIXNaming naming, final File socketDir,
       final RMIClientSocketFactory defaultClientFactory,
       final RMIServerSocketFactory defaultServerFactory) throws IOException {
     this(naming, socketDir, defaultClientFactory, defaultServerFactory, null, null);
   }
 
+  /**
+   * Creates a new socket factory.
+   * 
+   * @param naming The {@link AFUNIXNaming} instance to use.
+   * @param socketDir The directory to store the sockets in.
+   * @param defaultClientFactory The default {@link RMIClientSocketFactory}.
+   * @param defaultServerFactory The default {@link RMIServerSocketFactory}.
+   * @param socketPrefix A string that will be inserted at the beginning of each socket filename, or
+   *          {@code null}.
+   * @param socketSuffix A string that will be added to the end of each socket filename, or
+   *          {@code null}.
+   * @throws IOException on error.
+   */
   public AFUNIXRMISocketFactory(final AFUNIXNaming naming, final File socketDir,
       final RMIClientSocketFactory defaultClientFactory,
       final RMIServerSocketFactory defaultServerFactory, final String socketPrefix,
@@ -174,6 +203,11 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     return socket;
   }
 
+  /**
+   * The directory in which socket files are stored.
+   * 
+   * @return The directory.
+   */
   public File getSocketDir() {
     return socketDir;
   }
@@ -214,10 +248,23 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     }
   }
 
+  /**
+   * Returns a new free port.
+   * 
+   * @return The new port.
+   * @throws IOException on error.
+   * @see #returnPort(int)
+   */
   protected int newPort() throws IOException {
     return getRmiService().newPort();
   }
 
+  /**
+   * Returns a port that was previously returned by {@link #newPort()}.
+   * 
+   * @param port The port to return.
+   * @throws IOException on error.
+   */
   protected void returnPort(int port) throws IOException {
     getRmiService().returnPort(port);
   }
@@ -407,6 +454,12 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     }
   }
 
+  /**
+   * Checks if the given port refers to a local server port.
+   * 
+   * @param port The port to check.
+   * @return {@code true} if the given port is a local server.
+   */
   public boolean isLocalServer(int port) {
     if (port < AFUNIXRMIPorts.AF_PORT_BASE) {
       return false;

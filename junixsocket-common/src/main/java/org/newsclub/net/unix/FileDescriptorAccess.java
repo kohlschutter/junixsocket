@@ -26,5 +26,11 @@ import java.io.IOException;
  * @author Christian Kohlschütter
  */
 public interface FileDescriptorAccess {
+  /**
+   * Returns the corresponding {@link FileDescriptor}.
+   * 
+   * @return The corresponding {@link FileDescriptor}.
+   * @throws IOException on error.
+   */
   FileDescriptor getFileDescriptor() throws IOException;
 }

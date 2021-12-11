@@ -1,5 +1,7 @@
-@SuppressWarnings("module")
-module org.newsclub.net.mysql {
+/**
+ * MySQL-specific code.
+ */
+@SuppressWarnings("module") module org.newsclub.net.mysql {
   exports org.newsclub.net.mysql;
 
   requires org.newsclub.net.unix;

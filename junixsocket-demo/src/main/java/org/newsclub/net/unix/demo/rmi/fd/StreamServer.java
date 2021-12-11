@@ -33,6 +33,12 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
  * @see StreamClient
  */
 public class StreamServer {
+  /**
+   * {@link StreamServer} command-line tool.
+   * 
+   * @param args Command-line arguments.
+   * @throws Exception on error.
+   */
   public static void main(String[] args) throws Exception {
     AFUNIXNaming naming = AFUNIXNaming.getInstance();
     System.out.println("Socket directory: " + naming.getSocketFactory().getSocketDir());

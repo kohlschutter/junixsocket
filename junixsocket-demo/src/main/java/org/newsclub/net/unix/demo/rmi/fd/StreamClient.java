@@ -33,6 +33,12 @@ import org.newsclub.net.unix.rmi.RemoteFileInput;
  * @see StreamServer
  */
 public class StreamClient {
+  /**
+   * {@link StreamClient} command-line tool.
+   * 
+   * @param args Command-line arguments.
+   * @throws Exception on error.
+   */
   public static void main(String[] args) throws Exception {
     if (args.length != 1) {
       System.err.println("Usage: StreamClient <path-to-file>");

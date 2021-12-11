@@ -32,9 +32,18 @@ import java.util.List;
 public final class Closeables implements Closeable {
   private List<WeakReference<Closeable>> list;
 
+  /**
+   * Creates a new {@link Closeables} instance.
+   */
   public Closeables() {
   }
 
+  /**
+   * Creates a new {@link Closeables} instance, populating it with the given {@link Closeable}
+   * objects.
+   * 
+   * @param closeable The {@link Closeable}s to add.
+   */
   public Closeables(Closeable... closeable) {
     for (Closeable cl : closeable) {
       this.list.add(new HardReference<Closeable>(cl));

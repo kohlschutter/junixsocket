@@ -33,7 +33,21 @@ import org.newsclub.net.unix.rmi.RemoteFileOutput;
  * @see StreamServer
  */
 public interface StreamService extends Remote {
+  /**
+   * Opens the given file for reading.
+   * 
+   * @param path The file to open.
+   * @return A remote instance for the file.
+   * @throws IOException on error.
+   */
   RemoteCloseable<RemoteFileInput> openForReading(File path) throws IOException;
 
+  /**
+   * Opens the given file for writing.
+   * 
+   * @param path The file to open.
+   * @return A remote instance for the file.
+   * @throws IOException on error.
+   */
   RemoteCloseable<RemoteFileOutput> openForWriting(File path) throws IOException;
 }

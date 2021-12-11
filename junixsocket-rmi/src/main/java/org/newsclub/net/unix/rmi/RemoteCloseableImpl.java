@@ -31,6 +31,13 @@ import java.rmi.server.RMISocketFactory;
 public class RemoteCloseableImpl<T> implements RemoteCloseable<T> {
   private final T remote;
 
+  /**
+   * Created a new instance.
+   * 
+   * @param socketFactory The socket factory.
+   * @param obj The object to wrap.
+   * @throws RemoteException on error.
+   */
   public RemoteCloseableImpl(RMISocketFactory socketFactory, T obj) throws RemoteException {
     this.remote = obj;
     AFUNIXNaming.exportObject(this, socketFactory);
@@ -42,6 +49,12 @@ public class RemoteCloseableImpl<T> implements RemoteCloseable<T> {
     doClose(remote);
   }
 
+  /**
+   * Closes the given object.
+   * 
+   * @param obj The object to close.
+   * @throws IOException on error.
+   */
   protected void doClose(T obj) throws IOException {
     if (obj instanceof Closeable) {
       ((Closeable) obj).close();

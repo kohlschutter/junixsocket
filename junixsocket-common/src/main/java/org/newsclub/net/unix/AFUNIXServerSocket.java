@@ -69,7 +69,7 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
     return new AFUNIXServerSocket(null);
   }
 
-  public static AFUNIXServerSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
+  static AFUNIXServerSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
       throws IOException {
     if (fdObj == null) {
       return newInstance();
@@ -233,6 +233,12 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
     return as;
   }
 
+  /**
+   * Returns a new {@link AFUNIXSocket} instance.
+   * 
+   * @return The new instance.
+   * @throws IOException on error.
+   */
   protected AFUNIXSocket newSocketInstance() throws IOException {
     return AFUNIXSocket.newInstance();
   }

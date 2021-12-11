@@ -50,6 +50,12 @@ public final class AFUNIXDatagramSocket extends DatagramSocket implements AFUNIX
     this.ancillaryDataSupport = impl.ancillaryDataSupport;
   }
 
+  /**
+   * Returns a new {@link AFUNIXDatagramSocket} instance.
+   * 
+   * @return The new instance.
+   * @throws IOException on error.
+   */
   public static AFUNIXDatagramSocket newInstance() throws IOException {
     return new AFUNIXDatagramSocket(new AFUNIXDatagramSocketImpl((FileDescriptor) null));
   }

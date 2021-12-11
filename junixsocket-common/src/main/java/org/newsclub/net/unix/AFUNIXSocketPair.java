@@ -34,18 +34,40 @@ public final class AFUNIXSocketPair<T extends AFUNIXSomeSocket> {
     this.socket2 = socket2;
   }
 
+  /**
+   * Opens a socket pair of interconnected channels.
+   * 
+   * @return The new channel pair.
+   * @throws IOException on error.
+   */
   public static AFUNIXSocketPair<AFUNIXSocketChannel> open() throws IOException {
     return AFUNIXSelectorProvider.provider().openSocketChannelPair();
   }
 
+  /**
+   * Opens a socket pair of interconnected datagram channels.
+   * 
+   * @return The new channel pair.
+   * @throws IOException on error.
+   */
   public static AFUNIXSocketPair<AFUNIXDatagramChannel> openDatagram() throws IOException {
     return AFUNIXSelectorProvider.provider().openDatagramChannelPair();
   }
 
+  /**
+   * Returns the first socket of the pair.
+   * 
+   * @return The first socket.
+   */
   public T getSocket1() {
     return socket1;
   }
 
+  /**
+   * Returns the second socket of the pair.
+   * 
+   * @return The second socket.
+   */
   public T getSocket2() {
     return socket2;
   }

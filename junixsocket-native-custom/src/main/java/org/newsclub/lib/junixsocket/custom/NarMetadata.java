@@ -19,6 +19,11 @@ package org.newsclub.lib.junixsocket.custom;
 
 import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGeneratedReport;
 
+/**
+ * Marker class to find native libraries in the classpath.
+ * 
+ * @author Christian Kohlschütter
+ */
 public final class NarMetadata {
   @ExcludeFromCodeCoverageGeneratedReport
   private NarMetadata() {

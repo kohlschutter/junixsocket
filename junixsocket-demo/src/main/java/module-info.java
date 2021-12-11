@@ -1,3 +1,6 @@
+/**
+ * Some demo code.
+ */
 @SuppressWarnings("module") //
 module org.newsclub.net.unix.demo {
   requires org.newsclub.net.unix;

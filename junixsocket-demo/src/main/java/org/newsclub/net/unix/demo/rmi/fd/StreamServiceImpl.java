@@ -31,9 +31,20 @@ import org.newsclub.net.unix.rmi.RemoteCloseableImpl;
 import org.newsclub.net.unix.rmi.RemoteFileInput;
 import org.newsclub.net.unix.rmi.RemoteFileOutput;
 
+/**
+ * An implementation of {@link StreamService}.
+ * 
+ * @author Christian Kohlschütter
+ */
 public class StreamServiceImpl implements StreamService, Closeable {
   private final AFUNIXRMISocketFactory socketFactory;
 
+  /**
+   * Creates a new instance.
+   * 
+   * @param socketFactory The socket factory to use.
+   * @throws RemoteException on error.
+   */
   public StreamServiceImpl(AFUNIXRMISocketFactory socketFactory) throws RemoteException {
     this.socketFactory = socketFactory;
   }
@@ -66,10 +77,22 @@ public class StreamServiceImpl implements StreamService, Closeable {
         socketFactory, fout));
   }
 
+  /**
+   * Checks if the given path may be accessed for reading.
+   * 
+   * @param path The path to check.
+   * @return {@code true} if permitted.
+   */
   protected boolean mayRead(File path) {
     return true;
   }
 
+  /**
+   * Checks if the given path may be accessed for writing.
+   * 
+   * @param path The path to check.
+   * @return {@code true} if permitted.
+   */
   protected boolean mayWrite(File path) {
     return true;
   }

@@ -43,6 +43,9 @@ import com.mysql.jdbc.SocketFactory;
 public class AFUNIXDatabaseSocketFactory implements SocketFactory {
   private Socket socket = null;
 
+  /**
+   * Creates a new instance.
+   */
   public AFUNIXDatabaseSocketFactory() {
   }
 

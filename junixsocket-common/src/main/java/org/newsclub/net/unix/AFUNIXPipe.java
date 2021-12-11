@@ -51,6 +51,12 @@ public final class AFUNIXPipe extends Pipe implements Closeable {
     this.sinkChannel = new SinkChannel(provider);
   }
 
+  /**
+   * Opens an {@link AFUNIXPipe}.
+   *
+   * @return The new pipe
+   * @throws IOException on error.
+   */
   public static AFUNIXPipe open() throws IOException {
     return AFUNIXSelectorProvider.provider().openPipe();
   }
@@ -84,6 +90,10 @@ public final class AFUNIXPipe extends Pipe implements Closeable {
     }
   }
 
+  /**
+   * A channel representing the readable end of a {@link Pipe}, with access to the
+   * {@link FileDescriptor}.
+   */
   public final class SourceChannel extends java.nio.channels.Pipe.SourceChannel implements
       FileDescriptorAccess {
     private SourceChannel(SelectorProvider provider) {
@@ -124,6 +134,10 @@ public final class AFUNIXPipe extends Pipe implements Closeable {
     }
   }
 
+  /**
+   * A channel representing the writable end of a {@link Pipe}, with access to the
+   * {@link FileDescriptor}.
+   */
   public final class SinkChannel extends java.nio.channels.Pipe.SinkChannel implements
       FileDescriptorAccess {
     private SinkChannel(SelectorProvider provider) {

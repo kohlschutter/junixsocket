@@ -26,6 +26,11 @@ import java.util.Set;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
+/**
+ * A selectable channel for stream-oriented listening sockets.
+ * 
+ * @author Christian Kohlschütter
+ */
 public final class AFUNIXServerSocketChannel extends ServerSocketChannel implements
     FileDescriptorAccess {
   private final AFUNIXServerSocket afSocket;
@@ -35,6 +40,12 @@ public final class AFUNIXServerSocketChannel extends ServerSocketChannel impleme
     this.afSocket = socket;
   }
 
+  /**
+   * Opens a server-socket channel.
+   *
+   * @return The new channel
+   * @throws IOException on error.
+   */
   public static AFUNIXServerSocketChannel open() throws IOException {
     return AFUNIXSelectorProvider.provider().openServerSocketChannel();
   }
