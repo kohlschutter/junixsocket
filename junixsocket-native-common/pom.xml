@@ -83,6 +83,23 @@
 
   <profiles>
     <profile>
+        <id>current-arch</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <dependencies>
+            <dependency>
+                <groupId>com.kohlschutter.junixsocket</groupId>
+                <artifactId>junixsocket-native</artifactId>
+                <version>${project.version}</version>
+                <type>nar</type>
+                <classifier>${junixsocket.native.aol}-jni</classifier>
+                <scope>runtime</scope>
+                <optional>true</optional>
+            </dependency>
+        </dependencies>
+    </profile>
+    <profile>
       <id>release</id>
       <activation>
         <property>
