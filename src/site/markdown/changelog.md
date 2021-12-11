@@ -1,5 +1,15 @@
 # Noteworthy changes
 
+### General remarks
+
+When upgrading from versions older than 2.4.0, please note that junixsocket-core is now a POM-only
+artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.html) for details.
+
+### _(2021-12-xx)_ **junixsocket 2.4.1**
+
+ - Fix cross-compilation on Apple Silicon
+ - Javadoc improvements, Code cleanup
+
 ### _(2021-07-30)_ **junixsocket 2.4.0**
 
  - New supported platforms: NetBSD, OpenBSD, DragonFlyBSD (AMD64-builds included by default)
@@ -19,6 +29,7 @@
  - More test cases, increased unit test code coverage
  - Simplified local compilation on non-macOS/Linux systems.
  - Improved selftest
+ - Maven Dependency: junixsocket-core is now a POM-only artifact (`<type>pom</type>`).
 
 ### _(2021-05-30)_ **junixsocket 2.3.4**
 
