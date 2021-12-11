@@ -25,30 +25,48 @@ printHelp=0
 linker="ld64.lld"
 linkerArgs=()
 
-while [ $# -gt 0 ]; do
-    v="$1"
-    shift
-  
-    case "$v" in 
-        -platform_version )
-        	# ignore this parameter and up to three arguments
-        	# see https://github.com/Homebrew/homebrew-core/issues/52461
-	    for i in 1 2 3; do
-	        [[ $1 =~ ^- ]] && break
-	        shift
-	    done
-            continue
-            ;;
-    esac
+llvmPath=
+llvmName=llvm
+latestLLVM=$(shopt -u failglob ; for f in {/usr/local,/opt/homebrew}/Cellar/"$llvmName"/*/bin; do [[ -d "$f" ]] && echo $f; done | sort -r -n | head -n 1)
+if [[ -n "$latestLLVM" && -d "$latestLLVM" ]]; then
+    llvmPath="$latestLLVM"
+fi
 
-    linkerArgs+=("$v")
-done
-
-linkerPath="$(PATH=/usr/bin:$PATH:$(cd /usr/local/Cellar/llvm/*/bin && pwd) which ${linker[@]} 2>/dev/null | head -n 1)"
+linkerPath="$(PATH=/usr/bin:$PATH:$llvmPath which ${linker[@]} 2>/dev/null | head -n 1)"
 if [ ! -f "$linkerPath" ]; then
     echo "Cannot find linker: ${linker[@]}" >&2
     exit 1
 fi
+
+skipPlatformVersion=0
+linkerVersion=$("$linkerPath" --version 2>/dev/null)
+if [[ -z $linkerVersion ]]; then
+    # Change https://reviews.llvm.org/D97799 landed in llvm 13
+    # llvm 12 and older don't support "ld64.lld --version", which makes this an easy check
+    skipPlatformVersion=1
+fi
+
+while [[ $# -gt 0 ]]; do
+    v="$1"
+    shift
+
+    case "$v" in 
+        -platform_version )
+            if [[ $skipPlatformVersion -gt 0 ]]; then
+                # ignore this parameter and up to three arguments on older releases only
+                # see https://github.com/Homebrew/homebrew-core/issues/52461
+                # see https://reviews.llvm.org/D97799
+                for i in 1 2 3; do
+                    [[ $1 =~ ^- ]] && break
+                    shift
+                done
+                continue
+            fi
+        ;;
+    esac
+
+    linkerArgs+=("$v")
+done
 
 if [ $printHelp -eq 1 ]; then
     cat <<EOT

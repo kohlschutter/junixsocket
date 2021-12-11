@@ -197,7 +197,7 @@ fi
 llvmPath=
 if [[ -z "$(which llvm-ar 2>/dev/null)" || $findOtherClang -gt 0 ]]; then
   # let's add the latest LLVM to the path
-  latestLLVM=$(for f in /usr/local/Cellar/"$llvmName"/*/bin; do echo $f; done | sort -r -n | head -n 1)
+  latestLLVM=$(shopt -u failglob ; for f in {/usr/local,/opt/homebrew}/Cellar/"$llvmName"/*/bin; do [[ -d "$f" ]] && echo $f; done | sort -r -n | head -n 1)
   if [[ -n "$latestLLVM" && -d "$latestLLVM" ]]; then
       llvmPath="$latestLLVM"
   fi
