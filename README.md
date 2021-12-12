@@ -23,7 +23,7 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
 * Provides a selftest package with 100+ tests to ensure compatibility with any target platform.
 * Apache 2.0 licensed.
 
-`*` (Tested up to Java 16; Java 7 support is limited to core functionality, no RMI).
+`*` (Tested up to Java 17; Java 7 support is limited to core functionality, no RMI).
 
 ## Quick links
 
