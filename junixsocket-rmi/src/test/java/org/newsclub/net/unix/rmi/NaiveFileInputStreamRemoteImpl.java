@@ -22,6 +22,7 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.util.IOUtil;
 
 public final class NaiveFileInputStreamRemoteImpl extends FileInputStream implements
@@ -45,6 +46,7 @@ public final class NaiveFileInputStreamRemoteImpl extends FileInputStream implem
   }
 
   @Override
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public RemoteFileInput getRemoteFileDescriptor() {
     return rfd;
   }

@@ -44,6 +44,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownHook;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * The {@link AFUNIXSocket}-compatible equivalent of {@link Naming}. Use this class for accessing
  * RMI registries that are reachable by {@link AFUNIXSocket}s.
@@ -205,6 +207,7 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    * 
    * @return The {@link AFUNIXRMISocketFactory}.
    */
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public AFUNIXRMISocketFactory getSocketFactory() {
     return socketFactory;
   }

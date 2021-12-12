@@ -27,6 +27,8 @@ import java.nio.channels.SocketChannel;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A selectable channel for stream-oriented connecting sockets.
  * 
@@ -122,6 +124,7 @@ public final class AFUNIXSocketChannel extends SocketChannel implements AFUNIXSo
   }
 
   @Override
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public AFUNIXSocket socket() {
     return afSocket;
   }

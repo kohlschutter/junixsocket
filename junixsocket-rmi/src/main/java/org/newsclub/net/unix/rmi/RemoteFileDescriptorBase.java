@@ -41,6 +41,8 @@ import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.FileDescriptorAccess;
 import org.newsclub.net.unix.server.AFUNIXSocketServer;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A wrapper that allows a {@link FileDescriptor} be sent via RMI over AF_UNIX sockets.
  * 
@@ -226,6 +228,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
    * @return The file descriptor.
    */
   @Override
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public final FileDescriptor getFileDescriptor() {
     return fd;
   }

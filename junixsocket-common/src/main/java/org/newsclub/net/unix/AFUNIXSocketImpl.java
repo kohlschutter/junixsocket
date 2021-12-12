@@ -69,7 +69,7 @@ class AFUNIXSocketImpl extends SocketImplShim {
   private static class AFUNIXSocketStreamCore extends AFUNIXSocketCore {
     private final AtomicInteger pendingAccepts = new AtomicInteger(0);
 
-    private AFUNIXSocketStreamCore(AFUNIXSocketImpl observed, FileDescriptor fd,
+    AFUNIXSocketStreamCore(AFUNIXSocketImpl observed, FileDescriptor fd,
         AncillaryDataSupport ancillaryDataSupport) {
       super(observed, fd, ancillaryDataSupport);
     }
@@ -515,22 +515,26 @@ class AFUNIXSocketImpl extends SocketImplShim {
   }
 
   private static int expectInteger(Object value) throws SocketException {
+    if (value == null) {
+      throw (SocketException) new SocketException("Value must not be null").initCause(
+          new NullPointerException());
+    }
     try {
       return (Integer) value;
     } catch (final ClassCastException e) {
       throw (SocketException) new SocketException("Unsupported value: " + value).initCause(e);
-    } catch (final NullPointerException e) {
-      throw (SocketException) new SocketException("Value must not be null").initCause(e);
     }
   }
 
   private static int expectBoolean(Object value) throws SocketException {
+    if (value == null) {
+      throw (SocketException) new SocketException("Value must not be null").initCause(
+          new NullPointerException());
+    }
     try {
       return ((Boolean) value).booleanValue() ? 1 : 0;
     } catch (final ClassCastException e) {
       throw (SocketException) new SocketException("Unsupported value: " + value).initCause(e);
-    } catch (final NullPointerException e) {
-      throw (SocketException) new SocketException("Value must not be null").initCause(e);
     }
   }
 

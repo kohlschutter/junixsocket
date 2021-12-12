@@ -40,6 +40,8 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketCredentials;
 import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownHook;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * An {@link RMISocketFactory} that supports {@link AFUNIXSocket}s.
  * 
@@ -117,6 +119,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
    *          {@code null}.
    * @throws IOException on error.
    */
+  @SuppressFBWarnings("EI_EXPOSE_REP2")
   public AFUNIXRMISocketFactory(final AFUNIXNaming naming, final File socketDir,
       final RMIClientSocketFactory defaultClientFactory,
       final RMIServerSocketFactory defaultServerFactory, final String socketPrefix,
@@ -345,7 +348,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
   private final class ServerSocketCloseable implements Closeable {
     private final int port;
 
-    private ServerSocketCloseable(AFUNIXServerSocket socket, int port) {
+    ServerSocketCloseable(AFUNIXServerSocket socket, int port) {
       this.port = port;
       synchronized (openServerSockets) {
         openServerSockets.put(port, socket);
@@ -419,7 +422,7 @@ public class AFUNIXRMISocketFactory extends RMISocketFactory implements External
     final String hostname;
     final int port;
 
-    private HostAndPort(String hostname, int port) {
+    HostAndPort(String hostname, int port) {
       this.hostname = hostname;
       this.port = port;
     }

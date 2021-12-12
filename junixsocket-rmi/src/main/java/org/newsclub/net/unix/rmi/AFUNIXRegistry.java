@@ -34,6 +34,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownHook;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A wrapper for RMI registries, both remote and local, to allow for a clean removal of bound
  * resources upon shutdown.
@@ -99,6 +101,7 @@ public final class AFUNIXRegistry implements Registry {
    * 
    * @return The {@link AFUNIXNaming} instance.
    */
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public AFUNIXNaming getNaming() {
     return naming;
   }

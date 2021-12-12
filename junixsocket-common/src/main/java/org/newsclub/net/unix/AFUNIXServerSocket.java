@@ -318,6 +318,7 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
   }
 
   @Override
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public AFUNIXSocketAddress getLocalSocketAddress() {
     return boundEndpoint;
   }

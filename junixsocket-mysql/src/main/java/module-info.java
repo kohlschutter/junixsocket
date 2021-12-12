@@ -9,4 +9,7 @@
   requires java.base;
 
   requires mysql.connector.java;
+
+  requires static com.kohlschutter.annotations.compiletime;
+  requires static org.eclipse.jdt.annotation;
 }

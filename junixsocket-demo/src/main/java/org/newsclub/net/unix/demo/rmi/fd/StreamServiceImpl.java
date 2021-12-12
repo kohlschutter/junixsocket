@@ -31,6 +31,8 @@ import org.newsclub.net.unix.rmi.RemoteCloseableImpl;
 import org.newsclub.net.unix.rmi.RemoteFileInput;
 import org.newsclub.net.unix.rmi.RemoteFileOutput;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * An implementation of {@link StreamService}.
  * 
@@ -45,6 +47,7 @@ public class StreamServiceImpl implements StreamService, Closeable {
    * @param socketFactory The socket factory to use.
    * @throws RemoteException on error.
    */
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public StreamServiceImpl(AFUNIXRMISocketFactory socketFactory) throws RemoteException {
     this.socketFactory = socketFactory;
   }

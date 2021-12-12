@@ -231,7 +231,7 @@ final class AFUNIXSelector extends AbstractSelector {
 
     final AFUNIXSelectionKey[] keys;
 
-    private PollFd(FileDescriptor pipeSourceFd) {
+    PollFd(FileDescriptor pipeSourceFd) {
       this(pipeSourceFd, SelectionKey.OP_READ);
     }
 
@@ -242,7 +242,8 @@ final class AFUNIXSelector extends AbstractSelector {
       this.keys = null;
     }
 
-    private PollFd(AFUNIXSelectionKey[] keys, FileDescriptor[] fds, int[] ops) {
+    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
+    PollFd(AFUNIXSelectionKey[] keys, FileDescriptor[] fds, int[] ops) {
       this.keys = keys;
       if (fds.length != ops.length) {
         throw new IllegalStateException();

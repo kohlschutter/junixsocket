@@ -178,6 +178,7 @@ public class SocketTestBase { // NOTE: needs to be public for junit
       stopAcceptingConnections();
     }
 
+    @SuppressFBWarnings("EI_EXPOSE_REP")
     public ServerSocket getServerSocket() {
       return serverSocket;
     }

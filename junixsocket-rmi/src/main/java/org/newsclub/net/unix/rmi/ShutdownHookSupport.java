@@ -95,7 +95,7 @@ final class ShutdownHookSupport {
   static final class ShutdownThread extends Thread {
     private final WeakReference<ShutdownHook> ref;
 
-    private ShutdownThread(WeakReference<ShutdownHook> ref) {
+    ShutdownThread(WeakReference<ShutdownHook> ref) {
       super();
       this.ref = ref;
     }

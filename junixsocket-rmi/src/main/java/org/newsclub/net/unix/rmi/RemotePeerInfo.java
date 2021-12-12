@@ -27,6 +27,8 @@ import java.rmi.server.RemoteObjectInvocationHandler;
 
 import org.newsclub.net.unix.AFUNIXSocketCredentials;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Information about the remote connection.
  * 
@@ -73,6 +75,7 @@ public final class RemotePeerInfo {
    * 
    * @return The peer credentials, or {@code null}.
    */
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public AFUNIXSocketCredentials getPeerCredentials() {
     return peerCredentials;
   }

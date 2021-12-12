@@ -32,6 +32,7 @@ import org.newsclub.net.unix.AFUNIXSocketCredentials;
 import org.newsclub.net.unix.rmi.RemoteCloseableThing.IsCloseable;
 import org.newsclub.net.unix.rmi.RemoteCloseableThing.NotCloseable;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.util.IOUtil;
 
 /**
@@ -47,6 +48,7 @@ public class TestServiceImpl implements TestService, Closeable {
   private final RemoteCloseableThingImpl.IsCloseableImpl testCloseableImpl =
       new RemoteCloseableThingImpl.IsCloseableImpl();
 
+  @SuppressFBWarnings("EI_EXPOSE_REP2")
   public TestServiceImpl(AFUNIXRMISocketFactory socketFactory) throws IOException {
     this.socketFactory = socketFactory;
     this.tmpFile = File.createTempFile("FDTestService", ".tmp");

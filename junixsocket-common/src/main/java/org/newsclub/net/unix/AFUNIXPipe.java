@@ -96,7 +96,7 @@ public final class AFUNIXPipe extends Pipe implements Closeable {
    */
   public final class SourceChannel extends java.nio.channels.Pipe.SourceChannel implements
       FileDescriptorAccess {
-    private SourceChannel(SelectorProvider provider) {
+    SourceChannel(SelectorProvider provider) {
       super(provider);
     }
 
@@ -140,7 +140,7 @@ public final class AFUNIXPipe extends Pipe implements Closeable {
    */
   public final class SinkChannel extends java.nio.channels.Pipe.SinkChannel implements
       FileDescriptorAccess {
-    private SinkChannel(SelectorProvider provider) {
+    SinkChannel(SelectorProvider provider) {
       super(provider);
     }
 

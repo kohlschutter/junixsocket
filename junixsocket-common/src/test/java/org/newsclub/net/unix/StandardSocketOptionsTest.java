@@ -219,7 +219,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
   }
 
   private class TestStateSocket extends TestState<Socket> {
-    private TestStateSocket(Socket sock) {
+    TestStateSocket(Socket sock) {
       super(sock);
     }
 
@@ -241,7 +241,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
   }
 
   private class TestStateServerSocket extends TestState<ServerSocket> {
-    private TestStateServerSocket(ServerSocket sock) {
+    TestStateServerSocket(ServerSocket sock) {
       super(sock);
     }
 

@@ -25,6 +25,8 @@ import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
 import org.newsclub.net.unix.demo.rmi.services.World;
 import org.newsclub.net.unix.rmi.AFUNIXNaming;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * The implementation of the very simple {@link HelloWorld} service.
  * 
@@ -38,6 +40,7 @@ public class HelloWorldImpl implements HelloWorld {
    * 
    * @param naming The naming instance to use.
    */
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public HelloWorldImpl(AFUNIXNaming naming) {
     this.naming = naming;
   }

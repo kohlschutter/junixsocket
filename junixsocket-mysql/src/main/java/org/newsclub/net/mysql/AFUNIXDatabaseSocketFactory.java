@@ -26,6 +26,7 @@ import java.util.Properties;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.mysql.jdbc.SocketFactory;
 
 /**
@@ -50,16 +51,19 @@ public class AFUNIXDatabaseSocketFactory implements SocketFactory {
   }
 
   @Override
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public Socket afterHandshake() throws SocketException, IOException {
     return socket;
   }
 
   @Override
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public Socket beforeHandshake() throws SocketException, IOException {
     return socket;
   }
 
   @Override
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public Socket connect(String host, int portNumber, Properties props) throws SocketException,
       IOException {
     // Adjust the path to your MySQL socket by setting the

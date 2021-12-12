@@ -25,6 +25,7 @@ import java.net.Socket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.mysql.cj.conf.PropertySet;
 import com.mysql.cj.conf.RuntimeProperty;
 import com.mysql.cj.protocol.ExportControlled;
@@ -46,6 +47,7 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
   }
 
   @SuppressWarnings({"unchecked", "exports"})
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
   public <T extends Closeable> T connect(String hostname, int portNumber, PropertySet props,
       int loginTimeout) throws IOException {
@@ -67,11 +69,12 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
   }
 
   @SuppressWarnings({"unchecked", "exports"})
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
   public <T extends Closeable> T performTlsHandshake(SocketConnection socketConnection,
       ServerSession serverSession) throws IOException {
     this.sslSocket = ExportControlled.performTlsHandshake(this.rawSocket, socketConnection,
-        serverSession == null ? null : serverSession.getServerVersion());
+        serverSession == null ? null : serverSession.getServerVersion(), null);
     return (T) this.sslSocket;
   }
 }
