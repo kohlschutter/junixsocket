@@ -119,7 +119,7 @@ The files can be found in
     mvn clean install -Pstrict -Prelease
 
     # after gpgkeyname, specify the key you want to use for signing
-    mvn deploy -Pstrict -Prelease -Psigned -Dgpgkeyname=5034B...
+    mvn deploy -Pstrict -Prelease -Psigned -Dgpgkeyname=5034B... -Dgpg.executable=$(which gpg)
     
 ##### Notes
 
@@ -163,7 +163,7 @@ and try it on all supported platforms. The last output line should say "Selftest
   
 **IMPORTANT** Once released, it cannot be undone! Make sure you verify the staged artifact first!
   
-    mvn nexus-staging:release -Prelease
+    MAVEN_OPTS="--add-opens java.base/java.util=ALL-UNNAMED" mvn nexus-staging:release -Prelease
 
 NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in Maven Central.
 
