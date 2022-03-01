@@ -38,7 +38,7 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSomeSocket, AFUN
 
   private static Integer capabilities = null;
 
-  private AFUNIXSocketImpl impl;
+  AFUNIXSocketImpl impl;
 
   private final AFUNIXSocketFactory socketFactory;
   private final Closeables closeables = new Closeables();

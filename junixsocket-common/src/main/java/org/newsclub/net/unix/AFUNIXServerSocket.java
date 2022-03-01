@@ -217,7 +217,7 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
   @Override
   public AFUNIXSocket accept() throws IOException {
     AFUNIXSocket as = newSocketInstance();
-    boolean success = implementation.accept0(as.getAFImpl());
+    boolean success = implementation.accept0(as.impl);
     if (isClosed()) {
       // We may have connected to the socket to unblock it
       throw new SocketException("Socket is closed");
