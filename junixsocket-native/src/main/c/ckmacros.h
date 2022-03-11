@@ -64,6 +64,17 @@ _Pragma("clang diagnostic ignored \"-Wunused-variable\"")
 #   define CK_IGNORE_UNUSED_VARIABLE_END \
 _Pragma("clang diagnostic pop")
 
+#if __has_warning("-Wreserved-identifier")
+#   define CK_IGNORE_RESERVED_IDENTIFIER_BEGIN \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wreserved-identifier\"")
+#   define CK_IGNORE_RESERVED_IDENTIFIER_END \
+_Pragma("clang diagnostic pop")
+#else
+#   define CK_IGNORE_RESERVED_IDENTIFIER_BEGIN
+#   define CK_IGNORE_RESERVED_IDENTIFIER_END
+#endif
+
 /**
  * Wrap code with #if CK_EXCLUDED_FROM_STATIC_ANALYSIS and #endif
  * to exclude said portion from static analysis
@@ -117,6 +128,9 @@ _Pragma("GCC diagnostic pop")
 #   define CK_IGNORE_UNUSED_VARIABLE_BEGIN
 #   define CK_IGNORE_UNUSED_VARIABLE_END
 #endif
+
+#   define CK_IGNORE_RESERVED_IDENTIFIER_BEGIN
+#   define CK_IGNORE_RESERVED_IDENTIFIER_END
 
 #   define CK_EXCLUDED_FROM_STATIC_ANALYSIS 1
 

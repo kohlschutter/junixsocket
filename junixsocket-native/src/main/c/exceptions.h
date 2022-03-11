@@ -33,10 +33,12 @@ typedef enum {
 void init_exceptions(JNIEnv *env);
 void destroy_exceptions(JNIEnv *env);
 
+CK_IGNORE_RESERVED_IDENTIFIER_BEGIN
 void _throwException(JNIEnv* env, ExceptionType exceptionType, char* message);
 
 void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose);
 
 void _throwSockoptErrnumException(JNIEnv* env, int errnum, jobject fd);
+CK_IGNORE_RESERVED_IDENTIFIER_END
 
 #endif /* exceptions_h */

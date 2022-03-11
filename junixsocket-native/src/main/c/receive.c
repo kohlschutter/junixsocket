@@ -59,8 +59,10 @@ ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
     return recv_wrapper(handle, buf, length, senderBuf, senderBufLen, opt);
 #else
 
-    socklen_t controlLen;
+    static struct msghdr msgHdr;
+    typeof(msgHdr.msg_controllen) controlLen; // sometimes size_t, sometimes socklen_t
     jobject ancBuf;
+
     if(ancSupp == NULL) {
         controlLen = 0;
         ancBuf = NULL;
@@ -291,7 +293,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
         return -1;
     }
     if(dataBufferRef.size < length) {
-        length = dataBufferRef.size;
+        length = (jint)dataBufferRef.size;
     }
 
     struct jni_direct_byte_buffer_ref addressBufferRef =
@@ -302,7 +304,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
     }
 
     struct sockaddr_un *senderBuf = (struct sockaddr_un *)addressBufferRef.buf;
-    socklen_t senderBufLen = addressBufferRef.size;
+    socklen_t senderBufLen = (socklen_t)MIN(SOCKLEN_MAX, (unsigned)addressBufferRef.size);
 
     ssize_t count = recvmsg_wrapper(env, handle, dataBufferRef.buf, length, senderBuf, &senderBufLen, opt, ancSupp);
 
@@ -323,5 +325,5 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
 
 end:
 
-    return count;
+    return (jint)count;
 }

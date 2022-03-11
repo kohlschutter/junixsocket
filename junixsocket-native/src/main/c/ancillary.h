@@ -32,8 +32,8 @@ struct cmsghdr* junixsocket_CMSG_NXTHDR (struct msghdr *mhdr, struct cmsghdr *cm
 void init_ancillary(JNIEnv *env);
 void destroy_ancillary(JNIEnv *env);
 
-jfieldID getFieldID_ancillaryReceiveBuffer();
-jfieldID getFieldID_pendingFileDescriptors();
+jfieldID getFieldID_ancillaryReceiveBuffer(void);
+jfieldID getFieldID_pendingFileDescriptors(void);
 
 #endif
 

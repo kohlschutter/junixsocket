@@ -24,6 +24,8 @@
 void init_filedescriptors(JNIEnv *env);
 void destroy_filedescriptors(JNIEnv *env);
 
+CK_IGNORE_RESERVED_IDENTIFIER_BEGIN
+__attribute__((visibility("hidden")))
 jint _getFD(JNIEnv *env, jobject fd);
 void _initFD(JNIEnv *env, jobject fd, jint handle);
 
@@ -33,6 +35,7 @@ void _initHandle(JNIEnv *env, jobject fd, jlong handle);
 #endif
 
 int _closeFd(JNIEnv *env, jobject fd, int handle);
+CK_IGNORE_RESERVED_IDENTIFIER_END
 
 jboolean checkNonBlocking(int handle, int errnum);
 

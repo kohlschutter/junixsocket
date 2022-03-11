@@ -213,7 +213,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_send
         return -1;
     }
     if(dataBufferRef.size < length) {
-        length = dataBufferRef.size;
+        length = (int)dataBufferRef.size;
     }
 
     struct jni_direct_byte_buffer_ref addressBufferRef =
@@ -224,9 +224,9 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_send
     }
 
     struct sockaddr_un *sendTo = (struct sockaddr_un *)(addressBufferRef.buf);
-    socklen_t sendToLen = addressBufferRef.size;
+    socklen_t sendToLen = (socklen_t)MIN(SOCKLEN_MAX, (unsigned)addressBufferRef.size);
 
-    int ret = sendmsg_wrapper(env, handle, dataBufferRef.buf, length, sendTo, sendToLen, opt, ancSupp);
+    ssize_t ret = sendmsg_wrapper(env, handle, dataBufferRef.buf, length, sendTo, sendToLen, opt, ancSupp);
     if(ret < 0) {
         ret = 0;
         if(socket_errno != EAGAIN && errno != EWOULDBLOCK && (errno != ENOBUFS || (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) == 0 )) {
@@ -236,5 +236,5 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_send
         }
     }
 
-    return ret;
+    return (jint)ret;
 }

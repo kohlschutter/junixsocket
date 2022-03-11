@@ -2087,7 +2087,7 @@
 		43D436B0261A55D0002D0C12 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1320;
 				TargetAttributes = {
 					432EF186261AD52100F4A583 = {
 						CreatedOnToolsVersion = 11.3.1;
@@ -2703,6 +2703,7 @@
 		4304A624266DFCEF003BCEDF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-portbld-dragonfly6.0";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -2731,6 +2732,7 @@
 		4304A625266DFCEF003BCEDF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-portbld-dragonfly6.0";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -2759,6 +2761,7 @@
 		432EF188261AD52200F4A583 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -2767,6 +2770,7 @@
 		432EF189261AD52200F4A583 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -2775,6 +2779,7 @@
 		432EF198261AD60200F4A583 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "aarch64-linux-gnu";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -2799,6 +2804,7 @@
 		432EF199261AD60200F4A583 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "aarch64-linux-gnu";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -2823,6 +2829,7 @@
 		432EF1A7261AD6D700F4A583 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-w64-mingw32";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -2852,6 +2859,7 @@
 		432EF1A8261AD6D700F4A583 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-w64-mingw32";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -2881,6 +2889,7 @@
 		432EF1B6261AD9FB00F4A583 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "i386-pc-solaris2.11";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -2907,6 +2916,7 @@
 		432EF1B7261AD9FB00F4A583 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "i386-pc-solaris2.11";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -2933,6 +2943,7 @@
 		432EF1C5261ADB5500F4A583 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "s390x-ibm-linux-gnu";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -2958,6 +2969,7 @@
 		432EF1C6261ADB5500F4A583 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "s390x-ibm-linux-gnu";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -2983,6 +2995,7 @@
 		432EF1D2261ADD6B00F4A583 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-unknown-freebsd12.1";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3007,6 +3020,7 @@
 		432EF1D3261ADD6B00F4A583 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-unknown-freebsd12.1";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3031,6 +3045,7 @@
 		432EF1E3261ADDD400F4A583 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "powerpc64le-linux-gnu";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3055,6 +3070,7 @@
 		432EF1E4261ADDD400F4A583 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "powerpc64le-linux-gnu";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3079,6 +3095,7 @@
 		432EF1F2261ADE4900F4A583 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "riscv64-redhat-linux";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3107,6 +3124,7 @@
 		432EF1F3261ADE4900F4A583 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "riscv64-redhat-linux";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3135,6 +3153,7 @@
 		432EF201261ADEDD00F4A583 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "armv6--linux-gnueabihf";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3159,6 +3178,7 @@
 		432EF202261ADEDD00F4A583 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "armv6--linux-gnueabihf";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3183,6 +3203,7 @@
 		432EF210261AE29200F4A583 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-apple-darwin18.2.0";
 				EXECUTABLE_EXTENSION = dylib;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3209,6 +3230,7 @@
 		432EF211261AE29200F4A583 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-apple-darwin18.2.0";
 				EXECUTABLE_EXTENSION = dylib;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3235,6 +3257,7 @@
 		43663EE0261AECC400CEED08 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = current;
 				EXECUTABLE_EXTENSION = dylib;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3258,6 +3281,7 @@
 		43663EE1261AECC400CEED08 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = current;
 				EXECUTABLE_EXTENSION = dylib;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3281,6 +3305,7 @@
 		43B3E00226660A2D0024822F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-unknown-netbsd9.0";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3306,6 +3331,7 @@
 		43B3E00326660A2D0024822F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-unknown-netbsd9.0";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3331,6 +3357,7 @@
 		43B3E03A26672FD30024822F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-unknown-linux-gnu";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3355,6 +3382,7 @@
 		43B3E03B26672FD30024822F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-unknown-linux-gnu";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3379,6 +3407,7 @@
 		43B3E072266756540024822F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "amd64-unknown-openbsd6.9";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3404,6 +3433,7 @@
 		43B3E073266756540024822F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "amd64-unknown-openbsd6.9";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3429,6 +3459,7 @@
 		43B3E0AA266971630024822F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_FLAGS = "-m64 -mcpu=v9 -mllvm -sparc-reserve-app-registers";
 				CROSSCLANG_TARGET = "sparc-sun-solaris2.11";
 				EXECUTABLE_EXTENSION = so;
@@ -3461,6 +3492,7 @@
 		43B3E0AB266971630024822F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_FLAGS = "-m64 -mcpu=v9 -mllvm -sparc-reserve-app-registers";
 				CROSSCLANG_TARGET = "sparc-sun-solaris2.11";
 				EXECUTABLE_EXTENSION = so;
@@ -3493,6 +3525,7 @@
 		43C5FB7B261AC3700088E301 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "arm64-apple-macos11";
 				EXECUTABLE_EXTENSION = dylib;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3516,6 +3549,7 @@
 		43C5FB7C261AC3700088E301 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "arm64-apple-macos11";
 				EXECUTABLE_EXTENSION = dylib;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3542,10 +3576,30 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				COMPILER_INDEX_STORE_ENABLE = NO;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				EXECUTABLE_PREFIX = "libjunixsocket-";
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -3553,6 +3607,12 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = src/main/c/jni;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
@@ -3596,16 +3656,41 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				COMPILER_INDEX_STORE_ENABLE = NO;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				EXECUTABLE_PREFIX = "libjunixsocket-";
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_ENABLE_PASCAL_STRINGS = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = src/main/c/jni;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
@@ -3646,6 +3731,7 @@
 		43D436BF261A564C002D0C12 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-alpine-linux-musl";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";
@@ -3672,6 +3758,7 @@
 		43D436C0261A564C002D0C12 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CROSSCLANG_TARGET = "x86_64-alpine-linux-musl";
 				EXECUTABLE_EXTENSION = so;
 				LD_DEPENDENCY_INFO_FILE = "";

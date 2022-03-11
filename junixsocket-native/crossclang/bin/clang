@@ -69,6 +69,7 @@ hasO=0
 outputFile=
 useLdShim=0
 outputStripLibPrefix=0
+serializeDiagnosticsOut=
 
 llvmName=llvm
 fileList=
@@ -86,6 +87,8 @@ while [ $# -gt 0 ]; do
 
   case "$previous" in
       -isdkroot ) sdkroot="$v" ;;
+      -o ) outputFile="$v" ; skipArg=1 ;;
+      --serialize-diagnostics ) serializeDiagnosticsOut="$v" ;;
   esac
 
   case "$v" in 
@@ -110,6 +113,15 @@ while [ $# -gt 0 ]; do
       -compatibility_version ) shift ; skipArg=1 ;;
       -o ) hasO=1; skipArg=1 ;;
       -Weverything ) skipGccArg=1 ;;
+      -Wcomma ) skipGccArg=1 ;;
+      -Wblock-capture-autoreleasing ) skipGccArg=1 ;;
+      -Winfinite-recursion ) skipGccArg=1 ;;
+      -Wshorten-64-to-32 ) skipGccArg=1 ;;
+      -Wobjc-literal-conversion ) skipGccArg=1 ;;
+      -Wnon-literal-null-conversion ) skipGccArg=1 ;;
+      -Wbool-conversion ) skipGccArg=1 ;;
+      -Wconstant-conversion ) skipGccArg=1 ;;
+      -Wquoted-include-in-framework-header ) skipGccArg=1 ;;
       -fno-c++-static-destructors ) skipGccArg=1 ;;
       -fmacro-backtrace-limit=0 ) skipGccArg=1 ;;
       -fdiagnostics-show-note-include-stack ) skipGccArg=1 ;;
@@ -134,11 +146,6 @@ while [ $# -gt 0 ]; do
   
   if [[ $hasFiles -eq 0 && -n "$v" && "${v:0:1}" != "-" && -e "$v" ]]; then
       hasFiles=1
-  fi
-  
-  if [[ "$previous" == "-o" ]]; then
-      outputFile="$v"
-      skipArg=1
   fi
 
   if [[ "$skipArg" -eq 0 ]]; then
@@ -167,6 +174,22 @@ if [[ $gccMode -eq 2 ]]; then
             compiler=clang
             gccMode=0
     esac
+fi
+
+if [[ $gccMode -gt 0 ]]; then
+    if [[ -n "$serializeDiagnosticsOut" ]]; then
+        # Create fake diagnostics file
+        xxd -r -ps -- >"$serializeDiagnosticsOut" <<EOT
+4449414701080000300000000701b240b44239d043383c20812d94833ccc
+433abc833b1c04886280407110240b0429a443389cc3432290423a84c339
+a4823b98c33b3c24c32cc8c338c84238b8c33994c303528c4238d0832b84
+433b94c3434290423a84c33998023b84c3393c248629a4033b94832b8443
+3b94c3837198423ae0432ad0c34190a80ac810255008140285285104834a
+16080c82d47440944021500814a2040a8142a09024102530a8a681288142
+a01018d4f540944021500814a2040a8142a0101814000000210c00000200
+00001400000000000000
+EOT
+    fi
 fi
 
 clangDir=

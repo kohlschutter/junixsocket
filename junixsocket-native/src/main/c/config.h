@@ -31,7 +31,9 @@ CK_IGNORE_UNUSED_MACROS_END
 #  define _NETBSD_SOURCE
 #endif
 
+CK_IGNORE_RESERVED_IDENTIFIER_BEGIN
 #include "jni/jni.h"
+CK_IGNORE_RESERVED_IDENTIFIER_END
 
 #if defined(_WIN32)
 #  define WIN32_LEAN_AND_MEAN
@@ -50,6 +52,7 @@ CK_IGNORE_UNUSED_MACROS_END
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <limits.h>
 
 CK_IGNORE_UNUSED_MACROS_BEGIN
 #define junixsocket_have_sun_len // might be undef'ed below
@@ -63,6 +66,14 @@ typedef unsigned long uint64_t;
 #  else
 typedef unsigned long long uint64_t;
 #  endif
+#endif
+
+#if !defined(SOCKLEN_MAX)
+    // from ruby's ext/socket/rubysocket.h
+    #define SOCKLEN_MAX \
+    (0 < (socklen_t)-1 ? \
+    ~(socklen_t)0 : \
+    (((((socklen_t)1) << (sizeof(socklen_t) * CHAR_BIT - 2)) - 1) * 2 + 1))
 #endif
 
 #if defined(_WIN32)
@@ -254,6 +265,10 @@ typedef unsigned long socklen_t; /* 64-bits */
 #  define junixsocket_have_MSG_DONTWAIT 1
 #else
 #  define junixsocket_have_MSG_DONTWAIT 0
+#endif
+
+#if !defined(MIN)
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
 #endif
 
 #include "org_newsclub_net_unix_NativeUnixSocket.h"

@@ -140,7 +140,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
     socklen_t len = sizeof(struct sockaddr_un);
 
     int ret;
-    if (peerName) {
+    if(peerName) {
         ret = getpeername(handle, (struct sockaddr *)&addr, &len);
     } else {
         ret = getsockname(handle, (struct sockaddr *)&addr, &len);
@@ -217,8 +217,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAd
         return;
     }
 
-    jlong len = addressBytes == NULL ? 0 : (*env)->GetArrayLength(env, addressBytes);
-    if (len > directByteBufRef.size) {
+    jsize len = addressBytes == NULL ? 0 : (*env)->GetArrayLength(env, addressBytes);
+    if(len > directByteBufRef.size || len > INT_MAX) {
         _throwException(env, kExceptionSocketException, "Byte array is too large");
         return;
     }
@@ -227,9 +227,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAd
     memset(directByteBufRef.buf, 0, sizeof(struct sockaddr_un));
     addr->sun_family = AF_UNIX;
 
-    if (len > 0) {
+    if(len > 0) {
 #if defined(junixsocket_have_sun_len)
-        addr->sun_len = (len >= SUN_NAME_MAX_LEN) ? SUN_NAME_MAX_LEN : len + 1; // including zero byte
+        addr->sun_len = ((socklen_t)len >= SUN_NAME_MAX_LEN) ? SUN_NAME_MAX_LEN : len + 1; // including zero byte
 #endif
         (*env)->GetByteArrayRegion(env, addressBytes, 0, len, (signed char*)addr->sun_path);
     }
