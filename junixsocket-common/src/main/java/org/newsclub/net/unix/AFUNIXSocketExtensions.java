@@ -62,9 +62,9 @@ public interface AFUNIXSocketExtensions {
    * along with a call to {@link InputStream#read()}, etc.
    * 
    * NOTE: Another call to this method will not return the same file descriptors again (most likely,
-   * {@code null} will be returned).
+   * an empty array will be returned).
    * 
-   * @return The file descriptors, or {@code null} if none were available.
+   * @return The file descriptors, or an empty array if none were available.
    * @throws IOException if the operation fails.
    */
   FileDescriptor[] getReceivedFileDescriptors() throws IOException;

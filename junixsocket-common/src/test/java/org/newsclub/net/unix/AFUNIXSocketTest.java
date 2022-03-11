@@ -17,14 +17,15 @@
  */
 package org.newsclub.net.unix;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.Closeable;
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -155,7 +156,7 @@ public class AFUNIXSocketTest {
   public void testReceivedFileDescriptorsUnconnected() throws Exception {
     try (AFUNIXSocket sock = AFUNIXSocket.newInstance()) {
       // We don't check socket status, so these calls are perfectly fine for unconnected sockets.
-      assertNull(sock.getReceivedFileDescriptors());
+      assertArrayEquals(new FileDescriptor[0], sock.getReceivedFileDescriptors());
       sock.clearReceivedFileDescriptors();
     }
   }

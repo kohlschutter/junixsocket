@@ -78,24 +78,23 @@ final class NativeUnixSocket {
 
   static native byte[] sockname(FileDescriptor fd, boolean peer);
 
-  static native long bind(final byte[] socketAddr, final FileDescriptor fd, final int options)
-      throws IOException;
+  static native long bind(byte[] socketAddr, FileDescriptor fd, int options) throws IOException;
 
-  static native void listen(final FileDescriptor fd, final int backlog) throws IOException;
+  static native void listen(FileDescriptor fd, int backlog) throws IOException;
 
-  static native boolean accept(final byte[] socketAddr, final FileDescriptor fdServer,
-      final FileDescriptor fd, long inode, int timeout) throws IOException;
+  static native boolean accept(byte[] socketAddr, FileDescriptor fdServer, FileDescriptor fd,
+      long inode, int timeout) throws IOException;
 
-  static native boolean connect(final byte[] socketAddr, final FileDescriptor fd, long inode)
+  static native boolean connect(byte[] socketAddr, FileDescriptor fd, long inode)
       throws IOException;
 
   static native boolean finishConnect(FileDescriptor fd) throws IOException;
 
-  static native void disconnect(final FileDescriptor fd) throws IOException;
+  static native void disconnect(FileDescriptor fd) throws IOException;
 
-  static native int socketStatus(final FileDescriptor fd) throws IOException;
+  static native int socketStatus(FileDescriptor fd) throws IOException;
 
-  static native Class<?> primaryType(final FileDescriptor fd) throws IOException;
+  static native Class<?> primaryType(FileDescriptor fd) throws IOException;
 
   /**
    * Reads data from an {@link AFUNIXSocketImpl}.
@@ -109,7 +108,7 @@ final class NativeUnixSocket {
    *         {@code buf} was {@code null}.
    * @throws IOException upon error.
    */
-  static native int read(final FileDescriptor fd, byte[] buf, int off, int len,
+  static native int read(FileDescriptor fd, byte[] buf, int off, int len,
       AncillaryDataSupport ancillaryDataSupport, int timeoutMillis) throws IOException;
 
   /**
@@ -123,37 +122,37 @@ final class NativeUnixSocket {
    * @return The number of bytes written (which could be 0).
    * @throws IOException upon error.
    */
-  static native int write(final FileDescriptor fd, byte[] buf, int off, int len,
+  static native int write(FileDescriptor fd, byte[] buf, int off, int len,
       AncillaryDataSupport ancillaryDataSupport) throws IOException;
 
-  static native int receive(final FileDescriptor fd, ByteBuffer directBuffer, int offset,
-      int length, ByteBuffer directSocketAddressOut, int options,
-      AncillaryDataSupport ancillaryDataSupport, int timeoutMillis) throws IOException;
+  static native int receive(FileDescriptor fd, ByteBuffer directBuffer, int offset, int length,
+      ByteBuffer directSocketAddressOut, int options, AncillaryDataSupport ancillaryDataSupport,
+      int timeoutMillis) throws IOException;
 
-  static native int send(final FileDescriptor fd, ByteBuffer directBuffer, int offset, int length,
+  static native int send(FileDescriptor fd, ByteBuffer directBuffer, int offset, int length,
       ByteBuffer directSocketAddress, int options, AncillaryDataSupport ancillaryDataSupport)
       throws IOException;
 
-  static native void close(final FileDescriptor fd) throws IOException;
+  static native void close(FileDescriptor fd) throws IOException;
 
-  static native void shutdown(final FileDescriptor fd, int mode) throws IOException;
+  static native void shutdown(FileDescriptor fd, int mode) throws IOException;
 
-  static native int getSocketOptionInt(final FileDescriptor fd, int optionId) throws IOException;
+  static native int getSocketOptionInt(FileDescriptor fd, int optionId) throws IOException;
 
-  static native void setSocketOptionInt(final FileDescriptor fd, int optionId, int value)
+  static native void setSocketOptionInt(FileDescriptor fd, int optionId, int value)
       throws IOException;
 
-  static native int available(final FileDescriptor fd) throws IOException;
+  static native int available(FileDescriptor fd) throws IOException;
 
   static native AFUNIXSocketCredentials peerCredentials(FileDescriptor fd,
       AFUNIXSocketCredentials creds) throws IOException;
 
-  static native void initServerImpl(final ServerSocket serverSocket, final AFUNIXSocketImpl impl)
+  static native void initServerImpl(ServerSocket serverSocket, AFUNIXSocketImpl impl)
       throws IOException;
 
   static native void createSocket(FileDescriptor fdesc, int type) throws IOException;
 
-  static native void setPort(final AFUNIXSocketAddress addr, int port);
+  static native void setPort(AFUNIXSocketAddress addr, int port);
 
   static native void initFD(FileDescriptor fdesc, int fd) throws IOException;
 

@@ -17,9 +17,9 @@
  */
 package org.newsclub.net.unix;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -73,7 +73,7 @@ public class FileDescriptorsTest extends SocketTestBase {
         FileDescriptor[] fds;
         int numRead;
         fds = socket.getReceivedFileDescriptors();
-        assertNull(fds, "Initially, there are no file descriptors");
+        assertArrayEquals(new FileDescriptor[0], fds, "Initially, there are no file descriptors");
 
         numRead = in.read(buf);
         assertEquals(5, numRead, "'HELLO' is five bytes long");
@@ -83,13 +83,13 @@ public class FileDescriptorsTest extends SocketTestBase {
         assertEquals(2, fds.length, "Now, we should have two file descriptors");
 
         fds = socket.getReceivedFileDescriptors();
-        assertNull(fds, "If we ask again, these new file descriptors should be gone");
+        assertArrayEquals(new FileDescriptor[0], fds, "If we ask again, these new file descriptors should be gone");
 
         try (InputStream is = socket.getInputStream()) {
           numRead = is.read(buf);
           assertEquals(-1, numRead, "There shouldn't be anything left to read");
           fds = socket.getReceivedFileDescriptors();
-          assertNull(fds, "There shouldn't be any new file descriptors");
+          assertArrayEquals(new FileDescriptor[0], fds, "There shouldn't be any new file descriptors");
         }
       }
     });
@@ -202,7 +202,7 @@ public class FileDescriptorsTest extends SocketTestBase {
         } catch (SocketException e) {
           // on Linux, a SocketException may be thrown (an ancillary message was sent, but not read)
         }
-        assertNull(socket.getReceivedFileDescriptors());
+        assertArrayEquals(new FileDescriptor[0], socket.getReceivedFileDescriptors());
         assertEquals(0, socket.getAncillaryReceiveBufferSize());
       }
     });
@@ -235,7 +235,7 @@ public class FileDescriptorsTest extends SocketTestBase {
         try {
           assertEquals(123, inputStream.read());
           FileDescriptor[] fds = socket.getReceivedFileDescriptors();
-          if (fds != null) {
+          if (fds.length != 0) {
             if (fds.length == 2) {
               // space was sufficient
             } else if (fds.length == 1) {
@@ -250,7 +250,7 @@ public class FileDescriptorsTest extends SocketTestBase {
         } catch (SocketException e) {
           // expected
         }
-        assertNull(socket.getReceivedFileDescriptors());
+        assertArrayEquals(new FileDescriptor[0], socket.getReceivedFileDescriptors());
       }
     });
   }

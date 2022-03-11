@@ -158,7 +158,7 @@ public class SocketTestBase { // NOTE: needs to be public for junit
      * @param sock The socket to handle.
      * @throws IOException upon error.
      */
-    protected abstract void handleConnection(final AFUNIXSocket sock) throws IOException;
+    protected abstract void handleConnection(AFUNIXSocket sock) throws IOException;
 
     /**
      * Called from within {@link #handleConnection(AFUNIXSocket)} to tell the server to no longer

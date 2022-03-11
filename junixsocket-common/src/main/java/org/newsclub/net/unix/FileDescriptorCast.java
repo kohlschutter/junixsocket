@@ -105,7 +105,6 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
       });
 
       addProvider(FileChannel.class, new CastingProvider<FileChannel>() {
-        @SuppressWarnings("resource")
         @Override
         public FileChannel provideAs(FileDescriptorCast fdc, Class<? super FileChannel> desiredType)
             throws IOException {

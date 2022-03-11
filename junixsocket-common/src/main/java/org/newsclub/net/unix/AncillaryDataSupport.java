@@ -32,6 +32,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 class AncillaryDataSupport implements Closeable {
   private static final ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate(0);
+  private static final FileDescriptor[] NO_FILE_DESCRIPTORS = new FileDescriptor[0];
 
   protected final Map<FileDescriptor, Integer> openReceivedFileDescriptors = Collections
       .synchronizedMap(new HashMap<FileDescriptor, Integer>());
@@ -106,11 +107,11 @@ class AncillaryDataSupport implements Closeable {
 
   FileDescriptor[] getReceivedFileDescriptors() {
     if (receivedFileDescriptors.isEmpty()) {
-      return null;
+      return NO_FILE_DESCRIPTORS;
     }
     List<FileDescriptor[]> copy = new ArrayList<>(receivedFileDescriptors);
     if (copy.isEmpty()) {
-      return null;
+      return NO_FILE_DESCRIPTORS;
     }
     receivedFileDescriptors.removeAll(copy);
     int count = 0;
@@ -118,7 +119,7 @@ class AncillaryDataSupport implements Closeable {
       count += fds.length;
     }
     if (count == 0) {
-      return null;
+      return NO_FILE_DESCRIPTORS;
     }
     FileDescriptor[] oneArray = new FileDescriptor[count];
     int offset = 0;
