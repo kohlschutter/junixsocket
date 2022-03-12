@@ -48,6 +48,7 @@ import org.newsclub.net.unix.AFUNIXSocketCapability;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.util.ConsolePrintStream;
+import com.kohlschutter.util.SystemPropertyUtil;
 
 /**
  * Performs a series of self-tests.
@@ -111,7 +112,19 @@ public class Selftest {
     }
 
     st.dumpResults();
-    System.exit(st.isFail() ? 1 : 0); // NOPMD
+
+    int rc = st.isFail() ? 1 : 0;
+
+    if (SystemPropertyUtil.getBooleanSystemProperty("selftest.wait.at-end", false)) {
+      System.gc(); // NOPMD
+      System.out.print("Press any key to end test. ");
+      System.out.flush();
+      System.in.read();
+      System.out.println("RC=" + rc);
+    }
+
+    System.out.flush();
+    System.exit(rc); // NOPMD
   }
 
   public void printExplanation() throws IOException {
