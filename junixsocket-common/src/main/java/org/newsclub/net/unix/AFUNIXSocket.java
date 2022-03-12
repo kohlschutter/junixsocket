@@ -392,7 +392,11 @@ public final class AFUNIXSocket extends Socket implements AFUNIXSomeSocket, AFUN
   }
 
   AFUNIXSocketImpl getAFImpl() {
-    if (created.compareAndSet(false, true)) {
+    return getAFImpl(true);
+  }
+
+  AFUNIXSocketImpl getAFImpl(boolean createSocket) {
+    if (createSocket && created.compareAndSet(false, true)) {
       try {
         getSoTimeout(); // trigger create via java.net.Socket
       } catch (SocketException e) {
