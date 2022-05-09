@@ -311,7 +311,13 @@ final class NativeLibraryLoader implements Closeable {
   }
 
   private static String architectureAndOS() {
-    return System.getProperty("os.arch") + "-" + System.getProperty("os.name").replaceAll(" ", "");
+    String osName = System.getProperty("os.name").replaceAll(" ", "");
+    if (osName.toLowerCase().contains("windows") && 
+      (osName.contains("2016") || osName.contains("2019") || osName.contains("2022"))) {
+      // recognize GH Actions Windows Server environments https://github.com/actions/virtual-environments
+      osName = "Windows10";
+    }
+    return System.getProperty("os.arch") + "-" + osName;
   }
 
   private List<LibraryCandidate> findLibraryCandidates(String artifactName,
