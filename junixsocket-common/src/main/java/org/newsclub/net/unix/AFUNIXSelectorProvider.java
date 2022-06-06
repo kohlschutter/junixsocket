@@ -30,7 +30,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  */
 public final class AFUNIXSelectorProvider extends AFSelectorProvider<AFUNIXSocketAddress> {
   private static final AFUNIXSelectorProvider INSTANCE = new AFUNIXSelectorProvider();
-  
+
   @SuppressWarnings("null")
   static final AFAddressFamily<@NonNull AFUNIXSocketAddress> AF_UNIX = //
       AFAddressFamily.registerAddressFamilyImpl("un", AFUNIXSocketAddress.AF_UNIX, //

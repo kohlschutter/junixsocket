@@ -25,8 +25,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
-public final class FinalizeTest extends
-    org.newsclub.net.unix.FinalizeTest<AFUNIXSocketAddress> {
+public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNIXSocketAddress> {
 
   public FinalizeTest() {
     super(AFUNIXAddressSpecifics.INSTANCE);

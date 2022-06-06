@@ -47,7 +47,7 @@ public abstract class AFSocketAddressConfig<A extends AFSocketAddress> {
    * @throws SocketException on error.
    */
   protected abstract A parseURI(URI u, int port) throws SocketException;
-  
+
   /**
    * Returns the implementation's address constructor.
    * 

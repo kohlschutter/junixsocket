@@ -222,12 +222,12 @@ final class NativeLibraryLoader implements Closeable {
   private Throwable loadLibraryOverride() {
     String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, "");
     String libraryOverrideForce = System.getProperty(PROP_LIBRARY_OVERRIDE_FORCE, "false");
-    
+
     if (libraryOverride.isEmpty() && libraryOverrideForce.startsWith("/")) {
       libraryOverride = libraryOverrideForce;
       libraryOverrideForce = "true";
     }
-    
+
     if (!libraryOverride.isEmpty()) {
       try {
         System.load(libraryOverride);
