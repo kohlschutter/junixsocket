@@ -106,6 +106,8 @@
                 <junixsocket.custom.arch>${nar.aol}-jni</junixsocket.custom.arch>
                 <junixsocket.custom.shaded>default</junixsocket.custom.shaded>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -130,6 +132,8 @@
                 <junixsocket.custom.arch></junixsocket.custom.arch>
                 <junixsocket.custom.shaded>default</junixsocket.custom.shaded>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -161,6 +165,8 @@
                 <junixsocket.native.jnilib.extension>dll</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.win.x86_64-w64>amd64-Windows10-clang-llvm-jni</junixsocket.common.classifier.win.x86_64-w64>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -192,6 +198,8 @@
                       <junixsocket.native.jnilib.extension>dll</junixsocket.native.jnilib.extension>
                       <junixsocket.common.classifier.win.x86_64-w64>aarch64-Windows10-clang-llvm-jni</junixsocket.common.classifier.win.x86_64-w64>
                       <ignorant>${ignorant}</ignorant>
+                      <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                      <gpg.executable>${gpg.executable}</gpg.executable>
                   </properties>
               </configuration>
           </execution>
@@ -223,6 +231,8 @@
                 <junixsocket.native.jnilib.extension>dylib</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.mac.x86_64>x86_64-MacOSX-clang-llvm-jni</junixsocket.common.classifier.mac.x86_64>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -254,6 +264,8 @@
                 <junixsocket.native.jnilib.extension>dylib</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.mac.x86_64>aarch64-MacOSX-clang-llvm-jni</junixsocket.common.classifier.mac.x86_64>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -285,6 +297,8 @@
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.linux.x86_64>amd64-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.x86_64>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -316,6 +330,8 @@
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.linux.arm>arm-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.arm>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -347,6 +363,8 @@
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.linux.arm>aarch64-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.arm>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -379,6 +397,8 @@
             <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
             <junixsocket.common.classifier.sunos.sparcv9>sparcv9-SunOS-clang-llvm-jni</junixsocket.common.classifier.sunos.sparcv9>
             <ignorant>${ignorant}</ignorant>
+            <gpgkeyname>${gpgkeyname}</gpgkeyname>
+            <gpg.executable>${gpg.executable}</gpg.executable>
             </properties>
             </configuration>
             </execution>
@@ -411,6 +431,8 @@
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.sunos.amd64>amd64-SunOS-clang-llvm-jni</junixsocket.common.classifier.sunos.amd64>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -442,6 +464,8 @@
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.linux.s390x>amd64-FreeBSD-clang-llvm-jni</junixsocket.common.classifier.linux.s390x>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -473,6 +497,8 @@
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.linux.s390x>amd64-DragonFlyBSD-clang-llvm-jni</junixsocket.common.classifier.linux.s390x>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -504,6 +530,8 @@
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.linux.ppc>ppc64le-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.ppc>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -535,6 +563,8 @@
                       <junixsocket.native.jnilib.extension>a</junixsocket.native.jnilib.extension>
                       <junixsocket.common.classifier.linux.ppc>ppc64-AIX-clang-llvm-jni</junixsocket.common.classifier.linux.ppc>
                       <ignorant>${ignorant}</ignorant>
+                      <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                      <gpg.executable>${gpg.executable}</gpg.executable>
                   </properties>
               </configuration>
           </execution>
@@ -567,6 +597,8 @@
                       <junixsocket.native.jnilib.strip.prefix>lib</junixsocket.native.jnilib.strip.prefix>
                       <junixsocket.common.classifier.linux.ppc>ppc64-OS400-clang-llvm-jni</junixsocket.common.classifier.linux.ppc>
                       <ignorant>${ignorant}</ignorant>
+                      <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                      <gpg.executable>${gpg.executable}</gpg.executable>
                   </properties>
               </configuration>
           </execution>
@@ -598,6 +630,8 @@
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <junixsocket.common.classifier.linux.s390x>s390x-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.s390x>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -628,6 +662,8 @@
                 <junixsocket.native.llvm.target>riscv64-redhat-linux</junixsocket.native.llvm.target>
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -658,6 +694,8 @@
                 <junixsocket.native.llvm.target>x86_64-unknown-netbsd9.0</junixsocket.native.llvm.target>
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
@@ -688,6 +726,8 @@
                 <junixsocket.native.llvm.target>amd64-unknown-openbsd6.9</junixsocket.native.llvm.target>
                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
                 <ignorant>${ignorant}</ignorant>
+                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                <gpg.executable>${gpg.executable}</gpg.executable>
               </properties>
             </configuration>
           </execution>
