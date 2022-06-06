@@ -31,6 +31,8 @@
 #include "filedescriptors.h"
 #include "jniutil.h"
 
+#include "init.h"
+
 #if defined(LOCAL_PEEREPID)
 
 static int ucredFromPid(pid_t pid, struct xucred* cr)
@@ -75,12 +77,18 @@ static void initUidGidFromXucred(JNIEnv *env, jobject creds, struct xucred *cr) 
 }
 #endif
 
-#if defined(__NetBSD__) || defined(SO_PEERCRED)
+#if defined(__NetBSD__) || defined(SO_PEERCRED) || defined(SO_PEERID) || defined(SIO_AF_UNIX_GETPEERPID)
 static void initUidGid(JNIEnv *env, jobject creds, jint pid, jint uid, jint gid) {
-    jlongArray gidArray = (*env)->NewLongArray(env, 1);
-    jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);
-    gids[0] = gid;
-    (*env)->ReleaseLongArrayElements(env, gidArray, gids, 0);
+    jlongArray gidArray;
+
+    if(gid == -1) {
+        gidArray = NULL;
+    } else {
+        gidArray = (*env)->NewLongArray(env, 1);
+        jlong *gids = (*env)->GetLongArrayElements(env, gidArray, 0);
+        gids[0] = gid;
+        (*env)->ReleaseLongArrayElements(env, gidArray, gids, 0);
+    }
 
     setLongFieldValue(env, creds, "uid", uid);
     setLongFieldValue(env, creds, "pid", pid);
@@ -100,8 +108,12 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
     CK_ARGUMENT_POTENTIALLY_UNUSED(fdesc);
 
 #if defined(LOCAL_PEERCRED) || defined(LOCAL_PEEREPID) || defined(LOCAL_PEEREUUID) || \
-    defined(SO_PEERCRED) || defined(__NetBSD__) || defined(__sun) || defined(__sun__)
+    defined(SO_PEERCRED) || defined(SO_PEERID) || defined(__NetBSD__) || defined(__sun) || defined(__sun__) || defined(SIO_AF_UNIX_GETPEERPID)
     int fd = _getFD(env, fdesc);
+
+    if(!supportsUNIX()) {
+        return NULL;
+    }
 
     jboolean peerCredOK = true;
     CK_ARGUMENT_POTENTIALLY_UNUSED(peerCredOK);
@@ -312,6 +324,30 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
         } else {
             initUidGid(env, creds, (jint)cr.pid, (jint)cr.uid, (jint)cr.gid);
         }
+    }
+#  elif defined(SO_PEERID)
+    {
+        struct peercred_struct cr;
+        socklen_t len = sizeof(cr);
+        if(getsockopt(fd, SOL_SOCKET, SO_PEERID, &cr, &len) != 0) {
+            if(socket_errno == EINVAL || errno == EOPNOTSUPP || errno == ENOPROTOOPT) {
+                return NULL;
+            } else {
+                _throwErrnumException(env, socket_errno, NULL);
+                return NULL;
+            }
+        } else {
+            initUidGid(env, creds, (jint)cr.pid, (jint)cr.euid, (jint)cr.egid);
+        }
+    }
+#  elif defined(SIO_AF_UNIX_GETPEERPID)
+    {
+        u_long pid = -1;
+        int ret = ioctlsocket(fd, SIO_AF_UNIX_GETPEERPID, &pid);
+        if(ret != 0 && pid > 0) {
+            return NULL;
+        }
+        initUidGid(env, creds, (jint)pid, -1, -1);
     }
 #  endif
 

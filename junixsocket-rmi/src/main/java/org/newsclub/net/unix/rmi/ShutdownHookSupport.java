@@ -84,6 +84,7 @@ final class ShutdownHookSupport {
      * @param thread The current Thread.
      * @throws Exception Most likely ignored
      */
+    @SuppressFBWarnings("THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION")
     void onRuntimeShutdown(Thread thread) throws Exception;
   }
 

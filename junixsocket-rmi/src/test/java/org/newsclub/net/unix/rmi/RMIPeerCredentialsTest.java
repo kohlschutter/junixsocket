@@ -22,9 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
 
 import org.junit.jupiter.api.Test;
-import org.newsclub.net.unix.AFUNIXSocketCapability;
+import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFUNIXSocketCredentials;
 
 /**
@@ -32,14 +33,15 @@ import org.newsclub.net.unix.AFUNIXSocketCredentials;
  * 
  * @author Christian Kohlschütter
  */
-@AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_PEER_CREDENTIALS)
+@AFSocketCapabilityRequirement({
+    AFSocketCapability.CAPABILITY_UNIX_DOMAIN, AFSocketCapability.CAPABILITY_PEER_CREDENTIALS})
 public class RMIPeerCredentialsTest extends TestBase {
   public RMIPeerCredentialsTest() throws IOException {
     super();
   }
 
   @Test
-  public void testRemotePeerCredentials() throws Exception {
+  public void testRemotePeerCredentials() throws NotBoundException, IOException {
     TestService svc = lookupTestService();
 
     // CPD-OFF

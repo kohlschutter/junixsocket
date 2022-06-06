@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -33,13 +34,14 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
 final class NativeLibraryLoader implements Closeable {
+  private static final String PROP_LIBRARY_DISABLE = "org.newsclub.net.unix.library.disable";
   private static final String PROP_LIBRARY_OVERRIDE = "org.newsclub.net.unix.library.override";
-  private static final String PROP_LIBRARY_OVERRIDE_FALSE =
+  private static final String PROP_LIBRARY_OVERRIDE_FORCE =
       "org.newsclub.net.unix.library.override.force";
   private static final String PROP_LIBRARY_TMPDIR = "org.newsclub.net.unix.library.tmpdir";
 
   private static final File TEMP_DIR;
-  private static final String ARCHITECTURE_AND_OS = architectureAndOS();
+  private static final List<String> ARCHITECTURE_AND_OS = architectureAndOS();
   private static final String LIBRARY_NAME = "junixsocket-native";
 
   private static boolean loaded = false;
@@ -50,6 +52,15 @@ final class NativeLibraryLoader implements Closeable {
   }
 
   NativeLibraryLoader() {
+  }
+
+  /**
+   * Returns the temporary directory where the native library is extracted to; debugging only.
+   * 
+   * @return The temporary directory.
+   */
+  static File tempDir() {
+    return TEMP_DIR;
   }
 
   private List<LibraryCandidate> tryProviderClass(String providerClassname, String artifactName)
@@ -64,7 +75,7 @@ final class NativeLibraryLoader implements Closeable {
 
   public static String getJunixsocketVersion() throws IOException {
     // NOTE: This can't easily be tested from within the junixsocket-common Maven build
-    return getArtifactVersion(AFUNIXSocket.class, "junixsocket-common");
+    return getArtifactVersion(AFSocket.class, "junixsocket-common");
   }
 
   private static String getArtifactVersion(Class<?> providerClass, String... artifactNames)
@@ -95,6 +106,7 @@ final class NativeLibraryLoader implements Closeable {
       this.libraryNameAndVersion = libraryNameAndVersion;
     }
 
+    @SuppressFBWarnings("THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION")
     abstract String load() throws Exception;
 
     @Override
@@ -112,6 +124,7 @@ final class NativeLibraryLoader implements Closeable {
     }
 
     @Override
+    @SuppressFBWarnings("THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION")
     String load() throws Exception, LinkageError {
       if (libraryNameAndVersion != null) {
         System.loadLibrary(libraryNameAndVersion);
@@ -187,10 +200,16 @@ final class NativeLibraryLoader implements Closeable {
   }
 
   private synchronized void setLoaded(String library) {
+    setLoaded0(library);
+  }
+
+  @SuppressFBWarnings("THROWS_METHOD_THROWS_RUNTIMEEXCEPTION")
+  private static synchronized void setLoaded0(String library) {
     if (!loaded) {
       loaded = true;
-      AFUNIXSocket.loadedLibrary = library;
+      AFSocket.loadedLibrary = library;
       try {
+        NativeUnixSocket.initPre();
         NativeUnixSocket.init();
       } catch (RuntimeException e) {
         throw e;
@@ -202,13 +221,20 @@ final class NativeLibraryLoader implements Closeable {
 
   private Throwable loadLibraryOverride() {
     String libraryOverride = System.getProperty(PROP_LIBRARY_OVERRIDE, "");
+    String libraryOverrideForce = System.getProperty(PROP_LIBRARY_OVERRIDE_FORCE, "false");
+    
+    if (libraryOverride.isEmpty() && libraryOverrideForce.startsWith("/")) {
+      libraryOverride = libraryOverrideForce;
+      libraryOverrideForce = "true";
+    }
+    
     if (!libraryOverride.isEmpty()) {
       try {
         System.load(libraryOverride);
         setLoaded(libraryOverride);
         return null;
       } catch (Exception | LinkageError e) {
-        if (Boolean.valueOf(System.getProperty(PROP_LIBRARY_OVERRIDE_FALSE, "false"))) {
+        if (Boolean.valueOf(libraryOverrideForce)) {
           throw e;
         }
         return e;
@@ -229,11 +255,24 @@ final class NativeLibraryLoader implements Closeable {
   }
 
   // NOPMD
+  @SuppressWarnings("null")
   public synchronized void loadLibrary() {
     synchronized (loadLibrarySyncMonitor()) { // NOPMD We want to lock this class' classloader.
       if (loaded) {
         // Already loaded
         return;
+      }
+
+      // set -Dorg.newsclub.net.unix.library.override.force=provided to assume that
+      // we already have loaded the library via System.load, etc.
+      if ("provided".equals(System.getProperty(PROP_LIBRARY_OVERRIDE_FORCE, ""))) {
+        setLoaded("provided");
+        return;
+      }
+
+      if (Boolean.valueOf(System.getProperty(PROP_LIBRARY_DISABLE, "false"))) {
+        throw initCantLoadLibraryError(Collections.singletonList(new UnsupportedOperationException(
+            "junixsocket disabled by System.property " + PROP_LIBRARY_DISABLE)));
       }
 
       List<Throwable> suppressedThrowables = new ArrayList<>();
@@ -280,8 +319,10 @@ final class NativeLibraryLoader implements Closeable {
     }
 
     UnsatisfiedLinkError e = new UnsatisfiedLinkError(message);
-    for (Throwable suppressed : suppressedThrowables) {
-      e.addSuppressed(suppressed);
+    if (suppressedThrowables != null) {
+      for (Throwable suppressed : suppressedThrowables) {
+        e.addSuppressed(suppressed);
+      }
     }
     throw e;
   }
@@ -310,36 +351,53 @@ final class NativeLibraryLoader implements Closeable {
     return candidates;
   }
 
-  private static String architectureAndOS() {
-    return System.getProperty("os.arch") + "-" + System.getProperty("os.name").replaceAll(" ", "");
+  private static List<String> architectureAndOS() {
+    String arch = System.getProperty("os.arch", "UnknownArch").replaceAll("[ /\\\\'\";:\\$]", "");
+    String osName = System.getProperty("os.name", "UnknownOS").replaceAll("[ /\\\\'\";:\\$]", "");
+
+    List<String> list = new ArrayList<>();
+    list.add(arch + "-" + osName);
+    if (osName.startsWith("Windows") && !"Windows10".equals(osName)) {
+      list.add(arch + "-" + "Windows10");
+    }
+
+    return list;
   }
 
   private List<LibraryCandidate> findLibraryCandidates(String artifactName,
       String libraryNameAndVersion, Class<?> providerClass) {
     String mappedName = System.mapLibraryName(libraryNameAndVersion);
 
+    String[] prefixes = mappedName.startsWith("lib") ? new String[] {""} : new String[] {"", "lib"};
+
     List<LibraryCandidate> list = new ArrayList<>();
-    for (String compiler : new String[] {
-        "gpp", "g++", "linker", "clang", "gcc", "cc", "CC", "icpc", "icc", "xlC", "xlC_r", "msvc",
-        "icl", "ecpc", "ecc"}) {
-      String path = "/lib/" + ARCHITECTURE_AND_OS + "-" + compiler + "/jni/" + mappedName;
+    for (String archOs : ARCHITECTURE_AND_OS) {
+      for (String compiler : new String[] {"clang", "gcc"
+          // "gpp", "g++", "linker", "clang", "gcc", "cc", "CC", "icpc", "icc", "xlC", "xlC_r",
+          // "msvc",
+          // "icl", "ecpc", "ecc"
+      }) {
+        for (String prefix : prefixes) {
+          String path = "/lib/" + archOs + "-" + compiler + "/jni/" + prefix + mappedName;
 
-      InputStream in;
+          InputStream in;
 
-      in = providerClass.getResourceAsStream(path);
-      if (in != null) {
-        list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion, path, in));
-      }
+          in = providerClass.getResourceAsStream(path);
+          if (in != null) {
+            list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion, path, in));
+          }
 
-      // NOTE: we have to try .nodeps version _after_ trying the properly linked one.
-      // While the former may throw an UnsatisfiedLinkError, this one may just terminate the VM
-      // with a "symbol lookup error"
-      String nodepsPath = nodepsPath(path);
-      if (nodepsPath != null) {
-        in = providerClass.getResourceAsStream(nodepsPath);
-        if (in != null) {
-          list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion, nodepsPath,
-              in));
+          // NOTE: we have to try .nodeps version _after_ trying the properly linked one.
+          // While the former may throw an UnsatisfiedLinkError, this one may just terminate the VM
+          // with a "symbol lookup error"
+          String nodepsPath = nodepsPath(path);
+          if (nodepsPath != null) {
+            in = providerClass.getResourceAsStream(nodepsPath);
+            if (in != null) {
+              list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion,
+                  nodepsPath, in));
+            }
+          }
         }
       }
     }

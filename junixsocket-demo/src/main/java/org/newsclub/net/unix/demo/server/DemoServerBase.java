@@ -24,15 +24,16 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.concurrent.Future;
 
+import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocket;
-import org.newsclub.net.unix.server.AFUNIXSocketServer;
+import org.newsclub.net.unix.server.SocketServer;
 
 /**
- * An {@link AFUNIXSocketServer} that's just good for demo purposes.
+ * An {@link SocketServer} that's just good for demo purposes.
  * 
  * @author Christian Kohlschütter
  */
-abstract class DemoServerBase extends AFUNIXSocketServer {
+abstract class DemoServerBase extends SocketServer<SocketAddress, Socket, ServerSocket> {
   public DemoServerBase(SocketAddress listenAddress) {
     super(listenAddress);
   }
@@ -136,5 +137,15 @@ abstract class DemoServerBase extends AFUNIXSocketServer {
   @Override
   protected void onListenException(Exception e) {
     e.printStackTrace();
+  }
+
+  @Override
+  protected ServerSocket newServerSocket() throws IOException {
+    SocketAddress listenAddress = getListenAddress();
+    if (listenAddress instanceof AFSocketAddress) {
+      return ((AFSocketAddress) listenAddress).getAddressFamily().newServerSocket();
+    } else {
+      return new ServerSocket();
+    }
   }
 }

@@ -17,34 +17,20 @@
  */
 package org.newsclub.net.unix.rmi;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
-import java.rmi.AccessException;
-import java.rmi.AlreadyBoundException;
-import java.rmi.ConnectIOException;
 import java.rmi.Naming;
-import java.rmi.NoSuchObjectException;
-import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.RMISocketFactory;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.newsclub.net.unix.AFUNIXSocket;
-import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownHook;
-
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * The {@link AFUNIXSocket}-compatible equivalent of {@link Naming}. Use this class for accessing
@@ -52,41 +38,49 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * 
  * @author Christian Kohlschütter
  */
-public final class AFUNIXNaming extends AFUNIXRegistryAccess {
-  private static final String RMI_SERVICE_NAME = AFUNIXRMIService.class.getName();
+public final class AFUNIXNaming extends AFNaming {
   private static final String PROP_RMI_SOCKET_DIR = "org.newsclub.net.unix.rmi.socketdir";
-
   private static final File DEFAULT_SOCKET_DIRECTORY = new File(System.getProperty(
       PROP_RMI_SOCKET_DIR, "/tmp"));
 
-  private static final Map<AFUNIXNamingRef, AFUNIXNaming> INSTANCES = new HashMap<>();
-
-  private AFUNIXRegistry registry = null;
-  private AFUNIXRMIService rmiService = null;
-  private final File registrySocketDir;
-  private final int registryPort;
-  private final int servicePort;
-  private final AFUNIXRMISocketFactory socketFactory;
   private boolean deleteRegistrySocketDir = false;
-  private boolean remoteShutdownAllowed = true;
-  private final AtomicBoolean shutdownInProgress = new AtomicBoolean(false);
-  private final AtomicBoolean addedShutdownHook = new AtomicBoolean(false);
+  private final File registrySocketDir;
 
-  private AFUNIXNaming(final File socketDir, final int port, final String socketPrefix,
-      final String socketSuffix) throws IOException {
-    super();
+  private final RMIClientSocketFactory defaultClientSocketFactory;
+  private final RMIServerSocketFactory defaultServerSocketFactory;
+
+  private final String socketPrefix;
+  private final String socketSuffix;
+
+  private AFUNIXNaming(File socketDir, int registryPort, String socketPrefix, String socketSuffix)
+      throws IOException {
+    super(registryPort, RMIPorts.RMI_SERVICE_PORT);
+    Objects.requireNonNull(socketDir);
     this.registrySocketDir = socketDir;
-    this.registryPort = port;
-    this.servicePort = AFUNIXRMIPorts.RMI_SERVICE_PORT;
-    this.socketFactory = new AFUNIXRMISocketFactory(this, socketDir, null, null, socketPrefix,
-        socketSuffix);
+    this.socketPrefix = socketPrefix;
+    this.socketSuffix = socketSuffix;
+
+    this.defaultClientSocketFactory = null; // DefaultRMIClientSocketFactory.getInstance();
+    this.defaultServerSocketFactory = null; // DefaultRMIServerSocketFactory.getInstance();
+  }
+
+  /**
+   * Returns the directory where RMI sockets are stored by default.
+   * 
+   * You can configure this location by setting the System property
+   * {@code org.newsclub.net.unix.rmi.socketdir} upon start.
+   * 
+   * @return The directory.
+   */
+  public static File getDefaultSocketDirectory() {
+    return DEFAULT_SOCKET_DIRECTORY;
   }
 
   /**
    * Returns a new private instance that resides in a custom location, to avoid any collisions with
    * existing instances.
    * 
-   * @return The private {@link AFUNIXNaming} instance.
+   * @return The private {@link AFNaming} instance.
    * @throws IOException if the operation fails.
    */
   public static AFUNIXNaming newPrivateInstance() throws IOException {
@@ -94,8 +88,8 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
     if (!tmpDir.canWrite()) {
       throw new IOException("Could not create temporary directory: " + tmpDir);
     }
-    AFUNIXNaming instance = getInstance(tmpDir, AFUNIXRMIPorts.DEFAULT_REGISTRY_PORT);
-    synchronized (AFUNIXNaming.class) {
+    AFUNIXNaming instance = getInstance(tmpDir, RMIPorts.DEFAULT_REGISTRY_PORT);
+    synchronized (instance) {
       instance.deleteRegistrySocketDir = true;
     }
     return instance;
@@ -109,7 +103,7 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    * @throws IOException if the operation fails.
    */
   public static AFUNIXNaming getInstance() throws IOException {
-    return getInstance(DEFAULT_SOCKET_DIRECTORY, AFUNIXRMIPorts.DEFAULT_REGISTRY_PORT);
+    return getInstance(DEFAULT_SOCKET_DIRECTORY, RMIPorts.DEFAULT_REGISTRY_PORT);
   }
 
   /**
@@ -121,7 +115,7 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    * @throws RemoteException if the operation fails.
    */
   public static AFUNIXNaming getInstance(final File socketDir) throws RemoteException {
-    return getInstance(socketDir, AFUNIXRMIPorts.DEFAULT_REGISTRY_PORT);
+    return getInstance(socketDir, RMIPorts.DEFAULT_REGISTRY_PORT);
   }
 
   /**
@@ -158,24 +152,32 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    */
   public static AFUNIXNaming getInstance(File socketDir, final int registryPort,
       String socketPrefix, String socketSuffix) throws RemoteException {
-    Objects.requireNonNull(socketDir);
-    final AFUNIXNamingRef sap = new AFUNIXNamingRef(socketDir, registryPort, socketPrefix,
-        socketSuffix);
-    AFUNIXNaming instance;
-    synchronized (AFUNIXNaming.class) {
-      instance = INSTANCES.get(sap);
-      if (instance == null) {
-        try {
-          instance = new AFUNIXNaming(sap.socketDir, registryPort, socketPrefix, socketSuffix);
-        } catch (RemoteException e) {
-          throw e;
-        } catch (IOException e) {
-          throw new RemoteException(e.getMessage(), e);
-        }
-        INSTANCES.put(sap, instance);
+    return AFNaming.getInstance(registryPort, new AFUNIXNamingProvider(socketDir, socketPrefix,
+        socketSuffix));
+  }
+
+  private static final class AFUNIXNamingProvider implements AFNamingProvider<AFUNIXNaming> {
+    private final File socketDir;
+    private final String socketPrefix;
+    private final String socketSuffix;
+
+    public AFUNIXNamingProvider(File socketDir, String socketPrefix, String socketSuffix)
+        throws RemoteException {
+      try {
+        this.socketDir = socketDir.getCanonicalFile();
+      } catch (IOException e) {
+        throw new RemoteException(e.getMessage(), e);
       }
+      this.socketPrefix = socketPrefix == null ? AFUNIXRMISocketFactory.DEFAULT_SOCKET_FILE_PREFIX
+          : socketPrefix;
+      this.socketSuffix = socketSuffix == null ? AFUNIXRMISocketFactory.DEFAULT_SOCKET_FILE_SUFFIX
+          : socketSuffix;
     }
-    return instance;
+
+    @Override
+    public AFUNIXNaming newInstance(int port) throws IOException {
+      return new AFUNIXNaming(socketDir, port, socketPrefix, socketSuffix); // NOPMD
+    }
   }
 
   /**
@@ -186,39 +188,33 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    * @return The instance.
    * @throws IOException if the operation fails.
    */
-  public static AFUNIXNaming getSingleFileInstance(final File socketFile) throws IOException {
-    return getInstance(socketFile, AFUNIXRMIPorts.PLAIN_FILE_SOCKET);
+  public static AFNaming getSingleFileInstance(final File socketFile) throws IOException {
+    return getInstance(socketFile, RMIPorts.PLAIN_FILE_SOCKET);
   }
 
-  /**
-   * Returns the directory where RMI sockets are stored by default.
-   * 
-   * You can configure this location by setting the System property
-   * {@code org.newsclub.net.unix.rmi.socketdir} upon start.
-   * 
-   * @return The directory.
-   */
-  public static File getDefaultSocketDirectory() {
-    return DEFAULT_SOCKET_DIRECTORY;
-  }
-
-  /**
-   * Returns the {@link AFUNIXRMISocketFactory} associated with this instance.
-   * 
-   * @return The {@link AFUNIXRMISocketFactory}.
-   */
-  @SuppressFBWarnings("EI_EXPOSE_REP")
+  @Override
   public AFUNIXRMISocketFactory getSocketFactory() {
-    return socketFactory;
+    return (AFUNIXRMISocketFactory) super.getSocketFactory();
   }
 
-  /**
-   * Returns the directory in which sockets used by this registry are located.
-   * 
-   * @return The directory.
-   */
-  public File getRegistrySocketDir() {
-    return registrySocketDir;
+  @Override
+  public AFRegistry getRegistry() throws RemoteException {
+    return getRegistry(0, TimeUnit.SECONDS);
+  }
+
+  @Override
+  public AFUNIXRegistry getRegistry(long timeout, TimeUnit unit) throws RemoteException {
+    return (AFUNIXRegistry) super.getRegistry(timeout, unit);
+  }
+
+  @Override
+  public AFUNIXRegistry getRegistry(boolean create) throws RemoteException {
+    return (AFUNIXRegistry) super.getRegistry(create);
+  }
+
+  @Override
+  public AFUNIXRegistry createRegistry() throws RemoteException {
+    return (AFUNIXRegistry) super.createRegistry();
   }
 
   /**
@@ -229,94 +225,32 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    * @return The directory.
    */
   public File getRegistrySocketFile() {
-    return socketFactory.getFile(registryPort);
-  }
-
-  /**
-   * Returns the registry port.
-   * 
-   * @return The port.
-   */
-  public int getRegistryPort() {
-    return registryPort;
-  }
-
-  AFUNIXRMIService getRMIService() throws RemoteException, NotBoundException {
-    return getRMIService(getRegistry());
-  }
-
-  AFUNIXRMIService getRMIService(AFUNIXRegistry reg) throws RemoteException, NotBoundException {
-    if (rmiService == null) {
-      this.rmiService = getRMIServiceFromRegistry(reg);
-    }
-    return rmiService;
-  }
-
-  AFUNIXRMIService getRMIServiceFromRegistry(AFUNIXRegistry reg) throws RemoteException,
-      NotBoundException {
-    AFUNIXRMIService service;
-    service = (AFUNIXRMIService) reg.lookup(RMI_SERVICE_NAME, 5, TimeUnit.SECONDS);
-    this.remoteShutdownAllowed = service.isShutdownAllowed();
-    return service;
-  }
-
-  private void closeUponRuntimeShutdown() {
-    if (addedShutdownHook.compareAndSet(false, true)) {
-      ShutdownHookSupport.addWeakShutdownHook(new ShutdownHook() {
-
-        @Override
-        public void onRuntimeShutdown(Thread thread) throws IOException {
-          synchronized (AFUNIXNaming.class) {
-            if (registry != null && registry.isLocal()) {
-              shutdownRegistry();
-            }
-          }
-        }
-      });
-    }
-  }
-
-  private void rebindRMIService(final AFUNIXRMIService assigner) throws RemoteException {
-    rmiService = assigner;
-    getRegistry().rebind(RMI_SERVICE_NAME, assigner);
+    return getSocketFactory().getFile(getRegistryPort());
   }
 
   @Override
-  public AFUNIXRegistry getRegistry() throws RemoteException {
-    return getRegistry(0, TimeUnit.SECONDS);
+  protected AFUNIXRMISocketFactory initSocketFactory() throws IOException {
+    return new AFUNIXRMISocketFactory(this, registrySocketDir, defaultClientSocketFactory,
+        defaultServerSocketFactory, socketPrefix, socketSuffix);
   }
 
-  /**
-   * Returns a reference to the existing RMI registry.
-   * 
-   * If there's no registry running at this port after waiting for up to the given time, an
-   * exception is thrown.
-   * 
-   * @param timeout The timeout value.
-   * @param unit The timeout unit.
-   * @return The registry.
-   * @throws RemoteException If there was a problem.
-   */
-  public AFUNIXRegistry getRegistry(long timeout, TimeUnit unit) throws RemoteException {
-    if (shutdownInProgress.get()) {
-      throw new ShutdownException();
-    }
-    synchronized (AFUNIXNaming.class) {
-      AFUNIXRegistry reg = getRegistry(false);
-      if (reg == null) {
-        File socketFile = getRegistrySocketFile();
-        if (!socketFile.exists()) {
-          if (waitUntilFileExists(socketFile, timeout, unit)) {
-            reg = getRegistry(false);
-            if (reg != null) {
-              return reg;
-            }
-          }
+  @Override
+  protected AFUNIXRegistry newAFRegistry(Registry impl) throws RemoteException {
+    return new AFUNIXRegistry(this, impl);
+  }
+
+  @Override
+  protected AFRegistry openRegistry(long timeout, TimeUnit unit) throws RemoteException {
+    File socketFile = getRegistrySocketFile();
+    if (!socketFile.exists()) {
+      if (waitUntilFileExists(socketFile, timeout, unit)) {
+        AFRegistry reg = getRegistry(false);
+        if (reg != null) {
+          return reg;
         }
-        throw new ShutdownException("Could not find registry at " + getRegistrySocketFile());
       }
-      return reg;
     }
+    throw new ShutdownException("Could not find registry at " + getRegistrySocketFile());
   }
 
   private boolean waitUntilFileExists(File f, long timeout, TimeUnit unit) {
@@ -334,131 +268,7 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
     return f.exists();
   }
 
-  /**
-   * Returns a reference to the RMI registry, or {@code null}.
-   *
-   * If there's no registry running at this port, and {@code create} is set to {@code true}, a new
-   * one is created; when {@code create} is set to {@code false}, {@code null} is returned.
-   * 
-   * @param create {@code true} if a new register may be created if necessary.
-   * @return The registry, or {@code null}
-   * @throws RemoteException If there was a problem.
-   */
-  public AFUNIXRegistry getRegistry(boolean create) throws RemoteException {
-    if (shutdownInProgress.get()) {
-      throw new ShutdownException();
-    }
-    synchronized (AFUNIXNaming.class) {
-      if (registry != null) {
-        return registry;
-      } else if (!socketFactory.hasSocketFile(registryPort)) {
-        return create ? createRegistry() : null;
-      }
-
-      AFUNIXRegistry reg = locateRegistry();
-      setRegistry(reg);
-
-      try {
-        getRMIService(reg);
-      } catch (NotBoundException | NoSuchObjectException | ConnectIOException e) {
-        if (create) {
-          setRegistry(null);
-          return createRegistry();
-        } else {
-          throw new ServerException("Could not access " + AFUNIXRMIService.class.getName(), e);
-        }
-      }
-
-      return registry;
-    }
-  }
-
-  private AFUNIXRegistry locateRegistry() throws RemoteException {
-    Registry regImpl = LocateRegistry.getRegistry(null, registryPort, socketFactory);
-    return regImpl == null ? null : new AFUNIXRegistry(this, regImpl);
-  }
-
-  /**
-   * Shuts this RMI Registry down.
-   * 
-   * @throws RemoteException if the operation fails.
-   */
-  public void shutdownRegistry() throws RemoteException {
-    synchronized (AFUNIXNaming.class) {
-      if (registry == null) {
-        return;
-      }
-
-      AFUNIXRegistry registryToBeClosed = registry;
-      AFUNIXRMIService rmiServiceToBeClosed = rmiService;
-
-      if (!registryToBeClosed.isLocal()) {
-        if (!isRemoteShutdownAllowed()) {
-          throw new ServerException("The server refuses to be shutdown remotely");
-        }
-        setRegistry(null);
-
-        try {
-          shutdownViaRMIService(registryToBeClosed, rmiServiceToBeClosed);
-        } catch (Exception e) {
-          // ignore
-        }
-        return;
-      }
-
-      setRegistry(null);
-
-      if (!shutdownInProgress.compareAndSet(false, true)) {
-        return;
-      }
-      try {
-        unexportRMIService(registryToBeClosed, (AFUNIXRMIServiceImpl) rmiServiceToBeClosed);
-        forceUnexportBound(registryToBeClosed);
-        closeSocketFactory();
-        deleteSocketDir();
-
-      } finally {
-        shutdownInProgress.set(false);
-      }
-    }
-  }
-
-  private void unexportRMIService(AFUNIXRegistry reg, AFUNIXRMIServiceImpl serv)
-      throws AccessException, RemoteException {
-    if (serv != null) {
-      serv.shutdownRegisteredCloseables();
-    }
-
-    try {
-      if (serv != null) {
-        unexportObject(serv);
-      }
-      reg.unbind(RMI_SERVICE_NAME);
-    } catch (ShutdownException | NotBoundException e) {
-      // ignore
-    }
-    this.rmiService = null;
-  }
-
-  private void forceUnexportBound(AFUNIXRegistry reg) {
-    try {
-      reg.forceUnexportBound();
-    } catch (Exception e) {
-      // ignore
-    }
-  }
-
-  private void closeSocketFactory() {
-    if (socketFactory != null) {
-      try {
-        socketFactory.close();
-      } catch (IOException e) {
-        // ignore
-      }
-    }
-  }
-
-  private void deleteSocketDir() {
+  private synchronized void deleteSocketDir() {
     if (deleteRegistrySocketDir && registrySocketDir != null) {
       try {
         Files.delete(registrySocketDir.toPath());
@@ -468,173 +278,25 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
     }
   }
 
-  private void shutdownViaRMIService(AFUNIXRegistry reg, AFUNIXRMIService serv)
-      throws RemoteException {
-    try {
-      if (serv == null) {
-        serv = getRMIService(reg);
-      }
-      if (serv.isShutdownAllowed()) {
-        serv.shutdown();
-      }
-    } catch (ServerException | ConnectIOException | NotBoundException e) {
-      // ignore
-    }
+  @Override
+  protected void shutdownRegistryFinishingTouches() {
+    deleteSocketDir();
   }
 
   /**
-   * Creates a new RMI {@link Registry}.
+   * Returns the directory in which sockets used by this registry are located.
    * 
-   * If there already was a registry created previously, it is shut down and replaced by the current
-   * one.
-   * 
-   * Use {@link #getRegistry()} to try to reuse an existing registry.
-   * 
-   * @return The registry
-   * @throws RemoteException if the operation fails.
-   * @see #getRegistry()
+   * @return The directory.
    */
-  public AFUNIXRegistry createRegistry() throws RemoteException {
-    synchronized (AFUNIXNaming.class) {
-      AFUNIXRegistry existingRegistry = registry;
-      if (existingRegistry == null) {
-        try {
-          existingRegistry = getRegistry(false);
-        } catch (ServerException e) {
-          Throwable cause = e.getCause();
-          if (cause instanceof NotBoundException || cause instanceof ConnectIOException) {
-            existingRegistry = null;
-          } else {
-            throw e;
-          }
-        }
-      }
-      if (existingRegistry != null) {
-        if (!isRemoteShutdownAllowed()) {
-          throw new ServerException("The server refuses to be shutdown remotely");
-        }
-        shutdownRegistry();
-      }
-
-      if (registrySocketDir != null && !registrySocketDir.mkdirs() && !registrySocketDir
-          .isDirectory()) {
-        throw new ServerException("Cannot create socket directory:" + registrySocketDir);
-      }
-      setRegistry(new AFUNIXRegistry(this, LocateRegistry.createRegistry(registryPort,
-          socketFactory, socketFactory)));
-
-      final AFUNIXRMIService service = new AFUNIXRMIServiceImpl(this);
-      UnicastRemoteObject.exportObject(service, servicePort, socketFactory, socketFactory);
-
-      rebindRMIService(service);
-
-      return registry;
-    }
+  public File getRegistrySocketDir() {
+    return registrySocketDir;
   }
 
-  /**
-   * Checks if this {@link AFUNIXNaming} instance can be shut down remotely.
-   * 
-   * @return {@code true} if remote shutdown is allowed.
-   */
-  public boolean isRemoteShutdownAllowed() {
-    return remoteShutdownAllowed;
-  }
-
-  /**
-   * Controls whether this {@link AFUNIXNaming} instance can be shut down remotely.
-   * 
-   * @param remoteShutdownAllowed {@code true} if remote shutdown is allowed.
-   */
-  public void setRemoteShutdownAllowed(boolean remoteShutdownAllowed) {
-    this.remoteShutdownAllowed = remoteShutdownAllowed;
-  }
-
-  /**
-   * Exports and binds the given Remote object to the given name, using the given
-   * {@link AFUNIXNaming} setup.
-   * 
-   * @param name The name to use to bind the object in the registry.
-   * @param obj The object to export and bind.
-   * @throws RemoteException if the operation fails.
-   * @throws AlreadyBoundException if there already was something bound at that name
-   */
-  public void exportAndBind(String name, Remote obj) throws RemoteException, AlreadyBoundException {
-    exportObject(obj, getSocketFactory());
-
-    getRegistry().bind(name, obj);
-  }
-
-  /**
-   * Exports and re-binds the given Remote object to the given name, using the given
-   * {@link AFUNIXNaming} setup.
-   * 
-   * @param name The name to use to bind the object in the registry.
-   * @param obj The object to export and bind.
-   * @throws RemoteException if the operation fails.
-   */
-  public void exportAndRebind(String name, Remote obj) throws RemoteException {
-    exportObject(obj, getSocketFactory());
-
-    getRegistry().rebind(name, obj);
-  }
-
-  /**
-   * Forcibly un-exports the given object, if it exists, and unbinds the object from the registry
-   * (otherwise returns without an error).
-   *
-   * @param name The name used to bind the object.
-   * @param obj The object to un-export.
-   * @throws RemoteException if the operation fails.
-   */
-  public void unexportAndUnbind(String name, Remote obj) throws RemoteException {
-    unexportObject(obj);
-    try {
-      unbind(name);
-    } catch (MalformedURLException | NotBoundException e) {
-      // ignore
-    }
-  }
-
-  /**
-   * Exports the given Remote object, using the given socket factory and a randomly assigned port.
-   * 
-   * NOTE: This helper function can also be used for regular RMI servers.
-   * 
-   * @param obj The object to export.
-   * @param socketFactory The socket factory to use.
-   * @return The remote stub.
-   * @throws RemoteException if the operation fails.
-   */
-  public static Remote exportObject(Remote obj, RMISocketFactory socketFactory)
-      throws RemoteException {
-    return UnicastRemoteObject.exportObject(obj, 0, socketFactory, socketFactory);
-  }
-
-  /**
-   * Forcibly un-exports the given object, if it exists (otherwise returns without an error). This
-   * should be called upon closing a {@link Closeable} {@link Remote} object.
-   * 
-   * NOTE: This helper function can also be used for regular RMI servers.
-   * 
-   * @param obj The object to un-export.
-   */
-  public static void unexportObject(Remote obj) {
-    try {
-      UnicastRemoteObject.unexportObject(obj, true);
-    } catch (NoSuchObjectException e) {
-      // ignore
-    }
-  }
-
-  private void setRegistry(AFUNIXRegistry registry) {
-    synchronized (AFUNIXNaming.class) {
-      this.registry = registry;
-      if (registry == null) {
-        rmiService = null;
-      } else if (registry.isLocal()) {
-        closeUponRuntimeShutdown();
-      }
+  @Override
+  protected void initRegistryPrerequisites() throws ServerException {
+    if (registrySocketDir != null && !registrySocketDir.mkdirs() && !registrySocketDir
+        .isDirectory()) {
+      throw new ServerException("Cannot create socket directory:" + registrySocketDir);
     }
   }
 }

@@ -26,31 +26,36 @@
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    connect
- * Signature: ([BLjava/io/FileDescriptor;J)Z
+ * Signature: (Ljava/nio/ByteBuffer;ILjava/io/FileDescriptor;J)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
-                                                                           JNIEnv * env, jclass clazz CK_UNUSED, jbyteArray addr, jobject fd,
-                                                                           jlong expectedInode)
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
+(
+ JNIEnv * env, jclass clazz CK_UNUSED, jobject ab, jint abLen, jobject fd,
+ jlong expectedInode)
 {
-    struct sockaddr_un su;
-    socklen_t suLength = initSu(env, &su, addr);
-    if(suLength == 0) {
+    jux_sockaddr_t *addr = (*env)->GetDirectBufferAddress(env, ab);
+    socklen_t addrLength = (socklen_t)abLen;
+    if(addrLength == 0) {
         _throwException(env, kExceptionSocketException,
                         "Socket address length out of range");
         return false;
     }
 
     int socketHandle = _getFD(env, fd);
-    if(socketHandle <= 0) {
-        _throwException(env, kExceptionSocketException, "Socket closed");
+    if(socketHandle < 0) {
+        _throwException(env, kExceptionSocketException, "Socket is closed");
         return false;
     }
 
     if(expectedInode > 0) {
+        if(addr->addr.sa_family != AF_UNIX) {
+            _throwException(env, kExceptionSocketException, "Cannot check inode for this type of socket");
+            return false;
+        }
         struct stat fdStat;
 
         // It's OK when the file's gone, but not OK if it refers to another inode.
-        int statRes = stat(su.sun_path, &fdStat);
+        int statRes = stat(addr->un.sun_path, &fdStat);
         if(statRes == 0) {
             ino_t statInode = fdStat.st_ino;
 
@@ -66,7 +71,7 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
 
     int ret;
     do {
-        ret = connect(socketHandle, (struct sockaddr *)&su, suLength);
+        ret = connect(socketHandle, (struct sockaddr *)addr, addrLength);
     } while(ret == -1 && (errnum = socket_errno) == EINTR);
 
     if(ret == -1) {
@@ -91,8 +96,8 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect(
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_disconnect
 (JNIEnv *env, jclass clazz CK_UNUSED, jobject fd) {
     int sockfd = _getFD(env, fd);
-    if(sockfd <= 0) {
-        _throwException(env, kExceptionSocketException, "Socket closed");
+    if(sockfd < 0) {
+        _throwException(env, kExceptionSocketException, "Socket is closed");
         return;
     }
 
@@ -122,8 +127,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_disconnect
 JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_finishConnect
  (JNIEnv *env, jclass clazz CK_UNUSED, jobject fd) {
      int socketHandle = _getFD(env, fd);
-     if(socketHandle <= 0) {
-         _throwException(env, kExceptionSocketException, "Socket closed");
+     if(socketHandle < 0) {
+         _throwException(env, kExceptionSocketException, "Socket is closed");
          return false;
      }
 
@@ -159,9 +164,8 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_finishCon
          goto end;
      }
 
-     struct sockaddr_un addr = {0};
-
-     socklen_t addrSize = sizeof(struct sockaddr_un);
+     jux_sockaddr_t addr = {0};
+     socklen_t addrSize = sizeof(jux_sockaddr_t);
      ret = getpeername(socketHandle, (struct sockaddr *)&addr, &addrSize);
      if(ret != 0) {
          // not connected, ignore error

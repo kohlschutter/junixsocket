@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketOption;
 import java.net.StandardSocketOptions;
 import java.time.Duration;
@@ -41,6 +42,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.SoftAssertions;
 
 /**
@@ -48,7 +50,9 @@ import com.kohlschutter.testutil.SoftAssertions;
  * 
  * @author Christian Kohlschütter
  */
-public class StandardSocketOptionsTest extends SocketTestBase {
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+public abstract class StandardSocketOptionsTest<A extends SocketAddress> extends SocketTestBase<A> {
   private static final Set<SocketOption<?>> IGNORABLE_OPTIONS = Set.of( //
       StandardSocketOptions.IP_TOS, //
       StandardSocketOptions.TCP_NODELAY, //
@@ -56,6 +60,10 @@ public class StandardSocketOptionsTest extends SocketTestBase {
   );
 
   private SoftAssertions softAssertions;
+
+  protected StandardSocketOptionsTest(AddressSpecifics<A> asp) {
+    super(asp);
+  }
 
   @BeforeEach
   public void beforeEach() {
@@ -69,7 +77,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
 
   @Test
   public void testUnconnectedServerSocketOptions() throws Exception {
-    try (AFUNIXServerSocket sock = AFUNIXServerSocket.bindOn(SocketTestBase.newTempFile(), true); //
+    try (ServerSocket sock = newServerSocketBindOn(newTempAddress(), true); //
         TestState<ServerSocket> state = new TestStateServerSocket(sock);) {
 
       // supported
@@ -105,7 +113,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
       try (ServerThread serverThread = new ServerThread() {
 
         @Override
-        protected void handleConnection(AFUNIXSocket sock) throws IOException {
+        protected void handleConnection(Socket sock) throws IOException {
           try (TestState<Socket> state = new TestStateSocket(sock)) {
             state.testSocketOption(StandardSocketOptions.SO_REUSEADDR, null, true, true);
             state.testSocketOption(StandardSocketOptions.SO_RCVBUF, null, 8192, null);
@@ -118,7 +126,7 @@ public class StandardSocketOptionsTest extends SocketTestBase {
           }
         }
       }; //
-          AFUNIXSocket sock = connectToServer();
+          Socket sock = connectTo(serverThread.getServerAddress());
           InputStream in = sock.getInputStream();//
       ) {
         assertEquals(0xAF, in.read());

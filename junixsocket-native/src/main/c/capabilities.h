@@ -21,4 +21,7 @@
 
 #include "config.h"
 
+void init_capabilities(JNIEnv *env);
+void destroy_capabilities(JNIEnv *env);
+
 #endif /* capabilities_h */

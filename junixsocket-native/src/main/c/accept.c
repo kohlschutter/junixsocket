@@ -27,27 +27,35 @@
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    accept
- * Signature: ([BLjava/io/FileDescriptor;Ljava/io/FileDescriptor;JI)Z
+ * Signature: (Ljava/nio/ByteBuffer;ILjava/io/FileDescriptor;Ljava/io/FileDescriptor;JI)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
-                                                                          JNIEnv * env, jclass clazz CK_UNUSED, jbyteArray addr, jobject fdServer,
-                                                                          jobject fd, jlong expectedInode, int timeout)
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
+(
+ JNIEnv * env, jclass clazz CK_UNUSED, jobject ab, jint abLen, jobject fdServer,
+ jobject fd, jlong expectedInode, int timeout)
 {
     CK_ARGUMENT_POTENTIALLY_UNUSED(timeout);
 
-    struct sockaddr_un su = {0};
-    socklen_t suLength = 0;
+    jux_sockaddr_t *addr = (*env)->GetDirectBufferAddress(env, ab);
+    socklen_t suLength = (socklen_t)abLen;
 
     int serverHandle = _getFD(env, fdServer);
+    if(serverHandle < 0) {
+        _throwException(env, kExceptionSocketException, "Socket is closed");
+        return false;
+    }
 
-    if(expectedInode > 0) {
-        suLength = initSu(env, &su, addr);
+    if(expectedInode > 0 && suLength > 0) {
+        if(addr->addr.sa_family != AF_UNIX) {
+            _throwException(env, kExceptionSocketException, "Cannot check inode for this type of socket");
+            return false;
+        }
 
-        if(suLength > 0 && su.sun_path[0] != 0) {
+        if(addr->un.sun_path[0] != 0) {
             struct stat fdStat;
 
             // It's OK when the file's gone, but not OK if it refers to another inode.
-            int statRes = stat(su.sun_path, &fdStat);
+            int statRes = stat(addr->un.sun_path, &fdStat);
             if(statRes == 0) {
                 ino_t statInode = fdStat.st_ino;
 
@@ -74,18 +82,16 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
     }
 #endif
 
-    suLength = sizeof(struct sockaddr_un);
-
     int socketHandle;
     int errnum = 0;
     do {
 #if defined(junixsocket_have_accept4)
-        socketHandle = accept4(serverHandle, (struct sockaddr *)&su, &suLength, SOCK_CLOEXEC);
+        socketHandle = accept4(serverHandle, (struct sockaddr *)addr, &suLength, SOCK_CLOEXEC);
         if(socketHandle == -1 && errno == ENOSYS) {
-            socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
+            socketHandle = accept(serverHandle, (struct sockaddr *)addr, &suLength);
         }
 #else
-        socketHandle = accept(serverHandle, (struct sockaddr *)&su, &suLength);
+        socketHandle = accept(serverHandle, (struct sockaddr *)addr, &suLength);
 #endif
     } while(socketHandle == -1 && (errnum = socket_errno) == EINTR);
 
@@ -93,15 +99,16 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept(
         if(checkNonBlocking(serverHandle, errnum)) {
             // non-blocking socket, nothing to accept
         } else {
-            _throwErrnumException(env, errnum, fdServer);
+            _throwSockoptErrnumException(env, errnum, fdServer);
         }
         return false;
     }
 
 #if !defined(junixsocket_have_accept4)
 #  if defined(_WIN32)
-    HANDLE h = (HANDLE)_get_osfhandle(socketHandle);
-    SetHandleInformation(h, HANDLE_FLAG_INHERIT, 0);
+    // FIXME -- crashes on some Windows versions/compilers; omitting since it's non-essential
+    // HANDLE h = (HANDLE)_get_osfhandle(socketHandle);
+    // SetHandleInformation(h, HANDLE_FLAG_INHERIT, 0);
 #  elif defined(FD_CLOEXEC)
     fcntl(socketHandle, F_SETFD, FD_CLOEXEC);
 #  endif

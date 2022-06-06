@@ -25,9 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Reads and writes data either using byte arrays or byte-for-byte (which may be implemented
@@ -35,14 +39,20 @@ import org.junit.jupiter.api.Test;
  * 
  * @author Christian Kohlschütter
  */
-public class ReadWriteTest extends SocketTestBase {
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+public abstract class ReadWriteTest<A extends SocketAddress> extends SocketTestBase<A> {
   private static final byte[] DATA = {-127, -2, -1, 0, 1, 2, 127, 1, 2, 4, 8, 16, 31};
+
+  protected ReadWriteTest(AddressSpecifics<A> asp) {
+    super(asp);
+  }
 
   @Test
   public void testReceiveWithByteArraySendWithByteArray() {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ByteArrayWritingServerThread()) {
-        receiveDataWithByteArray();
+        receiveDataWithByteArray(serverThread.getServerAddress());
       }
     });
   }
@@ -56,7 +66,7 @@ public class ReadWriteTest extends SocketTestBase {
   public void testReceiveDataByteForByteSendWithByteArray() {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ByteArrayWritingServerThread()) {
-        receiveDataByteForByte();
+        receiveDataByteForByte(serverThread.getServerAddress());
       }
     });
   }
@@ -65,7 +75,7 @@ public class ReadWriteTest extends SocketTestBase {
   public void testReceiveWithByteArraySendByteForByte() {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ByteForByteWritingServerThread()) {
-        receiveDataWithByteArray();
+        receiveDataWithByteArray(serverThread.getServerAddress());
       }
     });
   }
@@ -74,7 +84,7 @@ public class ReadWriteTest extends SocketTestBase {
   public void testReceiveDataByteForByteSendByteForByte() {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
       try (ServerThread serverThread = new ByteForByteWritingServerThread()) {
-        receiveDataByteForByte();
+        receiveDataByteForByte(serverThread.getServerAddress());
       }
     });
   }
@@ -85,7 +95,7 @@ public class ReadWriteTest extends SocketTestBase {
     }
 
     @Override
-    protected void handleConnection(final AFUNIXSocket sock) throws IOException {
+    protected void handleConnection(final Socket sock) throws IOException {
       try (OutputStream out = sock.getOutputStream(); //
           InputStream in = sock.getInputStream()) {
 
@@ -105,7 +115,7 @@ public class ReadWriteTest extends SocketTestBase {
     }
 
     @Override
-    protected void handleConnection(final AFUNIXSocket sock) throws IOException {
+    protected void handleConnection(final Socket sock) throws IOException {
       try (OutputStream out = sock.getOutputStream(); //
           InputStream in = sock.getInputStream()) {
 
@@ -121,8 +131,8 @@ public class ReadWriteTest extends SocketTestBase {
     }
   }
 
-  private void receiveDataWithByteArray() throws IOException {
-    try (AFUNIXSocket sock = connectToServer(); //
+  private void receiveDataWithByteArray(SocketAddress serverAddress) throws IOException {
+    try (Socket sock = connectTo(serverAddress); //
         InputStream in = sock.getInputStream(); //
         OutputStream out = sock.getOutputStream()) {
 
@@ -147,8 +157,8 @@ public class ReadWriteTest extends SocketTestBase {
     }
   }
 
-  private void receiveDataByteForByte() throws IOException {
-    try (AFUNIXSocket sock = connectToServer(); //
+  private void receiveDataByteForByte(SocketAddress serverAddress) throws IOException {
+    try (Socket sock = connectTo(serverAddress); //
         InputStream in = sock.getInputStream(); //
         OutputStream out = sock.getOutputStream()) {
 

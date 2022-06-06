@@ -17,7 +17,7 @@
  */
 package org.newsclub.net.unix;
 
-import java.io.IOException;
+import java.net.SocketAddress;
 
 import org.junit.jupiter.api.Test;
 import org.opentest4j.TestAbortedException;
@@ -42,9 +42,9 @@ import com.kohlschutter.testutil.AvailabilityRequirement;
  * 
  * See <a href="https://github.com/kohlschutter/junixsocket/pull/29">issue 29</a> for details.
  */
-public class FinalizeTest extends SocketTestBase {
-  public FinalizeTest() throws IOException {
-    super();
+public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBase<A> {
+  protected FinalizeTest(AddressSpecifics<A> asp) {
+    super(asp);
   }
 
   @Test
@@ -53,4 +53,6 @@ public class FinalizeTest extends SocketTestBase {
   public void testLeak() throws Exception {
     throw new TestAbortedException();
   }
+
+  protected abstract String socketType();
 }

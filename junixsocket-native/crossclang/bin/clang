@@ -31,7 +31,7 @@
 # set -x
 
 # Make sure to include all paths that may contain custom linkers etc.
-PATH="$PATH":/usr/bin:/opt/homebrew/bin:/usr/local/bin
+PATH="$PATH":/usr/bin:/opt/crossclang/local/bin:/opt/homebrew/bin:/usr/local/bin
 export PATH
 
 currentDir=$(cd "$(dirname $0)"; pwd)
@@ -75,9 +75,15 @@ llvmName=llvm
 fileList=
 # ld64_sdk_version=10.9
 ld64_sdk_version=
+hideUnknownWarningWarnings=0
+
+hasExportDynamic=0
+ignoreExportDynamic=0
 
 skipGccArg=0
 analyze=0
+
+extraVersionArgs=()
 
 while [ $# -gt 0 ]; do
   v="$1"
@@ -107,6 +113,8 @@ while [ $# -gt 0 ]; do
       -Xcrossclang-use-gcc=* ) gccMode=1 ; compiler="${v#-Xcrossclang-use-gcc=}" ; skipArg=1 ;;
       -Xcrossclang-output-strip-lib-prefix ) outputStripLibPrefix=1 ; skipArg=1 ;;
       -Xcrossclang-ld64-sdk-version ) ld64_sdk_version="$1"; shift ; skipArg=1 ;;
+      -Xcrossclang-hide-unknown-warning-warnings ) hideUnknownWarningWarnings=1 ; skipArg=1 ;;
+      -Xcrossclang-ignore-export-dynamic) ignoreExportDynamic=1 ; skipArg=1 ;;
       # -index-store-path ) shift ; skipArg=1 ;; # if you're hitting this, set "Enable Index-While-Building Functionality=No" in Xcode build settings instead
       -filelist ) fileList="$1" ; shift; skipArg=1 ;;
       -current_version ) shift ; skipArg=1 ;;
@@ -141,6 +149,17 @@ while [ $# -gt 0 ]; do
       -l* ) libsArgs+=("$v") ; skipArg=1 ;; # for compatibility, libs will be added last
       -target ) v="$1"; target="$v"; shift; skipArg=1 ;;
       c++ ) if [ "$previous" == "-x" ]; then looksLikeCPP=1; fi ;;
+      -m64 ) extraVersionArgs+=("$v") ;;
+      -Xlinker )
+            if [[ "$1" == "-export_dynamic" ]]; then
+                hasExportDynamic=1
+            elif [[ -n "$1" ]]; then
+                clangArgs+=("-Xlinker" "$1")
+                gccArgs+=("-Xlinker" "$1")
+            fi
+            shift
+            skipArg=1
+            ;;
       - ) hasFiles=1 ;;
   esac
   
@@ -159,6 +178,11 @@ while [ $# -gt 0 ]; do
 
   previous="$v"
 done
+
+if [[ $hasExportDynamic -eq 1 && $ignoreExportDynamic -eq 0 ]]; then
+    clangArgs+=("-Xlinker" "-export_dynamic")
+    gccArgs+=("-Xlinker" "-export_dynamic")
+fi
 
 if [[ $analyze -gt 0 && $gccMode -gt 0 ]]; then
     # When using the static code analyzer, switch back to clang
@@ -288,7 +312,7 @@ if [[ "$target" != "unspecified" ]]; then
             PATH=/usr/bin:$PATH
         fi
 
-        target=$($(which $compiler) --version | grep "^Target: " | head -n 1)
+        target=$($(which $compiler) --version ${extraVersionArgs[@]} | grep "^Target: " | head -n 1)
         target=${target##* }
         if [ -z "$target" ]; then
             echo "Could not determine target" >&2
@@ -335,7 +359,7 @@ if [[ "$target" != "unspecified" ]]; then
                 echo "Warning: crossclang has an incomplete configuration for target \"$target\" -- you need to run sync-target-sdk first!" >&2
             fi
         elif [[ "$defaultFallback" -eq 0 ]]; then
-            platformTarget=$($(which $compiler) --version | grep "^Target: " | head -n 1)
+            platformTarget=$($(which $compiler) --version ${extraVersionArgs[@]} | grep "^Target: " | head -n 1)
             platformTarget=${platformTarget##* }
 
             tryPlatformClang=0
@@ -628,6 +652,8 @@ if [[ $withAndWithoutLC -eq 1 ]]; then
 
     "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${wwoArgs[@]} ${clangArgs[@]} ${libsArgs[@]} && \
     "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${wwoArgsNoDeps[@]} ${clangArgsNoDeps[@]} ${libsArgs[@]}
+elif [[ $hideUnknownWarningWarnings -eq 1 ]]; then
+    exec "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${output_args[@]} ${clangArgs[@]} ${libsArgs[@]} 2> >(grep -v -E "unrecognized command-line option .* may have been intended to silence")
 else
     exec "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${output_args[@]} ${clangArgs[@]} ${libsArgs[@]}
 fi

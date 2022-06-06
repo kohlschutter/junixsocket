@@ -19,22 +19,37 @@ package org.newsclub.net.unix.selftest;
 
 import org.junit.jupiter.api.Test;
 
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
+
 public class SelftestTest {
   @Test
-  public void testHelloWorld() throws Exception {
+  public void testHelloWorld() {
   }
 
   @Test
-  public void testFoo() throws Exception {
+  public void testFoo() {
     // fail();
   }
 
   @Test
-  public void testStdout() throws Exception {
+  public void testStdout() {
     System.out.println("Some interrupting text");
   }
 
   @Test
-  public void testBar() throws Exception {
+  public void testBar() {
+  }
+
+  @Test
+  public void testAbortedInformational() {
+    throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_INFORMATIONAL,
+        "Some important message with source info");
+  }
+
+  @Test
+  public void testAbortedInformationalShort() {
+    throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+        "Some important message");
   }
 }

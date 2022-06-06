@@ -17,6 +17,9 @@
  */
 package org.newsclub.net.unix.demo.rmi.fd;
 
+import java.io.IOException;
+import java.rmi.AlreadyBoundException;
+
 import org.newsclub.net.unix.rmi.AFUNIXNaming;
 
 /**
@@ -32,14 +35,19 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
  * @author Christian Kohlschütter
  * @see StreamClient
  */
-public class StreamServer {
+public final class StreamServer {
+  private StreamServer() {
+    throw new IllegalStateException("No instances");
+  }
+
   /**
    * {@link StreamServer} command-line tool.
    * 
    * @param args Command-line arguments.
-   * @throws Exception on error.
+   * @throws IOException on error.
+   * @throws AlreadyBoundException if there was already a server running.
    */
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException, AlreadyBoundException {
     AFUNIXNaming naming = AFUNIXNaming.getInstance();
     System.out.println("Socket directory: " + naming.getSocketFactory().getSocketDir());
 

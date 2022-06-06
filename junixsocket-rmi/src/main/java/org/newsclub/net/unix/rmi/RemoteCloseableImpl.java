@@ -40,12 +40,12 @@ public class RemoteCloseableImpl<T> implements RemoteCloseable<T> {
    */
   public RemoteCloseableImpl(RMISocketFactory socketFactory, T obj) throws RemoteException {
     this.remote = obj;
-    AFUNIXNaming.exportObject(this, socketFactory);
+    AFNaming.exportObject(this, socketFactory);
   }
 
   @Override
   public final void close() throws IOException {
-    AFUNIXNaming.unexportObject(this);
+    AFNaming.unexportObject(this);
     doClose(remote);
   }
 

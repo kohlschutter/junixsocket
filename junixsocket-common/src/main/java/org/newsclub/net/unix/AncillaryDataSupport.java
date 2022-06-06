@@ -30,22 +30,58 @@ import java.util.Map;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
-class AncillaryDataSupport implements Closeable {
+final class AncillaryDataSupport implements Closeable {
   private static final ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate(0);
   private static final FileDescriptor[] NO_FILE_DESCRIPTORS = new FileDescriptor[0];
 
-  protected final Map<FileDescriptor, Integer> openReceivedFileDescriptors = Collections
+  private static final int MIN_ANCBUF_LEN = NativeUnixSocket.isLoaded() ? NativeUnixSocket
+      .ancillaryBufMinLen() : 0;
+
+  private final Map<FileDescriptor, Integer> openReceivedFileDescriptors = Collections
       .synchronizedMap(new HashMap<FileDescriptor, Integer>());
 
   private final List<FileDescriptor[]> receivedFileDescriptors = Collections.synchronizedList(
       new LinkedList<FileDescriptor[]>());
 
   // referenced from native code
-  protected ByteBuffer ancillaryReceiveBuffer = EMPTY_BUFFER;
+  private ByteBuffer ancillaryReceiveBuffer = EMPTY_BUFFER;
 
   // referenced from native code
   @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
   int[] pendingFileDescriptors = null;
+
+  private int[] tipcErrorInfo = null;
+
+  private int[] tipcDestName = null;
+
+  // referenced from native code
+  void setTipcErrorInfo(int errorCode, int dataLength) {
+    if (errorCode == 0 && dataLength == 0) {
+      tipcErrorInfo = null;
+    } else {
+      tipcErrorInfo = new int[] {errorCode, dataLength};
+    }
+  }
+
+  int[] getTIPCErrorInfo() {
+    int[] info = tipcErrorInfo;
+    tipcErrorInfo = null;
+    return info;
+  }
+
+  void setTipcDestName(int a, int b, int c) {
+    if (a == 0 && b == 0 && c == 0) {
+      this.tipcDestName = null;
+    } else {
+      this.tipcDestName = new int[] {a, b, c};
+    }
+  }
+
+  int[] getTIPCDestName() {
+    int[] addr = tipcDestName;
+    tipcDestName = null;
+    return addr;
+  }
 
   int getAncillaryReceiveBufferSize() {
     return ancillaryReceiveBuffer.capacity();
@@ -57,7 +93,7 @@ class AncillaryDataSupport implements Closeable {
     } else if (size <= 0) {
       this.ancillaryReceiveBuffer = EMPTY_BUFFER;
     } else {
-      setAncillaryReceiveBufferSize0(Math.max(256, size));
+      setAncillaryReceiveBufferSize0(Math.max(256, Math.min(MIN_ANCBUF_LEN, size)));
     }
   }
 
@@ -65,7 +101,7 @@ class AncillaryDataSupport implements Closeable {
     this.ancillaryReceiveBuffer = ByteBuffer.allocateDirect(size);
   }
 
-  public final void ensureAncillaryReceiveBufferSize(int minSize) {
+  public void ensureAncillaryReceiveBufferSize(int minSize) {
     if (minSize <= 0) {
       return;
     }
@@ -101,7 +137,7 @@ class AncillaryDataSupport implements Closeable {
     this.receivedFileDescriptors.add(descriptors);
   }
 
-  final void clearReceivedFileDescriptors() {
+  void clearReceivedFileDescriptors() {
     receivedFileDescriptors.clear();
   }
 

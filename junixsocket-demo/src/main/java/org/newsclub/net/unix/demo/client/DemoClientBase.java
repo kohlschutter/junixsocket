@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
 
+import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocket;
-import org.newsclub.net.unix.AFUNIXSocketAddress;
 
 /**
  * An {@link AFUNIXSocket} client that's just good for demo purposes.
@@ -39,8 +39,9 @@ abstract class DemoClientBase {
   }
 
   public void connect(SocketAddress endpoint) throws IOException {
-    if (endpoint instanceof AFUNIXSocketAddress) {
-      socket = AFUNIXSocket.newInstance();
+    System.out.println("Connect " + this + " to " + endpoint);
+    if (endpoint instanceof AFSocketAddress) {
+      socket = ((AFSocketAddress) endpoint).getAddressFamily().newSocket();
     } else {
       socket = new Socket();
     }

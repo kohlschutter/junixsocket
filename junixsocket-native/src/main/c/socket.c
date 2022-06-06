@@ -22,6 +22,7 @@
 #include "org_newsclub_net_unix_NativeUnixSocket.h"
 #include "filedescriptors.h"
 #include "exceptions.h"
+#include "address.h"
 
 int sockTypeToNative(JNIEnv *env, int type) {
     switch(type) {
@@ -36,17 +37,35 @@ int sockTypeToNative(JNIEnv *env, int type) {
             return -1;
     }
 }
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    sockTypeToNative
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockTypeToNative
+ (JNIEnv *env, jclass klazz CK_UNUSED, jint type) {
+    return sockTypeToNative(env, type);
+}
+
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    createSocket
  * Signature: (Ljava/io/FileDescriptor;I)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_createSocket
-(JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jint type) {
+(JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jint domain, jint type) {
     int handle = _getFD(env, fd);
+
     if(handle > 0) {
         // already initialized
         _throwException(env, kExceptionSocketException, "Already created");
+        return;
+    }
+
+    domain = domainToNative(domain);
+    if(domain == -1) {
+        _throwException(env, kExceptionSocketException, "Unsupported domain");
         return;
     }
 
@@ -56,9 +75,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_createSocket
     }
 
 #if defined(junixsocket_have_socket_cloexec)
-    handle = socket(AF_UNIX, type | SOCK_CLOEXEC, 0);
+    handle = socket(domain, type | SOCK_CLOEXEC, 0);
     if(handle == -1 && errno == EPROTONOSUPPORT) {
-        handle = socket(AF_UNIX, type, 0);
+        handle = socket(domain, type, 0);
         if(handle > 0) {
 #  if defined(FD_CLOEXEC)
             fcntl(handle, F_SETFD, FD_CLOEXEC); // best effort
@@ -66,9 +85,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_createSocket
         }
     }
 #else
-    handle = socket(AF_UNIX, type, 0);
+    handle = socket(domain, type, 0);
 #endif
-    if(handle <= 0) {
+    if(handle < 0) {
         _throwErrnumException(env, socket_errno, fd);
         return;
     }
@@ -79,8 +98,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_createSocket
     fcntl(handle, F_SETFD, FD_CLOEXEC); // best effort
 #  elif defined(_WIN32)
     // WSASocketW does not support AF_UNIX, so we can't set this atomically like on Linux
-    HANDLE h = (HANDLE)_get_osfhandle(handle);
-    SetHandleInformation(h, HANDLE_FLAG_INHERIT, 0); // best effort
+    // FIXME -- crashes on some Windows versions/compilers; omitting since it's non-essential
+    // HANDLE h = (HANDLE)_get_osfhandle(handle);
+    // SetHandleInformation(h, HANDLE_FLAG_INHERIT, 0); // best effort
 #  endif
 #endif
 
@@ -95,11 +115,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_createSocket
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketStatus
  (JNIEnv *env, jclass clazz CK_UNUSED, jobject fd) {
      int handle = _getFD(env, fd);
-     if(handle <= 0) {
+     if(handle < 0) {
          return org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_INVALID;
      }
-     struct sockaddr_un addr = {0};
-     socklen_t len = sizeof(struct sockaddr_un);
+     jux_sockaddr_t addr = {0};
+     socklen_t len = sizeof(jux_sockaddr_t);
 
      int ret;
 
@@ -109,6 +129,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketStatus
          switch(errnum) {
              case EINVAL:
              case ENOTCONN:
+             case ENOTSOCK: // OSv socketpair
                  break;
              default:
                  _throwErrnumException(env, errnum, fd);
@@ -124,23 +145,30 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketStatus
          switch(errnum) {
              case EINVAL:
              case ENOTCONN:
+             case ENOTSOCK: // OSv socketpair
                  break;
              default:
                  _throwErrnumException(env, errnum, fd);
                  return -1;
          }
      } else if (len > 0) {
-         jboolean hasNonZero = false;
+         if(addr.addr.sa_family == AF_UNIX) {
+             // this is AF_UNIX specific
+             jboolean hasNonZero = false;
 
-         len -= offsetof(struct sockaddr_un, sun_path);
+             len -= offsetof(struct sockaddr_un, sun_path);
 
-         for(socklen_t i=0;i<len;i++) {
-             if(addr.sun_path[i] != 0) {
-                 hasNonZero = true;
-                 break;
+             for(socklen_t i=0;i<len;i++) {
+                 if(addr.un.sun_path[i] != 0) {
+                     hasNonZero = true;
+                     break;
+                 }
              }
-         }
-         if(hasNonZero) {
+             if(hasNonZero) {
+                 return org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_BOUND;
+             }
+         } else {
+             // FIXME validate other protocols
              return org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_BOUND;
          }
      }

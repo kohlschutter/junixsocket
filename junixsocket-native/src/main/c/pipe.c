@@ -17,15 +17,16 @@
  */
 JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initPipe
  (JNIEnv *env, jclass clazz CK_UNUSED, jobject fdSource, jobject fdSink, jboolean selectable) {
-     int fildes[2];
+    int fildes[2] = {-1, -1};
 
      int ret;
 #if defined(_WIN32)
      CK_ARGUMENT_POTENTIALLY_UNUSED(fildes);
      CK_ARGUMENT_POTENTIALLY_UNUSED(ret);
+
      if(selectable) {
          Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
-         (env, NULL, SOCK_STREAM, fdSource, fdSink);
+         (env, NULL, AF_UNIX, SOCK_STREAM, fdSource, fdSink);
          return true;
      } else {
          ret = _pipe((int*)&fildes, 256, O_BINARY | O_NOINHERIT);
@@ -43,7 +44,6 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initPipe
 #  endif
          }
      }
-
 #else
      CK_ARGUMENT_POTENTIALLY_UNUSED(selectable);
 
@@ -55,8 +55,16 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initPipe
 #  endif
      }
 #endif
-     if(ret != 0) {
-         _throwSockoptErrnumException(env, socket_errno, NULL);
+
+    if(ret != 0) {
+         _throwSockoptErrnumException(env,
+#if defined(_WIN32)
+                                      (selectable ? socket_errno : errno),
+#else
+                                      socket_errno,
+#endif
+                                      NULL);
+
          return false;
      }
 

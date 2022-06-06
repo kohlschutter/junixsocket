@@ -20,14 +20,67 @@ package org.newsclub.net.unix;
 import java.io.IOException;
 import java.net.ProtocolFamily;
 import java.net.SocketAddress;
-import java.nio.channels.spi.AbstractSelector;
-import java.nio.channels.spi.SelectorProvider;
+
+import org.eclipse.jdt.annotation.NonNull;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Service-provider class for junixsocket selectors and selectable channels.
  */
-public final class AFUNIXSelectorProvider extends SelectorProvider {
+public final class AFUNIXSelectorProvider extends AFSelectorProvider<AFUNIXSocketAddress> {
   private static final AFUNIXSelectorProvider INSTANCE = new AFUNIXSelectorProvider();
+  
+  @SuppressWarnings("null")
+  static final AFAddressFamily<@NonNull AFUNIXSocketAddress> AF_UNIX = //
+      AFAddressFamily.registerAddressFamilyImpl("un", AFUNIXSocketAddress.AF_UNIX, //
+
+          new AFAddressFamilyConfig<AFUNIXSocketAddress>() {
+            @Override
+            public Class<? extends AFSocket<AFUNIXSocketAddress>> socketClass() {
+              return AFUNIXSocket.class;
+            }
+
+            @Override
+            public AFSocket.Constructor<AFUNIXSocketAddress> socketConstructor() {
+              return AFUNIXSocket::new;
+            }
+
+            @Override
+            public Class<? extends AFServerSocket<AFUNIXSocketAddress>> serverSocketClass() {
+              return AFUNIXServerSocket.class;
+            }
+
+            @Override
+            public AFServerSocket.Constructor<AFUNIXSocketAddress> serverSocketConstructor() {
+              return AFUNIXServerSocket::new;
+            }
+
+            @Override
+            public Class<? extends AFSocketChannel<AFUNIXSocketAddress>> socketChannelClass() {
+              return AFUNIXSocketChannel.class;
+            }
+
+            @Override
+            public Class<? extends AFServerSocketChannel<AFUNIXSocketAddress>> serverSocketChannelClass() {
+              return AFUNIXServerSocketChannel.class;
+            }
+
+            @Override
+            public Class<? extends AFDatagramSocket<AFUNIXSocketAddress>> datagramSocketClass() {
+              return AFUNIXDatagramSocket.class;
+            }
+
+            @Override
+            public AFDatagramSocket.Constructor<AFUNIXSocketAddress> datagramSocketConstructor() {
+              return AFUNIXDatagramSocket::new;
+            }
+
+            @Override
+            public Class<? extends AFDatagramChannel<AFUNIXSocketAddress>> datagramChannelClass() {
+              return AFUNIXDatagramChannel.class;
+            }
+          });
 
   private AFUNIXSelectorProvider() {
     super();
@@ -38,6 +91,7 @@ public final class AFUNIXSelectorProvider extends SelectorProvider {
    * 
    * @return The instance.
    */
+  @SuppressFBWarnings("MS_EXPOSE_REP")
   public static AFUNIXSelectorProvider getInstance() {
     return INSTANCE;
   }
@@ -51,44 +105,26 @@ public final class AFUNIXSelectorProvider extends SelectorProvider {
     return getInstance();
   }
 
-  /**
-   * Opens a socket pair of interconnected channels.
-   * 
-   * @return The new channel pair.
-   * @throws IOException on error.
-   */
-  @SuppressWarnings("resource")
-  public AFUNIXSocketPair<AFUNIXSocketChannel> openSocketChannelPair() throws IOException {
-    AFUNIXSocketChannel s1 = openSocketChannel();
-    AFUNIXSocketChannel s2 = openSocketChannel();
-
-    NativeUnixSocket.socketPair(NativeUnixSocket.SOCK_STREAM, s1.getAFCore().fd, s2.getAFCore().fd);
-
-    s1.socket().internalDummyConnect();
-    s2.socket().internalDummyConnect();
-
-    return new AFUNIXSocketPair<AFUNIXSocketChannel>(s1, s2);
+  @Override
+  protected <P extends AFSomeSocket> AFSocketPair<P> newSocketPair(P s1, P s2) {
+    return new AFUNIXSocketPair<P>(s1, s2);
   }
 
-  /**
-   * Opens a socket pair of interconnected datagram channels.
-   * 
-   * @return The new channel pair.
-   * @throws IOException on error.
-   */
-  @SuppressWarnings("resource")
+  @SuppressWarnings("unchecked")
+  @Override
+  public AFUNIXSocketPair<AFUNIXSocketChannel> openSocketChannelPair() throws IOException {
+    return (AFUNIXSocketPair<AFUNIXSocketChannel>) super.openSocketChannelPair();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
   public AFUNIXSocketPair<AFUNIXDatagramChannel> openDatagramChannelPair() throws IOException {
-    AFUNIXDatagramChannel s1 = openDatagramChannel(AFUNIXProtocolFamily.UNIX);
-    AFUNIXDatagramChannel s2 = openDatagramChannel(AFUNIXProtocolFamily.UNIX);
+    return (AFUNIXSocketPair<AFUNIXDatagramChannel>) super.openDatagramChannelPair();
+  }
 
-    NativeUnixSocket.socketPair(NativeUnixSocket.SOCK_STREAM, s1.getAFCore().fd, s2.getAFCore().fd);
-
-    s1.socket().internalDummyBind();
-    s2.socket().internalDummyBind();
-    s1.socket().internalDummyConnect();
-    s2.socket().internalDummyConnect();
-
-    return new AFUNIXSocketPair<AFUNIXDatagramChannel>(s1, s2);
+  @Override
+  protected AFUNIXSocket newSocket() throws IOException {
+    return AFUNIXSocket.newInstance();
   }
 
   @Override
@@ -98,30 +134,7 @@ public final class AFUNIXSelectorProvider extends SelectorProvider {
 
   @Override
   public AFUNIXDatagramChannel openDatagramChannel(ProtocolFamily family) throws IOException {
-    if (!AFUNIXProtocolFamily.UNIX.name().equals(family.name())) {
-      throw new UnsupportedOperationException("Unsupported protocol family");
-    }
-    return openDatagramChannel();
-  }
-
-  @Override
-  public AFUNIXPipe openPipe() throws IOException {
-    return new AFUNIXPipe(this, false);
-  }
-
-  /**
-   * Opens a pipe with support for selectors.
-   * 
-   * @return The new pipe
-   * @throws IOException on error.
-   */
-  public AFUNIXPipe openSelectablePipe() throws IOException {
-    return new AFUNIXPipe(this, true);
-  }
-
-  @Override
-  public AbstractSelector openSelector() throws IOException {
-    return new AFUNIXSelector(this);
+    return (AFUNIXDatagramChannel) super.openDatagramChannel(family);
   }
 
   @Override
@@ -129,30 +142,28 @@ public final class AFUNIXSelectorProvider extends SelectorProvider {
     return AFUNIXServerSocket.newInstance().getChannel();
   }
 
-  /**
-   * Opens a server-socket channel bound on the given {@link SocketAddress}.
-   *
-   * @param sa The socket address to bind on.
-   * @return The new channel
-   * @throws IOException on error.
-   */
+  @Override
   public AFUNIXServerSocketChannel openServerSocketChannel(SocketAddress sa) throws IOException {
     return AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.unwrap(sa)).getChannel();
   }
 
   @Override
   public AFUNIXSocketChannel openSocketChannel() throws IOException {
-    return AFUNIXSocket.newInstance().getChannel();
+    return (AFUNIXSocketChannel) super.openSocketChannel();
   }
 
-  /**
-   * Opens a socket channel connected to the given {@link SocketAddress}.
-   * 
-   * @param sa The socket address to connect to.
-   * @return The new channel
-   * @throws IOException on error.
-   */
+  @Override
   public AFUNIXSocketChannel openSocketChannel(SocketAddress sa) throws IOException {
     return AFUNIXSocket.connectTo(AFUNIXSocketAddress.unwrap(sa)).getChannel();
+  }
+
+  @Override
+  protected ProtocolFamily protocolFamily() {
+    return AFUNIXProtocolFamily.UNIX;
+  }
+
+  @Override
+  protected AFAddressFamily<@NonNull AFUNIXSocketAddress> addressFamily() {
+    return AFUNIXSocketAddress.AF_UNIX;
   }
 }

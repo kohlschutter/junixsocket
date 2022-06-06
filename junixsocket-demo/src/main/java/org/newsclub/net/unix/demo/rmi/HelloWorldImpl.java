@@ -23,7 +23,7 @@ import java.rmi.NotBoundException;
 import org.newsclub.net.unix.AFUNIXSocketCredentials;
 import org.newsclub.net.unix.demo.rmi.services.HelloWorld;
 import org.newsclub.net.unix.demo.rmi.services.World;
-import org.newsclub.net.unix.rmi.AFUNIXNaming;
+import org.newsclub.net.unix.rmi.AFNaming;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
@@ -33,7 +33,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 public class HelloWorldImpl implements HelloWorld {
-  private final AFUNIXNaming naming;
+  private final AFNaming naming;
 
   /**
    * Creates a new {@link HelloWorld} implementation.
@@ -41,7 +41,7 @@ public class HelloWorldImpl implements HelloWorld {
    * @param naming The naming instance to use.
    */
   @SuppressFBWarnings("EI_EXPOSE_REP")
-  public HelloWorldImpl(AFUNIXNaming naming) {
+  public HelloWorldImpl(AFNaming naming) {
     this.naming = naming;
   }
 

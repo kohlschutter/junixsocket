@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix.demo.rmi;
 
+import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.registry.Registry;
 import java.rmi.server.RemoteObject;
 
@@ -32,7 +34,7 @@ import org.newsclub.net.unix.rmi.RemotePeerInfo;
  * @author Christian Kohlschütter
  */
 public final class SimpleRMIClientActingAsServer {
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException, NotBoundException {
     AFUNIXNaming naming = AFUNIXNaming.getInstance();
 
     System.out.println("Locating registry...");

@@ -21,13 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
+import java.net.SocketAddress;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -44,19 +43,22 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 /**
  * See https://code.google.com/p/junixsocket/issues/detail?id=20
  */
-@SuppressFBWarnings("RANGE_ARRAY_LENGTH")
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
+    "RANGE_ARRAY_LENGTH"})
 // CPD-OFF - Skip code-duplication checks
-public class BufferOverflowTest {
-  private File socketFile;
+public abstract class BufferOverflowTest<A extends SocketAddress> extends SocketTestBase<A> {
   private ServerSocket server;
   private ExecutorService executor;
 
+  protected BufferOverflowTest(AddressSpecifics<A> asp) {
+    super(asp);
+  }
+
   @BeforeEach
   public void setUp() throws IOException {
-    this.socketFile = SocketTestBase.initSocketFile();
-
-    server = AFUNIXServerSocket.newInstance();
-    server.bind(AFUNIXSocketAddress.of(socketFile));
+    server = newServerSocket();
+    server.bind(getServerBindAddress());
 
     executor = Executors.newFixedThreadPool(2);
   }
@@ -71,17 +73,13 @@ public class BufferOverflowTest {
       // ignore
     }
 
-    if (socketFile != null) {
-      Files.deleteIfExists(socketFile.toPath());
-    }
-
     if (executor != null) {
       executor.shutdown();
     }
   }
 
-  Socket[] connectToServer() throws Exception {
-    AFUNIXSocket clientSocket = AFUNIXSocket.newInstance();
+  Socket[] connect() throws Exception {
+    Socket clientSocket = newSocket();
 
     Future<Socket> serverAcceptFuture = executor.submit(new Callable<Socket>() {
       @Override
@@ -92,7 +90,7 @@ public class BufferOverflowTest {
 
     Thread.sleep(100);
 
-    clientSocket.connect(AFUNIXSocketAddress.of(socketFile));
+    clientSocket.connect(server.getLocalSocketAddress());
 
     Socket serverSocket = serverAcceptFuture.get(100, TimeUnit.MILLISECONDS);
 
@@ -102,7 +100,7 @@ public class BufferOverflowTest {
   @Test
   public void readOutOfBounds() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      Socket[] sockets = connectToServer();
+      Socket[] sockets = connect();
       try (Socket serverSocket = sockets[0]; //
           Socket clientSocket = sockets[1];) {
 
@@ -126,7 +124,7 @@ public class BufferOverflowTest {
   @Test
   public void readUpTo() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      Socket[] sockets = connectToServer();
+      Socket[] sockets = connect();
       try (Socket serverSocket = sockets[0]; //
           Socket clientSocket = sockets[1];) {
 
@@ -146,7 +144,7 @@ public class BufferOverflowTest {
   @Test
   public void writeOverflow() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      Socket[] sockets = connectToServer();
+      Socket[] sockets = connect();
       try (Socket serverSocket = sockets[0]; //
           Socket clientSocket = sockets[1];) {
 

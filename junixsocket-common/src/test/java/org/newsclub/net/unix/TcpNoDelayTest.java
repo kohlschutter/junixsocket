@@ -17,21 +17,28 @@
  */
 package org.newsclub.net.unix;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketException;
-import java.nio.file.Files;
 
 import org.junit.jupiter.api.Test;
 
-public class TcpNoDelayTest extends SocketTestBase {
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+public abstract class TcpNoDelayTest<A extends SocketAddress> extends SocketTestBase<A> {
+  protected TcpNoDelayTest(AddressSpecifics<A> asp) {
+    super(asp);
+  }
+
   @Test
   public void testStrictImpl() throws Exception {
     try (ServerThread serverThread = new ServerThread() {
 
       @Override
-      protected void handleConnection(final AFUNIXSocket sock) throws IOException {
+      protected void handleConnection(final Socket sock) throws IOException {
       }
 
       @Override
@@ -48,7 +55,8 @@ public class TcpNoDelayTest extends SocketTestBase {
       }
     }) {
 
-      try (AFUNIXSocket sock = connectToServer(AFUNIXSocket.newStrictInstance())) {
+      try (Socket sock = newStrictSocket()) {
+        sock.connect(serverThread.getServerAddress());
         boolean gotException = false;
         try {
           sock.setTcpNoDelay(true);
@@ -57,12 +65,11 @@ public class TcpNoDelayTest extends SocketTestBase {
           gotException = true;
         }
         if (!gotException) {
-          // Did not expected SocketException (but that's implementation-specific)
-          assertTrue(sock.getTcpNoDelay());
+          // Did not get expected SocketException (but that's implementation-specific)
+          sock.getTcpNoDelay(); // not guaranteed to be set to true
+          // assertTrue(sock.getTcpNoDelay());
         }
       }
-    } finally {
-      Files.deleteIfExists(getSocketFile().toPath());
     }
   }
 
@@ -71,7 +78,7 @@ public class TcpNoDelayTest extends SocketTestBase {
     try (ServerThread serverThread = new ServerThread() {
 
       @Override
-      protected void handleConnection(final AFUNIXSocket sock) throws IOException {
+      protected void handleConnection(final Socket sock) throws IOException {
       }
 
       @Override
@@ -88,13 +95,10 @@ public class TcpNoDelayTest extends SocketTestBase {
       }
     }) {
 
-      try (AFUNIXSocket sock = connectToServer()) {
+      try (Socket sock = connectTo(serverThread.getServerAddress())) {
         sock.setTcpNoDelay(true);
         // No exception
       }
-
-    } finally {
-      Files.deleteIfExists(getSocketFile().toPath());
     }
   }
 }

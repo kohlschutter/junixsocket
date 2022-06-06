@@ -19,7 +19,6 @@ package org.newsclub.net.unix;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URLDecoder;
@@ -33,48 +32,16 @@ import javax.net.SocketFactory;
  * Typically, the "hostname" is used as a reference to a socketFile on the file system. The actual
  * mapping is left to the implementor.
  * 
- * Three default implementations are provided.
- * 
  * @see AFUNIXSocketFactory.FactoryArg
  * @see AFUNIXSocketFactory.SystemProperty
  * @see AFUNIXSocketFactory.URIScheme
  */
-public abstract class AFUNIXSocketFactory extends SocketFactory {
+public abstract class AFUNIXSocketFactory extends AFSocketFactory<AFUNIXSocketAddress> {
   /**
-   * Translates a "host" string (and port) to an {@link AFUNIXSocketAddress}.
-   * 
-   * @param host The hostname
-   * @param port The port, or 0.
-   * @return The {@link AFUNIXSocketAddress}
-   * @throws SocketException If there was a problem converting the hostname
-   * @throws NullPointerException If host was {@code null}.
+   * Creates a {@link AFUNIXSocketFactory}.
    */
-  protected abstract AFUNIXSocketAddress addressFromHost(String host, int port)
-      throws SocketException;
-
-  /**
-   * Checks whether the given hostname is supported by this socket factory. If not, calls to
-   * createSocket will cause a {@link SocketException}.
-   * 
-   * @param host The host to check.
-   * @return {@code true} if supported.
-   */
-  protected boolean isHostnameSupported(String host) {
-    return host != null;
-  }
-
-  /**
-   * Checks whether the given {@link InetAddress} is supported by this socket factory. If not, calls
-   * to createSocket will cause a {@link SocketException}.
-   * 
-   * By default, this only checks the hostname part of the address via
-   * {@link #isHostnameSupported(String)}.
-   * 
-   * @param address The address to check.
-   * @return {@code true} if supported.
-   */
-  protected boolean isInetAddressSupported(InetAddress address) {
-    return address != null && isHostnameSupported(address.getHostName());
+  protected AFUNIXSocketFactory() {
+    super();
   }
 
   @Override
@@ -83,54 +50,8 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
   }
 
   @Override
-  public Socket createSocket(String host, int port) throws IOException {
-    if (!isHostnameSupported(host)) {
-      throw new SocketException("Unsupported hostname");
-    }
-    if (port < 0) {
-      throw new IllegalArgumentException("Illegal port");
-    }
-
-    AFUNIXSocketAddress socketAddress = addressFromHost(host, port);
-    return AFUNIXSocket.connectTo(socketAddress);
-  }
-
-  @Override
-  public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
-      throws IOException {
-    if (!isHostnameSupported(host)) {
-      throw new SocketException("Unsupported hostname");
-    }
-    if (localPort < 0) {
-      throw new IllegalArgumentException("Illegal local port");
-    }
-    // NOTE: we simply ignore localHost and localPort
-    return createSocket(host, port);
-  }
-
-  @Override
-  public Socket createSocket(InetAddress address, int port) throws IOException {
-    if (!isInetAddressSupported(address)) {
-      throw new SocketException("Unsupported address");
-    }
-    String hostname = address.getHostName();
-    if (!isHostnameSupported(hostname)) {
-      throw new SocketException("Unsupported hostname");
-    }
-    return createSocket(hostname, port);
-  }
-
-  @Override
-  public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
-      throws IOException {
-    if (!isInetAddressSupported(address)) {
-      throw new SocketException("Unsupported address");
-    }
-    if (localPort < 0) {
-      throw new IllegalArgumentException("Illegal local port");
-    }
-    // NOTE: we simply ignore localAddress and localPort
-    return createSocket(address, port);
+  protected AFUNIXSocket connectTo(AFUNIXSocketAddress addr) throws IOException {
+    return AFUNIXSocket.connectTo(addr);
   }
 
   /**
@@ -141,8 +62,15 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
   private abstract static class DefaultSocketHostnameSocketFactory extends AFUNIXSocketFactory {
     private static final String PROP_SOCKET_HOSTNAME = "org.newsclub.net.unix.socket.hostname";
 
+    /**
+     * Creates a {@link DefaultSocketHostnameSocketFactory}.
+     */
+    public DefaultSocketHostnameSocketFactory() {
+      super();
+    }
+
     @Override
-    protected final boolean isHostnameSupported(String host) {
+    public final boolean isHostnameSupported(String host) {
       return getDefaultSocketHostname().equals(host);
     }
 
@@ -189,7 +117,7 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
     }
 
     @Override
-    protected AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
+    public AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
       return AFUNIXSocketAddress.of(socketFile, port);
     }
   }
@@ -208,8 +136,15 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
   public static final class SystemProperty extends DefaultSocketHostnameSocketFactory {
     private static final String PROP_SOCKET_DEFAULT = "org.newsclub.net.unix.socket.default";
 
+    /**
+     * Creates a {@link SystemProperty} socket factory.
+     */
+    public SystemProperty() {
+      super();
+    }
+
     @Override
-    protected AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
+    public AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
       String path = System.getProperty(PROP_SOCKET_DEFAULT);
       if (path == null || path.isEmpty()) {
         throw new IllegalStateException("Property not configured: " + PROP_SOCKET_DEFAULT);
@@ -237,6 +172,13 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
     private static final String FILE_SCHEME_PREFIX_ENCODED = "file%";
     private static final String FILE_SCHEME_LOCALHOST = "localhost";
 
+    /**
+     * Creates a {@link URIScheme} socket factory.
+     */
+    public URIScheme() {
+      super();
+    }
+
     private static String stripBrackets(String host) {
       if (host.startsWith("[")) {
         if (host.endsWith("]")) {
@@ -249,13 +191,13 @@ public abstract class AFUNIXSocketFactory extends SocketFactory {
     }
 
     @Override
-    protected boolean isHostnameSupported(String host) {
+    public boolean isHostnameSupported(String host) {
       host = stripBrackets(host);
       return host.startsWith(FILE_SCHEME_PREFIX) || host.startsWith(FILE_SCHEME_PREFIX_ENCODED);
     }
 
     @Override
-    protected AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
+    public AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
       host = stripBrackets(host);
       if (host.startsWith(FILE_SCHEME_PREFIX_ENCODED)) {
         try {

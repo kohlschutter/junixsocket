@@ -17,101 +17,113 @@
  */
 package org.newsclub.net.unix;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.SocketException;
-import java.nio.charset.Charset;
+import java.net.URI;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-public final class AFUNIXSocketAddressTest {
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.AssertUtil;
+
+@SuppressFBWarnings("DMI_HARDCODED_ABSOLUTE_FILENAME")
+public class AFUNIXSocketAddressTest {
 
   @Test
-  public void testPort() throws IOException {
-    assertEquals(0, AFUNIXSocketAddress.of(new File("/tmp/whatever")).getPort());
-    assertEquals(123, AFUNIXSocketAddress.of(new File("/tmp/whatever"), 123).getPort());
-    assertEquals(44444, AFUNIXSocketAddress.of(new File("/tmp/whatever"), 44444).getPort());
+  public void testSchemesAvailable() throws Exception {
+    AssertUtil.assertSetContains(AFAddressFamily.uriSchemes(), //
+        Arrays.asList("unix", "http+unix", "https+unix"));
+  }
 
-    try {
-      AFUNIXSocketAddress.of(new File("/tmp/whatever"), -2);
-      fail("Expected IllegalArgumentException for illegal port");
-    } catch (final IllegalArgumentException e) {
-      // expected
+  @Test
+  public void testFileScheme() throws Exception {
+    assertEquals(AFUNIXSocketAddress.of(new File("/tmp/yo")), AFUNIXSocketAddress.of(URI.create(
+        "file:/tmp/yo")));
+    assertEquals(AFUNIXSocketAddress.of(new File("/tmp/yo")), AFUNIXSocketAddress.of(URI.create(
+        "file:///tmp/yo")));
+    assertEquals(AFUNIXSocketAddress.of(new File("/tmp/yo")), AFUNIXSocketAddress.of(URI.create(
+        "file://localhost/tmp/yo")));
+  }
+
+  @Test
+  public void testUnixScheme() throws Exception {
+    assertEquals(AFUNIXSocketAddress.of(new File("/tmp/yo")), AFUNIXSocketAddress.of(URI.create(
+        "unix:/tmp/yo")));
+    assertEquals(AFUNIXSocketAddress.of(new File("/tmp/yo")), AFUNIXSocketAddress.of(URI.create(
+        "unix:///tmp/yo")));
+    assertEquals(AFUNIXSocketAddress.of(new File("/tmp/yo")), AFUNIXSocketAddress.of(URI.create(
+        "unix://localhost/tmp/yo")));
+  }
+
+  @Test
+  public void testHttpUnix() throws Exception {
+    assertEquals(AFUNIXSocketAddress.of(new File("/var/run/docker.sock")), AFUNIXSocketAddress.of(
+        URI.create("http+unix://%2Fvar%2Frun%2Fdocker.sock/info")));
+    assertEquals(AFUNIXSocketAddress.of(new File("/var/run/docker.sock"), 8123), AFUNIXSocketAddress
+        .of(URI.create("http+unix://%2Fvar%2Frun%2Fdocker.sock:8123/info")));
+    assertEquals(AFUNIXSocketAddress.of(new File("/var/run/docker.sock"), 8123), AFUNIXSocketAddress
+        .of(URI.create(
+            "http+unix://foo:bar%40@%2Fvar%2Frun%2Fdocker.sock:8123/info?q1=a1&q2=a2#frag%40")));
+    assertEquals(AFUNIXSocketAddress.of(new File("test"), 80), AFUNIXSocketAddress.of(URI.create(
+        "http+unix://test:80/info")));
+  }
+
+  private String fixWindowsEncodedPaths(String path) {
+    return path.replace("%5C", "%2F");
+  }
+
+  private void assertsEqualUnixURIs(URI u1, URI u2) {
+    assertEquals(fixWindowsEncodedPaths(u1.toString()), fixWindowsEncodedPaths(u2.toString()));
+  }
+
+  private void assertParseURI(URI u) throws Exception {
+    AFUNIXSocketAddress addr = (AFUNIXSocketAddress) AFSocketAddress.of(u);
+    URI u2 = addr.toURI(u.getScheme(), u);
+    assertsEqualUnixURIs(u, u2);
+  }
+
+  @Test
+  public void testParseURIandBack() throws Exception {
+    assertParseURI(URI.create(
+        "http+unix://foo:bar%40@%2Fvar%2Frun%2Fdocker.sock:8123/info?q1=a1&q2=a2+%40#frag%40"));
+    assertParseURI(URI.create(
+        "http+unix://%2Fvar%2Frun%2Fdocker.sock:8123/info?q1=a1&q2=a2+%40#frag%40"));
+    assertParseURI(URI.create(
+        "http+unix://%2Fvar%2Frun%2Fdocker.sock/info?q1=a1&q2=a2+%40#frag%40"));
+    assertParseURI(URI.create("http+unix://%2Fvar%2Frun%2Fdocker.sock/info?q1="));
+    assertParseURI(URI.create("http+unix://%2Fvar%2Frun%2Fdocker.sock:1234"));
+  }
+
+  @Test
+  public void testURITemplate() throws Exception {
+    URI socketURI = URI.create("unix://%2Fvar%2Frun%2Fdocker.sock");
+    URI httpURI = URI.create("http://localhost/some/path?q=");
+    AFSocketAddress a = AFSocketAddress.of(socketURI);
+    assertEquals("https+unix://%2Fvar%2Frun%2Fdocker.sock/some/path?q=", fixWindowsEncodedPaths(a
+        .toURI("https+unix", httpURI).toString()));
+  }
+
+  @Test
+  public void testURITemplateWithPortNumber() throws Exception {
+    URI socketURI = URI.create("unix://%2Fvar%2Frun%2Fdocker.sock");
+    URI httpURI = URI.create("http://localhost:8123/some/path?q=");
+    AFSocketAddress a = AFSocketAddress.of(socketURI);
+    assertEquals("https+unix://%2Fvar%2Frun%2Fdocker.sock/some/path?q=", fixWindowsEncodedPaths(a
+        .toURI("https+unix", httpURI).toString()));
+  }
+
+  @Test
+  public void testSocatString() throws Exception {
+    String socatString = AFUNIXSocketAddress.of(new File("/tmp/yo")).toSocatAddressString(null,
+        AFSocketProtocol.DEFAULT);
+    if (socatString == null) {
+      assertFalse(AFSocket.supports(AFSocketCapability.CAPABILITY_UNIX_DOMAIN));
+    } else {
+      assertTrue(socatString.contains(":"));
     }
-    try {
-      AFUNIXSocketAddress.of(new File("/tmp/whatever"), 65536);
-    } catch (final IllegalArgumentException e) {
-      fail("AFUNIXSocketAddress supports ports larger than 65535");
-    }
-  }
-
-  @Test
-  public void testPath() throws Exception {
-    // as of junixsocket 2.4.0, a different canonical path doesn't matter
-    assertEquals("/tmp/whatever", AFUNIXSocketAddress.of(new File("/tmp/whatever")).getPath()
-        .replace(File.separatorChar, '/'));
-    assertEquals("whatever", AFUNIXSocketAddress.of(new File("whatever")).getPath().replace(
-        File.separatorChar, '/'));
-
-    byte[] bytes = AFUNIXSocketAddress.of(new File("/tmp/whatever")).getPathAsBytes();
-    for (int i = 0; i < bytes.length; i++) {
-      if (bytes[i] == (byte) File.separatorChar) {
-        bytes[i] = '/';
-      }
-    }
-    assertArrayEquals("/tmp/whatever".getBytes(Charset.defaultCharset()), bytes);
-  }
-
-  @Test
-  public void testAbstractNamespace() throws Exception {
-    AFUNIXSocketAddress address = AFUNIXSocketAddress.inAbstractNamespace(
-        "test\n\u000b\u0000\u007f");
-    byte[] addressBytes = {0, 't', 'e', 's', 't', '\n', '\u000b', '\u0000', '\u007f'};
-    assertArrayEquals(addressBytes, address.getPathAsBytes());
-    assertEquals(0, address.getPort());
-    assertEquals("@test..@.", address.getPath());
-    assertEquals("[path=\\x00test\\x0a\\x0b\\x00\\x7f]", address.toString().replaceFirst("^.*?\\[",
-        "["));
-    assertTrue(address.isInAbstractNamespace());
-    assertFalse(address.hasFilename());
-    assertThrows(FileNotFoundException.class, () -> address.getFile());
-  }
-
-  @Test
-  public void testEmptyAddress() throws Exception {
-    assertThrows(SocketException.class, () -> AFUNIXSocketAddress.of(new byte[0]));
-  }
-
-  @Test
-  public void testByteConstructor() throws Exception {
-    assertEquals("@", AFUNIXSocketAddress.of(new byte[] {0}).getPath());
-    assertEquals("@..", AFUNIXSocketAddress.of(new byte[] {0, (byte) 128, (byte) 255}).getPath());
-
-    assertEquals("abc.123", AFUNIXSocketAddress.of("abc.123".getBytes(AFUNIXSocketAddress
-        .addressCharset())).getPath());
-    assertEquals(new File("abc.123"), AFUNIXSocketAddress.of(new File("abc.123")).getFile());
-    assertEquals("abc.123", AFUNIXSocketAddress.of(new File("abc.123")).getPath());
-  }
-
-  @Test
-  public void testInetAddress() throws Exception {
-    AFUNIXSocketAddress addr1 = AFUNIXSocketAddress.of(new File("/tmp/testing"));
-    assertTrue(AFUNIXSocketAddress.isSupportedAddress(addr1));
-    assertNull(addr1.getAddress()); // sadly
-    assertTrue(AFUNIXSocketAddress.isSupportedAddress(addr1.wrapAddress()));
-    AFUNIXSocketAddress addr2 = AFUNIXSocketAddress.unwrap(addr1.wrapAddress(), 0);
-    assertEquals(addr1, addr2);
-    assertTrue(AFUNIXSocketAddress.isSupportedAddress(addr2));
-    assertTrue(AFUNIXSocketAddress.isSupportedAddress(addr2.wrapAddress()));
-    assertNull(addr2.getAddress()); // sadly
   }
 }

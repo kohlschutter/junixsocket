@@ -103,8 +103,9 @@ _Pragma("clang diagnostic pop")
 #   define CK_IGNORE_CAST_BEGIN \
 _Pragma("GCC diagnostic push") \
 _Pragma("GCC diagnostic ignored \"-Wint-to-pointer-cast\"") \
-_Pragma("GCC diagnostic ignored \"-Wpointer-to-int-cast\"")
-_Pragma("GCC diagnostic ignored \"-Wbad-function-cast\"")
+_Pragma("GCC diagnostic ignored \"-Wpointer-to-int-cast\"") \
+_Pragma("GCC diagnostic ignored \"-Wbad-function-cast\"") \
+_Pragma("GCC diagnostic ignored \"-Wcast-function-type\"")
 #   define CK_IGNORE_CAST_END \
 _Pragma("GCC diagnostic pop")
 #else
@@ -142,10 +143,15 @@ _Pragma("GCC diagnostic pop")
 
 #define CK_UNUSED __attribute__((__unused__))
 
-#if __clang || !defined(_WIN32)
-#  define CK_VISIBILITY_INTERNAL __attribute__((visibility("internal")))
-#else
+#if defined(_WIN32)
 #  define CK_VISIBILITY_INTERNAL
+#  define CK_VISIBILITY_DEFAULT
+#elif __clang
+#  define CK_VISIBILITY_INTERNAL __attribute__((visibility("internal")))
+#  define CK_VISIBILITY_DEFAULT __attribute__((visibility("default")))
+#else
+#  define CK_VISIBILITY_INTERNAL __attribute__((visibility("hidden")))
+#  define CK_VISIBILITY_DEFAULT __attribute__((visibility("default")))
 #endif
 
 /**

@@ -21,4 +21,7 @@
 
 #include "config.h"
 
+void init_reflection(JNIEnv *env);
+void destroy_reflection(JNIEnv *env);
+
 #endif /* reflection_h */

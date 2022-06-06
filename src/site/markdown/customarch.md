@@ -84,7 +84,7 @@ for development and testing purposes:
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-native-custom</artifactId>
-      <version>2.4.0</version>
+      <version>2.5.0</version>
       <classifier>amd64-Linux-gpp-jni</classifier>
     </dependency>
 
@@ -97,17 +97,31 @@ have your custom artifact, there's a chance it wouldn't even build on other peop
 An alternative is to directly add the junixsocket-native-custom jar to the classpath whenever you
 invoke the Java VM (e.g., your web server, etc.), for example:
 
-    java -cp junixsocket-native-custom-2.4.0-amd64-Linux-gpp-jni.jar:*(...)* *YourMainClass*
+    java -cp junixsocket-native-custom-2.5.0-amd64-Linux-gpp-jni.jar:*(...)* *YourMainClass*
 
 ## If that doesn't work...
 
 There may be reasons why all this doesn't work, and you simply want to specify the location of
 the native library yourself.
 
-Simply set the system property `org.newsclub.net.unix.library.override` to the path of the native
+Simply set the system property `org.newsclub.net.unix.library.override` to the absolute path of the native
 library. For example:
 
-    java -Dorg.newsclub.net.unix.library.override=/path/to/junixsocket-native-2.4.0.so (...)
+    java -Dorg.newsclub.net.unix.library.override=/path/to/junixsocket-native-2.5.0.so (...)
 
-> **NOTE** If this override fails to load, an attempt is made to load the standard junixsocket library,
+If this override fails to load, an attempt is made to load the standard junixsocket library,
 unless the system property `org.newsclub.net.unix.library.override.force` is set to `true`.
+
+You can also specify the absolute path with the system property
+`org.newsclub.net.unix.library.override.force`, which essentially combines these two declarations, i.e.
+ 
+    java -Dorg.newsclub.net.unix.library.override.force=/path/to/junixsocket-native-2.5.0.so (...)
+ 
+## If that doesn't work either...
+
+You may have a very special system setup. You can always try to manually load the native library
+directly (using `System.load`, `System.loadLibrary`, etc.). Be sure to do this before any junixsocket
+class is referenced. You also need to specify the system property
+`org.newsclub.net.unix.library.override.force` with a value of `provided`, i.e.,
+
+    java -Dorg.newsclub.net.unix.library.override.force=provided

@@ -19,9 +19,12 @@ package org.newsclub.net.unix.demo.rmi.fd;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.registry.Registry;
 
 import org.newsclub.net.unix.demo.rmi.services.StreamService;
+import org.newsclub.net.unix.rmi.AFNaming;
 import org.newsclub.net.unix.rmi.AFUNIXNaming;
 import org.newsclub.net.unix.rmi.RemoteCloseable;
 import org.newsclub.net.unix.rmi.RemoteFileInput;
@@ -32,14 +35,19 @@ import org.newsclub.net.unix.rmi.RemoteFileInput;
  * @author Christian Kohlschütter
  * @see StreamServer
  */
-public class StreamClient {
+public final class StreamClient {
+  private StreamClient() {
+    throw new IllegalStateException("No instances");
+  }
+
   /**
    * {@link StreamClient} command-line tool.
    * 
    * @param args Command-line arguments.
-   * @throws Exception on error.
+   * @throws IOException on error.
+   * @throws NotBoundException if the server cannot be reached.
    */
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws IOException, NotBoundException {
     if (args.length != 1) {
       System.err.println("Usage: StreamClient <path-to-file>");
       System.exit(1); // NOPMD
@@ -52,7 +60,7 @@ public class StreamClient {
       System.out.println("    StreamClient /etc/master.passwd");
     }
 
-    AFUNIXNaming naming = AFUNIXNaming.getInstance();
+    AFNaming naming = AFUNIXNaming.getInstance();
 
     final Registry registry = naming.getRegistry();
     StreamService obj = (StreamService) registry.lookup("streamService");

@@ -26,14 +26,14 @@ fi
 
 for toolchain in $(ls -1 | grep '\.xctoolchain$'); do
     echo Installing "$toolchain" ... 
-    ( cd "$toolchainsPath" ; ln -s "$pwd/$toolchain" )
+    ( cd "$toolchainsPath" ; ln -sf "$pwd/$toolchain" )
 done
 echo
 
 echo "SDKs path: $sdksPath"
 for sdk in $(ls -1 | grep '\.sdk$'); do
     echo Installing "$sdk" ... 
-    ( cd "$sdksPath" ; ln -s "$pwd/$sdk" )
+    ( cd "$sdksPath" ; ln -sf "$pwd/$sdk" )
 done
 
 echo Done. Now please restart XCode

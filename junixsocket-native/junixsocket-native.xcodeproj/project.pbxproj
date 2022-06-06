@@ -13,6 +13,8 @@
 			buildPhases = (
 			);
 			dependencies = (
+				436B5AF32827E55000574CD4 /* PBXTargetDependency */,
+				436B5AB928244D5700574CD4 /* PBXTargetDependency */,
 				43B3E076266756780024822F /* PBXTargetDependency */,
 				430235DB2650CCCD00823167 /* PBXTargetDependency */,
 				432EF19C261AD6AF00F4A583 /* PBXTargetDependency */,
@@ -29,6 +31,7 @@
 				43B3E03E266730080024822F /* PBXTargetDependency */,
 				432EF1D8261ADDA000F4A583 /* PBXTargetDependency */,
 				43B3E00626660A7A0024822F /* PBXTargetDependency */,
+				43684DB9282EE2CA005F2989 /* PBXTargetDependency */,
 				432EF1AB261AD97A00F4A583 /* PBXTargetDependency */,
 			);
 			name = "All Architectures";
@@ -587,6 +590,184 @@
 		4304A61F266DFCEF003BCEDF /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
 		4304A620266DFCEF003BCEDF /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
 		4304A621266DFCEF003BCEDF /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		43684D82282EE24B005F2989 /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		43684D83282EE24B005F2989 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		43684D84282EE24B005F2989 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		43684D85282EE24B005F2989 /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		43684D86282EE24B005F2989 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		43684D87282EE24B005F2989 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		43684D88282EE24B005F2989 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		43684D89282EE24B005F2989 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		43684D8A282EE24B005F2989 /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		43684D8B282EE24B005F2989 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		43684D8C282EE24B005F2989 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		43684D8D282EE24B005F2989 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		43684D8E282EE24B005F2989 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		43684D8F282EE24B005F2989 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		43684D90282EE24B005F2989 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		43684D91282EE24B005F2989 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		43684D92282EE24B005F2989 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		43684D93282EE24B005F2989 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		43684D94282EE24B005F2989 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		43684D95282EE24B005F2989 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		43684D96282EE24B005F2989 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		43684D97282EE24B005F2989 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		43684D98282EE24B005F2989 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		43684D99282EE24B005F2989 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		43684D9A282EE24B005F2989 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		43684D9B282EE24B005F2989 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		43684D9D282EE24B005F2989 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		43684D9E282EE24B005F2989 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		43684D9F282EE24B005F2989 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		43684DA0282EE24B005F2989 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		43684DA1282EE24B005F2989 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		43684DA2282EE24B005F2989 /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		43684DA3282EE24B005F2989 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		43684DA4282EE24B005F2989 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		43684DA5282EE24B005F2989 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		43684DA6282EE24B005F2989 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		43684DA7282EE24B005F2989 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		43684DA8282EE24B005F2989 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		43684DA9282EE24B005F2989 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		43684DAA282EE24B005F2989 /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		43684DAB282EE24B005F2989 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		43684DAC282EE24B005F2989 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		43684DAD282EE24B005F2989 /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		43684DAE282EE24B005F2989 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		43684DAF282EE24B005F2989 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		43684DB0282EE24B005F2989 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		43684DB1282EE24B005F2989 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		43684DB2282EE24B005F2989 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		436B5A8228244CB500574CD4 /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436B5A8328244CB500574CD4 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		436B5A8428244CB500574CD4 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		436B5A8528244CB500574CD4 /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		436B5A8628244CB500574CD4 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		436B5A8728244CB500574CD4 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		436B5A8828244CB500574CD4 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		436B5A8928244CB500574CD4 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		436B5A8A28244CB500574CD4 /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		436B5A8B28244CB500574CD4 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		436B5A8C28244CB500574CD4 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		436B5A8D28244CB500574CD4 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		436B5A8E28244CB500574CD4 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		436B5A8F28244CB500574CD4 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		436B5A9028244CB500574CD4 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		436B5A9128244CB500574CD4 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		436B5A9228244CB500574CD4 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		436B5A9328244CB500574CD4 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		436B5A9428244CB500574CD4 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		436B5A9528244CB500574CD4 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		436B5A9628244CB500574CD4 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		436B5A9728244CB500574CD4 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		436B5A9828244CB500574CD4 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		436B5A9928244CB500574CD4 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		436B5A9A28244CB500574CD4 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		436B5A9B28244CB500574CD4 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		436B5A9D28244CB500574CD4 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		436B5A9E28244CB500574CD4 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		436B5A9F28244CB500574CD4 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		436B5AA028244CB500574CD4 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		436B5AA128244CB500574CD4 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		436B5AA228244CB500574CD4 /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		436B5AA328244CB500574CD4 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		436B5AA428244CB500574CD4 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		436B5AA528244CB500574CD4 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		436B5AA628244CB500574CD4 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		436B5AA728244CB500574CD4 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		436B5AA828244CB500574CD4 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		436B5AA928244CB500574CD4 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		436B5AAA28244CB500574CD4 /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436B5AAB28244CB500574CD4 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		436B5AAC28244CB500574CD4 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		436B5AAD28244CB500574CD4 /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		436B5AAE28244CB500574CD4 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		436B5AAF28244CB500574CD4 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		436B5AB028244CB500574CD4 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		436B5AB128244CB500574CD4 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		436B5AB228244CB500574CD4 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		436B5ABC2826F49A00574CD4 /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436B5ABD2826F49A00574CD4 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
+		436B5ABE2826F49A00574CD4 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
+		436B5ABF2826F49A00574CD4 /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
+		436B5AC02826F49A00574CD4 /* init.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BE2650AB4D00823167 /* init.h */; };
+		436B5AC12826F49A00574CD4 /* send.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AA2650AB4A00823167 /* send.h */; };
+		436B5AC22826F49A00574CD4 /* listen.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B12650AB4B00823167 /* listen.h */; };
+		436B5AC32826F49A00574CD4 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A22650AB4900823167 /* config.h */; };
+		436B5AC42826F49A00574CD4 /* socketpair.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DFB6266082000024822F /* socketpair.h */; };
+		436B5AC52826F49A00574CD4 /* connect.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A72650AB4A00823167 /* connect.h */; };
+		436B5AC62826F49A00574CD4 /* jniutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A12650AB4900823167 /* jniutil.h */; };
+		436B5AC72826F49A00574CD4 /* socketoptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339D2650AB4900823167 /* socketoptions.h */; };
+		436B5AC82826F49A00574CD4 /* filedescriptors.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AC2650AB4A00823167 /* filedescriptors.h */; };
+		436B5AC92826F49A00574CD4 /* exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A82650AB4A00823167 /* exceptions.h */; };
+		436B5ACA2826F49A00574CD4 /* capabilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A42650AB4900823167 /* capabilities.h */; };
+		436B5ACB2826F49A00574CD4 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C02650AB4D00823167 /* org_newsclub_net_unix_NativeUnixSocket.h */; };
+		436B5ACC2826F49A00574CD4 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B42650AB4B00823167 /* socket.h */; };
+		436B5ACD2826F49A00574CD4 /* ckmacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BF2650AB4D00823167 /* ckmacros.h */; };
+		436B5ACE2826F49A00574CD4 /* address.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233B92650AB4C00823167 /* address.h */; };
+		436B5ACF2826F49A00574CD4 /* polling.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A92650AB4A00823167 /* polling.h */; };
+		436B5AD02826F49A00574CD4 /* accept.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233BB2650AB4C00823167 /* accept.h */; };
+		436B5AD12826F49A00574CD4 /* reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AD2650AB4A00823167 /* reflection.h */; };
+		436B5AD22826F49A00574CD4 /* jniport.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C12650AC3200823167 /* jniport.h */; };
+		436B5AD32826F49A00574CD4 /* receive.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233A62650AB4A00823167 /* receive.h */; };
+		436B5AD42826F49A00574CD4 /* credentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233AE2650AB4A00823167 /* credentials.h */; };
+		436B5AD52826F49A00574CD4 /* bind.h in Headers */ = {isa = PBXBuildFile; fileRef = 4302339F2650AB4900823167 /* bind.h */; };
+		436B5AD72826F49A00574CD4 /* filedescriptors.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C42650AB4E00823167 /* filedescriptors.c */; };
+		436B5AD82826F49A00574CD4 /* bind.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C32650AB4D00823167 /* bind.c */; };
+		436B5AD92826F49A00574CD4 /* address.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339C2650AB4900823167 /* address.c */; };
+		436B5ADA2826F49A00574CD4 /* send.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B22650AB4B00823167 /* send.c */; };
+		436B5ADB2826F49A00574CD4 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C22650AB4D00823167 /* socket.c */; };
+		436B5ADC2826F49A00574CD4 /* pipe.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DF82265EEC930024822F /* pipe.c */; };
+		436B5ADD2826F49A00574CD4 /* connect.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BC2650AB4C00823167 /* connect.c */; };
+		436B5ADE2826F49A00574CD4 /* capabilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B02650AB4B00823167 /* capabilities.c */; };
+		436B5ADF2826F49A00574CD4 /* socketoptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B52650AB4B00823167 /* socketoptions.c */; };
+		436B5AE02826F49A00574CD4 /* polling.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C12650AB4D00823167 /* polling.c */; };
+		436B5AE12826F49A00574CD4 /* receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AB2650AB4A00823167 /* receive.c */; };
+		436B5AE22826F49A00574CD4 /* jniutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A32650AB4900823167 /* jniutil.c */; };
+		436B5AE32826F49A00574CD4 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233B32650AB4B00823167 /* init.c */; };
+		436B5AE42826F49A00574CD4 /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436B5AE52826F49A00574CD4 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A02650AB4900823167 /* config.c */; };
+		436B5AE62826F49A00574CD4 /* credentials.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233C62650AB4E00823167 /* credentials.c */; };
+		436B5AE72826F49A00574CD4 /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B3DFB5266082000024822F /* socketpair.c */; };
+		436B5AE82826F49A00574CD4 /* exceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BD2650AB4C00823167 /* exceptions.c */; };
+		436B5AE92826F49A00574CD4 /* reflection.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233BA2650AB4C00823167 /* reflection.c */; };
+		436B5AEA2826F49A00574CD4 /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
+		436B5AEB2826F49A00574CD4 /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
+		436B5AEC2826F49A00574CD4 /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		436E166127FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166227FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166327FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166427FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166527FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166627FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166727FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166827FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166927FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166A27FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166B27FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166C27FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166D27FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166E27FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E166F27FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E167027FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E167127FBB70B00A553EC /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
+		436E167227FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167327FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167427FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167527FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167627FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167727FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167827FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167927FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167A27FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167B27FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167C27FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167D27FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167E27FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E167F27FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E168027FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E168127FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		436E168227FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
 		43B3DF83265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
 		43B3DF84265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
 		43B3DF85265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
@@ -906,6 +1087,27 @@
 			remoteGlobalIDString = 432EF1F7261ADEDD00F4A583;
 			remoteInfo = "armv6--linux-gnueabihf";
 		};
+		43684DB8282EE2CA005F2989 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43D436B0261A55D0002D0C12 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 43684D80282EE24B005F2989;
+			remoteInfo = "aarch64-w64-mingw32";
+		};
+		436B5AB828244D5700574CD4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43D436B0261A55D0002D0C12 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 436B5A8028244CB500574CD4;
+			remoteInfo = "powerpc-ibm-aix7.2";
+		};
+		436B5AF22827E55000574CD4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43D436B0261A55D0002D0C12 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 436B5ABA2826F49A00574CD4;
+			remoteInfo = "powerpc-ibm-os400";
+		};
 		43B3E00526660A7A0024822F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 43D436B0261A55D0002D0C12 /* Project object */;
@@ -997,6 +1199,11 @@
 		432EF203261ADEDD00F4A583 /* libjunixsocket-armv6--linux-gnueabihf.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-armv6--linux-gnueabihf.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF212261AE29200F4A583 /* libjunixsocket-x86_64-apple-darwin18.2.0.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-apple-darwin18.2.0.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43663EE2261AECC400CEED08 /* libjunixsocket-current.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-current.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		43684DB7282EE24B005F2989 /* libjunixsocket-aarch64-w64-mingw32.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-aarch64-w64-mingw32.so"; sourceTree = BUILT_PRODUCTS_DIR; };
+		436B5AB728244CB500574CD4 /* libjunixsocket-powerpc-ibm-aix7.2.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-powerpc-ibm-aix7.2.so"; sourceTree = BUILT_PRODUCTS_DIR; };
+		436B5AF12826F49A00574CD4 /* libjunixsocket-powerpc-ibm-os400.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-powerpc-ibm-os400.so"; sourceTree = BUILT_PRODUCTS_DIR; };
+		436E165F27FBB70B00A553EC /* tipc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = tipc.h; path = src/main/c/tipc.h; sourceTree = "<group>"; };
+		436E166027FBB70B00A553EC /* tipc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = tipc.c; path = src/main/c/tipc.c; sourceTree = "<group>"; };
 		43B3DF81265EEC930024822F /* pipe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pipe.h; path = src/main/c/pipe.h; sourceTree = "<group>"; };
 		43B3DF82265EEC930024822F /* pipe.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = pipe.c; path = src/main/c/pipe.c; sourceTree = "<group>"; };
 		43B3DFB5266082000024822F /* socketpair.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = socketpair.c; path = src/main/c/socketpair.c; sourceTree = "<group>"; };
@@ -1081,6 +1288,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		43663EDE261AECC400CEED08 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		43684DB3282EE24B005F2989 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		436B5AB328244CB500574CD4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		436B5AED2826F49A00574CD4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1194,6 +1422,8 @@
 				4302339D2650AB4900823167 /* socketoptions.h */,
 				43B3DFB5266082000024822F /* socketpair.c */,
 				43B3DFB6266082000024822F /* socketpair.h */,
+				436E166027FBB70B00A553EC /* tipc.c */,
+				436E165F27FBB70B00A553EC /* tipc.h */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -1238,6 +1468,9 @@
 				43B3E074266756540024822F /* libjunixsocket-amd64-unknown-openbsd6.9.so */,
 				43B3E0AC266971630024822F /* libjunixsocket-sparc-sun-solaris2.11.so */,
 				4304A626266DFCEF003BCEDF /* libjunixsocket-x86_64-portbld-dragonfly6.0.so */,
+				436B5AB728244CB500574CD4 /* libjunixsocket-powerpc-ibm-aix7.2.so */,
+				436B5AF12826F49A00574CD4 /* libjunixsocket-powerpc-ibm-os400.so */,
+				43684DB7282EE24B005F2989 /* libjunixsocket-aarch64-w64-mingw32.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1249,6 +1482,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E167127FBB70B00A553EC /* tipc.h in Headers */,
 				4304A5F3266DFCEF003BCEDF /* jni.h in Headers */,
 				4304A5F4266DFCEF003BCEDF /* ancillary.h in Headers */,
 				4304A5F5266DFCEF003BCEDF /* pipe.h in Headers */,
@@ -1281,6 +1515,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166227FBB70B00A553EC /* tipc.h in Headers */,
 				430235C32650AC3200823167 /* jni.h in Headers */,
 				430235A82650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF84265EEC930024822F /* pipe.h in Headers */,
@@ -1313,6 +1548,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166D27FBB70B00A553EC /* tipc.h in Headers */,
 				430235CD2650AC3200823167 /* jni.h in Headers */,
 				430235B22650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF8E265EEC930024822F /* pipe.h in Headers */,
@@ -1345,6 +1581,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166627FBB70B00A553EC /* tipc.h in Headers */,
 				430235C62650AC3200823167 /* jni.h in Headers */,
 				430235AB2650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF87265EEC930024822F /* pipe.h in Headers */,
@@ -1377,6 +1614,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166927FBB70B00A553EC /* tipc.h in Headers */,
 				430235C92650AC3200823167 /* jni.h in Headers */,
 				430235AE2650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF8A265EEC930024822F /* pipe.h in Headers */,
@@ -1409,6 +1647,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166C27FBB70B00A553EC /* tipc.h in Headers */,
 				430235CC2650AC3200823167 /* jni.h in Headers */,
 				430235B12650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF8D265EEC930024822F /* pipe.h in Headers */,
@@ -1441,6 +1680,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166727FBB70B00A553EC /* tipc.h in Headers */,
 				430235C72650AC3200823167 /* jni.h in Headers */,
 				430235AC2650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF88265EEC930024822F /* pipe.h in Headers */,
@@ -1473,6 +1713,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166827FBB70B00A553EC /* tipc.h in Headers */,
 				430235C82650AC3200823167 /* jni.h in Headers */,
 				430235AD2650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF89265EEC930024822F /* pipe.h in Headers */,
@@ -1505,6 +1746,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166527FBB70B00A553EC /* tipc.h in Headers */,
 				430235C52650AC3200823167 /* jni.h in Headers */,
 				430235AA2650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF86265EEC930024822F /* pipe.h in Headers */,
@@ -1537,6 +1779,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166B27FBB70B00A553EC /* tipc.h in Headers */,
 				430235CB2650AC3200823167 /* jni.h in Headers */,
 				430235B02650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF8C265EEC930024822F /* pipe.h in Headers */,
@@ -1569,6 +1812,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166127FBB70B00A553EC /* tipc.h in Headers */,
 				430235C22650AC3200823167 /* jni.h in Headers */,
 				430235A72650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF83265EEC930024822F /* pipe.h in Headers */,
@@ -1597,10 +1841,110 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		43684D81282EE24B005F2989 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43684D82282EE24B005F2989 /* tipc.h in Headers */,
+				43684D83282EE24B005F2989 /* jni.h in Headers */,
+				43684D84282EE24B005F2989 /* ancillary.h in Headers */,
+				43684D85282EE24B005F2989 /* pipe.h in Headers */,
+				43684D86282EE24B005F2989 /* init.h in Headers */,
+				43684D87282EE24B005F2989 /* send.h in Headers */,
+				43684D88282EE24B005F2989 /* listen.h in Headers */,
+				43684D89282EE24B005F2989 /* config.h in Headers */,
+				43684D8A282EE24B005F2989 /* socketpair.h in Headers */,
+				43684D8B282EE24B005F2989 /* connect.h in Headers */,
+				43684D8C282EE24B005F2989 /* jniutil.h in Headers */,
+				43684D8D282EE24B005F2989 /* socketoptions.h in Headers */,
+				43684D8E282EE24B005F2989 /* filedescriptors.h in Headers */,
+				43684D8F282EE24B005F2989 /* exceptions.h in Headers */,
+				43684D90282EE24B005F2989 /* capabilities.h in Headers */,
+				43684D91282EE24B005F2989 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				43684D92282EE24B005F2989 /* socket.h in Headers */,
+				43684D93282EE24B005F2989 /* ckmacros.h in Headers */,
+				43684D94282EE24B005F2989 /* address.h in Headers */,
+				43684D95282EE24B005F2989 /* polling.h in Headers */,
+				43684D96282EE24B005F2989 /* accept.h in Headers */,
+				43684D97282EE24B005F2989 /* reflection.h in Headers */,
+				43684D98282EE24B005F2989 /* jniport.h in Headers */,
+				43684D99282EE24B005F2989 /* receive.h in Headers */,
+				43684D9A282EE24B005F2989 /* credentials.h in Headers */,
+				43684D9B282EE24B005F2989 /* bind.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		436B5A8128244CB500574CD4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				436B5A8228244CB500574CD4 /* tipc.h in Headers */,
+				436B5A8328244CB500574CD4 /* jni.h in Headers */,
+				436B5A8428244CB500574CD4 /* ancillary.h in Headers */,
+				436B5A8528244CB500574CD4 /* pipe.h in Headers */,
+				436B5A8628244CB500574CD4 /* init.h in Headers */,
+				436B5A8728244CB500574CD4 /* send.h in Headers */,
+				436B5A8828244CB500574CD4 /* listen.h in Headers */,
+				436B5A8928244CB500574CD4 /* config.h in Headers */,
+				436B5A8A28244CB500574CD4 /* socketpair.h in Headers */,
+				436B5A8B28244CB500574CD4 /* connect.h in Headers */,
+				436B5A8C28244CB500574CD4 /* jniutil.h in Headers */,
+				436B5A8D28244CB500574CD4 /* socketoptions.h in Headers */,
+				436B5A8E28244CB500574CD4 /* filedescriptors.h in Headers */,
+				436B5A8F28244CB500574CD4 /* exceptions.h in Headers */,
+				436B5A9028244CB500574CD4 /* capabilities.h in Headers */,
+				436B5A9128244CB500574CD4 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				436B5A9228244CB500574CD4 /* socket.h in Headers */,
+				436B5A9328244CB500574CD4 /* ckmacros.h in Headers */,
+				436B5A9428244CB500574CD4 /* address.h in Headers */,
+				436B5A9528244CB500574CD4 /* polling.h in Headers */,
+				436B5A9628244CB500574CD4 /* accept.h in Headers */,
+				436B5A9728244CB500574CD4 /* reflection.h in Headers */,
+				436B5A9828244CB500574CD4 /* jniport.h in Headers */,
+				436B5A9928244CB500574CD4 /* receive.h in Headers */,
+				436B5A9A28244CB500574CD4 /* credentials.h in Headers */,
+				436B5A9B28244CB500574CD4 /* bind.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		436B5ABB2826F49A00574CD4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				436B5ABC2826F49A00574CD4 /* tipc.h in Headers */,
+				436B5ABD2826F49A00574CD4 /* jni.h in Headers */,
+				436B5ABE2826F49A00574CD4 /* ancillary.h in Headers */,
+				436B5ABF2826F49A00574CD4 /* pipe.h in Headers */,
+				436B5AC02826F49A00574CD4 /* init.h in Headers */,
+				436B5AC12826F49A00574CD4 /* send.h in Headers */,
+				436B5AC22826F49A00574CD4 /* listen.h in Headers */,
+				436B5AC32826F49A00574CD4 /* config.h in Headers */,
+				436B5AC42826F49A00574CD4 /* socketpair.h in Headers */,
+				436B5AC52826F49A00574CD4 /* connect.h in Headers */,
+				436B5AC62826F49A00574CD4 /* jniutil.h in Headers */,
+				436B5AC72826F49A00574CD4 /* socketoptions.h in Headers */,
+				436B5AC82826F49A00574CD4 /* filedescriptors.h in Headers */,
+				436B5AC92826F49A00574CD4 /* exceptions.h in Headers */,
+				436B5ACA2826F49A00574CD4 /* capabilities.h in Headers */,
+				436B5ACB2826F49A00574CD4 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
+				436B5ACC2826F49A00574CD4 /* socket.h in Headers */,
+				436B5ACD2826F49A00574CD4 /* ckmacros.h in Headers */,
+				436B5ACE2826F49A00574CD4 /* address.h in Headers */,
+				436B5ACF2826F49A00574CD4 /* polling.h in Headers */,
+				436B5AD02826F49A00574CD4 /* accept.h in Headers */,
+				436B5AD12826F49A00574CD4 /* reflection.h in Headers */,
+				436B5AD22826F49A00574CD4 /* jniport.h in Headers */,
+				436B5AD32826F49A00574CD4 /* receive.h in Headers */,
+				436B5AD42826F49A00574CD4 /* credentials.h in Headers */,
+				436B5AD52826F49A00574CD4 /* bind.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		43B3DFD026660A2D0024822F /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166E27FBB70B00A553EC /* tipc.h in Headers */,
 				43B3DFD126660A2D0024822F /* jni.h in Headers */,
 				43B3DFD226660A2D0024822F /* ancillary.h in Headers */,
 				43B3DFD326660A2D0024822F /* pipe.h in Headers */,
@@ -1633,6 +1977,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166F27FBB70B00A553EC /* tipc.h in Headers */,
 				43B3E00926672FD30024822F /* jni.h in Headers */,
 				43B3E00A26672FD30024822F /* ancillary.h in Headers */,
 				43B3E00B26672FD30024822F /* pipe.h in Headers */,
@@ -1665,6 +2010,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166327FBB70B00A553EC /* tipc.h in Headers */,
 				43B3E041266756540024822F /* jni.h in Headers */,
 				43B3E042266756540024822F /* ancillary.h in Headers */,
 				43B3E043266756540024822F /* pipe.h in Headers */,
@@ -1697,6 +2043,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E167027FBB70B00A553EC /* tipc.h in Headers */,
 				43B3E079266971630024822F /* jni.h in Headers */,
 				43B3E07A266971630024822F /* ancillary.h in Headers */,
 				43B3E07B266971630024822F /* pipe.h in Headers */,
@@ -1729,6 +2076,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166427FBB70B00A553EC /* tipc.h in Headers */,
 				430235C42650AC3200823167 /* jni.h in Headers */,
 				430235A92650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF85265EEC930024822F /* pipe.h in Headers */,
@@ -1761,6 +2109,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436E166A27FBB70B00A553EC /* tipc.h in Headers */,
 				430235CA2650AC3200823167 /* jni.h in Headers */,
 				430235AF2650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF8B265EEC930024822F /* pipe.h in Headers */,
@@ -1979,6 +2328,57 @@
 			productReference = 43663EE2261AECC400CEED08 /* libjunixsocket-current.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
+		43684D80282EE24B005F2989 /* aarch64-w64-mingw32 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43684DB4282EE24B005F2989 /* Build configuration list for PBXNativeTarget "aarch64-w64-mingw32" */;
+			buildPhases = (
+				43684D81282EE24B005F2989 /* Headers */,
+				43684D9C282EE24B005F2989 /* Sources */,
+				43684DB3282EE24B005F2989 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "aarch64-w64-mingw32";
+			productName = "junixsocket-native";
+			productReference = 43684DB7282EE24B005F2989 /* libjunixsocket-aarch64-w64-mingw32.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		436B5A8028244CB500574CD4 /* powerpc-ibm-aix7.2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 436B5AB428244CB500574CD4 /* Build configuration list for PBXNativeTarget "powerpc-ibm-aix7.2" */;
+			buildPhases = (
+				436B5A8128244CB500574CD4 /* Headers */,
+				436B5A9C28244CB500574CD4 /* Sources */,
+				436B5AB328244CB500574CD4 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "powerpc-ibm-aix7.2";
+			productName = "junixsocket-native";
+			productReference = 436B5AB728244CB500574CD4 /* libjunixsocket-powerpc-ibm-aix7.2.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		436B5ABA2826F49A00574CD4 /* powerpc-ibm-os400 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 436B5AEE2826F49A00574CD4 /* Build configuration list for PBXNativeTarget "powerpc-ibm-os400" */;
+			buildPhases = (
+				436B5ABB2826F49A00574CD4 /* Headers */,
+				436B5AD62826F49A00574CD4 /* Sources */,
+				436B5AED2826F49A00574CD4 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "powerpc-ibm-os400";
+			productName = "junixsocket-native";
+			productReference = 436B5AF12826F49A00574CD4 /* libjunixsocket-powerpc-ibm-os400.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 		43B3DFCF26660A2D0024822F /* x86_64-unknown-netbsd9.0 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 43B3E00126660A2D0024822F /* Build configuration list for PBXNativeTarget "x86_64-unknown-netbsd9.0" */;
@@ -2118,11 +2518,14 @@
 				432EF1F7261ADEDD00F4A583 /* armv6--linux-gnueabihf */,
 				432EF1AC261AD9FB00F4A583 /* i386-pc-solaris2.11_m64 */,
 				432EF1D9261ADDD400F4A583 /* powerpc64le-linux-gnu */,
+				436B5A8028244CB500574CD4 /* powerpc-ibm-aix7.2 */,
+				436B5ABA2826F49A00574CD4 /* powerpc-ibm-os400 */,
 				432EF1E8261ADE4900F4A583 /* riscv64-redhat-linux */,
 				432EF1BB261ADB5500F4A583 /* s390x-ibm-linux-gnu */,
 				43D436BB261A564C002D0C12 /* x86_64-alpine-linux-musl */,
 				432EF206261AE29200F4A583 /* x86_64-apple-darwin18.2.0 */,
 				432EF1C8261ADD6B00F4A583 /* x86_64-unknown-freebsd12.1 */,
+				43684D80282EE24B005F2989 /* aarch64-w64-mingw32 */,
 				432EF19D261AD6D700F4A583 /* x86_64-w64-mingw32 */,
 				43B3DFCF26660A2D0024822F /* x86_64-unknown-netbsd9.0 */,
 				43B3E00726672FD30024822F /* x86_64-unknown-linux-gnu */,
@@ -2150,6 +2553,7 @@
 				4304A617266DFCEF003BCEDF /* receive.c in Sources */,
 				4304A618266DFCEF003BCEDF /* jniutil.c in Sources */,
 				4304A619266DFCEF003BCEDF /* init.c in Sources */,
+				436E168227FBB70B00A553EC /* tipc.c in Sources */,
 				4304A61A266DFCEF003BCEDF /* config.c in Sources */,
 				4304A61B266DFCEF003BCEDF /* credentials.c in Sources */,
 				4304A61C266DFCEF003BCEDF /* socketpair.c in Sources */,
@@ -2178,6 +2582,7 @@
 				4302347C2650AB4E00823167 /* receive.c in Sources */,
 				4302341C2650AB4E00823167 /* jniutil.c in Sources */,
 				430234DC2650AB4F00823167 /* init.c in Sources */,
+				436E167327FBB70B00A553EC /* tipc.c in Sources */,
 				430233F82650AB4E00823167 /* config.c in Sources */,
 				430235B42650AB4F00823167 /* credentials.c in Sources */,
 				43B3DFB8266082000024822F /* socketpair.c in Sources */,
@@ -2206,6 +2611,7 @@
 				430234862650AB4E00823167 /* receive.c in Sources */,
 				430234262650AB4E00823167 /* jniutil.c in Sources */,
 				430234E62650AB4F00823167 /* init.c in Sources */,
+				436E167E27FBB70B00A553EC /* tipc.c in Sources */,
 				430234022650AB4E00823167 /* config.c in Sources */,
 				430235BE2650AB4F00823167 /* credentials.c in Sources */,
 				43B3DFC2266082000024822F /* socketpair.c in Sources */,
@@ -2234,6 +2640,7 @@
 				4302347F2650AB4E00823167 /* receive.c in Sources */,
 				4302341F2650AB4E00823167 /* jniutil.c in Sources */,
 				430234DF2650AB4F00823167 /* init.c in Sources */,
+				436E167727FBB70B00A553EC /* tipc.c in Sources */,
 				430233FB2650AB4E00823167 /* config.c in Sources */,
 				430235B72650AB4F00823167 /* credentials.c in Sources */,
 				43B3DFBB266082000024822F /* socketpair.c in Sources */,
@@ -2262,6 +2669,7 @@
 				430234822650AB4E00823167 /* receive.c in Sources */,
 				430234222650AB4E00823167 /* jniutil.c in Sources */,
 				430234E22650AB4F00823167 /* init.c in Sources */,
+				436E167A27FBB70B00A553EC /* tipc.c in Sources */,
 				430233FE2650AB4E00823167 /* config.c in Sources */,
 				430235BA2650AB4F00823167 /* credentials.c in Sources */,
 				43B3DFBE266082000024822F /* socketpair.c in Sources */,
@@ -2290,6 +2698,7 @@
 				430234852650AB4E00823167 /* receive.c in Sources */,
 				430234252650AB4E00823167 /* jniutil.c in Sources */,
 				430234E52650AB4F00823167 /* init.c in Sources */,
+				436E167D27FBB70B00A553EC /* tipc.c in Sources */,
 				430234012650AB4E00823167 /* config.c in Sources */,
 				430235BD2650AB4F00823167 /* credentials.c in Sources */,
 				43B3DFC1266082000024822F /* socketpair.c in Sources */,
@@ -2318,6 +2727,7 @@
 				430234802650AB4E00823167 /* receive.c in Sources */,
 				430234202650AB4E00823167 /* jniutil.c in Sources */,
 				430234E02650AB4F00823167 /* init.c in Sources */,
+				436E167827FBB70B00A553EC /* tipc.c in Sources */,
 				430233FC2650AB4E00823167 /* config.c in Sources */,
 				430235B82650AB4F00823167 /* credentials.c in Sources */,
 				43B3DFBC266082000024822F /* socketpair.c in Sources */,
@@ -2346,6 +2756,7 @@
 				430234812650AB4E00823167 /* receive.c in Sources */,
 				430234212650AB4E00823167 /* jniutil.c in Sources */,
 				430234E12650AB4F00823167 /* init.c in Sources */,
+				436E167927FBB70B00A553EC /* tipc.c in Sources */,
 				430233FD2650AB4E00823167 /* config.c in Sources */,
 				430235B92650AB4F00823167 /* credentials.c in Sources */,
 				43B3DFBD266082000024822F /* socketpair.c in Sources */,
@@ -2374,6 +2785,7 @@
 				4302347E2650AB4E00823167 /* receive.c in Sources */,
 				4302341E2650AB4E00823167 /* jniutil.c in Sources */,
 				430234DE2650AB4F00823167 /* init.c in Sources */,
+				436E167627FBB70B00A553EC /* tipc.c in Sources */,
 				430233FA2650AB4E00823167 /* config.c in Sources */,
 				430235B62650AB4F00823167 /* credentials.c in Sources */,
 				43B3DFBA266082000024822F /* socketpair.c in Sources */,
@@ -2402,6 +2814,7 @@
 				430234842650AB4E00823167 /* receive.c in Sources */,
 				430234242650AB4E00823167 /* jniutil.c in Sources */,
 				430234E42650AB4F00823167 /* init.c in Sources */,
+				436E167C27FBB70B00A553EC /* tipc.c in Sources */,
 				430234002650AB4E00823167 /* config.c in Sources */,
 				430235BC2650AB4F00823167 /* credentials.c in Sources */,
 				43B3DFC0266082000024822F /* socketpair.c in Sources */,
@@ -2430,6 +2843,7 @@
 				4302347B2650AB4E00823167 /* receive.c in Sources */,
 				4302341B2650AB4E00823167 /* jniutil.c in Sources */,
 				430234DB2650AB4F00823167 /* init.c in Sources */,
+				436E167227FBB70B00A553EC /* tipc.c in Sources */,
 				430233F72650AB4E00823167 /* config.c in Sources */,
 				430235B32650AB4F00823167 /* credentials.c in Sources */,
 				43B3DFB7266082000024822F /* socketpair.c in Sources */,
@@ -2438,6 +2852,93 @@
 				430234AB2650AB4E00823167 /* listen.c in Sources */,
 				430234332650AB4E00823167 /* ancillary.c in Sources */,
 				430233DF2650AB4E00823167 /* accept.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		43684D9C282EE24B005F2989 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43684D9D282EE24B005F2989 /* filedescriptors.c in Sources */,
+				43684D9E282EE24B005F2989 /* bind.c in Sources */,
+				43684D9F282EE24B005F2989 /* address.c in Sources */,
+				43684DA0282EE24B005F2989 /* send.c in Sources */,
+				43684DA1282EE24B005F2989 /* socket.c in Sources */,
+				43684DA2282EE24B005F2989 /* pipe.c in Sources */,
+				43684DA3282EE24B005F2989 /* connect.c in Sources */,
+				43684DA4282EE24B005F2989 /* capabilities.c in Sources */,
+				43684DA5282EE24B005F2989 /* socketoptions.c in Sources */,
+				43684DA6282EE24B005F2989 /* polling.c in Sources */,
+				43684DA7282EE24B005F2989 /* receive.c in Sources */,
+				43684DA8282EE24B005F2989 /* jniutil.c in Sources */,
+				43684DA9282EE24B005F2989 /* init.c in Sources */,
+				43684DAA282EE24B005F2989 /* tipc.c in Sources */,
+				43684DAB282EE24B005F2989 /* config.c in Sources */,
+				43684DAC282EE24B005F2989 /* credentials.c in Sources */,
+				43684DAD282EE24B005F2989 /* socketpair.c in Sources */,
+				43684DAE282EE24B005F2989 /* exceptions.c in Sources */,
+				43684DAF282EE24B005F2989 /* reflection.c in Sources */,
+				43684DB0282EE24B005F2989 /* listen.c in Sources */,
+				43684DB1282EE24B005F2989 /* ancillary.c in Sources */,
+				43684DB2282EE24B005F2989 /* accept.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		436B5A9C28244CB500574CD4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				436B5A9D28244CB500574CD4 /* filedescriptors.c in Sources */,
+				436B5A9E28244CB500574CD4 /* bind.c in Sources */,
+				436B5A9F28244CB500574CD4 /* address.c in Sources */,
+				436B5AA028244CB500574CD4 /* send.c in Sources */,
+				436B5AA128244CB500574CD4 /* socket.c in Sources */,
+				436B5AA228244CB500574CD4 /* pipe.c in Sources */,
+				436B5AA328244CB500574CD4 /* connect.c in Sources */,
+				436B5AA428244CB500574CD4 /* capabilities.c in Sources */,
+				436B5AA528244CB500574CD4 /* socketoptions.c in Sources */,
+				436B5AA628244CB500574CD4 /* polling.c in Sources */,
+				436B5AA728244CB500574CD4 /* receive.c in Sources */,
+				436B5AA828244CB500574CD4 /* jniutil.c in Sources */,
+				436B5AA928244CB500574CD4 /* init.c in Sources */,
+				436B5AAA28244CB500574CD4 /* tipc.c in Sources */,
+				436B5AAB28244CB500574CD4 /* config.c in Sources */,
+				436B5AAC28244CB500574CD4 /* credentials.c in Sources */,
+				436B5AAD28244CB500574CD4 /* socketpair.c in Sources */,
+				436B5AAE28244CB500574CD4 /* exceptions.c in Sources */,
+				436B5AAF28244CB500574CD4 /* reflection.c in Sources */,
+				436B5AB028244CB500574CD4 /* listen.c in Sources */,
+				436B5AB128244CB500574CD4 /* ancillary.c in Sources */,
+				436B5AB228244CB500574CD4 /* accept.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		436B5AD62826F49A00574CD4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				436B5AD72826F49A00574CD4 /* filedescriptors.c in Sources */,
+				436B5AD82826F49A00574CD4 /* bind.c in Sources */,
+				436B5AD92826F49A00574CD4 /* address.c in Sources */,
+				436B5ADA2826F49A00574CD4 /* send.c in Sources */,
+				436B5ADB2826F49A00574CD4 /* socket.c in Sources */,
+				436B5ADC2826F49A00574CD4 /* pipe.c in Sources */,
+				436B5ADD2826F49A00574CD4 /* connect.c in Sources */,
+				436B5ADE2826F49A00574CD4 /* capabilities.c in Sources */,
+				436B5ADF2826F49A00574CD4 /* socketoptions.c in Sources */,
+				436B5AE02826F49A00574CD4 /* polling.c in Sources */,
+				436B5AE12826F49A00574CD4 /* receive.c in Sources */,
+				436B5AE22826F49A00574CD4 /* jniutil.c in Sources */,
+				436B5AE32826F49A00574CD4 /* init.c in Sources */,
+				436B5AE42826F49A00574CD4 /* tipc.c in Sources */,
+				436B5AE52826F49A00574CD4 /* config.c in Sources */,
+				436B5AE62826F49A00574CD4 /* credentials.c in Sources */,
+				436B5AE72826F49A00574CD4 /* socketpair.c in Sources */,
+				436B5AE82826F49A00574CD4 /* exceptions.c in Sources */,
+				436B5AE92826F49A00574CD4 /* reflection.c in Sources */,
+				436B5AEA2826F49A00574CD4 /* listen.c in Sources */,
+				436B5AEB2826F49A00574CD4 /* ancillary.c in Sources */,
+				436B5AEC2826F49A00574CD4 /* accept.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2458,6 +2959,7 @@
 				43B3DFF526660A2D0024822F /* receive.c in Sources */,
 				43B3DFF626660A2D0024822F /* jniutil.c in Sources */,
 				43B3DFF726660A2D0024822F /* init.c in Sources */,
+				436E167F27FBB70B00A553EC /* tipc.c in Sources */,
 				43B3DFF826660A2D0024822F /* config.c in Sources */,
 				43B3DFF926660A2D0024822F /* credentials.c in Sources */,
 				43B3DFFA26660A2D0024822F /* socketpair.c in Sources */,
@@ -2486,6 +2988,7 @@
 				43B3E02D26672FD30024822F /* receive.c in Sources */,
 				43B3E02E26672FD30024822F /* jniutil.c in Sources */,
 				43B3E02F26672FD30024822F /* init.c in Sources */,
+				436E168027FBB70B00A553EC /* tipc.c in Sources */,
 				43B3E03026672FD30024822F /* config.c in Sources */,
 				43B3E03126672FD30024822F /* credentials.c in Sources */,
 				43B3E03226672FD30024822F /* socketpair.c in Sources */,
@@ -2514,6 +3017,7 @@
 				43B3E065266756540024822F /* receive.c in Sources */,
 				43B3E066266756540024822F /* jniutil.c in Sources */,
 				43B3E067266756540024822F /* init.c in Sources */,
+				436E167427FBB70B00A553EC /* tipc.c in Sources */,
 				43B3E068266756540024822F /* config.c in Sources */,
 				43B3E069266756540024822F /* credentials.c in Sources */,
 				43B3E06A266756540024822F /* socketpair.c in Sources */,
@@ -2542,6 +3046,7 @@
 				43B3E09D266971630024822F /* receive.c in Sources */,
 				43B3E09E266971630024822F /* jniutil.c in Sources */,
 				43B3E09F266971630024822F /* init.c in Sources */,
+				436E168127FBB70B00A553EC /* tipc.c in Sources */,
 				43B3E0A0266971630024822F /* config.c in Sources */,
 				43B3E0A1266971630024822F /* credentials.c in Sources */,
 				43B3E0A2266971630024822F /* socketpair.c in Sources */,
@@ -2570,6 +3075,7 @@
 				4302347D2650AB4E00823167 /* receive.c in Sources */,
 				4302341D2650AB4E00823167 /* jniutil.c in Sources */,
 				430234DD2650AB4F00823167 /* init.c in Sources */,
+				436E167527FBB70B00A553EC /* tipc.c in Sources */,
 				430233F92650AB4E00823167 /* config.c in Sources */,
 				430235B52650AB4F00823167 /* credentials.c in Sources */,
 				43B3DFB9266082000024822F /* socketpair.c in Sources */,
@@ -2598,6 +3104,7 @@
 				430234832650AB4E00823167 /* receive.c in Sources */,
 				430234232650AB4E00823167 /* jniutil.c in Sources */,
 				430234E32650AB4F00823167 /* init.c in Sources */,
+				436E167B27FBB70B00A553EC /* tipc.c in Sources */,
 				430233FF2650AB4E00823167 /* config.c in Sources */,
 				430235BB2650AB4F00823167 /* credentials.c in Sources */,
 				43B3DFBF266082000024822F /* socketpair.c in Sources */,
@@ -2672,6 +3179,21 @@
 			target = 432EF1F7261ADEDD00F4A583 /* armv6--linux-gnueabihf */;
 			targetProxy = 432EF204261AE01000F4A583 /* PBXContainerItemProxy */;
 		};
+		43684DB9282EE2CA005F2989 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 43684D80282EE24B005F2989 /* aarch64-w64-mingw32 */;
+			targetProxy = 43684DB8282EE2CA005F2989 /* PBXContainerItemProxy */;
+		};
+		436B5AB928244D5700574CD4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 436B5A8028244CB500574CD4 /* powerpc-ibm-aix7.2 */;
+			targetProxy = 436B5AB828244D5700574CD4 /* PBXContainerItemProxy */;
+		};
+		436B5AF32827E55000574CD4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 436B5ABA2826F49A00574CD4 /* powerpc-ibm-os400 */;
+			targetProxy = 436B5AF22827E55000574CD4 /* PBXContainerItemProxy */;
+		};
 		43B3E00626660A7A0024822F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 43B3DFCF26660A2D0024822F /* x86_64-unknown-netbsd9.0 */;
@@ -2725,7 +3247,7 @@
 					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -2754,7 +3276,7 @@
 					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -2797,7 +3319,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -2822,7 +3344,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -2852,7 +3374,7 @@
 					"-Xcrossclang-output-strip-lib-prefix",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -2882,7 +3404,7 @@
 					"-Xcrossclang-output-strip-lib-prefix",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -2909,7 +3431,7 @@
 					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -2936,7 +3458,7 @@
 					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -2962,7 +3484,7 @@
 					"-fno-lto",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -2988,7 +3510,7 @@
 					"-fno-lto",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -3013,7 +3535,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -3038,7 +3560,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -3063,7 +3585,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -3088,7 +3610,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -3117,7 +3639,7 @@
 					llvm,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -3146,7 +3668,7 @@
 					llvm,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -3171,7 +3693,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -3196,7 +3718,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -3302,6 +3824,216 @@
 			};
 			name = Release;
 		};
+		43684DB5282EE24B005F2989 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CROSSCLANG_TARGET = "aarch64-w64-mingw32";
+				EXECUTABLE_EXTENSION = so;
+				LD_DEPENDENCY_INFO_FILE = "";
+				LD_LTO_OBJECT_FILE = "";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-Xcrossclang-use-gcc=aarch64-w64-mingw32-gcc",
+				);
+				OTHER_LDFLAGS = (
+					"$(inheritedx)",
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-lws2_32",
+					"-ladvapi32",
+					"-lmswsock",
+					"-Xcrossclang-use-gcc=aarch64-w64-mingw32-gcc",
+					"-Xcrossclang-output-strip-lib-prefix",
+					"-Xcrossclang-ignore-export-dynamic",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = crossclang.macosx1.0;
+			};
+			name = Debug;
+		};
+		43684DB6282EE24B005F2989 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CROSSCLANG_TARGET = "aarch64-w64-mingw32";
+				EXECUTABLE_EXTENSION = so;
+				LD_DEPENDENCY_INFO_FILE = "";
+				LD_LTO_OBJECT_FILE = "";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-Xcrossclang-use-gcc=aarch64-w64-mingw32-gcc",
+				);
+				OTHER_LDFLAGS = (
+					"$(inheritedx)",
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-lWs2_32",
+					"-lAdvApi32",
+					"-lMswsock",
+					"-Xcrossclang-use-gcc=aarch64-w64-mingw32-gcc",
+					"-Xcrossclang-output-strip-lib-prefix",
+					"-Xcrossclang-ignore-export-dynamic",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = crossclang.macosx1.0;
+			};
+			name = Release;
+		};
+		436B5AB528244CB500574CD4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CROSSCLANG_TARGET = "powerpc-ibm-aix7.2.0.0";
+				EXECUTABLE_EXTENSION = so;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					_THREAD_SAFE_ERRNO,
+					"_BSD=44",
+					"DEBUG=1",
+				);
+				LD_DEPENDENCY_INFO_FILE = "";
+				LD_LTO_OBJECT_FILE = "";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-fPIC",
+					"-Xcrossclang-use-gcc=powerpc-ibm-aix7.2-gcc",
+					"-maix64",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-Xcrossclang-use-gcc=powerpc-ibm-aix7.2-gcc",
+					"-maix64",
+					"-static-libgcc",
+					"-s",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = NO;
+				SDKROOT = crossclang.macosx1.0;
+			};
+			name = Debug;
+		};
+		436B5AB628244CB500574CD4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CROSSCLANG_TARGET = "powerpc-ibm-aix7.2.0.0";
+				EXECUTABLE_EXTENSION = so;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					_THREAD_SAFE_ERRNO,
+					"_BSD=44",
+				);
+				LD_DEPENDENCY_INFO_FILE = "";
+				LD_LTO_OBJECT_FILE = "";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-fPIC",
+					"-Xcrossclang-use-gcc=powerpc-ibm-aix7.2-gcc",
+					"-maix64",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-Xcrossclang-use-gcc=powerpc-ibm-aix7.2-gcc",
+					"-maix64",
+					"-static-libgcc",
+					"-s",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = NO;
+				SDKROOT = crossclang.macosx1.0;
+			};
+			name = Release;
+		};
+		436B5AEF2826F49A00574CD4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CROSSCLANG_TARGET = "powerpc-ibm-os400";
+				EXECUTABLE_EXTENSION = so;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					_THREAD_SAFE_ERRNO,
+					"_BSD=44",
+					"DEBUG=1",
+					_OS400,
+				);
+				LD_DEPENDENCY_INFO_FILE = "";
+				LD_LTO_OBJECT_FILE = "";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-fPIC",
+					"-Xcrossclang-use-gcc=powerpc-ibm-aix7.2-gcc",
+					"-maix64",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-target",
+					"powerpc-ibm-aix7.2.0.0",
+					"-Xcrossclang-use-gcc=powerpc-ibm-aix7.2-gcc",
+					"-maix64",
+					"-static-libgcc",
+					"-s",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = NO;
+				SDKROOT = crossclang.macosx1.0;
+			};
+			name = Debug;
+		};
+		436B5AF02826F49A00574CD4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CROSSCLANG_TARGET = "powerpc-ibm-os400";
+				EXECUTABLE_EXTENSION = so;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					_THREAD_SAFE_ERRNO,
+					"_BSD=44",
+					_OS400,
+				);
+				LD_DEPENDENCY_INFO_FILE = "";
+				LD_LTO_OBJECT_FILE = "";
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-target",
+					"$(CROSSCLANG_TARGET)",
+					"-fPIC",
+					"-Xcrossclang-use-gcc=powerpc-ibm-aix7.2-gcc",
+					"-maix64",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-target",
+					"powerpc-ibm-aix7.2.0.0",
+					"-Xcrossclang-use-gcc=powerpc-ibm-aix7.2-gcc",
+					"-maix64",
+					"-static-libgcc",
+					"-s",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUN_CLANG_STATIC_ANALYZER = NO;
+				SDKROOT = crossclang.macosx1.0;
+			};
+			name = Release;
+		};
 		43B3E00226660A2D0024822F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3324,7 +4056,7 @@
 					"-Wl,--no-rosegment,--disable-new-dtags,-znognustack,-znoseparate-code,-znorelro",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -3350,7 +4082,7 @@
 					"-Wl,--no-rosegment,--disable-new-dtags,-znognustack,-znoseparate-code,-znorelro",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -3375,7 +4107,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -3400,7 +4132,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -3426,7 +4158,7 @@
 					"-Wl,--no-rosegment,--disable-new-dtags",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -3452,7 +4184,7 @@
 					"-Wl,--no-rosegment,--disable-new-dtags",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -3485,7 +4217,7 @@
 					"-lrt",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Debug;
 		};
@@ -3518,7 +4250,7 @@
 					"-lrt",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
 			};
 			name = Release;
 		};
@@ -3751,7 +4483,12 @@
 					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
+				SYSTEM_HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)$(CROSSCLANGROOT)/usr/include",
+					"/opt/crossclang/target-sdks/x86_64-alpine-linux-musl/usr/include",
+				);
 			};
 			name = Debug;
 		};
@@ -3778,7 +4515,12 @@
 					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang;
+				SDKROOT = crossclang.macosx1.0;
+				SYSTEM_HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)$(CROSSCLANGROOT)/usr/include",
+					"/opt/crossclang/target-sdks/x86_64-alpine-linux-musl/usr/include",
+				);
 			};
 			name = Release;
 		};
@@ -3889,6 +4631,33 @@
 			buildConfigurations = (
 				43663EE0261AECC400CEED08 /* Debug */,
 				43663EE1261AECC400CEED08 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		43684DB4282EE24B005F2989 /* Build configuration list for PBXNativeTarget "aarch64-w64-mingw32" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				43684DB5282EE24B005F2989 /* Debug */,
+				43684DB6282EE24B005F2989 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		436B5AB428244CB500574CD4 /* Build configuration list for PBXNativeTarget "powerpc-ibm-aix7.2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				436B5AB528244CB500574CD4 /* Debug */,
+				436B5AB628244CB500574CD4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		436B5AEE2826F49A00574CD4 /* Build configuration list for PBXNativeTarget "powerpc-ibm-os400" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				436B5AEF2826F49A00574CD4 /* Debug */,
+				436B5AF02826F49A00574CD4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -24,6 +24,19 @@
 
 static jboolean doSetServerSocket = true;
 
+static jclass kClassAbstractSelectableChannel;
+static jmethodID kMethodRemoveKey;
+
+void init_reflection(JNIEnv *env) {
+    kClassAbstractSelectableChannel = findClassAndGlobalRef(env, "java/nio/channels/spi/AbstractSelectableChannel");
+    if(kClassAbstractSelectableChannel) {
+        kMethodRemoveKey = (*env)->GetMethodID(env, kClassAbstractSelectableChannel, "removeKey", "(Ljava/nio/channels/SelectionKey;)V");
+    }
+}
+void destroy_reflection(JNIEnv *env) {
+    releaseClassGlobalRef(env, kClassAbstractSelectableChannel);
+}
+
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    initServerImpl
@@ -131,4 +144,22 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_currentRMI
     jobject socket = (*env)->GetObjectField(env, connHandler, socketField);
 
     return socket;
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    deregisterSelectionKey
+ * Signature: (Ljava/nio/channels/spi/AbstractSelectableChannel;Ljava/nio/channels/SelectionKey;)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_deregisterSelectionKey
+ (JNIEnv * env, jclass clazz CK_UNUSED, jobject chann, jobject key)
+{
+    if(chann == NULL) {
+        return;
+    }
+    if(kMethodRemoveKey != NULL) {
+        (*env)->CallVoidMethod(env, chann, kMethodRemoveKey, key);
+    } else {
+        // FIXME
+    }
 }

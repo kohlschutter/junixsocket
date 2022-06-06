@@ -119,7 +119,7 @@ The files can be found in
     mvn clean install -Pstrict -Prelease
 
     # after gpgkeyname, specify the key you want to use for signing
-    mvn deploy -Pstrict -Prelease -Psigned -Dgpgkeyname=5034B... -Dgpg.executable=$(which gpg)
+    mvn deploy -Pstrict -Prelease -Psigned -Dgpgkeyname=your@email.com -Dgpg.executable=$(which gpg)
     
 ##### Notes
 

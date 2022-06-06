@@ -17,27 +17,16 @@
  */
 package org.newsclub.net.unix;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
-import java.net.SocketAddress;
-import java.net.SocketOption;
-import java.nio.channels.ServerSocketChannel;
-import java.util.Set;
-
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A selectable channel for stream-oriented listening sockets.
  * 
  * @author Christian Kohlschütter
  */
-public final class AFUNIXServerSocketChannel extends ServerSocketChannel implements
-    FileDescriptorAccess {
-  private final AFUNIXServerSocket afSocket;
-
+public final class AFUNIXServerSocketChannel extends AFServerSocketChannel<AFUNIXSocketAddress> {
   AFUNIXServerSocketChannel(AFUNIXServerSocket socket) {
-    super(AFUNIXSelectorProvider.getInstance());
-    this.afSocket = socket;
+    super(socket, AFUNIXSelectorProvider.getInstance());
   }
 
   /**
@@ -47,75 +36,11 @@ public final class AFUNIXServerSocketChannel extends ServerSocketChannel impleme
    * @throws IOException on error.
    */
   public static AFUNIXServerSocketChannel open() throws IOException {
-    return AFUNIXSelectorProvider.provider().openServerSocketChannel();
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public <T> T getOption(SocketOption<T> name) throws IOException {
-    Integer optionId = SocketOptionsMapper.resolve(name);
-    if (optionId == null) {
-      throw new UnsupportedOperationException("unsupported option");
-    } else {
-      return (T) afSocket.getAFImpl().getOption(optionId.intValue());
-    }
-  }
-
-  @Override
-  public <T> AFUNIXServerSocketChannel setOption(SocketOption<T> name, T value) throws IOException {
-    Integer optionId = SocketOptionsMapper.resolve(name);
-    if (optionId == null) {
-      throw new UnsupportedOperationException("unsupported option");
-    } else {
-      afSocket.getAFImpl().setOption(optionId.intValue(), value);
-    }
-    return this;
-  }
-
-  @Override
-  public Set<SocketOption<?>> supportedOptions() {
-    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;
-  }
-
-  @Override
-  public AFUNIXServerSocketChannel bind(SocketAddress local, int backlog) throws IOException {
-    afSocket.bind(local, backlog);
-    return this;
-  }
-
-  @SuppressFBWarnings("EI_EXPOSE_REP")
-  @Override
-  public AFUNIXServerSocket socket() {
-    return afSocket;
+    return AFUNIXServerSocket.newInstance().getChannel();
   }
 
   @Override
   public AFUNIXSocketChannel accept() throws IOException {
-    AFUNIXSocket socket = afSocket.accept();
-    return socket == null ? null : socket.getChannel();
-  }
-
-  @Override
-  public AFUNIXSocketAddress getLocalAddress() throws IOException {
-    return afSocket.getLocalSocketAddress();
-  }
-
-  @Override
-  protected void implCloseSelectableChannel() throws IOException {
-    afSocket.close();
-  }
-
-  @Override
-  protected void implConfigureBlocking(boolean block) throws IOException {
-    getAFCore().implConfigureBlocking(block);
-  }
-
-  AFUNIXSocketCore getAFCore() {
-    return afSocket.getAFImpl().getCore();
-  }
-
-  @Override
-  public FileDescriptor getFileDescriptor() throws IOException {
-    return afSocket.getFileDescriptor();
+    return (AFUNIXSocketChannel) super.accept();
   }
 }

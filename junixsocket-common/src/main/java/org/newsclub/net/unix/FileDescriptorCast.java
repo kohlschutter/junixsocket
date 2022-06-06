@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ProcessBuilder.Redirect;
 import java.net.Socket;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -39,10 +41,10 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 /**
  * Provides object-oriented access to file descriptors via {@link InputStream}, {@link Socket},
  * etc., depending on the file descriptor type.
- * 
+ * <p>
  * Typical usage:
- * 
- * <code>
+ * </p>
+ * <pre><code>
  * FileDescriptor fd;
  * 
  * // succeeds if fd refers to an AF_UNIX stream socket
@@ -54,22 +56,33 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * // always succeeds
  * InputStream in = FileDescriptorCast.using(fd).as(InputStream.class); 
  * OutputStream in = FileDescriptorCast.using(fd).as(OutputStream.class); 
- * </code>
- * 
+ * </code></pre>
+ * <p>
  * IMPORTANT: On some platforms (e.g., Solaris, Illumos) you may need to re-apply a read timeout
  * (e.g., using {@link Socket#setSoTimeout(int)}) after obtaining the socket.
+ * </p>
+ * <p>
+ * Note that you may also lose Java port information for {@link AFSocketAddress} implementations
+ * that do not encode this information directly (such as {@link AFUNIXSocketAddress} and
+ * {@link AFTIPCSocketAddress}).
+ * </p>
  * 
  * @author Christian Kohlschütter
  */
 public final class FileDescriptorCast implements FileDescriptorAccess {
+  private static final Map<Class<?>, CastingProviderMap> PRIMARY_TYPE_PROVIDERS_MAP = Collections
+      .synchronizedMap(new HashMap<>());
+
   private final FileDescriptor fdObj;
 
   private int localPort = 0;
   private int remotePort = 0;
 
+  private static final Function<FileDescriptor, FileInputStream> FD_IS_PROVIDER = System
+      .getProperty("osv.version") != null ? LenientFileInputStream::new : FileInputStream::new;
+
   private static final CastingProviderMap GLOBAL_PROVIDERS_FINAL = new CastingProviderMap() {
 
-    @SuppressWarnings("null")
     @Override
     protected void addProviders() {
       // FileDescriptor and Object cannot be overridden
@@ -84,7 +97,6 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   };
 
   private static final CastingProviderMap GLOBAL_PROVIDERS = new CastingProviderMap() {
-    @SuppressWarnings("null")
     @Override
     protected void addProviders() {
       addProvider(WritableByteChannel.class, new CastingProvider<WritableByteChannel>() {
@@ -100,7 +112,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
         @Override
         public ReadableByteChannel provideAs(FileDescriptorCast fdc,
             Class<? super ReadableByteChannel> desiredType) throws IOException {
-          return new FileInputStream(fdc.getFileDescriptor()).getChannel();
+          return FD_IS_PROVIDER.apply(fdc.getFileDescriptor()).getChannel();
         }
       });
 
@@ -123,14 +135,26 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
         @Override
         public FileInputStream provideAs(FileDescriptorCast fdc,
             Class<? super FileInputStream> desiredType) throws IOException {
-          return new FileInputStream(fdc.getFileDescriptor());
+          return FD_IS_PROVIDER.apply(fdc.getFileDescriptor());
         }
       });
+
+      if (AFSocket.supports(AFSocketCapability.CAPABILITY_FD_AS_REDIRECT)) {
+        addProvider(Redirect.class, new CastingProvider<Redirect>() {
+          @Override
+          public Redirect provideAs(FileDescriptorCast fdc, Class<? super Redirect> desiredType)
+              throws IOException {
+
+            Redirect red = NativeUnixSocket.initRedirect(fdc.getFileDescriptor());
+            if (red == null) {
+              throw new ClassCastException("Cannot access file descriptor as " + desiredType);
+            }
+            return red;
+          }
+        });
+      }
     }
   };
-
-  private static final Map<Class<?>, CastingProviderMap> PRIMARY_TYPE_PROVIDERS_MAP =
-      new HashMap<>();
 
   private final CastingProviderMap cpm;
 
@@ -139,82 +163,61 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
     this.cpm = Objects.requireNonNull(cpm);
   }
 
-  static {
-    registerCastingProviders(AFUNIXSocket.class, new CastingProviderMap() {
-
-      @SuppressWarnings("null")
-      @Override
-      protected void addProviders() {
-        addProviders(GLOBAL_PROVIDERS);
-
-        final CastingProvider<AFUNIXSocket> cpSocket = new CastingProvider<AFUNIXSocket>() {
-          @Override
-          public AFUNIXSocket provideAs(FileDescriptorCast fdc,
-              Class<? super AFUNIXSocket> desiredType) throws IOException {
-            return AFUNIXSocket.newInstance(fdc.getFileDescriptor(), fdc.localPort, fdc.remotePort);
-          }
-        };
-        final CastingProvider<AFUNIXServerSocket> cpServerSocket =
-            new CastingProvider<AFUNIXServerSocket>() {
-              @Override
-              public AFUNIXServerSocket provideAs(FileDescriptorCast fdc,
-                  Class<? super AFUNIXServerSocket> desiredType) throws IOException {
-                return AFUNIXServerSocket.newInstance(fdc.getFileDescriptor(), fdc.localPort,
-                    fdc.remotePort);
-              }
-            };
-
-        addProvider(AFUNIXSocketChannel.class, new CastingProvider<AFUNIXSocketChannel>() {
-          @Override
-          public AFUNIXSocketChannel provideAs(FileDescriptorCast fdc,
-              Class<? super AFUNIXSocketChannel> desiredType) throws IOException {
-            return cpSocket.provideAs(fdc, AFUNIXSocket.class).getChannel();
-          }
-        });
-        addProvider(AFUNIXServerSocketChannel.class,
-            new CastingProvider<AFUNIXServerSocketChannel>() {
-              @Override
-              public AFUNIXServerSocketChannel provideAs(FileDescriptorCast fdc,
-                  Class<? super AFUNIXServerSocketChannel> desiredType) throws IOException {
-                return cpServerSocket.provideAs(fdc, AFUNIXServerSocket.class).getChannel();
-              }
-            });
-        addProvider(AFUNIXSocket.class, cpSocket);
-        addProvider(AFUNIXServerSocket.class, cpServerSocket);
-      }
-    });
-
-    registerCastingProviders(AFUNIXDatagramSocket.class, new CastingProviderMap() {
-
-      @SuppressWarnings("null")
-      @Override
-      protected void addProviders() {
-        addProviders(GLOBAL_PROVIDERS);
-
-        final CastingProvider<AFUNIXDatagramSocket> cpDatagramSocket =
-            new CastingProvider<AFUNIXDatagramSocket>() {
-              @Override
-              public AFUNIXDatagramSocket provideAs(FileDescriptorCast fdc,
-                  Class<? super AFUNIXDatagramSocket> desiredType) throws IOException {
-                return AFUNIXDatagramSocket.newInstance(fdc.getFileDescriptor(), fdc.localPort,
-                    fdc.remotePort);
-              }
-            };
-
-        addProvider(AFUNIXDatagramChannel.class, new CastingProvider<AFUNIXDatagramChannel>() {
-          @Override
-          public AFUNIXDatagramChannel provideAs(FileDescriptorCast fdc,
-              Class<? super AFUNIXDatagramChannel> desiredType) throws IOException {
-            return cpDatagramSocket.provideAs(fdc, AFUNIXDatagramSocket.class).getChannel();
-          }
-        });
-        addProvider(AFUNIXDatagramSocket.class, cpDatagramSocket);
-      }
-    });
+  private static void registerCastingProviders(Class<?> primaryType, CastingProviderMap cpm) {
+    Objects.requireNonNull(primaryType);
+    CastingProviderMap prev;
+    if ((prev = PRIMARY_TYPE_PROVIDERS_MAP.put(primaryType, cpm)) != null) {
+      PRIMARY_TYPE_PROVIDERS_MAP.put(primaryType, prev);
+      throw new IllegalStateException("Already registered: " + primaryType);
+    }
   }
 
-  private static void registerCastingProviders(Class<?> primaryType, CastingProviderMap cpm) {
-    PRIMARY_TYPE_PROVIDERS_MAP.put(primaryType, cpm);
+  static <A extends AFSocketAddress> void registerCastingProviders(
+      AFAddressFamilyConfig<A> config) {
+    Class<? extends AFSocket<A>> socketClass = config.socketClass();
+    Class<? extends AFDatagramSocket<A>> datagramSocketClass = config.datagramSocketClass();
+
+    registerCastingProviders(socketClass, new CastingProviderMap() {
+
+      @SuppressWarnings("null")
+      @Override
+      protected void addProviders() {
+        addProviders(GLOBAL_PROVIDERS);
+
+        final CastingProvider<AFSocket<A>> cpSocket = (fdc, desiredType) -> AFSocket.newInstance(
+            config.socketConstructor(), (AFSocketFactory<A>) null, fdc.getFileDescriptor(),
+            fdc.localPort, fdc.remotePort);
+        final CastingProvider<AFServerSocket<A>> cpServerSocket = (fdc,
+            desiredType) -> AFServerSocket.newInstance(config.serverSocketConstructor(), fdc
+                .getFileDescriptor(), fdc.localPort, fdc.remotePort);
+
+        addProvider(socketClass, cpSocket);
+        addProvider(config.serverSocketClass(), cpServerSocket);
+
+        addProvider(config.socketChannelClass(), (fdc, desiredType) -> cpSocket.provideAs(fdc,
+            AFSocket.class).getChannel());
+        addProvider(config.serverSocketChannelClass(), (fdc, desiredType) -> cpServerSocket
+            .provideAs(fdc, AFServerSocket.class).getChannel());
+      }
+    });
+
+    registerCastingProviders(datagramSocketClass, new CastingProviderMap() {
+
+      @SuppressWarnings("null")
+      @Override
+      protected void addProviders() {
+        addProviders(GLOBAL_PROVIDERS);
+
+        final CastingProvider<AFDatagramSocket<A>> cpDatagramSocket = (fdc,
+            desiredType) -> AFDatagramSocket.newInstance(config.datagramSocketConstructor(), fdc
+                .getFileDescriptor(), fdc.localPort, fdc.remotePort);
+
+        addProvider(datagramSocketClass, cpDatagramSocket);
+
+        addProvider(config.datagramChannelClass(), (fdc, desiredType) -> cpDatagramSocket.provideAs(
+            fdc, AFDatagramSocket.class).getChannel());
+      }
+    });
   }
 
   private abstract static class CastingProviderMap {
@@ -229,7 +232,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
 
     protected abstract void addProviders();
 
-    protected final <T> void addProvider(Class<T> type, CastingProvider<? extends T> cp) {
+    protected final <T> void addProvider(Class<T> type, CastingProvider<?> cp) {
       Objects.requireNonNull(type);
 
       addProvider0(type, cp);
@@ -260,6 +263,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
     }
   }
 
+  @FunctionalInterface
   private interface CastingProvider<T> {
     T provideAs(FileDescriptorCast fdc, Class<? super T> desiredType) throws IOException;
   }
@@ -276,13 +280,20 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
     if (!fdObj.valid()) {
       throw new IOException("Not a valid file descriptor");
     }
-    Class<?> primaryType = NativeUnixSocket.primaryType(fdObj);
+    Class<?> primaryType = NativeUnixSocket.isLoaded() ? NativeUnixSocket.primaryType(fdObj) : null;
     if (primaryType == null) {
-      throw new IOException("Unsupported file descriptor");
+      primaryType = FileDescriptor.class;
     }
+
+    triggerInit();
 
     CastingProviderMap map = PRIMARY_TYPE_PROVIDERS_MAP.get(primaryType);
     return new FileDescriptorCast(fdObj, map == null ? GLOBAL_PROVIDERS : map);
+  }
+
+  private static void triggerInit() {
+    AFUNIXSocketAddress.addressFamily().getClass(); // trigger registration
+    AFTIPCSocketAddress.addressFamily().getClass(); // trigger registration
   }
 
   /**
@@ -370,5 +381,25 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   @SuppressFBWarnings("EI_EXPOSE_REP")
   public FileDescriptor getFileDescriptor() {
     return fdObj;
+  }
+
+  private static final class LenientFileInputStream extends FileInputStream {
+    private LenientFileInputStream(FileDescriptor fdObj) {
+      super(fdObj);
+    }
+
+    @Override
+    public int available() throws IOException {
+      try {
+        return super.available();
+      } catch (IOException e) {
+        String msg = e.getMessage();
+        if ("Invalid seek".equals(msg)) {
+          // OSv may not like FileInputStream#availabe() on pipe fds.
+          return 0;
+        }
+        throw e;
+      }
+    }
   }
 }

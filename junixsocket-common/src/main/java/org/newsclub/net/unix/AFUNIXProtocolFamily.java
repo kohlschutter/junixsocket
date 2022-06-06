@@ -20,13 +20,13 @@ package org.newsclub.net.unix;
 import java.net.ProtocolFamily;
 
 /**
- * Describes the protocol families supported by junixsocket.
+ * Describes the protocol family supported by {@link AFUNIXSocketAddress} etc.
  * 
  * @author Christian Kohlschütter
  */
 public enum AFUNIXProtocolFamily implements ProtocolFamily {
   /**
-   * Unix domain (Local) interprocess communication.
+   * UNIX domain.
    */
-  UNIX
+  UNIX;
 }

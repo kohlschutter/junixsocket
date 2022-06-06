@@ -21,11 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.Semaphore;
@@ -33,15 +33,21 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.AssertUtil;
-import com.kohlschutter.util.IOUtil;
 
 /**
  * Tests {@link Socket#setSoTimeout(int)} behavior.
  * 
  * @see <a href="http://code.google.com/p/junixsocket/issues/detail?id=14">Issue 14</a>
  */
-public class SoTimeoutTest extends SocketTestBase {
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+public abstract class SoTimeoutTest<A extends SocketAddress> extends SocketTestBase<A> {
+  protected SoTimeoutTest(AddressSpecifics<A> asp) {
+    super(asp);
+  }
+
   /**
    * Triggers a case where {@link Socket#setSoTimeout(int)} fails on some platforms: when the socket
    * is closed.
@@ -54,14 +60,14 @@ public class SoTimeoutTest extends SocketTestBase {
     try (ServerThread serverThread = new ServerThread() {
 
       @Override
-      protected void handleConnection(final AFUNIXSocket socket) throws IOException {
+      protected void handleConnection(final Socket socket) throws IOException {
         try {
           socket.close();
         } finally {
           sema.release();
         }
       }
-    }; AFUNIXSocket sock = connectToServer()) {
+    }; Socket sock = connectTo(serverThread.getServerAddress())) {
       sema.acquire();
 
       try {
@@ -84,7 +90,7 @@ public class SoTimeoutTest extends SocketTestBase {
     try (ServerThread serverThread = new ServerThread() {
 
       @Override
-      protected void handleConnection(final AFUNIXSocket sock) throws IOException {
+      protected void handleConnection(final Socket sock) throws IOException {
         // Let's wait some time for a byte that never gets sent by the
         // client
         try (InputStream inputStream = sock.getInputStream()) {
@@ -94,7 +100,7 @@ public class SoTimeoutTest extends SocketTestBase {
           // ignore
         }
       }
-    }; AFUNIXSocket sock = connectToServer()) {
+    }; Socket sock = connectTo(serverThread.getServerAddress())) {
       assertTrue(sock.isConnected());
       assertFalse(sock.isClosed());
       try {
@@ -110,12 +116,8 @@ public class SoTimeoutTest extends SocketTestBase {
 
   @Test
   public void testSocketTimeoutExceptionRead() throws Exception {
-    final File tempFile = newTempFile();
-    final AFUNIXSocketAddress address = AFUNIXSocketAddress.of(tempFile);
-    try (AFUNIXServerSocket server = AFUNIXServerSocket.bindOn(address);
-        AFUNIXSocket client = AFUNIXSocket.connectTo(address)) {
-
-      final AFUNIXSocket socket = server.accept();
+    try (CloseablePair<? extends Socket> pair = newInterconnectedSockets();) {
+      Socket socket = pair.getSecond();
       socket.setSoTimeout(500);
       byte[] buf = new byte[socket.getReceiveBufferSize()];
       InputStream in = socket.getInputStream();
@@ -123,19 +125,13 @@ public class SoTimeoutTest extends SocketTestBase {
       assertThrows(SocketTimeoutException.class, () -> {
         AssertUtil.ignoreValue(in.read(buf));
       });
-    } finally {
-      IOUtil.delete(tempFile);
     }
   }
 
   @Test
   public void testSocketTimeoutExceptionWrite() throws Exception {
-    final File tempFile = newTempFile();
-    final AFUNIXSocketAddress address = AFUNIXSocketAddress.of(tempFile);
-    try (AFUNIXServerSocket server = AFUNIXServerSocket.bindOn(address);
-        AFUNIXSocket client = AFUNIXSocket.connectTo(address)) {
-
-      final AFUNIXSocket socket = server.accept();
+    try (CloseablePair<? extends Socket> pair = newInterconnectedSockets();) {
+      Socket socket = pair.getSecond();
       socket.setSoTimeout(500);
       byte[] buf = new byte[socket.getSendBufferSize()];
       OutputStream out = socket.getOutputStream();
@@ -146,8 +142,6 @@ public class SoTimeoutTest extends SocketTestBase {
       } catch (SocketTimeoutException e) {
         // expected but not guaranteed
       }
-    } finally {
-      IOUtil.delete(tempFile);
     }
   }
 }

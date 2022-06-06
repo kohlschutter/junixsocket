@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
-import org.newsclub.net.unix.AFUNIXSocket;
+import org.newsclub.net.unix.AFSocket;
 
 /**
  * Tests whether we can get the junixsocket version (which is encoded in a properties file).
@@ -33,8 +33,8 @@ import org.newsclub.net.unix.AFUNIXSocket;
  */
 public class JunixsocketVersionTest {
   @Test
-  public void testVersion() throws Exception {
-    String version = AFUNIXSocket.getVersion();
+  public void testVersion() {
+    String version = AFSocket.getVersion();
     assertNotNull(version);
     assertNotEquals("", version);
   }

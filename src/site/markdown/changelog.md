@@ -5,10 +5,24 @@
 When upgrading from versions older than 2.4.0, please note that junixsocket-core is now a POM-only
 artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.html) for details.
 
-### _(2021-12-xx)_ **junixsocket 2.4.1**
+### _(2022-06-06)_ **junixsocket 2.5.0**
 
+ - New supported platforms: AIX 7 Power64, IBM i Power64, Windows ARM64, Windows Server 2019 & 2022 
+ - Generic rework to support more than just Unix Domain sockets
+ - Add support for AF_TIPC (on Linux)
+ - Add support for using sockets passed as standard input
+ - Add support for address-specific, non-standard URIs (for example
+   unix:// and tipc://), as well as socat addresses
+ - Add support for using FileDescriptor for ProcessBuilder Redirects (Java 9+)
+ - Add support for peer credentials (PID) on Windows
+ - Fix Selector logic
  - Fix cross-compilation on Apple Silicon
+ - Fix a file descriptor leak (regression in 2.4.0)
+ - Improve behavior on partially unsupported platforms and allow loading of Windows 10 native
+   library on other Windows versions (e.g., Windows Server 2022, Windows 8.1).
  - Javadoc improvements, Code cleanup
+ - Deprecate AFUNIXSocketCapability in favor of AFSocketCapability
+ - Drop support for Java 7
 
 ### _(2021-07-30)_ **junixsocket 2.4.0**
 

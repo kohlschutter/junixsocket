@@ -11,14 +11,22 @@
 #include "exceptions.h"
 #include "socket.h"
 #include "filedescriptors.h"
+#include "address.h"
+#include "init.h"
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    socketPair
- * Signature: (ILjava/io/FileDescriptor;Ljava/io/FileDescriptor;)V
+ * Signature: (IILjava/io/FileDescriptor;Ljava/io/FileDescriptor;)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
-(JNIEnv *env, jclass clazz CK_UNUSED, jint type, jobject fd1, jobject fd2) {
+(JNIEnv *env, jclass clazz CK_UNUSED, jint domain, jint type, jobject fd1, jobject fd2) {
+    domain = domainToNative(domain);
+    if(domain == -1) {
+        _throwException(env, kExceptionSocketException, "Unsupported domain");
+        return;
+    }
+
     type = sockTypeToNative(env, type);
     if(type == -1) {
         return;
@@ -31,7 +39,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
 //    return;
 
     int handleListen = socket(AF_INET, type, 0);
-    if(handleListen <= 0) {
+    if(handleListen < 0) {
         _throwErrnumException(env, socket_errno, NULL);
         return;
     }
@@ -63,7 +71,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
     }
 
     int handleConnect = socket(AF_INET, type, 0);
-    if(handleConnect <= 0) {
+    if(handleConnect < 0) {
         _throwErrnumException(env, socket_errno, NULL);
         return;
     }
@@ -71,8 +79,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
     u_long mode = 1;
     if(ioctlsocket(handleConnect, FIONBIO, &mode) != NO_ERROR) {
         int errnum = socket_errno;
-        close(handleListen);
-        close(handleConnect);
+        closesocket(handleListen);
+        closesocket(handleConnect);
         _throwErrnumException(env, errnum, NULL);
         return;
     }
@@ -85,18 +93,18 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
 
     len = sizeof(struct sockaddr_in);
     int handleAccept = accept(handleListen, (struct sockaddr *)&addr, &len);
-    if(handleAccept <= 0) {
+    if(handleAccept < 0) {
         _throwErrnumException(env, socket_errno, NULL);
         return;
     }
 
-    close(handleListen);
+    closesocket(handleListen);
 
     mode = 0;
     if(ioctlsocket(handleConnect, FIONBIO, &mode) != NO_ERROR) {
         int errnum = socket_errno;
-        close(handleAccept);
-        close(handleConnect);
+        closesocket(handleAccept);
+        closesocket(handleConnect);
         _throwErrnumException(env, errnum, NULL);
         return;
     }
@@ -107,18 +115,23 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
     int socket_vector[2];
     int ret;
 #if defined(junixsocket_have_socket_cloexec)
-    ret = socketpair(AF_UNIX, type, SOCK_CLOEXEC, socket_vector);
-    if(ret == -1 && errno == EPROTONOSUPPORT) {
-        ret = socketpair(AF_UNIX, type, 0, socket_vector);
-        if(ret == 0) {
-#  if defined(FD_CLOEXEC)
-            fcntl(socket_vector[0], F_SETFD, FD_CLOEXEC); // best effort
-            fcntl(socket_vector[1], F_SETFD, FD_CLOEXEC); // best effort
-#  endif
+    if(supportsUNIX()) {
+        ret = socketpair(domain, type, SOCK_CLOEXEC, socket_vector);
+        if(ret == -1 && errno == EPROTONOSUPPORT) {
+            ret = socketpair(domain, type, 0, socket_vector);
+            if(ret == 0) {
+#    if defined(FD_CLOEXEC)
+                fcntl(socket_vector[0], F_SETFD, FD_CLOEXEC); // best effort
+                fcntl(socket_vector[1], F_SETFD, FD_CLOEXEC); // best effort
+#    endif
+            }
         }
+    } else {
+        // workaround for OSv assert(proto == 0);
+        ret = socketpair(domain, type, 0, socket_vector);
     }
 #else
-    ret = socketpair(AF_UNIX, type, 0, socket_vector);
+    ret = socketpair(domain, type, 0, socket_vector);
 #endif
     if(ret == -1) {
         _throwErrnumException(env, socket_errno, NULL);

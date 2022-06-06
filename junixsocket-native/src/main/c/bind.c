@@ -26,37 +26,62 @@
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    bind
- * Signature: ([BLjava/io/FileDescriptor;I)J
+ * Signature: (Ljava/nio/ByteBuffer;ILjava/io/FileDescriptor;I)J
  */
-JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
-                                                                         JNIEnv * env, jclass clazz CK_UNUSED, jbyteArray addr, jobject fd, jint options)
+JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
+ (JNIEnv * env, jclass clazz CK_UNUSED, jobject ab, jint abLen, jobject fd, jint options)
 {
 #if defined(_WIN32)
     CK_ARGUMENT_POTENTIALLY_UNUSED(options);
 #endif
 
-    struct sockaddr_un su = {0};
-    socklen_t suLength = initSu(env, &su, addr);
-    if(suLength == 0) {
-        _throwException(env, kExceptionSocketException,
-                        "Socket address length out of range");
+    // FIXME domain
+
+    jux_sockaddr_t *addr = (*env)->GetDirectBufferAddress(env, ab);
+    socklen_t suLength = (socklen_t)abLen;
+
+    int serverHandle = _getFD(env, fd);
+    if(serverHandle < 0) {
+        _throwException(env, kExceptionSocketException, "Socket is closed");
         return -1;
     }
 
-    int serverHandle = _getFD(env, fd);
-    if(serverHandle <= 0) {
-        _throwException(env, kExceptionSocketException, "Socket closed");
-        return -1;
+    if(suLength == 0) {
+        // unbind / anonymous bind
+        int bindRes = bind(serverHandle, &addr->addr, 0);
+        if(bindRes < 0) {
+            _throwErrnumException(env, socket_errno, NULL);
+            return -1;
+        }
+        _initFD(env, fd, serverHandle);
+        return 0;
+    }
+
+    if(
+#if defined(_OS400)
+       JNI_TRUE
+#else
+       addr->addr.sa_family != AF_UNIX
+#endif
+    ) {
+        int bindRes = bind(serverHandle, &addr->addr, suLength);
+        int myErr = socket_errno;
+        if(bindRes < 0) {
+            _throwErrnumException(env, myErr, NULL);
+            return -1;
+        }
+        _initFD(env, fd, serverHandle);
+        return 0;
     }
 
 #if defined(_WIN32)
-
-    if(su.sun_path[0] != 0) {
-        DeleteFileA(su.sun_path);
+    if(addr->addr.sa_family == AF_UNIX && addr->un.sun_path[0] != 0) {
+        DeleteFileA(addr->un.sun_path);
     }
 
     int bindRes;
-    bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
+
+    bindRes = bind(serverHandle, (struct sockaddr *)&addr->addr, suLength);
     int myErr = socket_errno;
     _initFD(env, fd, serverHandle);
 
@@ -67,7 +92,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
         return 0;
     }
 #else
-    bool reuse = (options == -1);
+    bool reuse = ((options & org_newsclub_net_unix_NativeUnixSocket_BIND_OPT_REUSE) != 0) && addr->addr.sa_family == AF_UNIX;
     bool useSuTmp = false;
     struct sockaddr_un suTmp;
     if(reuse) {
@@ -105,19 +130,20 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
         // prevent raising SIGPIPE
         ret = setsockopt(serverHandle, SOL_SOCKET, SO_NOSIGPIPE, &optVal, sizeof(optVal));
         if(ret == -1) {
+
             _throwSockoptErrnumException(env, socket_errno, fd);
             return -1;
         }
 #endif
-
         int bindRes;
-        if(attempt == 0 && !reuse) {
+
+        if(attempt == 0 && !reuse && addr->addr.sa_family == AF_UNIX) {
             // if we're not going to reuse the socket, let's try to connect first.
             // This avoids changing file metadata (e.g. ctime!)
             bindRes = -1;
             errno = 0;
         } else {
-            bindRes = bind(serverHandle, (struct sockaddr *)&su, suLength);
+            bindRes = bind(serverHandle, &addr->addr, suLength);
         }
 
         myErr = socket_errno;
@@ -126,7 +152,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
             break;
         } else if(attempt == 0 && (!reuse || myErr == EADDRINUSE)) {
             if(reuse) {
-                if(su.sun_path[0] == 0) {
+                if(addr->un.sun_path[0] == 0) {
                     // nothing to be done in the abstract namespace
                 } else {
                     // if we're reusing the socket, it's better to move away the existing
@@ -136,7 +162,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
                     strcpy(suTmp.sun_path, "/tmp/junixsocket.XXXXXX\0");
                     mkstemp(suTmp.sun_path);
 
-                    int renameRet = rename(su.sun_path, suTmp.sun_path);
+                    int renameRet = rename(addr->un.sun_path, suTmp.sun_path);
                     if(renameRet == -1) {
                         if(socket_errno != ENOENT) {
                             // ignore failure
@@ -157,7 +183,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
             // if the given file exists, but is not a socket, ENOTSOCK is returned
             // if access is denied, EACCESS is returned
             do {
-                ret = connect(serverHandle, (struct sockaddr *)&su, suLength);
+                ret = connect(serverHandle, &addr->addr, suLength);
             } while(ret == -1 && (errno = socket_errno) == EINTR);
 
             if(ret == 0) {
@@ -174,10 +200,10 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
 
                 if(reuse || errno == ECONNREFUSED) {
                     // either reuse existing socket, or take over a no longer working socket
-                    if(su.sun_path[0] == 0) {
+                    if(addr->un.sun_path[0] == 0) {
                         // no need to unlink in the abstract namespace
                         continue;
-                    } else if(unlink(su.sun_path) == -1) {
+                    } else if(unlink(addr->un.sun_path) == -1) {
                         if(errno == ENOENT) {
                             continue;
                         }
@@ -192,11 +218,13 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
         return -1;
     }
 
-    if(su.sun_path[0] == 0) {
+    if(addr->addr.sa_family != AF_UNIX) {
+        // nothing to do
+    } else if(addr->un.sun_path[0] == 0) {
         // nothing to be done for the abstract namespace
     } else {
 #if !defined(_WIN32)
-        int chmodRes = chmod(su.sun_path, 0666);
+        int chmodRes = chmod(addr->un.sun_path, 0666);
         if(chmodRes == -1) {
             myErr = errno;
             _throwErrnumException(env, myErr, NULL);
@@ -210,12 +238,14 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind(
     struct stat fdStat;
     ino_t inode;
 
-    if(su.sun_path[0] == 0) {
+    if(addr->addr.sa_family != AF_UNIX) {
+        inode = 0;
+    } else if(addr->un.sun_path[0] == 0) {
         // no inodes in the abstract namespace
         inode = 0;
     } else {
 #if !defined(_WIN32)
-        int statRes = stat(su.sun_path, &fdStat);
+        int statRes = stat(addr->un.sun_path, &fdStat);
         if(statRes == -1) {
             if (errno == EINVAL) {
                 inode = 0;

@@ -25,7 +25,7 @@ public class ShutdownHookTestBase {
   }
 
   @AfterAll
-  public static void tearDownClass() throws Exception {
+  public static void tearDownClass() {
     ShutdownHookSupport.runHooks();
   }
 }

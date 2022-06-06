@@ -19,35 +19,19 @@ package org.newsclub.net.unix;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.ProtocolFamily;
-import java.net.SocketAddress;
 import java.net.SocketException;
-import java.net.SocketOption;
-import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.nio.channels.MembershipKey;
-import java.util.Set;
-
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A {@link DatagramChannel} implementation that works with AF_UNIX Unix domain sockets.
  * 
  * @author Christian Kohlschütter
  */
-public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUNIXSomeSocket,
+public final class AFUNIXDatagramChannel extends AFDatagramChannel<AFUNIXSocketAddress> implements
     AFUNIXSocketExtensions {
-  private final AFUNIXDatagramSocket afSocket;
-
   AFUNIXDatagramChannel(AFUNIXDatagramSocket socket) {
-    super(AFUNIXSelectorProvider.getInstance());
-    this.afSocket = socket;
-  }
-
-  AFUNIXDatagramSocket getAFSocket() {
-    return afSocket;
+    super(AFUNIXSelectorProvider.getInstance(), socket);
   }
 
   /**
@@ -76,120 +60,13 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
   // CPD-OFF
 
   @Override
-  public MembershipKey join(InetAddress group, NetworkInterface interf) throws IOException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public MembershipKey join(InetAddress group, NetworkInterface interf, InetAddress source)
-      throws IOException {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public AFUNIXDatagramChannel bind(SocketAddress local) throws IOException {
-    afSocket.bind(local);
-    return this;
-  }
-
-  @SuppressFBWarnings("EI_EXPOSE_REP")
-  @Override
-  public AFUNIXDatagramSocket socket() {
-    return afSocket;
-  }
-
-  /**
-   * Returns the binding state of the socket.
-   * 
-   * @return true if the socket successfully bound to an address
-   */
-  public boolean isBound() {
-    return afSocket.isBound();
-  }
-
-  @Override
-  public boolean isConnected() {
-    return afSocket.isConnected();
-  }
-
-  @Override
-  public AFUNIXDatagramChannel connect(SocketAddress remote) throws IOException {
-    afSocket.connect(remote);
-    return this;
-  }
-
-  @Override
-  public AFUNIXDatagramChannel disconnect() throws IOException {
-    afSocket.disconnect();
-    return this;
-  }
-
-  @Override
-  public AFUNIXSocketAddress getRemoteAddress() throws IOException {
-    return afSocket.getRemoteSocketAddress();
-  }
-
-  @Override
-  public AFUNIXSocketAddress getLocalAddress() throws IOException {
-    return afSocket.getLocalSocketAddress();
-  }
-
-  @Override
-  public AFUNIXSocketAddress receive(ByteBuffer dst) throws IOException {
-    return afSocket.getAFImpl().receive(dst);
-  }
-
-  @Override
-  public int send(ByteBuffer src, SocketAddress target) throws IOException {
-    return afSocket.getAFImpl().send(src, target);
-  }
-
-  @Override
-  public int read(ByteBuffer dst) throws IOException {
-    return afSocket.getAFImpl().read(dst, null);
-  }
-
-  @Override
-  public long read(ByteBuffer[] dsts, int offset, int length) throws IOException {
-    if (length == 0) {
-      return 0;
-    }
-    // FIXME support more than one buffer for scatter-gather access
-    return read(dsts[offset]);
-  }
-
-  @Override
-  public int write(ByteBuffer src) throws IOException {
-    return afSocket.getAFImpl().write(src);
-  }
-
-  @Override
-  public long write(ByteBuffer[] srcs, int offset, int length) throws IOException {
-    if (length == 0) {
-      return 0;
-    }
-    // FIXME support more than one buffer for scatter-gather access
-    return write(srcs[offset]);
-  }
-
-  @Override
-  protected void implCloseSelectableChannel() throws IOException {
-    getAFSocket().close();
-  }
-
-  @Override
-  protected void implConfigureBlocking(boolean block) throws IOException {
-    getAFCore().implConfigureBlocking(block);
-  }
-
-  @Override
   public FileDescriptor[] getReceivedFileDescriptors() throws IOException {
-    return afSocket.getReceivedFileDescriptors();
+    return ((AFUNIXSocketExtensions) getAFSocket()).getReceivedFileDescriptors();
   }
 
   @Override
   public void clearReceivedFileDescriptors() {
-    afSocket.clearReceivedFileDescriptors();
+    ((AFUNIXSocketExtensions) getAFSocket()).clearReceivedFileDescriptors();
   }
 
   @Override
@@ -197,93 +74,16 @@ public final class AFUNIXDatagramChannel extends DatagramChannel implements AFUN
     if (fdescs != null && fdescs.length > 0 && !isConnected()) {
       throw new SocketException("Not connected");
     }
-    afSocket.setOutboundFileDescriptors(fdescs);
+    ((AFUNIXSocketExtensions) getAFSocket()).setOutboundFileDescriptors(fdescs);
   }
 
   @Override
   public boolean hasOutboundFileDescriptors() {
-    return afSocket.hasOutboundFileDescriptors();
+    return ((AFUNIXSocketExtensions) getAFSocket()).hasOutboundFileDescriptors();
   }
 
   @Override
   public AFUNIXSocketCredentials getPeerCredentials() throws IOException {
-    return afSocket.getPeerCredentials();
-  }
-
-  @Override
-  public int getAncillaryReceiveBufferSize() {
-    return afSocket.getAncillaryReceiveBufferSize();
-  }
-
-  @Override
-  public void setAncillaryReceiveBufferSize(int size) {
-    afSocket.setAncillaryReceiveBufferSize(size);
-  }
-
-  @Override
-  public void ensureAncillaryReceiveBufferSize(int minSize) {
-    afSocket.ensureAncillaryReceiveBufferSize(minSize);
-  }
-
-  @Override
-  public <T> AFUNIXDatagramChannel setOption(SocketOption<T> name, T value) throws IOException {
-    Integer optionId = SocketOptionsMapper.resolve(name);
-    if (optionId == null) {
-      throw new UnsupportedOperationException("unsupported option");
-    } else {
-      afSocket.getAFImpl().setOption(optionId.intValue(), value);
-    }
-    return this;
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public <T> T getOption(SocketOption<T> name) throws IOException {
-    Integer optionId = SocketOptionsMapper.resolve(name);
-    if (optionId == null) {
-      throw new UnsupportedOperationException("unsupported option");
-    } else {
-      return (T) afSocket.getAFImpl().getOption(optionId.intValue());
-    }
-  }
-
-  @Override
-  public Set<SocketOption<?>> supportedOptions() {
-    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;
-  }
-
-  AFUNIXSocketCore getAFCore() {
-    return afSocket.getAFImpl().getCore();
-  }
-
-  @Override
-  public FileDescriptor getFileDescriptor() throws IOException {
-    return afSocket.getFileDescriptor();
-  }
-
-  /**
-   * Checks if this {@link AFUNIXDatagramSocket}'s bound filename should be removed upon
-   * {@link #close()}.
-   * 
-   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
-   * namespace).
-   * 
-   * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
-   */
-  public boolean isDeleteOnClose() {
-    return afSocket.isDeleteOnClose();
-  }
-
-  /**
-   * Enables/disables deleting this {@link AFUNIXDatagramSocket}'s bound filename upon
-   * {@link #close()}.
-   * 
-   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
-   * namespace).
-   * 
-   * @param b Enabled if {@code true}.
-   */
-  public void setDeleteOnClose(boolean b) {
-    afSocket.setDeleteOnClose(b);
+    return ((AFUNIXSocketExtensions) getAFSocket()).getPeerCredentials();
   }
 }

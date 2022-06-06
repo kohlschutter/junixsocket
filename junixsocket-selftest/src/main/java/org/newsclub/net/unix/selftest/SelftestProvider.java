@@ -17,8 +17,10 @@
  */
 package org.newsclub.net.unix.selftest;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Provides references to all tests that should be included in junixsocket-selftest.
@@ -37,5 +39,9 @@ public class SelftestProvider {
     });
 
     return tests;
+  }
+
+  public Set<String> modulesDisabledByDefault() {
+    return Collections.emptySet();
   }
 }

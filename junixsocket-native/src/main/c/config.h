@@ -60,6 +60,14 @@ CK_IGNORE_UNUSED_MACROS_BEGIN
 #define junixsocket_have_pipe2 // might be undef'ed below
 CK_IGNORE_UNUSED_MACROS_END
 
+#if defined(_AIX)
+#  define junixsocket_use_poll_for_accept
+#  undef junixsocket_have_pipe2
+#endif
+#if defined(_OS400)
+#  define JUNIXSOCKET_HARDEN_CMSG_NXTHDR 1
+#endif
+
 #if !defined(uint64_t) && !defined(_INT64_TYPE) && !defined(_UINT64_T) && !defined(_UINT64_T_DEFINED_)
 #  ifdef _LP64
 typedef unsigned long uint64_t;
@@ -98,6 +106,13 @@ typedef struct sockaddr_un
     ADDRESS_FAMILY sun_family;
     char sun_path[UNIX_PATH_MAX];
 }sockaddr_un;
+#  endif
+
+#  if !defined(SIO_AF_UNIX_GETPEERPID)
+// https://microsoft.github.io/windows-docs-rs/doc/windows/Win32/Networking/WinSock/constant.SIO_AF_UNIX_GETPEERPID.html
+// https://www.magnumdb.com/search?q=IOC_VENDOR
+// https://www.mail-archive.com/mingw-w64-public@lists.sourceforge.net/msg18854.html
+#    define SIO_AF_UNIX_GETPEERPID _WSAIOR(IOC_VENDOR, 256)
 #  endif
 
 // Redefining these errors simplifies WinSock error handling
@@ -175,6 +190,10 @@ extern "C" {
 #  define JUNIXSOCKET_HARDEN_CMSG_NXTHDR 1
 #endif
 
+#include <linux/tipc.h>
+#include <arpa/inet.h>
+#define junixsocket_have_tipc 1
+
 #endif
 
 // Solaris
@@ -203,6 +222,12 @@ typedef unsigned long socklen_t; /* 64-bits */
 #  else
 // probably OpenBSD
 #  define junixsocket_accept_infinite_timeout_workaround
+#  endif
+#endif
+
+#if defined(__MACH__)
+#  if !defined(_DARWIN_C_SOURCE)
+#    define _DARWIN_C_SOURCE 1
 #  endif
 #endif
 
@@ -238,6 +263,10 @@ typedef unsigned long socklen_t; /* 64-bits */
 #if defined(_WIN32)
 #  define socket_errno (errno = WSAGetLastError())
 #  define ssize_t int
+#elif defined(_OS400)
+CK_VISIBILITY_INTERNAL
+int jux_mangleErrno(int);
+#   define socket_errno (errno = jux_mangleErrno(errno))
 #else
 #  define socket_errno errno
 #endif

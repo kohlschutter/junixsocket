@@ -1,4 +1,4 @@
 /**
- * The actual AF_UNIX Socket implementation.
+ * The junixsocket base implementation, including support for AF_UNIX sockets.
  */
 package org.newsclub.net.unix;

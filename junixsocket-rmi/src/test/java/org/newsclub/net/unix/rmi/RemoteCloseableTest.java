@@ -22,25 +22,32 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.rmi.NoSuchObjectException;
+import java.rmi.NotBoundException;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.Test;
+import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.rmi.RemoteCloseableThing.IsCloseable;
 import org.newsclub.net.unix.rmi.RemoteCloseableThing.NotCloseable;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Tests {@link RemoteCloseable}.
  * 
  * @author Christian Kohlschütter
  */
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+@AFSocketCapabilityRequirement({AFSocketCapability.CAPABILITY_UNIX_DOMAIN})
 public class RemoteCloseableTest extends TestBase {
   public RemoteCloseableTest() throws IOException {
     super();
   }
 
   @Test
-  public void testRemoteCloseableWithACloseableThing() throws Exception {
+  public void testRemoteCloseableWithACloseableThing() throws IOException, NotBoundException {
     TestService svc = lookupTestService();
 
     svc.remoteCloseableThingResetNumberOfCloseCalls(IsCloseable.class);
@@ -76,7 +83,7 @@ public class RemoteCloseableTest extends TestBase {
   }
 
   @Test
-  public void testRemoteCloseableWithANotCloseableThing() throws Exception {
+  public void testRemoteCloseableWithANotCloseableThing() throws IOException, NotBoundException {
     TestService svc = lookupTestService();
 
     svc.remoteCloseableThingResetNumberOfCloseCalls(NotCloseable.class);

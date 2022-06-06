@@ -23,18 +23,28 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Tests breaking out of accept.
  * 
  * @see <a href="http://code.google.com/p/junixsocket/issues/detail?id=6">Issue 6</a>
  */
-public class CancelAcceptTest extends SocketTestBase {
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+public abstract class CancelAcceptTest<A extends SocketAddress> extends SocketTestBase<A> {
   private boolean serverSocketClosed = false;
+
+  protected CancelAcceptTest(AddressSpecifics<A> asp) {
+    super(asp);
+  }
 
   @Test
   public void issue6test1() throws Exception {
@@ -44,7 +54,7 @@ public class CancelAcceptTest extends SocketTestBase {
     try (ServerThread serverThread = new ServerThread() {
 
       @Override
-      protected void handleConnection(final AFUNIXSocket sock) throws IOException {
+      protected void handleConnection(final Socket sock) throws IOException {
       }
 
       @Override
@@ -64,10 +74,10 @@ public class CancelAcceptTest extends SocketTestBase {
       }
     }) {
 
-      try (AFUNIXSocket sock = connectToServer()) {
+      try (Socket sock = connectTo(serverThread.getServerAddress())) {
         // open and close
       }
-      try (AFUNIXSocket sock = connectToServer()) {
+      try (Socket sock = connectTo(serverThread.getServerAddress())) {
         // open and close
       }
 
@@ -82,7 +92,7 @@ public class CancelAcceptTest extends SocketTestBase {
       ignoreServerSocketClosedException.set(true);
       serverSocket.close();
       try {
-        try (AFUNIXSocket sock = connectToServer()) {
+        try (Socket sock = connectTo(serverThread.getServerAddress())) {
           // open and close
         }
         fail("Did not throw SocketException");
@@ -94,7 +104,7 @@ public class CancelAcceptTest extends SocketTestBase {
           "ServerSocket should be closed now");
 
       try {
-        try (AFUNIXSocket sock = connectToServer()) {
+        try (Socket sock = connectTo(serverThread.getServerAddress())) {
           fail("ServerSocket should have been closed already");
         }
         fail("Did not throw SocketException");

@@ -20,14 +20,26 @@ package org.newsclub.net.unix;
 import java.io.File;
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.net.BindException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.nio.channels.DatagramChannel;
+import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.SelectorProvider;
 import java.nio.file.Files;
+import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.newsclub.net.unix.java.JavaAddressSpecifics;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
@@ -36,17 +48,38 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * 
  * @author Christian Kohlschuetter
  */
-public class SocketTestBase { // NOTE: needs to be public for junit
+@SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs to be public for
+                                                                // junit
   private static final File SOCKET_FILE = initSocketFile();
-  private final AFUNIXSocketAddress serverAddress;
-  private Exception caller = new Exception();
+  private static final Random RANDOM = new Random();
 
-  protected SocketTestBase() {
+  private final SocketAddress serverAddress;
+  private Exception caller = new Exception();
+  private final AddressSpecifics<A> asp;
+
+  @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
+  protected SocketTestBase(AddressSpecifics<A> asp) {
+    this.asp = asp;
     try {
-      this.serverAddress = AFUNIXSocketAddress.of(SOCKET_FILE);
+      this.serverAddress = initServerSocketBindAddress();
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }
+  }
+
+  private static File initSocketFile() {
+    return SocketTestBase.newTempFile(System.getProperty("org.newsclub.net.unix.testsocket"));
+  }
+
+  public static File socketFile() {
+    return SOCKET_FILE;
+  }
+
+  protected final SocketAddress initServerSocketBindAddress() throws IOException {
+    return asp.initServerSocketBindAddress();
   }
 
   @BeforeEach
@@ -59,15 +92,11 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     Files.deleteIfExists(SOCKET_FILE.toPath());
   }
 
-  protected AFUNIXSocketAddress getServerAddress() {
-    return serverAddress;
-  }
-
-  static File newTempFile() {
+  public static File newTempFile() {
     return newTempFile(null);
   }
 
-  private static File newTempFile(String name) {
+  public static File newTempFile(String name) {
     File f;
     try {
       f = (name == null) ? File.createTempFile("jutest", ".sock") : new File(name);
@@ -81,28 +110,20 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     return f;
   }
 
-  static File initSocketFile() {
-    return newTempFile(System.getProperty("org.newsclub.net.unix.testsocket"));
-  }
-
-  protected File getSocketFile() {
-    return SOCKET_FILE;
-  }
-
-  protected AFUNIXServerSocket startServer() throws IOException {
+  protected ServerSocket startServer() throws IOException {
     caller = new Exception();
-    final AFUNIXServerSocket server = AFUNIXServerSocket.newInstance();
-    server.bind(serverAddress);
+    final ServerSocket server = newServerSocket();
+    SocketAddress bindAddr = getServerBindAddress();
+    try {
+      server.bind(getServerBindAddress());
+    } catch (BindException e) {
+      if (asp instanceof JavaAddressSpecifics && ((InetSocketAddress) bindAddr).getPort() == 0) {
+        server.bind(null);
+      } else {
+        throw e;
+      }
+    }
     return server;
-  }
-
-  protected AFUNIXSocket connectToServer() throws IOException {
-    return AFUNIXSocket.connectTo(serverAddress);
-  }
-
-  protected AFUNIXSocket connectToServer(AFUNIXSocket socket) throws IOException {
-    socket.connect(serverAddress);
-    return socket;
   }
 
   protected enum ExceptionHandlingDecision {
@@ -110,7 +131,7 @@ public class SocketTestBase { // NOTE: needs to be public for junit
   }
 
   protected abstract class ServerThread extends Thread implements AutoCloseable {
-    private final AFUNIXServerSocket serverSocket;
+    private final ServerSocket serverSocket;
     private volatile Exception exception = null;
     private volatile Error error = null;
     private final AtomicBoolean loop = new AtomicBoolean(true);
@@ -125,7 +146,7 @@ public class SocketTestBase { // NOTE: needs to be public for junit
       start();
     }
 
-    protected AFUNIXServerSocket startServer() throws IOException {
+    protected ServerSocket startServer() throws IOException {
       return SocketTestBase.this.startServer();
     }
 
@@ -158,11 +179,11 @@ public class SocketTestBase { // NOTE: needs to be public for junit
      * @param sock The socket to handle.
      * @throws IOException upon error.
      */
-    protected abstract void handleConnection(AFUNIXSocket sock) throws IOException;
+    protected abstract void handleConnection(Socket sock) throws IOException;
 
     /**
-     * Called from within {@link #handleConnection(AFUNIXSocket)} to tell the server to no longer
-     * accept new calls and to terminate the server thread.
+     * Called from within {@link #handleConnection(AFSocket)} to tell the server to no longer accept
+     * new calls and to terminate the server thread.
      * 
      * Note that this will lead to existing client connections to be closed.
      * 
@@ -178,9 +199,23 @@ public class SocketTestBase { // NOTE: needs to be public for junit
       stopAcceptingConnections();
     }
 
+    /**
+     * Returns the server socket.
+     * 
+     * @return the server socket.
+     */
     @SuppressFBWarnings("EI_EXPOSE_REP")
     public ServerSocket getServerSocket() {
       return serverSocket;
+    }
+
+    /**
+     * Returns the server's address to connect to.
+     * 
+     * @return the address.
+     */
+    public SocketAddress getServerAddress() {
+      return getServerSocket().getLocalSocketAddress();
     }
 
     /**
@@ -198,7 +233,7 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     protected void acceptAndHandleConnection() throws IOException {
       boolean acceptSuccess = false;
       sema.release();
-      try (AFUNIXSocket sock = serverSocket.accept()) {
+      try (Socket sock = serverSocket.accept()) {
         try {
           sema.acquire();
         } catch (InterruptedException e) {
@@ -270,6 +305,19 @@ public class SocketTestBase { // NOTE: needs to be public for junit
     }
   }
 
+  protected abstract class AFUNIXServerThread extends ServerThread {
+    protected AFUNIXServerThread() throws IOException {
+      super();
+    }
+
+    @Override
+    protected final void handleConnection(Socket sock) throws IOException {
+      handleConnection((AFUNIXSocket) sock);
+    }
+
+    protected abstract void handleConnection(AFUNIXSocket sock) throws IOException;
+  }
+
   /**
    * Sleeps for the given amount of milliseconds.
    * 
@@ -283,5 +331,74 @@ public class SocketTestBase { // NOTE: needs to be public for junit
       Thread.currentThread().interrupt();
       throw (InterruptedIOException) new InterruptedIOException("sleep interrupted").initCause(e);
     }
+  }
+
+  protected final SocketAddress getServerBindAddress() {
+    return serverAddress;
+  }
+
+  protected final Socket newSocket() throws IOException {
+    return asp.newSocket();
+  }
+
+  protected final Socket newStrictSocket() throws IOException {
+    return asp.newStrictSocket();
+  }
+
+  protected final DatagramSocket newDatagramSocket() throws IOException {
+    return asp.newDatagramSocket();
+  }
+
+  protected final DatagramChannel newDatagramChannel() throws IOException {
+    return asp.newDatagramChannel();
+  }
+
+  protected final ServerSocket newServerSocket() throws IOException {
+    return asp.newServerSocket();
+  }
+
+  protected final ServerSocket newServerSocketBindOn(SocketAddress addr) throws IOException {
+    return asp.newServerSocketBindOn(addr);
+  }
+
+  protected final ServerSocket newServerSocketBindOn(SocketAddress addr, boolean deleteOnClose)
+      throws IOException {
+    return asp.newServerSocketBindOn(addr, deleteOnClose);
+  }
+
+  // protected final Socket connectToServer() throws IOException {
+  // return asp.connectTo(getServerAddress());
+  // }
+
+  protected final SocketAddress newTempAddress() throws IOException {
+    return asp.newTempAddress();
+  }
+
+  protected final SocketAddress unwrap(InetAddress addr, int port) throws SocketException {
+    return asp.unwrap(addr, port);
+  }
+
+  protected final SelectorProvider selectorProvider() throws IOException {
+    return asp.selectorProvider();
+  }
+
+  protected CloseablePair<? extends SocketChannel> newSocketPair() throws IOException {
+    return asp.newSocketPair();
+  }
+
+  protected CloseablePair<? extends DatagramChannel> newDatagramSocketPair() throws IOException {
+    return asp.newDatagramSocketPair();
+  }
+
+  protected Socket connectTo(SocketAddress socket) throws IOException {
+    return asp.connectTo(socket);
+  }
+
+  protected CloseablePair<? extends Socket> newInterconnectedSockets() throws IOException {
+    return asp.newInterconnectedSockets();
+  }
+
+  protected Random getRandom() {
+    return RANDOM;
   }
 }

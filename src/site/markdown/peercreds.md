@@ -41,5 +41,5 @@ to authenticate these connections with the help of peer credentials:
 
 ## Not supported by all platforms
 
- Not all platforms support file descriptors over AF_UNIX. Make sure they're available using
+Not all platforms support file descriptors over AF_UNIX. Make sure they're available using
 > `AFUNIXSocket.supports(AFUNIXSocketCapability.CAPABILITY_PEER_CREDENTIALS)`.

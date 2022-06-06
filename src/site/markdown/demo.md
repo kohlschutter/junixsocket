@@ -13,17 +13,12 @@ as expected.
 
 junixsocket-dist provides a self-contained jar that performs this selftest:
 
-    java -jar junixsocket-selftest-2.4.0-jar-with-dependencies.jar
+    java -jar junixsocket-selftest-2.5.0-jar-with-dependencies.jar
 
 The last line should say "Selftest PASSED", and you're good to go.
 
 If not, please [file a bug report](https://github.com/kohlschutter/junixsocket/issues) with the
 output of the selftest.
-
-> **NOTE:** On Java 7, you can use the following command for a very basic check:
- 
-    java -cp junixsocket-common.jar:junixsocket-native-common.jar \
-             org.newsclub.net.unix.AFUNIXSocket
 
 ## Running the demos
 

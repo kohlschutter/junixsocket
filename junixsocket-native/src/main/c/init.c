@@ -20,17 +20,62 @@
 #include "init.h"
 
 #include "exceptions.h"
+#include "capabilities.h"
+#include "reflection.h"
 #include "ancillary.h"
 #include "filedescriptors.h"
 #include "polling.h"
+#include "socketoptions.h"
+
+static jboolean cap_supports_unix = false;
+static jboolean cap_supports_tipc = false;
+
+static void init_unix(void) {
+
+    int ret = socket(AF_UNIX, SOCK_STREAM
+#if defined(junixsocket_have_socket_cloexec)
+                     | SOCK_CLOEXEC
+#endif
+                     , 0);
+    if(ret >= 0) {
+        cap_supports_unix = true;
+#if defined(_WIN32)
+        closesocket(ret);
+#else
+        close(ret);
+#endif
+    }
+}
+
+#if defined(junixsocket_have_tipc)
+static void init_tipc(void) {
+
+    int ret = socket(AF_TIPC, SOCK_STREAM
+#if defined(junixsocket_have_socket_cloexec)
+                     | SOCK_CLOEXEC
+#endif
+                     , 0);
+    if(ret >= 0) {
+        cap_supports_tipc = true;
+        close(ret);
+    }
+}
+#endif
+
+jboolean supportsUNIX(void) {
+    return cap_supports_unix;
+}
+jboolean supportsTIPC(void) {
+    return cap_supports_tipc;
+}
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    init
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init(
-                                                                        JNIEnv *env, jclass clazz CK_UNUSED)
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init
+(JNIEnv *env, jclass clazz CK_UNUSED)
 {
 #if defined(_WIN32)
     WSADATA wsaData;
@@ -42,11 +87,19 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init(
 #endif
 
     init_exceptions(env);
+    init_capabilities(env);
+    init_reflection(env);
+    init_unix();
     init_filedescriptors(env);
 #if defined(junixsocket_have_ancillary)
     init_ancillary(env);
 #endif
+
+#if defined(junixsocket_have_tipc)
+    init_tipc();
+#endif
     init_poll(env);
+    init_socketoptions(env);
 }
 
 /*
@@ -54,17 +107,20 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init(
  * Method:    destroy
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy(
-                                                                           JNIEnv *env, jclass clazz CK_UNUSED)
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy
+(JNIEnv *env, jclass clazz CK_UNUSED)
 {
 #if defined(_WIN32)
     WSACleanup();
 #endif
 
     destroy_exceptions(env);
+    destroy_capabilities(env);
+    destroy_reflection(env);
     destroy_filedescriptors(env);
 #if defined(junixsocket_have_ancillary)
     destroy_ancillary(env);
 #endif
     destroy_poll(env);
+    destroy_socketoptions(env);
 }

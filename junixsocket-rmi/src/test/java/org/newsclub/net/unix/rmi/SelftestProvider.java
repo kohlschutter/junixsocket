@@ -17,8 +17,10 @@
  */
 package org.newsclub.net.unix.rmi;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Provides references to all "junixsocket-rmi" tests that should be included in
@@ -30,10 +32,17 @@ public class SelftestProvider {
   public Map<String, Class<?>[]> tests() {
     Map<String, Class<?>[]> tests = new LinkedHashMap<>();
     tests.put("junixsocket-rmi", new Class<?>[] { //
+        RegistryTest.class, //
+        RemoteCloseableTest.class, //
         RemoteFileDescriptorTest.class, //
+        RMIPeerCredentialsTest.class, //
         JunixsocketVersionTest.class, //
     });
 
     return tests;
+  }
+
+  public Set<String> modulesDisabledByDefault() {
+    return Collections.emptySet();
   }
 }

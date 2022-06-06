@@ -18,37 +18,49 @@
 package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Verifies that accept properly times out when an soTimeout was specified.
  * 
  * @author Christian Kohlschütter
  */
-public class AcceptTimeoutTest extends SocketTestBase {
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketTestBase<A> {
   private static final int TIMING_INACCURACY_MILLIS = 5000;
+
+  protected AcceptTimeoutTest(AddressSpecifics<A> asp) {
+    super(asp);
+  }
 
   @Test
   public void testCatchTimeout() throws Exception {
     final int timeoutMillis = 500;
     assertTimeoutPreemptively(Duration.ofMillis(5 * timeoutMillis), () -> {
-      try (AFUNIXServerSocket sock = startServer()) {
+      try (ServerSocket sock = startServer()) {
         long time = System.currentTimeMillis();
         sock.setSoTimeout(timeoutMillis);
         long actualTimeout = sock.getSoTimeout();
         assertTrue(Math.abs(timeoutMillis - actualTimeout) <= TIMING_INACCURACY_MILLIS,
             "We should roughly get the same timeout back that we set before, but was "
                 + actualTimeout + " instead of " + timeoutMillis);
-        try (AFUNIXSocket socket = sock.accept()) {
+        try (Socket socket = sock.accept()) {
           fail("Did not receive " + SocketTimeoutException.class.getName() + "; socket=" + socket);
         } catch (SocketException | SocketTimeoutException e) {
           // expected
@@ -66,17 +78,17 @@ public class AcceptTimeoutTest extends SocketTestBase {
   public void testTimeoutAfterDelay() throws Exception {
     final int timeoutMillis = 5000;
     assertTimeoutPreemptively(Duration.ofMillis(2 * timeoutMillis), () -> {
-      try (AFUNIXServerSocket sock = startServer()) {
+      try (ServerSocket serverSock = startServer()) {
         final int connectDelayMillis = 50;
-        sock.setSoTimeout(timeoutMillis);
+        serverSock.setSoTimeout(timeoutMillis);
 
-        long actualTimeout = sock.getSoTimeout();
+        long actualTimeout = serverSock.getSoTimeout();
         assertTrue(Math.abs(timeoutMillis - actualTimeout) <= 10,
             "We should roughly get the same timeout back that we set before, but was "
                 + actualTimeout + " instead of " + timeoutMillis);
 
         new Thread() {
-          private final AFUNIXSocket socket = AFUNIXSocket.newInstance();
+          private final Socket socket = newSocket();
 
           {
             setDaemon(true);
@@ -91,7 +103,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
             }
 
             try {
-              socket.connect(getServerAddress());
+              socket.connect(serverSock.getLocalSocketAddress());
             } catch (IOException e) {
               e.printStackTrace();
             }
@@ -100,7 +112,7 @@ public class AcceptTimeoutTest extends SocketTestBase {
         }.start();
 
         long time = System.currentTimeMillis();
-        try (AFUNIXSocket socket = sock.accept();) {
+        try (Socket socket = serverSock.accept();) {
           assertNotNull(socket);
         }
         time = System.currentTimeMillis() - time;
@@ -111,5 +123,11 @@ public class AcceptTimeoutTest extends SocketTestBase {
                 + timeoutMillis + "ms");
       }
     });
+  }
+
+  @Test
+  public void testAcceptWithoutBindToService() throws Exception {
+    ServerSocket ss = newServerSocket();
+    assertThrows(SocketException.class, () -> ss.accept());
   }
 }

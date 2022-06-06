@@ -34,6 +34,8 @@ void destroy_ancillary(JNIEnv *env);
 
 jfieldID getFieldID_ancillaryReceiveBuffer(void);
 jfieldID getFieldID_pendingFileDescriptors(void);
+jmethodID getMethodID_setTipcErrorInfo(void);
+jmethodID getMethodID_setTipcDestName(void);
 
 #endif
 

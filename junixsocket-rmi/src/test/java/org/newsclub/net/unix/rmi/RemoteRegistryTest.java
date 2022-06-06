@@ -37,12 +37,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.ForkedVM;
 import com.kohlschutter.testutil.ForkedVMRequirement;
 import com.kohlschutter.testutil.OutputBridge;
 import com.kohlschutter.testutil.OutputBridge.ProcessStream;
 
 @ForkedVMRequirement(forkSupported = true)
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public class RemoteRegistryTest {
   @Test
   public void testRemoteRegistry() throws Exception {
@@ -79,7 +82,7 @@ public class RemoteRegistryTest {
           .getSimpleName()) {
 
         @Override
-        protected AFUNIXNaming getNamingInstance() throws IOException {
+        protected AFNaming getNamingInstance() throws IOException {
           return AFUNIXNaming.getInstance();
         }
       }) {
@@ -109,7 +112,7 @@ public class RemoteRegistryTest {
         return 30;
       }
     }) {
-      AFUNIXRegistry registry = sra.getRegistry();
+      AFRegistry registry = sra.getRegistry();
       assertNotNull(registry, "Could not access the AFUNIXRegistry created by the forked VM");
 
       assertThrows(ServerException.class, () -> sra.getRegistry().getNaming().shutdownRegistry());
@@ -122,10 +125,10 @@ public class RemoteRegistryTest {
   }
 
   private void tryToSayHello(SpawnedRegistryAccess sra) throws Exception {
-    AFUNIXRegistry registry = sra.getRegistry();
+    AFRegistry registry = sra.getRegistry();
     assertNotNull(registry, "Could not access the AFUNIXRegistry created by the forked VM");
 
-    AFUNIXNaming naming = registry.getNaming();
+    AFNaming naming = registry.getNaming();
     try {
       Hello hello = (Hello) naming.lookup("hello", 20, TimeUnit.SECONDS);
       assertEquals("Hello", hello.hello());
@@ -142,7 +145,7 @@ public class RemoteRegistryTest {
     private final File socketDir;
     private final ExecutorService executors;
     private final Process registryProcess;
-    private final CompletableFuture<AFUNIXRegistry> registryFuture;
+    private final CompletableFuture<AFRegistry> registryFuture;
     private final AtomicBoolean markedShutdown = new AtomicBoolean(false);
     private final String prefix;
     private final OutputBridge bridgeOut;
@@ -194,7 +197,7 @@ public class RemoteRegistryTest {
       return markedShutdown.get() || executors.isShutdown();
     }
 
-    public AFUNIXRegistry getRegistry() throws InterruptedException, ExecutionException {
+    public AFRegistry getRegistry() throws InterruptedException, ExecutionException {
       return registryFuture.get();
     }
 
@@ -253,8 +256,8 @@ public class RemoteRegistryTest {
     private void asyncGetRegistry() {
       executors.submit(() -> {
         try {
-          AFUNIXNaming naming = getNamingInstance();
-          AFUNIXRegistry registry = naming.getRegistry(30, TimeUnit.SECONDS);
+          AFNaming naming = getNamingInstance();
+          AFRegistry registry = naming.getRegistry(30, TimeUnit.SECONDS);
           registryFuture.complete(registry);
         } catch (RuntimeException | IOException e) {
           if (!isShutdown()) {
@@ -264,7 +267,7 @@ public class RemoteRegistryTest {
       });
     }
 
-    protected AFUNIXNaming getNamingInstance() throws IOException {
+    protected AFNaming getNamingInstance() throws IOException {
       return AFUNIXNaming.getInstance(socketDir);
     }
 

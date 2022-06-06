@@ -20,6 +20,7 @@ package org.newsclub.net.unix.rmi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.server.ExportException;
@@ -28,24 +29,30 @@ import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
+import org.newsclub.net.unix.AFSocketCapability;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+@AFSocketCapabilityRequirement({AFSocketCapability.CAPABILITY_UNIX_DOMAIN})
 public class RegistryTest extends ShutdownHookTestBase {
   @Test
-  public void testDoubleCreateRegistry() throws Exception {
-    AFUNIXNaming naming = AFUNIXNaming.newPrivateInstance();
+  public void testDoubleCreateRegistry() throws IOException {
+    AFNaming naming = AFUNIXNaming.newPrivateInstance();
     naming.createRegistry();
     naming.createRegistry();
     naming.shutdownRegistry();
   }
 
   @Test
-  public void testExportAndBind() throws Exception {
+  public void testExportAndBind() throws IOException, AlreadyBoundException, NotBoundException {
     AFUNIXNaming naming = AFUNIXNaming.newPrivateInstance();
 
     assertEquals(naming.getRegistrySocketDir(), naming.getSocketFactory().getSocketDir());
 
     naming.createRegistry();
-    assertEquals(Arrays.asList(AFUNIXRMIService.class.getName()), Arrays.asList(naming.list()));
+    assertEquals(Arrays.asList(AFRMIService.class.getName()), Arrays.asList(naming.list()));
 
     Hello hello = new HelloImpl();
 
@@ -56,7 +63,7 @@ public class RegistryTest extends ShutdownHookTestBase {
     naming.bind("hello2", hello);
     naming.rebind("hello2", hello);
     assertThrows(AlreadyBoundException.class, () -> naming.bind("hello2", hello));
-    assertEquals(new HashSet<>(Arrays.asList(AFUNIXRMIService.class.getName(), "hello", "hello2")),
+    assertEquals(new HashSet<>(Arrays.asList(AFRMIService.class.getName(), "hello", "hello2")),
         new HashSet<>(Arrays.asList(naming.list())));
 
     assertEquals("Hello", ((Hello) naming.lookup("hello2")).hello());
@@ -66,7 +73,7 @@ public class RegistryTest extends ShutdownHookTestBase {
 
     naming.unbind("hello2");
     naming.unexportAndUnbind("hello", hello);
-    assertEquals(Arrays.asList(AFUNIXRMIService.class.getName()), Arrays.asList(naming.list()));
+    assertEquals(Arrays.asList(AFRMIService.class.getName()), Arrays.asList(naming.list()));
 
     naming.shutdownRegistry();
 

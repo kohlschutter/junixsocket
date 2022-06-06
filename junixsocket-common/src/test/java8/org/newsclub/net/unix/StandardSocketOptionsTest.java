@@ -1,5 +1,7 @@
 package org.newsclub.net.unix;
 
+import java.net.SocketAddress;
+
 import org.junit.jupiter.api.Test;
 import org.opentest4j.TestAbortedException;
 
@@ -13,7 +15,11 @@ import com.kohlschutter.testutil.AvailabilityRequirement;
  * 
  * @author Christian Kohlschütter
  */
-public class StandardSocketOptionsTest {
+public abstract class StandardSocketOptionsTest<A extends SocketAddress> extends SocketTestBase<A> {
+  protected StandardSocketOptionsTest(AddressSpecifics<A> asp) {
+    super(asp);
+  }
+
   @Test
   @AvailabilityRequirement(classes = {"java.lang.ProcessHandle"}, //
       message = "This test requires Java 9 or later")

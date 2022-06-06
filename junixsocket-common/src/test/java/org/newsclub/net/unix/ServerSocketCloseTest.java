@@ -22,8 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
@@ -34,10 +36,17 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Ensures that we don't have any dangling "accept" calls after closing our ServerSocket.
  */
-public class ServerSocketCloseTest {
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+public abstract class ServerSocketCloseTest<A extends SocketAddress> extends SocketTestBase<A> {
+  protected ServerSocketCloseTest(AddressSpecifics<A> asp) {
+    super(asp);
+  }
 
   @Test
   @Timeout(value = 60, unit = TimeUnit.SECONDS)
@@ -51,13 +60,11 @@ public class ServerSocketCloseTest {
   }
 
   private void testUnblockAccepts(int timeout) throws Exception {
-    assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
-      File socketFile = SocketTestBase.initSocketFile();
-      try (AFUNIXServerSocket serverSocket = AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.of(
-          socketFile))) {
+    assertTimeoutPreemptively(Duration.ofSeconds(30), () -> {
+      try (ServerSocket serverSocket = newServerSocketBindOn(getServerBindAddress())) {
         serverSocket.setSoTimeout(timeout);
 
-        final int numThreads = 32;
+        final int numThreads = 4;
 
         final CountDownLatch cdl = new CountDownLatch(numThreads);
 
@@ -70,7 +77,8 @@ public class ServerSocketCloseTest {
             public void run() {
               try {
                 cdl.countDown();
-                try (AFUNIXSocket accept = serverSocket.accept()) {
+                try (Socket accept = serverSocket.accept()) {
+                  // usually not reached
                   assertNotNull(accept);
                 }
               } catch (SocketException e) {
@@ -80,6 +88,7 @@ public class ServerSocketCloseTest {
                   fail(e);
                 }
               } catch (IOException e) {
+                e.printStackTrace();
                 fail(e);
               }
             }
@@ -88,6 +97,7 @@ public class ServerSocketCloseTest {
 
         // Wait until all threads are in accept
         cdl.await();
+        Thread.sleep(100);
 
         serverSocket.close();
 

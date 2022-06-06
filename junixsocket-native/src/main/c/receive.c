@@ -24,6 +24,14 @@
 #include "ancillary.h"
 #include "jniutil.h"
 #include "polling.h"
+#include "address.h"
+
+#if junixsocket_have_tipc
+struct jux_tipc_errinfo {
+    uint32_t errorCode;
+    uint32_t dataLength;
+};
+#endif
 
 static int optToFlags(jint opt) {
     int flags = 0;
@@ -33,26 +41,32 @@ static int optToFlags(jint opt) {
     return flags;
 }
 
-ssize_t recv_wrapper(int handle, jbyte *buf, jint length, struct sockaddr_un *senderBuf, socklen_t *senderBufLen, int opt) {
-
+static ssize_t recv_wrapper(int handle, jbyte *buf, jint length, jux_sockaddr_t *senderBuf, socklen_t *senderBufLen, jint opt) {
     int flags = optToFlags(opt);
 
     ssize_t count;
     do {
-        if (senderBuf != NULL) {
-            count = recvfrom(handle, (char*)buf, length, flags, (struct sockaddr *)senderBuf, senderBufLen);
-        } else if((opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_SOCKET) != 0 && flags == 0) {
+        if((opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_SOCKET) != 0 && flags == 0) {
             // "read" can be used with pipes, too.
             count = read(handle, (char*)buf, length);
+            if(senderBufLen) {
+                *senderBufLen = 0;
+            }
+        } else if (senderBuf != NULL) {
+            count = recvfrom(handle, (char*)buf, length, flags, (struct sockaddr *)senderBuf, senderBufLen);
         } else {
             count = recv(handle, (char*)buf, length, flags);
+            if(count == -1 && socket_errno == ENOTSOCK) {
+                // unexpected non-socket, try again with read
+                count = read(handle, (char*)buf, length);
+            }
         }
     } while(count == (ssize_t)-1 && (socket_errno == EINTR));
 
     return count;
 }
 
-ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struct sockaddr_un *senderBuf, socklen_t *senderBufLen, int opt, jobject ancSupp) {
+static ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, jux_sockaddr_t *senderBuf, socklen_t *senderBufLen, jint opt, jobject ancSupp) {
 #if !defined(junixsocket_have_ancillary)
     CK_ARGUMENT_POTENTIALLY_UNUSED(env);
     CK_ARGUMENT_POTENTIALLY_UNUSED(ancSupp);
@@ -85,6 +99,10 @@ ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
 
     if (control == NULL || controlLen == 0 || ancSupp == NULL) {
         return recv_wrapper(handle, buf, length, senderBuf, senderBufLen, opt);
+    } else if(controlLen < sizeof(struct cmsghdr)) {
+        // DragonFlyBSD doesn't throw an exception by itself, so we have to do it.
+        _throwException(env, kExceptionSocketException, "No buffer space available");
+        return -1;
     }
 
     int flags = optToFlags(opt);
@@ -116,25 +134,26 @@ ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
         return count;
     }
 
-    if(controlLen < sizeof(struct cmsghdr)) {
-        // DragonFlyBSD doesn't throw an exception by itself, so we have to do it.
-        _throwException(env, kExceptionSocketException, "No buffer space available");
-        return -1;
-    }
-
+    struct cmsghdr *cmsgPrev = NULL;
     for(struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg); cmsg != NULL; cmsg =
         junixsocket_CMSG_NXTHDR(&msg, cmsg)) {
+        if(cmsg == cmsgPrev) {
+            break;
+        }
+        cmsgPrev = cmsg;
+
+        char *endBytes = (char*)cmsg + cmsg->cmsg_len;
+        char *controlEnd = (char*)control + controlLen;
+        if(controlEnd < endBytes) {
+            endBytes = controlEnd;
+        }
+        unsigned char *data = CMSG_DATA(cmsg);
+        size_t len = ((unsigned char *)endBytes - data);
+
         if(cmsg->cmsg_level == SOL_SOCKET
            && cmsg->cmsg_type == SCM_RIGHTS) {
-            char *endBytes = (char*)cmsg + cmsg->cmsg_len;
-            char *controlEnd = (char*)control + controlLen;
-            if(controlEnd < endBytes) {
-                endBytes = controlEnd;
-            }
 
-            unsigned char *data = CMSG_DATA(cmsg);
-            unsigned char *end = (unsigned char *)endBytes;
-            int numFds = (int)(end - data) / sizeof(int);
+            int numFds = (int)(len) / sizeof(int);
 
             CK_STATIC_ASSERT(sizeof(int)==sizeof(jint));
 
@@ -153,12 +172,31 @@ ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
                 _throwException(env, kExceptionSocketException, "No buffer space available");
                 return -1;
             }
+#if junixsocket_have_tipc
+        } else if(cmsg->cmsg_level == SOL_TIPC && cmsg->cmsg_type == TIPC_ERRINFO && len == 8) {
+            CK_IGNORE_CAST_ALIGN_BEGIN
+            struct jux_tipc_errinfo *errInfo = (struct jux_tipc_errinfo *)data;
+            CK_IGNORE_CAST_ALIGN_END
+
+            jmethodID kSetTipcErrorInfo = getMethodID_setTipcErrorInfo();
+            if(kSetTipcErrorInfo != NULL) {
+                (*env)->CallVoidMethod(env, ancSupp, kSetTipcErrorInfo, errInfo->errorCode, errInfo->dataLength);
+            }
+        } else if(cmsg->cmsg_level == SOL_TIPC && cmsg->cmsg_type == TIPC_DESTNAME && len == 12) {
+            CK_IGNORE_CAST_ALIGN_BEGIN
+            struct tipc_name_seq* addr = (struct tipc_name_seq*)data; // three bytes
+            CK_IGNORE_CAST_ALIGN_END
+            jmethodID kSetTipcDestName = getMethodID_setTipcDestName();
+            if(kSetTipcDestName != NULL) {
+                (*env)->CallVoidMethod(env, ancSupp, kSetTipcDestName, addr->type, addr->lower, addr->upper);
+            }
+#endif
         } else {
 #if DEBUG
             if(cmsg->cmsg_level == 0 && cmsg->cmsg_type == 0) {
                 continue;
             } else {
-                fprintf(stderr, "NativeUnixSocket_read: Unexpected cmsg level:%i type:%i\n", cmsg->cmsg_level, cmsg->cmsg_type);
+                fprintf(stderr, "NativeUnixSocket_read: Unexpected cmsg level:%i type:%i len:%zu\n", cmsg->cmsg_level, cmsg->cmsg_type, len);
                 fflush(stderr);
             }
 #endif
@@ -172,16 +210,17 @@ ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    read
- * Signature: (Ljava/io/FileDescriptor;[BIILorg/newsclub/net/unix/AncillaryDataSupport;)I
+ * Signature: (Ljava/io/FileDescriptor;[BIIILorg/newsclub/net/unix/AncillaryDataSupport;)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
                                                                         JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jbyteArray jbuf,
-                                                                        jint offset, jint length, jobject ancSupp, jint hardTimeoutMillis)
+                                                                        jint offset, jint length, jint opt, jobject ancSupp, jint hardTimeoutMillis)
 {
 #if defined(_WIN32)
     CK_ARGUMENT_POTENTIALLY_UNUSED(ancSupp);
 #endif
     CK_ARGUMENT_POTENTIALLY_UNUSED(hardTimeoutMillis);
+
 
     // Performance: In order to read a single byte, simply don't specify a receive buffer.
     if(jbuf) {
@@ -226,7 +265,6 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
 
     ssize_t count;
 
-    int opt = 0;
     count = recvmsg_wrapper(env, handle, buf, length, NULL, 0, opt, ancSupp);
 
     jint returnValue;
@@ -261,15 +299,15 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
     CK_ARGUMENT_POTENTIALLY_UNUSED(hardTimeoutMillis);
 
     int handle = _getFD(env, fd);
-    if (handle <= 0) {
-        _throwException(env, kExceptionSocketException, "Socket closed");
+    if(handle < 0) {
+        _throwException(env, kExceptionSocketException, "Socket is closed");
         return -1;
     }
 
 #if defined(junixsocket_use_poll_for_read)
     int ret = pollWithTimeout(env, fd, handle, hardTimeoutMillis);
     if(ret < 1) {
-        if(checkNonBlocking(handle, socket_errno)) {
+        if(checkNonBlocking0(handle, socket_errno, opt)) {
             // non-blocking socket
             return 0;
         } else if(ret == -1) {
@@ -297,33 +335,57 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
     }
 
     struct jni_direct_byte_buffer_ref addressBufferRef =
-    getDirectByteBufferRef (env, addressBuffer, 0, sizeof(struct sockaddr_un));
+    getDirectByteBufferRef (env, addressBuffer, 0, sizeof(jux_sockaddr_t));
     if(addressBufferRef.size == -1) {
         _throwException(env, kExceptionSocketException, "Cannot get addressBuffer");
         return -1;
     }
 
-    struct sockaddr_un *senderBuf = (struct sockaddr_un *)addressBufferRef.buf;
+    jux_sockaddr_t *senderBuf = (jux_sockaddr_t *)addressBufferRef.buf;
     socklen_t senderBufLen = (socklen_t)MIN(SOCKLEN_MAX, (unsigned)addressBufferRef.size);
 
+    memset(senderBuf, 0, senderBufLen);
     ssize_t count = recvmsg_wrapper(env, handle, dataBufferRef.buf, length, senderBuf, &senderBufLen, opt, ancSupp);
 
     // NOTE: if we receive messages from an unbound socket, the "sender" may be just a bunch of zeros.
 
+    int theError;
     if(count == -1) {
-        count = 0;
-        if(checkNonBlocking(handle, errno)) {
-             // no data on non-blocking socket
-        } else {
-            // read(2) returns -1 on error. Java throws an Exception.
-            if(!(*env)->ExceptionCheck(env)) {
-                _throwErrnumException(env, errno, fd);
-            }
-            goto end;
-        }
+        theError = errno;
+    } else if(count == 0) {
+        // check if non-blocking below
+        theError = EWOULDBLOCK;
+    } else {
+        return (jint)count;
     }
 
-end:
+    if(checkNonBlocking0(handle, theError, opt)) {
+        theError = errno;
+         // no data on non-blocking socket, or terminated connection?
+        if(count == 0 && theError != 0) {
+            _throwException(env, kExceptionClosedChannelException, NULL);
+        } else if(theError == 0 || theError == EAGAIN || theError == ETIMEDOUT
+#if defined(_WIN32)
+                  || theError == WSAETIMEDOUT
+#endif
+                  || theError == EINTR) {
+            // just return 0
+        } else {
+            _throwErrnumException(env, errno, fd);
+        }
+        return 0;
+    } else if(theError == EWOULDBLOCK) {
+        return -1;
+    } else if(count == -1) {
+        if(theError == ENOENT) {
+            return -1;
+        }
+        // read(2) returns -1 on error. Java throws an Exception.
+        if(!(*env)->ExceptionCheck(env)) {
+            _throwErrnumException(env, theError, fd);
+        }
+    }
+    count = 0;
 
     return (jint)count;
 }

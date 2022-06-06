@@ -54,6 +54,9 @@ final class RAFChannelProvider extends RandomAccessFile implements FileDescripto
       }
     }
     tempPath.deleteOnExit();
+
+    NativeUnixSocket.ensureSupported();
+
     this.fdObj = fdObj;
 
     FileDescriptor rafFdObj = getFD();

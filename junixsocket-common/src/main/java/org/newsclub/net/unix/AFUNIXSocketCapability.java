@@ -23,18 +23,23 @@ package org.newsclub.net.unix;
  * 
  * You can check whether your environment supports a given capability by calling
  * {@link AFUNIXSocket#supports(AFUNIXSocketCapability)}.
+ * 
+ * This enum is deprecated. Use {@link AFSocketCapability} instead.
+ * 
+ * @see AFSocketCapability
  */
+@Deprecated
 public enum AFUNIXSocketCapability {
   // see org_newsclub_net_unix_NativeUnixSocket.c in junixsocket-native
 
   /** Socket supports retrieving peer credentials. */
-  CAPABILITY_PEER_CREDENTIALS(0), //
+  CAPABILITY_PEER_CREDENTIALS(0),
 
   /** Socket supports sending and receiving ancillary messages. */
-  CAPABILITY_ANCILLARY_MESSAGES(1), //
+  CAPABILITY_ANCILLARY_MESSAGES(1),
 
   /** Socket supports passing file descriptors via ancillary messages. */
-  CAPABILITY_FILE_DESCRIPTORS(2), //
+  CAPABILITY_FILE_DESCRIPTORS(2),
 
   /** Socket addressing supports the abstract namespace (Linux). */
   CAPABILITY_ABSTRACT_NAMESPACE(3),

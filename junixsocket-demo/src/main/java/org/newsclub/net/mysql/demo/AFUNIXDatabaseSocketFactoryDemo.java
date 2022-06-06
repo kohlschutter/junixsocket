@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
@@ -34,7 +35,7 @@ import org.newsclub.net.unix.demo.DemoHelper;
  * @author Christian Kohlschuetter
  */
 public class AFUNIXDatabaseSocketFactoryDemo {
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws ClassNotFoundException, SQLException {
     DemoHelper.initJDBCDriverClass("mysqlDriver", "", "com.mysql.jdbc.Driver");
     System.out.println();
 

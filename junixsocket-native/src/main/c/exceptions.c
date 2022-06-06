@@ -29,6 +29,8 @@ static char *kExceptionClassnames[kExceptionMaxExcl] = {
     "java/lang/IndexOutOfBoundsException", // kExceptionIndexOutOfBoundsException
     "java/lang/IllegalStateException", // kExceptionIllegalStateException
     "java/lang/NullPointerException", // kExceptionNullPointerException
+    "java/net/NoRouteToHostException", // kExceptionNoRouteToHostException
+    "java/nio/channels/ClosedChannelException", // kExceptionClosedChannelException
 };
 
 static jclass *kExceptionClasses;
@@ -42,8 +44,19 @@ void init_exceptions(JNIEnv *env) {
     for (int i=0; i<kExceptionMaxExcl; i++) {
         jclass exc = findClassAndGlobalRef(env, kExceptionClassnames[i]);
         kExceptionClasses[i] = exc;
-        kExceptionConstructors[i] = (*env)->GetMethodID(env, exc, "<init>",
-                                                        "(Ljava/lang/String;)V");
+
+        jmethodID m = (*env)->GetMethodID(env, exc, "<init>", "(Ljava/lang/String;)V");
+        if(!m) {
+            (*env)->ExceptionClear(env);
+            m = (*env)->GetMethodID(env, exc, "<init>", "()V");
+            if(!m) {
+#if DEBUG
+                fprintf(stderr, "Could not initialize handler for exception %s\n", kExceptionClassnames[i]);
+#endif
+            }
+        }
+
+        kExceptionConstructors[i] = m;
     }
 }
 
@@ -57,6 +70,11 @@ void destroy_exceptions(JNIEnv *env) {
 
 void _throwException(JNIEnv* env, ExceptionType exceptionType, char* message)
 {
+    if((*env)->ExceptionCheck(env)) {
+        // keep the existing exception
+        return;
+    }
+
     if((int)exceptionType < 0 || exceptionType >= kExceptionMaxExcl) {
         exceptionType = kExceptionIllegalStateException;
     }
@@ -83,6 +101,9 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
         case WSAETIMEDOUT:
 #endif
             exceptionType = kExceptionSocketTimeoutException;
+            break;
+        case EHOSTUNREACH:
+            exceptionType = kExceptionNoRouteToHostException;
             break;
         case EPIPE:
         case EBADF:
@@ -148,10 +169,16 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
 
 void _throwSockoptErrnumException(JNIEnv* env, int errnum, jobject fd)
 {
-    // when setsockopt returns an error with EINVAL, it means the socket was shut down already
+    // when setsockopt returns an error with EINVAL, it may mean the socket was shut down already
     if(errnum == EINVAL) {
-        _throwException(env, kExceptionSocketException, "Socket closed");
-        return;
+        int handle = _getFD(env, fd);
+        struct sockaddr addr = {};
+        socklen_t len = 0;
+        int ret = getsockname(handle, &addr, &len);
+        if(ret == -1) {
+            _throwException(env, kExceptionSocketException, "Socket is closed");
+            return;
+        }
     }
 
     _throwErrnumException(env, errnum, fd);

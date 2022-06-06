@@ -22,14 +22,19 @@ import java.io.Serializable;
 import java.net.Socket;
 import java.rmi.server.RMIClientSocketFactory;
 
+import org.newsclub.net.unix.AFSocket;
+
 /**
  * An implementation of {@link RMIClientSocketFactory}.
  * 
- * * @see AFUNIXRMISocketFactory where we deal with AF_UNIX sockets.
+ * @see AFRMISocketFactory where we deal with {@link AFSocket}s.
  */
 public final class DefaultRMIClientSocketFactory implements RMIClientSocketFactory, Serializable {
   private static final long serialVersionUID = 1L;
   private static final DefaultRMIClientSocketFactory INSTANCE = new DefaultRMIClientSocketFactory();
+
+  private DefaultRMIClientSocketFactory() {
+  }
 
   /**
    * Returns the singleton instance for DefaultRMIClientSocketFactory.

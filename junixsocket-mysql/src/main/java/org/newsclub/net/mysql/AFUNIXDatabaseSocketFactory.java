@@ -71,7 +71,7 @@ public class AFUNIXDatabaseSocketFactory implements SocketFactory {
     // If no socket path is given, use the default: /tmp/mysql.sock
     final File socketFile = new File(props.getProperty("junixsocket.file", "/tmp/mysql.sock"));
 
-    socket = AFUNIXSocket.connectTo(new AFUNIXSocketAddress(socketFile));
+    socket = AFUNIXSocket.connectTo(AFUNIXSocketAddress.of(socketFile));
     return socket;
   }
 }

@@ -1,13 +1,16 @@
 # junixsocket
 
-junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](https://en.wikipedia.org/wiki/Unix_domain_socket) (AF_UNIX sockets) from Java.
+junixsocket is a Java/JNI library that allows the use of
+[Unix Domain Sockets](https://en.wikipedia.org/wiki/Unix_domain_socket) (AF_UNIX sockets), and
+other address/protocol families (such as [TIPC](http://tipc.io/)), from Java.
 
 ## Why it's cool
 
 * *junixsocket* is the most complete implementation of Unix Domain Sockets for the Java ecosystem.
-* Comes with pre-built native libraries for several operating systems and platforms, including
-  macOS, Linux, Windows, Solaris, FreeBSD, NetBSD, OpenBSD, DragonFlyBSD.
-* Supports all Java versions since Java 7\*.
+* Supports other socket types, such as TIPC (on Linux), as well!
+* Comes with pre-built native libraries for most operating systems and platforms, including
+  macOS, Linux, Windows, Solaris, FreeBSD, NetBSD, OpenBSD, DragonFlyBSD, AIX, IBM i.
+* Supports all Java versions since Java 8.
 * Supports both the Java Socket API and NIO (`java.net.Socket`, `java.net.SocketChannel`, etc.)
 * Supports streams and datagrams.
 * Supports Remote Method Invocation (RMI) over AF_UNIX.
@@ -23,7 +26,7 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
 * Provides a selftest package with 100+ tests to ensure compatibility with any target platform.
 * Apache 2.0 licensed.
 
-`*` (Tested up to Java 17; Java 7 support is limited to core functionality, no RMI).
+`*` (Tested up to Java 19; support for Java 7 was dropped in version 2.5.0).
 
 ## Quick links
 
@@ -39,8 +42,10 @@ junixsocket is a Java/JNI library that allows the use of [Unix Domain Sockets](h
   * API Javadocs
     - [The core (common) API](https://kohlschutter.github.io/junixsocket/junixsocket-common/apidocs/org.newsclub.net.unix/org/newsclub/net/unix/package-summary.html)
     - [The RMI-over-Unix-Socket API](https://kohlschutter.github.io/junixsocket/junixsocket-rmi/apidocs/org.newsclub.net.unix.rmi/org/newsclub/net/unix/rmi/package-summary.html)
+    - [The TIPC API](https://kohlschutter.github.io/junixsocket/junixsocket-tipc/apidocs/org.newsclub.net.unix.tipc/org/newsclub/net/unix/tipc/package-summary.html)
     
   * [Unix Domain Socket Reference](https://kohlschutter.github.io/junixsocket/unixsockets.html)
+  * [TIPC Reference](http://tipc.io)
 
 ## Licensing
 
@@ -67,7 +72,7 @@ To include the core junixsocket functionality in your project, add the following
 <dependency>
   <groupId>com.kohlschutter.junixsocket</groupId>
   <artifactId>junixsocket-core</artifactId>
-  <version>2.4.1</version>
+  <version>2.5.0</version>
   <type>pom</type>
 </dependency>
 ```

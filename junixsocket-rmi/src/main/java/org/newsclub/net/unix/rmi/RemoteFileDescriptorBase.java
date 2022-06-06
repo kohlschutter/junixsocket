@@ -29,17 +29,18 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
-import java.net.Socket;
 import java.net.SocketException;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.newsclub.net.unix.AFUNIXServerSocket;
+import org.newsclub.net.unix.AFServerSocket;
+import org.newsclub.net.unix.AFSocket;
+import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.FileDescriptorAccess;
-import org.newsclub.net.unix.server.AFUNIXSocketServer;
+import org.newsclub.net.unix.server.AFSocketServer;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
@@ -89,7 +90,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
    * 
    * @see #readExternal(ObjectInput)
    */
-  protected RemoteFileDescriptorBase() {
+  RemoteFileDescriptorBase() {
   }
 
   RemoteFileDescriptorBase(AFUNIXRMISocketFactory socketFactory, T stream, FileDescriptor fd,
@@ -110,12 +111,12 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
 
     int localPort;
     try {
-      AFUNIXServerSocket serverSocket = (AFUNIXServerSocket) socketFactory.createServerSocket(0);
+      AFServerSocket<?> serverSocket = (AFServerSocket<?>) socketFactory.createServerSocket(0);
       localPort = serverSocket.getLocalPort();
 
-      AFUNIXSocketServer server = new AFUNIXSocketServer(serverSocket) {
+      AFSocketServer<?> server = new AFSocketServer<AFSocketAddress>(serverSocket) {
         @Override
-        protected void doServeSocket(Socket socket) throws IOException {
+        protected void doServeSocket(AFSocket<?> socket) throws IOException {
           AFUNIXSocket unixSocket = (AFUNIXSocket) socket;
           try (DataOutputStream out = new DataOutputStream(socket.getOutputStream());
               InputStream in = socket.getInputStream();) {
@@ -143,13 +144,14 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
         }
 
         @Override
-        protected void onServerStopped(java.net.ServerSocket socket) {
+        protected void onServerStopped(AFServerSocket<?> socket) {
           try {
             serverSocket.close();
           } catch (IOException e) {
             // ignore
           }
         }
+
       };
       server.startThenStopAfter(SERVER_TIMEOUT, TimeUnit.MILLISECONDS);
     } catch (IOException e) {

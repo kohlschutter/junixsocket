@@ -28,3 +28,15 @@ CK_VISIBILITY_INTERNAL int clock_gettime(int ignored CK_UNUSED, struct timespec 
     return 0;
 }
 # endif
+
+#if defined(_OS400)
+int jux_mangleErrno(int err) {
+    switch(err) {
+        case 3418: // CP3418 Possible APAR condition or hardware failure
+                   // https://www.ibm.com/docs/en/i/7.5?topic=ssw_ibm_i_75/apis/gpeern.htm
+            return EINVAL;
+        default:
+            return err;
+    }
+}
+#endif

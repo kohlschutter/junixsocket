@@ -118,12 +118,23 @@ void setLongFieldValue(JNIEnv *env, jobject instance, char *fieldName,
 }
 
 jclass findClassAndGlobalRef(JNIEnv *env, char *className) {
+    return findClassAndGlobalRef0(env, className, JNI_FALSE);
+}
+
+jclass findClassAndGlobalRef0(JNIEnv *env, char *className, jboolean okIfMissing) {
+
     jclass clazz = (*env)->FindClass(env, className);
     if (clazz) {
         return (*env)->NewGlobalRef(env, clazz);
+    } else if(okIfMissing) {
+//#if DEBUG
+//        fprintf(stderr, "(junixsocket) Could not find optional class %s\n", className);
+//#endif
+        (*env)->ExceptionClear(env);
+        return NULL;
     } else {
 #if DEBUG
-        fprintf(stderr, "(junixsocket) Could not find class %s", className);
+        fprintf(stderr, "(junixsocket) Could not find class %s\n", className);
 #endif
         return NULL;
     }
@@ -131,7 +142,6 @@ jclass findClassAndGlobalRef(JNIEnv *env, char *className) {
 void releaseClassGlobalRef(JNIEnv *env, jclass klazz) {
     if (klazz) {
         (*env)->DeleteGlobalRef(env, klazz);
-        klazz = NULL;
     }
 }
 

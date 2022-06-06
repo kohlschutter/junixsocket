@@ -27,6 +27,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.ProcessBuilder.Redirect;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.Collections;
@@ -49,17 +52,19 @@ import com.kohlschutter.util.ExceptionUtil;
  * <a href="https://github.com/kohlschutter/junixsocket/pull/29">issue 29</a>.
  * 
  * We need to ensure that the native file descriptor is closed whenever our socket implementation is
- * garbage collected, even when {@link AFUNIXSocket#close()} is not called.
+ * garbage collected, even when {@link AFSocket#close()} is not called.
  * 
  * @author Christian Kohlschütter
  */
 @CommandAvailabilityRequirement(commands = {"lsof"})
 @ForkedVMRequirement(forkSupported = true)
-public class FinalizeTest extends SocketTestBase {
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBase<A> {
   private Process process = null;
 
-  public FinalizeTest() throws IOException {
-    super();
+  protected FinalizeTest(AddressSpecifics<A> asp) {
+    super(asp);
   }
 
   @Test
@@ -75,7 +80,7 @@ public class FinalizeTest extends SocketTestBase {
         }
 
         @Override
-        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
+        protected void handleConnection(final Socket socket) throws IOException {
           try {
             assumeTrue(process.pid() > 0);
             int linesBefore = -1;
@@ -97,7 +102,8 @@ public class FinalizeTest extends SocketTestBase {
         }
       }) {
         sema.acquire();
-        this.process = launchServerProcess(getSocketFile().getAbsolutePath());
+        this.process = launchServerProcess(socketType(), ((AFSocketAddress) serverThread
+            .getServerAddress()).getHostString());
         Integer linesBefore = future.get();
         assertNotNull(linesBefore);
 
@@ -107,6 +113,9 @@ public class FinalizeTest extends SocketTestBase {
             Thread.sleep(100);
             linesAfter = lsofUnixSockets(process.pid());
             if (linesAfter != linesBefore) {
+              break;
+            }
+            if (!process.isAlive()) {
               break;
             }
           }
@@ -122,16 +131,20 @@ public class FinalizeTest extends SocketTestBase {
       } catch (ExecutionException e) {
         throw ExceptionUtil.unwrapExecutionException(e);
       } finally {
-        this.process.destroy();
+        Process p = this.process;
+        if (p != null) {
+          p.destroy();
+        }
         this.process = null;
       }
     });
   }
 
-  private Process launchServerProcess(String socketPath) throws IOException {
-    return new ForkedVM() {
+  private Process launchServerProcess(String socketType, String socketPath) throws IOException {
+    ForkedVM vm = new ForkedVM() {
       @Override
       protected void onJavaMainClass(String arg) {
+        super.onJavaOption("-Dtest.junixsocket.socket.type=" + socketType);
         super.onJavaOption("-Dtest.junixsocket.socket=" + socketPath);
         super.onJavaMainClass(FinalizeTestClient.class.getName());
       }
@@ -140,7 +153,11 @@ public class FinalizeTest extends SocketTestBase {
       protected void onArguments(List<String> args) {
         super.onArguments(Collections.emptyList());
       }
-    }.fork();
+    };
+    vm.setRedirectError(Redirect.INHERIT);
+    vm.setRedirectOutput(Redirect.INHERIT);
+
+    return vm.fork();
   }
 
   @SuppressFBWarnings({"RV_DONT_JUST_NULL_CHECK_READLINE"})
@@ -169,4 +186,6 @@ public class FinalizeTest extends SocketTestBase {
     assumeTrue(p.waitFor() == 0, "lsof should terminate with RC=0");
     return lines;
   }
+
+  protected abstract String socketType();
 }

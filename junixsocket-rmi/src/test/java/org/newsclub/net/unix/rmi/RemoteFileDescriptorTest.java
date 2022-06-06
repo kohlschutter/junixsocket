@@ -31,23 +31,24 @@ import java.rmi.NotBoundException;
 import java.rmi.server.RMISocketFactory;
 
 import org.junit.jupiter.api.Test;
-import org.newsclub.net.unix.AFUNIXSocketCapability;
+import org.newsclub.net.unix.AFSocketCapability;
 
 import com.kohlschutter.util.IOUtil;
 
-@AFUNIXSocketCapabilityRequirement(AFUNIXSocketCapability.CAPABILITY_FILE_DESCRIPTORS)
+@AFSocketCapabilityRequirement({
+    AFSocketCapability.CAPABILITY_UNIX_DOMAIN, AFSocketCapability.CAPABILITY_FILE_DESCRIPTORS})
 public class RemoteFileDescriptorTest extends TestBase {
   private static final byte[] HELLO_WORLD = "Hello World :-)\n".getBytes(StandardCharsets.US_ASCII);
   private static final byte[] SMILEY = ":-)\n".getBytes(StandardCharsets.US_ASCII);
 
   @Test
-  public void testServiceProxy() throws Exception {
+  public void testServiceProxy() throws IOException, NotBoundException {
     TestService svc = lookupTestService();
     assertTrue(Proxy.isProxyClass(svc.getClass()));
   }
 
   @Test
-  public void testRemoteStdout() throws Exception {
+  public void testRemoteStdout() throws IOException, NotBoundException {
     TestService svc = lookupTestService();
 
     try (RemoteFileDescriptor stdout = svc.stdout()) {
@@ -59,7 +60,7 @@ public class RemoteFileDescriptorTest extends TestBase {
   }
 
   @Test
-  public void testRemoteStdoutNoop() throws Exception {
+  public void testRemoteStdoutNoop() throws IOException, NotBoundException {
     TestService svc = lookupTestService();
 
     try (RemoteFileDescriptor stdout = svc.stdout()) {
@@ -68,7 +69,7 @@ public class RemoteFileDescriptorTest extends TestBase {
   }
 
   @Test
-  public void testWriteAndReadHello() throws Exception {
+  public void testWriteAndReadHello() throws IOException, NotBoundException {
     TestService svc = lookupTestService();
 
     try (FileOutputStream fos = svc.output().asFileOutputStream()) {

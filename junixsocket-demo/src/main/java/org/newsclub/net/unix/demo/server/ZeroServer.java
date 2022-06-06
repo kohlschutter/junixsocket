@@ -28,6 +28,7 @@ import java.net.SocketAddress;
  * 
  * @author Christian Kohlschütter
  */
+// CPD-OFF
 public final class ZeroServer extends DemoServerBase {
   public ZeroServer(SocketAddress listenAddress) {
     super(listenAddress);

@@ -21,4 +21,8 @@
 
 #include "config.h"
 
+void init_socketoptions(JNIEnv *env);
+
+void destroy_socketoptions(JNIEnv *env);
+
 #endif /* socketoptions_h */

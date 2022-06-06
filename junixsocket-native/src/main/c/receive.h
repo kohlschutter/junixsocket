@@ -20,7 +20,7 @@
 #define receive_h
 
 #include "config.h"
+#include "address.h"
 
-ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struct sockaddr_un *senderBuf, socklen_t *senderBufLen, int opt, jobject ancSupp);
 
 #endif /* receive_h */

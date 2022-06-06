@@ -29,7 +29,7 @@ static jfieldID fieldID_ops = NULL;
 static jfieldID fieldID_rops = NULL;
 
 void init_poll(JNIEnv *env) {
-    class_PollFd = findClassAndGlobalRef(env, "org/newsclub/net/unix/AFUNIXSelector$PollFd");
+    class_PollFd = findClassAndGlobalRef(env, "org/newsclub/net/unix/AFSelector$PollFd");
     fieldID_fds = (*env)->GetFieldID(env, class_PollFd, "fds", "[Ljava/io/FileDescriptor;");
     fieldID_ops = (*env)->GetFieldID(env, class_PollFd, "ops", "[I");
     fieldID_rops = (*env)->GetFieldID(env, class_PollFd, "rops", "[I");
@@ -46,6 +46,7 @@ static const int OP_READ = (1<<0);
 static const int OP_WRITE = (1<<2);
 static const int OP_CONNECT = (1<<3);
 static const int OP_ACCEPT = (1<<4);
+static const int OP_INVALID = (1<<7); // custom
 
 static int opToEvent(int op) {
     int event = 0;
@@ -66,8 +67,8 @@ static int eventToOp(int event) {
     if((event & POLLOUT)) {
         op |= (OP_WRITE | OP_CONNECT); // will be masked accordingly later
     }
-    if((event & POLLHUP)) {
-        // FIXME should we set op to 0?
+    if((event & ((POLLERR | POLLHUP | POLLNVAL))) != 0) {
+        op |= OP_INVALID;
     }
     return op;
 }
@@ -89,6 +90,10 @@ jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
 #else
     struct timeval optVal;
 #endif
+    if(handle < 0) {
+        _throwException(env, kExceptionSocketException, "Socket is closed");
+        return -1;
+    }
 
     socklen_t optLen = sizeof(optVal);
     int ret = getsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, WIN32_NEEDS_CHARP &optVal, &optLen);
@@ -233,14 +238,14 @@ jint pollWithMillis(int handle, uint64_t millis) {
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    available
- * Signature: (Ljava/io/FileDescriptor;)I
+ * Signature: (Ljava/io/FileDescriptor;Ljava/nio/ByteBuffer;)I
  */
-JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available(
-                                                                             JNIEnv * env, jclass clazz CK_UNUSED, jobject fd)
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available
+ (JNIEnv * env, jclass clazz CK_UNUSED, jobject fd, jobject buffer)
 {
     int handle = _getFD(env, fd);
-    if (handle <= 0) {
-        _throwException(env, kExceptionSocketException, "Socket closed");
+    if (handle < 0) {
+        _throwException(env, kExceptionSocketException, "Socket is closed");
         return 0;
     }
 
@@ -249,15 +254,67 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available(
 
     int ret;
 #if defined(_WIN32)
-    u_long count;
-    ret = ioctlsocket(handle, FIONREAD, &count);
+    long count;
+    ret = ioctlsocket(handle, FIONREAD, (u_long*)&count);
 #else
-    int count;
+    int count = 0;
+
+#  if defined(_AIX)
+    ret = ioctlx(handle, FIONREAD, &count, 0);
+#  else
     ret = ioctl(handle, FIONREAD, &count);
+#  endif
+
+    if(count < 0) {
+        count = 0;
+    }
+
 #endif
-    if((int)count == -1 || ret == -1) {
-        _throwErrnumException(env, socket_errno, fd);
-        return -1;
+    if(ret == -1) {
+        int myerr = socket_errno;
+        if(myerr == ENOTTY) {
+            // e.g., TIPC on Linux may not implement this call
+            // we resort to polling and peeking with recv's MSG_PEEK
+
+            struct pollfd pollFd = {
+                .events = POLLIN,
+                .fd = handle
+            };
+#if defined(_WIN32)
+            ret = WSAPoll(&pollFd, 1, 0);
+#else
+            ret = poll(&pollFd, 1, 0);
+#endif
+            if(ret != 1 || (pollFd.revents & POLLIN) == 0) {
+                // also ignore subsequent errors
+                return 0;
+            }
+
+            struct jni_direct_byte_buffer_ref dataBufferRef =
+            getDirectByteBufferRef (env, buffer, 0, 0);
+            if(dataBufferRef.size == -1) {
+                // ignore subsequent errors
+                return 0;
+            } else if(dataBufferRef.buf == NULL) {
+                // ignore subsequent errors
+                return 0;
+            }
+
+            ssize_t count = recv(handle, (char*)&dataBufferRef.buf, dataBufferRef.size, MSG_PEEK
+#if defined(MSG_TRUNC)
+                                 | MSG_TRUNC // ask for the correct amount in case our buffer is too small
+#endif
+                                 );
+            if(count > 0) {
+                return (jint)count;
+            }
+            return 0;
+        } else if(myerr == ESPIPE) {
+            return 0;
+        } else {
+            _throwErrnumException(env, myerr, fd);
+            return -1;
+        }
     }
 
     return count;
@@ -266,7 +323,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available(
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    poll
- * Signature: (Lorg/newsclub/net/unix/AFUNIXSelector/PollFd;I)I
+ * Signature: (Lorg/newsclub/net/unix/AFSelector/PollFd;I)I
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
 (JNIEnv *env, jclass clazz CK_UNUSED, jobject pollFdObj, jint timeout) {
@@ -286,16 +343,28 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
     struct pollfd* pollFd = calloc(nfds, sizeof(struct pollfd));
 
     jint *buf = calloc(nfds, sizeof(jint));
-    (*env)->GetIntArrayRegion(env, opsObj, 0, nfds, buf);
-    for(int i=0;i<nfds;i++) {
-        pollFd[i].events = opToEvent(buf[i]);
-    }
 
+    (*env)->GetIntArrayRegion(env, opsObj, 0, nfds, buf);
     for(int i=0; i<nfds;i++) {
         jobject fdObj = (*env)->GetObjectArrayElement(env, fdsObj, i);
-        int fd = _getFD(env, fdObj);
-        pollFd[i].fd = fd;
+
+        struct pollfd *pfd = &pollFd[i];
+        if(fdObj) {
+            int fd = _getFD(env, fdObj);
+            pfd->fd = fd;
+            pfd->events = opToEvent(buf[i]);
+        } else {
+            pfd->fd = 0;
+            pfd->events = 0;
+        }
+}
+
+#if defined(_OS400)
+    if(timeout == -1) {
+        // unclear why, but a timeout of -1 returns EINVAL
+        timeout = INT_MAX;
     }
+#endif
 
 #if defined(_WIN32)
     int ret = WSAPoll(pollFd, nfds, timeout);
@@ -309,10 +378,15 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
     }
 
     for(int i=0; i<nfds;i++) {
-        // FIXME check for POLLERR?
-        buf[i] &= eventToOp(pollFd[i].revents);
+        int revents = pollFd[i].revents;
+        if((revents & (POLLERR|POLLHUP|POLLNVAL)) != 0) {
+            buf[i] |= OP_INVALID;
+        }
+        buf[i] &= eventToOp(revents);
     }
+
     (*env)->SetIntArrayRegion(env, ropsObj, 0, nfds, buf);
+
 
 end:
     free(buf);

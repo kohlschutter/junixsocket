@@ -17,8 +17,9 @@
  */
 package org.newsclub.net.unix;
 
-import java.io.File;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
@@ -30,11 +31,28 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @see FinalizeTest
  * @author Christian Kohlschütter
  */
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public class FinalizeTestClient {
   @SuppressFBWarnings({"RV_RETURN_VALUE_IGNORED"})
   public static void main(String[] args) throws Exception {
-    AFUNIXSocket socket = AFUNIXSocket.connectTo(AFUNIXSocketAddress.of(new File(System.getProperty(
-        "test.junixsocket.socket", ""))));
+    String socketType = System.getProperty("test.junixsocket.socket.type", "");
+    String socketName = System.getProperty("test.junixsocket.socket", "");
+    if (socketType.isEmpty() || socketName.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Both test.junixsocket.socket and test.junixsocket.socket.type must be specified as system properties");
+    }
+
+    Socket socket;
+    AFSocketAddress addr;
+    if ("UNIX".equals(socketType)) {
+      addr = AFUNIXSocketAddress.unwrap(socketName, 0);
+    } else if ("TIPC".equals(socketType)) {
+      addr = AFTIPCSocketAddress.unwrap(socketName, 0);
+    } else {
+      throw new IllegalArgumentException("Unsupported socket type: " + socketType);
+    }
+    socket = AFSocket.connectTo(Objects.requireNonNull(addr));
     socket.getInputStream().read();
     while (true) {
       // create some pressure on GC

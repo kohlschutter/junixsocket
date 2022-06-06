@@ -22,10 +22,12 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.URI;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Function;
 
+import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
@@ -157,6 +159,14 @@ public final class DemoHelper {
   }
 
   public static SocketAddress socketAddress(String socketName) throws IOException {
+    if (socketName.startsWith("file:")) {
+      // demo only: assume file: URLs are always handled by AFUNIXSocketAddress
+      return AFUNIXSocketAddress.of(URI.create(socketName));
+    } else if (socketName.contains(":/")) {
+      // assume URI, e.g., unix:// or tipc://
+      return AFSocketAddress.of(URI.create(socketName));
+    }
+
     int colon = socketName.lastIndexOf(':');
     int slashOrBackslash = Math.max(socketName.lastIndexOf('/'), socketName.lastIndexOf('\\'));
 
@@ -181,6 +191,32 @@ public final class DemoHelper {
       Socket socket = new Socket();
       socket.connect(socketAddress);
       return socket;
+    }
+  }
+
+  public static SocketAddress parseAddress(String[] args, SocketAddress defaultAddress)
+      throws IOException {
+    if (args.length == 0) {
+      return defaultAddress;
+    } else if (args.length == 1) {
+      return parseAddress("--unix", args[0], defaultAddress);
+    } else {
+      return parseAddress(args[0], args[1], defaultAddress);
+    }
+  }
+
+  public static SocketAddress parseAddress(String opt, String val, SocketAddress defaultAddress)
+      throws IOException {
+    if (opt == null || val == null) {
+      return defaultAddress;
+    }
+    switch (opt) {
+      case "--unix":
+        return AFUNIXSocketAddress.of(new File(val));
+      case "--url":
+        return AFSocketAddress.of(URI.create(val));
+      default:
+        throw new IllegalArgumentException("Valid parameters: --unix <path> OR --url <URL>");
     }
   }
 }

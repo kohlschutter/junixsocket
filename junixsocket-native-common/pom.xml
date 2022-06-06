@@ -9,7 +9,7 @@
     <groupId>com.kohlschutter.junixsocket</groupId>
     <artifactId>junixsocket-parent</artifactId>
     <!-- Update this manually after maven-release -->
-    <version>2.4.1-SNAPSHOT</version>
+    <version>2.5.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <name>junixsocket-native-common</name>
@@ -59,6 +59,8 @@
                   <includes>
                     <include>**/*.dylib</include>
                     <include>**/*.so</include>
+                    <include>**/*.a</include>
+                    <include>**/*.srvpgm</include>
                     <include>**/*.dll</include>
                     <include>META-INF/**/pom.properties</include>
                   </includes>
@@ -212,6 +214,24 @@
           <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-native</artifactId>
+            <version>${project.version}</version>
+            <type>nar</type>
+            <classifier>ppc64-AIX-gcc-jni</classifier>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-native</artifactId>
+            <version>${project.version}</version>
+            <type>nar</type>
+            <classifier>ppc64-OS400-gcc-jni</classifier>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>
           <artifactId>junixsocket-native</artifactId>
           <version>${project.version}</version>
@@ -237,6 +257,15 @@
           <classifier>amd64-Windows10-clang-llvm-jni</classifier>
           <scope>runtime</scope>
           <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-native</artifactId>
+            <version>${project.version}</version>
+            <type>nar</type>
+            <classifier>aarch64-Windows10-clang-llvm-jni</classifier>
+            <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
           <groupId>com.kohlschutter.junixsocket</groupId>

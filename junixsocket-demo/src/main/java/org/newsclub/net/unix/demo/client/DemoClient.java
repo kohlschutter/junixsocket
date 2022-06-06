@@ -20,12 +20,11 @@ package org.newsclub.net.unix.demo.client;
 import java.io.IOException;
 import java.net.SocketAddress;
 
-import org.newsclub.net.unix.AFUNIXSocket;
+import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.demo.DemoHelper;
 
 /**
- * A demo program to configure and run several {@link AFUNIXSocket} client demos from the command
- * line.
+ * A demo program to configure and run several {@link AFSocket} client demos from the command line.
  * 
  * @author Christian Kohlschütter
  */
@@ -62,7 +61,8 @@ public final class DemoClient {
       return;
     }
 
-    final SocketAddress endpoint = DemoHelper.socketAddress(socketName);
+    SocketAddress endpoint = DemoHelper.socketAddress(socketName);
+
     try {
       demoClient.connect(endpoint);
     } finally {

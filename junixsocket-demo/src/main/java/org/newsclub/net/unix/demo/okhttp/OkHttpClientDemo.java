@@ -20,9 +20,12 @@ package org.newsclub.net.unix.demo.okhttp;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketAddress;
 import java.time.Duration;
 
-import org.newsclub.net.unix.AFUNIXSocketFactory;
+import org.newsclub.net.unix.AFSocketFactory;
+import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.demo.DemoHelper;
 import org.newsclub.net.unix.demo.nanohttpd.NanoHttpdServerDemo;
 
 import com.kohlschutter.util.IOUtil;
@@ -43,29 +46,22 @@ import okhttp3.ResponseBody;
  */
 public class OkHttpClientDemo {
   public static void main(String[] args) throws IOException {
-    File socketFile;
-    if (args.length == 0) {
-      socketFile = new File("/tmp/junixsocket-http-server.sock");
-    } else {
-      socketFile = new File(args[0]);
-    }
+    SocketAddress addr = DemoHelper.parseAddress(args, //
+        AFUNIXSocketAddress.of(new File("/tmp/junixsocket-http-server.sock")));
 
-    OkHttpClient client = new OkHttpClient.Builder() //
-        .socketFactory(new AFUNIXSocketFactory.FactoryArg(socketFile)) //
-        .callTimeout(Duration.ofMinutes(1)) //
-        .build();
+    OkHttpClient.Builder builder = new OkHttpClient.Builder() //
+        .socketFactory(new AFSocketFactory.FixedAddressSocketFactory(addr)) //
+        .callTimeout(Duration.ofMinutes(1));
+
+    OkHttpClient client = builder.build();
 
     Request request = new Request.Builder().url("http://localhost/").build();
     try (Response response = client.newCall(request).execute()) {
 
-      // NOTE: Spotbugs can't make its mind up:
-      // If we use a try-with-resources statement here, it either
-      // returns NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE
-      // or RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE
       @SuppressWarnings("resource")
       ResponseBody body = response.body();
       if (body != null) {
-        try (InputStream in = body.byteStream()) {
+        try (InputStream in = body.byteStream()) { // NOPMD.UseTryWithResources
           IOUtil.transferAllBytes(in, System.out);
         } finally {
           body.close();

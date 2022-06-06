@@ -21,6 +21,17 @@
 
 #include "config.h"
 
+typedef union {
+    struct sockaddr addr;
+    struct sockaddr_un un;
+#if junixsocket_have_tipc
+    struct sockaddr_tipc tipc;
+#endif
+    char bytes[128];
+} jux_sockaddr_t;
+
+
 socklen_t initSu(JNIEnv * env, struct sockaddr_un *su, jbyteArray addr);
+int domainToNative(int domain);
 
 #endif /* address_h */

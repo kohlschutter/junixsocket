@@ -33,30 +33,7 @@ import java.io.InputStream;
  * 
  * @author Christian Kohlschütter
  */
-public interface AFUNIXSocketExtensions {
-  /**
-   * Returns the size of the receive buffer for ancillary messages (in bytes).
-   * 
-   * @return The size.
-   */
-  int getAncillaryReceiveBufferSize();
-
-  /**
-   * Sets the size of the receive buffer for ancillary messages (in bytes).
-   * 
-   * To disable handling ancillary messages, set it to 0 (default).
-   * 
-   * @param size The size.
-   */
-  void setAncillaryReceiveBufferSize(int size);
-
-  /**
-   * Ensures a minimum ancillary receive buffer size.
-   * 
-   * @param minSize The minimum size (in bytes).
-   */
-  void ensureAncillaryReceiveBufferSize(int minSize);
-
+public interface AFUNIXSocketExtensions extends AFSocketExtensions {
   /**
    * Retrieves an array of incoming {@link FileDescriptor}s that were sent as ancillary messages,
    * along with a call to {@link InputStream#read()}, etc.

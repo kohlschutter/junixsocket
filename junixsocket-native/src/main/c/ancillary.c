@@ -55,22 +55,50 @@ static jclass class_AncillaryDataSupport = NULL;
 static jfieldID fieldID_ancillaryReceiveBuffer = NULL;
 static jfieldID fieldID_pendingFileDescriptors = NULL;
 
-jfieldID getFieldID_ancillaryReceiveBuffer() {
+static jmethodID kSetTipcErrorInfo = NULL;
+static jmethodID kSetTipcDestName = NULL;
+
+jfieldID getFieldID_ancillaryReceiveBuffer(void) {
     return fieldID_ancillaryReceiveBuffer;
 }
-jfieldID getFieldID_pendingFileDescriptors() {
+jfieldID getFieldID_pendingFileDescriptors(void) {
     return fieldID_pendingFileDescriptors;
+}
+jmethodID getMethodID_setTipcErrorInfo(void) {
+    return kSetTipcErrorInfo;
+}
+jmethodID getMethodID_setTipcDestName(void) {
+    return kSetTipcDestName;
 }
 
 void init_ancillary(JNIEnv *env) {
     class_AncillaryDataSupport = findClassAndGlobalRef(env, "org/newsclub/net/unix/AncillaryDataSupport");
     fieldID_ancillaryReceiveBuffer = (*env)->GetFieldID(env, class_AncillaryDataSupport, "ancillaryReceiveBuffer", "Ljava/nio/ByteBuffer;");
     fieldID_pendingFileDescriptors = (*env)->GetFieldID(env, class_AncillaryDataSupport, "pendingFileDescriptors", "[I");
+
+    kSetTipcErrorInfo = (*env)->GetMethodID(env, class_AncillaryDataSupport, "setTipcErrorInfo", "(II)V");
+    kSetTipcDestName = (*env)->GetMethodID(env, class_AncillaryDataSupport, "setTipcDestName", "(III)V");
 }
 void destroy_ancillary(JNIEnv *env) {
     releaseClassGlobalRef(env, class_AncillaryDataSupport);
     fieldID_ancillaryReceiveBuffer = NULL;
     fieldID_pendingFileDescriptors = NULL;
+    kSetTipcErrorInfo = NULL;
+    kSetTipcDestName = NULL;
 }
 
 #endif
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    ancillaryBufMinLen
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_ancillaryBufMinLen
+ (JNIEnv *env CK_UNUSED, jclass klazz CK_UNUSED) {
+#if defined(junixsocket_have_ancillary)
+    return sizeof(struct cmsghdr);
+#else
+    return 0;
+#endif
+}

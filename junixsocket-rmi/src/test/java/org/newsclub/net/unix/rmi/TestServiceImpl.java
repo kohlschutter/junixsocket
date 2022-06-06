@@ -54,7 +54,7 @@ public class TestServiceImpl implements TestService, Closeable {
     this.tmpFile = File.createTempFile("FDTestService", ".tmp");
     tmpFile.deleteOnExit();
 
-    AFUNIXNaming.exportObject(this, socketFactory);
+    AFNaming.exportObject(this, socketFactory);
   }
 
   @Override
@@ -128,7 +128,7 @@ public class TestServiceImpl implements TestService, Closeable {
 
   @Override
   public void close() throws IOException {
-    AFUNIXNaming.unexportObject(this);
+    AFNaming.unexportObject(this);
     deleteFile();
   }
 

@@ -23,6 +23,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 import org.junit.platform.console.options.Theme;
 import org.junit.platform.console.tasks.JuxPackageAccess;
 import org.junit.platform.engine.TestExecutionResult;
+import org.junit.platform.engine.TestExecutionResult.Status;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.launcher.Launcher;
 import org.junit.platform.launcher.LauncherDiscoveryRequest;
@@ -42,11 +44,16 @@ import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.util.ConsolePrintStream;
 
+@SuppressFBWarnings({"THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 class SelftestExecutor {
   private final List<Class<?>> testClasses;
   private final String prefix;
+  private final Map<String, TestIdentifier> tids = new HashMap<>();
+
+  private final Map<TestIdentifier, TestExecutionResult> testsWithWarnings = new LinkedHashMap<>();
 
   SelftestExecutor(final List<Class<?>> testClasses, String prefix) {
     this.testClasses = testClasses;
@@ -67,7 +74,7 @@ class SelftestExecutor {
       // https://junit.org/junit5/docs/5.7.1/api/org.junit.jupiter.api/org/junit/jupiter/api/Timeout.html
       requestBuilder.configurationParameter(
           "junit.jupiter.execution.timeout.testable.method.default", System.getProperty(
-              "selftest.test-timeout", "10 s"));
+              "selftest.test-timeout", "30 s"));
 
       requestBuilder.selectors(testClasses.stream().map(DiscoverySelectors::selectClass).collect(
           Collectors.toList()));
@@ -75,8 +82,8 @@ class SelftestExecutor {
 
       TestPlan testPlan = launcher.discover(discoveryRequest);
 
+      tids.clear();
       launcher.execute(testPlan, new TestExecutionListener() {
-        final Map<String, TestIdentifier> tids = new HashMap<>();
 
         @Override
         public void executionStarted(TestIdentifier tid) {
@@ -90,10 +97,12 @@ class SelftestExecutor {
 
         @Override
         public void executionFinished(TestIdentifier tid, TestExecutionResult testExecutionResult) {
-          tids.remove(tid.getUniqueId());
-
           if (!tid.getParentId().isPresent()) {
             out0.updateln(prefix + "done");
+          }
+
+          if (testExecutionResult.getStatus() == Status.ABORTED) {
+            testsWithWarnings.put(tid, testExecutionResult);
           }
         }
       });
@@ -106,5 +115,13 @@ class SelftestExecutor {
     } finally {
       out.flush();
     }
+  }
+
+  Map<TestIdentifier, TestExecutionResult> getTestsWithWarnings() {
+    return testsWithWarnings;
+  }
+
+  TestIdentifier getTestIdentifier(String id) {
+    return tids.get(id);
   }
 }

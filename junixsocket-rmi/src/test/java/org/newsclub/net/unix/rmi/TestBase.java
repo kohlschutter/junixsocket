@@ -31,30 +31,42 @@ import org.junit.jupiter.api.BeforeEach;
 // must remain public until SUREFIRE-1909 is fixed
 public class TestBase extends ShutdownHookTestBase {
   private static final String TEST_SERVICE_NAME = TestService.class.getName();
-  private AFUNIXNaming naming;
+  private AFNaming naming;
   private TestServiceImpl testService;
 
   protected TestBase() {
     super();
   }
 
+  protected AFNaming newNamingTestInstance() throws IOException {
+    return AFUNIXNaming.newPrivateInstance();
+  }
+
   @BeforeEach
   public void setUp() throws IOException, AlreadyBoundException {
-    // NOTE: for testing. You'd probably want to use AFUNIXNaming.getInstance()
-    naming = AFUNIXNaming.newPrivateInstance();
+    naming = newNamingTestInstance();
 
     // Create registry
     Registry registry = naming.createRegistry();
 
     // Create and bind service
-    testService = new TestServiceImpl(naming.getSocketFactory());
+    AFRMISocketFactory sf = naming.getSocketFactory();
+    if (sf instanceof AFUNIXRMISocketFactory) {
+      testService = new TestServiceImpl((AFUNIXRMISocketFactory) sf);
+    } else {
+      testService = null;
+    }
     registry.bind(TEST_SERVICE_NAME, RemoteObject.toStub(testService));
   }
 
   @AfterEach
   public void tearDown() throws IOException {
-    testService.close();
-    naming.shutdownRegistry();
+    if (testService != null) {
+      testService.close();
+    }
+    if (naming != null) {
+      naming.shutdownRegistry();
+    }
   }
 
   protected TestService lookupTestService() throws AccessException, RemoteException,
@@ -62,7 +74,7 @@ public class TestBase extends ShutdownHookTestBase {
     return (TestService) naming.getRegistry().lookup(TEST_SERVICE_NAME);
   }
 
-  protected AFUNIXRMISocketFactory namingSocketFactory() {
+  protected AFRMISocketFactory namingSocketFactory() {
     return naming.getSocketFactory();
   }
 }

@@ -21,4 +21,8 @@
 
 #include "config.h"
 
+jboolean supportsUNIX(void);
+
+jboolean supportsTIPC(void);
+
 #endif /* init_h */

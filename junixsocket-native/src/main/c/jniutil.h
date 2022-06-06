@@ -35,6 +35,7 @@ CK_VISIBILITY_INTERNAL void setLongFieldValue(JNIEnv *env, jobject instance, cha
                        jlong value);
 
 CK_VISIBILITY_INTERNAL jclass findClassAndGlobalRef(JNIEnv *env, char *className);
+CK_VISIBILITY_INTERNAL jclass findClassAndGlobalRef0(JNIEnv *env, char *className, jboolean okIfMissing);
 CK_VISIBILITY_INTERNAL void releaseClassGlobalRef(JNIEnv *env, jclass klazz);
 
 struct jni_direct_byte_buffer_ref {
@@ -43,7 +44,7 @@ struct jni_direct_byte_buffer_ref {
         ssize_t size; // size of buffer (or -1 on error)
         void *padding;
     };
-} CK_VISIBILITY_INTERNAL;
+};
 
 /**
  * Ensures that a given direct byte buffer has a minimum size (which can be 0).

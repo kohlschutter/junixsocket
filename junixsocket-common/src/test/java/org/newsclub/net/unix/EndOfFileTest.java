@@ -22,13 +22,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
+import java.net.SocketAddress;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -40,21 +39,27 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * See http://code.google.com/p/junixsocket/issues/detail?id=9
  * 
  * @author Derrick Rice (April, 2010)
  */
-public class EndOfFileTest {
-  private File socketFile;
+@SuppressFBWarnings({
+    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+public abstract class EndOfFileTest<A extends SocketAddress> extends SocketTestBase<A> {
   protected ServerSocket server;
   protected ExecutorService executor;
 
+  protected EndOfFileTest(AddressSpecifics<A> asp) {
+    super(asp);
+  }
+
   @BeforeEach
   public void setUp() throws IOException {
-    server = AFUNIXServerSocket.newInstance();
-    this.socketFile = SocketTestBase.initSocketFile();
-    server.bind(AFUNIXSocketAddress.of(socketFile));
+    server = newServerSocket();
+    server.bind(getServerBindAddress());
 
     executor = Executors.newFixedThreadPool(2);
   }
@@ -69,17 +74,13 @@ public class EndOfFileTest {
       // ignore
     }
 
-    if (socketFile != null) {
-      Files.deleteIfExists(socketFile.toPath());
-    }
-
     if (executor != null) {
       executor.shutdown();
     }
   }
 
-  Socket[] connectToServer() throws Exception {
-    AFUNIXSocket clientSocket = AFUNIXSocket.newInstance();
+  protected Socket[] connect() throws Exception {
+    Socket clientSocket = newSocket();
 
     Future<Socket> serverAcceptFuture = executor.submit(new Callable<Socket>() {
       @Override
@@ -90,7 +91,7 @@ public class EndOfFileTest {
 
     Thread.sleep(100);
 
-    clientSocket.connect(AFUNIXSocketAddress.of(socketFile));
+    clientSocket.connect(server.getLocalSocketAddress());
 
     Socket serverSocket = serverAcceptFuture.get(5, TimeUnit.SECONDS);
 
@@ -100,7 +101,7 @@ public class EndOfFileTest {
   @Test
   public void bidirectionalSanity() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      Socket[] sockets = connectToServer();
+      Socket[] sockets = connect();
       try (Socket serverSocket = sockets[0]; //
           Socket clientSocket = sockets[1]) {
         String input;
@@ -135,7 +136,7 @@ public class EndOfFileTest {
   @Test
   public void serverReadEof() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      Socket[] sockets = connectToServer();
+      Socket[] sockets = connect();
       Socket serverSocket = sockets[0];
       Socket clientSocket = sockets[1];
       clientSocket.close();
@@ -163,7 +164,7 @@ public class EndOfFileTest {
   public void clientReadEof() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
 
-      Socket[] sockets = connectToServer();
+      Socket[] sockets = connect();
       Socket serverSocket = sockets[0];
       Socket clientSocket = sockets[1];
 
@@ -191,7 +192,7 @@ public class EndOfFileTest {
   @SuppressWarnings("resource")
   public void serverWriteToSocketClosedByServer() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      Socket[] sockets = connectToServer();
+      Socket[] sockets = connect();
       Socket serverSocket = sockets[0];
       Socket clientSocket = sockets[1];
 
@@ -221,7 +222,7 @@ public class EndOfFileTest {
   @SuppressWarnings("resource")
   public void serverWriteToSocketClosedByClient() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      Socket[] sockets = connectToServer();
+      Socket[] sockets = connect();
       Socket serverSocket = sockets[0];
       Socket clientSocket = sockets[1];
 
@@ -263,7 +264,7 @@ public class EndOfFileTest {
   @SuppressWarnings("resource")
   public void clientWriteToSocketClosedByClient() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      Socket[] sockets = connectToServer();
+      Socket[] sockets = connect();
       Socket serverSocket = sockets[0];
       Socket clientSocket = sockets[1];
 
@@ -293,7 +294,7 @@ public class EndOfFileTest {
   @SuppressWarnings("resource")
   public void clientWriteToSocketClosedByServer() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
-      Socket[] sockets = connectToServer();
+      Socket[] sockets = connect();
       Socket serverSocket = sockets[0];
       Socket clientSocket = sockets[1];
 

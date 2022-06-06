@@ -134,6 +134,8 @@ public final class RemotePeerInfo {
             data.peerCredentials = AFUNIXSocketCredentials.SAME_PROCESS;
           }
         }
+      } else {
+        data.peerCredentials = null;
       }
 
       return data;

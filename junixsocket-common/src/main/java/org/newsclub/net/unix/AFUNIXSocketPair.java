@@ -25,13 +25,9 @@ import java.io.IOException;
  * @param <T> The socket type.
  * @author Christian Kohlschütter
  */
-public final class AFUNIXSocketPair<T extends AFUNIXSomeSocket> {
-  private final T socket1;
-  private final T socket2;
-
+public final class AFUNIXSocketPair<T extends AFSomeSocket> extends AFSocketPair<T> {
   AFUNIXSocketPair(T socket1, T socket2) {
-    this.socket1 = socket1;
-    this.socket2 = socket2;
+    super(socket1, socket2);
   }
 
   /**
@@ -52,23 +48,5 @@ public final class AFUNIXSocketPair<T extends AFUNIXSomeSocket> {
    */
   public static AFUNIXSocketPair<AFUNIXDatagramChannel> openDatagram() throws IOException {
     return AFUNIXSelectorProvider.provider().openDatagramChannelPair();
-  }
-
-  /**
-   * Returns the first socket of the pair.
-   * 
-   * @return The first socket.
-   */
-  public T getSocket1() {
-    return socket1;
-  }
-
-  /**
-   * Returns the second socket of the pair.
-   * 
-   * @return The second socket.
-   */
-  public T getSocket2() {
-    return socket2;
   }
 }
