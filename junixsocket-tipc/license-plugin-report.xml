@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="CHECK" timestamp="1654552051248">
+    <module artifactId="junixsocket-tipc" groupId="com.kohlschutter.junixsocket" version="2.5.0"/>
+    <files>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCDatagramChannel.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCDatagramSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCDatagramSocketImpl.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCDestName.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCErrInfo.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCGroupRequest.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCProtocolFamily.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCSelectorProvider.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCServerSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCServerSocketChannel.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCSocketChannel.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCSocketExtensions.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCSocketFactory.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCSocketImpl.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCSocketOptions.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCSocketPair.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCTopologyEvent.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCTopologySubscription.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCTopologyWatcher.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/AFTIPCAddressSpecifics.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/AFTIPCTopologyWatcherTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/AcceptTimeoutTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/AncillaryMessageTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/AvailableTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/BufferOverflowTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/CancelAcceptTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/DatagramSocketTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/EndOfFileTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/FinalizeTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/ReadWriteTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/SelectorTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/SelftestProvider.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/ServerSocketCloseTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/ServerSocketTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/SoTimeoutTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/SocketChannelTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/SocketOptionsTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/SocketPairTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/SocketTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/StandardSocketOptionsTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/TcpNoDelayTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/ThroughputTest.java" result="PRESENT"/>
+    </files>
+</licensePluginReport>

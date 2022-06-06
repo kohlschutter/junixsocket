@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFRegistryAccess.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFRegistryAccess.java</span></div><h1>AFRegistryAccess.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.rmi;
+
+import java.net.MalformedURLException;
+import java.rmi.AccessException;
+import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.concurrent.TimeUnit;
+
+<span class="fc" id="L28">abstract class AFRegistryAccess {</span>
+  /**
+   * Returns a reference to the existing RMI registry.
+   * 
+   * If there's no registry running at this port, an exception is thrown.
+   * 
+   * @return The registry.
+   * @throws RemoteException If there was a problem.
+   */
+  public abstract AFRegistry getRegistry() throws RemoteException;
+
+  /**
+   * Convenience method for {@code getRegistry().lookup}.
+   * 
+   * @param name the name for the remote reference to look up
+   * @return The instance
+   * @throws NotBoundException upon error
+   * @throws MalformedURLException upon error
+   * @throws RemoteException upon error
+   * @see AFRegistry#lookup(String)
+   */
+  public Remote lookup(String name) throws NotBoundException, MalformedURLException,
+      RemoteException {
+<span class="fc" id="L51">    return getRegistry().lookup(name);</span>
+  }
+
+  /**
+   * Convenience method for {@code getRegistry().lookup}.
+   * 
+   * @param name the name for the remote reference to look up
+   * @param timeout The timeout value.
+   * @param unit The timeout unit.
+   * @return The instance
+   * @throws NotBoundException upon error
+   * @throws MalformedURLException upon error
+   * @throws RemoteException upon error
+   * @see AFRegistry#lookup(String, long, TimeUnit)
+   */
+  public Remote lookup(String name, long timeout, TimeUnit unit) throws NotBoundException,
+      MalformedURLException, RemoteException {
+<span class="fc" id="L68">    return getRegistry().lookup(name, timeout, unit);</span>
+  }
+
+  /**
+   * Convenience method for {@code getRegistry().unbind}.
+   * 
+   * @param name the name for the remote reference to unbind
+   * @throws RemoteException upon error
+   * @throws NotBoundException upon error
+   * @throws MalformedURLException upon error
+   * @see AFRegistry#unbind(String)
+   */
+  public void unbind(String name) throws RemoteException, NotBoundException, MalformedURLException {
+<span class="fc" id="L81">    getRegistry().unbind(name);</span>
+<span class="fc" id="L82">  }</span>
+
+  /**
+   * Convenience method for {@code getRegistry().bind}.
+   * 
+   * @param name the name for the remote reference to bind
+   * @param obj the remote reference to bind
+   * @throws RemoteException upon error
+   * @throws AlreadyBoundException upon error
+   * @throws MalformedURLException upon error
+   * @see AFRegistry#bind(String, Remote)
+   */
+  public void bind(String name, Remote obj) throws AlreadyBoundException, MalformedURLException,
+      RemoteException {
+<span class="fc" id="L96">    getRegistry().bind(name, obj);</span>
+<span class="fc" id="L97">  }</span>
+
+  /**
+   * Convenience method for {@code getRegistry().rebind}.
+   * 
+   * @param name the name for the remote reference to rebind
+   * @param obj the remote reference to rebind
+   * @throws RemoteException upon error
+   * @throws MalformedURLException upon error
+   * @see AFRegistry#rebind(String, Remote)
+   */
+  public void rebind(String name, Remote obj) throws MalformedURLException, RemoteException {
+<span class="fc" id="L109">    getRegistry().rebind(name, obj);</span>
+<span class="fc" id="L110">  }</span>
+
+  /**
+   * Convenience method for {@code getRegistry().list}.
+   * 
+   * Unlike {@link AFRegistry#list()}, in case the registry has been shut down already, an empty
+   * array is returned.
+   * 
+   * @return an array of the names bound in this registry
+   * @throws RemoteException upon error
+   * @throws AccessException upon error
+   */
+  public String[] list() throws RemoteException, AccessException {
+    try {
+<span class="fc" id="L124">      return getRegistry().list();</span>
+<span class="fc" id="L125">    } catch (ShutdownException e) {</span>
+<span class="fc" id="L126">      return new String[0];</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

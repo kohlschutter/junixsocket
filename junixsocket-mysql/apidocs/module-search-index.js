@@ -1,1 +1,1 @@
-moduleSearchIndex = [{"l":"org.newsclub.net.mysql"}]
+moduleSearchIndex = [{"l":"org.newsclub.net.mysql"}];updateSearchResults();

@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFRMISocketFactory.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFRMISocketFactory.java</span></div><h1>AFRMISocketFactory.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.rmi;
+
+import java.io.Closeable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.rmi.NotBoundException;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
+import java.rmi.server.RMISocketFactory;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.newsclub.net.unix.AFServerSocket;
+import org.newsclub.net.unix.AFSocket;
+import org.newsclub.net.unix.AFSocketAddress;
+import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownHook;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+/**
+ * An {@link RMISocketFactory} that supports {@link AFSocket}s.
+ * 
+ * @author Christian Kohlschütter
+ */
+public abstract class AFRMISocketFactory extends RMISocketFactory implements Externalizable,
+    Closeable {
+  private static final long serialVersionUID = 1L;
+
+  private RMIClientSocketFactory defaultClientFactory;
+  private RMIServerSocketFactory defaultServerFactory;
+
+  private AFNaming naming;
+
+<span class="fc" id="L57">  private AFRMIService rmiService = null;</span>
+
+<span class="fc" id="L59">  private final Map&lt;Integer, AFServerSocket&lt;?&gt;&gt; openServerSockets = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L60">  private final Set&lt;AFSocket&lt;?&gt;&gt; openSockets = new HashSet&lt;&gt;();</span>
+
+  /**
+   * Constructor required per definition.
+   * 
+   * @see RMISocketFactory
+   */
+  public AFRMISocketFactory() {
+<span class="fc" id="L68">    super();</span>
+<span class="fc" id="L69">    closeUponRuntimeShutdown();</span>
+<span class="fc" id="L70">  }</span>
+
+  /**
+   * Creates a new socket factory.
+   * 
+   * @param naming The {@link AFNaming} instance to use.
+   * @param defaultClientFactory The default {@link RMIClientSocketFactory}.
+   * @param defaultServerFactory The default {@link RMIServerSocketFactory}.
+   * @throws IOException on error.
+   */
+  @SuppressFBWarnings(&quot;EI_EXPOSE_REP2&quot;)
+  public AFRMISocketFactory(final AFNaming naming,
+      final RMIClientSocketFactory defaultClientFactory,
+      final RMIServerSocketFactory defaultServerFactory) throws IOException {
+<span class="fc" id="L84">    super();</span>
+<span class="fc" id="L85">    this.naming = naming;</span>
+<span class="fc" id="L86">    this.defaultClientFactory = defaultClientFactory;</span>
+<span class="fc" id="L87">    this.defaultServerFactory = defaultServerFactory;</span>
+
+<span class="fc" id="L89">    closeUponRuntimeShutdown();</span>
+<span class="fc" id="L90">  }</span>
+
+  // only to be called from the constructor
+  private void closeUponRuntimeShutdown() {
+<span class="fc" id="L94">    ShutdownHookSupport.addWeakShutdownHook(new ShutdownHook() {</span>
+
+      @Override
+      public void onRuntimeShutdown(Thread thread) {
+        try {
+<span class="fc" id="L99">          close();</span>
+<span class="nc" id="L100">        } catch (IOException e) {</span>
+          // ignore
+<span class="fc" id="L102">        }</span>
+<span class="fc" id="L103">      }</span>
+    });
+<span class="fc" id="L105">  }</span>
+
+  /**
+   * Creates a new socket address for the given RMI port.
+   * 
+   * @param port The port.
+   * @return The socket address.
+   * @throws IOException on error.
+   */
+  protected abstract AFSocketAddress newSocketAddress(int port) throws IOException;
+
+  /**
+   * Creates a new socket that is connected to the given socket address.
+   * 
+   * @param addr The socket address.
+   * @return The connected socket.
+   * @throws IOException on error.
+   */
+  protected abstract AFSocket&lt;?&gt; newConnectedSocket(AFSocketAddress addr) throws IOException;
+
+  @Override
+  public Socket createSocket(String host, int port) throws IOException {
+<span class="fc" id="L127">    final RMIClientSocketFactory cf = defaultClientFactory;</span>
+<span class="pc bpc" id="L128" title="3 of 4 branches missed.">    if (cf != null &amp;&amp; port &lt; RMIPorts.AF_PORT_BASE) {</span>
+<span class="nc" id="L129">      return cf.createSocket(host, port);</span>
+    }
+
+<span class="fc" id="L132">    final AFSocketAddress addr = newSocketAddress(port);</span>
+<span class="fc" id="L133">    AFSocket&lt;?&gt; socket = newConnectedSocket(addr);</span>
+
+<span class="fc" id="L135">    synchronized (openSockets) {</span>
+<span class="fc" id="L136">      openSockets.add(socket);</span>
+<span class="fc" id="L137">    }</span>
+<span class="fc" id="L138">    socket.addCloseable(() -&gt; {</span>
+<span class="fc" id="L139">      synchronized (openSockets) {</span>
+<span class="fc" id="L140">        openSockets.remove(socket);</span>
+<span class="fc" id="L141">      }</span>
+<span class="fc" id="L142">    });</span>
+<span class="fc" id="L143">    return socket;</span>
+  }
+
+  @Override
+  public void close() throws IOException {
+<span class="fc" id="L148">    synchronized (naming) {</span>
+<span class="fc" id="L149">      rmiService = null;</span>
+<span class="fc" id="L150">      closeServerSockets();</span>
+<span class="fc" id="L151">      closeSockets();</span>
+<span class="fc" id="L152">    }</span>
+<span class="fc" id="L153">  }</span>
+
+  private AFRMIService getRmiService() throws IOException {
+<span class="fc" id="L156">    synchronized (naming) {</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">      if (rmiService == null) {</span>
+        try {
+<span class="fc" id="L159">          rmiService = naming.getRMIService();</span>
+<span class="nc" id="L160">        } catch (NotBoundException e) {</span>
+<span class="nc" id="L161">          throw (IOException) new IOException(e.getMessage()).initCause(e);</span>
+<span class="fc" id="L162">        }</span>
+      }
+<span class="fc" id="L164">      return rmiService;</span>
+    }
+  }
+
+  /**
+   * Returns a new free port.
+   * 
+   * @return The new port.
+   * @throws IOException on error.
+   * @see #returnPort(int)
+   */
+  protected int newPort() throws IOException {
+<span class="fc" id="L176">    return getRmiService().newPort();</span>
+  }
+
+  /**
+   * Returns a port that was previously returned by {@link #newPort()}.
+   * 
+   * @param port The port to return.
+   * @throws IOException on error.
+   */
+  protected void returnPort(int port) throws IOException {
+<span class="fc" id="L186">    getRmiService().returnPort(port);</span>
+<span class="fc" id="L187">  }</span>
+
+  @Override
+  public ServerSocket createServerSocket(int port) throws IOException {
+<span class="fc bfc" id="L191" title="All 2 branches covered.">    if (port == 0) {</span>
+<span class="fc" id="L192">      port = newPort();</span>
+<span class="fc" id="L193">      final int returnPort = port;</span>
+<span class="fc" id="L194">      final AFSocketAddress addr = newSocketAddress(port);</span>
+<span class="fc" id="L195">      AFServerSocket&lt;?&gt; ass = addr.getAddressFamily().newServerSocket();</span>
+<span class="fc" id="L196">      ass.addCloseable(() -&gt; {</span>
+<span class="fc" id="L197">        returnPort(returnPort);</span>
+<span class="fc" id="L198">      });</span>
+<span class="fc" id="L199">      ass.setReuseAddress(true);</span>
+<span class="fc" id="L200">      ass.setDeleteOnClose(true);</span>
+<span class="fc" id="L201">      ass.bind(addr);</span>
+
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">      if (port &gt;= RMIPorts.AF_PORT_BASE) {</span>
+<span class="fc" id="L204">        ass.addCloseable(new ServerSocketCloseable(ass, port));</span>
+      }
+<span class="fc" id="L206">      return ass;</span>
+    }
+
+<span class="fc" id="L209">    final RMIServerSocketFactory sf = defaultServerFactory;</span>
+<span class="pc bpc" id="L210" title="3 of 4 branches missed.">    if (sf != null &amp;&amp; port &lt; RMIPorts.AF_PORT_BASE) {</span>
+<span class="nc" id="L211">      return sf.createServerSocket(port);</span>
+    }
+
+<span class="fc" id="L214">    final AFSocketAddress addr = newSocketAddress(port);</span>
+<span class="fc" id="L215">    AFServerSocket&lt;?&gt; socket = addr.getAddressFamily().newServerSocket();</span>
+<span class="fc" id="L216">    socket.setDeleteOnClose(true);</span>
+<span class="fc" id="L217">    socket.setReuseAddress(true);</span>
+<span class="fc" id="L218">    socket.bind(addr);</span>
+<span class="fc" id="L219">    socket.addCloseable(new ServerSocketCloseable(socket, port));</span>
+<span class="fc" id="L220">    return socket;</span>
+  }
+
+  private void closeServerSockets() throws IOException {
+    Map&lt;Integer, AFServerSocket&lt;?&gt;&gt; map;
+<span class="fc" id="L225">    synchronized (openServerSockets) {</span>
+<span class="fc" id="L226">      map = new HashMap&lt;&gt;(openServerSockets);</span>
+<span class="fc" id="L227">    }</span>
+<span class="fc" id="L228">    IOException ex = null;</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">    for (Map.Entry&lt;Integer, AFServerSocket&lt;?&gt;&gt; en : map.entrySet()) {</span>
+      try {
+<span class="nc" id="L231">        en.getValue().close();</span>
+<span class="fc" id="L232">      } catch (ShutdownException e) {</span>
+        // ignore
+<span class="nc" id="L234">      } catch (IOException e) {</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">        if (ex == null) {</span>
+<span class="nc" id="L236">          ex = e;</span>
+        } else {
+<span class="nc" id="L238">          ex.addSuppressed(e);</span>
+        }
+<span class="pc" id="L240">      }</span>
+<span class="fc" id="L241">    }</span>
+<span class="fc" id="L242">    synchronized (openServerSockets) {</span>
+<span class="fc" id="L243">      openServerSockets.clear();</span>
+<span class="fc" id="L244">    }</span>
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">    if (ex != null) {</span>
+<span class="nc" id="L246">      throw ex;</span>
+    }
+<span class="fc" id="L248">  }</span>
+
+  private void closeSockets() {
+    Set&lt;AFSocket&lt;?&gt;&gt; set;
+<span class="fc" id="L252">    synchronized (openSockets) {</span>
+<span class="fc" id="L253">      set = new HashSet&lt;&gt;(openSockets);</span>
+<span class="fc" id="L254">    }</span>
+<span class="fc bfc" id="L255" title="All 2 branches covered.">    for (AFSocket&lt;?&gt; socket : set) {</span>
+      try {
+<span class="fc" id="L257">        socket.close();</span>
+<span class="nc" id="L258">      } catch (IOException e) {</span>
+        // ignore
+<span class="fc" id="L260">      }</span>
+<span class="fc" id="L261">    }</span>
+<span class="fc" id="L262">    synchronized (openSockets) {</span>
+<span class="fc" id="L263">      openSockets.clear();</span>
+<span class="fc" id="L264">    }</span>
+<span class="fc" id="L265">  }</span>
+
+  private final class ServerSocketCloseable implements Closeable {
+    private final int port;
+
+<span class="fc" id="L270">    ServerSocketCloseable(AFServerSocket&lt;?&gt; socket, int port) {</span>
+<span class="fc" id="L271">      this.port = port;</span>
+<span class="fc" id="L272">      synchronized (openServerSockets) {</span>
+<span class="fc" id="L273">        openServerSockets.put(port, socket);</span>
+<span class="fc" id="L274">      }</span>
+<span class="fc" id="L275">    }</span>
+
+    @Override
+    public void close() throws IOException {
+<span class="fc" id="L279">      synchronized (openServerSockets) {</span>
+<span class="fc" id="L280">        openServerSockets.remove(port);</span>
+<span class="fc" id="L281">      }</span>
+<span class="fc" id="L282">    }</span>
+  }
+
+  @Override
+  public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+<span class="fc" id="L287">    naming = readNamingInstance(in);</span>
+<span class="fc" id="L288">    defaultClientFactory = (RMIClientSocketFactory) in.readObject();</span>
+<span class="fc" id="L289">    defaultServerFactory = (RMIServerSocketFactory) in.readObject();</span>
+<span class="fc" id="L290">  }</span>
+
+  @Override
+  public void writeExternal(ObjectOutput out) throws IOException {
+<span class="fc" id="L294">    writeNamingInstance(out, naming);</span>
+<span class="fc" id="L295">    out.writeObject(defaultClientFactory);</span>
+<span class="fc" id="L296">    out.writeObject(defaultServerFactory);</span>
+<span class="fc" id="L297">  }</span>
+
+  /**
+   * Deserializes information necessary to instantiate the {@link AFNaming} instance.
+   * 
+   * @param in The stream.
+   * @return The {@link AFNaming} instance.
+   * @throws IOException on error.
+   */
+  protected abstract AFNaming readNamingInstance(ObjectInput in) throws IOException;
+
+  /**
+   * Serializes information necessary to instantiate the given {@link AFNaming} instance.
+   * 
+   * @param out The stream.
+   * @param namingInstance The {@link AFNaming} instance.
+   * @throws IOException on error.
+   */
+  protected abstract void writeNamingInstance(ObjectOutput out, AFNaming namingInstance)
+      throws IOException;
+
+  /**
+   * Checks if the given port refers to a local server port.
+   * 
+   * @param port The port to check.
+   * @return {@code true} if the given port is a local server.
+   */
+  public boolean isLocalServer(int port) {
+<span class="pc bpc" id="L325" title="1 of 2 branches missed.">    if (port &lt; RMIPorts.AF_PORT_BASE) {</span>
+<span class="nc" id="L326">      return false;</span>
+    }
+<span class="fc" id="L328">    synchronized (openServerSockets) {</span>
+<span class="fc" id="L329">      return openServerSockets.containsKey(port);</span>
+    }
+  }
+
+  /**
+   * The naming instance.
+   * 
+   * @return The instance.
+   */
+  protected AFNaming getNaming() {
+<span class="fc" id="L339">    return naming;</span>
+  }
+
+  /**
+   * Checks if this socket factory has some knowledge about the given port.
+   * 
+   * @param port The port.
+   * @return {@code true} if registered.
+   */
+  abstract boolean hasRegisteredPort(int port);
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

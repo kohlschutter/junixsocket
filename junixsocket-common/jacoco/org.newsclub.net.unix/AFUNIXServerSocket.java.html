@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXServerSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXServerSocket.java</span></div><h1>AFUNIXServerSocket.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2021 Christian Kohlschütter
+ * Copyright 2009-2022 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -17,87 +17,62 @@
  */
 package org.newsclub.net.unix;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * The server part of an AF_UNIX domain socket.
  * 
  * @author Christian Kohlschütter
  */
-public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAccess {
-  private final AFUNIXSocketImpl implementation;
-  private AFUNIXSocketAddress boundEndpoint;
-<span class="fc" id="L40">  private final Closeables closeables = new Closeables();</span>
-<span class="fc" id="L41">  private final AtomicBoolean created = new AtomicBoolean(false);</span>
-<span class="fc" id="L42">  private final AtomicBoolean deleteOnClose = new AtomicBoolean(true);</span>
-<span class="fc" id="L43">  private final AFUNIXServerSocketChannel channel = new AFUNIXServerSocketChannel(this);</span>
-
+public class AFUNIXServerSocket extends AFServerSocket&lt;AFUNIXSocketAddress&gt; {
   /**
    * Constructs a new, unconnected instance.
    * 
    * @throws IOException if the operation fails.
    */
   protected AFUNIXServerSocket() throws IOException {
-<span class="nc" id="L51">    this((FileDescriptor) null);</span>
-<span class="nc" id="L52">  }</span>
+<span class="nc" id="L39">    super();</span>
+<span class="nc" id="L40">  }</span>
 
+  /**
+   * Constructs a new instance, optionally associated with the given file descriptor.
+   * 
+   * @param fdObj The file descriptor, or {@code null}.
+   * @throws IOException if the operation fails.
+   */
   AFUNIXServerSocket(FileDescriptor fdObj) throws IOException {
-<span class="fc" id="L55">    super();</span>
-<span class="fc" id="L56">    this.implementation = new AFUNIXSocketImpl(fdObj);</span>
-<span class="fc" id="L57">    NativeUnixSocket.initServerImpl(this, implementation);</span>
+<span class="fc" id="L49">    super(fdObj);</span>
+<span class="fc" id="L50">  }</span>
 
-<span class="fc" id="L59">    setReuseAddress(true);</span>
-<span class="fc" id="L60">  }</span>
+  @Override
+  protected AFUNIXServerSocketChannel newChannel() {
+<span class="fc" id="L54">    return new AFUNIXServerSocketChannel(this);</span>
+  }
+
+  @Override
+  public AFUNIXServerSocketChannel getChannel() {
+<span class="fc" id="L59">    return (AFUNIXServerSocketChannel) super.getChannel();</span>
+  }
 
   /**
    * Returns a new, unbound AF_UNIX {@link ServerSocket}.
    * 
-   * @return The new, unbound {@link AFUNIXServerSocket}.
+   * @return The new, unbound {@link AFServerSocket}.
    * @throws IOException if the operation fails.
    */
   public static AFUNIXServerSocket newInstance() throws IOException {
-<span class="fc" id="L69">    return new AFUNIXServerSocket(null);</span>
+<span class="fc" id="L69">    return (AFUNIXServerSocket) AFServerSocket.newInstance(AFUNIXServerSocket::new);</span>
   }
 
-  public static AFUNIXServerSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
+  static AFUNIXServerSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
       throws IOException {
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">    if (fdObj == null) {</span>
-<span class="nc" id="L75">      return newInstance();</span>
-    }
-
-<span class="fc" id="L78">    int status = NativeUnixSocket.socketStatus(fdObj);</span>
-<span class="pc bpc" id="L79" title="2 of 4 branches missed.">    if (!fdObj.valid() || status == NativeUnixSocket.SOCKETSTATUS_INVALID) {</span>
-<span class="nc" id="L80">      throw new SocketException(&quot;Not a valid socket&quot;);</span>
-    }
-<span class="fc" id="L82">    AFUNIXServerSocket socket = new AFUNIXServerSocket(fdObj);</span>
-<span class="fc" id="L83">    socket.getAFImpl().updatePorts(localPort, remotePort);</span>
-
-<span class="pc bpc" id="L85" title="3 of 4 branches missed.">    switch (status) {</span>
-      case NativeUnixSocket.SOCKETSTATUS_CONNECTED:
-<span class="nc" id="L87">        throw new SocketException(&quot;Not a ServerSocket&quot;);</span>
-      case NativeUnixSocket.SOCKETSTATUS_BOUND:
-<span class="fc" id="L89">        socket.bind(AFUNIXSocketAddress.INTERNAL_DUMMY_BIND);</span>
-
-<span class="fc" id="L91">        socket.setBoundEndpoint(AFUNIXSocketAddress.getSocketAddress(fdObj, false, localPort));</span>
-<span class="fc" id="L92">        break;</span>
-      case NativeUnixSocket.SOCKETSTATUS_UNKNOWN:
-<span class="nc" id="L94">        break;</span>
-      default:
-<span class="nc" id="L96">        throw new IllegalStateException(&quot;Invalid socketStatus response: &quot; + status);</span>
-    }
-
-<span class="fc" id="L99">    socket.getAFImpl().setSocketAddress(socket.getLocalSocketAddress());</span>
-<span class="fc" id="L100">    return socket;</span>
+<span class="nc" id="L74">    return (AFUNIXServerSocket) AFServerSocket.newInstance(AFUNIXServerSocket::new, fdObj,</span>
+        localPort, remotePort);
   }
 
   /**
@@ -105,31 +80,25 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
    * {@link AFUNIXSocketAddress}.
    * 
    * @param addr The socket file to bind to.
-   * @return The new, bound {@link AFUNIXServerSocket}.
+   * @return The new, bound {@link AFServerSocket}.
    * @throws IOException if the operation fails.
    */
   public static AFUNIXServerSocket bindOn(final AFUNIXSocketAddress addr) throws IOException {
-<span class="fc" id="L112">    AFUNIXServerSocket socket = newInstance();</span>
-<span class="fc" id="L113">    socket.bind(addr);</span>
-<span class="fc" id="L114">    return socket;</span>
+<span class="fc" id="L87">    return (AFUNIXServerSocket) AFServerSocket.bindOn(AFUNIXServerSocket::new, addr);</span>
   }
 
   /**
-   * Returns a new AF_UNIX {@link ServerSocket} that is bound to the given
-   * {@link AFUNIXSocketAddress}.
+   * Returns a new AF_UNIX {@link ServerSocket} that is bound to the given {@link AFSocketAddress}.
    * 
    * @param addr The socket file to bind to.
    * @param deleteOnClose If {@code true}, the socket file (if the address points to a file) will be
    *          deleted upon {@link #close}.
-   * @return The new, bound {@link AFUNIXServerSocket}.
+   * @return The new, bound {@link AFServerSocket}.
    * @throws IOException if the operation fails.
    */
   public static AFUNIXServerSocket bindOn(final AFUNIXSocketAddress addr, boolean deleteOnClose)
       throws IOException {
-<span class="fc" id="L129">    AFUNIXServerSocket socket = newInstance();</span>
-<span class="fc" id="L130">    socket.bind(addr);</span>
-<span class="fc" id="L131">    socket.setDeleteOnClose(deleteOnClose);</span>
-<span class="fc" id="L132">    return socket;</span>
+<span class="fc" id="L101">    return (AFUNIXServerSocket) AFServerSocket.bindOn(AFUNIXServerSocket::new, addr, deleteOnClose);</span>
   }
 
   /**
@@ -137,12 +106,12 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
    * 
    * @param path The path to bind to.
    * @param deleteOnClose If {@code true}, the socket file will be deleted upon {@link #close}.
-   * @return The new, bound {@link AFUNIXServerSocket}.
+   * @return The new, bound {@link AFServerSocket}.
    * @throws IOException if the operation fails.
    */
   public static AFUNIXServerSocket bindOn(final File path, boolean deleteOnClose)
       throws IOException {
-<span class="fc" id="L145">    return bindOn(path.toPath(), deleteOnClose);</span>
+<span class="nc" id="L114">    return bindOn(path.toPath(), deleteOnClose);</span>
   }
 
   /**
@@ -150,15 +119,13 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
    * 
    * @param path The path to bind to.
    * @param deleteOnClose If {@code true}, the socket file will be deleted upon {@link #close}.
-   * @return The new, bound {@link AFUNIXServerSocket}.
+   * @return The new, bound {@link AFServerSocket}.
    * @throws IOException if the operation fails.
    */
   public static AFUNIXServerSocket bindOn(final Path path, boolean deleteOnClose)
       throws IOException {
-<span class="fc" id="L158">    AFUNIXServerSocket socket = newInstance();</span>
-<span class="fc" id="L159">    socket.setDeleteOnClose(deleteOnClose);</span>
-<span class="fc" id="L160">    socket.bind(AFUNIXSocketAddress.of(path));</span>
-<span class="fc" id="L161">    return socket;</span>
+<span class="nc" id="L127">    return (AFUNIXServerSocket) AFServerSocket.bindOn(AFUNIXServerSocket::new, AFUNIXSocketAddress</span>
+<span class="nc" id="L128">        .of(path), deleteOnClose);</span>
   }
 
   /**
@@ -166,214 +133,33 @@ public class AFUNIXServerSocket extends ServerSocket implements FileDescriptorAc
    * address, regardless of any socket address used in a call to &lt;code&gt;bind&lt;/code&gt;.
    * 
    * @param forceAddr The address to use.
-   * @return The new, yet unbound {@link AFUNIXServerSocket}.
+   * @return The new, yet unbound {@link AFServerSocket}.
    * @throws IOException if an exception occurs.
    */
   public static AFUNIXServerSocket forceBindOn(final AFUNIXSocketAddress forceAddr)
       throws IOException {
-<span class="nc" id="L174">    return new AFUNIXServerSocket(null) {</span>
-
-      @Override
-      public void bind(SocketAddress ignored, int backlog) throws IOException {
-<span class="nc" id="L178">        super.bind(forceAddr, backlog);</span>
-<span class="nc" id="L179">      }</span>
-    };
+<span class="nc" id="L141">    return (AFUNIXServerSocket) AFServerSocket.forceBindOn(AFUNIXServerSocket::new, forceAddr);</span>
   }
 
   @Override
-  public void bind(SocketAddress endpoint, int backlog) throws IOException {
-<span class="pc bpc" id="L185" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L186">      throw new SocketException(&quot;Socket is closed&quot;);</span>
-    }
-<span class="pc bpc" id="L188" title="1 of 2 branches missed.">    if (isBound()) {</span>
-<span class="nc" id="L189">      throw new SocketException(&quot;Already bound&quot;);</span>
-    }
-
-<span class="fc bfc" id="L192" title="All 2 branches covered.">    if (!(endpoint instanceof AFUNIXSocketAddress)) {</span>
-<span class="fc" id="L193">      throw new IllegalArgumentException(&quot;Can only bind to endpoints of type &quot;</span>
-<span class="fc" id="L194">          + AFUNIXSocketAddress.class.getName());</span>
-    }
-
-<span class="pc bpc" id="L197" title="1 of 2 branches missed.">    getAFImpl().bind(endpoint, getReuseAddress() ? -1 : 0);</span>
-<span class="fc" id="L198">    setBoundEndpoint((AFUNIXSocketAddress) endpoint);</span>
-
-<span class="fc bfc" id="L200" title="All 2 branches covered.">    if (endpoint == AFUNIXSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD</span>
-<span class="fc" id="L201">      return;</span>
-    }
-
-<span class="fc" id="L204">    implementation.listen(backlog);</span>
-<span class="fc" id="L205">  }</span>
-
-  @Override
-  public boolean isBound() {
-<span class="fc bfc" id="L209" title="All 2 branches covered.">    return boundEndpoint != null;</span>
+  protected AFUNIXSocketImpl newImpl(FileDescriptor fdObj) throws SocketException {
+<span class="fc" id="L146">    return new AFUNIXSocketImpl(fdObj);</span>
   }
 
+  /**
+   * Returns a new {@link AFSocket} instance.
+   * 
+   * @return The new instance.
+   * @throws IOException on error.
+   */
   @Override
-  public boolean isClosed() {
-<span class="pc bpc" id="L214" title="1 of 6 branches missed.">    return super.isClosed() || (isBound() &amp;&amp; !implementation.getFD().valid());</span>
+  protected AFUNIXSocket newSocketInstance() throws IOException {
+<span class="fc" id="L157">    return AFUNIXSocket.newInstance();</span>
   }
 
   @Override
   public AFUNIXSocket accept() throws IOException {
-<span class="fc" id="L219">    AFUNIXSocket as = newSocketInstance();</span>
-<span class="fc" id="L220">    boolean success = implementation.accept0(as.getAFImpl());</span>
-<span class="fc bfc" id="L221" title="All 2 branches covered.">    if (isClosed()) {</span>
-      // We may have connected to the socket to unblock it
-<span class="fc" id="L223">      throw new SocketException(&quot;Socket is closed&quot;);</span>
-    }
-
-<span class="fc bfc" id="L226" title="All 2 branches covered.">    if (!success) {</span>
-      // non-blocking socket, nothing to accept
-<span class="fc" id="L228">      return null;</span>
-    }
-<span class="fc" id="L230">    as.connect(AFUNIXSocketAddress.INTERNAL_DUMMY_CONNECT);</span>
-<span class="fc" id="L231">    as.getAFImpl().updatePorts(getAFImpl().getLocalPort1(), getAFImpl().getRemotePort());</span>
-
-<span class="fc" id="L233">    return as;</span>
-  }
-
-  protected AFUNIXSocket newSocketInstance() throws IOException {
-<span class="fc" id="L237">    return AFUNIXSocket.newInstance();</span>
-  }
-
-  @Override
-  public String toString() {
-<span class="nc bnc" id="L242" title="All 2 branches missed.">    return &quot;AFUNIXServerSocket[&quot; + (isBound() ? boundEndpoint.toString() : &quot;unbound&quot;) + &quot;]&quot;;</span>
-  }
-
-  @Override
-  public synchronized void close() throws IOException {
-<span class="fc bfc" id="L247" title="All 2 branches covered.">    if (isClosed()) {</span>
-<span class="fc" id="L248">      return;</span>
-    }
-
-<span class="fc" id="L251">    AFUNIXSocketAddress endpoint = boundEndpoint;</span>
-
-<span class="fc" id="L253">    IOException superException = null;</span>
-    try {
-<span class="fc" id="L255">      super.close();</span>
-<span class="nc" id="L256">    } catch (IOException e) {</span>
-<span class="nc" id="L257">      superException = e;</span>
-<span class="fc" id="L258">    }</span>
-<span class="pc bpc" id="L259" title="1 of 2 branches missed.">    if (implementation != null) {</span>
-      try {
-<span class="fc" id="L261">        implementation.close();</span>
-<span class="nc" id="L262">      } catch (IOException e) {</span>
-<span class="nc bnc" id="L263" title="All 2 branches missed.">        if (superException == null) {</span>
-<span class="nc" id="L264">          superException = e;</span>
-        } else {
-<span class="nc" id="L266">          superException.addSuppressed(e);</span>
-        }
-<span class="fc" id="L268">      }</span>
-    }
-
-<span class="fc" id="L271">    IOException ex = null;</span>
-    try {
-<span class="fc" id="L273">      closeables.close(superException);</span>
-    } finally {
-<span class="pc bpc" id="L275" title="2 of 6 branches missed.">      if (endpoint != null &amp;&amp; endpoint.hasFilename() &amp;&amp; isDeleteOnClose()) {</span>
-<span class="fc" id="L276">        File f = endpoint.getFile();</span>
-<span class="pc bpc" id="L277" title="3 of 4 branches missed.">        if (!f.delete() &amp;&amp; f.exists()) {</span>
-<span class="nc" id="L278">          ex = new IOException(&quot;Could not delete socket file after close: &quot; + f);</span>
-        }
-      }
-    }
-<span class="pc bpc" id="L282" title="1 of 2 branches missed.">    if (ex != null) {</span>
-<span class="nc" id="L283">      throw ex;</span>
-    }
-<span class="fc" id="L285">  }</span>
-
-  /**
-   * Registers a {@link Closeable} that should be closed when this socket is closed.
-   * 
-   * @param closeable The closeable.
-   */
-  public void addCloseable(Closeable closeable) {
-<span class="fc" id="L293">    closeables.add(closeable);</span>
-<span class="fc" id="L294">  }</span>
-
-  /**
-   * Unregisters a previously registered {@link Closeable}.
-   * 
-   * @param closeable The closeable.
-   */
-  public void removeCloseable(Closeable closeable) {
-<span class="fc" id="L302">    closeables.remove(closeable);</span>
-<span class="fc" id="L303">  }</span>
-
-  /**
-   * Checks whether everything is setup to support AF_UNIX sockets.
-   * 
-   * @return {@code true} if supported.
-   */
-  public static boolean isSupported() {
-<span class="fc" id="L311">    return NativeUnixSocket.isLoaded();</span>
-  }
-
-  @Override
-  public AFUNIXSocketAddress getLocalSocketAddress() {
-<span class="fc" id="L316">    return boundEndpoint;</span>
-  }
-
-  void setBoundEndpoint(AFUNIXSocketAddress addr) {
-<span class="fc" id="L320">    this.boundEndpoint = addr;</span>
-<span class="fc" id="L321">    getAFImpl().updatePorts(addr.getPort(), -1);</span>
-<span class="fc" id="L322">  }</span>
-
-  @Override
-  public int getLocalPort() {
-<span class="pc bpc" id="L326" title="1 of 2 branches missed.">    if (boundEndpoint == null) {</span>
-<span class="nc" id="L327">      return -1;</span>
-    } else {
-<span class="fc" id="L329">      return getAFImpl().getLocalPort1();</span>
-    }
-  }
-
-  /**
-   * Checks if this {@link AFUNIXServerSocket}'s file should be removed upon {@link #close()}.
-   * 
-   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
-   * namespace).
-   * 
-   * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
-   */
-  public boolean isDeleteOnClose() {
-<span class="fc" id="L342">    return deleteOnClose.get();</span>
-  }
-
-  /**
-   * Enables/disables deleting this {@link AFUNIXServerSocket}'s file upon {@link #close()}.
-   * 
-   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
-   * namespace).
-   * 
-   * @param b Enabled if {@code true}.
-   */
-  public void setDeleteOnClose(boolean b) {
-<span class="fc" id="L354">    deleteOnClose.set(b);</span>
-<span class="fc" id="L355">  }</span>
-
-  AFUNIXSocketImpl getAFImpl() {
-<span class="fc bfc" id="L358" title="All 2 branches covered.">    if (created.compareAndSet(false, true)) {</span>
-      try {
-<span class="fc" id="L360">        getSoTimeout(); // trigger create via java.net.Socket</span>
-<span class="nc" id="L361">      } catch (IOException e) {</span>
-        // ignore
-<span class="fc" id="L363">      }</span>
-    }
-<span class="fc" id="L365">    return implementation;</span>
-  }
-
-  @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
-  @Override
-  public AFUNIXServerSocketChannel getChannel() {
-<span class="fc" id="L371">    return channel;</span>
-  }
-
-  @Override
-  public FileDescriptor getFileDescriptor() throws IOException {
-<span class="fc" id="L376">    return implementation.getFileDescriptor();</span>
+<span class="fc" id="L162">    return (AFUNIXSocket) super.accept();</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

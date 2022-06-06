@@ -1,1 +1,1 @@
-moduleSearchIndex = [{"l":"org.newsclub.net.unix.rmi"}]
+moduleSearchIndex = [{"l":"org.newsclub.net.unix.rmi"}];updateSearchResults();

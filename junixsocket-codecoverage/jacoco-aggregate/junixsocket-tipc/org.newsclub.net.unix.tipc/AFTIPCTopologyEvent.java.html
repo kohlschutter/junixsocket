@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCTopologyEvent.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCTopologyEvent.java</span></div><h1>AFTIPCTopologyEvent.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.tipc;
+
+import static org.newsclub.net.unix.AFTIPCSocketAddress.AddressType.formatTIPCInt;
+
+import java.io.IOException;
+import java.net.SocketException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+import org.newsclub.net.unix.AFTIPCSocketAddress;
+import org.newsclub.net.unix.NamedInteger;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+/**
+ * A TIPC topology event received by the {@link AFTIPCTopologyWatcher} as a result of an
+ * {@link AFTIPCTopologySubscription}.
+ * 
+ * @author Christian Kohlschütter
+ */
+@NonNullByDefault
+public final class AFTIPCTopologyEvent {
+  private static final int MESSAGE_LENGTH = 48;
+  private final Type type;
+  private final int foundLower;
+  private final int foundUpper;
+  private final AFTIPCSocketAddress address;
+  private final AFTIPCTopologySubscription subscription;
+
+  /**
+   * Some TIPC error code.
+   * 
+   * @author Christian Kohlschütter
+   */
+  @SuppressWarnings(&quot;PMD.ShortClassName&quot;)
+  public static final class Type extends NamedInteger {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Publication event.
+     */
+    public static final Type TIPC_PUBLISHED;
+
+    /**
+     * Withdrawal event.
+     */
+    public static final Type TIPC_WITHDRAWN;
+
+    /**
+     * Subscription timeout event.
+     */
+    public static final Type TIPC_SUBSCR_TIMEOUT;
+
+    /**
+     * Undefined.
+     */
+    public static final Type UNDEFINED;
+
+<span class="nc" id="L80">    private static final @NonNull Type[] VALUES = init(new @NonNull Type[] {</span>
+        UNDEFINED = new Type(&quot;UNDEFINED&quot;, 0), //
+        TIPC_PUBLISHED = new Type(&quot;TIPC_PUBLISHED&quot;, 1), //
+        TIPC_WITHDRAWN = new Type(&quot;TIPC_WITHDRAWN&quot;, 2), //
+        TIPC_SUBSCR_TIMEOUT = new Type(&quot;TIPC_SUBSCR_TIMEOUT&quot;, 3), //
+    });
+
+    private Type(int id) {
+<span class="nc" id="L88">      super(id);</span>
+<span class="nc" id="L89">    }</span>
+
+    private Type(String name, int id) {
+<span class="nc" id="L92">      super(name, id);</span>
+<span class="nc" id="L93">    }</span>
+
+    /**
+     * Returns an {@link Type} instance given an integer.
+     * 
+     * @param v The value.
+     * @return The instance.
+     */
+    public static Type ofValue(int v) {
+<span class="nc" id="L102">      return ofValue(VALUES, Type::new, v);</span>
+    }
+  }
+
+  private AFTIPCTopologyEvent(Type type, int foundLower, int foundUpper,
+<span class="nc" id="L107">      AFTIPCSocketAddress address, AFTIPCTopologySubscription subscription) {</span>
+<span class="nc" id="L108">    this.type = type;</span>
+<span class="nc" id="L109">    this.foundLower = foundLower;</span>
+<span class="nc" id="L110">    this.foundUpper = foundUpper;</span>
+<span class="nc" id="L111">    this.address = address;</span>
+<span class="nc" id="L112">    this.subscription = subscription;</span>
+<span class="nc" id="L113">  }</span>
+
+  @SuppressWarnings(&quot;null&quot;)
+  static AFTIPCTopologyEvent readFromBuffer(ByteBuffer buf) throws SocketException {
+<span class="nc" id="L117">    buf = buf.order(ByteOrder.BIG_ENDIAN);</span>
+<span class="nc" id="L118">    Type type = Type.ofValue(buf.getInt());</span>
+<span class="nc" id="L119">    int foundLower = buf.getInt();</span>
+<span class="nc" id="L120">    int foundUpper = buf.getInt();</span>
+<span class="nc" id="L121">    AFTIPCSocketAddress address = AFTIPCSocketAddress.ofSocket(buf.getInt(), buf.getInt());</span>
+<span class="nc" id="L122">    AFTIPCTopologySubscription sub = AFTIPCTopologySubscription.readFromBuffer(buf);</span>
+
+<span class="nc" id="L124">    return new AFTIPCTopologyEvent(type, foundLower, foundUpper, address, sub);</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L129">    int lower = getFoundLower();</span>
+<span class="nc" id="L130">    int upper = getFoundUpper();</span>
+    String found;
+<span class="nc bnc" id="L132" title="All 2 branches missed.">    if (lower == upper) {</span>
+<span class="nc" id="L133">      found = formatTIPCInt(lower);</span>
+    } else {
+<span class="nc" id="L135">      found = formatTIPCInt(lower) + &quot;-&quot; + formatTIPCInt(upper);</span>
+    }
+<span class="nc" id="L137">    return super.toString() + &quot;[&quot; + getType() + &quot;;found:&quot; + found + &quot;;addr=&quot; + getAddress()</span>
+<span class="nc" id="L138">        + &quot;;sub=&quot; + getSubscription() + &quot;]&quot;;</span>
+  }
+
+  @SuppressWarnings(&quot;null&quot;)
+  ByteBuffer writeToBuffer(ByteBuffer buf) throws IOException {
+<span class="nc" id="L143">    buf = buf.order(ByteOrder.BIG_ENDIAN);</span>
+<span class="nc" id="L144">    buf.putInt(getType().value());</span>
+<span class="nc" id="L145">    buf.putInt(getFoundLower());</span>
+<span class="nc" id="L146">    buf.putInt(getFoundUpper());</span>
+<span class="nc" id="L147">    getAddress().writeNativeAddressTo(buf);</span>
+<span class="nc" id="L148">    getSubscription().writeToBuffer(buf);</span>
+<span class="nc" id="L149">    return buf;</span>
+  }
+
+  /**
+   * Converts this event message to a new {@link ByteBuffer}.
+   * 
+   * @return The new buffer, ready to read from.
+   * @throws IOException on error.
+   */
+  @SuppressWarnings({&quot;null&quot;, &quot;cast&quot;})
+  public ByteBuffer toBuffer() throws IOException {
+<span class="nc" id="L160">    return (ByteBuffer) writeToBuffer(ByteBuffer.allocate(MESSAGE_LENGTH)).flip();</span>
+  }
+
+  /**
+   * The event type.
+   * 
+   * @return The type.
+   */
+  public Type getType() {
+<span class="nc" id="L169">    return type;</span>
+  }
+
+  /**
+   * The found range's lower value.
+   * 
+   * @return The lower value.
+   */
+  public int getFoundLower() {
+<span class="nc" id="L178">    return foundLower;</span>
+  }
+
+  /**
+   * The found range's upper value.
+   * 
+   * @return The upper value.
+   */
+  public int getFoundUpper() {
+<span class="nc" id="L187">    return foundUpper;</span>
+  }
+
+  /**
+   * The corresponding socket address.
+   * 
+   * @return The socket address.
+   */
+  @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
+  public AFTIPCSocketAddress getAddress() {
+<span class="nc" id="L197">    return address;</span>
+  }
+
+  /**
+   * The corresponding subscription that found this event.
+   * 
+   * @return The subscription.
+   */
+  @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
+  public AFTIPCTopologySubscription getSubscription() {
+<span class="nc" id="L207">    return subscription;</span>
+  }
+
+  /**
+   * Returns {@code true} iff the event type is {@link Type#TIPC_PUBLISHED}.
+   * 
+   * @return {@code true} if this a &quot;published&quot; event.
+   */
+  public boolean isPublished() {
+<span class="nc bnc" id="L216" title="All 2 branches missed.">    return type == Type.TIPC_PUBLISHED; // NOPMD.CompareObjectsWithEquals</span>
+  }
+
+  /**
+   * Returns {@code true} iff the event type is {@link Type#TIPC_WITHDRAWN}.
+   * 
+   * @return {@code true} if this a &quot;withdrawn&quot; event.
+   */
+  public boolean isWithdrawn() {
+<span class="nc bnc" id="L225" title="All 2 branches missed.">    return type == Type.TIPC_WITHDRAWN; // NOPMD.CompareObjectsWithEquals</span>
+  }
+
+  /**
+   * Returns {@code true} iff the event type is {@link Type#TIPC_SUBSCR_TIMEOUT}.
+   * 
+   * @return {@code true} if this a &quot;timeout&quot; event.
+   */
+  public boolean isTimeout() {
+<span class="nc bnc" id="L234" title="All 2 branches missed.">    return type == Type.TIPC_SUBSCR_TIMEOUT; // NOPMD.CompareObjectsWithEquals</span>
+  }
+
+  /**
+   * Returns {@code true} iff the corresponding subscription has the
+   * {@link AFTIPCTopologySubscription.Flags#TIPC_SUB_PORTS} flag set.
+   * 
+   * @return {@code true} if this a event referring to a &quot;port&quot; subscription.
+   */
+  public boolean isPort() {
+<span class="nc" id="L244">    return subscription.isPort();</span>
+  }
+
+  /**
+   * Returns {@code true} iff the corresponding subscription has the
+   * {@link AFTIPCTopologySubscription.Flags#TIPC_SUB_SERVICE} flag set.
+   * 
+   * @return {@code true} if this a event referring to a &quot;service&quot; subscription.
+   */
+  public boolean isService() {
+<span class="nc" id="L254">    return subscription.isService();</span>
+  }
+
+  /**
+   * Returns {@code true} iff the corresponding subscription has the
+   * {@link AFTIPCTopologySubscription.Flags#TIPC_SUB_CANCEL} flag set.
+   * 
+   * @return {@code true} if this a event referring to a &quot;cancellation&quot; subscription request.
+   */
+  public boolean isCancellationRequest() {
+<span class="nc" id="L264">    return subscription.isCancellation();</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L269">    return Objects.hash(address, foundLower, foundUpper, subscription, type);</span>
+  }
+
+  @Override
+  public boolean equals(@Nullable Object obj) {
+<span class="nc bnc" id="L274" title="All 2 branches missed.">    if (this == obj) {</span>
+<span class="nc" id="L275">      return true;</span>
+    }
+<span class="nc bnc" id="L277" title="All 2 branches missed.">    if (!(obj instanceof AFTIPCTopologyEvent)) {</span>
+<span class="nc" id="L278">      return false;</span>
+    }
+<span class="nc" id="L280">    AFTIPCTopologyEvent other = (AFTIPCTopologyEvent) obj;</span>
+<span class="nc bnc" id="L281" title="All 6 branches missed.">    return Objects.equals(address, other.address) &amp;&amp; foundLower == other.foundLower</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">        &amp;&amp; foundUpper == other.foundUpper &amp;&amp; Objects.equals(subscription, other.subscription)</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">        &amp;&amp; Objects.equals(type, other.type);</span>
+  }
+
+  /**
+   * Returns the link name for a link state event requested by
+   * {@link AFTIPCTopologySubscription#TIPC_LINK_STATE} or
+   * {@link AFTIPCTopologyWatcher#addLinkStateSubscription()}.
+   * 
+   * A link name is something like &quot;f875a40e707d:eth0-8c1645f2ce27:eth0&quot;
+   * 
+   * @return The link name, or {@code  null} if unsupported.
+   * @throws IOException on error.
+   */
+  public @Nullable String getLinkName() throws IOException {
+    // this only works if getSubscription().getType() == AFTIPCSubscription.TIPC_LINK_STATE
+<span class="nc" id="L298">    int node = getFoundLower();</span>
+<span class="nc" id="L299">    int ref = getAddress().getTIPCRef();</span>
+<span class="nc" id="L300">    return AFTIPCSocket.getLinkName(node, ref &amp; 0xFFFF);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

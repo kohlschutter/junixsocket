@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXSelectorProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXSelectorProvider.java</span></div><h1>AFUNIXSelectorProvider.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2021 Christian Kohlschütter
+ * Copyright 2009-2022 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -20,95 +20,151 @@ package org.newsclub.net.unix;
 import java.io.IOException;
 import java.net.ProtocolFamily;
 import java.net.SocketAddress;
-import java.nio.channels.spi.AbstractSelector;
-import java.nio.channels.spi.SelectorProvider;
 
-public final class AFUNIXSelectorProvider extends SelectorProvider {
-<span class="fc" id="L27">  private static final AFUNIXSelectorProvider INSTANCE = new AFUNIXSelectorProvider();</span>
+import org.eclipse.jdt.annotation.NonNull;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+/**
+ * Service-provider class for junixsocket selectors and selectable channels.
+ */
+public final class AFUNIXSelectorProvider extends AFSelectorProvider&lt;AFUNIXSocketAddress&gt; {
+<span class="fc" id="L32">  private static final AFUNIXSelectorProvider INSTANCE = new AFUNIXSelectorProvider();</span>
+
+  @SuppressWarnings(&quot;null&quot;)
+<span class="fc" id="L35">  static final AFAddressFamily&lt;@NonNull AFUNIXSocketAddress&gt; AF_UNIX = //</span>
+<span class="fc" id="L36">      AFAddressFamily.registerAddressFamilyImpl(&quot;un&quot;, AFUNIXSocketAddress.AF_UNIX, //</span>
+
+<span class="fc" id="L38">          new AFAddressFamilyConfig&lt;AFUNIXSocketAddress&gt;() {</span>
+            @Override
+            public Class&lt;? extends AFSocket&lt;AFUNIXSocketAddress&gt;&gt; socketClass() {
+<span class="fc" id="L41">              return AFUNIXSocket.class;</span>
+            }
+
+            @Override
+            public AFSocket.Constructor&lt;AFUNIXSocketAddress&gt; socketConstructor() {
+<span class="fc" id="L46">              return AFUNIXSocket::new;</span>
+            }
+
+            @Override
+            public Class&lt;? extends AFServerSocket&lt;AFUNIXSocketAddress&gt;&gt; serverSocketClass() {
+<span class="fc" id="L51">              return AFUNIXServerSocket.class;</span>
+            }
+
+            @Override
+            public AFServerSocket.Constructor&lt;AFUNIXSocketAddress&gt; serverSocketConstructor() {
+<span class="fc" id="L56">              return AFUNIXServerSocket::new;</span>
+            }
+
+            @Override
+            public Class&lt;? extends AFSocketChannel&lt;AFUNIXSocketAddress&gt;&gt; socketChannelClass() {
+<span class="fc" id="L61">              return AFUNIXSocketChannel.class;</span>
+            }
+
+            @Override
+            public Class&lt;? extends AFServerSocketChannel&lt;AFUNIXSocketAddress&gt;&gt; serverSocketChannelClass() {
+<span class="fc" id="L66">              return AFUNIXServerSocketChannel.class;</span>
+            }
+
+            @Override
+            public Class&lt;? extends AFDatagramSocket&lt;AFUNIXSocketAddress&gt;&gt; datagramSocketClass() {
+<span class="fc" id="L71">              return AFUNIXDatagramSocket.class;</span>
+            }
+
+            @Override
+            public AFDatagramSocket.Constructor&lt;AFUNIXSocketAddress&gt; datagramSocketConstructor() {
+<span class="fc" id="L76">              return AFUNIXDatagramSocket::new;</span>
+            }
+
+            @Override
+            public Class&lt;? extends AFDatagramChannel&lt;AFUNIXSocketAddress&gt;&gt; datagramChannelClass() {
+<span class="fc" id="L81">              return AFUNIXDatagramChannel.class;</span>
+            }
+          });
 
   private AFUNIXSelectorProvider() {
     super();
   }
 
+  /**
+   * Returns the singleton instance.
+   * 
+   * @return The instance.
+   */
+  @SuppressFBWarnings(&quot;MS_EXPOSE_REP&quot;)
   public static AFUNIXSelectorProvider getInstance() {
-<span class="fc" id="L34">    return INSTANCE;</span>
+<span class="fc" id="L96">    return INSTANCE;</span>
   }
 
+  /**
+   * Returns the singleton instance.
+   * 
+   * @return The instance.
+   */
   public static AFUNIXSelectorProvider provider() {
-<span class="fc" id="L38">    return getInstance();</span>
+<span class="fc" id="L105">    return getInstance();</span>
   }
 
-  @SuppressWarnings(&quot;resource&quot;)
+  @Override
+  protected &lt;P extends AFSomeSocket&gt; AFSocketPair&lt;P&gt; newSocketPair(P s1, P s2) {
+<span class="fc" id="L110">    return new AFUNIXSocketPair&lt;P&gt;(s1, s2);</span>
+  }
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  @Override
   public AFUNIXSocketPair&lt;AFUNIXSocketChannel&gt; openSocketChannelPair() throws IOException {
-<span class="fc" id="L43">    AFUNIXSocketChannel s1 = openSocketChannel();</span>
-<span class="fc" id="L44">    AFUNIXSocketChannel s2 = openSocketChannel();</span>
-
-<span class="fc" id="L46">    NativeUnixSocket.socketPair(NativeUnixSocket.SOCK_STREAM, s1.getAFCore().fd, s2.getAFCore().fd);</span>
-
-<span class="fc" id="L48">    s1.socket().internalDummyConnect();</span>
-<span class="fc" id="L49">    s2.socket().internalDummyConnect();</span>
-
-<span class="fc" id="L51">    return new AFUNIXSocketPair&lt;AFUNIXSocketChannel&gt;(s1, s2);</span>
+<span class="fc" id="L116">    return (AFUNIXSocketPair&lt;AFUNIXSocketChannel&gt;) super.openSocketChannelPair();</span>
   }
 
-  @SuppressWarnings(&quot;resource&quot;)
+  @SuppressWarnings(&quot;unchecked&quot;)
+  @Override
   public AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt; openDatagramChannelPair() throws IOException {
-<span class="fc" id="L56">    AFUNIXDatagramChannel s1 = openDatagramChannel(AFUNIXProtocolFamily.UNIX);</span>
-<span class="fc" id="L57">    AFUNIXDatagramChannel s2 = openDatagramChannel(AFUNIXProtocolFamily.UNIX);</span>
+<span class="fc" id="L122">    return (AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt;) super.openDatagramChannelPair();</span>
+  }
 
-<span class="fc" id="L59">    NativeUnixSocket.socketPair(NativeUnixSocket.SOCK_STREAM, s1.getAFCore().fd, s2.getAFCore().fd);</span>
-
-<span class="fc" id="L61">    s1.socket().internalDummyBind();</span>
-<span class="fc" id="L62">    s2.socket().internalDummyBind();</span>
-<span class="fc" id="L63">    s1.socket().internalDummyConnect();</span>
-<span class="fc" id="L64">    s2.socket().internalDummyConnect();</span>
-
-<span class="fc" id="L66">    return new AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt;(s1, s2);</span>
+  @Override
+  protected AFUNIXSocket newSocket() throws IOException {
+<span class="fc" id="L127">    return AFUNIXSocket.newInstance();</span>
   }
 
   @Override
   public AFUNIXDatagramChannel openDatagramChannel() throws IOException {
-<span class="fc" id="L71">    return AFUNIXDatagramSocket.newInstance().getChannel();</span>
+<span class="fc" id="L132">    return AFUNIXDatagramSocket.newInstance().getChannel();</span>
   }
 
   @Override
   public AFUNIXDatagramChannel openDatagramChannel(ProtocolFamily family) throws IOException {
-<span class="pc bpc" id="L76" title="1 of 2 branches missed.">    if (!AFUNIXProtocolFamily.UNIX.name().equals(family.name())) {</span>
-<span class="nc" id="L77">      throw new UnsupportedOperationException(&quot;Unsupported protocol family&quot;);</span>
-    }
-<span class="fc" id="L79">    return openDatagramChannel();</span>
-  }
-
-  @Override
-  public AFUNIXPipe openPipe() throws IOException {
-<span class="fc" id="L84">    return new AFUNIXPipe(this, false);</span>
-  }
-
-  public AFUNIXPipe openSelectablePipe() throws IOException {
-<span class="fc" id="L88">    return new AFUNIXPipe(this, true);</span>
-  }
-
-  @Override
-  public AbstractSelector openSelector() throws IOException {
-<span class="fc" id="L93">    return new AFUNIXSelector(this);</span>
+<span class="fc" id="L137">    return (AFUNIXDatagramChannel) super.openDatagramChannel(family);</span>
   }
 
   @Override
   public AFUNIXServerSocketChannel openServerSocketChannel() throws IOException {
-<span class="fc" id="L98">    return AFUNIXServerSocket.newInstance().getChannel();</span>
+<span class="fc" id="L142">    return AFUNIXServerSocket.newInstance().getChannel();</span>
   }
 
+  @Override
   public AFUNIXServerSocketChannel openServerSocketChannel(SocketAddress sa) throws IOException {
-<span class="fc" id="L102">    return AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.unwrap(sa)).getChannel();</span>
+<span class="nc" id="L147">    return AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.unwrap(sa)).getChannel();</span>
   }
 
   @Override
   public AFUNIXSocketChannel openSocketChannel() throws IOException {
-<span class="fc" id="L107">    return AFUNIXSocket.newInstance().getChannel();</span>
+<span class="fc" id="L152">    return (AFUNIXSocketChannel) super.openSocketChannel();</span>
   }
 
+  @Override
   public AFUNIXSocketChannel openSocketChannel(SocketAddress sa) throws IOException {
-<span class="fc" id="L111">    return AFUNIXSocket.connectTo(AFUNIXSocketAddress.unwrap(sa)).getChannel();</span>
+<span class="nc" id="L157">    return AFUNIXSocket.connectTo(AFUNIXSocketAddress.unwrap(sa)).getChannel();</span>
+  }
+
+  @Override
+  protected ProtocolFamily protocolFamily() {
+<span class="fc" id="L162">    return AFUNIXProtocolFamily.UNIX;</span>
+  }
+
+  @Override
+  protected AFAddressFamily&lt;@NonNull AFUNIXSocketAddress&gt; addressFamily() {
+<span class="fc" id="L167">    return AFUNIXSocketAddress.AF_UNIX;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

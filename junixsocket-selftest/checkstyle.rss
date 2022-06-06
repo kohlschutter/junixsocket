@@ -23,9 +23,9 @@ under the License.
     <link>https://kohlschutter.github.io/junixsocket/junixsocket-selftest/</link>
     <description>junixsocket-selftest - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2009 - 2021 Kohlschütter Search Intelligence</copyright>
+    <copyright>&#169;2009 - 2022 Kohlschütter Search Intelligence</copyright>
     <item>
-      <title>File: 48,
+      <title>File: 107,
              Errors: 0,
              Warnings: 0,
              Infos: 0
@@ -46,7 +46,7 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AcceptTimeoutTest.java">org/newsclub/net/unix/AcceptTimeoutTest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.SocketTest.java">org/newsclub/net/unix/tipc/SocketTest.java</a>
                 </td>
                 <td>
                   0
@@ -60,7 +60,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXSocketPairTest.java">org/newsclub/net/unix/AFUNIXSocketPairTest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.DatagramSocketTest.java">org/newsclub/net/unix/DatagramSocketTest.java</a>
                 </td>
                 <td>
                   0
@@ -74,7 +74,707 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXInetAddressTest.java">org/newsclub/net/unix/AFUNIXInetAddressTest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.ServerSocketTest.java">org/newsclub/net/unix/domain/ServerSocketTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.AvailableTest.java">org/newsclub/net/unix/tipc/AvailableTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.StandardSocketOptionsTest.java">org/newsclub/net/unix/tipc/StandardSocketOptionsTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.TcpNoDelayTest.java">org/newsclub/net/unix/TcpNoDelayTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.java.SelectorTest.java">org/newsclub/net/unix/java/SelectorTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.FinalizeTest.java">org/newsclub/net/unix/FinalizeTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.AncillaryMessageTest.java">org/newsclub/net/unix/tipc/AncillaryMessageTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.RemoteCloseableTest.java">org/newsclub/net/unix/rmi/RemoteCloseableTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXSocketAddressTest.java">org/newsclub/net/unix/AFUNIXSocketAddressTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.BufferOverflowTest.java">org/newsclub/net/unix/domain/BufferOverflowTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.SoTimeoutTest.java">org/newsclub/net/unix/domain/SoTimeoutTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.java.ThroughputTest.java">org/newsclub/net/unix/java/ThroughputTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.java.JavaInetStackCondition.java">org/newsclub/net/unix/java/JavaInetStackCondition.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.selftest.SelftestProvider.java">org/newsclub/net/unix/selftest/SelftestProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFSocketCapabilityRequirement.java">org/newsclub/net/unix/AFSocketCapabilityRequirement.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.java.AcceptTimeoutTest.java">org/newsclub/net/unix/java/AcceptTimeoutTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.FileDescriptorCastTest.java">org/newsclub/net/unix/domain/FileDescriptorCastTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.ServerSocketCloseTest.java">org/newsclub/net/unix/tipc/ServerSocketCloseTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.RMIPeerCredentialsTest.java">org/newsclub/net/unix/rmi/RMIPeerCredentialsTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.SocketChannelTest.java">org/newsclub/net/unix/domain/SocketChannelTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.selftest.apps.SocketAddressUtil.java">org/newsclub/net/unix/selftest/apps/SocketAddressUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.SocketTest.java">org/newsclub/net/unix/SocketTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.SocketTest.java">org/newsclub/net/unix/domain/SocketTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.AFUNIXAddressSpecifics.java">org/newsclub/net/unix/domain/AFUNIXAddressSpecifics.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.SocketPairTest.java">org/newsclub/net/unix/domain/SocketPairTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.SelectorTest.java">org/newsclub/net/unix/tipc/SelectorTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.SocketFactoryTest.java">org/newsclub/net/unix/domain/SocketFactoryTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.FileDescriptorCastTest.java">org/newsclub/net/unix/FileDescriptorCastTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.RegistryTest.java">org/newsclub/net/unix/rmi/RegistryTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.BufferOverflowTest.java">org/newsclub/net/unix/tipc/BufferOverflowTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.SelftestProvider.java">org/newsclub/net/unix/SelftestProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.selftest.apps.ZeroServer.java">org/newsclub/net/unix/selftest/apps/ZeroServer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.SocketPairTest.java">org/newsclub/net/unix/tipc/SocketPairTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.selftest.Selftest.java">org/newsclub/net/unix/selftest/Selftest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.ServerSocketTest.java">org/newsclub/net/unix/tipc/ServerSocketTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.InetAddressTest.java">org/newsclub/net/unix/InetAddressTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.RemoteFileDescriptorTest.java">org/newsclub/net/unix/rmi/RemoteFileDescriptorTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.DatagramSocketTest.java">org/newsclub/net/unix/tipc/DatagramSocketTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.NaiveFileInputStreamRemoteImpl.java">org/newsclub/net/unix/rmi/NaiveFileInputStreamRemoteImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.CancelAcceptTest.java">org/newsclub/net/unix/tipc/CancelAcceptTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.ThroughputTest.java">org/newsclub/net/unix/domain/ThroughputTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.SocketChannelTest.java">org/newsclub/net/unix/tipc/SocketChannelTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.selftest.apps.StreamClient.java">org/newsclub/net/unix/selftest/apps/StreamClient.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.TestRegistryServer.java">org/newsclub/net/unix/rmi/TestRegistryServer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFTIPCSocketAddressTest.java">org/newsclub/net/unix/AFTIPCSocketAddressTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.EndOfFileTest.java">org/newsclub/net/unix/domain/EndOfFileTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.ReadWriteTest.java">org/newsclub/net/unix/ReadWriteTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.AvailableTest.java">org/newsclub/net/unix/domain/AvailableTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.AFSocketCapabilityRequirement.java">org/newsclub/net/unix/rmi/AFSocketCapabilityRequirement.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFSocketCapabilityCondition.java">org/newsclub/net/unix/AFSocketCapabilityCondition.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.selftest.SelftestExecutor.java">org/newsclub/net/unix/selftest/SelftestExecutor.java</a>
                 </td>
                 <td>
                   0
@@ -89,6 +789,34 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.NaiveFileInputStreamRemote.java">org/newsclub/net/unix/rmi/NaiveFileInputStreamRemote.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.AFSocketCapabilityCondition.java">org/newsclub/net/unix/rmi/AFSocketCapabilityCondition.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.AcceptTimeoutTest.java">org/newsclub/net/unix/tipc/AcceptTimeoutTest.java</a>
                 </td>
                 <td>
                   0
@@ -130,35 +858,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXSelectorTest.java">org/newsclub/net/unix/AFUNIXSelectorTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXSocketCapabilityCondition.java">org/newsclub/net/unix/rmi/AFUNIXSocketCapabilityCondition.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.CancelAcceptTest.java">org/newsclub/net/unix/CancelAcceptTest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.DatagramSocketTest.java">org/newsclub/net/unix/domain/DatagramSocketTest.java</a>
                 </td>
                 <td>
                   0
@@ -186,7 +886,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.selftest.Selftest.java">org/newsclub/net/unix/selftest/Selftest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.java.JavaInetStackRequirement.java">org/newsclub/net/unix/java/JavaInetStackRequirement.java</a>
                 </td>
                 <td>
                   0
@@ -200,7 +900,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXSocketCapabilityCondition.java">org/newsclub/net/unix/AFUNIXSocketCapabilityCondition.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.FileDescriptorsTest.java">org/newsclub/net/unix/domain/FileDescriptorsTest.java</a>
                 </td>
                 <td>
                   0
@@ -214,7 +914,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXSocketChannelTest.java">org/newsclub/net/unix/AFUNIXSocketChannelTest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.AcceptTimeoutTest.java">org/newsclub/net/unix/domain/AcceptTimeoutTest.java</a>
                 </td>
                 <td>
                   0
@@ -228,7 +928,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.RemoteFileDescriptorTest.java">org/newsclub/net/unix/rmi/RemoteFileDescriptorTest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.PeerCredentialsTest.java">org/newsclub/net/unix/domain/PeerCredentialsTest.java</a>
                 </td>
                 <td>
                   0
@@ -242,147 +942,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.TcpNoDelayTest.java">org/newsclub/net/unix/TcpNoDelayTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.FinalizeTest.java">org/newsclub/net/unix/FinalizeTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.NaiveFileInputStreamRemoteImpl.java">org/newsclub/net/unix/rmi/NaiveFileInputStreamRemoteImpl.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXPipeTest.java">org/newsclub/net/unix/AFUNIXPipeTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.RemoteCloseableTest.java">org/newsclub/net/unix/rmi/RemoteCloseableTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.EndOfFileJavaTest.java">org/newsclub/net/unix/EndOfFileJavaTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXSocketAddressTest.java">org/newsclub/net/unix/AFUNIXSocketAddressTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.ThroughputTest.java">org/newsclub/net/unix/ThroughputTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.TestService.java">org/newsclub/net/unix/rmi/TestService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXSocketTest.java">org/newsclub/net/unix/AFUNIXSocketTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.JunixsocketVersionTest.java">org/newsclub/net/unix/rmi/JunixsocketVersionTest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCTopologyWatcherTest.java">org/newsclub/net/unix/tipc/AFTIPCTopologyWatcherTest.java</a>
                 </td>
                 <td>
                   0
@@ -424,7 +984,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.selftest.SelftestProvider.java">org/newsclub/net/unix/selftest/SelftestProvider.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.SocketChannelTest.java">org/newsclub/net/unix/SocketChannelTest.java</a>
                 </td>
                 <td>
                   0
@@ -438,7 +998,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.junit.platform.console.tasks.JuxPackageAccess.java">org/junit/platform/console/tasks/JuxPackageAccess.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.TcpNoDelayTest.java">org/newsclub/net/unix/tipc/TcpNoDelayTest.java</a>
                 </td>
                 <td>
                   0
@@ -452,7 +1012,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.FileDescriptorsTest.java">org/newsclub/net/unix/FileDescriptorsTest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.SelectorTest.java">org/newsclub/net/unix/domain/SelectorTest.java</a>
                 </td>
                 <td>
                   0
@@ -466,35 +1026,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.RMIPeerCredentialsTest.java">org/newsclub/net/unix/rmi/RMIPeerCredentialsTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.TestRegistryServer.java">org/newsclub/net/unix/rmi/TestRegistryServer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.PeerCredentialsTest.java">org/newsclub/net/unix/PeerCredentialsTest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.PipeTest.java">org/newsclub/net/unix/PipeTest.java</a>
                 </td>
                 <td>
                   0
@@ -522,7 +1054,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.SocketTestBase.java">org/newsclub/net/unix/SocketTestBase.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.java.JavaAddressSpecifics.java">org/newsclub/net/unix/java/JavaAddressSpecifics.java</a>
                 </td>
                 <td>
                   0
@@ -536,7 +1068,21 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXDatagramSocketTest.java">org/newsclub/net/unix/AFUNIXDatagramSocketTest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.SoTimeoutTest.java">org/newsclub/net/unix/tipc/SoTimeoutTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.FinalizeTest.java">org/newsclub/net/unix/tipc/FinalizeTest.java</a>
                 </td>
                 <td>
                   0
@@ -564,6 +1110,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AddressSpecifics.java">org/newsclub/net/unix/AddressSpecifics.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.TestBase.java">org/newsclub/net/unix/rmi/TestBase.java</a>
                 </td>
                 <td>
@@ -578,7 +1138,343 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.ReadWriteTest.java">org/newsclub/net/unix/ReadWriteTest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.FinalizeTest.java">org/newsclub/net/unix/domain/FinalizeTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.EndOfFileTest.java">org/newsclub/net/unix/tipc/EndOfFileTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.SocketOptionsTest.java">org/newsclub/net/unix/tipc/SocketOptionsTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.selftest.apps.EchoServer.java">org/newsclub/net/unix/selftest/apps/EchoServer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.ServerSocketTest.java">org/newsclub/net/unix/ServerSocketTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.SelectorTest.java">org/newsclub/net/unix/SelectorTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AcceptTimeoutTest.java">org/newsclub/net/unix/AcceptTimeoutTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.SocketAddressTest.java">org/newsclub/net/unix/domain/SocketAddressTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.CancelAcceptTest.java">org/newsclub/net/unix/CancelAcceptTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.ReadWriteTest.java">org/newsclub/net/unix/tipc/ReadWriteTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.ThroughputTest.java">org/newsclub/net/unix/tipc/ThroughputTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.SocketPairTest.java">org/newsclub/net/unix/SocketPairTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFDatagramUtil.java">org/newsclub/net/unix/AFDatagramUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.ThroughputTest.java">org/newsclub/net/unix/ThroughputTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.TcpNoDelayTest.java">org/newsclub/net/unix/domain/TcpNoDelayTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.TestService.java">org/newsclub/net/unix/rmi/TestService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.JunixsocketVersionTest.java">org/newsclub/net/unix/rmi/JunixsocketVersionTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.junit.platform.console.tasks.JuxPackageAccess.java">org/junit/platform/console/tasks/JuxPackageAccess.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.ServerSocketCloseTest.java">org/newsclub/net/unix/domain/ServerSocketCloseTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCAddressSpecifics.java">org/newsclub/net/unix/tipc/AFTIPCAddressSpecifics.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.selftest.SelftestTest.java">org/newsclub/net/unix/selftest/SelftestTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.java.EndOfFileJavaTest.java">org/newsclub/net/unix/java/EndOfFileJavaTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.SocketTestBase.java">org/newsclub/net/unix/SocketTestBase.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.StandardSocketOptionsTest.java">org/newsclub/net/unix/domain/StandardSocketOptionsTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.ReadWriteTest.java">org/newsclub/net/unix/domain/ReadWriteTest.java</a>
                 </td>
                 <td>
                   0
@@ -606,6 +1502,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.tipc.SelftestProvider.java">org/newsclub/net/unix/tipc/SelftestProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AvailableTest.java">org/newsclub/net/unix/AvailableTest.java</a>
                 </td>
                 <td>
@@ -620,91 +1530,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXSocketCapabilityRequirement.java">org/newsclub/net/unix/AFUNIXSocketCapabilityRequirement.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.FileDescriptorCastTest.java">org/newsclub/net/unix/FileDescriptorCastTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXServerSocketTest.java">org/newsclub/net/unix/AFUNIXServerSocketTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.RegistryTest.java">org/newsclub/net/unix/rmi/RegistryTest.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXSocketCapabilityRequirement.java">org/newsclub/net/unix/rmi/AFUNIXSocketCapabilityRequirement.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.selftest.SelftestExecutor.java">org/newsclub/net/unix/selftest/SelftestExecutor.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.AFUNIXSocketFactoryTest.java">org/newsclub/net/unix/AFUNIXSocketFactoryTest.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-selftest//checkstyle.html#org.newsclub.net.unix.domain.CancelAcceptTest.java">org/newsclub/net/unix/domain/CancelAcceptTest.java</a>
                 </td>
                 <td>
                   0

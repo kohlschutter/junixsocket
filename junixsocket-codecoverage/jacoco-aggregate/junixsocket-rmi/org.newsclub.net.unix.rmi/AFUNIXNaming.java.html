@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXNaming.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFUNIXNaming.java</span></div><h1>AFUNIXNaming.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2021 Christian Kohlschütter
+ * Copyright 2009-2022 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -17,32 +17,20 @@
  */
 package org.newsclub.net.unix.rmi;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
-import java.rmi.AccessException;
-import java.rmi.AlreadyBoundException;
-import java.rmi.ConnectIOException;
 import java.rmi.Naming;
-import java.rmi.NoSuchObjectException;
-import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.RMISocketFactory;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.newsclub.net.unix.AFUNIXSocket;
-import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownHook;
 
 /**
  * The {@link AFUNIXSocket}-compatible equivalent of {@link Naming}. Use this class for accessing
@@ -50,53 +38,61 @@ import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownHook;
  * 
  * @author Christian Kohlschütter
  */
-public final class AFUNIXNaming extends AFUNIXRegistryAccess {
-<span class="fc" id="L54">  private static final String RMI_SERVICE_NAME = AFUNIXRMIService.class.getName();</span>
+public final class AFUNIXNaming extends AFNaming {
   private static final String PROP_RMI_SOCKET_DIR = &quot;org.newsclub.net.unix.rmi.socketdir&quot;;
-
-<span class="fc" id="L57">  private static final File DEFAULT_SOCKET_DIRECTORY = new File(System.getProperty(</span>
+<span class="fc" id="L43">  private static final File DEFAULT_SOCKET_DIRECTORY = new File(System.getProperty(</span>
       PROP_RMI_SOCKET_DIR, &quot;/tmp&quot;));
 
-<span class="fc" id="L60">  private static final Map&lt;AFUNIXNamingRef, AFUNIXNaming&gt; INSTANCES = new HashMap&lt;&gt;();</span>
-
-<span class="fc" id="L62">  private AFUNIXRegistry registry = null;</span>
-<span class="fc" id="L63">  private AFUNIXRMIService rmiService = null;</span>
+<span class="fc" id="L46">  private boolean deleteRegistrySocketDir = false;</span>
   private final File registrySocketDir;
-  private final int registryPort;
-  private final int servicePort;
-  private final AFUNIXRMISocketFactory socketFactory;
-<span class="fc" id="L68">  private boolean deleteRegistrySocketDir = false;</span>
-<span class="fc" id="L69">  private boolean remoteShutdownAllowed = true;</span>
-<span class="fc" id="L70">  private final AtomicBoolean shutdownInProgress = new AtomicBoolean(false);</span>
-<span class="fc" id="L71">  private final AtomicBoolean addedShutdownHook = new AtomicBoolean(false);</span>
 
-  private AFUNIXNaming(final File socketDir, final int port, final String socketPrefix,
-      final String socketSuffix) throws IOException {
-<span class="fc" id="L75">    super();</span>
-<span class="fc" id="L76">    this.registrySocketDir = socketDir;</span>
-<span class="fc" id="L77">    this.registryPort = port;</span>
-<span class="fc" id="L78">    this.servicePort = AFUNIXRMIPorts.RMI_SERVICE_PORT;</span>
-<span class="fc" id="L79">    this.socketFactory = new AFUNIXRMISocketFactory(this, socketDir, null, null, socketPrefix,</span>
-        socketSuffix);
-<span class="fc" id="L81">  }</span>
+  private final RMIClientSocketFactory defaultClientSocketFactory;
+  private final RMIServerSocketFactory defaultServerSocketFactory;
+
+  private final String socketPrefix;
+  private final String socketSuffix;
+
+  private AFUNIXNaming(File socketDir, int registryPort, String socketPrefix, String socketSuffix)
+      throws IOException {
+<span class="fc" id="L57">    super(registryPort, RMIPorts.RMI_SERVICE_PORT);</span>
+<span class="fc" id="L58">    Objects.requireNonNull(socketDir);</span>
+<span class="fc" id="L59">    this.registrySocketDir = socketDir;</span>
+<span class="fc" id="L60">    this.socketPrefix = socketPrefix;</span>
+<span class="fc" id="L61">    this.socketSuffix = socketSuffix;</span>
+
+<span class="fc" id="L63">    this.defaultClientSocketFactory = null; // DefaultRMIClientSocketFactory.getInstance();</span>
+<span class="fc" id="L64">    this.defaultServerSocketFactory = null; // DefaultRMIServerSocketFactory.getInstance();</span>
+<span class="fc" id="L65">  }</span>
+
+  /**
+   * Returns the directory where RMI sockets are stored by default.
+   * 
+   * You can configure this location by setting the System property
+   * {@code org.newsclub.net.unix.rmi.socketdir} upon start.
+   * 
+   * @return The directory.
+   */
+  public static File getDefaultSocketDirectory() {
+<span class="fc" id="L76">    return DEFAULT_SOCKET_DIRECTORY;</span>
+  }
 
   /**
    * Returns a new private instance that resides in a custom location, to avoid any collisions with
    * existing instances.
    * 
-   * @return The private {@link AFUNIXNaming} instance.
+   * @return The private {@link AFNaming} instance.
    * @throws IOException if the operation fails.
    */
   public static AFUNIXNaming newPrivateInstance() throws IOException {
-<span class="fc" id="L91">    File tmpDir = Files.createTempDirectory(&quot;junixsocket-&quot;).toFile();</span>
-<span class="pc bpc" id="L92" title="1 of 2 branches missed.">    if (!tmpDir.canWrite()) {</span>
-<span class="nc" id="L93">      throw new IOException(&quot;Could not create temporary directory: &quot; + tmpDir);</span>
+<span class="fc" id="L87">    File tmpDir = Files.createTempDirectory(&quot;junixsocket-&quot;).toFile();</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">    if (!tmpDir.canWrite()) {</span>
+<span class="nc" id="L89">      throw new IOException(&quot;Could not create temporary directory: &quot; + tmpDir);</span>
     }
-<span class="fc" id="L95">    AFUNIXNaming instance = getInstance(tmpDir, AFUNIXRMIPorts.DEFAULT_REGISTRY_PORT);</span>
-<span class="fc" id="L96">    synchronized (AFUNIXNaming.class) {</span>
-<span class="fc" id="L97">      instance.deleteRegistrySocketDir = true;</span>
-<span class="fc" id="L98">    }</span>
-<span class="fc" id="L99">    return instance;</span>
+<span class="fc" id="L91">    AFUNIXNaming instance = getInstance(tmpDir, RMIPorts.DEFAULT_REGISTRY_PORT);</span>
+<span class="fc" id="L92">    synchronized (instance) {</span>
+<span class="fc" id="L93">      instance.deleteRegistrySocketDir = true;</span>
+<span class="fc" id="L94">    }</span>
+<span class="fc" id="L95">    return instance;</span>
   }
 
   /**
@@ -107,7 +103,7 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    * @throws IOException if the operation fails.
    */
   public static AFUNIXNaming getInstance() throws IOException {
-<span class="fc" id="L110">    return getInstance(DEFAULT_SOCKET_DIRECTORY, AFUNIXRMIPorts.DEFAULT_REGISTRY_PORT);</span>
+<span class="fc" id="L106">    return getInstance(DEFAULT_SOCKET_DIRECTORY, RMIPorts.DEFAULT_REGISTRY_PORT);</span>
   }
 
   /**
@@ -119,7 +115,7 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    * @throws RemoteException if the operation fails.
    */
   public static AFUNIXNaming getInstance(final File socketDir) throws RemoteException {
-<span class="fc" id="L122">    return getInstance(socketDir, AFUNIXRMIPorts.DEFAULT_REGISTRY_PORT);</span>
+<span class="fc" id="L118">    return getInstance(socketDir, RMIPorts.DEFAULT_REGISTRY_PORT);</span>
   }
 
   /**
@@ -136,29 +132,52 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    */
   public static AFUNIXNaming getInstance(File socketDir, final int registryPort)
       throws RemoteException {
-<span class="fc" id="L139">    return getInstance(socketDir, registryPort, null, null);</span>
+<span class="fc" id="L135">    return getInstance(socketDir, registryPort, null, null);</span>
   }
 
+  /**
+   * Returns a {@link AFUNIXNaming} instance which support several socket files that can be stored
+   * under the same, given directory.
+   * 
+   * A custom &quot;registry port&quot; can be specified. Typically, AF-UNIX specific ports should be above
+   * {@code 100000}.
+   * 
+   * @param socketDir The directory to store sockets in.
+   * @param registryPort The registry port. Should be above {@code 100000}.
+   * @param socketPrefix A string to be inserted at the beginning of each socket filename, or
+   *          {@code null}.
+   * @param socketSuffix A string to be added at the end of each socket filename, or {@code null}.
+   * @return The instance.
+   * @throws RemoteException if the operation fails.
+   */
   public static AFUNIXNaming getInstance(File socketDir, final int registryPort,
       String socketPrefix, String socketSuffix) throws RemoteException {
-<span class="fc" id="L144">    Objects.requireNonNull(socketDir);</span>
-<span class="fc" id="L145">    final AFUNIXNamingRef sap = new AFUNIXNamingRef(socketDir, registryPort, socketPrefix,</span>
-        socketSuffix);
-    AFUNIXNaming instance;
-<span class="fc" id="L148">    synchronized (AFUNIXNaming.class) {</span>
-<span class="fc" id="L149">      instance = INSTANCES.get(sap);</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">      if (instance == null) {</span>
-        try {
-<span class="fc" id="L152">          instance = new AFUNIXNaming(sap.socketDir, registryPort, socketPrefix, socketSuffix);</span>
-<span class="nc" id="L153">        } catch (RemoteException e) {</span>
-<span class="nc" id="L154">          throw e;</span>
-<span class="nc" id="L155">        } catch (IOException e) {</span>
-<span class="nc" id="L156">          throw new RemoteException(e.getMessage(), e);</span>
-<span class="fc" id="L157">        }</span>
-<span class="fc" id="L158">        INSTANCES.put(sap, instance);</span>
-      }
-<span class="fc" id="L160">    }</span>
-<span class="fc" id="L161">    return instance;</span>
+<span class="fc" id="L155">    return AFNaming.getInstance(registryPort, new AFUNIXNamingProvider(socketDir, socketPrefix,</span>
+        socketSuffix));
+  }
+
+  private static final class AFUNIXNamingProvider implements AFNamingProvider&lt;AFUNIXNaming&gt; {
+    private final File socketDir;
+    private final String socketPrefix;
+    private final String socketSuffix;
+
+    public AFUNIXNamingProvider(File socketDir, String socketPrefix, String socketSuffix)
+<span class="fc" id="L165">        throws RemoteException {</span>
+      try {
+<span class="fc" id="L167">        this.socketDir = socketDir.getCanonicalFile();</span>
+<span class="nc" id="L168">      } catch (IOException e) {</span>
+<span class="nc" id="L169">        throw new RemoteException(e.getMessage(), e);</span>
+<span class="fc" id="L170">      }</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">      this.socketPrefix = socketPrefix == null ? AFUNIXRMISocketFactory.DEFAULT_SOCKET_FILE_PREFIX</span>
+<span class="pc" id="L172">          : socketPrefix;</span>
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">      this.socketSuffix = socketSuffix == null ? AFUNIXRMISocketFactory.DEFAULT_SOCKET_FILE_SUFFIX</span>
+<span class="pc" id="L174">          : socketSuffix;</span>
+<span class="fc" id="L175">    }</span>
+
+    @Override
+    public AFUNIXNaming newInstance(int port) throws IOException {
+<span class="fc" id="L179">      return new AFUNIXNaming(socketDir, port, socketPrefix, socketSuffix); // NOPMD</span>
+    }
   }
 
   /**
@@ -169,33 +188,33 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    * @return The instance.
    * @throws IOException if the operation fails.
    */
-  public static AFUNIXNaming getSingleFileInstance(final File socketFile) throws IOException {
-<span class="nc" id="L173">    return getInstance(socketFile, AFUNIXRMIPorts.PLAIN_FILE_SOCKET);</span>
+  public static AFNaming getSingleFileInstance(final File socketFile) throws IOException {
+<span class="nc" id="L192">    return getInstance(socketFile, RMIPorts.PLAIN_FILE_SOCKET);</span>
   }
 
-  /**
-   * Returns the directory where RMI sockets are stored by default.
-   * 
-   * You can configure this location by setting the System property
-   * {@code org.newsclub.net.unix.rmi.socketdir} upon start.
-   * 
-   * @return The directory.
-   */
-  public static File getDefaultSocketDirectory() {
-<span class="fc" id="L185">    return DEFAULT_SOCKET_DIRECTORY;</span>
-  }
-
+  @Override
   public AFUNIXRMISocketFactory getSocketFactory() {
-<span class="fc" id="L189">    return socketFactory;</span>
+<span class="fc" id="L197">    return (AFUNIXRMISocketFactory) super.getSocketFactory();</span>
   }
 
-  /**
-   * Returns the directory in which sockets used by this registry are located.
-   * 
-   * @return The directory.
-   */
-  public File getRegistrySocketDir() {
-<span class="fc" id="L198">    return registrySocketDir;</span>
+  @Override
+  public AFRegistry getRegistry() throws RemoteException {
+<span class="fc" id="L202">    return getRegistry(0, TimeUnit.SECONDS);</span>
+  }
+
+  @Override
+  public AFUNIXRegistry getRegistry(long timeout, TimeUnit unit) throws RemoteException {
+<span class="fc" id="L207">    return (AFUNIXRegistry) super.getRegistry(timeout, unit);</span>
+  }
+
+  @Override
+  public AFUNIXRegistry getRegistry(boolean create) throws RemoteException {
+<span class="fc" id="L212">    return (AFUNIXRegistry) super.getRegistry(create);</span>
+  }
+
+  @Override
+  public AFUNIXRegistry createRegistry() throws RemoteException {
+<span class="fc" id="L217">    return (AFUNIXRegistry) super.createRegistry();</span>
   }
 
   /**
@@ -206,398 +225,79 @@ public final class AFUNIXNaming extends AFUNIXRegistryAccess {
    * @return The directory.
    */
   public File getRegistrySocketFile() {
-<span class="fc" id="L209">    return socketFactory.getFile(registryPort);</span>
+<span class="fc" id="L228">    return getSocketFactory().getFile(getRegistryPort());</span>
   }
-
-  public int getRegistryPort() {
-<span class="fc" id="L213">    return registryPort;</span>
-  }
-
-  AFUNIXRMIService getRMIService() throws RemoteException, NotBoundException {
-<span class="fc" id="L217">    return getRMIService(getRegistry());</span>
-  }
-
-  AFUNIXRMIService getRMIService(AFUNIXRegistry reg) throws RemoteException, NotBoundException {
-<span class="fc bfc" id="L221" title="All 2 branches covered.">    if (rmiService == null) {</span>
-<span class="fc" id="L222">      this.rmiService = getRMIServiceFromRegistry(reg);</span>
-    }
-<span class="fc" id="L224">    return rmiService;</span>
-  }
-
-  AFUNIXRMIService getRMIServiceFromRegistry(AFUNIXRegistry reg) throws RemoteException,
-      NotBoundException {
-    AFUNIXRMIService service;
-<span class="fc" id="L230">    service = (AFUNIXRMIService) reg.lookup(RMI_SERVICE_NAME, 5, TimeUnit.SECONDS);</span>
-<span class="fc" id="L231">    this.remoteShutdownAllowed = service.isShutdownAllowed();</span>
-<span class="fc" id="L232">    return service;</span>
-  }
-
-  private void closeUponRuntimeShutdown() {
-<span class="fc bfc" id="L236" title="All 2 branches covered.">    if (addedShutdownHook.compareAndSet(false, true)) {</span>
-<span class="fc" id="L237">      ShutdownHookSupport.addWeakShutdownHook(new ShutdownHook() {</span>
-
-        @Override
-        public void onRuntimeShutdown(Thread thread) throws IOException {
-<span class="fc" id="L241">          synchronized (AFUNIXNaming.class) {</span>
-<span class="pc bpc" id="L242" title="1 of 4 branches missed.">            if (registry != null &amp;&amp; registry.isLocal()) {</span>
-<span class="nc" id="L243">              shutdownRegistry();</span>
-            }
-<span class="fc" id="L245">          }</span>
-<span class="fc" id="L246">        }</span>
-      });
-    }
-<span class="fc" id="L249">  }</span>
-
-  private void rebindRMIService(final AFUNIXRMIService assigner) throws RemoteException {
-<span class="fc" id="L252">    rmiService = assigner;</span>
-<span class="fc" id="L253">    getRegistry().rebind(RMI_SERVICE_NAME, assigner);</span>
-<span class="fc" id="L254">  }</span>
 
   @Override
-  public AFUNIXRegistry getRegistry() throws RemoteException {
-<span class="fc" id="L258">    return getRegistry(0, TimeUnit.SECONDS);</span>
+  protected AFUNIXRMISocketFactory initSocketFactory() throws IOException {
+<span class="fc" id="L233">    return new AFUNIXRMISocketFactory(this, registrySocketDir, defaultClientSocketFactory,</span>
+        defaultServerSocketFactory, socketPrefix, socketSuffix);
   }
 
-  /**
-   * Returns a reference to the existing RMI registry.
-   * 
-   * If there's no registry running at this port after waiting for up to the given time, an
-   * exception is thrown.
-   * 
-   * @param timeout The timeout value.
-   * @param unit The timeout unit.
-   * @return The registry.
-   * @throws RemoteException If there was a problem.
-   */
-  public AFUNIXRegistry getRegistry(long timeout, TimeUnit unit) throws RemoteException {
-<span class="fc bfc" id="L273" title="All 2 branches covered.">    if (shutdownInProgress.get()) {</span>
-<span class="fc" id="L274">      throw new ShutdownException();</span>
-    }
-<span class="fc" id="L276">    synchronized (AFUNIXNaming.class) {</span>
-<span class="fc" id="L277">      AFUNIXRegistry reg = getRegistry(false);</span>
-<span class="fc bfc" id="L278" title="All 2 branches covered.">      if (reg == null) {</span>
-<span class="fc" id="L279">        File socketFile = getRegistrySocketFile();</span>
-<span class="pc bpc" id="L280" title="1 of 2 branches missed.">        if (!socketFile.exists()) {</span>
-<span class="fc bfc" id="L281" title="All 2 branches covered.">          if (waitUntilFileExists(socketFile, timeout, unit)) {</span>
-<span class="fc" id="L282">            reg = getRegistry(false);</span>
-<span class="pc bpc" id="L283" title="1 of 2 branches missed.">            if (reg != null) {</span>
-<span class="fc" id="L284">              return reg;</span>
-            }
-          }
+  @Override
+  protected AFUNIXRegistry newAFRegistry(Registry impl) throws RemoteException {
+<span class="fc" id="L239">    return new AFUNIXRegistry(this, impl);</span>
+  }
+
+  @Override
+  protected AFRegistry openRegistry(long timeout, TimeUnit unit) throws RemoteException {
+<span class="fc" id="L244">    File socketFile = getRegistrySocketFile();</span>
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">    if (!socketFile.exists()) {</span>
+<span class="fc bfc" id="L246" title="All 2 branches covered.">      if (waitUntilFileExists(socketFile, timeout, unit)) {</span>
+<span class="fc" id="L247">        AFRegistry reg = getRegistry(false);</span>
+<span class="pc bpc" id="L248" title="1 of 2 branches missed.">        if (reg != null) {</span>
+<span class="fc" id="L249">          return reg;</span>
         }
-<span class="fc" id="L288">        throw new ShutdownException(&quot;Could not find registry at &quot; + getRegistrySocketFile());</span>
       }
-<span class="fc" id="L290">      return reg;</span>
     }
+<span class="fc" id="L253">    throw new ShutdownException(&quot;Could not find registry at &quot; + getRegistrySocketFile());</span>
   }
 
   private boolean waitUntilFileExists(File f, long timeout, TimeUnit unit) {
-<span class="fc" id="L295">    long timeWait = unit.toMillis(timeout);</span>
+<span class="fc" id="L257">    long timeWait = unit.toMillis(timeout);</span>
 
     try {
-<span class="fc bfc" id="L298" title="All 4 branches covered.">      while (timeWait &gt; 0 &amp;&amp; !f.exists()) {</span>
-<span class="fc" id="L299">        Thread.sleep(Math.min(50, timeWait));</span>
-<span class="fc" id="L300">        timeWait -= 50;</span>
+<span class="fc bfc" id="L260" title="All 4 branches covered.">      while (timeWait &gt; 0 &amp;&amp; !f.exists()) {</span>
+<span class="fc" id="L261">        Thread.sleep(Math.min(50, timeWait));</span>
+<span class="fc" id="L262">        timeWait -= 50;</span>
       }
-<span class="nc" id="L302">    } catch (InterruptedException e) {</span>
+<span class="nc" id="L264">    } catch (InterruptedException e) {</span>
       // ignored
-<span class="fc" id="L304">    }</span>
+<span class="fc" id="L266">    }</span>
 
-<span class="fc" id="L306">    return f.exists();</span>
+<span class="fc" id="L268">    return f.exists();</span>
   }
 
-  /**
-   * Returns a reference to the RMI registry, or {@code null}.
-   *
-   * If there's no registry running at this port, and {@code create} is set to {@code true}, a new
-   * one is created; when {@code create} is set to {@code false}, {@code null} is returned.
-   * 
-   * @param create {@code true} if a new register may be created if necessary.
-   * @return The registry, or {@code null}
-   * @throws RemoteException If there was a problem.
-   */
-  public AFUNIXRegistry getRegistry(boolean create) throws RemoteException {
-<span class="pc bpc" id="L320" title="1 of 2 branches missed.">    if (shutdownInProgress.get()) {</span>
-<span class="nc" id="L321">      throw new ShutdownException();</span>
-    }
-<span class="fc" id="L323">    synchronized (AFUNIXNaming.class) {</span>
-<span class="fc bfc" id="L324" title="All 2 branches covered.">      if (registry != null) {</span>
-<span class="fc" id="L325">        return registry;</span>
-<span class="fc bfc" id="L326" title="All 2 branches covered.">      } else if (!socketFactory.hasSocketFile(registryPort)) {</span>
-<span class="pc bpc" id="L327" title="1 of 2 branches missed.">        return create ? createRegistry() : null;</span>
-      }
-
-<span class="fc" id="L330">      AFUNIXRegistry reg = locateRegistry();</span>
-<span class="fc" id="L331">      setRegistry(reg);</span>
-
+  private synchronized void deleteSocketDir() {
+<span class="pc bpc" id="L272" title="1 of 4 branches missed.">    if (deleteRegistrySocketDir &amp;&amp; registrySocketDir != null) {</span>
       try {
-<span class="fc" id="L334">        getRMIService(reg);</span>
-<span class="nc" id="L335">      } catch (NotBoundException | NoSuchObjectException | ConnectIOException e) {</span>
-<span class="nc bnc" id="L336" title="All 2 branches missed.">        if (create) {</span>
-<span class="nc" id="L337">          setRegistry(null);</span>
-<span class="nc" id="L338">          return createRegistry();</span>
-        } else {
-<span class="nc" id="L340">          throw new ServerException(&quot;Could not access &quot; + AFUNIXRMIService.class.getName(), e);</span>
-        }
-<span class="fc" id="L342">      }</span>
-
-<span class="fc" id="L344">      return registry;</span>
-    }
-  }
-
-  private AFUNIXRegistry locateRegistry() throws RemoteException {
-<span class="fc" id="L349">    Registry regImpl = LocateRegistry.getRegistry(null, registryPort, socketFactory);</span>
-<span class="pc bpc" id="L350" title="1 of 2 branches missed.">    return regImpl == null ? null : new AFUNIXRegistry(this, regImpl);</span>
-  }
-
-  /**
-   * Shuts this RMI Registry down.
-   * 
-   * @throws RemoteException if the operation fails.
-   */
-  public void shutdownRegistry() throws RemoteException {
-<span class="fc" id="L359">    synchronized (AFUNIXNaming.class) {</span>
-<span class="pc bpc" id="L360" title="1 of 2 branches missed.">      if (registry == null) {</span>
-<span class="nc" id="L361">        return;</span>
-      }
-
-<span class="fc" id="L364">      AFUNIXRegistry registryToBeClosed = registry;</span>
-<span class="fc" id="L365">      AFUNIXRMIService rmiServiceToBeClosed = rmiService;</span>
-
-<span class="fc bfc" id="L367" title="All 2 branches covered.">      if (!registryToBeClosed.isLocal()) {</span>
-<span class="fc bfc" id="L368" title="All 2 branches covered.">        if (!isRemoteShutdownAllowed()) {</span>
-<span class="fc" id="L369">          throw new ServerException(&quot;The server refuses to be shutdown remotely&quot;);</span>
-        }
-<span class="fc" id="L371">        setRegistry(null);</span>
-
-        try {
-<span class="fc" id="L374">          shutdownViaRMIService(registryToBeClosed, rmiServiceToBeClosed);</span>
-<span class="nc" id="L375">        } catch (Exception e) {</span>
-          // ignore
-<span class="fc" id="L377">        }</span>
-<span class="fc" id="L378">        return;</span>
-      }
-
-<span class="fc" id="L381">      setRegistry(null);</span>
-
-<span class="pc bpc" id="L383" title="1 of 2 branches missed.">      if (!shutdownInProgress.compareAndSet(false, true)) {</span>
-<span class="nc" id="L384">        return;</span>
-      }
-      try {
-<span class="fc" id="L387">        unexportRMIService(registryToBeClosed, (AFUNIXRMIServiceImpl) rmiServiceToBeClosed);</span>
-<span class="fc" id="L388">        forceUnexportBound(registryToBeClosed);</span>
-<span class="fc" id="L389">        closeSocketFactory();</span>
-<span class="fc" id="L390">        deleteSocketDir();</span>
-
-      } finally {
-<span class="fc" id="L393">        shutdownInProgress.set(false);</span>
-      }
-<span class="fc" id="L395">    }</span>
-<span class="fc" id="L396">  }</span>
-
-  private void unexportRMIService(AFUNIXRegistry reg, AFUNIXRMIServiceImpl serv)
-      throws AccessException, RemoteException {
-<span class="pc bpc" id="L400" title="1 of 2 branches missed.">    if (serv != null) {</span>
-<span class="fc" id="L401">      serv.shutdownRegisteredCloseables();</span>
-    }
-
-    try {
-<span class="pc bpc" id="L405" title="1 of 2 branches missed.">      if (serv != null) {</span>
-<span class="fc" id="L406">        unexportObject(serv);</span>
-      }
-<span class="fc" id="L408">      reg.unbind(RMI_SERVICE_NAME);</span>
-<span class="fc" id="L409">    } catch (ShutdownException | NotBoundException e) {</span>
-      // ignore
-<span class="fc" id="L411">    }</span>
-<span class="fc" id="L412">    this.rmiService = null;</span>
-<span class="fc" id="L413">  }</span>
-
-  private void forceUnexportBound(AFUNIXRegistry reg) {
-    try {
-<span class="fc" id="L417">      reg.forceUnexportBound();</span>
-<span class="nc" id="L418">    } catch (Exception e) {</span>
-      // ignore
-<span class="fc" id="L420">    }</span>
-<span class="fc" id="L421">  }</span>
-
-  private void closeSocketFactory() {
-<span class="pc bpc" id="L424" title="1 of 2 branches missed.">    if (socketFactory != null) {</span>
-      try {
-<span class="fc" id="L426">        socketFactory.close();</span>
-<span class="nc" id="L427">      } catch (IOException e) {</span>
+<span class="fc" id="L274">        Files.delete(registrySocketDir.toPath());</span>
+<span class="nc" id="L275">      } catch (IOException e) {</span>
         // ignore
-<span class="fc" id="L429">      }</span>
+<span class="fc" id="L277">      }</span>
     }
-<span class="fc" id="L431">  }</span>
+<span class="fc" id="L279">  }</span>
 
-  private void deleteSocketDir() {
-<span class="pc bpc" id="L434" title="1 of 4 branches missed.">    if (deleteRegistrySocketDir &amp;&amp; registrySocketDir != null) {</span>
-      try {
-<span class="fc" id="L436">        Files.delete(registrySocketDir.toPath());</span>
-<span class="nc" id="L437">      } catch (IOException e) {</span>
-        // ignore
-<span class="fc" id="L439">      }</span>
-    }
-<span class="fc" id="L441">  }</span>
-
-  private void shutdownViaRMIService(AFUNIXRegistry reg, AFUNIXRMIService serv)
-      throws RemoteException {
-    try {
-<span class="pc bpc" id="L446" title="1 of 2 branches missed.">      if (serv == null) {</span>
-<span class="nc" id="L447">        serv = getRMIService(reg);</span>
-      }
-<span class="pc bpc" id="L449" title="1 of 2 branches missed.">      if (serv.isShutdownAllowed()) {</span>
-<span class="fc" id="L450">        serv.shutdown();</span>
-      }
-<span class="nc" id="L452">    } catch (ServerException | ConnectIOException | NotBoundException e) {</span>
-      // ignore
-<span class="fc" id="L454">    }</span>
-<span class="fc" id="L455">  }</span>
+  @Override
+  protected void shutdownRegistryFinishingTouches() {
+<span class="fc" id="L283">    deleteSocketDir();</span>
+<span class="fc" id="L284">  }</span>
 
   /**
-   * Creates a new RMI {@link Registry}.
+   * Returns the directory in which sockets used by this registry are located.
    * 
-   * If there already was a registry created previously, it is shut down and replaced by the current
-   * one.
-   * 
-   * Use {@link #getRegistry()} to try to reuse an existing registry.
-   * 
-   * @return The registry
-   * @throws RemoteException if the operation fails.
-   * @see #getRegistry()
+   * @return The directory.
    */
-  public AFUNIXRegistry createRegistry() throws RemoteException {
-<span class="fc" id="L470">    synchronized (AFUNIXNaming.class) {</span>
-<span class="fc" id="L471">      AFUNIXRegistry existingRegistry = registry;</span>
-<span class="fc bfc" id="L472" title="All 2 branches covered.">      if (existingRegistry == null) {</span>
-        try {
-<span class="fc" id="L474">          existingRegistry = getRegistry(false);</span>
-<span class="nc" id="L475">        } catch (ServerException e) {</span>
-<span class="nc" id="L476">          Throwable cause = e.getCause();</span>
-<span class="nc bnc" id="L477" title="All 4 branches missed.">          if (cause instanceof NotBoundException || cause instanceof ConnectIOException) {</span>
-<span class="nc" id="L478">            existingRegistry = null;</span>
-          } else {
-<span class="nc" id="L480">            throw e;</span>
-          }
-<span class="fc" id="L482">        }</span>
-      }
-<span class="fc bfc" id="L484" title="All 2 branches covered.">      if (existingRegistry != null) {</span>
-<span class="pc bpc" id="L485" title="1 of 2 branches missed.">        if (!isRemoteShutdownAllowed()) {</span>
-<span class="nc" id="L486">          throw new ServerException(&quot;The server refuses to be shutdown remotely&quot;);</span>
-        }
-<span class="fc" id="L488">        shutdownRegistry();</span>
-      }
-
-<span class="pc bpc" id="L491" title="1 of 4 branches missed.">      if (registrySocketDir != null &amp;&amp; !registrySocketDir.mkdirs() &amp;&amp; !registrySocketDir</span>
-<span class="pc bpc" id="L492" title="1 of 2 branches missed.">          .isDirectory()) {</span>
-<span class="nc" id="L493">        throw new ServerException(&quot;Cannot create socket directory:&quot; + registrySocketDir);</span>
-      }
-<span class="fc" id="L495">      setRegistry(new AFUNIXRegistry(this, LocateRegistry.createRegistry(registryPort,</span>
-          socketFactory, socketFactory)));
-
-<span class="fc" id="L498">      final AFUNIXRMIService service = new AFUNIXRMIServiceImpl(this);</span>
-<span class="fc" id="L499">      UnicastRemoteObject.exportObject(service, servicePort, socketFactory, socketFactory);</span>
-
-<span class="fc" id="L501">      rebindRMIService(service);</span>
-
-<span class="fc" id="L503">      return registry;</span>
-    }
+  public File getRegistrySocketDir() {
+<span class="fc" id="L292">    return registrySocketDir;</span>
   }
 
-  public boolean isRemoteShutdownAllowed() {
-<span class="fc" id="L508">    return remoteShutdownAllowed;</span>
-  }
-
-  public void setRemoteShutdownAllowed(boolean remoteShutdownAllowed) {
-<span class="fc" id="L512">    this.remoteShutdownAllowed = remoteShutdownAllowed;</span>
-<span class="fc" id="L513">  }</span>
-
-  /**
-   * Exports and binds the given Remote object to the given name, using the given
-   * {@link AFUNIXNaming} setup.
-   * 
-   * @param name The name to use to bind the object in the registry.
-   * @param obj The object to export and bind.
-   * @throws RemoteException if the operation fails.
-   * @throws AlreadyBoundException if there already was something bound at that name
-   */
-  public void exportAndBind(String name, Remote obj) throws RemoteException, AlreadyBoundException {
-<span class="fc" id="L525">    exportObject(obj, getSocketFactory());</span>
-
-<span class="fc" id="L527">    getRegistry().bind(name, obj);</span>
-<span class="fc" id="L528">  }</span>
-
-  /**
-   * Exports and re-binds the given Remote object to the given name, using the given
-   * {@link AFUNIXNaming} setup.
-   * 
-   * @param name The name to use to bind the object in the registry.
-   * @param obj The object to export and bind.
-   * @throws RemoteException if the operation fails.
-   */
-  public void exportAndRebind(String name, Remote obj) throws RemoteException {
-<span class="fc" id="L539">    exportObject(obj, getSocketFactory());</span>
-
-<span class="fc" id="L541">    getRegistry().rebind(name, obj);</span>
-<span class="fc" id="L542">  }</span>
-
-  /**
-   * Forcibly un-exports the given object, if it exists, and unbinds the object from the registry
-   * (otherwise returns without an error).
-   *
-   * @param name The name used to bind the object.
-   * @param obj The object to un-export.
-   * @throws RemoteException if the operation fails.
-   */
-  public void unexportAndUnbind(String name, Remote obj) throws RemoteException {
-<span class="fc" id="L553">    unexportObject(obj);</span>
-    try {
-<span class="fc" id="L555">      unbind(name);</span>
-<span class="nc" id="L556">    } catch (MalformedURLException | NotBoundException e) {</span>
-      // ignore
-<span class="fc" id="L558">    }</span>
-<span class="fc" id="L559">  }</span>
-
-  /**
-   * Exports the given Remote object, using the given socket factory and a randomly assigned port.
-   * 
-   * NOTE: This helper function can also be used for regular RMI servers.
-   * 
-   * @param obj The object to export.
-   * @param socketFactory The socket factory to use.
-   * @return The remote stub.
-   * @throws RemoteException if the operation fails.
-   */
-  public static Remote exportObject(Remote obj, RMISocketFactory socketFactory)
-      throws RemoteException {
-<span class="fc" id="L573">    return UnicastRemoteObject.exportObject(obj, 0, socketFactory, socketFactory);</span>
-  }
-
-  /**
-   * Forcibly un-exports the given object, if it exists (otherwise returns without an error). This
-   * should be called upon closing a {@link Closeable} {@link Remote} object.
-   * 
-   * NOTE: This helper function can also be used for regular RMI servers.
-   * 
-   * @param obj The object to un-export.
-   */
-  public static void unexportObject(Remote obj) {
-    try {
-<span class="fc" id="L586">      UnicastRemoteObject.unexportObject(obj, true);</span>
-<span class="fc" id="L587">    } catch (NoSuchObjectException e) {</span>
-      // ignore
-<span class="fc" id="L589">    }</span>
-<span class="fc" id="L590">  }</span>
-
-  private void setRegistry(AFUNIXRegistry registry) {
-<span class="fc" id="L593">    synchronized (AFUNIXNaming.class) {</span>
-<span class="fc" id="L594">      this.registry = registry;</span>
-<span class="fc bfc" id="L595" title="All 2 branches covered.">      if (registry == null) {</span>
-<span class="fc" id="L596">        rmiService = null;</span>
-<span class="fc bfc" id="L597" title="All 2 branches covered.">      } else if (registry.isLocal()) {</span>
-<span class="fc" id="L598">        closeUponRuntimeShutdown();</span>
-      }
-<span class="fc" id="L600">    }</span>
-<span class="fc" id="L601">  }</span>
+  @Override
+  protected void initRegistryPrerequisites() throws ServerException {
+<span class="pc bpc" id="L297" title="1 of 4 branches missed.">    if (registrySocketDir != null &amp;&amp; !registrySocketDir.mkdirs() &amp;&amp; !registrySocketDir</span>
+<span class="pc bpc" id="L298" title="1 of 2 branches missed.">        .isDirectory()) {</span>
+<span class="nc" id="L299">      throw new ServerException(&quot;Cannot create socket directory:&quot; + registrySocketDir);</span>
+    }
+<span class="fc" id="L301">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

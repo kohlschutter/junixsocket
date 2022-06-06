@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCServerSocket.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCServerSocket.java</span></div><h1>AFTIPCServerSocket.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.tipc;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.SocketException;
+
+import org.newsclub.net.unix.AFServerSocket;
+import org.newsclub.net.unix.AFServerSocketChannel;
+import org.newsclub.net.unix.AFSocket;
+import org.newsclub.net.unix.AFSocketAddress;
+import org.newsclub.net.unix.AFTIPCSocketAddress;
+
+/**
+ * The server part of an {@code AF_TIPC} socket.
+ * 
+ * @author Christian Kohlschütter
+ */
+public class AFTIPCServerSocket extends AFServerSocket&lt;AFTIPCSocketAddress&gt; {
+  AFTIPCServerSocket(FileDescriptor fdObj) throws IOException {
+<span class="nc" id="L38">    super(fdObj);</span>
+<span class="nc" id="L39">  }</span>
+
+  @Override
+  protected AFServerSocketChannel&lt;AFTIPCSocketAddress&gt; newChannel() {
+<span class="nc" id="L43">    return new AFTIPCServerSocketChannel(this);</span>
+  }
+
+  @Override
+  public AFTIPCServerSocketChannel getChannel() {
+<span class="nc" id="L48">    return (AFTIPCServerSocketChannel) super.getChannel();</span>
+  }
+
+  /**
+   * Returns a new, unbound AF_TIPC {@link ServerSocket}.
+   * 
+   * @return The new, unbound {@link AFServerSocket}.
+   * @throws IOException if the operation fails.
+   */
+  public static AFTIPCServerSocket newInstance() throws IOException {
+<span class="nc" id="L58">    return (AFTIPCServerSocket) AFServerSocket.newInstance(AFTIPCServerSocket::new);</span>
+  }
+
+  static AFTIPCServerSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
+      throws IOException {
+<span class="nc" id="L63">    return (AFTIPCServerSocket) AFServerSocket.newInstance(AFTIPCServerSocket::new, fdObj,</span>
+        localPort, remotePort);
+  }
+
+  /**
+   * Returns a new AF_TIPC {@link ServerSocket} that is bound to the given
+   * {@link AFTIPCSocketAddress}.
+   * 
+   * @param addr The socket file to bind to.
+   * @return The new, bound {@link AFServerSocket}.
+   * @throws IOException if the operation fails.
+   */
+  public static AFTIPCServerSocket bindOn(final AFTIPCSocketAddress addr) throws IOException {
+<span class="nc" id="L76">    return (AFTIPCServerSocket) AFServerSocket.bindOn(AFTIPCServerSocket::new, addr);</span>
+  }
+
+  /**
+   * Returns a new AF_TIPC {@link ServerSocket} that is bound to the given {@link AFSocketAddress}.
+   * 
+   * @param addr The socket file to bind to.
+   * @param deleteOnClose If {@code true}, the socket file (if the address points to a file) will be
+   *          deleted upon {@link #close}.
+   * @return The new, bound {@link AFServerSocket}.
+   * @throws IOException if the operation fails.
+   */
+  public static AFTIPCServerSocket bindOn(final AFTIPCSocketAddress addr, boolean deleteOnClose)
+      throws IOException {
+<span class="nc" id="L90">    return (AFTIPCServerSocket) AFServerSocket.bindOn(AFTIPCServerSocket::new, addr, deleteOnClose);</span>
+  }
+
+  /**
+   * Returns a new, &lt;em&gt;unbound&lt;/em&gt; AF_TIPC {@link ServerSocket} that will always bind to the given
+   * address, regardless of any socket address used in a call to &lt;code&gt;bind&lt;/code&gt;.
+   * 
+   * @param forceAddr The address to use.
+   * @return The new, yet unbound {@link AFServerSocket}.
+   * @throws IOException if an exception occurs.
+   */
+  public static AFTIPCServerSocket forceBindOn(final AFTIPCSocketAddress forceAddr)
+      throws IOException {
+<span class="nc" id="L103">    return (AFTIPCServerSocket) AFServerSocket.forceBindOn(AFTIPCServerSocket::new, forceAddr);</span>
+  }
+
+  @Override
+  protected AFTIPCSocketImpl newImpl(FileDescriptor fdObj) throws SocketException {
+<span class="nc" id="L108">    return new AFTIPCSocketImpl(fdObj);</span>
+  }
+
+  @Override
+  protected AFSocket&lt;AFTIPCSocketAddress&gt; newSocketInstance() throws IOException {
+<span class="nc" id="L113">    return AFTIPCSocket.newInstance();</span>
+  }
+
+  @Override
+  public AFTIPCSocket accept() throws IOException {
+<span class="nc" id="L118">    return (AFTIPCSocket) super.accept();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

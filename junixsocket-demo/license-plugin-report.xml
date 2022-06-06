@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="CHECK" timestamp="1654552084408">
+    <module artifactId="junixsocket-demo" groupId="com.kohlschutter.junixsocket" version="2.5.0"/>
+    <files>
+        <file path="src/main/java/org/newsclub/net/mysql/demo/AFUNIXDatabaseSocketFactoryDemo.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/DemoHelper.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/SimpleTestClient.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/SimpleTestServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/client/DemoClient.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/client/DemoClientBase.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/client/ReadClient.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/client/ReadFileHandleClient.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/client/ReadWriteClient.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/jdbc/PostgresDemo.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/nanohttpd/NanoHttpdServerDemo.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/okhttp/OkHttpClientDemo.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/okhttp/OkHttpClientTIPCDemo.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/rmi/HelloWorldImpl.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/rmi/SimpleRMIClient.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/rmi/SimpleRMIClientActingAsServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/rmi/SimpleRMIServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/rmi/WorldImpl.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/rmi/fd/StreamClient.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/rmi/fd/StreamServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/rmi/fd/StreamServiceImpl.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/rmi/services/HelloWorld.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/rmi/services/StreamService.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/rmi/services/World.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/server/ChargenServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/server/DemoServerBase.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/server/EchoServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/server/NullServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/server/SendFileHandleServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/server/SocketServerDemo.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/server/ZeroServer.java" result="PRESENT"/>
+    </files>
+</licensePluginReport>

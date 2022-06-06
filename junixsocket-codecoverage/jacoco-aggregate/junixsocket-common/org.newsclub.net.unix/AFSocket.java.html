@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFSocket.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSocket.java</span></div><h1>AFSocket.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.Closeable;
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.SocketImpl;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+/**
+ * junixsocket's base implementation of a {@link Socket}.
+ * 
+ * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
+ * @author Christian Kohlschütter
+ */
+public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket implements AFSomeSocket,
+    AFSocketExtensions {
+  private static final String PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX =
+      &quot;org.newsclub.net.unix.library.disable.&quot;;
+
+  @SuppressWarnings(&quot;PMD.MutableStaticState&quot;)
+  static String loadedLibrary; // set by NativeLibraryLoader
+
+<span class="fc" id="L48">  private static Integer capabilities = null;</span>
+
+  private final AFSocketImpl&lt;A&gt; impl;
+
+  private final AFSocketAddressFromHostname&lt;A&gt; afh;
+<span class="fc" id="L53">  private final Closeables closeables = new Closeables();</span>
+<span class="fc" id="L54">  private final AtomicBoolean created = new AtomicBoolean(false);</span>
+<span class="fc" id="L55">  private final AFSocketChannel&lt;A&gt; channel = newChannel();</span>
+
+  private @Nullable SocketAddressFilter connectFilter;
+
+  /**
+   * Creates a new {@link AFSocket} instance.
+   * 
+   * @param impl The corresponding {@link SocketImpl} class.
+   * @param afh The conversion helper to get a socket address from an encoded hostname.
+   * @throws SocketException on error.
+   */
+  protected AFSocket(final AFSocketImpl&lt;A&gt; impl, AFSocketAddressFromHostname&lt;A&gt; afh)
+      throws SocketException {
+<span class="fc" id="L68">    super(impl);</span>
+<span class="fc" id="L69">    this.afh = afh;</span>
+<span class="fc" id="L70">    this.impl = impl;</span>
+<span class="fc" id="L71">  }</span>
+
+  /**
+   * Returns the {@link AFSocketAddress} type supported by this socket.
+   * 
+   * @return The supported {@link AFSocketAddress}.
+   */
+  protected final Class&lt;? extends AFSocketAddress&gt; socketAddressClass() {
+<span class="fc" id="L79">    return getAFImpl(false).getAddressFamily().getSocketAddressClass();</span>
+  }
+
+  /**
+   * Creates a new {@link AFSocketChannel} for this socket.
+   * 
+   * @return The new instance.
+   */
+  protected abstract AFSocketChannel&lt;A&gt; newChannel();
+
+  /**
+   * The reference to the constructor of an {@link AFSocket} subclass.
+   * 
+   * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
+   */
+  @FunctionalInterface
+  public interface Constructor&lt;A extends AFSocketAddress&gt; {
+    /**
+     * Constructs a new {@link AFSocket} subclass instance.
+     * 
+     * @param fdObj The file descriptor.
+     * @param factory The socket factory instance.
+     * @return The instance.
+     * @throws SocketException on error.
+     */
+    @NonNull
+    AFSocket&lt;A&gt; newInstance(FileDescriptor fdObj, AFSocketFactory&lt;A&gt; factory)
+        throws SocketException;
+  }
+
+  static &lt;A extends AFSocketAddress&gt; AFSocket&lt;A&gt; newInstance(Constructor&lt;A&gt; constr,
+      AFSocketFactory&lt;A&gt; sf, FileDescriptor fdObj, int localPort, int remotePort)
+      throws IOException {
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">    if (!fdObj.valid()) {</span>
+<span class="nc" id="L113">      throw new SocketException(&quot;Invalid file descriptor&quot;);</span>
+    }
+<span class="fc" id="L115">    int status = NativeUnixSocket.socketStatus(fdObj);</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">    if (status == NativeUnixSocket.SOCKETSTATUS_INVALID) {</span>
+<span class="nc" id="L117">      throw new SocketException(&quot;Not a valid socket&quot;);</span>
+    }
+
+<span class="fc" id="L120">    AFSocket&lt;A&gt; socket = newInstance0(constr, fdObj, sf);</span>
+<span class="fc" id="L121">    socket.getAFImpl().updatePorts(localPort, remotePort);</span>
+
+<span class="pc bpc" id="L123" title="2 of 4 branches missed.">    switch (status) {</span>
+      case NativeUnixSocket.SOCKETSTATUS_CONNECTED:
+<span class="fc" id="L125">        socket.internalDummyConnect();</span>
+<span class="fc" id="L126">        break;</span>
+      case NativeUnixSocket.SOCKETSTATUS_BOUND:
+<span class="fc" id="L128">        socket.internalDummyBind();</span>
+<span class="fc" id="L129">        break;</span>
+      case NativeUnixSocket.SOCKETSTATUS_UNKNOWN:
+<span class="nc" id="L131">        break;</span>
+      default:
+<span class="nc" id="L133">        throw new IllegalStateException(&quot;Invalid socketStatus response: &quot; + status);</span>
+    }
+<span class="fc" id="L135">    socket.getAFImpl().setSocketAddress(socket.getLocalSocketAddress());</span>
+
+<span class="fc" id="L137">    return socket;</span>
+  }
+
+  /**
+   * Creates a new, unbound {@link AFSocket}.
+   * 
+   * This &quot;default&quot; implementation is a bit &quot;lenient&quot; with respect to the specification.
+   * 
+   * In particular, we may ignore calls to {@link Socket#getTcpNoDelay()} and
+   * {@link Socket#setTcpNoDelay(boolean)}.
+   * 
+   * @param &lt;A&gt; The corresponding address type.
+   * @param constr The implementation's {@link AFSocket} constructor
+   * @param factory The corresponding socket factory, or {@code null}.
+   * @return A new, unbound socket.
+   * @throws SocketException if the operation fails.
+   */
+  protected static final &lt;A extends AFSocketAddress&gt; AFSocket&lt;A&gt; newInstance(Constructor&lt;A&gt; constr,
+      AFSocketFactory&lt;A&gt; factory) throws SocketException {
+<span class="fc" id="L156">    return newInstance0(constr, null, factory);</span>
+  }
+
+  private static &lt;A extends AFSocketAddress&gt; @NonNull AFSocket&lt;A&gt; newInstance0(
+      Constructor&lt;A&gt; constr, FileDescriptor fdObj, AFSocketFactory&lt;A&gt; factory)
+      throws SocketException {
+<span class="fc" id="L162">    return constr.newInstance(fdObj, factory);</span>
+  }
+
+  /**
+   * Creates a new {@link AFSocket} and connects it to the given {@link AFSocketAddress}.
+   * 
+   * @param &lt;A&gt; The corresponding address type.
+   * @param constr The implementation's {@link AFSocket} constructor
+   * @param addr The address to connect to.
+   * @return A new, connected socket.
+   * @throws IOException if the operation fails.
+   */
+  protected static final &lt;A extends AFSocketAddress&gt; @NonNull AFSocket&lt;A&gt; connectTo(
+      Constructor&lt;A&gt; constr, A addr) throws IOException {
+<span class="fc" id="L176">    AFSocket&lt;A&gt; socket = constr.newInstance(null, null);</span>
+<span class="fc" id="L177">    socket.connect(addr);</span>
+<span class="fc" id="L178">    return socket;</span>
+  }
+
+  /**
+   * Creates a new {@link AFSocket} and connects it to the given {@link AFSocketAddress} using the
+   * default implementation suited for that address type.
+   * 
+   * @param &lt;A&gt; The corresponding address type.
+   * @param addr The address to connect to.
+   * @return A new, connected socket.
+   * @throws IOException if the operation fails.
+   */
+  public static final &lt;A extends AFSocketAddress&gt; AFSocket&lt;?&gt; connectTo(@NonNull A addr)
+      throws IOException {
+<span class="fc" id="L192">    AFSocket&lt;?&gt; socket = addr.getAddressFamily().getSocketConstructor().newInstance(null, null);</span>
+<span class="fc" id="L193">    socket.connect(addr);</span>
+<span class="fc" id="L194">    return socket;</span>
+  }
+
+  /**
+   * Not supported, since it's not necessary for client sockets.
+   * 
+   * @see AFServerSocket
+   */
+  @Override
+  public final void bind(SocketAddress bindpoint) throws IOException {
+<span class="pc bpc" id="L204" title="1 of 2 branches missed.">    if (bindpoint == null) {</span>
+<span class="fc" id="L205">      throw new IllegalArgumentException();</span>
+    }
+<span class="nc bnc" id="L207" title="All 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L208">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+    }
+<span class="nc bnc" id="L210" title="All 2 branches missed.">    if (isBound()) {</span>
+<span class="nc" id="L211">      throw new SocketException(&quot;Already bound&quot;);</span>
+    }
+<span class="nc" id="L213">    preprocessSocketAddress(bindpoint);</span>
+<span class="nc" id="L214">    throw new SocketException(&quot;Use AF*ServerSocket#bind or #bindOn&quot;);</span>
+  }
+
+  @Override
+  public final boolean isBound() {
+<span class="fc bfc" id="L219" title="All 4 branches covered.">    return super.isBound() || impl.isBound();</span>
+  }
+
+  @Override
+  public final boolean isConnected() {
+<span class="pc bpc" id="L224" title="1 of 4 branches missed.">    return super.isConnected() || impl.isConnected();</span>
+  }
+
+  @Override
+  public final void connect(SocketAddress endpoint) throws IOException {
+<span class="fc" id="L229">    connect(endpoint, 0);</span>
+<span class="fc" id="L230">  }</span>
+
+  @Override
+  public final void connect(SocketAddress endpoint, int timeout) throws IOException {
+<span class="fc" id="L234">    connect0(endpoint, timeout);</span>
+<span class="fc" id="L235">  }</span>
+
+  private AFSocketAddress preprocessSocketAddress(SocketAddress endpoint) throws SocketException {
+<span class="fc bfc" id="L238" title="All 2 branches covered.">    if (endpoint == null) {</span>
+<span class="fc" id="L239">      throw new IllegalArgumentException(&quot;endpoint is null&quot;);</span>
+<span class="fc bfc" id="L240" title="All 2 branches covered.">    } else if (endpoint instanceof SentinelSocketAddress) {</span>
+<span class="fc" id="L241">      return (AFSocketAddress) endpoint;</span>
+    } else {
+<span class="fc" id="L243">      return AFSocketAddress.preprocessSocketAddress(socketAddressClass(), endpoint, afh);</span>
+    }
+  }
+
+  final boolean connect0(SocketAddress endpoint, int timeout) throws IOException {
+<span class="fc bfc" id="L248" title="All 2 branches covered.">    if (timeout &lt; 0) {</span>
+<span class="fc" id="L249">      throw new IllegalArgumentException(&quot;connect: timeout can't be negative&quot;);</span>
+    }
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L252">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+    }
+
+<span class="pc bpc" id="L255" title="1 of 2 branches missed.">    if (connectFilter != null) {</span>
+<span class="nc" id="L256">      endpoint = connectFilter.apply(endpoint);</span>
+    }
+
+<span class="fc" id="L259">    AFSocketAddress address = preprocessSocketAddress(endpoint);</span>
+
+<span class="fc bfc" id="L261" title="All 2 branches covered.">    if (!isBound()) {</span>
+<span class="fc" id="L262">      internalDummyBind();</span>
+    }
+
+<span class="fc" id="L265">    boolean success = getAFImpl().connect0(address, timeout);</span>
+<span class="pc bpc" id="L266" title="1 of 2 branches missed.">    if (success) {</span>
+<span class="fc" id="L267">      int port = address.getPort();</span>
+<span class="fc bfc" id="L268" title="All 2 branches covered.">      if (port &gt; 0) {</span>
+<span class="fc" id="L269">        getAFImpl().updatePorts(getLocalPort(), port);</span>
+      }
+    }
+<span class="fc" id="L272">    internalDummyConnect();</span>
+<span class="fc" id="L273">    return success;</span>
+  }
+
+  final void internalDummyConnect() throws IOException {
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">    if (!isConnected()) {</span>
+<span class="nc" id="L278">      super.connect(AFSocketAddress.INTERNAL_DUMMY_CONNECT, 0);</span>
+    }
+<span class="fc" id="L280">  }</span>
+
+  final void internalDummyBind() throws IOException {
+<span class="fc bfc" id="L283" title="All 2 branches covered.">    if (!isBound()) {</span>
+<span class="fc" id="L284">      super.bind(AFSocketAddress.INTERNAL_DUMMY_BIND);</span>
+    }
+<span class="fc" id="L286">  }</span>
+
+  @Override
+  public final String toString() {
+<span class="fc" id="L290">    return getClass().getName() + &quot;@&quot; + Integer.toHexString(hashCode()) + toStringSuffix();</span>
+  }
+
+  final String toStringSuffix() {
+<span class="fc bfc" id="L294" title="All 2 branches covered.">    if (impl.getFD().valid()) {</span>
+<span class="fc" id="L295">      return &quot;[local=&quot; + getLocalSocketAddress() + &quot;;remote=&quot; + getRemoteSocketAddress() + &quot;]&quot;;</span>
+    } else {
+<span class="fc" id="L297">      return &quot;[invalid]&quot;;</span>
+    }
+  }
+
+  /**
+   * Returns &lt;code&gt;true&lt;/code&gt; iff {@link AFSocket}s are supported by the current Java VM.
+   * 
+   * To support {@link AFSocket}s, a custom JNI library must be loaded that is supplied with
+   * &lt;em&gt;junixsocket&lt;/em&gt;.
+   * 
+   * @return {@code true} iff supported.
+   */
+  public static boolean isSupported() {
+<span class="fc" id="L310">    return NativeUnixSocket.isLoaded();</span>
+  }
+
+  /**
+   * Checks if {@link AFSocket}s are supported by the current Java VM.
+   * 
+   * If not, an {@link UnsupportedOperationException} is thrown.
+   * 
+   * @throws UnsupportedOperationException if not supported.
+   */
+  public static void ensureSupported() throws UnsupportedOperationException {
+<span class="nc" id="L321">    NativeUnixSocket.ensureSupported();</span>
+<span class="nc" id="L322">  }</span>
+
+  /**
+   * Returns the version of the junixsocket library, as a string, for debugging purposes.
+   * 
+   * NOTE: Do not rely on the format of the version identifier, use socket capabilities instead.
+   * 
+   * @return String The version identifier, or {@code null} if it could not be determined.
+   * @see #supports(AFSocketCapability)
+   */
+  public static final String getVersion() {
+    try {
+<span class="fc" id="L334">      return NativeLibraryLoader.getJunixsocketVersion();</span>
+<span class="fc" id="L335">    } catch (IOException e) {</span>
+<span class="fc" id="L336">      return null;</span>
+    }
+  }
+
+  /**
+   * Returns an identifier of the loaded native library, or {@code null} if the library hasn't been
+   * loaded yet.
+   * 
+   * The identifier is useful mainly for debugging purposes.
+   * 
+   * @return The identifier of the loaded junixsocket-native library, or {@code null}.
+   */
+  public static final String getLoadedLibrary() {
+<span class="fc" id="L349">    return loadedLibrary;</span>
+  }
+
+  @Override
+  public final boolean isClosed() {
+<span class="fc bfc" id="L354" title="All 6 branches covered.">    return super.isClosed() || (isConnected() &amp;&amp; !impl.getFD().valid());</span>
+  }
+
+  @Override
+  public final int getAncillaryReceiveBufferSize() {
+<span class="fc" id="L359">    return impl.getAncillaryReceiveBufferSize();</span>
+  }
+
+  @Override
+  public final void setAncillaryReceiveBufferSize(int size) {
+<span class="fc" id="L364">    impl.setAncillaryReceiveBufferSize(size);</span>
+<span class="fc" id="L365">  }</span>
+
+  @Override
+  public final void ensureAncillaryReceiveBufferSize(int minSize) {
+<span class="fc" id="L369">    impl.ensureAncillaryReceiveBufferSize(minSize);</span>
+<span class="fc" id="L370">  }</span>
+
+  private static synchronized int getCapabilities() {
+<span class="fc bfc" id="L373" title="All 2 branches covered.">    if (capabilities == null) {</span>
+<span class="pc bpc" id="L374" title="1 of 2 branches missed.">      if (!isSupported()) {</span>
+<span class="nc" id="L375">        capabilities = 0;</span>
+      } else {
+<span class="fc" id="L377">        int v = NativeUnixSocket.capabilities();</span>
+
+<span class="pc bpc" id="L379" title="1 of 2 branches missed.">        if (System.getProperty(&quot;osv.version&quot;) != null) {</span>
+          // no fork, no redirect...
+<span class="nc" id="L381">          v &amp;= ~(AFSocketCapability.CAPABILITY_FD_AS_REDIRECT.getBitmask());</span>
+        }
+
+<span class="fc" id="L384">        capabilities = v;</span>
+      }
+    }
+<span class="fc" id="L387">    return capabilities.intValue();</span>
+  }
+
+  private static boolean isCapDisabled(String name) {
+<span class="fc" id="L391">    return Boolean.valueOf(System.getProperty(PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX + name,</span>
+        &quot;false&quot;));
+  }
+
+  /**
+   * Checks if the current environment (system platform, native library, etc.) supports a given
+   * junixsocket capability.
+   * 
+   * Deprecated. Please use {@link #supports(AFSocketCapability)} instead.
+   * 
+   * NOTE: The result may or may not be cached from a previous call or from a check upon
+   * initialization.
+   * 
+   * @param capability The capability.
+   * @return true if supported.
+   * @see #supports(AFSocketCapability)
+   */
+  @Deprecated
+  public static final boolean supports(AFUNIXSocketCapability capability) {
+<span class="nc bnc" id="L410" title="All 4 branches missed.">    return !isCapDisabled(capability.name()) &amp;&amp; (getCapabilities() &amp; capability.getBitmask()) != 0;</span>
+  }
+
+  /**
+   * Checks if the current environment (system platform, native library, etc.) supports a given
+   * junixsocket capability.
+   * 
+   * NOTE: The result may or may not be cached from a previous call or from a check upon
+   * initialization.
+   * 
+   * @param capability The capability.
+   * @return true if supported.
+   */
+  public static final boolean supports(AFSocketCapability capability) {
+<span class="pc bpc" id="L424" title="1 of 4 branches missed.">    return !isCapDisabled(capability.name()) &amp;&amp; (getCapabilities() &amp; capability.getBitmask()) != 0;</span>
+  }
+
+  @Override
+  public final synchronized void close() throws IOException {
+<span class="fc" id="L429">    IOException superException = null;</span>
+    try {
+<span class="fc" id="L431">      super.close();</span>
+<span class="nc" id="L432">    } catch (IOException e) {</span>
+<span class="nc" id="L433">      superException = e;</span>
+<span class="fc" id="L434">    }</span>
+<span class="fc" id="L435">    closeables.close(superException);</span>
+<span class="fc" id="L436">  }</span>
+
+  /**
+   * Registers a {@link Closeable} that should be closed when this socket is closed.
+   * 
+   * @param closeable The closeable.
+   */
+  public final void addCloseable(Closeable closeable) {
+<span class="fc" id="L444">    closeables.add(closeable);</span>
+<span class="fc" id="L445">  }</span>
+
+  /**
+   * Unregisters a previously registered {@link Closeable}.
+   * 
+   * @param closeable The closeable.
+   */
+  public final void removeCloseable(Closeable closeable) {
+<span class="fc" id="L453">    closeables.remove(closeable);</span>
+<span class="fc" id="L454">  }</span>
+
+  final AFSocketImpl&lt;A&gt; getAFImpl() {
+<span class="fc" id="L457">    return getAFImpl(true);</span>
+  }
+
+  final AFSocketImpl&lt;A&gt; getAFImpl(boolean createSocket) {
+<span class="fc bfc" id="L461" title="All 4 branches covered.">    if (createSocket &amp;&amp; created.compareAndSet(false, true)) {</span>
+      try {
+<span class="fc" id="L463">        getSoTimeout(); // trigger create via java.net.Socket</span>
+<span class="nc" id="L464">      } catch (SocketException e) {</span>
+        // ignore
+<span class="fc" id="L466">      }</span>
+    }
+<span class="fc" id="L468">    return impl;</span>
+  }
+
+  @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
+  @Override
+  public AFSocketChannel&lt;A&gt; getChannel() {
+<span class="fc" id="L474">    return channel;</span>
+  }
+
+  @SuppressWarnings(&quot;null&quot;)
+  @Override
+  public final synchronized A getRemoteSocketAddress() {
+<span class="fc bfc" id="L480" title="All 2 branches covered.">    if (!isConnected()) {</span>
+<span class="fc" id="L481">      return null;</span>
+    }
+<span class="fc" id="L483">    return impl.getRemoteSocketAddress();</span>
+  }
+
+  @SuppressWarnings(&quot;null&quot;)
+  @Override
+  public final A getLocalSocketAddress() {
+<span class="pc bpc" id="L489" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L490">      return null;</span>
+    }
+<span class="fc" id="L492">    return impl.getLocalSocketAddress();</span>
+  }
+
+  @Override
+  public final FileDescriptor getFileDescriptor() throws IOException {
+<span class="fc" id="L497">    return impl.getFileDescriptor();</span>
+  }
+
+  @Override
+  public final AFInputStream getInputStream() throws IOException {
+<span class="fc" id="L502">    return getAFImpl().getInputStream();</span>
+  }
+
+  @Override
+  public final AFOutputStream getOutputStream() throws IOException {
+<span class="fc" id="L507">    return getAFImpl().getOutputStream();</span>
+  }
+
+  /**
+   * Returns the internal helper instance for address-specific extensions.
+   * 
+   * @return The helper instance.
+   * @throws UnsupportedOperationException if such extensions are not supported for this address
+   *           type.
+   */
+  protected final AFSocketImplExtensions&lt;A&gt; getImplExtensions() {
+<span class="nc" id="L518">    return getAFImpl(false).getImplExtensions();</span>
+  }
+
+  /**
+   * Forces the address to be used for any subsequent call to {@link #connect(SocketAddress)} to be
+   * the given one, regardless of what'll be passed there.
+   * 
+   * @param endpoint The forced endpoint address.
+   * @return This instance.
+   */
+  public final AFSocket&lt;A&gt; forceConnectAddress(SocketAddress endpoint) {
+<span class="nc" id="L529">    return connectHook((SocketAddress orig) -&gt; {</span>
+<span class="nc bnc" id="L530" title="All 2 branches missed.">      return orig == null ? null : endpoint;</span>
+    });
+  }
+
+  /**
+   * Sets the hook for any subsequent call to {@link #connect(SocketAddress)} or
+   * {@link #connect(SocketAddress, int)} to be the given function.
+   * 
+   * The function can monitor events or even alter the target address.
+   * 
+   * @param hook The function that gets called for each connect call.
+   * @return This instance.
+   */
+  public final AFSocket&lt;A&gt; connectHook(SocketAddressFilter hook) {
+<span class="nc" id="L544">    this.connectFilter = hook;</span>
+<span class="nc" id="L545">    return this;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

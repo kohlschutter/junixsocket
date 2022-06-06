@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFSelectionKey.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSelectionKey.java</span></div><h1>AFSelectionKey.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.spi.AbstractSelectableChannel;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+final class AFSelectionKey extends SelectionKey {
+  private static final int OP_INVALID = 1 &lt;&lt; 7; // custom
+  private final AFSelector sel;
+  private final AFSocketCore core;
+  private int ops;
+  private final SelectableChannel chann;
+<span class="fc" id="L32">  private final AtomicBoolean cancelled = new AtomicBoolean();</span>
+  private int opsReady;
+
+  AFSelectionKey(AFSelector selector, AbstractSelectableChannel ch, int ops, Object att) {
+<span class="fc" id="L36">    super();</span>
+<span class="fc" id="L37">    this.chann = ch;</span>
+<span class="fc" id="L38">    this.sel = selector;</span>
+<span class="fc" id="L39">    this.ops = ops; // FIXME check</span>
+
+<span class="fc bfc" id="L41" title="All 2 branches covered.">    if (ch instanceof AFDatagramChannel&lt;?&gt;) {</span>
+<span class="fc" id="L42">      this.core = ((AFDatagramChannel&lt;?&gt;) ch).getAFCore();</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    } else if (ch instanceof AFSocketChannel&lt;?&gt;) {</span>
+<span class="fc" id="L44">      this.core = ((AFSocketChannel&lt;?&gt;) ch).getAFCore();</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">    } else if (ch instanceof AFServerSocketChannel&lt;?&gt;) {</span>
+<span class="fc" id="L46">      this.core = ((AFServerSocketChannel&lt;?&gt;) ch).getAFCore();</span>
+    } else {
+<span class="nc" id="L48">      throw new UnsupportedOperationException();</span>
+    }
+
+<span class="fc" id="L51">    attach(att);</span>
+<span class="fc" id="L52">  }</span>
+
+  @Override
+  public SelectableChannel channel() {
+<span class="fc" id="L56">    return chann;</span>
+  }
+
+  @Override
+  public Selector selector() {
+<span class="nc" id="L61">    return sel;</span>
+  }
+
+  @Override
+  public boolean isValid() {
+<span class="pc bpc" id="L66" title="3 of 8 branches missed.">    return !hasOpInvalid() &amp;&amp; !cancelled.get() &amp;&amp; chann.isOpen() &amp;&amp; sel.isOpen();</span>
+  }
+
+  boolean hasOpInvalid() {
+<span class="fc bfc" id="L70" title="All 2 branches covered.">    return (opsReady &amp; OP_INVALID) != 0;</span>
+  }
+
+  @Override
+  public void cancel() {
+<span class="fc" id="L75">    sel.remove(this);</span>
+<span class="fc" id="L76">    cancelNoRemove();</span>
+<span class="fc" id="L77">  }</span>
+
+  void cancelNoRemove() {
+<span class="fc bfc" id="L80" title="All 4 branches covered.">    if (!cancelled.compareAndSet(false, true) || !chann.isOpen()) {</span>
+<span class="fc" id="L81">      return;</span>
+    }
+
+<span class="fc" id="L84">    cancel1();</span>
+<span class="fc" id="L85">  }</span>
+
+  private void cancel1() {
+    // FIXME
+<span class="fc" id="L89">  }</span>
+
+  @Override
+  public int interestOps() {
+<span class="fc" id="L93">    return ops;</span>
+  }
+
+  @Override
+  public SelectionKey interestOps(int interestOps) {
+<span class="nc" id="L98">    this.ops = interestOps; // FIXME check</span>
+<span class="nc" id="L99">    return this;</span>
+  }
+
+  @Override
+  public int readyOps() {
+<span class="fc" id="L104">    return opsReady &amp; ~OP_INVALID;</span>
+  }
+
+  AFSocketCore getAFCore() {
+<span class="fc" id="L108">    return core;</span>
+  }
+
+  void setOpsReady(int opsReady) {
+<span class="fc" id="L112">    this.opsReady = opsReady;</span>
+<span class="fc" id="L113">  }</span>
+
+  @Override
+  public String toString() {
+<span class="nc" id="L117">    return super.toString() + &quot;[&quot; + readyOps() + &quot;;valid=&quot; + isValid() + &quot;;channel=&quot; + channel()</span>
+        + &quot;]&quot;;
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

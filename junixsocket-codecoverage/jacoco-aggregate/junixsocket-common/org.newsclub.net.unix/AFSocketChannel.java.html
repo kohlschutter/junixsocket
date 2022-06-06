@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFSocketChannel.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSocketChannel.java</span></div><h1>AFSocketChannel.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.SocketAddress;
+import java.net.SocketOption;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.SelectorProvider;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.jdt.annotation.NonNull;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+/**
+ * A selectable channel for stream-oriented connecting sockets.
+ * 
+ * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
+ * @author Christian Kohlschütter
+ */
+<span class="fc" id="L41">public abstract class AFSocketChannel&lt;A extends AFSocketAddress&gt; extends SocketChannel implements</span>
+    AFSomeSocket, AFSocketExtensions {
+  private final @NonNull AFSocket&lt;A&gt; afSocket;
+<span class="fc" id="L44">  private final AtomicBoolean connectPending = new AtomicBoolean(false);</span>
+
+  /**
+   * Creates a new socket channel for the given socket, using the given {@link SelectorProvider}.
+   * 
+   * @param socket The socket.
+   * @param sp The {@link SelectorProvider}.
+   */
+  @SuppressWarnings(&quot;null&quot;)
+  protected AFSocketChannel(AFSocket&lt;A&gt; socket, AFSelectorProvider&lt;A&gt; sp) {
+<span class="fc" id="L54">    super(sp);</span>
+<span class="fc" id="L55">    this.afSocket = Objects.requireNonNull(socket);</span>
+<span class="fc" id="L56">  }</span>
+
+  /**
+   * Returns the corresponding {@link AFSocket}.
+   * 
+   * @return The corresponding socket.
+   */
+  protected final AFSocket&lt;A&gt; getAFSocket() {
+<span class="fc" id="L64">    return afSocket;</span>
+  }
+
+  /**
+   * A reference to a method that provides an {@link AFSocket} instance.
+   * 
+   * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
+   */
+  @FunctionalInterface
+  protected interface AFSocketSupplier&lt;A extends AFSocketAddress&gt; {
+    /**
+     * Returns a new {@link AFSocket} instance.
+     * 
+     * @return The instance.
+     * @throws IOException on error.
+     */
+    AFSocket&lt;A&gt; newInstance() throws IOException;
+  }
+
+  /**
+   * Opens a socket channel.
+   *
+   * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
+   * @param supplier The AFSocketChannel constructor.
+   * 
+   * @return The new channel
+   * @throws IOException on error.
+   */
+  protected static final &lt;A extends AFSocketAddress&gt; AFSocketChannel&lt;A&gt; open(
+      AFSocketSupplier&lt;A&gt; supplier) throws IOException {
+<span class="nc" id="L94">    return supplier.newInstance().getChannel();</span>
+  }
+
+  /**
+   * Opens a socket channel, connecting to the given socket address.
+   *
+   * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
+   * @param remote The socket address to connect to.
+   * @param supplier The AFSocketChannel constructor.
+   * @return The new channel
+   * @throws IOException on error.
+   */
+  protected static final &lt;A extends AFSocketAddress&gt; AFSocketChannel&lt;A&gt; open(
+      AFSocketSupplier&lt;A&gt; supplier, SocketAddress remote) throws IOException {
+    @SuppressWarnings(&quot;resource&quot;)
+<span class="nc" id="L109">    AFSocketChannel&lt;A&gt; sc = open(supplier);</span>
+    try {
+<span class="nc" id="L111">      sc.connect(remote);</span>
+<span class="nc" id="L112">    } catch (Throwable x) { // NOPMD</span>
+      try {
+<span class="nc" id="L114">        sc.close();</span>
+<span class="nc" id="L115">      } catch (Throwable suppressed) { // NOPMD</span>
+<span class="nc" id="L116">        x.addSuppressed(suppressed);</span>
+<span class="nc" id="L117">      }</span>
+<span class="nc" id="L118">      throw x;</span>
+<span class="nc" id="L119">    }</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">    assert sc.isConnected();</span>
+<span class="nc" id="L121">    return sc;</span>
+  }
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  @Override
+  public final &lt;T&gt; T getOption(SocketOption&lt;T&gt; name) throws IOException {
+<span class="nc bnc" id="L127" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L128">      return getAFCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
+    }
+<span class="nc" id="L130">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">    if (optionId == null) {</span>
+<span class="nc" id="L132">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
+    } else {
+<span class="nc" id="L134">      return (T) afSocket.getAFImpl().getOption(optionId.intValue());</span>
+    }
+  }
+
+  @Override
+  public final &lt;T&gt; AFSocketChannel&lt;A&gt; setOption(SocketOption&lt;T&gt; name, T value) throws IOException {
+<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L141">      getAFCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
+<span class="nc" id="L142">      return this;</span>
+    }
+<span class="nc" id="L144">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">    if (optionId == null) {</span>
+<span class="nc" id="L146">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
+    } else {
+<span class="nc" id="L148">      afSocket.getAFImpl().setOption(optionId.intValue(), value);</span>
+    }
+<span class="nc" id="L150">    return this;</span>
+  }
+
+  @Override
+  public final Set&lt;SocketOption&lt;?&gt;&gt; supportedOptions() {
+<span class="nc" id="L155">    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;</span>
+  }
+
+  @Override
+  public final AFSocketChannel&lt;A&gt; bind(SocketAddress local) throws IOException {
+<span class="nc" id="L160">    afSocket.bind(local);</span>
+<span class="nc" id="L161">    return this;</span>
+  }
+
+  @Override
+  public final AFSocketChannel&lt;A&gt; shutdownInput() throws IOException {
+<span class="nc" id="L166">    afSocket.getAFImpl().shutdownInput();</span>
+<span class="nc" id="L167">    return this;</span>
+  }
+
+  @Override
+  public final AFSocketChannel&lt;A&gt; shutdownOutput() throws IOException {
+<span class="nc" id="L172">    afSocket.getAFImpl().shutdownOutput();</span>
+<span class="nc" id="L173">    return this;</span>
+  }
+
+  @Override
+  @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
+  public final AFSocket&lt;A&gt; socket() {
+<span class="fc" id="L179">    return afSocket;</span>
+  }
+
+  @Override
+  public final boolean isConnected() {
+<span class="fc" id="L184">    boolean connected = afSocket.isConnected();</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">    if (connected) {</span>
+<span class="fc" id="L186">      connectPending.set(false);</span>
+    }
+<span class="fc" id="L188">    return connected;</span>
+  }
+
+  @Override
+  public final boolean isConnectionPending() {
+<span class="fc" id="L193">    return connectPending.get();</span>
+  }
+
+  @Override
+  public final boolean connect(SocketAddress remote) throws IOException {
+<span class="fc" id="L198">    boolean connected = afSocket.connect0(remote, 0);</span>
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">    if (!connected) {</span>
+<span class="nc" id="L200">      connectPending.set(true);</span>
+    }
+<span class="fc" id="L202">    return connected;</span>
+  }
+
+  @Override
+  public final boolean finishConnect() throws IOException {
+<span class="nc bnc" id="L207" title="All 2 branches missed.">    if (isConnected()) {</span>
+<span class="nc" id="L208">      return true;</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">    } else if (!isConnectionPending()) {</span>
+<span class="nc" id="L210">      return false;</span>
+    }
+
+<span class="nc bnc" id="L213" title="All 2 branches missed.">    boolean connected = NativeUnixSocket.finishConnect(afSocket.getFileDescriptor())</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">        || isConnected();</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">    if (connected) {</span>
+<span class="nc" id="L216">      connectPending.set(false);</span>
+    }
+<span class="nc" id="L218">    return connected;</span>
+  }
+
+  @Override
+  public final A getRemoteAddress() throws IOException {
+<span class="fc" id="L223">    return getRemoteSocketAddress();</span>
+  }
+
+  @Override
+  public final A getRemoteSocketAddress() {
+<span class="fc" id="L228">    return afSocket.getRemoteSocketAddress();</span>
+  }
+
+  @Override
+  public final int read(ByteBuffer dst) throws IOException {
+<span class="fc" id="L233">    return afSocket.getAFImpl().read(dst, null);</span>
+  }
+
+  @Override
+  public final long read(ByteBuffer[] dsts, int offset, int length) throws IOException {
+<span class="nc bnc" id="L238" title="All 2 branches missed.">    if (length == 0) {</span>
+<span class="nc" id="L239">      return 0;</span>
+    }
+    // FIXME support more than one buffer for scatter-gather access
+<span class="nc" id="L242">    return read(dsts[offset]);</span>
+  }
+
+  @Override
+  public final long write(ByteBuffer[] srcs, int offset, int length) throws IOException {
+<span class="nc bnc" id="L247" title="All 2 branches missed.">    if (length == 0) {</span>
+<span class="nc" id="L248">      return 0;</span>
+    }
+    // FIXME support more than one buffer for scatter-gather access
+<span class="nc" id="L251">    return write(srcs[offset]);</span>
+  }
+
+  @Override
+  public final int write(ByteBuffer src) throws IOException {
+<span class="fc" id="L256">    return afSocket.getAFImpl().write(src);</span>
+  }
+
+  @Override
+  public final A getLocalAddress() throws IOException {
+<span class="fc" id="L261">    return getLocalSocketAddress();</span>
+  }
+
+  @Override
+  public final A getLocalSocketAddress() {
+<span class="fc" id="L266">    return afSocket.getLocalSocketAddress();</span>
+  }
+
+  @Override
+  protected final void implCloseSelectableChannel() throws IOException {
+<span class="fc" id="L271">    afSocket.close();</span>
+<span class="fc" id="L272">  }</span>
+
+  @Override
+  protected final void implConfigureBlocking(boolean block) throws IOException {
+<span class="fc" id="L276">    getAFCore().implConfigureBlocking(block);</span>
+<span class="fc" id="L277">  }</span>
+
+  @Override
+  public final int getAncillaryReceiveBufferSize() {
+<span class="nc" id="L281">    return afSocket.getAncillaryReceiveBufferSize();</span>
+  }
+
+  @Override
+  public final void setAncillaryReceiveBufferSize(int size) {
+<span class="nc" id="L286">    afSocket.setAncillaryReceiveBufferSize(size);</span>
+<span class="nc" id="L287">  }</span>
+
+  @Override
+  public final void ensureAncillaryReceiveBufferSize(int minSize) {
+<span class="nc" id="L291">    afSocket.ensureAncillaryReceiveBufferSize(minSize);</span>
+<span class="nc" id="L292">  }</span>
+
+  final AFSocketCore getAFCore() {
+<span class="fc" id="L295">    return afSocket.getAFImpl().getCore();</span>
+  }
+
+  @Override
+  public final FileDescriptor getFileDescriptor() throws IOException {
+<span class="fc" id="L300">    return afSocket.getFileDescriptor();</span>
+  }
+
+  @Override
+  public final String toString() {
+<span class="nc" id="L305">    return super.toString() + afSocket.toStringSuffix();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

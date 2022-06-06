@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCGroupRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCGroupRequest.java</span></div><h1>AFTIPCGroupRequest.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.tipc;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+import org.newsclub.net.unix.AFTIPCSocketAddress.Scope;
+import org.newsclub.net.unix.NamedIntegerBitmask;
+
+/**
+ * A TIPC group request.
+ * 
+ * @author Christian Kohlschütter
+ */
+@NonNullByDefault
+public final class AFTIPCGroupRequest {
+  /**
+   * &quot;No group&quot;.
+   */
+<span class="fc" id="L36">  public static final AFTIPCGroupRequest NONE = new AFTIPCGroupRequest(0, 0,</span>
+      Scope.SCOPE_NOT_SPECIFIED, GroupRequestFlags.NONE);
+
+  private final int type;
+  private final int instance;
+  private final Scope scope;
+  private final GroupRequestFlags flags;
+
+  /**
+   * Some flags used in the group request.
+   * 
+   * @author Christian Kohlschütter
+   */
+  public static final class GroupRequestFlags extends NamedIntegerBitmask&lt;GroupRequestFlags&gt; {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * No flags set.
+     */
+<span class="fc" id="L55">    public static final GroupRequestFlags NONE = new GroupRequestFlags(&quot;NONE&quot;, 0);</span>
+
+    /**
+     * Receive copies of sent messages.
+     */
+    public static final GroupRequestFlags GROUP_LOOPBACK;
+
+    /**
+     * Receive membership events.
+     */
+    public static final GroupRequestFlags GROUP_MEMBER_EVTS;
+
+<span class="fc" id="L67">    private static final @NonNull GroupRequestFlags[] VALUES = {</span>
+        GROUP_LOOPBACK = new GroupRequestFlags(&quot;GROUP_LOOPBACK&quot;, 1), //
+        GROUP_MEMBER_EVTS = new GroupRequestFlags(&quot;GROUP_MEMBER_EVTS&quot;, 2), //
+    };
+
+    private GroupRequestFlags(@Nullable String name, int flags) {
+<span class="fc" id="L73">      super(name, flags);</span>
+<span class="fc" id="L74">    }</span>
+
+    /**
+     * Returns a {@link GroupRequestFlags} instance given an integer value.
+     * 
+     * @param v The value.
+     * @return The instance.
+     */
+    public static GroupRequestFlags ofValue(int v) {
+<span class="nc" id="L83">      return resolve(VALUES, NONE, GroupRequestFlags::new, v);</span>
+    }
+
+    /**
+     * Returns a {@link GroupRequestFlags} instance representing the combination of the given list
+     * of {@link GroupRequestFlags} flags.
+     * 
+     * @param flags The flags (zero or more values).
+     * @return The instance.
+     */
+    public static GroupRequestFlags withFlags(@NonNull GroupRequestFlags... flags) {
+<span class="nc" id="L94">      return resolve(VALUES, NONE, GroupRequestFlags::new, flags);</span>
+    }
+
+    /**
+     * Combines the given {@link GroupRequestFlags} instance with another one.
+     * 
+     * @param other The other instance.
+     * @return The combined instance.
+     */
+    @Override
+    public GroupRequestFlags combineWith(GroupRequestFlags other) {
+<span class="nc" id="L105">      return combineWith(VALUES, NONE, GroupRequestFlags::new, other);</span>
+    }
+  }
+
+<span class="fc" id="L109">  private AFTIPCGroupRequest(int type, int instance, Scope scope, GroupRequestFlags flags) {</span>
+<span class="fc" id="L110">    this.type = type;</span>
+<span class="fc" id="L111">    this.instance = instance;</span>
+<span class="fc" id="L112">    this.scope = scope;</span>
+<span class="fc" id="L113">    this.flags = flags;</span>
+<span class="fc" id="L114">  }</span>
+
+  /**
+   * Returns an {@link AFTIPCGroupRequest} instance using the given parameters.
+   * 
+   * @param type The group type.
+   * @param instance The group instance.
+   * @param scope The group scope.
+   * @param flags The request flags.
+   * @return The instance.
+   */
+  public static AFTIPCGroupRequest with(int type, int instance, Scope scope,
+      GroupRequestFlags flags) {
+<span class="nc bnc" id="L127" title="All 8 branches missed.">    if (type == 0 &amp;&amp; instance == 0 &amp;&amp; scope.value() == 0 &amp;&amp; flags.value() == 0) {</span>
+<span class="nc" id="L128">      return NONE;</span>
+    } else {
+<span class="nc" id="L130">      return new AFTIPCGroupRequest(type, instance, scope, flags);</span>
+    }
+  }
+
+  /**
+   * Returns an {@link AFTIPCGroupRequest} instance using the given parameters, implying cluster
+   * scope.
+   * 
+   * @param type The group type.
+   * @param instance The group instance.
+   * @param flags The request flags.
+   * @return The instance.
+   */
+  public static AFTIPCGroupRequest with(int type, int instance, GroupRequestFlags flags) {
+<span class="nc" id="L144">    return with(type, instance, Scope.SCOPE_CLUSTER, flags);</span>
+  }
+
+  static AFTIPCGroupRequest fromNative(int type, int instance, int scopeId, int flags) {
+<span class="nc" id="L148">    return with(type, instance, Scope.ofValue(scopeId), GroupRequestFlags.ofValue(flags));</span>
+  }
+
+  /**
+   * Returns the group type.
+   * 
+   * @return The group type.
+   */
+  public int getType() {
+<span class="nc" id="L157">    return type;</span>
+  }
+
+  /**
+   * Returns the group instance.
+   * 
+   * @return The group instance.
+   */
+  public int getInstance() {
+<span class="nc" id="L166">    return instance;</span>
+  }
+
+  /**
+   * Returns the group scope.
+   * 
+   * @return The group scope.
+   */
+  public Scope getScope() {
+<span class="nc" id="L175">    return scope;</span>
+  }
+
+  int getScopeId() {
+<span class="nc" id="L179">    return scope.value();</span>
+  }
+
+  int getFlagsValue() {
+<span class="nc" id="L183">    return flags.value();</span>
+  }
+
+  /**
+   * Returns the group request flags.
+   * 
+   * @return The group request flags.
+   */
+  public GroupRequestFlags getFlags() {
+<span class="nc" id="L192">    return flags;</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc bnc" id="L197" title="All 2 branches missed.">    return getClass().getName() + ((this == NONE) ? &quot;(no group)&quot; : &quot;(type=&quot; + type + &quot;;instance=&quot;</span>
+<span class="nc" id="L198">        + instance + &quot;;scope=&quot; + scope + &quot;;flags=&quot; + flags + &quot;)&quot;);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

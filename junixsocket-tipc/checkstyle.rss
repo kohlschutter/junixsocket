@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>junixsocket-tipc - Checkstyle report</title>
+    <link>https://kohlschutter.github.io/junixsocket/junixsocket-tipc/</link>
+    <description>junixsocket-tipc - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2009 - 2022 Kohlschütter Search Intelligence</copyright>
+    <item>
+      <title>File: 20,
+             Errors: 0,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCGroupRequest.java">org/newsclub/net/unix/tipc/AFTIPCGroupRequest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCDatagramSocket.java">org/newsclub/net/unix/tipc/AFTIPCDatagramSocket.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCSocketPair.java">org/newsclub/net/unix/tipc/AFTIPCSocketPair.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCSocketImpl.java">org/newsclub/net/unix/tipc/AFTIPCSocketImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCSocketFactory.java">org/newsclub/net/unix/tipc/AFTIPCSocketFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCTopologyEvent.java">org/newsclub/net/unix/tipc/AFTIPCTopologyEvent.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCSocketChannel.java">org/newsclub/net/unix/tipc/AFTIPCSocketChannel.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCSocketOptions.java">org/newsclub/net/unix/tipc/AFTIPCSocketOptions.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCDatagramChannel.java">org/newsclub/net/unix/tipc/AFTIPCDatagramChannel.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCDatagramSocketImpl.java">org/newsclub/net/unix/tipc/AFTIPCDatagramSocketImpl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCSocket.java">org/newsclub/net/unix/tipc/AFTIPCSocket.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCErrInfo.java">org/newsclub/net/unix/tipc/AFTIPCErrInfo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCServerSocket.java">org/newsclub/net/unix/tipc/AFTIPCServerSocket.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCTopologyWatcher.java">org/newsclub/net/unix/tipc/AFTIPCTopologyWatcher.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCSocketExtensions.java">org/newsclub/net/unix/tipc/AFTIPCSocketExtensions.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCSelectorProvider.java">org/newsclub/net/unix/tipc/AFTIPCSelectorProvider.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCServerSocketChannel.java">org/newsclub/net/unix/tipc/AFTIPCServerSocketChannel.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCTopologySubscription.java">org/newsclub/net/unix/tipc/AFTIPCTopologySubscription.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCProtocolFamily.java">org/newsclub/net/unix/tipc/AFTIPCProtocolFamily.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-tipc//checkstyle.html#org.newsclub.net.unix.tipc.AFTIPCDestName.java">org/newsclub/net/unix/tipc/AFTIPCDestName.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

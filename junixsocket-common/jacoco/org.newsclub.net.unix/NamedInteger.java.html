@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NamedInteger.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">NamedInteger.java</span></div><h1>NamedInteger.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
+/**
+ * A &quot;named integer&quot;, usually used for constants.
+ * 
+ * See the concrete implementations for usage.
+ * 
+ * @author Christian Kohlschütter
+ */
+@NonNullByDefault
+public class NamedInteger implements Serializable {
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * The name.
+   */
+  private final String name; // NOPMD
+
+  /**
+   * The ID value.
+   */
+  private final int id;
+
+  /**
+   * Marks a subclass that provides a method {@code &quot;public static T ofValue(int v)&quot;} that allows
+   * casting an integer to this type via reflection.
+   */
+  public interface HasOfValue {
+    /* static &lt;T extends NamedInteger&gt; ofValue(int v); */
+  }
+
+  /**
+   * Creates a new {@link NamedInteger} instance, without actually naming it. A name of &quot;UNDEFINED&quot;
+   * is used.
+   * 
+   * @param id The value.
+   */
+  protected NamedInteger(int id) {
+<span class="fc" id="L64">    this(&quot;UNDEFINED&quot;, id);</span>
+<span class="fc" id="L65">  }</span>
+
+  /**
+   * Creates a new {@link NamedInteger} instance.
+   * 
+   * @param name The name.
+   * @param id The value.
+   */
+<span class="fc" id="L73">  protected NamedInteger(String name, int id) {</span>
+<span class="fc" id="L74">    this.name = name;</span>
+<span class="fc" id="L75">    this.id = id;</span>
+<span class="fc" id="L76">  }</span>
+
+  /**
+   * Returns the name.
+   * 
+   * @return The name.
+   */
+  public final String name() {
+<span class="nc" id="L84">    return name;</span>
+  }
+
+  /**
+   * Returns the value.
+   * 
+   * @return The value.
+   */
+  public final int value() {
+<span class="fc" id="L93">    return id;</span>
+  }
+
+  @Override
+  public final String toString() {
+<span class="nc" id="L98">    return name() + &quot;(&quot; + id + &quot;)&quot;;</span>
+  }
+
+  @Override
+  public final int hashCode() {
+<span class="nc" id="L103">    return Objects.hash(id);</span>
+  }
+
+  @Override
+  public final boolean equals(@Nullable Object obj) {
+<span class="nc bnc" id="L108" title="All 2 branches missed.">    if (this == obj) {</span>
+<span class="nc" id="L109">      return true;</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">    } else if (obj == null) {</span>
+<span class="nc" id="L111">      return false;</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">    } else if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L113">      return false;</span>
+    }
+<span class="nc" id="L115">    NamedInteger other = (NamedInteger) obj;</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">    return id == other.value();</span>
+  }
+
+  /**
+   * Ensures that the {@code VALUES} array is configured correctly.
+   * 
+   * @param &lt;T&gt; The instance type.
+   * @param values The {@code VALUES} array.
+   * @return The verified {@code VALUES} array.
+   */
+  protected static final &lt;T extends NamedInteger&gt; T[] init(T[] values) {
+<span class="fc" id="L127">    Set&lt;Integer&gt; seenValues = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">    for (T val : values) {</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">      if (!seenValues.add(val.value())) {</span>
+<span class="nc" id="L130">        throw new IllegalStateException(&quot;Duplicate value: &quot; + val.value());</span>
+      }
+    }
+<span class="fc" id="L133">    return values;</span>
+  }
+
+  /**
+   * Constructor for &quot;undefined&quot; values.
+   * 
+   * @param &lt;T&gt; The instance type.
+   */
+  @FunctionalInterface
+  protected interface UndefinedValueConstructor&lt;T extends NamedInteger&gt; {
+    /**
+     * Creates a new &quot;undefined&quot; value instance.
+     * 
+     * @param id The value.
+     * @return The instance.
+     */
+    T newInstance(int id);
+  }
+
+  /**
+   * Returns an instance given an integer value.
+   * 
+   * @param &lt;T&gt; The instance type.
+   * @param values The {@code VALUES} array.
+   * @param constr The constructor for undefined values.
+   * @param v The value.
+   * @return The instance.
+   */
+  protected static final &lt;T extends NamedInteger&gt; T ofValue(T[] values,
+      UndefinedValueConstructor&lt;T&gt; constr, int v) {
+<span class="fc bfc" id="L163" title="All 2 branches covered.">    for (T e : values) {</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">      if (e.value() == v) {</span>
+<span class="fc" id="L165">        return e;</span>
+      }
+    }
+<span class="fc" id="L168">    return constr.newInstance(v);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

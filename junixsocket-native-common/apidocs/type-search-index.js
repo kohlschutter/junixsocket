@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"org.newsclub.lib.junixsocket.common","l":"NarMetadata"}]
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.newsclub.lib.junixsocket.common","l":"NarMetadata"}];updateSearchResults();

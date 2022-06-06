@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFSocketAddressConfig.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSocketAddressConfig.java</span></div><h1>AFSocketAddressConfig.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.net.SocketException;
+import java.net.URI;
+import java.util.Set;
+
+import org.newsclub.net.unix.AFSocketAddress.AFSocketAddressConstructor;
+
+/**
+ * The implementation-specifics for a given {@link AFSocketAddress} subclass implementation.
+ * 
+ * @param &lt;A&gt; The supported address type.
+ * @author Christian Kohlschütter
+ * @see AFAddressFamilyConfig
+ */
+public abstract class AFSocketAddressConfig&lt;A extends AFSocketAddress&gt; {
+
+  /**
+   * Constructor.
+   */
+<span class="fc" id="L38">  protected AFSocketAddressConfig() {</span>
+<span class="fc" id="L39">  }</span>
+
+  /**
+   * Tries to parse the given address-specific URI.
+   * 
+   * @param u The URI.
+   * @param port The port to use, or {@code -1} for &quot;unspecified&quot;.
+   * @return The address.
+   * @throws SocketException on error.
+   */
+  protected abstract A parseURI(URI u, int port) throws SocketException;
+
+  /**
+   * Returns the implementation's address constructor.
+   * 
+   * @return The implementation's address constructor.
+   */
+  protected abstract AFSocketAddressConstructor&lt;A&gt; addressConstructor();
+
+  /**
+   * Returns the name of the implementation's selector provider class.
+   * 
+   * @return The name of the implementation's selector provider class.
+   */
+  protected abstract String selectorProviderClassname();
+
+  /**
+   * Returns the set of supported URI schemes that can be parsed via {@link #parseURI(URI,int)}.
+   * 
+   * These schemes must be unique to this {@link AFSocketAddress} type.
+   * 
+   * @return The set of supported URI schemes.
+   */
+  protected abstract Set&lt;String&gt; uriSchemes();
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

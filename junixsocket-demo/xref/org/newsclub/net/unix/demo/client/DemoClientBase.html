@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2021 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2022 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> * you may not use this file except in compliance with the License.</em>
@@ -29,8 +29,8 @@
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.net.Socket;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.net.SocketAddress;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocket;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocketAddress;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketAddress;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocket;
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment"> * An {@link AFUNIXSocket} client that's just good for demo purposes.</em>
@@ -47,21 +47,22 @@
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>    }
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> connect(SocketAddress endpoint) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>      <strong class="jxr_keyword">if</strong> (endpoint instanceof AFUNIXSocketAddress) {
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>        socket = AFUNIXSocket.newInstance();
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>      } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>        socket = <strong class="jxr_keyword">new</strong> Socket();
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>      }
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>      socket.connect(endpoint);
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>      handleSocket(socket);
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>    }
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>    @SuppressWarnings(<span class="jxr_string">"hiding"</span>)
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">void</strong> handleSocket(Socket socket) <strong class="jxr_keyword">throws</strong> IOException;
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  }
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      System.out.println(<span class="jxr_string">"Connect "</span> + <strong class="jxr_keyword">this</strong> + <span class="jxr_string">" to "</span> + endpoint);
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">if</strong> (endpoint instanceof AFSocketAddress) {
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>        socket = ((AFSocketAddress) endpoint).getAddressFamily().newSocket();
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>        socket = <strong class="jxr_keyword">new</strong> Socket();
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      }
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>      socket.connect(endpoint);
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      handleSocket(socket);
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    }
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>    @SuppressWarnings(<span class="jxr_string">"hiding"</span>)
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">void</strong> handleSocket(Socket socket) <strong class="jxr_keyword">throws</strong> IOException;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2021 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2022 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>

@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCTopologySubscription.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCTopologySubscription.java</span></div><h1>AFTIPCTopologySubscription.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.tipc;
+
+import static org.newsclub.net.unix.AFTIPCSocketAddress.AddressType.formatTIPCInt;
+
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.WeakHashMap;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+import org.newsclub.net.unix.NamedIntegerBitmask;
+
+/**
+ * An &quot;event subscription&quot; to be used with {@link AFTIPCTopologyWatcher}.
+ * 
+ * @author Christian Kohlschütter
+ */
+@NonNullByDefault
+public final class AFTIPCTopologySubscription {
+<span class="nc" id="L42">  static final byte[] USR_EMPTY = new byte[8];</span>
+
+<span class="nc" id="L44">  private static final WeakHashMap&lt;ByteBuffer, @Nullable AFTIPCTopologySubscription&gt; SUBSCRIPTIONS =</span>
+      new WeakHashMap&lt;&gt;();
+
+  /**
+   * Special timeout value meaning &quot;never timeout&quot;.
+   */
+  public static final int TIPC_WAIT_FOREVER = -1;
+
+  /**
+   * The &quot;node state&quot; cluster topology monitor mode.
+   * 
+   * When TIPC establishes contact with another node, it does internally create a binding {type =
+   * TIPC_NODE_STATE, instance = peer node hash number} in the binding table. This makes it possible
+   * for applications on a node to keep track of reachable peer nodes at any time. *
+   */
+  public static final int TIPC_NODE_STATE = 0;
+
+  /**
+   * The &quot;link state&quot; cluster connectivity monitor mode.
+   * 
+   * When TIPC establishes a new link to another node, it does internally create a binding {type =
+   * TIPC_LINK_STATE, instance = peer node hash number} in the binding table. This makes it possible
+   * for applications on a node to keep track of working links to peer nodes at any time.
+   * 
+   * This type of binding differs from the topology subscription binding ({@link #TIPC_NODE_STATE})
+   * in that there may be two links, and hence two bindings, to keep track of for each peer node.
+   * Although this binding type only is published with node visibility, it is possible to combine it
+   * with remote node topology subscriptions to obtain a full and continuous matrix view of the
+   * connectivity in the cluster.
+   */
+  public static final int TIPC_LINK_STATE = 2;
+
+  private static final int MESSAGE_LENGTH = 28;
+
+  private final int type;
+  private final int lower;
+  private final int upper;
+  private final Flags flags;
+  private final int timeout;
+  private final byte[] usrHandle;
+
+  /**
+   * Some flags used in the subscription request.
+   */
+  public static final class Flags extends NamedIntegerBitmask&lt;Flags&gt; {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * No flags set.
+     */
+<span class="nc" id="L94">    public static final Flags NONE = new Flags(&quot;NONE&quot;, 0);</span>
+
+    /**
+     * Event at each match.
+     */
+    public static final Flags TIPC_SUB_PORTS;
+
+    /**
+     * Event at first up/last down.
+     */
+    public static final Flags TIPC_SUB_SERVICE;
+
+    /**
+     * Cancel a subscription.
+     */
+    public static final Flags TIPC_SUB_CANCEL;
+
+<span class="nc" id="L111">    private static final @NonNull Flags[] VALUES = {</span>
+        TIPC_SUB_PORTS = new Flags(&quot;TIPC_SUB_PORTS&quot;, 1), //
+        TIPC_SUB_SERVICE = new Flags(&quot;TIPC_SUB_SERVICE&quot;, 2), //
+        TIPC_SUB_CANCEL = new Flags(&quot;TIPC_SUB_CANCEL&quot;, 4), //
+    };
+
+    private Flags(@Nullable String name, int flags) {
+<span class="nc" id="L118">      super(name, flags);</span>
+<span class="nc" id="L119">    }</span>
+
+    /**
+     * Returns a {@link Flags} instance given an integer value.
+     * 
+     * @param v The value.
+     * @return The instance.
+     */
+    public static Flags ofValue(int v) {
+<span class="nc" id="L128">      return resolve(VALUES, NONE, Flags::new, v);</span>
+    }
+
+    /**
+     * Returns a {@link Flags} instance representing the combination of the given list of
+     * {@link Flags} flags.
+     * 
+     * @param flags The flags (zero or more values).
+     * @return The instance.
+     */
+    public static Flags withFlags(@NonNull Flags... flags) {
+<span class="nc" id="L139">      return resolve(VALUES, NONE, Flags::new, flags);</span>
+    }
+
+    /**
+     * Combines the given {@link Flags} instance with another one.
+     * 
+     * @param other The other instance.
+     * @return The combined instance.
+     */
+    @Override
+    public Flags combineWith(Flags other) {
+<span class="nc" id="L150">      return combineWith(VALUES, NONE, Flags::new, other);</span>
+    }
+  }
+
+  /**
+   * Creates a new subscription message that does not time out.
+   * 
+   * @param type The service type (any service, particularly {@link #TIPC_NODE_STATE} and
+   *          {@link #TIPC_LINK_STATE}.
+   * @param lower The lower instance.
+   * @param upper The upper instance.
+   * @param flags Any flaas (use {@link Flags#NONE} if you don't have any).
+   */
+  public AFTIPCTopologySubscription(int type, int lower, int upper, Flags flags) {
+<span class="nc" id="L164">    this(type, lower, upper, flags, TIPC_WAIT_FOREVER, USR_EMPTY);</span>
+<span class="nc" id="L165">  }</span>
+
+  /**
+   * Creates a new subscription message.
+   * 
+   * @param type The service type (any service, particularly {@link #TIPC_NODE_STATE} and
+   *          {@link #TIPC_LINK_STATE}.
+   * @param lower The lower instance.
+   * @param upper The upper instance.
+   * @param flags Any flaas (use {@link Flags#NONE} if you don't have any).
+   * @param timeoutSeconds The timeout (in seconds), or {@value #TIPC_WAIT_FOREVER} if this should
+   *          never time out.
+   */
+  public AFTIPCTopologySubscription(int type, int lower, int upper, Flags flags,
+      int timeoutSeconds) {
+<span class="nc" id="L180">    this(type, lower, upper, flags, timeoutSeconds, USR_EMPTY);</span>
+<span class="nc" id="L181">  }</span>
+
+  /**
+   * Creates a new subscription message.
+   * 
+   * @param type The service type (any service, particularly {@link #TIPC_NODE_STATE} and
+   *          {@link #TIPC_LINK_STATE}.
+   * @param lower The lower instance.
+   * @param upper The upper instance.
+   * @param flags Any flaas (use {@link Flags#NONE} if you don't have any).
+   * @param timeoutSeconds The timeout (in seconds), or {@value #TIPC_WAIT_FOREVER} if this should
+   *          never time out.
+   * @param usrHandle A custom 8-byte message that is included in {@link AFTIPCTopologyEvent}
+   *          messages.
+   */
+  public AFTIPCTopologySubscription(int type, int lower, int upper, Flags flags, int timeoutSeconds,
+<span class="nc" id="L197">      byte[] usrHandle) {</span>
+<span class="nc" id="L198">    this.type = type;</span>
+<span class="nc" id="L199">    this.lower = lower;</span>
+<span class="nc" id="L200">    this.upper = upper;</span>
+<span class="nc bnc" id="L201" title="All 2 branches missed.">    this.flags = flags == null ? Flags.NONE : flags;</span>
+<span class="nc" id="L202">    this.timeout = timeoutSeconds;</span>
+<span class="nc" id="L203">    this.usrHandle = new byte[8];</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">    if (usrHandle != null) {</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">      if (usrHandle.length &gt; 8) {</span>
+<span class="nc" id="L206">        throw new IllegalArgumentException(&quot;User handle too long&quot;);</span>
+      } else {
+<span class="nc" id="L208">        System.arraycopy(usrHandle, 0, this.usrHandle, 0, usrHandle.length);</span>
+      }
+    }
+<span class="nc" id="L211">  }</span>
+
+  @SuppressWarnings({&quot;null&quot;, &quot;cast&quot;})
+  static AFTIPCTopologySubscription readFromBuffer(ByteBuffer buf) {
+<span class="nc" id="L215">    buf = (ByteBuffer) buf.slice().limit(MESSAGE_LENGTH);</span>
+<span class="nc" id="L216">    AFTIPCTopologySubscription sub = SUBSCRIPTIONS.get(buf);</span>
+<span class="nc bnc" id="L217" title="All 2 branches missed.">    if (sub != null) {</span>
+<span class="nc" id="L218">      return sub;</span>
+    }
+<span class="nc" id="L220">    int type = buf.getInt();</span>
+<span class="nc" id="L221">    int lower = buf.getInt();</span>
+<span class="nc" id="L222">    int upper = buf.getInt();</span>
+<span class="nc" id="L223">    int timeout = buf.getInt();</span>
+<span class="nc" id="L224">    Flags flags = Flags.ofValue(buf.getInt());</span>
+<span class="nc" id="L225">    byte[] usrHandle = new byte[8];</span>
+<span class="nc" id="L226">    buf.get(usrHandle, 0, 8);</span>
+<span class="nc" id="L227">    buf.flip();</span>
+<span class="nc" id="L228">    sub = new AFTIPCTopologySubscription(type, lower, upper, flags, timeout, usrHandle);</span>
+<span class="nc" id="L229">    SUBSCRIPTIONS.put(buf, sub);</span>
+<span class="nc" id="L230">    return sub;</span>
+  }
+
+  @SuppressWarnings(&quot;null&quot;)
+  ByteBuffer writeToBuffer(ByteBuffer buf) {
+<span class="nc" id="L235">    buf = buf.order(ByteOrder.BIG_ENDIAN);</span>
+<span class="nc" id="L236">    buf.putInt(type);</span>
+<span class="nc" id="L237">    buf.putInt(lower);</span>
+<span class="nc" id="L238">    buf.putInt(upper);</span>
+<span class="nc" id="L239">    buf.putInt(timeout);</span>
+<span class="nc" id="L240">    buf.putInt(flags.value());</span>
+<span class="nc" id="L241">    buf.put(usrHandle);</span>
+<span class="nc" id="L242">    return buf;</span>
+  }
+
+  /**
+   * Converts this subscription message to a new {@link ByteBuffer}.
+   * 
+   * @return The new buffer, ready to read from.
+   */
+  @SuppressWarnings({&quot;null&quot;, &quot;cast&quot;})
+  public ByteBuffer toBuffer() {
+<span class="nc" id="L252">    return (ByteBuffer) writeToBuffer(ByteBuffer.allocate(MESSAGE_LENGTH)).flip();</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L257">    return super.toString() + &quot;[&quot; + type + &quot;@&quot; + formatTIPCInt(lower) + &quot;-&quot; + formatTIPCInt(upper)</span>
+<span class="nc" id="L258">        + &quot;;flags=&quot; + flags + &quot;;timeout=&quot; + timeout + &quot;;usrHandle=&quot; + String.format(Locale.ENGLISH,</span>
+<span class="nc" id="L259">            &quot;%16s&quot;, new BigInteger(1, usrHandle).toString(16)).replace(' ', '0') + &quot;]&quot;;</span>
+  }
+
+  /**
+   * Creates an {@link AFTIPCTopologySubscription} that cancels this subscription.
+   * 
+   * Note that a cancellation cannot be cancelled again.
+   * 
+   * @return The new {@link AFTIPCTopologySubscription}.
+   */
+  public AFTIPCTopologySubscription toCancellation() {
+<span class="nc" id="L270">    return new AFTIPCTopologySubscription(type, lower, upper, Flags.TIPC_SUB_CANCEL, timeout,</span>
+        usrHandle);
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L276">    final int prime = 31;</span>
+<span class="nc" id="L277">    int result = 1;</span>
+<span class="nc" id="L278">    result = prime * result + Arrays.hashCode(usrHandle);</span>
+<span class="nc" id="L279">    result = prime * result + Objects.hash(flags, lower, timeout, type, upper);</span>
+<span class="nc" id="L280">    return result;</span>
+  }
+
+  @Override
+  public boolean equals(@Nullable Object obj) {
+<span class="nc bnc" id="L285" title="All 2 branches missed.">    if (this == obj) {</span>
+<span class="nc" id="L286">      return true;</span>
+    }
+<span class="nc bnc" id="L288" title="All 2 branches missed.">    if (!(obj instanceof AFTIPCTopologySubscription)) {</span>
+<span class="nc" id="L289">      return false;</span>
+    }
+<span class="nc" id="L291">    AFTIPCTopologySubscription other = (AFTIPCTopologySubscription) obj;</span>
+<span class="nc bnc" id="L292" title="All 10 branches missed.">    return Objects.equals(flags, other.flags) &amp;&amp; lower == other.lower &amp;&amp; timeout == other.timeout</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">        &amp;&amp; type == other.type &amp;&amp; upper == other.upper &amp;&amp; Arrays.equals(usrHandle, other.usrHandle);</span>
+  }
+
+  /**
+   * Returns the service type.
+   * 
+   * @return The type.
+   */
+  public int getType() {
+<span class="nc" id="L302">    return type;</span>
+  }
+
+  /**
+   * Returns the lower instance value.
+   * 
+   * @return The lower instance value.
+   */
+  public int getLower() {
+<span class="nc" id="L311">    return lower;</span>
+  }
+
+  /**
+   * Returns the upper instance value.
+   * 
+   * @return The upper instance value.
+   */
+  public int getUpper() {
+<span class="nc" id="L320">    return upper;</span>
+  }
+
+  /**
+   * Returns the flags.
+   * 
+   * @return The flags.
+   */
+  public Flags getFlags() {
+<span class="nc" id="L329">    return flags;</span>
+  }
+
+  /**
+   * Returns the timeout, in seconds (or {@link #TIPC_WAIT_FOREVER} for &quot;never timeout&quot;).
+   * 
+   * @return The timeout.
+   */
+  public int getTimeout() {
+<span class="nc" id="L338">    return timeout;</span>
+  }
+
+  /**
+   * Returns the 8-byte user handle.
+   * 
+   * @return The user handle.
+   */
+  public byte[] getUsrHandle() {
+<span class="nc" id="L347">    return usrHandle.clone();</span>
+  }
+
+  /**
+   * Returns {@code true} iff the subscription has the
+   * {@link AFTIPCTopologySubscription.Flags#TIPC_SUB_PORTS} flag set.
+   * 
+   * @return {@code true} if this is a &quot;port&quot; subscription.
+   */
+  public boolean isPort() {
+<span class="nc" id="L357">    return flags.hasFlag(Flags.TIPC_SUB_PORTS);</span>
+  }
+
+  /**
+   * Returns {@code true} iff the subscription has the
+   * {@link AFTIPCTopologySubscription.Flags#TIPC_SUB_SERVICE} flag set.
+   * 
+   * @return {@code true} if this is a &quot;service&quot; subscription.
+   */
+  public boolean isService() {
+<span class="nc" id="L367">    return flags.hasFlag(Flags.TIPC_SUB_SERVICE);</span>
+  }
+
+  /**
+   * Returns {@code true} iff the subscription has the
+   * {@link AFTIPCTopologySubscription.Flags#TIPC_SUB_CANCEL} flag set.
+   * 
+   * @return {@code true} if this is a &quot;cancellation&quot; subscription request.
+   */
+  public boolean isCancellation() {
+<span class="nc" id="L377">    return flags.hasFlag(Flags.TIPC_SUB_CANCEL);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

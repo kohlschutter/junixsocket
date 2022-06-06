@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCSocketFactory.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCSocketFactory.java</span></div><h1>AFTIPCSocketFactory.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.tipc;
+
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
+
+import org.newsclub.net.unix.AFSocketFactory;
+import org.newsclub.net.unix.AFTIPCSocketAddress;
+import org.newsclub.net.unix.AFTIPCSocketAddress.Scope;
+
+/**
+ * The base for a SocketFactory that connects to TIPC sockets.
+ * 
+ * Typically, the &quot;hostname&quot; is used as a reference to a socketFile on the file system. The actual
+ * mapping is left to the implementor.
+ */
+public abstract class AFTIPCSocketFactory extends AFSocketFactory&lt;AFTIPCSocketAddress&gt; {
+  /**
+   * Creates a {@link AFTIPCSocketFactory}.
+   */
+  protected AFTIPCSocketFactory() {
+<span class="nc" id="L39">    super();</span>
+<span class="nc" id="L40">  }</span>
+
+  @Override
+  public final Socket createSocket() throws SocketException {
+<span class="nc" id="L44">    return configure(AFTIPCSocket.newInstance(this));</span>
+  }
+
+  @Override
+  protected final AFTIPCSocket connectTo(AFTIPCSocketAddress addr) throws IOException {
+<span class="nc" id="L49">    return configure(AFTIPCSocket.connectTo(addr));</span>
+  }
+
+  /**
+   * Performs some optional configuration on a newly created socket.
+   * 
+   * @param sock The socket.
+   * @return The very socket.
+   * @throws SocketException on error.
+   */
+  protected AFTIPCSocket configure(AFTIPCSocket sock) throws SocketException {
+<span class="nc" id="L60">    return sock;</span>
+  }
+
+  /**
+   * Always connects sockets to the given TIPC type and instance.
+   * 
+   * @author Christian Kohlschütter
+   */
+  public static class ServiceAddress extends AFTIPCSocketFactory {
+    private final int type;
+    private final int instance;
+
+    /**
+     * Creates an {@link AFTIPCSocketFactory} that always uses the given TIPC service type and
+     * instance, implying cluster scope.
+     * 
+     * @param type The service type.
+     * @param instance The service instance.
+     */
+    public ServiceAddress(int type, int instance) {
+<span class="nc" id="L80">      super();</span>
+<span class="nc" id="L81">      this.type = type;</span>
+<span class="nc" id="L82">      this.instance = instance;</span>
+<span class="nc" id="L83">    }</span>
+
+    @Override
+    public final AFTIPCSocketAddress addressFromHost(String host, int port) throws SocketException {
+<span class="nc" id="L87">      return AFTIPCSocketAddress.ofService(port, Scope.SCOPE_CLUSTER, type, instance, 0);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

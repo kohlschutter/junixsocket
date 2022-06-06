@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NamedIntegerBitmask.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">NamedIntegerBitmask.java</span></div><h1>NamedIntegerBitmask.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
+/**
+ * Describes a 32-bit bitmask that supports named flags.
+ * 
+ * @param &lt;T&gt; The subclass's type itself.
+ * @author Christian Kohlschütter
+ */
+@NonNullByDefault
+public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&gt;&gt; implements
+    Serializable {
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * Name of the flag/flag set.
+   */
+  private final String name; // NOPMD.AvoidFieldNameMatchingMethodName
+
+  /**
+   * Flag value.
+   */
+  private final int flags;
+
+  /**
+   * Creates a new named flag.
+   * 
+   * @param name The name of the flag / flag set.
+   * @param flags The flag value.
+   */
+<span class="nc" id="L56">  protected NamedIntegerBitmask(@Nullable String name, int flags) {</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">    this.name = name == null ? &quot;UNDEFINED&quot; : name;</span>
+<span class="nc" id="L58">    this.flags = flags;</span>
+<span class="nc" id="L59">  }</span>
+
+  /**
+   * Returns the name of the flag / flag set.
+   * 
+   * @return The name.
+   */
+  public final String name() {
+<span class="nc" id="L67">    return name;</span>
+  }
+
+  /**
+   * Returns the value of the flag / flag set.
+   * 
+   * @return The value.
+   */
+  public final int value() {
+<span class="nc" id="L76">    return flags;</span>
+  }
+
+  /**
+   * Checks if the given flag is set.
+   * 
+   * @param flag The flag to check.
+   * @return {@code true} iff set.
+   */
+  public final boolean hasFlag(T flag) {
+<span class="nc" id="L86">    int v = flag.value();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">    return (this.flags &amp; v) == v;</span>
+  }
+
+  @Override
+  public final String toString() {
+<span class="nc" id="L92">    return getClass().getName() + &quot;(&quot; + name() + &quot;:&quot; + value() + &quot;)&quot;;</span>
+  }
+
+  /**
+   * Combines two flags / flag sets (use this to implement
+   * {@link #combineWith(NamedIntegerBitmask)}).
+   * 
+   * @param allFlags The array of all defined flags, expected &quot;none&quot;.
+   * @param flagsNone The &quot;none&quot; flag set.
+   * @param constr The constructor.
+   * @param other The other flag / flag set to merge.
+   * @return An instance combining both.
+   */
+  @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
+  protected final T combineWith(T[] allFlags, T flagsNone, Constructor&lt;T&gt; constr, T other) {
+<span class="nc" id="L107">    return resolve(allFlags, flagsNone, constr, value() | other.value());</span>
+  }
+
+  /**
+   * Combines two flags / flag sets.
+   * 
+   * @param other The other flag / flag set.
+   * @return An instance combining both.
+   */
+  @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
+  public abstract T combineWith(T other);
+
+  /**
+   * Creates a new instance.
+   * 
+   * @param &lt;T&gt; This type.
+   */
+  @FunctionalInterface
+  protected interface Constructor&lt;T extends NamedIntegerBitmask&lt;T&gt;&gt; {
+    /**
+     * Creates a new instance.
+     * 
+     * @param name The name.
+     * @param flags The flag value.
+     * @return The instance.
+     */
+    T newInstance(@Nullable String name, int flags);
+  }
+
+  /**
+   * Returns a {@link NamedIntegerBitmask} instance given a flag value.
+   * 
+   * @param &lt;T&gt; The subclass's type itself.
+   * @param allFlags The array of all defined flags, expected &quot;none&quot;.
+   * @param flagsNone The &quot;none&quot; flag set.
+   * @param constr The constructor.
+   * @param v The flag value.
+   * @return An instance representing the flag value.
+   */
+  @SuppressWarnings({&quot;null&quot;, &quot;unchecked&quot;})
+  protected static final &lt;T extends NamedIntegerBitmask&lt;T&gt;&gt; T resolve(T[] allFlags, T flagsNone,
+      Constructor&lt;T&gt; constr, int v) {
+<span class="nc bnc" id="L149" title="All 2 branches missed.">    if (v == 0) {</span>
+<span class="nc" id="L150">      return flagsNone;</span>
+    }
+
+<span class="nc" id="L153">    List&lt;T&gt; flags = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">    for (T flag : allFlags) {</span>
+<span class="nc" id="L155">      int val = flag.value();</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">      if (val == v) {</span>
+<span class="nc" id="L157">        return flag;</span>
+      }
+<span class="nc bnc" id="L159" title="All 2 branches missed.">      if ((v &amp; val) == val) {</span>
+<span class="nc" id="L160">        flags.add(flag);</span>
+      }
+    }
+
+<span class="nc" id="L164">    return resolve(allFlags, flagsNone, constr, flags.toArray((T[]) Array.newInstance(flagsNone</span>
+<span class="nc" id="L165">        .getClass(), flags.size())));</span>
+  }
+
+  /**
+   * Returns a {@link NamedIntegerBitmask} instance given a series of flags.
+   * 
+   * @param &lt;T&gt; The subclass's type itself.
+   * @param allFlags The array of all defined flags, expected &quot;none&quot;.
+   * @param flagsNone The &quot;none&quot; flag set.
+   * @param constr The constructor.
+   * @param setFlags The flags to set, potentially empty.
+   * @return An instance representing the flag values.
+   */
+  protected static final &lt;T extends NamedIntegerBitmask&lt;T&gt;&gt; T resolve(T[] allFlags, T flagsNone,
+      Constructor&lt;T&gt; constr, @NonNull T[] setFlags) {
+<span class="nc" id="L180">    int flags = 0;</span>
+<span class="nc" id="L181">    int numFlagsSet = 0;</span>
+    @Nullable
+<span class="nc" id="L183">    T lastFlagSet = null;</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">    if (setFlags != null) {</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">      for (T flag : setFlags) {</span>
+<span class="nc" id="L186">        flags |= flag.value();</span>
+<span class="nc" id="L187">        lastFlagSet = flag;</span>
+<span class="nc" id="L188">        numFlagsSet++;</span>
+      }
+    }
+<span class="nc bnc" id="L191" title="All 2 branches missed.">    if (flags == 0) {</span>
+<span class="nc" id="L192">      return flagsNone;</span>
+<span class="nc bnc" id="L193" title="All 4 branches missed.">    } else if (numFlagsSet == 1 &amp;&amp; lastFlagSet != null) {</span>
+<span class="nc" id="L194">      return lastFlagSet;</span>
+    }
+
+<span class="nc" id="L197">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">    for (T flag : setFlags) {</span>
+<span class="nc" id="L199">      sb.append(flag.name());</span>
+<span class="nc" id="L200">      sb.append(',');</span>
+    }
+<span class="nc" id="L202">    sb.setLength(sb.length() - 1);</span>
+
+<span class="nc" id="L204">    return constr.newInstance(sb.toString(), flags);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

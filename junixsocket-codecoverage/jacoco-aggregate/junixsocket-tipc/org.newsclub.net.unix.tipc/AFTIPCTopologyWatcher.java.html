@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCTopologyWatcher.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCTopologyWatcher.java</span></div><h1>AFTIPCTopologyWatcher.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.tipc;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.newsclub.net.unix.AFSocketType;
+import org.newsclub.net.unix.AFTIPCSocketAddress;
+
+/**
+ * Provides access to the TIPC topology service.
+ * 
+ * @author Christian Kohlschütter
+ */
+public class AFTIPCTopologyWatcher implements Closeable {
+  private final int defaultTimeout;
+  private final AFTIPCDatagramChannel channel;
+  private final Selector selector;
+  private boolean doLoop;
+<span class="nc" id="L40">  private final AtomicBoolean running = new AtomicBoolean(false);</span>
+
+  /**
+   * Creates an {@link AFTIPCTopologyWatcher} whose subscription requests do not time out by
+   * default.
+   * 
+   * @throws IOException on error.
+   */
+  public AFTIPCTopologyWatcher() throws IOException {
+<span class="nc" id="L49">    this(AFTIPCTopologySubscription.TIPC_WAIT_FOREVER);</span>
+<span class="nc" id="L50">  }</span>
+
+  /**
+   * Creates an {@link AFTIPCTopologyWatcher} whose subscription requests use the given default
+   * timeout.
+   * 
+   * @param defaultTimeoutSeconds The timeout in seconds (or
+   *          {@link AFTIPCTopologySubscription#TIPC_WAIT_FOREVER};
+   * @throws IOException on error.
+   */
+<span class="nc" id="L60">  public AFTIPCTopologyWatcher(int defaultTimeoutSeconds) throws IOException {</span>
+<span class="nc" id="L61">    this.defaultTimeout = defaultTimeoutSeconds;</span>
+<span class="nc" id="L62">    this.channel = AFTIPCDatagramSocket.newInstance(AFSocketType.SOCK_SEQPACKET).getChannel();</span>
+<span class="nc" id="L63">    this.selector = channel.provider().openSelector();</span>
+<span class="nc" id="L64">    channel.connect(AFTIPCSocketAddress.ofTopologyService());</span>
+<span class="nc" id="L65">    channel.configureBlocking(false);</span>
+<span class="nc" id="L66">  }</span>
+
+  /**
+   * Watches for all port changes.
+   * 
+   * @return The subscription object.
+   * @throws IOException on error.
+   * @see #cancelSubscription(AFTIPCTopologySubscription)
+   */
+  public final AFTIPCTopologySubscription addPortSubscription() throws IOException {
+<span class="nc" id="L76">    return addPortSubscription(0, ~0);</span>
+  }
+
+  /**
+   * Watches for port changes of the given port (&quot;port&quot; meaning TIPC port, not TCP).
+   * 
+   * @param port The port.
+   * @return The subscription object.
+   * @throws IOException on error.
+   * @see #cancelSubscription(AFTIPCTopologySubscription)
+   */
+  public final AFTIPCTopologySubscription addPortSubscription(int port) throws IOException {
+<span class="nc" id="L88">    return addPortSubscription(port, port);</span>
+  }
+
+  /**
+   * Watches for port changes within the given range (&quot;port&quot; meaning TIPC port, not TCP).
+   * 
+   * @param lower The lower value of the port range.
+   * @param upper The upper value of the port range.
+   * @return The subscription object.
+   * @throws IOException on error.
+   * @see #cancelSubscription(AFTIPCTopologySubscription)
+   */
+  public final AFTIPCTopologySubscription addPortSubscription(int lower, int upper)
+      throws IOException {
+<span class="nc" id="L102">    return sendMessage(new AFTIPCTopologySubscription(AFTIPCTopologySubscription.TIPC_NODE_STATE,</span>
+        lower, upper, AFTIPCTopologySubscription.Flags.TIPC_SUB_PORTS, defaultTimeout,
+        AFTIPCTopologySubscription.USR_EMPTY));
+  }
+
+  /**
+   * Watches for all link state changes.
+   * 
+   * @return The subscription object.
+   * @throws IOException on error.
+   * @see #cancelSubscription(AFTIPCTopologySubscription)
+   */
+  public final AFTIPCTopologySubscription addLinkStateSubscription() throws IOException {
+<span class="nc" id="L115">    return sendMessage(new AFTIPCTopologySubscription(AFTIPCTopologySubscription.TIPC_LINK_STATE, 0,</span>
+        ~0, AFTIPCTopologySubscription.Flags.NONE, defaultTimeout,
+        AFTIPCTopologySubscription.USR_EMPTY));
+  }
+
+  /**
+   * Watches for service changes of the given service type, matching any instance.
+   * 
+   * @param type The service type.
+   * @return The subscription object.
+   * @throws IOException on error.
+   * @see #cancelSubscription(AFTIPCTopologySubscription)
+   */
+  public final AFTIPCTopologySubscription addServiceSubscription(int type) throws IOException {
+<span class="nc" id="L129">    return addServiceSubscription(type, 0, ~0);</span>
+  }
+
+  /**
+   * Watches for service changes of the given service type, matching only the specified instance.
+   * 
+   * @param type The service type.
+   * @param instance The instance to match.
+   * @return The subscription object.
+   * @throws IOException on error.
+   * @see #cancelSubscription(AFTIPCTopologySubscription)
+   */
+  public final AFTIPCTopologySubscription addServiceSubscription(int type, int instance)
+      throws IOException {
+<span class="nc" id="L143">    return addServiceSubscription(type, instance, instance);</span>
+  }
+
+  /**
+   * Watches for service changes of the given service type and instance range.
+   * 
+   * @param type The service type.
+   * @param lower The lower value of the instance range.
+   * @param upper The upper value of the instance range.
+   * @return The subscription object.
+   * @throws IOException on error.
+   * @see #cancelSubscription(AFTIPCTopologySubscription)
+   */
+  public final AFTIPCTopologySubscription addServiceSubscription(int type, int lower, int upper)
+      throws IOException {
+<span class="nc" id="L158">    return sendMessage(new AFTIPCTopologySubscription(type, lower, upper,</span>
+        AFTIPCTopologySubscription.Flags.TIPC_SUB_SERVICE, defaultTimeout,
+        AFTIPCTopologySubscription.USR_EMPTY));
+  }
+
+  /**
+   * Cancels a previously added service subscription.
+   * 
+   * @param sub The subscription to cancel.
+   * @throws IOException on error.
+   */
+  public final void cancelSubscription(AFTIPCTopologySubscription sub) throws IOException {
+<span class="nc" id="L170">    sendMessage(sub.toCancellation());</span>
+<span class="nc" id="L171">  }</span>
+
+  /**
+   * Sends a manually crafted subscription message to the TIPC topology server. You usually don't
+   * need to do this directly; use the
+   * {@code #addPortSubscription(int, int)}/{@link #cancelSubscription(AFTIPCTopologySubscription)}
+   * methods instead.
+   * 
+   * @param sub The subscription message.
+   * @return The very message.
+   * @throws IOException on error.
+   */
+  public final AFTIPCTopologySubscription sendMessage(AFTIPCTopologySubscription sub)
+      throws IOException {
+<span class="nc" id="L185">    channel.write(sub.toBuffer());</span>
+<span class="nc" id="L186">    return sub;</span>
+  }
+
+  /**
+   * Runs a receive loop until {@link #stopLoop()} or {@link #close()} is called.
+   * 
+   * This method returns after the run loop terminates.
+   * 
+   * @throws IOException on error.
+   */
+  @SuppressWarnings(&quot;null&quot;)
+  public final void runLoop() throws IOException {
+<span class="nc bnc" id="L198" title="All 2 branches missed.">    if (!running.compareAndSet(false, true)) {</span>
+<span class="nc" id="L199">      throw new IllegalStateException(&quot;Already running&quot;);</span>
+    }
+
+<span class="nc" id="L202">    ByteBuffer buf = ByteBuffer.allocate(64);</span>
+<span class="nc" id="L203">    SelectionKey key = channel.register(selector, SelectionKey.OP_READ);</span>
+
+    try {
+<span class="nc" id="L206">      doLoop = true;</span>
+<span class="nc bnc" id="L207" title="All 4 branches missed.">      while (!Thread.interrupted() &amp;&amp; doLoop) {</span>
+<span class="nc" id="L208">        int n = selector.select();</span>
+<span class="nc bnc" id="L209" title="All 4 branches missed.">        if (!key.isValid() || !doLoop) {</span>
+<span class="nc" id="L210">          break;</span>
+        }
+<span class="nc bnc" id="L212" title="All 2 branches missed.">        if (n &gt; 0) {</span>
+<span class="nc" id="L213">          channel.receive(buf);</span>
+          @SuppressWarnings(&quot;cast&quot;)
+<span class="nc" id="L215">          AFTIPCTopologyEvent event = AFTIPCTopologyEvent.readFromBuffer((ByteBuffer) buf.flip());</span>
+<span class="nc" id="L216">          onEvent(event);</span>
+<span class="nc" id="L217">          buf.clear();</span>
+        }
+<span class="nc" id="L219">      }</span>
+    } finally {
+<span class="nc" id="L221">      key.cancel();</span>
+<span class="nc" id="L222">      running.set(false);</span>
+    }
+<span class="nc" id="L224">  }</span>
+
+  /**
+   * Called for every event encountered by the run loop.
+   * 
+   * @param event The event.
+   * @throws IOException on error. Any exception will terminate the run loop.
+   * @see #runLoop()
+   */
+  protected void onEvent(AFTIPCTopologyEvent event) throws IOException {
+<span class="nc" id="L234">  }</span>
+
+  /**
+   * Called upon {@link #close()}.
+   * 
+   * @throws IOException on error.
+   */
+  protected void onClose() throws IOException {
+<span class="nc" id="L242">  }</span>
+
+  /**
+   * Checks if the watcher run loop is running.
+   * 
+   * @return {@code true} if running.
+   * @see #runLoop()
+   */
+  public boolean isRunning() {
+<span class="nc" id="L251">    return running.get();</span>
+  }
+
+  /**
+   * Stops the run loop.
+   */
+  public final void stopLoop() {
+<span class="nc" id="L258">    doLoop = false;</span>
+<span class="nc" id="L259">    selector.wakeup();</span>
+<span class="nc" id="L260">  }</span>
+
+  /**
+   * Closes this instance.
+   */
+  @Override
+  public final void close() throws IOException {
+<span class="nc" id="L267">    channel.close();</span>
+<span class="nc" id="L268">    stopLoop();</span>
+<span class="nc" id="L269">    onClose();</span>
+<span class="nc" id="L270">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

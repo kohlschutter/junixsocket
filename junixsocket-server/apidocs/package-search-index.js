@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"m":"org.newsclub.net.unix.server","l":"org.newsclub.net.unix.server"}]
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"org.newsclub.net.unix.server","l":"org.newsclub.net.unix.server"}];updateSearchResults();

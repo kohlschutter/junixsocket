@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCErrInfo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCErrInfo.java</span></div><h1>AFTIPCErrInfo.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.tipc;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.newsclub.net.unix.NamedInteger;
+
+/**
+ * The TIPC-specific error info response that may be included as ancillary data.
+ * 
+ * @author Christian Kohlschütter
+ */
+public final class AFTIPCErrInfo implements Serializable {
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * Error code.
+   */
+  private final ErrorCode errorCode;
+
+  /**
+   * The length of the returned data.
+   */
+  private final int dataLength;
+
+  /**
+   * Some TIPC error code.
+   * 
+   * @author Christian Kohlschütter
+   */
+  @NonNullByDefault
+  public static final class ErrorCode extends NamedInteger {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * No error.
+     */
+    public static final ErrorCode TIPC_OK;
+
+    /**
+     * Destination port name is unknown.
+     */
+    public static final ErrorCode TIPC_ERR_NO_NAME;
+
+    /**
+     * Destination port id does not exist.
+     */
+    public static final ErrorCode TIPC_ERR_NO_PORT;
+
+    /**
+     * Destination node is unreachable.
+     */
+    public static final ErrorCode TIPC_ERR_NO_NODE;
+
+    /**
+     * Destination is congested.
+     */
+    public static final ErrorCode TIPC_ERR_OVERLOAD;
+
+    /**
+     * Normal connection shutdown occurred.
+     */
+    public static final ErrorCode TIPC_ERR_CONN_SHUTDOWN;
+
+<span class="nc" id="L84">    private static final @NonNull ErrorCode[] VALUES = init(new @NonNull ErrorCode[] {</span>
+        TIPC_OK = new ErrorCode(&quot;TIPC_OK&quot;, 0), //
+        TIPC_ERR_NO_NAME = new ErrorCode(&quot;TIPC_ERR_NO_NAME&quot;, 1), //
+        TIPC_ERR_NO_PORT = new ErrorCode(&quot;TIPC_ERR_NO_PORT&quot;, 2), //
+        TIPC_ERR_NO_NODE = new ErrorCode(&quot;TIPC_ERR_NO_NODE&quot;, 3), //
+        TIPC_ERR_OVERLOAD = new ErrorCode(&quot;TIPC_ERR_OVERLOAD&quot;, 4), //
+        TIPC_ERR_CONN_SHUTDOWN = new ErrorCode(&quot;TIPC_ERR_CONN_SHUTDOWN&quot;, 5), //
+    });
+
+    private ErrorCode(int id) {
+<span class="nc" id="L94">      super(id);</span>
+<span class="nc" id="L95">    }</span>
+
+    private ErrorCode(String name, int id) {
+<span class="nc" id="L98">      super(name, id);</span>
+<span class="nc" id="L99">    }</span>
+
+    /**
+     * Returns an {@link ErrorCode} instance given an integer.
+     * 
+     * @param v The value.
+     * @return The instance.
+     */
+    public static ErrorCode ofValue(int v) {
+<span class="nc" id="L108">      return ofValue(VALUES, ErrorCode::new, v);</span>
+    }
+  }
+
+  /**
+   * Creates a new instance.
+   * 
+   * @param errorCode The error code.
+   * @param dataLength The length of the returned data.
+   */
+<span class="nc" id="L118">  public AFTIPCErrInfo(ErrorCode errorCode, int dataLength) {</span>
+<span class="nc" id="L119">    this.errorCode = errorCode;</span>
+<span class="nc" id="L120">    this.dataLength = dataLength;</span>
+<span class="nc" id="L121">  }</span>
+
+  /**
+   * Returns the error code.
+   * 
+   * @return The error code.
+   */
+  public ErrorCode getErrorCode() {
+<span class="nc" id="L129">    return errorCode;</span>
+  }
+
+  /**
+   * The length of the corresponding data.
+   * 
+   * @return The length in bytes.
+   */
+  public int getDataLength() {
+<span class="nc" id="L138">    return dataLength;</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L143">    return getClass().getName() + &quot;(&quot; + errorCode + &quot;;dataLength=&quot; + dataLength + &quot;)&quot;;</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="nc" id="L148">    return Objects.hash(dataLength, errorCode);</span>
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+<span class="nc bnc" id="L153" title="All 2 branches missed.">    if (this == obj) {</span>
+<span class="nc" id="L154">      return true;</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">    } else if (obj == null) {</span>
+<span class="nc" id="L156">      return false;</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">    } else if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L158">      return false;</span>
+    }
+<span class="nc" id="L160">    AFTIPCErrInfo other = (AFTIPCErrInfo) obj;</span>
+<span class="nc bnc" id="L161" title="All 4 branches missed.">    return dataLength == other.dataLength &amp;&amp; errorCode.equals(other.errorCode);</span>
+  }
+
+  @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
+  static AFTIPCErrInfo of(int[] tipcErrInfo) {
+<span class="nc bnc" id="L166" title="All 2 branches missed.">    if (tipcErrInfo == null) {</span>
+<span class="nc" id="L167">      return null;</span>
+    }
+<span class="nc bnc" id="L169" title="All 2 branches missed.">    if (tipcErrInfo.length != 2) {</span>
+<span class="nc" id="L170">      throw new IllegalArgumentException();</span>
+    }
+<span class="nc" id="L172">    return new AFTIPCErrInfo(ErrorCode.ofValue(tipcErrInfo[0]), tipcErrInfo[1]);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFPipe.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFPipe.java</span></div><h1>AFPipe.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.Closeable;
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.Pipe;
+import java.nio.channels.spi.SelectorProvider;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+/**
+ * A {@link Pipe}, natively implemented.
+ * 
+ * @author Christian Kohlschütter
+ */
+public final class AFPipe extends Pipe implements Closeable {
+  private final AFCore sourceCore;
+  private final AFCore sinkCore;
+  private final SourceChannel sourceChannel;
+  private final SinkChannel sinkChannel;
+  private final int options;
+
+  AFPipe(AFSelectorProvider&lt;?&gt; provider, boolean selectable) throws IOException {
+<span class="fc" id="L42">    super();</span>
+
+<span class="fc" id="L44">    NativeUnixSocket.ensureSupported();</span>
+
+<span class="fc" id="L46">    this.sourceCore = new AFCore(this, (FileDescriptor) null);</span>
+<span class="fc" id="L47">    this.sinkCore = new AFCore(this, (FileDescriptor) null);</span>
+
+<span class="fc" id="L49">    boolean isSocket = NativeUnixSocket.initPipe(sourceCore.fd, sinkCore.fd, selectable);</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">    this.options = isSocket ? 0 : NativeUnixSocket.OPT_NON_SOCKET;</span>
+
+<span class="fc" id="L52">    this.sourceChannel = new SourceChannel(provider);</span>
+<span class="fc" id="L53">    this.sinkChannel = new SinkChannel(provider);</span>
+<span class="fc" id="L54">  }</span>
+
+  @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
+  @Override
+  public SourceChannel source() {
+<span class="fc" id="L59">    return sourceChannel;</span>
+  }
+
+  @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
+  @Override
+  public SinkChannel sink() {
+<span class="fc" id="L65">    return sinkChannel;</span>
+  }
+
+  FileDescriptor sourceFD() {
+<span class="fc" id="L69">    return sourceCore.fd;</span>
+  }
+
+  FileDescriptor sinkFD() {
+<span class="nc" id="L73">    return sinkCore.fd;</span>
+  }
+
+  @Override
+  public void close() throws IOException {
+    try {
+<span class="fc" id="L79">      source().close();</span>
+    } finally {
+<span class="fc" id="L81">      sink().close();</span>
+    }
+<span class="fc" id="L83">  }</span>
+
+  /**
+   * A channel representing the readable end of a {@link Pipe}, with access to the
+   * {@link FileDescriptor}.
+   */
+  public final class SourceChannel extends java.nio.channels.Pipe.SourceChannel implements
+      FileDescriptorAccess {
+<span class="fc" id="L91">    SourceChannel(SelectorProvider provider) {</span>
+<span class="fc" id="L92">      super(provider);</span>
+<span class="fc" id="L93">    }</span>
+
+    @Override
+    public long read(ByteBuffer[] dsts, int offset, int length) throws IOException {
+<span class="nc bnc" id="L97" title="All 2 branches missed.">      if (length == 0) {</span>
+<span class="nc" id="L98">        return 0;</span>
+      }
+<span class="nc" id="L100">      return read(dsts[offset]);</span>
+    }
+
+    @Override
+    public long read(ByteBuffer[] dsts) throws IOException {
+<span class="nc" id="L105">      return read(dsts, 0, dsts.length);</span>
+    }
+
+    @Override
+    public int read(ByteBuffer dst) throws IOException {
+<span class="fc" id="L110">      return sourceCore.read(dst, null, options);</span>
+    }
+
+    @Override
+    protected void implConfigureBlocking(boolean block) throws IOException {
+<span class="nc" id="L115">      sourceCore.implConfigureBlocking(block);</span>
+<span class="nc" id="L116">    }</span>
+
+    @Override
+    protected void implCloseSelectableChannel() throws IOException {
+<span class="fc" id="L120">      sourceCore.close();</span>
+<span class="fc" id="L121">    }</span>
+
+    @Override
+    public FileDescriptor getFileDescriptor() throws IOException {
+<span class="fc" id="L125">      return sourceCore.fd;</span>
+    }
+  }
+
+  /**
+   * A channel representing the writable end of a {@link Pipe}, with access to the
+   * {@link FileDescriptor}.
+   */
+  public final class SinkChannel extends java.nio.channels.Pipe.SinkChannel implements
+      FileDescriptorAccess {
+<span class="fc" id="L135">    SinkChannel(SelectorProvider provider) {</span>
+<span class="fc" id="L136">      super(provider);</span>
+<span class="fc" id="L137">    }</span>
+
+    @Override
+    public long write(ByteBuffer[] srcs, int offset, int length) throws IOException {
+<span class="nc bnc" id="L141" title="All 2 branches missed.">      if (length == 0) {</span>
+<span class="nc" id="L142">        return 0;</span>
+      }
+<span class="nc" id="L144">      return write(srcs[offset]);</span>
+    }
+
+    @Override
+    public long write(ByteBuffer[] srcs) throws IOException {
+<span class="nc" id="L149">      return write(srcs, 0, srcs.length);</span>
+    }
+
+    @Override
+    public int write(ByteBuffer src) throws IOException {
+<span class="fc" id="L154">      return sinkCore.write(src, null, options);</span>
+    }
+
+    @Override
+    protected void implConfigureBlocking(boolean block) throws IOException {
+<span class="nc" id="L159">      sinkCore.implConfigureBlocking(block);</span>
+<span class="nc" id="L160">    }</span>
+
+    @Override
+    protected void implCloseSelectableChannel() throws IOException {
+<span class="fc" id="L164">      sinkCore.close();</span>
+<span class="fc" id="L165">    }</span>
+
+    @Override
+    public FileDescriptor getFileDescriptor() throws IOException {
+<span class="fc" id="L169">      return sinkCore.fd;</span>
+    }
+  }
+
+  /**
+   * Returns the options bitmask that is to be passed to native receive/send calls.
+   * 
+   * @return The options.
+   */
+  int getOptions() {
+<span class="fc" id="L179">    return options;</span>
+  }
+
+  /**
+   * Opens an {@link AFPipe}.
+   *
+   * @return The new pipe
+   * @throws IOException on error.
+   */
+  public static AFPipe open() throws IOException {
+<span class="fc" id="L189">    return AFUNIXSelectorProvider.provider().openPipe();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

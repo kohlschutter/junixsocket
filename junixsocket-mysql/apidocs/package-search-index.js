@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"m":"org.newsclub.net.mysql","l":"org.newsclub.net.mysql"}]
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"org.newsclub.net.mysql","l":"org.newsclub.net.mysql"}];updateSearchResults();

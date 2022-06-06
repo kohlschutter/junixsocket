@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFSelectorProvider.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSelectorProvider.java</span></div><h1>AFSelectorProvider.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.IOException;
+import java.net.ProtocolFamily;
+import java.net.SocketAddress;
+import java.nio.channels.spi.AbstractSelector;
+import java.nio.channels.spi.SelectorProvider;
+
+import org.eclipse.jdt.annotation.NonNull;
+
+/**
+ * Service-provider class for junixsocket selectors and selectable channels.
+ * 
+ * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
+ */
+public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extends SelectorProvider {
+
+  /**
+   * Constructs a new {@link AFSelectorProvider}.
+   */
+  protected AFSelectorProvider() {
+<span class="fc" id="L39">    super();</span>
+<span class="fc" id="L40">  }</span>
+
+  /**
+   * Constructs a new pipe.
+   * 
+   * @param selectable {@code true} if the pipe should be selectable.
+   * @return The pipe.
+   * @throws IOException on error.
+   */
+  private AFPipe newPipe(boolean selectable) throws IOException {
+<span class="fc" id="L50">    return new AFPipe(this, selectable);</span>
+  }
+
+  /**
+   * Constructs a new socket pair from two sockets.
+   * 
+   * @param &lt;Y&gt; The type of the pair.
+   * @param s1 Some socket, the first one.
+   * @param s2 Some socket, the second one.
+   * @return The pair.
+   */
+  protected abstract &lt;Y extends AFSomeSocket&gt; AFSocketPair&lt;Y&gt; newSocketPair(Y s1, Y s2);
+
+  /**
+   * Constructs a new socket.
+   * 
+   * @return The socket instance.
+   * @throws IOException on error.
+   */
+  protected abstract AFSocket&lt;A&gt; newSocket() throws IOException;
+
+  /**
+   * Returns the protocol family supported by this implementation.
+   * 
+   * @return The protocol family.
+   */
+  protected abstract ProtocolFamily protocolFamily();
+
+  /**
+   * Returns the address family supported by this implementation.
+   * 
+   * @return The address family.
+   */
+  protected abstract AFAddressFamily&lt;@NonNull A&gt; addressFamily();
+
+  /**
+   * Returns the domain ID for the supported protocol, as specified by {@link NativeUnixSocket}.
+   * 
+   * @return The domain ID.
+   */
+  protected final int domainId() {
+<span class="fc" id="L91">    return addressFamily().getDomain();</span>
+  }
+
+  /**
+   * Opens a socket pair of interconnected channels.
+   * 
+   * @return The new channel pair.
+   * @throws IOException on error.
+   */
+  @SuppressWarnings(&quot;resource&quot;)
+  public AFSocketPair&lt;? extends AFSocketChannel&lt;A&gt;&gt; openSocketChannelPair() throws IOException {
+<span class="fc" id="L102">    AFSocketChannel&lt;A&gt; s1 = openSocketChannel();</span>
+<span class="fc" id="L103">    AFSocketChannel&lt;A&gt; s2 = openSocketChannel();</span>
+
+<span class="fc" id="L105">    NativeUnixSocket.socketPair(domainId(), NativeUnixSocket.SOCK_STREAM, s1.getAFCore().fd, s2</span>
+<span class="fc" id="L106">        .getAFCore().fd);</span>
+
+<span class="fc" id="L108">    s1.socket().internalDummyConnect();</span>
+<span class="fc" id="L109">    s2.socket().internalDummyConnect();</span>
+
+<span class="fc" id="L111">    return newSocketPair(s1, s2);</span>
+  }
+
+  /**
+   * Opens a socket pair of interconnected datagram channels.
+   * 
+   * @return The new channel pair.
+   * @throws IOException on error.
+   */
+  @SuppressWarnings(&quot;resource&quot;)
+  public AFSocketPair&lt;? extends AFDatagramChannel&lt;A&gt;&gt; openDatagramChannelPair() throws IOException {
+<span class="fc" id="L122">    ProtocolFamily pf = protocolFamily();</span>
+<span class="fc" id="L123">    AFDatagramChannel&lt;A&gt; s1 = openDatagramChannel(pf);</span>
+<span class="fc" id="L124">    AFDatagramChannel&lt;A&gt; s2 = openDatagramChannel(pf);</span>
+
+<span class="fc" id="L126">    NativeUnixSocket.socketPair(domainId(), NativeUnixSocket.SOCK_STREAM, s1.getAFCore().fd, s2</span>
+<span class="fc" id="L127">        .getAFCore().fd);</span>
+
+<span class="fc" id="L129">    s1.socket().internalDummyBind();</span>
+<span class="fc" id="L130">    s2.socket().internalDummyBind();</span>
+<span class="fc" id="L131">    s1.socket().internalDummyConnect();</span>
+<span class="fc" id="L132">    s2.socket().internalDummyConnect();</span>
+
+<span class="fc" id="L134">    return newSocketPair(s1, s2);</span>
+  }
+
+  @Override
+  public abstract AFDatagramChannel&lt;A&gt; openDatagramChannel() throws IOException;
+
+  @Override
+  public AFDatagramChannel&lt;A&gt; openDatagramChannel(ProtocolFamily family) throws IOException {
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">    if (!protocolFamily().name().equals(family.name())) {</span>
+<span class="nc" id="L143">      throw new UnsupportedOperationException(&quot;Unsupported protocol family&quot;);</span>
+    }
+<span class="fc" id="L145">    return openDatagramChannel();</span>
+  }
+
+  @Override
+  public final AFPipe openPipe() throws IOException {
+<span class="fc" id="L150">    return newPipe(false);</span>
+  }
+
+  /**
+   * Opens a pipe with support for selectors.
+   * 
+   * @return The new pipe
+   * @throws IOException on error.
+   */
+  final AFPipe openSelectablePipe() throws IOException {
+<span class="fc" id="L160">    return newPipe(true);</span>
+  }
+
+  @Override
+  public final AbstractSelector openSelector() throws IOException {
+<span class="fc" id="L165">    return new AFSelector(this);</span>
+  }
+
+  @Override
+  public abstract AFServerSocketChannel&lt;A&gt; openServerSocketChannel() throws IOException;
+
+  /**
+   * Opens a server-socket channel bound on the given {@link SocketAddress}.
+   *
+   * @param sa The socket address to bind on.
+   * @return The new channel
+   * @throws IOException on error.
+   */
+  public abstract AFServerSocketChannel&lt;A&gt; openServerSocketChannel(SocketAddress sa)
+      throws IOException;
+
+  @Override
+  public AFSocketChannel&lt;A&gt; openSocketChannel() throws IOException {
+<span class="fc" id="L183">    return newSocket().getChannel();</span>
+  }
+
+  /**
+   * Opens a socket channel connected to the given {@link SocketAddress}.
+   * 
+   * @param sa The socket address to connect to.
+   * @return The new channel
+   * @throws IOException on error.
+   */
+  public abstract AFSocketChannel&lt;A&gt; openSocketChannel(SocketAddress sa) throws IOException;
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="CHECK" timestamp="1654552095250">
+    <module artifactId="junixsocket-selftest" groupId="com.kohlschutter.junixsocket" version="2.5.0"/>
+    <files>
+        <file path="src/main/java/org/newsclub/net/unix/selftest/Selftest.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/selftest/SelftestExecutor.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/selftest/SelftestProvider.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/selftest/SelftestTest.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/selftest/apps/EchoServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/selftest/apps/SocketAddressUtil.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/selftest/apps/StreamClient.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/selftest/apps/ZeroServer.java" result="PRESENT"/>
+    </files>
+</licensePluginReport>

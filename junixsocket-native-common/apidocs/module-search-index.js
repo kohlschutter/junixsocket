@@ -1,1 +1,1 @@
-moduleSearchIndex = [{"l":"com.kohlschutter.junixsocket.nativecommon"}]
+moduleSearchIndex = [{"l":"com.kohlschutter.junixsocket.nativecommon"}];updateSearchResults();

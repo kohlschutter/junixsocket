@@ -1,1 +1,1 @@
-typeSearchIndex = [{"p":"org.newsclub.net.unix.server","l":"AFUNIXSocketServer"},{"l":"All Classes","url":"allclasses-index.html"}]
+typeSearchIndex = [{"p":"org.newsclub.net.unix.server","l":"AFSocketServer"},{"p":"org.newsclub.net.unix.server","l":"AFUNIXSocketServer"},{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.newsclub.net.unix.server","l":"SocketServer"}];updateSearchResults();

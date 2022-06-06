@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFNamingRef.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFNamingRef.java</span></div><h1>AFNamingRef.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.rmi;
+
+import java.rmi.RemoteException;
+import java.util.Objects;
+
+/**
+ * A reference to a {@link AFNaming} instance.
+ * 
+ * @author Christian Kohlschütter
+ */
+final class AFNamingRef {
+  private final AFNamingProvider&lt;?&gt; provider;
+  private final int port;
+
+<span class="fc" id="L32">  AFNamingRef(AFNamingProvider&lt;?&gt; provider, int port) throws RemoteException {</span>
+<span class="fc" id="L33">    this.provider = provider;</span>
+<span class="fc" id="L34">    this.port = port;</span>
+<span class="fc" id="L35">  }</span>
+
+  @Override
+  public int hashCode() {
+<span class="fc" id="L39">    return Objects.hash(port, provider);</span>
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+<span class="nc bnc" id="L44" title="All 2 branches missed.">    if (this == obj) {</span>
+<span class="nc" id="L45">      return true;</span>
+    }
+<span class="nc bnc" id="L47" title="All 2 branches missed.">    if (!(obj instanceof AFNamingRef)) {</span>
+<span class="nc" id="L48">      return false;</span>
+    }
+<span class="nc" id="L50">    AFNamingRef other = (AFNamingRef) obj;</span>
+<span class="nc bnc" id="L51" title="All 4 branches missed.">    return port == other.port &amp;&amp; Objects.equals(provider, other.provider);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

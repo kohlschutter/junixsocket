@@ -23,9 +23,9 @@ under the License.
     <link>https://kohlschutter.github.io/junixsocket/junixsocket-rmi/</link>
     <description>junixsocket-rmi - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2009 - 2021 Kohlschütter Search Intelligence</copyright>
+    <copyright>&#169;2009 - 2022 Kohlschütter Search Intelligence</copyright>
     <item>
-      <title>File: 14,
+      <title>File: 18,
              Errors: 0,
              Warnings: 0,
              Infos: 0
@@ -102,7 +102,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRMIServiceImpl.java">org/newsclub/net/unix/rmi/AFUNIXRMIServiceImpl.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFNamingRef.java">org/newsclub/net/unix/rmi/AFNamingRef.java</a>
                 </td>
                 <td>
                   0
@@ -116,7 +116,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXNamingRef.java">org/newsclub/net/unix/rmi/AFUNIXNamingRef.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFRegistryAccess.java">org/newsclub/net/unix/rmi/AFRegistryAccess.java</a>
                 </td>
                 <td>
                   0
@@ -130,7 +130,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRegistryAccess.java">org/newsclub/net/unix/rmi/AFUNIXRegistryAccess.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFRMIServiceImpl.java">org/newsclub/net/unix/rmi/AFRMIServiceImpl.java</a>
                 </td>
                 <td>
                   0
@@ -144,7 +144,35 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRMIService.java">org/newsclub/net/unix/rmi/AFUNIXRMIService.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFRMIService.java">org/newsclub/net/unix/rmi/AFRMIService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFRMISocketFactory.java">org/newsclub/net/unix/rmi/AFRMISocketFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFNamingProvider.java">org/newsclub/net/unix/rmi/AFNamingProvider.java</a>
                 </td>
                 <td>
                   0
@@ -159,6 +187,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.DefaultRMIClientSocketFactory.java">org/newsclub/net/unix/rmi/DefaultRMIClientSocketFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.RMIPorts.java">org/newsclub/net/unix/rmi/RMIPorts.java</a>
                 </td>
                 <td>
                   0
@@ -200,6 +242,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFRegistry.java">org/newsclub/net/unix/rmi/AFRegistry.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.ShutdownHookSupport.java">org/newsclub/net/unix/rmi/ShutdownHookSupport.java</a>
                 </td>
                 <td>
@@ -228,7 +284,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFUNIXRMIPorts.java">org/newsclub/net/unix/rmi/AFUNIXRMIPorts.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-rmi//checkstyle.html#org.newsclub.net.unix.rmi.AFNaming.java">org/newsclub/net/unix/rmi/AFNaming.java</a>
                 </td>
                 <td>
                   0

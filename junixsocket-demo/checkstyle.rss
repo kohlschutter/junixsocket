@@ -23,9 +23,9 @@ under the License.
     <link>https://kohlschutter.github.io/junixsocket/junixsocket-demo/</link>
     <description>junixsocket-demo - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2009 - 2021 Kohlschütter Search Intelligence</copyright>
+    <copyright>&#169;2009 - 2022 Kohlschütter Search Intelligence</copyright>
     <item>
-      <title>File: 23,
+      <title>File: 24,
              Errors: 0,
              Warnings: 0,
              Infos: 0
@@ -144,6 +144,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.okhttp.OkHttpClientTIPCDemo.java">org/newsclub/net/unix/demo/okhttp/OkHttpClientTIPCDemo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.rmi.WorldImpl.java">org/newsclub/net/unix/demo/rmi/WorldImpl.java</a>
                 </td>
                 <td>
@@ -186,7 +200,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.nanohttpd.NanoHttpdServerDemo.java">org/newsclub/net/unix/demo/nanohttpd/NanoHttpdServerDemo.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.server.SocketServerDemo.java">org/newsclub/net/unix/demo/server/SocketServerDemo.java</a>
                 </td>
                 <td>
                   0
@@ -200,7 +214,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.server.AFUNIXSocketServerDemo.java">org/newsclub/net/unix/demo/server/AFUNIXSocketServerDemo.java</a>
+                  <a href="https://kohlschutter.github.io/junixsocket/junixsocket-demo//checkstyle.html#org.newsclub.net.unix.demo.nanohttpd.NanoHttpdServerDemo.java">org/newsclub/net/unix/demo/nanohttpd/NanoHttpdServerDemo.java</a>
                 </td>
                 <td>
                   0

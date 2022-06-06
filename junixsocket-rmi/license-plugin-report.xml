@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="CHECK" timestamp="1654552070900">
+    <module artifactId="junixsocket-rmi" groupId="com.kohlschutter.junixsocket" version="2.5.0"/>
+    <files>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/AFNaming.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/AFNamingProvider.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/AFNamingRef.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/AFRMIService.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/AFRMIServiceImpl.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/AFRMISocketFactory.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/AFRegistry.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/AFRegistryAccess.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/AFUNIXNaming.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/AFUNIXRMISocketFactory.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/AFUNIXRegistry.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/DefaultRMIClientSocketFactory.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/DefaultRMIServerSocketFactory.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/RMIPorts.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/RemoteCloseable.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/RemoteCloseableImpl.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/RemoteFileDescriptor.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/RemoteFileDescriptorBase.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/RemoteFileInput.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/RemoteFileOutput.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/RemotePeerInfo.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/ShutdownException.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/rmi/ShutdownHookSupport.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/AFSocketCapabilityCondition.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/AFSocketCapabilityRequirement.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/Hello.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/HelloImpl.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/JunixsocketVersionTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/NaiveFileInputStreamRemote.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/NaiveFileInputStreamRemoteImpl.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/RMIPeerCredentialsTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/RegistryTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/RemoteCloseableTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/RemoteCloseableThing.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/RemoteCloseableThingImpl.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/RemoteFileDescriptorTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/RemoteRegistryTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/SelftestProvider.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/ShutdownHookTestBase.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/TestBase.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/TestRegistryServer.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/TestService.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/rmi/TestServiceImpl.java" result="PRESENT"/>
+    </files>
+</licensePluginReport>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCSocketOptions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCSocketOptions.java</span></div><h1>AFTIPCSocketOptions.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.tipc;
+
+import java.net.SocketOption;
+import java.net.StandardSocketOptions;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.newsclub.net.unix.AFSocketOption;
+import org.newsclub.net.unix.NamedInteger;
+
+/**
+ * TIPC-specific socket options.
+ * 
+ * @author Christian Kohlschütter
+ */
+@NonNullByDefault
+public final class AFTIPCSocketOptions {
+  /**
+   * Use as value for {@link SocketOption}s of type {@link Void}.
+   * 
+   * @see #TIPC_GROUP_LEAVE
+   */
+  @SuppressWarnings({&quot;null&quot;})
+<span class="nc" id="L41">  public static final Void VOID = (@NonNull Void) null;</span>
+
+  /**
+   * This option governs how likely a message sent by the socket is to be affected by congestion. A
+   * message with higher importance is less likely to be delayed due to link congestion and less
+   * likely to be rejected due to receiver congestion.
+   * 
+   * @see MessageImportance
+   */
+<span class="nc" id="L50">  public static final AFSocketOption&lt;MessageImportance&gt; TIPC_IMPORTANCE = new AFSocketOption&lt;&gt;(</span>
+      &quot;TIPC_IMPORTANCE&quot;, MessageImportance.class, 271, 127);
+
+  /**
+   * Controls whether a message should be discarded when link congestion occurs.
+   */
+<span class="nc" id="L56">  public static final AFSocketOption&lt;Boolean&gt; TIPC_SRC_DROPPABLE = new AFSocketOption&lt;&gt;(</span>
+      &quot;TIPC_SRC_DROPPABLE&quot;, Boolean.class, 271, 128);
+
+  /**
+   * This option governs the handling of a sent message if it cannot be delivered to its
+   * destination. If set, the message is discarded; otherwise it is returned to the sender.
+   * 
+   * By default, this option is enabled for SOCK_RDM and SOCK_DGRAM sockets, and disabled otherwise.
+   */
+<span class="nc" id="L65">  public static final AFSocketOption&lt;Boolean&gt; TIPC_DEST_DROPPABLE = new AFSocketOption&lt;&gt;(</span>
+      &quot;TIPC_DEST_DROPPABLE&quot;, Boolean.class, 271, 129);
+
+  /**
+   * Specifies the number of milliseconds connect() will wait before giving up because of lack of
+   * response. The default value is 8000 ms.
+   */
+<span class="nc" id="L72">  public static final AFSocketOption&lt;Integer&gt; TIPC_CONN_TIMEOUT = new AFSocketOption&lt;&gt;(</span>
+      &quot;TIPC_CONN_TIMEOUT&quot;, Integer.class, 271, 130);
+
+  /**
+   * Returns the number of messages in the node's receive queue (get only).
+   */
+<span class="nc" id="L78">  public static final AFSocketOption&lt;Integer&gt; TIPC_NODE_RECVQ_DEPTH = new AFSocketOption&lt;&gt;(</span>
+      &quot;TIPC_NODE_RECVQ_DEPTH&quot;, Integer.class, 271, 131);
+
+  /**
+   * Returns the number of messages in the socket's receive queue (get only).
+   */
+<span class="nc" id="L84">  public static final AFSocketOption&lt;Integer&gt; TIPC_SOCK_RECVQ_DEPTH = new AFSocketOption&lt;&gt;(</span>
+      &quot;TIPC_SOCK_RECVQ_DEPTH&quot;, Integer.class, 271, 132);
+
+  /**
+   * Force datagram multicasts from this socket to be transmitted as bearer broadcast/multicast
+   * (instead of replicated unicast) whenever possible..
+   */
+<span class="nc" id="L91">  public static final AFSocketOption&lt;Boolean&gt; TIPC_MCAST_BROADCAST = new AFSocketOption&lt;&gt;(</span>
+      &quot;TIPC_MCAST_BROADCAST&quot;, Boolean.class, 271, 133);
+
+  /**
+   * Force datagram multicasts from this socket to be transmitted as replicated unicast instead of
+   * bearer broadcast/multicast..
+   */
+<span class="nc" id="L98">  public static final AFSocketOption&lt;Boolean&gt; TIPC_MCAST_REPLICAST = new AFSocketOption&lt;&gt;(</span>
+      &quot;TIPC_MCAST_REPLICAST&quot;, Boolean.class, 271, 134);
+
+  /**
+   * Join a communication group.
+   */
+<span class="nc" id="L104">  public static final AFSocketOption&lt;AFTIPCGroupRequest&gt; TIPC_GROUP_JOIN = new AFSocketOption&lt;&gt;(</span>
+      &quot;TIPC_GROUP_JOIN&quot;, AFTIPCGroupRequest.class, 271, 135);
+
+  /**
+   * Leave the previously joined communication group.
+   * 
+   * Only valid for setOption. The value is ignored. Use {@link #VOID}.
+   */
+<span class="nc" id="L112">  public static final AFSocketOption&lt;Void&gt; TIPC_GROUP_LEAVE = new AFSocketOption&lt;&gt;(</span>
+      &quot;TIPC_GROUP_LEAVE&quot;, Void.class, 271, 136);
+
+  /**
+   * When using TIPC_SOCK_RECVQ_DEPTH for getsockopt(), it returns the number of buffers in the
+   * receive socket buffer which is not so helpful for user space applications.
+   * 
+   * TIPC_SOCK_RECVQ_USED returns the current allocated bytes of the receive socket buffer. This
+   * helps user space applications dimension its buffer usage to avoid buffer overload issue.
+   */
+<span class="nc" id="L122">  public static final AFSocketOption&lt;Integer&gt; TIPC_SOCK_RECVQ_USED = new AFSocketOption&lt;&gt;(</span>
+      &quot;TIPC_SOCK_RECVQ_USED&quot;, Integer.class, 271, 137);
+
+  /**
+   * If enabled, the Nagle algorithm is disabled. Similar to
+   * {@link StandardSocketOptions#TCP_NODELAY}.
+   */
+<span class="nc" id="L129">  public static final AFSocketOption&lt;Boolean&gt; TIPC_NODELAY = new AFSocketOption&lt;&gt;(&quot;TIPC_NODELAY&quot;,</span>
+      Boolean.class, 271, 138);
+
+<span class="nc" id="L132">  private AFTIPCSocketOptions() {</span>
+<span class="nc" id="L133">    throw new IllegalStateException();</span>
+  }
+
+  /**
+   * The TIPC message importance.
+   * 
+   * Messages with a higher importance have a lower chance of being dropped when congestion occurs.
+   * 
+   * @author Christian Kohlschütter
+   */
+  public static final class MessageImportance extends NamedInteger implements
+      NamedInteger.HasOfValue {
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Low importance (the default).
+     */
+    public static final MessageImportance LOW;
+
+    /**
+     * Medium importance.
+     */
+    public static final MessageImportance MEDIUM;
+
+    /**
+     * High importance.
+     */
+    public static final MessageImportance HIGH;
+
+    /**
+     * Critical importance.
+     */
+    public static final MessageImportance CRITICAL;
+
+<span class="nc" id="L167">    private static final @NonNull MessageImportance[] VALUES = init(</span>
+        new @NonNull MessageImportance[] {
+            LOW = new MessageImportance(&quot;LOW&quot;, 0), //
+            MEDIUM = new MessageImportance(&quot;MEDIUM&quot;, 1), //
+            HIGH = new MessageImportance(&quot;HIGH&quot;, 2), //
+            CRITICAL = new MessageImportance(&quot;CRITICAL&quot;, 3) //
+        });
+
+    private MessageImportance(int id) {
+<span class="nc" id="L176">      super(id);</span>
+<span class="nc" id="L177">    }</span>
+
+    private MessageImportance(String name, int id) {
+<span class="nc" id="L180">      super(name, id);</span>
+<span class="nc" id="L181">    }</span>
+
+    /**
+     * Returns a {@link MessageImportance} instance for the given value.
+     * 
+     * @param v The value.
+     * @return The instance.
+     */
+    public static MessageImportance ofValue(int v) {
+<span class="nc" id="L190">      return ofValue(VALUES, MessageImportance::new, v);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

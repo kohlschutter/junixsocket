@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCDestName.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCDestName.java</span></div><h1>AFTIPCDestName.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.tipc;
+
+import java.io.Serializable;
+import java.net.SocketException;
+
+import org.newsclub.net.unix.AFTIPCSocketAddress;
+import org.newsclub.net.unix.AFTIPCSocketAddress.Scope;
+
+/**
+ * The TIPC-specific DestName response that may be included as ancillary data.
+ * 
+ * @author Christian Kohlschütter
+ */
+public final class AFTIPCDestName implements Serializable {
+  private static final long serialVersionUID = 1L;
+  /**
+   * Type value.
+   */
+  private final int type;
+
+  /**
+   * Lower service range value.
+   */
+  private final int lower;
+
+  /**
+   * Upper service range value.
+   */
+  private final int upper;
+
+  /**
+   * Creates a new instance.
+   * 
+   * @param type The &quot;type&quot; value.
+   * @param lower The &quot;lower&quot; service range value (or the service &quot;instance&quot; if {@code lower} and
+   *          {@code upper} are the same).
+   * @param upper The &quot;upper&quot; service range value (or the service &quot;instance&quot; if {@code lower} and
+   *          {@code upper} are the same).
+   */
+<span class="nc" id="L57">  public AFTIPCDestName(int type, int lower, int upper) {</span>
+<span class="nc" id="L58">    this.type = type;</span>
+<span class="nc" id="L59">    this.lower = lower;</span>
+<span class="nc" id="L60">    this.upper = upper;</span>
+<span class="nc" id="L61">  }</span>
+
+  /**
+   * Returns the &quot;type&quot; value.
+   * 
+   * @return The type.
+   */
+  public int getType() {
+<span class="nc" id="L69">    return type;</span>
+  }
+
+  /**
+   * Returns the &quot;lower&quot; value of the service range (or the service &quot;instance&quot; if identical to the
+   * upper value).
+   * 
+   * @return The lower value.
+   */
+  public int getLower() {
+<span class="nc" id="L79">    return lower;</span>
+  }
+
+  /**
+   * Returns the &quot;upper&quot; value of the service range (or the service &quot;instance&quot; if identical to the
+   * lower value).
+   * 
+   * @return The upper value.
+   */
+  public int getUpper() {
+<span class="nc" id="L89">    return upper;</span>
+  }
+
+  /**
+   * Checks if this DestName describes a service range (as opposed to a service) address.
+   * 
+   * @return {@code true} if the {@link #getLower()} value is different from the {@link #getUpper()}
+   *         value.
+   */
+  public boolean isServiceRange() {
+<span class="nc bnc" id="L99" title="All 2 branches missed.">    return lower != upper;</span>
+  }
+
+  /**
+   * Converts this DestName to a proper {@link AFTIPCSocketAddress}, by using the given
+   * {@link Scope} (which is otherwise not included).
+   * 
+   * @param scope The scope to use.
+   * @param alwaysRange If {@code true}, a service range address is even returned when a service
+   *          address would suffice.
+   * @return The address.
+   */
+  public AFTIPCSocketAddress toSocketAddress(Scope scope, boolean alwaysRange) {
+    try {
+<span class="nc bnc" id="L113" title="All 4 branches missed.">      if (alwaysRange || isServiceRange()) {</span>
+<span class="nc" id="L114">        return AFTIPCSocketAddress.ofServiceRange(scope, type, lower, upper);</span>
+      } else {
+<span class="nc" id="L116">        return AFTIPCSocketAddress.ofService(scope, type, lower);</span>
+      }
+<span class="nc" id="L118">    } catch (SocketException e) {</span>
+<span class="nc" id="L119">      throw new IllegalStateException(e);</span>
+    }
+  }
+
+  @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
+  static AFTIPCDestName of(int[] tipcDestName) {
+<span class="nc bnc" id="L125" title="All 2 branches missed.">    if (tipcDestName == null) {</span>
+<span class="nc" id="L126">      return null;</span>
+    }
+<span class="nc bnc" id="L128" title="All 2 branches missed.">    if (tipcDestName.length != 3) {</span>
+<span class="nc" id="L129">      throw new IllegalArgumentException();</span>
+    }
+<span class="nc" id="L131">    return new AFTIPCDestName(tipcDestName[0], tipcDestName[1], tipcDestName[2]);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
