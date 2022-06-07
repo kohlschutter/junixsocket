@@ -179,7 +179,13 @@ NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in
 
 3. Release title = "junixsocket" + version>, e.g., "junixsocket 2.5.0"
 
-4. Hit "Publish release"    
+4. Paste changelog contents to text field
+
+5. Upload binaries: `junixsocket-dist/target/junixsocket-dist-(VERSION)-bin.tar.gz` /
+   `junixsocket-dist-(VERSION)-bin.zip` as well as
+   `junixsocket-selftest/target/junixsocket-selftest-(VERSION)-jar-with-dependencies.jar`
+
+6. Hit "Publish release"
 
 ### Publish website 
 

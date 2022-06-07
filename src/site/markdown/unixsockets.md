@@ -192,7 +192,7 @@ On Android, many sockets are defined in `/dev/socket/`.
 
 Connect to an existing stream socket
 
-	nc -U /path/to/ocket
+	nc -U /path/to/socket
 
 Create a listening stream socket
 
