@@ -68,6 +68,7 @@
             <version>${project.version}</version>
             <scope>test</scope>
             <classifier>default</classifier>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>
