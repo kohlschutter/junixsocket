@@ -12,8 +12,7 @@
 
 #include <time.h>
 
-inline _LIBCPP_HIDE_FROM_ABI int
-gettimeofdayMonotonic(struct timespec64* Output) {
+static int gettimeofdayMonotonic(struct timespec* Output) {
 
   // The POSIX gettimeofday() function is not available on z/OS. Therefore,
   // we will call stcke and other hardware instructions in implement equivalent.
@@ -39,15 +38,9 @@ gettimeofdayMonotonic(struct timespec64* Output) {
   ns = (ns * 1000) >> 12;
   us = us - 2208988800000000;
 
-  register uint64_t DivPair0 asm("r0"); // dividend (upper half), remainder
-  DivPair0 = 0;
-  register uint64_t DivPair1 asm("r1"); // dividend (lower half), quotient
-  DivPair1 = us;
-  uint64_t Divisor = 1000000;
-  asm(" dlgr %0,%2" : "+r"(DivPair0), "+r"(DivPair1) : "r"(Divisor) :);
+  Output->tv_sec = us / 1000000;
+  Output->tv_nsec = ns;
 
-  Output->tv_sec = DivPair1;
-  Output->tv_nsec = DivPair0 * 1000 + ns;
   return 0;
 }
 
