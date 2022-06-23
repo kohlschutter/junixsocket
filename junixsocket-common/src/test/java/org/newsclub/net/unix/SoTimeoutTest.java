@@ -32,6 +32,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.AssertUtil;
@@ -133,6 +134,9 @@ public abstract class SoTimeoutTest<A extends SocketAddress> extends SocketTestB
     try (CloseablePair<? extends Socket> pair = newInterconnectedSockets();) {
       Socket socket = pair.getSecond();
       socket.setSoTimeout(500);
+      if(socket.getSoTimeout() == 0) {
+        throw new TestAbortedException("Could not set socket timeout");
+      }
       byte[] buf = new byte[socket.getSendBufferSize()];
       OutputStream out = socket.getOutputStream();
 

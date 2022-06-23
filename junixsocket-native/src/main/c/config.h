@@ -21,7 +21,9 @@
 
 #include "ckmacros.h"
 
+#if !defined(DEBUG)
 #define DEBUG 1
+#endif
 
 CK_IGNORE_UNUSED_MACROS_BEGIN
 #define _GNU_SOURCE 1
@@ -46,7 +48,11 @@ CK_IGNORE_RESERVED_IDENTIFIER_END
 
 #include <stddef.h>
 #include <errno.h>
+#if __TOS_MVS__
+// z/OS doesn't have sys/param.h
+#else
 #include <sys/param.h>
+#endif
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -59,6 +65,19 @@ CK_IGNORE_UNUSED_MACROS_BEGIN
 #define junixsocket_have_ancillary // might be undef'ed below
 #define junixsocket_have_pipe2 // might be undef'ed below
 CK_IGNORE_UNUSED_MACROS_END
+
+#if !defined(false)
+#  define false JNI_FALSE
+#  define true JNI_TRUE
+#  define bool jboolean
+#endif
+
+#if __TOS_MVS__
+#  undef junixsocket_have_ancillary
+#  undef junixsocket_have_pipe2
+#  define junixsocket_use_poll_for_read
+#  define junixsocket_use_poll_for_accept
+#endif
 
 #if defined(_AIX)
 #  define junixsocket_use_poll_for_accept
@@ -151,12 +170,15 @@ int clock_gettime(int ignored CK_UNUSED, struct timespec *spec);
 #  define WIN32_NEEDS_CHARP
 #endif
 
-#if __has_include(<sys/cdefs.h>)
-#  include <sys/cdefs.h>
-#endif
-
-#if __has_include(<sys/ucred.h>)
-#  include <sys/ucred.h>
+#if __TOS_MVS__
+// z/OS XLC doesn't have __has_include
+#else
+#  if __has_include(<sys/cdefs.h>)
+#    include <sys/cdefs.h>
+#  endif
+#  if __has_include(<sys/ucred.h>)
+#    include <sys/ucred.h>
+#  endif
 #endif
 
 #if !defined(JUNIXSOCKET_HARDEN_CMSG_NXTHDR) && defined(__BSD_VISIBLE)

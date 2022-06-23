@@ -10,6 +10,7 @@ other address/protocol families (such as [TIPC](http://tipc.io/)), from Java.
 * Supports other socket types, such as TIPC (on Linux), as well!
 * Comes with pre-built native libraries for most operating systems and platforms, including
   macOS, Linux, Windows, Solaris, FreeBSD, NetBSD, OpenBSD, DragonFlyBSD, AIX, IBM i.
+* Additionally, you can build and run junixsocket natively on IBM z/OS (experimental).
 * Supports all Java versions since Java 8.
 * Supports both the Java Socket API and NIO (`java.net.Socket`, `java.net.SocketChannel`, etc.)
 * Supports streams and datagrams.

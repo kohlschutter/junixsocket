@@ -5,6 +5,10 @@
 When upgrading from versions older than 2.4.0, please note that junixsocket-core is now a POM-only
 artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.html) for details.
 
+### _(2022-xx-xx)_ **junixsocket 2.5.1**
+
+ - Add support for IBM z/OS (experimental, binary not included)
+
 ### _(2022-06-06)_ **junixsocket 2.5.0**
 
  - New supported platforms: AIX 7 Power64, IBM i Power64, Windows ARM64, Windows Server 2019 & 2022 

@@ -25,11 +25,15 @@
 #include "receive.h"
 #include "jniutil.h"
 
-#if __has_include(<pthread/pthread.h>)
-#include <pthread/pthread.h>
-#endif
-#if __has_include(<sched.h>)
-#include <sched.h>
+#if __TOS_MVS__
+#  include <sched.h>
+#else
+#  if __has_include(<pthread/pthread.h>)
+#    include <pthread/pthread.h>
+#  endif
+#  if __has_include(<sched.h>)
+#    include <sched.h>
+#  endif
 #endif
 
 #if defined(junixsocket_have_ancillary)

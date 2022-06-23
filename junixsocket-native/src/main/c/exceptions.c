@@ -154,12 +154,16 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
 #endif
 
 #if DEBUG
+#if __TOS_MVS__
+    // snprintf is broken on z/OS
+#else
     char *message1 = calloc(1, buflen);
     CK_IGNORE_USED_BUT_MARKED_UNUSED_BEGIN
     snprintf(message1, buflen, "%s; errno=%i", message, errnum);
     CK_IGNORE_USED_BUT_MARKED_UNUSED_END
     free(message);
     message = message1;
+#endif
 #endif
 
     _throwException(env, exceptionType, message);

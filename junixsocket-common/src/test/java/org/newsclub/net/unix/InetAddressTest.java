@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.domain.AFUNIXAddressSpecifics;
@@ -49,12 +49,12 @@ public final class InetAddressTest extends SocketTestBase<AFUNIXSocketAddress> {
   @Test
   public void testHostnameString() throws IOException {
     assertEquals("[%2Ftmp%2Ftest.sock.un.junixsocket", AFInetAddress.wrapAddress("/tmp/test.sock"
-        .getBytes(Charset.defaultCharset()), AFUNIXSocketAddress.AF_UNIX).getHostName());
+        .getBytes(StandardCharsets.UTF_8), AFUNIXSocketAddress.AF_UNIX).getHostName());
   }
 
   @Test
   public void testIsLoopbackAddress() throws IOException {
-    assertTrue(AFInetAddress.wrapAddress("/tmp/test.sock".getBytes(Charset.defaultCharset()),
+    assertTrue(AFInetAddress.wrapAddress("/tmp/test.sock".getBytes(StandardCharsets.UTF_8),
         AFUNIXSocketAddress.AF_UNIX).isLoopbackAddress());
   }
 }

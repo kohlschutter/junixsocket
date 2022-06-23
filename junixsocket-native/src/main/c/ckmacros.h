@@ -143,7 +143,7 @@ _Pragma("GCC diagnostic pop")
 
 #define CK_UNUSED __attribute__((__unused__))
 
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(__TOS_MVS__)
 #  define CK_VISIBILITY_INTERNAL
 #  define CK_VISIBILITY_DEFAULT
 #elif __clang

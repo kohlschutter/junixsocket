@@ -23,6 +23,10 @@
 #include "exceptions.h"
 #include "filedescriptors.h"
 
+#if __TOS_MVS__
+#  include <sys/time.h>
+#endif
+
 static jclass kIntegerClass;
 static jmethodID kIntegerConstructor;
 static jmethodID kIntegerIntValue;
@@ -97,6 +101,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
     }
 #if !defined(_WIN32)
     if(optID == SO_SNDTIMEO || optID == SO_RCVTIMEO) {
+#if __TOS_MVS__
+        // Unsupported on z/OS
+        return -1;
+#endif
         struct timeval optVal;
         socklen_t optLen = sizeof(optVal);
         int ret = getsockopt(handle, SOL_SOCKET, optID, &optVal, &optLen);
@@ -155,6 +163,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 
 #if !defined(_WIN32)
     if(optID == SO_SNDTIMEO || optID == SO_RCVTIMEO) {
+#if __TOS_MVS__
+        // Unsupported on z/OS
+        return;
+#endif
+
         // NOTE: SO_RCVTIMEO == SocketOptions.SO_TIMEOUT = 0x1006
         struct timeval optVal;
         optVal.tv_sec = value / 1000;

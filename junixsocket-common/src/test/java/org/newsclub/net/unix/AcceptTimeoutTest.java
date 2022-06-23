@@ -57,6 +57,12 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
         long time = System.currentTimeMillis();
         sock.setSoTimeout(timeoutMillis);
         long actualTimeout = sock.getSoTimeout();
+        if (actualTimeout == 0) {
+          // timeout not supported. So far we know this is only true for z/OS
+          if ("z/OS".equals(System.getProperty("os.name"))) {
+            return;
+          }
+        }
         assertTrue(Math.abs(timeoutMillis - actualTimeout) <= TIMING_INACCURACY_MILLIS,
             "We should roughly get the same timeout back that we set before, but was "
                 + actualTimeout + " instead of " + timeoutMillis);
@@ -83,6 +89,12 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
         serverSock.setSoTimeout(timeoutMillis);
 
         long actualTimeout = serverSock.getSoTimeout();
+        if (actualTimeout == 0) {
+          // timeout not supported. So far we know this is only true for z/OS
+          if ("z/OS".equals(System.getProperty("os.name"))) {
+            return;
+          }
+        }
         assertTrue(Math.abs(timeoutMillis - actualTimeout) <= 10,
             "We should roughly get the same timeout back that we set before, but was "
                 + actualTimeout + " instead of " + timeoutMillis);

@@ -33,7 +33,11 @@ typedef __int64 jlong;
 
 #else
 
+#if __TOS_MVS__
+#define JNIEXPORT
+#else
 #define JNIEXPORT __attribute__((visibility ("default")))
+#endif
 
 typedef signed char jbyte;
 #ifdef _LP64

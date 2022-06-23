@@ -23,6 +23,16 @@
 #include "filedescriptors.h"
 #include "jniutil.h"
 
+#if __TOS_MVS__
+#  include <sys/time.h>
+#  include <sys/select.h>
+#  include "gettod_zos.h"
+static int clock_gettime(int mode, struct timespec* out) {
+  return gettimeofdayMonotonic(out);
+}
+#  define CLOCK_MONOTONIC 1
+#endif
+
 static jclass class_PollFd = NULL;
 static jfieldID fieldID_fds = NULL;
 static jfieldID fieldID_ops = NULL;
@@ -96,7 +106,13 @@ jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
     }
 
     socklen_t optLen = sizeof(optVal);
+#if __TOS_MVS__
+    int ret = 0;
+    optVal.tv_sec = 0;
+    optVal.tv_usec = 0;
+#else
     int ret = getsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, WIN32_NEEDS_CHARP &optVal, &optLen);
+#endif
 
     uint64_t millis = 0;
     if(ret != 0) {
@@ -172,12 +188,10 @@ jint pollWithMillis(int handle, uint64_t millis) {
     if(clock_gettime(CLOCK_MONOTONIC, &timeEnd) == -1) {
         return -1;
     }
-
     int ret;
 
     while (millisRemaining > 0) {
         // FIXME: should this be in a loop to ensure the timeout condition is met?
-
         timeStart = timeEnd;
 
         int pollTime = millisRemaining;
