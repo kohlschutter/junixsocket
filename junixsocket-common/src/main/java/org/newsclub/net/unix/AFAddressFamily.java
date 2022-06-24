@@ -140,7 +140,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
     return addressConstructor;
   }
 
-  private void checkProvider() {
+  private synchronized void checkProvider() {
     if (socketConstructor == null && selectorProvider == null) {
       try {
         getSelectorProvider();
@@ -204,7 +204,9 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
     af.addressConfig = (AFSocketAddressConfig) config;
     af.addressConstructor = (AFSocketAddressConstructor) config.addressConstructor();
     af.addressClass = (Class) addressClass;
-    af.selectorProviderClassname = config.selectorProviderClassname();
+    synchronized (af) { // work-around for likely false positive Spotbugs error
+      af.selectorProviderClassname = config.selectorProviderClassname();
+    }
 
     for (String scheme : config.uriSchemes()) {
       if (scheme.isEmpty()) {
