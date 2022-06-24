@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 //
+// based upon jetty-unixdomain-server
+// original copyright message from jetty's UnixDomainServerConnector:
+//
 // ========================================================================
 // Copyright (c) 1995-2022 Mort Bay Consulting Pty Ltd and others.
 //
