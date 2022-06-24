@@ -647,10 +647,9 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         case SocketOptions.TCP_NODELAY:
           return (NativeUnixSocket.getSocketOptionInt(fdesc, optID) != 0);
         case SocketOptions.SO_TIMEOUT:
-          int v = Math.max(
-              NativeUnixSocket.getSocketOptionInt(fdesc, 0x1005), NativeUnixSocket
+          int v = Math.max(NativeUnixSocket.getSocketOptionInt(fdesc, 0x1005), NativeUnixSocket
               .getSocketOptionInt(fdesc, 0x1006));
-          if(v == -1) {
+          if (v == -1) {
             // special value, meaning: do not override infinite timeout from native code
             return 0;
           }

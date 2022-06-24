@@ -134,7 +134,7 @@ public abstract class SoTimeoutTest<A extends SocketAddress> extends SocketTestB
     try (CloseablePair<? extends Socket> pair = newInterconnectedSockets();) {
       Socket socket = pair.getSecond();
       socket.setSoTimeout(500);
-      if(socket.getSoTimeout() == 0) {
+      if (socket.getSoTimeout() == 0) {
         throw new TestAbortedException("Could not set socket timeout");
       }
       byte[] buf = new byte[socket.getSendBufferSize()];
