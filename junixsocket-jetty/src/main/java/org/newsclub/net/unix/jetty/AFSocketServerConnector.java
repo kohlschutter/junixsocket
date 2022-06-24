@@ -97,7 +97,7 @@ public class AFSocketServerConnector extends AbstractConnector {
   private int acceptedReceiveBufferSize;
   private int acceptedSendBufferSize;
 
-  private boolean mayStopServer = true;
+  private boolean mayStopServer = false;
   private final Class<? extends EventListener> selectorManagerListenerClass;
   private final Server server;
 

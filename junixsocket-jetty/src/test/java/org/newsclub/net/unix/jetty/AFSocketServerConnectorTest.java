@@ -29,7 +29,6 @@ import java.time.Duration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
-import org.eclipse.jetty.util.thread.ThreadPool;
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFSocketFactory;
@@ -60,6 +59,7 @@ public class AFSocketServerConnectorTest {
 
     server1.join();
     checkConnection(addr);
+    assertFalse(server1.isRunning());
     server2.stop();
     server2.join();
     assertFalse(addr.getFile().exists()); // isDeleteOnClose=true by default
@@ -90,16 +90,9 @@ public class AFSocketServerConnectorTest {
   }
 
   private static Server newServer(AFSocketAddress addr) throws Exception {
-    Server server = new Server() {
-      private final ThreadPool tp = new ExecutorThreadPool();
-
-      @Override
-      public ThreadPool getThreadPool() {
-        // working around a bug in QueuedThreadPool:
-        // joinThreads may throw an InterruptedException, resulting in an incomplete shutdown
-        return tp;
-      }
-    };
+    // NOTE: Using ExecutorThreadPool to work-around an issue with QueuedThreadPool
+    // https://github.com/eclipse/jetty.project/issues/8206
+    Server server = new Server(new ExecutorThreadPool());
 
     // below code is based upon
     // https://www.eclipse.org/jetty/documentation/jetty-10/programming-guide/index.html
@@ -114,13 +107,14 @@ public class AFSocketServerConnectorTest {
     AFSocketServerConnector connector = new AFSocketServerConnector(server, acceptors, selectors,
         new HttpConnectionFactory());
 
-    // Configure Unix-Domain parameters.
-
-    // The Unix-Domain path to listen to.
+    // The AFSocketAddress to listen to.
     connector.setListenSocketAddress(addr);
 
     // The accept queue size.
     connector.setAcceptQueueSize(128);
+
+    // Try to automatically stop server if another instance reuses our address
+    connector.setMayStopServer(true);
 
     server.addConnector(connector);
     server.start();
