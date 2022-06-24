@@ -213,7 +213,20 @@ final class AFSelector extends AbstractSelector {
       }
 
       if (existingPollFd != null) {
-        return existingPollFd;
+        boolean needsUpdate = false;
+        int i = 1;
+        for (AFSelectionKey key : keysRegistered) {
+          if (existingPollFd.keys[i] != key) {
+            needsUpdate = true;
+            break;
+          }
+          existingPollFd.ops[i] = key.interestOps();
+
+          i++;
+        }
+        if (!needsUpdate) {
+          return existingPollFd;
+        }
       }
 
       int size = keysRegistered.size() + 1;
