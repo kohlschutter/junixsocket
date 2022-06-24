@@ -18,9 +18,13 @@
 package org.newsclub.net.unix;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 import java.net.URI;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.channels.UnsupportedAddressTypeException;
+import java.nio.channels.spi.SelectorProvider;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,6 +62,8 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
   private AFSocket.Constructor<A> socketConstructor;
   private AFServerSocket.Constructor<A> serverSocketConstructor;
   private AFSocketAddressConfig<A> addressConfig;
+
+  private SelectorProvider selectorProvider = null;
 
   static {
     NativeUnixSocket.isLoaded(); // trigger init
@@ -135,10 +141,10 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
   }
 
   private void checkProvider() {
-    if (socketConstructor == null && selectorProviderClassname != null) {
+    if (socketConstructor == null && selectorProvider == null) {
       try {
-        Class.forName(selectorProviderClassname);
-      } catch (ClassNotFoundException e) {
+        getSelectorProvider();
+      } catch (IllegalStateException e) {
         // ignore
       }
     }
@@ -290,6 +296,27 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
     }
   }
 
+  /**
+   * Creates a new, unconnected, unbound {@link SocketChannel} compatible with this socket address.
+   * 
+   * @return The socket instance.
+   * @throws IOException on error.
+   */
+  public AFSocketChannel<?> newSocketChannel() throws IOException {
+    return newSocket().getChannel();
+  }
+
+  /**
+   * Creates a new, unconnected, unbound {@link ServerSocketChannel} compatible with this socket
+   * address.
+   * 
+   * @return The socket instance.
+   * @throws IOException on error.
+   */
+  public AFServerSocketChannel<?> newServerSocketChannel() throws IOException {
+    return newServerSocket().getChannel();
+  }
+
   AFSocketAddress parseURI(URI u, int overridePort) throws SocketException {
     if (addressConfig == null) {
       throw new SocketException("Cannot instantiate addresses of type " + addressClass);
@@ -308,5 +335,30 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
   public static synchronized Set<String> uriSchemes() {
     checkDeferredInit();
     return Collections.unmodifiableSet(URI_SCHEMES.keySet());
+  }
+
+  /**
+   * Returns the {@link SelectorProvider} associated with this address family, or {@code null} if no
+   * such instance is registered.
+   * 
+   * @return The {@link SelectorProvider}.
+   * @throws IllegalStateException on error.
+   */
+  public synchronized SelectorProvider getSelectorProvider() {
+    if (selectorProvider != null) {
+      return selectorProvider;
+    }
+    if (selectorProviderClassname == null) {
+      return null;
+    }
+    try {
+      selectorProvider = (SelectorProvider) Class.forName(selectorProviderClassname).getMethod(
+          "provider", new Class[0]).invoke(null);
+    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException
+        | ClassNotFoundException | RuntimeException e) {
+      throw new IllegalStateException("Cannot instantiate selector provider for "
+          + addressClassname, e);
+    }
+    return selectorProvider;
   }
 }
