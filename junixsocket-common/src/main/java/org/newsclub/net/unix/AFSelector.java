@@ -42,10 +42,6 @@ final class AFSelector extends AbstractSelector {
 
   private final Set<AFSelectionKey> keysRegistered = new HashSet<>();
 
-  @SuppressWarnings("unchecked")
-  private final Set<SelectionKey> keysView =
-      (Set<SelectionKey>) (Set<? extends SelectionKey>) Collections.unmodifiableSet(keysRegistered);
-
   private PollFd pollFd = null;
 
   private final SelectionKeySet keysSelected = new SelectionKeySet();
@@ -78,7 +74,9 @@ final class AFSelector extends AbstractSelector {
 
   @Override
   public Set<SelectionKey> keys() {
-    return keysView;
+    synchronized (this) {
+      return Collections.unmodifiableSet(new HashSet<>(keysRegistered));
+    }
   }
 
   @Override
