@@ -8,6 +8,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 ### _(2022-xx-xx)_ **junixsocket 2.5.1**
 
  - Add support for IBM z/OS (experimental, binary not included)
+ - Fix Selector logic: Update possibly changed interestOps before polling
 
 ### _(2022-06-06)_ **junixsocket 2.5.0**
 
