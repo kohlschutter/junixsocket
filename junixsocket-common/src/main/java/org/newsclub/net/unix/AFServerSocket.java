@@ -335,6 +335,8 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
       return;
     }
 
+    boolean localSocketAddressValid = isLocalSocketAddressValid();
+
     AFSocketAddress endpoint = boundEndpoint;
 
     IOException superException = null;
@@ -359,7 +361,8 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     try {
       closeables.close(superException);
     } finally {
-      if (endpoint != null && endpoint.hasFilename() && isDeleteOnClose()) {
+      if (endpoint != null && endpoint.hasFilename() && localSocketAddressValid
+          && isDeleteOnClose()) {
         File f = endpoint.getFile();
         if (!f.delete() && f.exists()) {
           ex = new IOException("Could not delete socket file after close: " + f);
@@ -405,6 +408,26 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
       setBoundEndpoint(getAFImpl().getLocalSocketAddress());
     }
     return boundEndpoint;
+  }
+
+  /**
+   * Checks if the local socket address returned by {@link #getLocalSocketAddress()} is still valid.
+   * 
+   * The address is no longer valid if the server socket has been closed, {@code null}, or another
+   * server socket has been bound on that address.
+   * 
+   * @return {@code true} iff still valid.
+   */
+  public boolean isLocalSocketAddressValid() {
+    if (isClosed()) {
+      return false;
+    }
+    @Nullable
+    A addr = getLocalSocketAddress();
+    if (addr == null) {
+      return false;
+    }
+    return addr.equals(getAFImpl().getLocalSocketAddress());
   }
 
   final void setBoundEndpoint(@Nullable A addr) {

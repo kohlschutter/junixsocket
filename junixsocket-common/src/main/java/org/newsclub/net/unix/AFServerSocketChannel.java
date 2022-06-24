@@ -114,6 +114,18 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
     return afSocket.getLocalSocketAddress();
   }
 
+  /**
+   * Checks if the local socket address returned by {@link #getLocalAddress()} is still valid.
+   * 
+   * The address is no longer valid if the server socket has been closed, {@code null}, or another
+   * server socket has been bound on that address.
+   * 
+   * @return {@code true} iff still valid.
+   */
+  public final boolean isLocalSocketAddressValid() {
+    return afSocket.isLocalSocketAddressValid();
+  }
+
   @Override
   protected final void implCloseSelectableChannel() throws IOException {
     afSocket.close();
@@ -131,5 +143,30 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
   @Override
   public final FileDescriptor getFileDescriptor() throws IOException {
     return afSocket.getFileDescriptor();
+  }
+
+  /**
+   * Checks if this {@link AFServerSocketChannel}'s file should be removed upon {@link #close()}.
+   * 
+   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
+   * namespace).
+   * 
+   * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
+   */
+  public final boolean isDeleteOnClose() {
+    return socket().isDeleteOnClose();
+  }
+
+  /**
+   * Enables/disables deleting this {@link AFServerSocketChannel}'s file (or other resource type)
+   * upon {@link #close()}.
+   * 
+   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
+   * namespace).
+   * 
+   * @param b Enabled if {@code true}.
+   */
+  public final void setDeleteOnClose(boolean b) {
+    socket().setDeleteOnClose(b);
   }
 }
