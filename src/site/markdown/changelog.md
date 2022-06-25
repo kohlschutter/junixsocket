@@ -2,6 +2,8 @@
 
 ### General remarks
 
+Please tend to always use the latest version; the existing API should always be backwards compatible between minor releases (e.g., 2.4.0 -> 2.5.1) unless explicitly mentioned in the changelog below (e.g., dropping Java 7 support in 2.5.0)
+
 When upgrading from versions older than 2.4.0, please note that junixsocket-core is now a POM-only
 artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.html) for details.
 
@@ -9,7 +11,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
  - Add support for IBM z/OS (experimental, binary not included)
  - Add junixsocket support for jetty via junixsocket-jetty.
- - Fix Selector logic: Update possibly changed interestOps before polling
+ - Fix Selector logic (more bug fixes).
 
 ### _(2022-06-06)_ **junixsocket 2.5.0**
 
