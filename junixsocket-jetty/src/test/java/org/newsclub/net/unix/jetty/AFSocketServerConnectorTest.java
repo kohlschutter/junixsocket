@@ -28,7 +28,6 @@ import java.time.Duration;
 
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketAddress;
@@ -41,17 +40,9 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class AFSocketServerConnectorTest {
-  private static String oldLogLevel = null;
-
   @BeforeAll
   public static void setUp() {
-    oldLogLevel = System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "error");
-  }
-
-  @AfterAll
-  public static void tearDown() {
-    System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", oldLogLevel == null ? ""
-        : oldLogLevel);
+    System.setProperty("org.slf4j.simpleLogger.log.org.eclipse.jetty.server", "error");
   }
 
   @Test
