@@ -50,6 +50,8 @@ IBM i support verified with 7.1 (IBM i 7R1 / 71-11-2984-4), 7.2 (IBM i 7R2 / 72-
 7.3 (IBM i 7R3 / 73-07-001), 7.4 (IBM i 7R4 / 74-05-2984-1) on s922 and e980, using IBM J9 64-bit
 VMs (Java 8, and Java 11 where available).
 
+IBM z/OS is supported with caveats (not all selftests currently pass, and you have to compile from source with XLC).
+
 Support for [custom architectures](customarch.html) can be added by compiling a custom native binary
 on the target machine, or by [cross-compiling](crosscomp.html) using clang/LLVM on a suitable host.
 
