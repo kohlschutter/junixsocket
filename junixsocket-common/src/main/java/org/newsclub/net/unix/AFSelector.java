@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedSelectorException;
@@ -267,7 +268,15 @@ final class AFSelector extends AbstractSelector {
       try {
         synchronized (pipeMsgWakeUp) {
           pipeMsgWakeUp.clear();
-          selectorPipe.sink().write(pipeMsgWakeUp);
+          try {
+            selectorPipe.sink().write(pipeMsgWakeUp);
+          } catch (SocketException e) {
+            if (selectorPipe.sinkFD().valid()) {
+              throw e;
+            } else {
+              // ignore (Broken pipe, etc)
+            }
+          }
         }
       } catch (IOException e) {
         // FIXME throw as runtimeexception?
