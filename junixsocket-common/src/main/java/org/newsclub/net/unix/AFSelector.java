@@ -260,6 +260,7 @@ final class AFSelector extends AbstractSelector {
     for (SelectionKey key : keys) {
       ((AFSelectionKey) key).cancelNoRemove();
     }
+    selectorPipe.close();
   }
 
   @Override
