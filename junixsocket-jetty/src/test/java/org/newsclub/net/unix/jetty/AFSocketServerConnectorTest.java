@@ -62,15 +62,16 @@ public class AFSocketServerConnectorTest {
     checkConnection(addr);
     assertTrue(server1.isRunning());
 
-    try (AFServerSocket<?> serverSocket = addr.newBoundServerSocket()) {
-      // isDeleteOnClose is smart enough to not delete the wrong socket
-      assertTrue(addr.getFile().exists());
+    Server server2 = newServer(addr);
 
-      server1.join();
-      assertFalse(server1.isRunning());
-    } finally {
-      assertFalse(addr.getFile().exists()); // isDeleteOnClose=true by default
-    }
+    // isDeleteOnClose is smart enough to not delete the wrong socket
+    assertTrue(addr.getFile().exists());
+
+    server1.join();
+    assertFalse(server1.isRunning());
+    server2.stop();
+    server2.join();
+    assertFalse(addr.getFile().exists()); // isDeleteOnClose=true by default
   }
 
   private void checkConnection(AFSocketAddress addr) throws Exception {
