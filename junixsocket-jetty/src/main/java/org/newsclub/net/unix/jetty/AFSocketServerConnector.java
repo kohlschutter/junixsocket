@@ -50,6 +50,8 @@ import java.nio.file.Path;
 import java.util.EventListener;
 import java.util.Locale;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.jetty.io.ArrayByteBufferPool;
@@ -341,43 +343,37 @@ public class AFSocketServerConnector extends AbstractConnector {
         }
 
         if (takenOver) {
-          LOG.warn("Another server has taken over our address");
-          getExecutor().execute(() -> {
-            try {
-              stop();
-            } catch (Exception e1) {
-              LOG.warn("Exception upon stopping " + this, e1); // NOPMD
-            }
-          });
+          ExecutorService es = Executors.newSingleThreadExecutor();
+          try {
+            LOG.warn("Another server has taken over our address");
+            es.execute(() -> {
+              Connector[] connectors = server.getConnectors();
 
-          Connector[] connectors = server.getConnectors();
-
-          boolean shutdownServer;
-          if (connectors == null) {
-            shutdownServer = true;
-          } else {
-            shutdownServer = true;
-            for (Connector conn : connectors) {
-              if (conn != this && conn.isRunning()) { // NOPMD.CompareObjectsWithEquals
-                shutdownServer = false;
-                break;
+              boolean shutdownServer;
+              if (connectors == null) {
+                shutdownServer = true;
+              } else {
+                shutdownServer = true;
+                for (Connector conn : connectors) {
+                  if (conn != AFSocketServerConnector.this && conn.isRunning()) { // NOPMD.CompareObjectsWithEquals
+                    shutdownServer = false;
+                    break;
+                  }
+                }
               }
-            }
-          }
 
-          if (shutdownServer && mayStopServer) {
-            LOG.warn("Server has no other connectors; shutting down: " + server); // NOPMD
+              if (shutdownServer && mayStopServer) {
+                LOG.warn("Server has no other connectors; shutting down: " + server); // NOPMD
 
-            getExecutor().execute(() -> {
-              try {
-                server.stop();
-              } catch (InterruptedException e1) {
-                // ignore
-                e1.printStackTrace();
-              } catch (Exception e1) {
-                LOG.warn("Exception upon stopping " + server, e1); // NOPMD
+                try {
+                  server.stop();
+                } catch (Exception e1) {
+                  LOG.warn("Exception upon stopping " + server, e1); // NOPMD
+                }
               }
             });
+          } finally {
+            es.shutdown();
           }
         }
         throw (ClosedByInterruptException) new ClosedByInterruptException().initCause(e);

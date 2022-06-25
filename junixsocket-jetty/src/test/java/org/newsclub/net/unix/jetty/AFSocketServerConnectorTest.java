@@ -28,8 +28,10 @@ import java.time.Duration;
 
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.thread.ExecutorThreadPool;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.newsclub.net.unix.AFServerSocket;
 import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFSocketFactory;
 import org.newsclub.net.unix.domain.AFUNIXAddressSpecifics;
@@ -40,9 +42,17 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class AFSocketServerConnectorTest {
-  static {
-    // System.setProperty("org.eclipse.jetty.LEVEL", "DEBUG");
-    // System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
+  private static String oldLogLevel = null;
+
+  @BeforeAll
+  public static void setUp() {
+    oldLogLevel = System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "error");
+  }
+
+  @AfterAll
+  public static void tearDown() {
+    System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", oldLogLevel == null ? ""
+        : oldLogLevel);
   }
 
   @Test
@@ -52,17 +62,15 @@ public class AFSocketServerConnectorTest {
     checkConnection(addr);
     assertTrue(server1.isRunning());
 
-    Server server2 = newServer(addr); // alternatively: addr.newBoundServerSocket();
+    try (AFServerSocket<?> serverSocket = addr.newBoundServerSocket()) {
+      // isDeleteOnClose is smart enough to not delete the wrong socket
+      assertTrue(addr.getFile().exists());
 
-    // isDeleteOnClose is smart enough to not delete the wrong socket
-    assertTrue(addr.getFile().exists());
-
-    server1.join();
-    checkConnection(addr);
-    assertFalse(server1.isRunning());
-    server2.stop();
-    server2.join();
-    assertFalse(addr.getFile().exists()); // isDeleteOnClose=true by default
+      server1.join();
+      assertFalse(server1.isRunning());
+    } finally {
+      assertFalse(addr.getFile().exists()); // isDeleteOnClose=true by default
+    }
   }
 
   private void checkConnection(AFSocketAddress addr) throws Exception {
@@ -90,9 +98,7 @@ public class AFSocketServerConnectorTest {
   }
 
   private static Server newServer(AFSocketAddress addr) throws Exception {
-    // NOTE: Using ExecutorThreadPool to work-around an issue with QueuedThreadPool
-    // https://github.com/eclipse/jetty.project/issues/8206
-    Server server = new Server(new ExecutorThreadPool());
+    Server server = new Server();
 
     // below code is based upon
     // https://www.eclipse.org/jetty/documentation/jetty-10/programming-guide/index.html
