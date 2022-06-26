@@ -12,6 +12,7 @@
     <name>junixsocket-jetty</name>
     <properties>
         <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+        <jetty.version>11.0.11</jetty.version>
     </properties>
 
     <description>junixsocket for Jetty</description>
@@ -26,7 +27,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>11.0.11</version>
+            <version>${jetty.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -42,12 +43,23 @@
             <version>4.9.3</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-common</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-client</artifactId>
+            <version>${jetty.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -13,16 +13,25 @@
 
 package org.eclipse.jetty.unixdomain.server;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.SocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.HttpProxy;
+import org.eclipse.jetty.client.ProxyProtocolClientConnectionFactory.V1;
+import org.eclipse.jetty.client.ProxyProtocolClientConnectionFactory.V2;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.dynamic.HttpClientTransportDynamic;
 import org.eclipse.jetty.http.HttpStatus;
@@ -36,28 +45,20 @@ import org.eclipse.jetty.server.ProxyConnectionFactory;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.eclipse.jetty.toolchain.test.FS;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledForJreRange;
-import org.junit.jupiter.api.condition.JRE;
+import org.newsclub.net.unix.AFSocketAddress;
+import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.jetty.AFSocketClientConnector;
+import org.newsclub.net.unix.jetty.AFSocketServerConnector;
 
-import static org.eclipse.jetty.client.ProxyProtocolClientConnectionFactory.V1;
-import static org.eclipse.jetty.client.ProxyProtocolClientConnectionFactory.V2;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-@EnabledForJreRange(min = JRE.JAVA_16)
 public class UnixDomainTest {
   private static final Class<?> unixDomainSocketAddressClass = probe();
 
@@ -73,17 +74,13 @@ public class UnixDomainTest {
   private Server server;
   private Path unixDomainPath;
 
-  @BeforeEach
-  public void prepare() {
-    Assumptions.assumeTrue(unixDomainSocketAddressClass != null);
-  }
-
   private void start(Handler handler) throws Exception {
     server = new Server();
-    UnixDomainServerConnector connector = new UnixDomainServerConnector(server, factories);
-    String dir = System.getProperty("jetty.unixdomain.dir");
+    // UnixDomainServerConnector connector = new UnixDomainServerConnector(server, factories);
+    AFSocketServerConnector connector = new AFSocketServerConnector(server, factories);
+    String dir = System.getProperty("jetty.unixdomain.dir", System.getProperty("java.io.tmpdir"));
     assertNotNull(dir);
-    unixDomainPath = Files.createTempFile(Path.of(dir), "unix_", ".sock");
+    unixDomainPath = Files.createTempFile(new File(dir).toPath(), "unix_", ".sock");
     assertTrue(unixDomainPath.toAbsolutePath().toString().length() < 108,
         "Unix-Domain path too long");
     Files.delete(unixDomainPath);
@@ -114,21 +111,26 @@ public class UnixDomainTest {
 
         // Verify the SocketAddresses.
         SocketAddress local = endPoint.getLocalSocketAddress();
-        assertThat(local, Matchers.instanceOf(unixDomainSocketAddressClass));
+        assertThat(local, Matchers.instanceOf(AFSocketAddress.class));
         SocketAddress remote = endPoint.getRemoteSocketAddress();
-        assertThat(remote, Matchers.instanceOf(unixDomainSocketAddressClass));
+        if (remote != null) {
+          // remote should be null if not connected
+          assertThat(remote, Matchers.instanceOf(AFSocketAddress.class));
+        }
 
         // Verify that other address methods don't throw.
         local = assertDoesNotThrow(endPoint::getLocalAddress);
-        assertNull(local);
+        // assertNull(local);
         remote = assertDoesNotThrow(endPoint::getRemoteAddress);
-        assertNull(remote);
+        // assertNull(remote);
 
         assertDoesNotThrow(endPoint::toString);
       }
     });
 
-    ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
+    // ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
+    ClientConnector clientConnector = AFSocketClientConnector.withSocketAddress(AFUNIXSocketAddress
+        .of(unixDomainPath));
     HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
     httpClient.start();
     try {
@@ -156,7 +158,9 @@ public class UnixDomainTest {
       }
     });
 
-    ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
+    // ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
+    ClientConnector clientConnector = AFSocketClientConnector.withSocketAddress(AFUNIXSocketAddress
+        .of(unixDomainPath));
 
     HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
     httpClient.getProxyConfiguration().getProxies().add(new HttpProxy("localhost", fakeProxyPort));
@@ -183,19 +187,19 @@ public class UnixDomainTest {
         jettyRequest.setHandled(true);
         EndPoint endPoint = jettyRequest.getHttpChannel().getEndPoint();
         assertThat(endPoint, Matchers.instanceOf(ProxyConnectionFactory.ProxyEndPoint.class));
-        assertThat(endPoint.getLocalSocketAddress(), Matchers.instanceOf(
-            unixDomainSocketAddressClass));
-        assertThat(endPoint.getRemoteSocketAddress(), Matchers.instanceOf(
-            unixDomainSocketAddressClass));
+        // assertThat(endPoint.getLocalSocketAddress(),
+        // Matchers.instanceOf(unixDomainSocketAddressClass));
+        // assertThat(endPoint.getRemoteSocketAddress(),
+        // Matchers.instanceOf(unixDomainSocketAddressClass));
         if ("/v1".equals(target)) {
           // As PROXYv1 does not support UNIX, the wrapped EndPoint data is used.
           Path localPath = toUnixDomainPath(endPoint.getLocalSocketAddress());
           assertThat(localPath, Matchers.equalTo(unixDomainPath));
         } else if ("/v2".equals(target)) {
           assertThat(toUnixDomainPath(endPoint.getLocalSocketAddress()).toString(), Matchers
-              .equalTo(FS.separators(dstAddr)));
+              .equalTo(separators(dstAddr)));
           assertThat(toUnixDomainPath(endPoint.getRemoteSocketAddress()).toString(), Matchers
-              .equalTo(FS.separators(srcAddr)));
+              .equalTo(separators(srcAddr)));
         } else {
           Assertions.fail("Invalid PROXY protocol version " + target);
         }
@@ -203,7 +207,9 @@ public class UnixDomainTest {
     });
 
     // Java 11+ portable way to implement SocketChannelWithAddress.Factory.
-    ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
+    // ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
+    ClientConnector clientConnector = AFSocketClientConnector.withSocketAddress(AFUNIXSocketAddress
+        .of(unixDomainPath));
 
     HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
     httpClient.start();
@@ -216,7 +222,7 @@ public class UnixDomainTest {
       assertEquals(HttpStatus.OK_200, response1.getStatus());
 
       // Try PROXYv2 with explicit PROXY information.
-      var tag = new V2.Tag(V2.Tag.Command.PROXY, V2.Tag.Family.UNIX, V2.Tag.Protocol.STREAM,
+      V2.Tag tag = new V2.Tag(V2.Tag.Command.PROXY, V2.Tag.Family.UNIX, V2.Tag.Protocol.STREAM,
           srcAddr, 0, dstAddr, 0, null);
       ContentResponse response2 = httpClient.newRequest("localhost", 0).path("/v2").tag(tag)
           .timeout(5, TimeUnit.SECONDS).send();
@@ -230,19 +236,39 @@ public class UnixDomainTest {
   @Test
   public void testInvalidUnixDomainPath() {
     server = new Server();
-    UnixDomainServerConnector connector = new UnixDomainServerConnector(server, factories);
-    connector.setUnixDomainPath(Path.of("/does/not/exist"));
+    // UnixDomainServerConnector connector = new UnixDomainServerConnector(server, factories);
+    AFSocketServerConnector connector = new AFSocketServerConnector(server, factories);
+    connector.setUnixDomainPath(new File("/does/not/exist").toPath());
     server.addConnector(connector);
     assertThrows(IOException.class, () -> server.start());
   }
 
   private static Path toUnixDomainPath(SocketAddress address) {
-    try {
-      Assertions.assertNotNull(unixDomainSocketAddressClass);
-      return (Path) unixDomainSocketAddressClass.getMethod("getPath").invoke(address);
-    } catch (Throwable x) {
-      Assertions.fail(x);
-      throw new AssertionError();
+    if (address instanceof AFUNIXSocketAddress) {
+      return new File(((AFUNIXSocketAddress) address).getPath()).toPath();
+    } else if (unixDomainSocketAddressClass != null) {
+      try {
+        return (Path) unixDomainSocketAddressClass.getMethod("getPath").invoke(address);
+      } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException
+          | SecurityException e) {
+        Assertions.fail(e);
+        throw new AssertionError(e);
+      }
+    } else {
+      throw new IllegalStateException("Unsupported socket address class " + address.getClass()
+          + ": " + address);
     }
+  }
+
+  public static String separators(String path) {
+    StringBuilder ret = new StringBuilder();
+    for (char c : path.toCharArray()) {
+      if ((c == '/') || (c == '\\')) {
+        ret.append(File.separatorChar);
+      } else {
+        ret.append(c);
+      }
+    }
+    return ret.toString();
   }
 }
