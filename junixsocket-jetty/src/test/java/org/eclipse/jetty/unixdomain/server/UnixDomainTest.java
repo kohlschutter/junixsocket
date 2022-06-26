@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +50,6 @@ import org.eclipse.jetty.util.component.LifeCycle;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
@@ -84,7 +84,8 @@ public class UnixDomainTest {
     assertTrue(unixDomainPath.toAbsolutePath().toString().length() < 108,
         "Unix-Domain path too long");
     Files.delete(unixDomainPath);
-    connector.setUnixDomainPath(unixDomainPath);
+    // connector.setUnixDomainPath(unixDomainPath);
+    connector.setListenSocketAddress(AFUNIXSocketAddress.of(unixDomainPath));
     server.addConnector(connector);
     server.setHandler(handler);
     server.start();
@@ -100,6 +101,7 @@ public class UnixDomainTest {
     String uri = "http://localhost:1234/path";
     start(new AbstractHandler() {
       @Override
+      @SuppressWarnings("deprecation")
       public void handle(String target, Request jettyRequest, HttpServletRequest request,
           HttpServletResponse response) {
         jettyRequest.setHandled(true);
@@ -119,10 +121,12 @@ public class UnixDomainTest {
         }
 
         // Verify that other address methods don't throw.
-        local = assertDoesNotThrow(endPoint::getLocalAddress);
-        // assertNull(local);
-        remote = assertDoesNotThrow(endPoint::getRemoteAddress);
-        // assertNull(remote);
+        SocketAddress inetLocal = assertDoesNotThrow(endPoint::getLocalAddress);
+        // assertNull(local); // junixsocket's addresses extend InetSocketAddress
+        assertEquals(local, inetLocal);
+        SocketAddress inetRemote = assertDoesNotThrow(endPoint::getRemoteAddress);
+        // assertNull(remote); // junixsocket's addresses extend InetSocketAddress
+        assertEquals(remote, inetRemote);
 
         assertDoesNotThrow(endPoint::toString);
       }
@@ -238,7 +242,15 @@ public class UnixDomainTest {
     server = new Server();
     // UnixDomainServerConnector connector = new UnixDomainServerConnector(server, factories);
     AFSocketServerConnector connector = new AFSocketServerConnector(server, factories);
-    connector.setUnixDomainPath(new File("/does/not/exist").toPath());
+
+    // connector.setUnixDomainPath(new File("/does/not/exist").toPath());
+    try {
+      connector.setListenSocketAddress(AFUNIXSocketAddress.of(new File("/does/not/exist")
+          .toPath()));
+    } catch (SocketException e) {
+      throw new IllegalStateException(e);
+    }
+
     server.addConnector(connector);
     assertThrows(IOException.class, () -> server.start());
   }
