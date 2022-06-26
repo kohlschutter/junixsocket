@@ -67,6 +67,7 @@ import org.eclipse.jetty.util.component.LifeCycle;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
@@ -90,6 +91,11 @@ public class UnixDomainTest {
   private ConnectionFactory[] factories = new ConnectionFactory[] {new HttpConnectionFactory()};
   private Server server;
   private Path unixDomainPath;
+
+  @BeforeAll
+  public static void setUp() {
+    System.setProperty("org.slf4j.simpleLogger.log.org.eclipse.jetty", "error");
+  }
 
   private void start(Handler handler) throws Exception {
     server = new Server();
