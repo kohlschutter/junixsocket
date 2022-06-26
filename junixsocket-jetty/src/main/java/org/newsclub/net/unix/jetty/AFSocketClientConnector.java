@@ -19,12 +19,15 @@ package org.newsclub.net.unix.jetty;
 
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.SelectorProvider;
 import java.util.Map;
 
 import org.eclipse.jetty.io.ClientConnector;
-import org.eclipse.jetty.io.ClientConnector.Configurator;
+import org.eclipse.jetty.io.SelectorManager;
 import org.eclipse.jetty.server.Connector;
+import org.newsclub.net.unix.AFAddressFamily;
 import org.newsclub.net.unix.AFSocketAddress;
 
 /**
@@ -36,9 +39,12 @@ import org.newsclub.net.unix.AFSocketAddress;
  * 
  * @author Christian Kohlschütter
  */
-public final class AFSocketClientConnector {
-  private AFSocketClientConnector() {
-    throw new IllegalStateException("No instances");
+public final class AFSocketClientConnector extends ClientConnector {
+  private final AFAddressFamily<?> addressFamily;
+
+  private AFSocketClientConnector(AFSocketAddress addr) {
+    super(configuratorFor(addr));
+    this.addressFamily = addr.getAddressFamily();
   }
 
   /**
@@ -49,7 +55,18 @@ public final class AFSocketClientConnector {
    * @return The client connector.
    */
   public static ClientConnector withSocketAddress(AFSocketAddress addr) {
-    return new ClientConnector(configuratorFor(addr));
+    return new AFSocketClientConnector(addr);
+  }
+
+  @Override
+  protected SelectorManager newSelectorManager() {
+    return new ClientSelectorManager(getExecutor(), getScheduler(), getSelectors()) {
+      @Override
+      protected Selector newSelector() throws IOException {
+        SelectorProvider provider = addressFamily.getSelectorProvider();
+        return provider.openSelector();
+      }
+    };
   }
 
   private static Configurator configuratorFor(AFSocketAddress addr) {
