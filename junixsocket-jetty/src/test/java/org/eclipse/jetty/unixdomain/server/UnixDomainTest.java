@@ -44,6 +44,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.client.HttpClient;
@@ -223,10 +224,16 @@ public class UnixDomainTest {
           Path localPath = toUnixDomainPath(endPoint.getLocalSocketAddress());
           assertThat(localPath, Matchers.equalTo(unixDomainPath));
         } else if ("/v2".equals(target)) {
-          assertThat(toUnixDomainPath(endPoint.getLocalSocketAddress()).toString(), Matchers
-              .equalTo(separators(dstAddr)));
-          assertThat(toUnixDomainPath(endPoint.getRemoteSocketAddress()).toString(), Matchers
-              .equalTo(separators(srcAddr)));
+          SocketAddress localSocketAddress = endPoint.getLocalSocketAddress();
+          if (localSocketAddress != null) {
+            assertThat(toUnixDomainPath(localSocketAddress).toString(), Matchers.equalTo(separators(
+                dstAddr)));
+          }
+          SocketAddress remoteSocketAddress = endPoint.getRemoteSocketAddress();
+          if (remoteSocketAddress != null) {
+            assertThat(toUnixDomainPath(remoteSocketAddress).toString(), Matchers.equalTo(
+                separators(srcAddr)));
+          }
         } else {
           Assertions.fail("Invalid PROXY protocol version " + target);
         }
@@ -279,6 +286,8 @@ public class UnixDomainTest {
   }
 
   private static Path toUnixDomainPath(SocketAddress address) {
+    Objects.requireNonNull(address, "address");
+
     if (address instanceof AFUNIXSocketAddress) {
       return new File(((AFUNIXSocketAddress) address).getPath()).toPath();
     } else if (unixDomainSocketAddressClass != null) {
