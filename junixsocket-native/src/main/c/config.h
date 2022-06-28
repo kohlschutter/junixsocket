@@ -308,6 +308,10 @@ int jux_mangleErrno(int);
 #            define _STAT_VER 3
 #        endif
 #    endif
+#    if !defined(__xstat)
+extern int __xstat (int __ver, const char *__filename,
+                    struct stat *__stat_buf) __THROW __nonnull ((2, 3));
+#    endif
 #    define stat(...) __xstat(_STAT_VER, __VA_ARGS__)
 #  endif
 #endif
