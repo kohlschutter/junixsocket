@@ -22,7 +22,7 @@ other address/protocol families (such as [TIPC](http://tipc.io/)), from Java.
 * Supports sending and receiving [file descriptors](https://kohlschutter.github.io/junixsocket/filedescriptors.html).
 * Supports the abstract namespace on Linux.
 * Supports socketpair, and instantiating socket classes from file descriptors.
-* Supports HTTP over UNIX socket (using [NanoHTTPD](https://github.com/NanoHttpd/nanohttpd), [OkHttp](https://github.com/square/okhttp), and [jetty](https://github.com/eclipse/jetty.project/)).
+* Supports [HTTP over UNIX sockets](https://kohlschutter.github.io/junixsocket/http.html) (using [NanoHTTPD](https://github.com/NanoHttpd/nanohttpd), [OkHttp](https://github.com/square/okhttp), and [jetty](https://github.com/eclipse/jetty.project/)).
 * Supports JPMS/Jigsaw modules. Modularized so you can install only what you need.
 * Provides a selftest package with 100+ tests to ensure compatibility with any target platform.
 * Apache 2.0 licensed.

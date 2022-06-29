@@ -43,9 +43,10 @@
       <item name="Command line demos" href="demo.html" />
       <item name="Source reference"
         href="junixsocket-demo/xref/index.html" />
-      <item name="Sending file descriptors"
+      <item name="File descriptors"
         href="filedescriptors.html" />
       <item name="Peer credentials" href="peercreds.html" />
+      <item name="HTTP over Unix sockets" href="http.html" />
     </menu>
 
     <menu name="For Developers">

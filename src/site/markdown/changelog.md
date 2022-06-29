@@ -10,8 +10,9 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 ### _(2022-xx-xx)_ **junixsocket 2.5.1**
 
  - Add support for IBM z/OS (experimental, binary not included)
- - Add junixsocket support for jetty via junixsocket-jetty.
- - Fix Selector logic (more bug fixes).
+ - Add support for building from source on arm64-Linux
+ - Add junixsocket support for jetty via [junixsocket-jetty](junixsocket-jetty/index.html)
+ - Fix Selector logic (more bug fixes)
 
 ### _(2022-06-06)_ **junixsocket 2.5.0**
 

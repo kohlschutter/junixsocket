@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/DECORATION/1.8.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd"
+  name="junixsocket">
+
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+  </skin>
+  <custom>
+    <fluidoSkin>
+      <gitHub>
+        <projectId>kohlschutter/junixsocket</projectId>
+        <ribbonOrientation>right</ribbonOrientation>
+      </gitHub>
+    </fluidoSkin>
+  </custom>
+
+  <bannerLeft>
+    <name>${project.name}</name>
+    <!-- <src>https://project-website.example/images/project-logo.png</src> 
+      <href>https://project-website.example/</href> -->
+  </bannerLeft>
+
+  <edit>${project.scm.url}</edit>
+
+  <body>
+    <menu ref="parent" />
+    <menu ref="modules" />
+    <menu ref="reports" />
+  </body>
+</project>
