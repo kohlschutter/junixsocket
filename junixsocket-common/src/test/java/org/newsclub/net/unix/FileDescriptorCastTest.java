@@ -18,8 +18,10 @@
 package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -34,6 +36,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.time.Duration;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -49,6 +52,16 @@ public class FileDescriptorCastTest {
   public void testInvalidFileDescriptor() throws IOException {
     assertThrows(IOException.class, () -> FileDescriptorCast.using(new FileDescriptor()));
     assertThrows(NullPointerException.class, () -> FileDescriptorCast.using(null));
+    assertThrows(ClassCastException.class, () -> FileDescriptorCast.using(FileDescriptor.out).as(
+        Runtime.class));
+  }
+
+  public void testAvailableTypes() throws IOException {
+    FileDescriptorCast fdc = FileDescriptorCast.using(FileDescriptor.out);
+    Set<Class<?>> availableTypes = fdc.availableTypes();
+    assertTrue(availableTypes.contains(OutputStream.class));
+    assertTrue(fdc.isAvailable(OutputStream.class));
+    assertFalse(fdc.isAvailable(System.class));
   }
 
   @Test
