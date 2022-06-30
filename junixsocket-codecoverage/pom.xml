@@ -71,6 +71,12 @@
     </dependency>
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-jetty</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-rmi</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>

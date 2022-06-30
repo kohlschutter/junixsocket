@@ -105,6 +105,6 @@ vulnerabilities in older versions of the Linux kernel.
 * [TIPC documentation in the Linux kernel](https://www.kernel.org/doc/html/latest/networking/tipc.html)
 * [TIPC IETF draft](https://datatracker.ietf.org/doc/html/draft-maloy-tipc-01.txt)
 
-* [junixsocket-tipc javadoc](https://kohlschutter.github.io/junixsocket/junixsocket-tipc/apidocs/org.newsclub.net.unix.tipc/module-summary.html)
+* [junixsocket-tipc javadoc](https://kohlschutter.github.io/junixsocket/junixsocket-tipc/apidocs/org.newsclub.net.unix.tipc/org/newsclub/net/unix/tipc/package-summary.html)
 * [junixsocket-tipc source code](https://kohlschutter.github.io/junixsocket/junixsocket-tipc/xref/index.html)
 * [junixsocket-tipc unit tests](https://kohlschutter.github.io/junixsocket/junixsocket-tipc/xref-test/index.html)

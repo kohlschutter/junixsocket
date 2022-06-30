@@ -192,8 +192,11 @@ NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in
 This builds the Maven site and publishes it to [https://kohlschutter.github.io/junixsocket/](https://kohlschutter.github.io/junixsocket/).
 
     cd junixsocket 
-    mvn clean install site site:stage -Pstrict -Prelease
-    mvn scm-publish:publish-scm -Pstrict -Prelease
+    mvn clean install site -Pstrict,release && \
+      mvn javadoc:aggregate -P '!with-native,!with-non-modularized,strict,release' && \
+      mvn jxr:aggregate jxr:test-aggregate -P strict,release && \
+      mvn site:stage -Pstrict,release && \
+      mvn scm-publish:publish-scm -Pstrict,release
 
 NOTE: There can be a 10-minute delay until the pages get updated automatically in your browser cache.
 Hit refresh to expedite.

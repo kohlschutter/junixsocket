@@ -35,9 +35,16 @@
       <item name="Quick Start" href="quickstart.html" />
       <item name="Compatibility" href="compatibility.html" />
       <item name="Selftest" href="selftest.html" />
-      <item name="Add junixsocket to your project"
-        href="dependency.html" />
-      <item name="FAQ" href="faq.html" />
+      <item name="Add junixsocket to your project" href="dependency.html" />
+      <!-- <item name="FAQ" href="faq.html" /> -->
+    </menu>
+
+    <menu name="Reference">
+      <item name="API Javadoc" href="apidocs/index.html" />
+      <item name="Source xref" href="xref/index.html" />
+      <item name="Test xref" href="xref-test/index.html" />
+      <item name="Code Coverage"
+        href="junixsocket-codecoverage/jacoco-aggregate/index.html" />
     </menu>
 
     <menu name="Protocols">
@@ -62,11 +69,6 @@
         href="crosscomp.html" />
       <item name="Developing with Eclipse" href="eclipse.html" />
       <item name="Release Instructions" href="release.html" />
-    </menu>
-
-    <menu name="Reference">
-      <item name="Code Coverage"
-        href="junixsocket-codecoverage/jacoco-aggregate/index.html" />
     </menu>
 
     <menu ref="modules" />

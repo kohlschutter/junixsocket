@@ -39,12 +39,7 @@ other address/protocol families (such as [TIPC](http://tipc.io/)), from Java.
     - Sockets (`org.newsclub.net.unix.demo`)
     - RMI over Unix Sockets (`org.newsclub.net.unix.demo.rmi` and `org.newsclub.net.unix.demo.rmi.services`)
     - MySQL over Unix Sockets  (`org.newsclub.net.mysql.demo`)
-
-  * API Javadocs
-    - [The core (common) API](https://kohlschutter.github.io/junixsocket/junixsocket-common/apidocs/org.newsclub.net.unix/org/newsclub/net/unix/package-summary.html)
-    - [The RMI-over-Unix-Socket API](https://kohlschutter.github.io/junixsocket/junixsocket-rmi/apidocs/org.newsclub.net.unix.rmi/org/newsclub/net/unix/rmi/package-summary.html)
-    - [The TIPC API](https://kohlschutter.github.io/junixsocket/junixsocket-tipc/apidocs/org.newsclub.net.unix.tipc/org/newsclub/net/unix/tipc/package-summary.html)
-    
+  * [API Javadocs](https://kohlschutter.github.io/junixsocket/apidocs/)
   * [Unix Domain Socket Reference](https://kohlschutter.github.io/junixsocket/unixsockets.html)
   * [TIPC Reference](http://tipc.io)
 

@@ -80,10 +80,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <module>junixsocket-server</module>
     <module>junixsocket-rmi</module>
     <module>junixsocket-mysql</module>
-    <module>junixsocket-jetty</module>
     <module>junixsocket-core</module>
     <module>junixsocket-demo</module>
-    <module>junixsocket-selftest</module>
     <module>junixsocket-dist</module>
     <module>junixsocket-codecoverage</module>
   </modules>
@@ -140,6 +138,19 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <junixsocket.custom.classifier></junixsocket.custom.classifier>
       </properties>
     </profile>
+    <profile>
+        <id>with-non-modularized</id>
+        <activation>
+            <property>
+                <name>!javadoc.skipNonModularized</name>
+            </property>
+        </activation>
+        <modules>
+            <module>junixsocket-jetty</module>
+            <module>junixsocket-selftest</module>
+        </modules>
+    </profile>
+
     <profile>
       <id>cross</id>
       <activation>
