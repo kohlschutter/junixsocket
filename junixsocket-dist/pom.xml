@@ -44,6 +44,16 @@
     </dependency>
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-tipc</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-jetty</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-selftest</artifactId>
       <version>${project.version}</version>
       <classifier>jar-with-dependencies</classifier>
