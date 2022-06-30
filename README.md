@@ -2,11 +2,11 @@
 
 junixsocket is a Java/JNI library that allows the use of
 [Unix Domain Sockets](https://en.wikipedia.org/wiki/Unix_domain_socket) (AF_UNIX sockets), and
-other address/protocol families (such as [TIPC](http://tipc.io/)), from Java.
+other address/protocol families (such as [AF_TIPC](http://tipc.io/)), from Java.
 
-## Why it's cool
+## Unix sockets API, in Java, AF.
 
-* *junixsocket* is the most complete implementation of Unix Domain Sockets for the Java ecosystem.
+* *junixsocket* is the most complete implementation of AF_UNIX sockets for the Java ecosystem.
 * Supports other socket types, such as TIPC (on Linux), as well!
 * Comes with pre-built native libraries for most operating systems and platforms, including
   macOS, Linux, Windows, Solaris, FreeBSD, NetBSD, OpenBSD, DragonFlyBSD, AIX, IBM i.
@@ -23,7 +23,7 @@ other address/protocol families (such as [TIPC](http://tipc.io/)), from Java.
 * Supports the abstract namespace on Linux.
 * Supports socketpair, and instantiating socket classes from file descriptors.
 * Supports [HTTP over UNIX sockets](https://kohlschutter.github.io/junixsocket/http.html) (using [NanoHTTPD](https://github.com/NanoHttpd/nanohttpd), [OkHttp](https://github.com/square/okhttp), and [jetty](https://github.com/eclipse/jetty.project/)).
-* Supports JPMS/Jigsaw modules. Modularized so you can install only what you need.
+* Supports JPMS/Jigsaw modules. The project is modularized so you can install only what you need.
 * Provides a selftest package with 100+ tests to ensure compatibility with any target platform.
 * Apache 2.0 licensed.
 
@@ -31,8 +31,7 @@ other address/protocol families (such as [TIPC](http://tipc.io/)), from Java.
 
 ## Quick links
 
- * [Project website](https://kohlschutter.github.io/junixsocket/)
- * [Github project](https://github.com/kohlschutter/junixsocket/)
+ * [Project website](https://kohlschutter.github.io/junixsocket/) and [Github project](https://github.com/kohlschutter/junixsocket/)
  * [Changelog](https://kohlschutter.github.io/junixsocket/changelog.html)
  * [Getting started](https://kohlschutter.github.io/junixsocket/quickstart.html)
  * [Demo code](https://kohlschutter.github.io/junixsocket/demo.html) ([Java source](https://kohlschutter.github.io/junixsocket/junixsocket-demo/xref/index.html))
@@ -41,7 +40,7 @@ other address/protocol families (such as [TIPC](http://tipc.io/)), from Java.
     - MySQL over Unix Sockets  (`org.newsclub.net.mysql.demo`)
   * [API Javadocs](https://kohlschutter.github.io/junixsocket/apidocs/)
   * [Unix Domain Socket Reference](https://kohlschutter.github.io/junixsocket/unixsockets.html)
-  * [TIPC Reference](http://tipc.io)
+  * [TIPC documentation](https://kohlschutter.github.io/junixsocket/junixsocket-tipc/index.html)
 
 ## Licensing
 
@@ -51,8 +50,9 @@ Commercial support is available through [Kohlschütter Search Intelligence](http
 
 ## Self-test
 
-To verify that the software works as expected on your platform, you can run the selftest program,
-which is located in the "junixsocket-dist" distribution package:
+To verify that the software works as expected on your platform, you can run the
+[junixsocket-selftest](https://kohlschutter.github.io/junixsocket/selftest.html) program, which is
+located in the "junixsocket-dist" distribution package, and also released on GitHub.
 
 ```
 java -jar junixsocket-selftest-VERSION-jar-with-dependencies.jar 
