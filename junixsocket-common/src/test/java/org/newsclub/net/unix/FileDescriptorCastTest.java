@@ -56,6 +56,7 @@ public class FileDescriptorCastTest {
         Runtime.class));
   }
 
+  @Test
   public void testAvailableTypes() throws IOException {
     FileDescriptorCast fdc = FileDescriptorCast.using(FileDescriptor.out);
     Set<Class<?>> availableTypes = fdc.availableTypes();
