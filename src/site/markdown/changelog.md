@@ -13,6 +13,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
  - Add support for building from source on arm64-Linux
  - Add junixsocket support for jetty via [junixsocket-jetty](junixsocket-jetty/index.html)
  - Fix Selector logic (more bug fixes)
+ - Documentation updates
 
 ### _(2022-06-06)_ **junixsocket 2.5.0**
 
