@@ -21,6 +21,12 @@ Here's how you build junixsocket from the source.
 
     Also see [here](crosscomp.html) for instructions how to cross-compile for all supported architectures.
 
+    Be sure to install `bash`, `gcc`,`clang`, `ld`/`binutils`, C headers (`glibc-devel`/`libc-dev`, `musl-dev`, etc.), and, optionally, for TIPC on Linux, Linux headers (e.g, `linux-headers`).
+
+    For example, on Alpine Linux, run the following command:
+
+		sudo apk add git maven clang gcc binutils bash musl-dev libc-dev linux-headers
+
 ## Building with Maven
 
 Build and test junixsocket.
@@ -42,7 +48,15 @@ Here's how to make building less strict (this turns off several code quality che
 
     mvn clean install -Dignorant=true
 
-You can also build the full release version of junixsocket (which will include all cross-compile destinations) -- see the [release instructions](release.html) for details:
+If some tests fail, you may try
+
+    mvn clean install -DskipTests=true
+
+If you're having problems with building the native library, you can skip directly to building the Java code via
+
+    mvn clean install -rf :junixsocket-common
+
+You can also try to build the full release version of junixsocket (which will include all cross-compile destinations) -- see the [release instructions](release.html) for details:
 
     mvn clean install -Pstrict -Prelease
 
