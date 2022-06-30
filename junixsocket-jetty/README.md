@@ -48,7 +48,4 @@ For example, for a UNIX domain socket at path `/tmp/socket`, use:
 
 ## More examples
 
-See [junixsocket-jetty's unit tests](xref-test/index.html)
-<!--
-see code in src/test/java; the above link will only work for 'mvn site' output
--->
+See [junixsocket-jetty's unit tests](https://kohlschutter.github.io/junixsocket/junixsocket-jetty/xref-test/index.html)
