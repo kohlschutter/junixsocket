@@ -44,6 +44,22 @@ If you're going to use the mySQL Connector for Unix sockets, add the following d
       <version>2.5.0</version>
     </dependency>
  
+If you're going to use TIPC, add the following dependency:
+
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-tipc</artifactId>
+      <version>2.5.0</version>
+    </dependency>
+  
+If you're going to use the Jetty connectors, add the following dependency:
+
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-jetty</artifactId>
+      <version>2.5.1</version>
+    </dependency>
+ 
 ## Gradle
  
  Minimum requirement:
@@ -57,6 +73,14 @@ If you're going to use the mySQL Connector for Unix sockets, add the following d
  For MySQL support, add:
  
     compile 'com.kohlschutter.junixsocket:junixsocket-mysql:2.5.0'
+ 
+ For TIPC support, add:
+ 
+    compile 'com.kohlschutter.junixsocket:junixsocket-tipc:2.5.0'
+ 
+ For Jetty support, add:
+ 
+    compile 'com.kohlschutter.junixsocket:junixsocket-jetty:2.5.1'
 
 ## jars only
 

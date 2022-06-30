@@ -73,4 +73,5 @@ To include the core junixsocket functionality in your project, add the following
 </dependency>
 ```
 
-For more, optional packages (RMI, MySQL, server, etc.) see [here](https://kohlschutter.github.io/junixsocket/dependency.html)
+For more, optional packages (RMI, MySQL, Jetty, TIPC, server, etc.) see
+[here](https://kohlschutter.github.io/junixsocket/dependency.html)
