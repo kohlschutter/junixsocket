@@ -15,7 +15,7 @@ junixsocket-dist provides a self-contained jar that performs this selftest:
 
     java -jar junixsocket-selftest-2.5.0-jar-with-dependencies.jar
 
-The last line should say "Selftest PASSED", and you're good to go.
+The last line should read "Selftest PASSED", and you're good to go.
 
 If not, please [file a bug report](https://github.com/kohlschutter/junixsocket/issues) with the
 output of the selftest.

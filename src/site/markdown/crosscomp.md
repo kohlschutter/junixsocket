@@ -12,10 +12,6 @@ On Mac, the Xcode version of clang is not sufficient. You have to install llvm f
 
     brew install llvm
 
-In order to compile for RISC-V, you need LLVM 9. Currently, it won't compile on newer versions, so install that one, too:
-
-    brew install llvm@9
-
 ## Setting up the target SDKs
 
 First, we need to setup the SDK of all supported target platforms, so we can build our code one
@@ -131,10 +127,9 @@ For junixsocket, specifically, you can speed-up your porting development by dire
 the JNI code as follows:
 
     cd junixsocket/junixsocket-native
-    crossclang/bin/clang src/main/c/org_newsclub_net_unix_NativeUnixSocket.c \
+    crossclang/bin/clang src/main/c/*.c \
         -target (target-platform) \
-        -I /(path-to-java-jdk)/include/ \
-        -I /(path-to-java-jdk)/include/(platform-specific)/ \
+        -Isrc/main/c -Isrc/main/c/jni \
         -shared (additional flags) \
         -olibjunixtest.so
 

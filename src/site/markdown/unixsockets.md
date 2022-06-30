@@ -2,9 +2,10 @@
 
 Unix sockets, UNIX-domain sockets, Unix domain protocol family, POSIX local inter-process communication socket, POSIX local IPC socket, `AF_UNIX`, `PF_UNIX`, `PF_LOCAL`, `AF_FILE`, `PF_FILE` —
 all these terms more or less refer to the same concept — a host-internal protocol and addressing
-scheme that is more or less like socket communication between computers on the Internet. Typically, but not always, Unix sockets are referenced by pathnames on the file system.
+scheme that is more or less like socket communication between computers on the Internet.
+Typically, but not always, Unix sockets are referenced by pathnames on the file system.
 
-Unix sockets are available on a variety of platforms (including macOS and Linux), and they all
+Unix sockets are available on a variety of platforms (including macOS, Windows and Linux), and they all
 differ a little in how they work.
 
 Here are some references that may be useful to you.
@@ -84,7 +85,7 @@ Unlike Internet socket addresses, Unix domain socket addresses do not support a 
 
 ### Length of a socket path (`sun_path`)
 
-Some operating systems, such as HP/UX, limit `sun_path` to only be up to 92 bytes. macOS, QNX and 4.4 BSD limit them to 104. Linux, 4.3 BSD and z/OS have a limit of 108 bytes. A mandatory terminating null byte is included in this calculation.
+Some operating systems, such as HP/UX, limit `sun_path` to only be up to 92 bytes. macOS, QNX and 4.4 BSD limit them to 104. Linux, 4.3 BSD and z/OS have a limit of 108 bytes. A (sometimes) mandatory terminating null byte is included in this calculation.
 
 ### Socket types
 

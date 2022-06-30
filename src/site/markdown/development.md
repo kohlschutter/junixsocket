@@ -6,10 +6,12 @@ High-quality contributions are the best way to get your changes merged.
 Here are some instructions to get started.
 
    * [Building from source](building.html)
-
-   * [Custom architectures: Building and running](customarch.html)
    
    * [Developing with Eclipse](eclipse.html) 
+
+   * [Custom architectures: Building and running](customarch.html)
+
+   * [Cross-compiling junixsocket](crosscomp.html)
 
    * [How to release junixsocket](release.html)
 

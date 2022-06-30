@@ -9,7 +9,9 @@ Here's how you build your custom artifacts.
  
  1. Make sure you have a machine running your target platform. 
  2. Install the Java JDK 9 or newer (preferably Java 11), Maven 3.6 or newer, and junixsocket.
- 3. Install a development environment so you can compile C code (e.g., gcc, clang, etc.)
+ 3. Install a development environment so you can compile C code.
+ 
+    junixsocket specifically needs `bash`, `clang`/`gcc`, `ld`, and system C headers.
  
 > **NOTE** You may also be able to cross-compile code for your target platform, on your development
 machine. See [Cross-compiling junixsocket](crosscomp.html) for details. 

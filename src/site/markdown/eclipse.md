@@ -47,8 +47,8 @@ code.
 
 The `coding-style` project has configurations for both. Import them into Eclipse.
 
-   - `coding-style/1.1/eclipse/checkstyle-configuration.xml` (add to Eclipse Preferences -> Checkstyle -> New... -> External Configuration File) 
-   - `coding-style/1.1/eclipse/spotbugs-exclude.xml` (add to Eclipse Preferences -> Java -> SpotBugs -> Filter Files -> Exclude filter files)
+   - `coding-style/eclipse/checkstyle-configuration.xml` (add to Eclipse Preferences -> Checkstyle -> New... -> External Configuration File) 
+   - `coding-style/eclipse/spotbugs-exclude.xml` (add to Eclipse Preferences -> Java -> SpotBugs -> Filter Files -> Exclude filter files)
 
 You can use `mvn clean install` to check from the command line. Add `-Pstrict` to fail if there are issues.
 
@@ -57,10 +57,9 @@ You can use `mvn clean install` to check from the command line. Add `-Pstrict` t
 Enable "Refresh using native hooks or polling" (under Eclipse Preferences -> General -> Workspace)
 I don't know why this isn't on by default.
 
-## Use Java 11 for development
+## Use Java 11 or newer for development
 
-Make sure Java 9 or later is installed and available in Eclipse. If you have the choice, simply skip
-Java 9 and 10, and go straight to 11.
+Make sure Java 11 or later is installed and available in Eclipse.
 
 ## Working with the native C JNI library
 
@@ -76,4 +75,4 @@ unit tests.
 If you just want to see if the code compiles, use this instead:
 
     cd junixsocket 
-    ( cd junixsocket-native ; mvn clean install -DskipTests=true )
+    mvn clean install -DskipTests=true -pl junixsocket-native
