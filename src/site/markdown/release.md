@@ -68,7 +68,7 @@ install Java, Maven and junixsocket, and you should be good to go.
 ### Bump project version
 
     cd junixsocket
-    mvn versions:set -DnewVersion=2.5.0
+    mvn versions:set -DnewVersion=2.5.1
     # git add / commit here...
     
 ### Build native libraries on other supported, common platforms
@@ -86,8 +86,8 @@ The platform-dependent nar files should now be available in the local maven repo
 Use the provided script to copy the corresponding nar to a project folder:
 
     cd junixsocket
-    # replace 2.5.0 with the desired version number
-    junixsocket-native-prebuilt/bin/copy-nar-from-m2repo.sh 2.5.0
+    # replace 2.5.1 with the desired version number
+    junixsocket-native-prebuilt/bin/copy-nar-from-m2repo.sh 2.5.1
 
 Now copy the nar files from the target machine to your development computer (from where you do the release).
 By convention, copy the files to the same folder as on the target machine (*junixsocket/junixsocket-native-prebuilt/bin*)
@@ -177,7 +177,7 @@ NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in
 
 2. Select the newly created tag (= search for the version).
 
-3. Release title = "junixsocket" + version>, e.g., "junixsocket 2.5.0"
+3. Release title = "junixsocket" + version>, e.g., "junixsocket 2.5.1"
 
 4. Paste changelog contents to text field
 
@@ -189,14 +189,21 @@ NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in
 
 ### Publish website 
 
-This builds the Maven site and publishes it to [https://kohlschutter.github.io/junixsocket/](https://kohlschutter.github.io/junixsocket/).
+This builds the Maven site 
 
-    cd junixsocket 
-    mvn clean install site -Pstrict,release && \
+    cd junixsocket
+    mvn clean && \
+      mvn install site -Pstrict,release && \
       mvn javadoc:aggregate -P '!with-native,!with-non-modularized,strict,release' && \
       mvn jxr:aggregate jxr:test-aggregate -P strict,release && \
-      mvn site:stage -Pstrict,release && \
-      mvn scm-publish:publish-scm -Pstrict,release
+      mvn site:stage -Pstrict,release
+
+The website should now be inspected at `junixsocket/target/staging/index.html`
+
+If everything looks good, we can publish it to
+[https://kohlschutter.github.io/junixsocket/](https://kohlschutter.github.io/junixsocket/):
+   
+    mvn scm-publish:publish-scm -Pstrict,release
 
 NOTE: There can be a 10-minute delay until the pages get updated automatically in your browser cache.
 Hit refresh to expedite.
