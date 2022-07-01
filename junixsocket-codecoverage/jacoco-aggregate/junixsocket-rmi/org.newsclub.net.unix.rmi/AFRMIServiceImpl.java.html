@@ -128,10 +128,10 @@ final class AFRMIServiceImpl implements AFRMIService {
   public void unregisterForShutdown(Closeable closeable) throws RemoteException {
 <span class="fc" id="L129">    synchronized (closeAtShutdown) {</span>
 <span class="fc" id="L130">      Objects.requireNonNull(closeable);</span>
-<span class="pc bpc" id="L131" title="1 of 2 branches missed.">      for (Iterator&lt;WeakReference&lt;Closeable&gt;&gt; it = closeAtShutdown.iterator(); it.hasNext();) {</span>
-<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (closeable.equals(it.next().get())) {</span>
-<span class="nc" id="L133">          it.remove();</span>
-<span class="nc" id="L134">          return;</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">      for (Iterator&lt;WeakReference&lt;Closeable&gt;&gt; it = closeAtShutdown.iterator(); it.hasNext();) {</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        if (closeable.equals(it.next().get())) {</span>
+<span class="fc" id="L133">          it.remove();</span>
+<span class="fc" id="L134">          return;</span>
         }
       }
 <span class="fc" id="L137">    }</span>

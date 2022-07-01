@@ -81,7 +81,7 @@ public final class AFTIPCErrInfo implements Serializable {
      */
     public static final ErrorCode TIPC_ERR_CONN_SHUTDOWN;
 
-<span class="nc" id="L84">    private static final @NonNull ErrorCode[] VALUES = init(new @NonNull ErrorCode[] {</span>
+<span class="fc" id="L84">    private static final @NonNull ErrorCode[] VALUES = init(new @NonNull ErrorCode[] {</span>
         TIPC_OK = new ErrorCode(&quot;TIPC_OK&quot;, 0), //
         TIPC_ERR_NO_NAME = new ErrorCode(&quot;TIPC_ERR_NO_NAME&quot;, 1), //
         TIPC_ERR_NO_PORT = new ErrorCode(&quot;TIPC_ERR_NO_PORT&quot;, 2), //
@@ -95,8 +95,8 @@ public final class AFTIPCErrInfo implements Serializable {
 <span class="nc" id="L95">    }</span>
 
     private ErrorCode(String name, int id) {
-<span class="nc" id="L98">      super(name, id);</span>
-<span class="nc" id="L99">    }</span>
+<span class="fc" id="L98">      super(name, id);</span>
+<span class="fc" id="L99">    }</span>
 
     /**
      * Returns an {@link ErrorCode} instance given an integer.
@@ -105,7 +105,7 @@ public final class AFTIPCErrInfo implements Serializable {
      * @return The instance.
      */
     public static ErrorCode ofValue(int v) {
-<span class="nc" id="L108">      return ofValue(VALUES, ErrorCode::new, v);</span>
+<span class="fc" id="L108">      return ofValue(VALUES, ErrorCode::new, v);</span>
     }
   }
 
@@ -115,10 +115,10 @@ public final class AFTIPCErrInfo implements Serializable {
    * @param errorCode The error code.
    * @param dataLength The length of the returned data.
    */
-<span class="nc" id="L118">  public AFTIPCErrInfo(ErrorCode errorCode, int dataLength) {</span>
-<span class="nc" id="L119">    this.errorCode = errorCode;</span>
-<span class="nc" id="L120">    this.dataLength = dataLength;</span>
-<span class="nc" id="L121">  }</span>
+<span class="fc" id="L118">  public AFTIPCErrInfo(ErrorCode errorCode, int dataLength) {</span>
+<span class="fc" id="L119">    this.errorCode = errorCode;</span>
+<span class="fc" id="L120">    this.dataLength = dataLength;</span>
+<span class="fc" id="L121">  }</span>
 
   /**
    * Returns the error code.
@@ -150,26 +150,26 @@ public final class AFTIPCErrInfo implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-<span class="nc bnc" id="L153" title="All 2 branches missed.">    if (this == obj) {</span>
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">    if (this == obj) {</span>
 <span class="nc" id="L154">      return true;</span>
-<span class="nc bnc" id="L155" title="All 2 branches missed.">    } else if (obj == null) {</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">    } else if (obj == null) {</span>
 <span class="nc" id="L156">      return false;</span>
-<span class="nc bnc" id="L157" title="All 2 branches missed.">    } else if (getClass() != obj.getClass()) {</span>
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">    } else if (getClass() != obj.getClass()) {</span>
 <span class="nc" id="L158">      return false;</span>
     }
-<span class="nc" id="L160">    AFTIPCErrInfo other = (AFTIPCErrInfo) obj;</span>
-<span class="nc bnc" id="L161" title="All 4 branches missed.">    return dataLength == other.dataLength &amp;&amp; errorCode.equals(other.errorCode);</span>
+<span class="fc" id="L160">    AFTIPCErrInfo other = (AFTIPCErrInfo) obj;</span>
+<span class="pc bpc" id="L161" title="2 of 4 branches missed.">    return dataLength == other.dataLength &amp;&amp; errorCode.equals(other.errorCode);</span>
   }
 
   @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   static AFTIPCErrInfo of(int[] tipcErrInfo) {
-<span class="nc bnc" id="L166" title="All 2 branches missed.">    if (tipcErrInfo == null) {</span>
-<span class="nc" id="L167">      return null;</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">    if (tipcErrInfo == null) {</span>
+<span class="fc" id="L167">      return null;</span>
     }
-<span class="nc bnc" id="L169" title="All 2 branches missed.">    if (tipcErrInfo.length != 2) {</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">    if (tipcErrInfo.length != 2) {</span>
 <span class="nc" id="L170">      throw new IllegalArgumentException();</span>
     }
-<span class="nc" id="L172">    return new AFTIPCErrInfo(ErrorCode.ofValue(tipcErrInfo[0]), tipcErrInfo[1]);</span>
+<span class="fc" id="L172">    return new AFTIPCErrInfo(ErrorCode.ofValue(tipcErrInfo[0]), tipcErrInfo[1]);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

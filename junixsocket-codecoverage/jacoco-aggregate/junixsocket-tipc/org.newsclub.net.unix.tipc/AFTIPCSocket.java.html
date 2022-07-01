@@ -36,21 +36,21 @@ import org.newsclub.net.unix.AFTIPCSocketImplExtensions;
  */
 public final class AFTIPCSocket extends AFSocket&lt;AFTIPCSocketAddress&gt; implements
     AFTIPCSocketExtensions {
-<span class="nc" id="L39">  private static AFTIPCSocketImplExtensions staticExtensions = null;</span>
+<span class="fc" id="L39">  private static AFTIPCSocketImplExtensions staticExtensions = null;</span>
 
   AFTIPCSocket(FileDescriptor fdObj, AFSocketFactory&lt;AFTIPCSocketAddress&gt; factory)
       throws SocketException {
-<span class="nc" id="L43">    super(new AFTIPCSocketImpl(fdObj), factory);</span>
-<span class="nc" id="L44">  }</span>
+<span class="fc" id="L43">    super(new AFTIPCSocketImpl(fdObj), factory);</span>
+<span class="fc" id="L44">  }</span>
 
   private static synchronized AFTIPCSocketImplExtensions getStaticImplExtensions()
       throws IOException {
-<span class="nc bnc" id="L48" title="All 2 branches missed.">    if (staticExtensions == null) {</span>
-<span class="nc" id="L49">      try (AFTIPCSocket socket = new AFTIPCSocket(null, null)) {</span>
-<span class="nc" id="L50">        staticExtensions = (AFTIPCSocketImplExtensions) socket.getImplExtensions();</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">    if (staticExtensions == null) {</span>
+<span class="fc" id="L49">      try (AFTIPCSocket socket = new AFTIPCSocket(null, null)) {</span>
+<span class="fc" id="L50">        staticExtensions = (AFTIPCSocketImplExtensions) socket.getImplExtensions();</span>
       }
     }
-<span class="nc" id="L53">    return staticExtensions;</span>
+<span class="fc" id="L53">    return staticExtensions;</span>
   }
 
   /**
@@ -66,12 +66,12 @@ public final class AFTIPCSocket extends AFSocket&lt;AFTIPCSocketAddress&gt; impl
    * @return {@code true} iff supported.
    */
   public static boolean isSupported() {
-<span class="nc bnc" id="L69" title="All 4 branches missed.">    return AFSocket.isSupported() &amp;&amp; AFSocket.supports(AFSocketCapability.CAPABILITY_TIPC);</span>
+<span class="pc bpc" id="L69" title="2 of 4 branches missed.">    return AFSocket.isSupported() &amp;&amp; AFSocket.supports(AFSocketCapability.CAPABILITY_TIPC);</span>
   }
 
   @Override
   protected AFTIPCSocketChannel newChannel() {
-<span class="nc" id="L74">    return new AFTIPCSocketChannel(this);</span>
+<span class="fc" id="L74">    return new AFTIPCSocketChannel(this);</span>
   }
 
   /**
@@ -86,7 +86,7 @@ public final class AFTIPCSocket extends AFSocket&lt;AFTIPCSocketAddress&gt; impl
    * @throws IOException if the operation fails.
    */
   public static AFTIPCSocket newInstance() throws IOException {
-<span class="nc" id="L89">    return (AFTIPCSocket) AFSocket.newInstance(AFTIPCSocket::new, (AFTIPCSocketFactory) null);</span>
+<span class="fc" id="L89">    return (AFTIPCSocket) AFSocket.newInstance(AFTIPCSocket::new, (AFTIPCSocketFactory) null);</span>
   }
 
   static AFTIPCSocket newInstance(AFTIPCSocketFactory factory) throws SocketException {
@@ -103,7 +103,7 @@ public final class AFTIPCSocket extends AFSocket&lt;AFTIPCSocketAddress&gt; impl
    * @throws IOException if the operation fails.
    */
   public static AFTIPCSocket newStrictInstance() throws IOException {
-<span class="nc" id="L106">    return (AFTIPCSocket) AFSocket.newInstance(AFTIPCSocket::new, (AFTIPCSocketFactory) null);</span>
+<span class="fc" id="L106">    return (AFTIPCSocket) AFSocket.newInstance(AFTIPCSocket::new, (AFTIPCSocketFactory) null);</span>
   }
 
   /**
@@ -114,12 +114,12 @@ public final class AFTIPCSocket extends AFSocket&lt;AFTIPCSocketAddress&gt; impl
    * @throws IOException if the operation fails.
    */
   public static AFTIPCSocket connectTo(AFTIPCSocketAddress addr) throws IOException {
-<span class="nc" id="L117">    return (AFTIPCSocket) AFSocket.connectTo(AFTIPCSocket::new, addr);</span>
+<span class="fc" id="L117">    return (AFTIPCSocket) AFSocket.connectTo(AFTIPCSocket::new, addr);</span>
   }
 
   @Override
   public AFTIPCSocketChannel getChannel() {
-<span class="nc" id="L122">    return (AFTIPCSocketChannel) super.getChannel();</span>
+<span class="fc" id="L122">    return (AFTIPCSocketChannel) super.getChannel();</span>
   }
 
   /**
@@ -132,19 +132,19 @@ public final class AFTIPCSocket extends AFSocket&lt;AFTIPCSocketAddress&gt; impl
   public static void main(String[] args) {
     // If you want to run this directly from within Eclipse, see
     // org.newsclub.net.unix.tipc.SocketTest#testMain.
-<span class="nc" id="L135">    System.out.print(AFTIPCSocket.class.getName() + &quot;.isSupported(): &quot;);</span>
-<span class="nc" id="L136">    System.out.flush();</span>
-<span class="nc" id="L137">    System.out.println(AFTIPCSocket.isSupported());</span>
-<span class="nc" id="L138">  }</span>
+<span class="fc" id="L135">    System.out.print(AFTIPCSocket.class.getName() + &quot;.isSupported(): &quot;);</span>
+<span class="fc" id="L136">    System.out.flush();</span>
+<span class="fc" id="L137">    System.out.println(AFTIPCSocket.isSupported());</span>
+<span class="fc" id="L138">  }</span>
 
   @Override
   public AFTIPCErrInfo getErrInfo() {
-<span class="nc" id="L142">    return AFTIPCErrInfo.of(((AFTIPCSocketImplExtensions) getImplExtensions()).getTIPCErrInfo());</span>
+<span class="fc" id="L142">    return AFTIPCErrInfo.of(((AFTIPCSocketImplExtensions) getImplExtensions()).getTIPCErrInfo());</span>
   }
 
   @Override
   public AFTIPCDestName getDestName() {
-<span class="nc" id="L147">    return AFTIPCDestName.of(((AFTIPCSocketImplExtensions) getImplExtensions()).getTIPCDestName());</span>
+<span class="fc" id="L147">    return AFTIPCDestName.of(((AFTIPCSocketImplExtensions) getImplExtensions()).getTIPCDestName());</span>
   }
 
   /**
@@ -155,7 +155,7 @@ public final class AFTIPCSocket extends AFSocket&lt;AFTIPCSocketAddress&gt; impl
    * @throws IOException on error.
    */
   public static byte[] getNodeIdentity(int peerId) throws IOException {
-<span class="nc" id="L158">    return getStaticImplExtensions().getTIPCNodeId(peerId);</span>
+<span class="fc" id="L158">    return getStaticImplExtensions().getTIPCNodeId(peerId);</span>
   }
 
   /**
@@ -177,8 +177,8 @@ public final class AFTIPCSocket extends AFSocket&lt;AFTIPCSocketAddress&gt; impl
    * @throws IOException on error.
    */
   public static String getNodeIdHexString(int peerId) throws IOException {
-<span class="nc" id="L180">    byte[] id = getNodeIdentity(peerId);</span>
-<span class="nc bnc" id="L181" title="All 2 branches missed.">    return id == null ? null : new BigInteger(1, id).toString(16);</span>
+<span class="fc" id="L180">    byte[] id = getNodeIdentity(peerId);</span>
+<span class="pc bpc" id="L181" title="1 of 2 branches missed.">    return id == null ? null : new BigInteger(1, id).toString(16);</span>
   }
 
   /**
@@ -190,7 +190,7 @@ public final class AFTIPCSocket extends AFSocket&lt;AFTIPCSocketAddress&gt; impl
    * @throws IOException on error.
    */
   public static String getLinkName(int peerId, int bearerId) throws IOException {
-<span class="nc" id="L193">    return getStaticImplExtensions().getTIPCLinkName(peerId, bearerId);</span>
+<span class="fc" id="L193">    return getStaticImplExtensions().getTIPCLinkName(peerId, bearerId);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

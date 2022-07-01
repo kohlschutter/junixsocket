@@ -114,23 +114,60 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
 <span class="fc" id="L114">    return afSocket.getLocalSocketAddress();</span>
   }
 
+  /**
+   * Checks if the local socket address returned by {@link #getLocalAddress()} is still valid.
+   * 
+   * The address is no longer valid if the server socket has been closed, {@code null}, or another
+   * server socket has been bound on that address.
+   * 
+   * @return {@code true} iff still valid.
+   */
+  public final boolean isLocalSocketAddressValid() {
+<span class="nc" id="L126">    return afSocket.isLocalSocketAddressValid();</span>
+  }
+
   @Override
   protected final void implCloseSelectableChannel() throws IOException {
-<span class="fc" id="L119">    afSocket.close();</span>
-<span class="fc" id="L120">  }</span>
+<span class="fc" id="L131">    afSocket.close();</span>
+<span class="fc" id="L132">  }</span>
 
   @Override
   protected final void implConfigureBlocking(boolean block) throws IOException {
-<span class="fc" id="L124">    getAFCore().implConfigureBlocking(block);</span>
-<span class="fc" id="L125">  }</span>
+<span class="fc" id="L136">    getAFCore().implConfigureBlocking(block);</span>
+<span class="fc" id="L137">  }</span>
 
   final AFSocketCore getAFCore() {
-<span class="fc" id="L128">    return afSocket.getAFImpl().getCore();</span>
+<span class="fc" id="L140">    return afSocket.getAFImpl().getCore();</span>
   }
 
   @Override
   public final FileDescriptor getFileDescriptor() throws IOException {
-<span class="nc" id="L133">    return afSocket.getFileDescriptor();</span>
+<span class="nc" id="L145">    return afSocket.getFileDescriptor();</span>
   }
+
+  /**
+   * Checks if this {@link AFServerSocketChannel}'s file should be removed upon {@link #close()}.
+   * 
+   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
+   * namespace).
+   * 
+   * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
+   */
+  public final boolean isDeleteOnClose() {
+<span class="nc" id="L157">    return socket().isDeleteOnClose();</span>
+  }
+
+  /**
+   * Enables/disables deleting this {@link AFServerSocketChannel}'s file (or other resource type)
+   * upon {@link #close()}.
+   * 
+   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
+   * namespace).
+   * 
+   * @param b Enabled if {@code true}.
+   */
+  public final void setDeleteOnClose(boolean b) {
+<span class="nc" id="L170">    socket().setDeleteOnClose(b);</span>
+<span class="nc" id="L171">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

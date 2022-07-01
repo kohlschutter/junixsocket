@@ -39,9 +39,9 @@ import org.newsclub.net.unix.NamedIntegerBitmask;
  */
 @NonNullByDefault
 public final class AFTIPCTopologySubscription {
-<span class="nc" id="L42">  static final byte[] USR_EMPTY = new byte[8];</span>
+<span class="fc" id="L42">  static final byte[] USR_EMPTY = new byte[8];</span>
 
-<span class="nc" id="L44">  private static final WeakHashMap&lt;ByteBuffer, @Nullable AFTIPCTopologySubscription&gt; SUBSCRIPTIONS =</span>
+<span class="fc" id="L44">  private static final WeakHashMap&lt;ByteBuffer, @Nullable AFTIPCTopologySubscription&gt; SUBSCRIPTIONS =</span>
       new WeakHashMap&lt;&gt;();
 
   /**
@@ -91,7 +91,7 @@ public final class AFTIPCTopologySubscription {
     /**
      * No flags set.
      */
-<span class="nc" id="L94">    public static final Flags NONE = new Flags(&quot;NONE&quot;, 0);</span>
+<span class="fc" id="L94">    public static final Flags NONE = new Flags(&quot;NONE&quot;, 0);</span>
 
     /**
      * Event at each match.
@@ -108,15 +108,15 @@ public final class AFTIPCTopologySubscription {
      */
     public static final Flags TIPC_SUB_CANCEL;
 
-<span class="nc" id="L111">    private static final @NonNull Flags[] VALUES = {</span>
+<span class="fc" id="L111">    private static final @NonNull Flags[] VALUES = {</span>
         TIPC_SUB_PORTS = new Flags(&quot;TIPC_SUB_PORTS&quot;, 1), //
         TIPC_SUB_SERVICE = new Flags(&quot;TIPC_SUB_SERVICE&quot;, 2), //
         TIPC_SUB_CANCEL = new Flags(&quot;TIPC_SUB_CANCEL&quot;, 4), //
     };
 
     private Flags(@Nullable String name, int flags) {
-<span class="nc" id="L118">      super(name, flags);</span>
-<span class="nc" id="L119">    }</span>
+<span class="fc" id="L118">      super(name, flags);</span>
+<span class="fc" id="L119">    }</span>
 
     /**
      * Returns a {@link Flags} instance given an integer value.
@@ -125,7 +125,7 @@ public final class AFTIPCTopologySubscription {
      * @return The instance.
      */
     public static Flags ofValue(int v) {
-<span class="nc" id="L128">      return resolve(VALUES, NONE, Flags::new, v);</span>
+<span class="fc" id="L128">      return resolve(VALUES, NONE, Flags::new, v);</span>
     }
 
     /**
@@ -194,52 +194,52 @@ public final class AFTIPCTopologySubscription {
    *          messages.
    */
   public AFTIPCTopologySubscription(int type, int lower, int upper, Flags flags, int timeoutSeconds,
-<span class="nc" id="L197">      byte[] usrHandle) {</span>
-<span class="nc" id="L198">    this.type = type;</span>
-<span class="nc" id="L199">    this.lower = lower;</span>
-<span class="nc" id="L200">    this.upper = upper;</span>
-<span class="nc bnc" id="L201" title="All 2 branches missed.">    this.flags = flags == null ? Flags.NONE : flags;</span>
-<span class="nc" id="L202">    this.timeout = timeoutSeconds;</span>
-<span class="nc" id="L203">    this.usrHandle = new byte[8];</span>
-<span class="nc bnc" id="L204" title="All 2 branches missed.">    if (usrHandle != null) {</span>
-<span class="nc bnc" id="L205" title="All 2 branches missed.">      if (usrHandle.length &gt; 8) {</span>
+<span class="fc" id="L197">      byte[] usrHandle) {</span>
+<span class="fc" id="L198">    this.type = type;</span>
+<span class="fc" id="L199">    this.lower = lower;</span>
+<span class="fc" id="L200">    this.upper = upper;</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">    this.flags = flags == null ? Flags.NONE : flags;</span>
+<span class="fc" id="L202">    this.timeout = timeoutSeconds;</span>
+<span class="fc" id="L203">    this.usrHandle = new byte[8];</span>
+<span class="pc bpc" id="L204" title="1 of 2 branches missed.">    if (usrHandle != null) {</span>
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">      if (usrHandle.length &gt; 8) {</span>
 <span class="nc" id="L206">        throw new IllegalArgumentException(&quot;User handle too long&quot;);</span>
       } else {
-<span class="nc" id="L208">        System.arraycopy(usrHandle, 0, this.usrHandle, 0, usrHandle.length);</span>
+<span class="fc" id="L208">        System.arraycopy(usrHandle, 0, this.usrHandle, 0, usrHandle.length);</span>
       }
     }
-<span class="nc" id="L211">  }</span>
+<span class="fc" id="L211">  }</span>
 
   @SuppressWarnings({&quot;null&quot;, &quot;cast&quot;})
   static AFTIPCTopologySubscription readFromBuffer(ByteBuffer buf) {
-<span class="nc" id="L215">    buf = (ByteBuffer) buf.slice().limit(MESSAGE_LENGTH);</span>
-<span class="nc" id="L216">    AFTIPCTopologySubscription sub = SUBSCRIPTIONS.get(buf);</span>
-<span class="nc bnc" id="L217" title="All 2 branches missed.">    if (sub != null) {</span>
-<span class="nc" id="L218">      return sub;</span>
+<span class="fc" id="L215">    buf = (ByteBuffer) buf.slice().limit(MESSAGE_LENGTH);</span>
+<span class="fc" id="L216">    AFTIPCTopologySubscription sub = SUBSCRIPTIONS.get(buf);</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">    if (sub != null) {</span>
+<span class="fc" id="L218">      return sub;</span>
     }
-<span class="nc" id="L220">    int type = buf.getInt();</span>
-<span class="nc" id="L221">    int lower = buf.getInt();</span>
-<span class="nc" id="L222">    int upper = buf.getInt();</span>
-<span class="nc" id="L223">    int timeout = buf.getInt();</span>
-<span class="nc" id="L224">    Flags flags = Flags.ofValue(buf.getInt());</span>
-<span class="nc" id="L225">    byte[] usrHandle = new byte[8];</span>
-<span class="nc" id="L226">    buf.get(usrHandle, 0, 8);</span>
-<span class="nc" id="L227">    buf.flip();</span>
-<span class="nc" id="L228">    sub = new AFTIPCTopologySubscription(type, lower, upper, flags, timeout, usrHandle);</span>
-<span class="nc" id="L229">    SUBSCRIPTIONS.put(buf, sub);</span>
-<span class="nc" id="L230">    return sub;</span>
+<span class="fc" id="L220">    int type = buf.getInt();</span>
+<span class="fc" id="L221">    int lower = buf.getInt();</span>
+<span class="fc" id="L222">    int upper = buf.getInt();</span>
+<span class="fc" id="L223">    int timeout = buf.getInt();</span>
+<span class="fc" id="L224">    Flags flags = Flags.ofValue(buf.getInt());</span>
+<span class="fc" id="L225">    byte[] usrHandle = new byte[8];</span>
+<span class="fc" id="L226">    buf.get(usrHandle, 0, 8);</span>
+<span class="fc" id="L227">    buf.flip();</span>
+<span class="fc" id="L228">    sub = new AFTIPCTopologySubscription(type, lower, upper, flags, timeout, usrHandle);</span>
+<span class="fc" id="L229">    SUBSCRIPTIONS.put(buf, sub);</span>
+<span class="fc" id="L230">    return sub;</span>
   }
 
   @SuppressWarnings(&quot;null&quot;)
   ByteBuffer writeToBuffer(ByteBuffer buf) {
-<span class="nc" id="L235">    buf = buf.order(ByteOrder.BIG_ENDIAN);</span>
-<span class="nc" id="L236">    buf.putInt(type);</span>
-<span class="nc" id="L237">    buf.putInt(lower);</span>
-<span class="nc" id="L238">    buf.putInt(upper);</span>
-<span class="nc" id="L239">    buf.putInt(timeout);</span>
-<span class="nc" id="L240">    buf.putInt(flags.value());</span>
-<span class="nc" id="L241">    buf.put(usrHandle);</span>
-<span class="nc" id="L242">    return buf;</span>
+<span class="fc" id="L235">    buf = buf.order(ByteOrder.BIG_ENDIAN);</span>
+<span class="fc" id="L236">    buf.putInt(type);</span>
+<span class="fc" id="L237">    buf.putInt(lower);</span>
+<span class="fc" id="L238">    buf.putInt(upper);</span>
+<span class="fc" id="L239">    buf.putInt(timeout);</span>
+<span class="fc" id="L240">    buf.putInt(flags.value());</span>
+<span class="fc" id="L241">    buf.put(usrHandle);</span>
+<span class="fc" id="L242">    return buf;</span>
   }
 
   /**
@@ -249,7 +249,7 @@ public final class AFTIPCTopologySubscription {
    */
   @SuppressWarnings({&quot;null&quot;, &quot;cast&quot;})
   public ByteBuffer toBuffer() {
-<span class="nc" id="L252">    return (ByteBuffer) writeToBuffer(ByteBuffer.allocate(MESSAGE_LENGTH)).flip();</span>
+<span class="fc" id="L252">    return (ByteBuffer) writeToBuffer(ByteBuffer.allocate(MESSAGE_LENGTH)).flip();</span>
   }
 
   @Override
@@ -354,7 +354,7 @@ public final class AFTIPCTopologySubscription {
    * @return {@code true} if this is a &quot;port&quot; subscription.
    */
   public boolean isPort() {
-<span class="nc" id="L357">    return flags.hasFlag(Flags.TIPC_SUB_PORTS);</span>
+<span class="fc" id="L357">    return flags.hasFlag(Flags.TIPC_SUB_PORTS);</span>
   }
 
   /**
@@ -364,7 +364,7 @@ public final class AFTIPCTopologySubscription {
    * @return {@code true} if this is a &quot;service&quot; subscription.
    */
   public boolean isService() {
-<span class="nc" id="L367">    return flags.hasFlag(Flags.TIPC_SUB_SERVICE);</span>
+<span class="fc" id="L367">    return flags.hasFlag(Flags.TIPC_SUB_SERVICE);</span>
   }
 
   /**
@@ -374,7 +374,7 @@ public final class AFTIPCTopologySubscription {
    * @return {@code true} if this is a &quot;cancellation&quot; subscription request.
    */
   public boolean isCancellation() {
-<span class="nc" id="L377">    return flags.hasFlag(Flags.TIPC_SUB_CANCEL);</span>
+<span class="fc" id="L377">    return flags.hasFlag(Flags.TIPC_SUB_CANCEL);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

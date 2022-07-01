@@ -56,31 +56,31 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
   // referenced from native code
   void setTipcErrorInfo(int errorCode, int dataLength) {
-<span class="nc bnc" id="L59" title="All 4 branches missed.">    if (errorCode == 0 &amp;&amp; dataLength == 0) {</span>
+<span class="pc bpc" id="L59" title="3 of 4 branches missed.">    if (errorCode == 0 &amp;&amp; dataLength == 0) {</span>
 <span class="nc" id="L60">      tipcErrorInfo = null;</span>
     } else {
-<span class="nc" id="L62">      tipcErrorInfo = new int[] {errorCode, dataLength};</span>
+<span class="fc" id="L62">      tipcErrorInfo = new int[] {errorCode, dataLength};</span>
     }
-<span class="nc" id="L64">  }</span>
+<span class="fc" id="L64">  }</span>
 
   int[] getTIPCErrorInfo() {
-<span class="nc" id="L67">    int[] info = tipcErrorInfo;</span>
-<span class="nc" id="L68">    tipcErrorInfo = null;</span>
-<span class="nc" id="L69">    return info;</span>
+<span class="fc" id="L67">    int[] info = tipcErrorInfo;</span>
+<span class="fc" id="L68">    tipcErrorInfo = null;</span>
+<span class="fc" id="L69">    return info;</span>
   }
 
   void setTipcDestName(int a, int b, int c) {
-<span class="nc bnc" id="L73" title="All 6 branches missed.">    if (a == 0 &amp;&amp; b == 0 &amp;&amp; c == 0) {</span>
+<span class="pc bpc" id="L73" title="5 of 6 branches missed.">    if (a == 0 &amp;&amp; b == 0 &amp;&amp; c == 0) {</span>
 <span class="nc" id="L74">      this.tipcDestName = null;</span>
     } else {
-<span class="nc" id="L76">      this.tipcDestName = new int[] {a, b, c};</span>
+<span class="fc" id="L76">      this.tipcDestName = new int[] {a, b, c};</span>
     }
-<span class="nc" id="L78">  }</span>
+<span class="fc" id="L78">  }</span>
 
   int[] getTIPCDestName() {
-<span class="nc" id="L81">    int[] addr = tipcDestName;</span>
-<span class="nc" id="L82">    tipcDestName = null;</span>
-<span class="nc" id="L83">    return addr;</span>
+<span class="fc" id="L81">    int[] addr = tipcDestName;</span>
+<span class="fc" id="L82">    tipcDestName = null;</span>
+<span class="fc" id="L83">    return addr;</span>
   }
 
   int getAncillaryReceiveBufferSize() {

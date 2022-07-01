@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="CHECK" timestamp="1656675929621">
+    <module artifactId="junixsocket-jetty" groupId="com.kohlschutter.junixsocket" version="2.5.1"/>
+    <files>
+        <file path="src/main/java/org/newsclub/net/unix/jetty/AFSocketClientConnector.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/jetty/AFSocketServerConnector.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/jetty/AFSocketServerConnectorTest.java" result="PRESENT"/>
+    </files>
+</licensePluginReport>

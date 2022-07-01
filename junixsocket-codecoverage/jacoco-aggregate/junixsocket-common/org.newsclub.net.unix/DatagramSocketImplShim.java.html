@@ -34,9 +34,9 @@ abstract class DatagramSocketImplShim extends DatagramSocketImpl {
 
   @Override
   protected &lt;T&gt; void setOption(SocketOption&lt;T&gt; name, T value) throws IOException {
-<span class="nc bnc" id="L37" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="nc" id="L38">      ((AFDatagramSocketImpl&lt;?&gt;) this).getCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
-<span class="nc" id="L39">      return;</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="fc" id="L38">      ((AFDatagramSocketImpl&lt;?&gt;) this).getCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
+<span class="fc" id="L39">      return;</span>
     }
 <span class="nc" id="L41">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
 <span class="nc bnc" id="L42" title="All 2 branches missed.">    if (optionId == null) {</span>
@@ -49,8 +49,8 @@ abstract class DatagramSocketImplShim extends DatagramSocketImpl {
   @SuppressWarnings(&quot;unchecked&quot;)
   @Override
   protected &lt;T&gt; T getOption(SocketOption&lt;T&gt; name) throws IOException {
-<span class="nc bnc" id="L52" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="nc" id="L53">      return ((AFDatagramSocketImpl&lt;?&gt;) this).getCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="fc" id="L53">      return ((AFDatagramSocketImpl&lt;?&gt;) this).getCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
     }
 <span class="nc" id="L55">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
 <span class="nc bnc" id="L56" title="All 2 branches missed.">    if (optionId == null) {</span>

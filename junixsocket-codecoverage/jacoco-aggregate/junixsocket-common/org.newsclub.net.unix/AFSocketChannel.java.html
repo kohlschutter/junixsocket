@@ -137,17 +137,17 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
   @Override
   public final &lt;T&gt; AFSocketChannel&lt;A&gt; setOption(SocketOption&lt;T&gt; name, T value) throws IOException {
-<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
 <span class="nc" id="L141">      getAFCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
 <span class="nc" id="L142">      return this;</span>
     }
-<span class="nc" id="L144">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
-<span class="nc bnc" id="L145" title="All 2 branches missed.">    if (optionId == null) {</span>
-<span class="nc" id="L146">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
+<span class="fc" id="L144">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">    if (optionId == null) {</span>
+<span class="fc" id="L146">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
     } else {
-<span class="nc" id="L148">      afSocket.getAFImpl().setOption(optionId.intValue(), value);</span>
+<span class="fc" id="L148">      afSocket.getAFImpl().setOption(optionId.intValue(), value);</span>
     }
-<span class="nc" id="L150">    return this;</span>
+<span class="fc" id="L150">    return this;</span>
   }
 
   @Override
@@ -169,8 +169,8 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
   @Override
   public final AFSocketChannel&lt;A&gt; shutdownOutput() throws IOException {
-<span class="nc" id="L172">    afSocket.getAFImpl().shutdownOutput();</span>
-<span class="nc" id="L173">    return this;</span>
+<span class="fc" id="L172">    afSocket.getAFImpl().shutdownOutput();</span>
+<span class="fc" id="L173">    return this;</span>
   }
 
   @Override
@@ -196,16 +196,16 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
   @Override
   public final boolean connect(SocketAddress remote) throws IOException {
 <span class="fc" id="L198">    boolean connected = afSocket.connect0(remote, 0);</span>
-<span class="pc bpc" id="L199" title="1 of 2 branches missed.">    if (!connected) {</span>
-<span class="nc" id="L200">      connectPending.set(true);</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">    if (!connected) {</span>
+<span class="fc" id="L200">      connectPending.set(true);</span>
     }
 <span class="fc" id="L202">    return connected;</span>
   }
 
   @Override
   public final boolean finishConnect() throws IOException {
-<span class="nc bnc" id="L207" title="All 2 branches missed.">    if (isConnected()) {</span>
-<span class="nc" id="L208">      return true;</span>
+<span class="pc bpc" id="L207" title="1 of 2 branches missed.">    if (isConnected()) {</span>
+<span class="fc" id="L208">      return true;</span>
 <span class="nc bnc" id="L209" title="All 2 branches missed.">    } else if (!isConnectionPending()) {</span>
 <span class="nc" id="L210">      return false;</span>
     }
@@ -244,11 +244,11 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
   @Override
   public final long write(ByteBuffer[] srcs, int offset, int length) throws IOException {
-<span class="nc bnc" id="L247" title="All 2 branches missed.">    if (length == 0) {</span>
+<span class="pc bpc" id="L247" title="1 of 2 branches missed.">    if (length == 0) {</span>
 <span class="nc" id="L248">      return 0;</span>
     }
     // FIXME support more than one buffer for scatter-gather access
-<span class="nc" id="L251">    return write(srcs[offset]);</span>
+<span class="fc" id="L251">    return write(srcs[offset]);</span>
   }
 
   @Override
@@ -283,8 +283,8 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
   @Override
   public final void setAncillaryReceiveBufferSize(int size) {
-<span class="nc" id="L286">    afSocket.setAncillaryReceiveBufferSize(size);</span>
-<span class="nc" id="L287">  }</span>
+<span class="fc" id="L286">    afSocket.setAncillaryReceiveBufferSize(size);</span>
+<span class="fc" id="L287">  }</span>
 
   @Override
   public final void ensureAncillaryReceiveBufferSize(int minSize) {

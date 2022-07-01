@@ -36,8 +36,8 @@ public final class AFTIPCSocketPair&lt;T extends AFSomeSocket&gt; extends AFSock
    * @param socket2 The second socket.
    */
   protected AFTIPCSocketPair(T socket1, T socket2) {
-<span class="nc" id="L39">    super(socket1, socket2);</span>
-<span class="nc" id="L40">  }</span>
+<span class="fc" id="L39">    super(socket1, socket2);</span>
+<span class="fc" id="L40">  }</span>
 
   /**
    * Opens a socket pair of interconnected channels.
@@ -46,7 +46,7 @@ public final class AFTIPCSocketPair&lt;T extends AFSomeSocket&gt; extends AFSock
    * @throws IOException on error.
    */
   public static AFTIPCSocketPair&lt;AFTIPCSocketChannel&gt; open() throws IOException {
-<span class="nc" id="L49">    return AFTIPCSelectorProvider.provider().openSocketChannelPair();</span>
+<span class="fc" id="L49">    return AFTIPCSelectorProvider.provider().openSocketChannelPair();</span>
   }
 
   /**
@@ -56,7 +56,7 @@ public final class AFTIPCSocketPair&lt;T extends AFSomeSocket&gt; extends AFSock
    * @throws IOException on error.
    */
   public static AFTIPCSocketPair&lt;AFTIPCDatagramChannel&gt; openDatagram() throws IOException {
-<span class="nc" id="L59">    return AFTIPCSelectorProvider.provider().openDatagramChannelPair();</span>
+<span class="fc" id="L59">    return AFTIPCSelectorProvider.provider().openDatagramChannelPair();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

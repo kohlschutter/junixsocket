@@ -28,5 +28,5 @@ junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMIServiceImpl,66,143,13,5,21,37,12,
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFNaming.new ShutdownHookSupport.ShutdownHook() {...},8,18,3,1,1,5,2,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,DefaultRMIServerSocketFactory,22,0,0,0,8,0,6,0,6,0
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMISocketFactory.new ShutdownHookSupport.ShutdownHook() {...},1,11,0,0,1,4,0,2,0,2
-junixsocket-rmi,org.newsclub.net.unix.rmi,AFRegistry,43,273,5,19,19,78,5,19,1,11
+junixsocket-rmi,org.newsclub.net.unix.rmi,AFRegistry,41,275,5,19,17,80,5,19,1,11
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXNaming,19,217,7,15,5,53,8,26,1,22

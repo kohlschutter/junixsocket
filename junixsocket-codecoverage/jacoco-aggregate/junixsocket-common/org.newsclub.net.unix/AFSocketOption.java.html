@@ -39,12 +39,12 @@ public final class AFSocketOption&lt;T&gt; implements SocketOption&lt;T&gt; {
    * @param level The socket level (as defined in junixsocket-native).
    * @param optionName The option name (as defined in junixsocket-native).
    */
-<span class="nc" id="L42">  public AFSocketOption(String name, Class&lt;T&gt; type, int level, int optionName) {</span>
-<span class="nc" id="L43">    this.name = name;</span>
-<span class="nc" id="L44">    this.type = type;</span>
-<span class="nc" id="L45">    this.level = level;</span>
-<span class="nc" id="L46">    this.optionName = optionName;</span>
-<span class="nc" id="L47">  }</span>
+<span class="fc" id="L42">  public AFSocketOption(String name, Class&lt;T&gt; type, int level, int optionName) {</span>
+<span class="fc" id="L43">    this.name = name;</span>
+<span class="fc" id="L44">    this.type = type;</span>
+<span class="fc" id="L45">    this.level = level;</span>
+<span class="fc" id="L46">    this.optionName = optionName;</span>
+<span class="fc" id="L47">  }</span>
 
   @Override
   public String name() {
@@ -53,15 +53,15 @@ public final class AFSocketOption&lt;T&gt; implements SocketOption&lt;T&gt; {
 
   @Override
   public Class&lt;T&gt; type() {
-<span class="nc" id="L56">    return type;</span>
+<span class="fc" id="L56">    return type;</span>
   }
 
   int level() {
-<span class="nc" id="L60">    return level;</span>
+<span class="fc" id="L60">    return level;</span>
   }
 
   int optionName() {
-<span class="nc" id="L64">    return optionName;</span>
+<span class="fc" id="L64">    return optionName;</span>
   }
 
   @Override

@@ -316,8 +316,8 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
   final int read(ByteBuffer dst, ByteBuffer socketAddressBuffer) throws IOException {
     try {
 <span class="fc" id="L318">      return core.read(dst, socketAddressBuffer, 0);</span>
-<span class="nc" id="L319">    } catch (SocketClosedException e) {</span>
-<span class="nc" id="L320">      throw (ClosedChannelException) new ClosedChannelException().initCause(e);</span>
+<span class="fc" id="L319">    } catch (SocketClosedException e) {</span>
+<span class="fc" id="L320">      throw (ClosedChannelException) new ClosedChannelException().initCause(e);</span>
     }
   }
 

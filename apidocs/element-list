@@ -1,0 +1,17 @@
+module:com.kohlschutter.junixsocket.nativecommon
+org.newsclub.lib.junixsocket.common
+module:com.kohlschutter.junixsocket.nativecustom
+org.newsclub.lib.junixsocket.custom
+module:org.newsclub.net.mysql
+org.newsclub.net.mysql
+module:org.newsclub.net.unix
+org.newsclub.net.unix
+module:org.newsclub.net.unix.demo
+org.newsclub.net.unix.demo.rmi.fd
+org.newsclub.net.unix.demo.rmi.services
+module:org.newsclub.net.unix.rmi
+org.newsclub.net.unix.rmi
+module:org.newsclub.net.unix.server
+org.newsclub.net.unix.server
+module:org.newsclub.net.unix.tipc
+org.newsclub.net.unix.tipc

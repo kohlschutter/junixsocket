@@ -144,9 +144,9 @@ public abstract class AFSocketFactory&lt;A extends AFSocketAddress&gt; extends S
      * @param address The address to use for all connections.
      */
     public FixedAddressSocketFactory(SocketAddress address) {
-<span class="nc" id="L147">      super();</span>
-<span class="nc" id="L148">      this.forceAddr = Objects.requireNonNull(address);</span>
-<span class="nc" id="L149">    }</span>
+<span class="fc" id="L147">      super();</span>
+<span class="fc" id="L148">      this.forceAddr = Objects.requireNonNull(address);</span>
+<span class="fc" id="L149">    }</span>
 
     @Override
     public boolean isHostnameSupported(String host) {
@@ -161,10 +161,10 @@ public abstract class AFSocketFactory&lt;A extends AFSocketAddress&gt; extends S
     @Override
     public Socket createSocket() throws SocketException {
       try {
-<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (forceAddr instanceof AFSocketAddress) {</span>
-<span class="nc" id="L165">          AFSocket&lt;?&gt; socket = ((AFSocketAddress) forceAddr).getAddressFamily().newSocket();</span>
-<span class="nc" id="L166">          socket.forceConnectAddress(forceAddr);</span>
-<span class="nc" id="L167">          return socket;</span>
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">        if (forceAddr instanceof AFSocketAddress) {</span>
+<span class="fc" id="L165">          AFSocket&lt;?&gt; socket = ((AFSocketAddress) forceAddr).getAddressFamily().newSocket();</span>
+<span class="fc" id="L166">          socket.forceConnectAddress(forceAddr);</span>
+<span class="fc" id="L167">          return socket;</span>
         } else {
 <span class="nc" id="L169">          return new Socket() {</span>
             @Override

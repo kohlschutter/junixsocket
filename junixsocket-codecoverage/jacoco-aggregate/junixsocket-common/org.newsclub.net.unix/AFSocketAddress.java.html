@@ -479,20 +479,20 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   static final int unwrapAddressDirectBufferInternal(ByteBuffer socketAddressBuffer,
       SocketAddress address) throws SocketException {
-<span class="nc" id="L482">    Objects.requireNonNull(address);</span>
+<span class="fc" id="L482">    Objects.requireNonNull(address);</span>
     // FIXME: add support for UnixDomainSocketAddress
-<span class="nc bnc" id="L484" title="All 2 branches missed.">    if (!(address instanceof AFSocketAddress)) {</span>
+<span class="pc bpc" id="L484" title="1 of 2 branches missed.">    if (!(address instanceof AFSocketAddress)) {</span>
 <span class="nc" id="L485">      throw new SocketException(&quot;Unsupported address&quot;);</span>
     }
 
-<span class="nc" id="L488">    byte[] addr = ((AFSocketAddress) address).getBytes();</span>
-<span class="nc" id="L489">    int domain = ((AFSocketAddress) address).getAddressFamily().getDomain();</span>
-<span class="nc bnc" id="L490" title="All 2 branches missed.">    int len = NativeUnixSocket.isLoaded() ? NativeUnixSocket.bytesToSockAddr(domain,</span>
-<span class="nc" id="L491">        socketAddressBuffer, addr) : -1;</span>
-<span class="nc bnc" id="L492" title="All 2 branches missed.">    if (len == -1) {</span>
+<span class="fc" id="L488">    byte[] addr = ((AFSocketAddress) address).getBytes();</span>
+<span class="fc" id="L489">    int domain = ((AFSocketAddress) address).getAddressFamily().getDomain();</span>
+<span class="pc bpc" id="L490" title="1 of 2 branches missed.">    int len = NativeUnixSocket.isLoaded() ? NativeUnixSocket.bytesToSockAddr(domain,</span>
+<span class="pc" id="L491">        socketAddressBuffer, addr) : -1;</span>
+<span class="pc bpc" id="L492" title="1 of 2 branches missed.">    if (len == -1) {</span>
 <span class="nc" id="L493">      throw new SocketException(&quot;Unsupported domain&quot;);</span>
     }
-<span class="nc" id="L495">    return len;</span>
+<span class="fc" id="L495">    return len;</span>
   }
 
   /**
@@ -657,12 +657,12 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     }
 
 <span class="fc" id="L659">    int family = (nativeAddress.get(SOCKADDR_NATIVE_FAMILY_OFFSET) &amp; 0xFF);</span>
-<span class="pc bpc" id="L660" title="1 of 2 branches missed.">    int type = socketType == null ? -1 : NativeUnixSocket.sockTypeToNative(socketType.getId());</span>
+<span class="fc bfc" id="L660" title="All 2 branches covered.">    int type = socketType == null ? -1 : NativeUnixSocket.sockTypeToNative(socketType.getId());</span>
 <span class="fc" id="L661">    StringBuilder sb = new StringBuilder();</span>
 <span class="fc" id="L662">    sb.append(family);</span>
-<span class="pc bpc" id="L663" title="1 of 2 branches missed.">    if (type != -1) {</span>
-<span class="nc" id="L664">      sb.append(':');</span>
-<span class="nc" id="L665">      sb.append(type);</span>
+<span class="fc bfc" id="L663" title="All 2 branches covered.">    if (type != -1) {</span>
+<span class="fc" id="L664">      sb.append(':');</span>
+<span class="fc" id="L665">      sb.append(type);</span>
     }
 <span class="pc bpc" id="L667" title="1 of 2 branches missed.">    if (socketProtocol != null) {</span>
 <span class="fc" id="L668">      sb.append(':');</span>

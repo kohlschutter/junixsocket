@@ -151,7 +151,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(final Path socketPath) throws SocketException {
-<span class="nc" id="L154">    return of(socketPath, 0);</span>
+<span class="fc" id="L154">    return of(socketPath, 0);</span>
   }
 
   /**
@@ -164,7 +164,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(final Path socketPath, int port) throws SocketException {
-<span class="nc" id="L167">    return of(socketPath.toString().getBytes(ADDRESS_CHARSET), port);</span>
+<span class="fc" id="L167">    return of(socketPath.toString().getBytes(ADDRESS_CHARSET), port);</span>
   }
 
   /**

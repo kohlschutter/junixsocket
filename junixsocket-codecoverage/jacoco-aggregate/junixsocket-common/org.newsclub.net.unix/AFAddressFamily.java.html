@@ -18,9 +18,13 @@
 package org.newsclub.net.unix;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 import java.net.URI;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.channels.UnsupportedAddressTypeException;
+import java.nio.channels.spi.SelectorProvider;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,11 +44,11 @@ import org.newsclub.net.unix.AFSocketAddress.AFSocketAddressConstructor;
  * @author Christian Kohlschütter
  */
 public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
-<span class="fc" id="L43">  private static final Map&lt;String, AFAddressFamily&lt;?&gt;&gt; AF_MAP = Collections.synchronizedMap(</span>
+<span class="fc" id="L47">  private static final Map&lt;String, AFAddressFamily&lt;?&gt;&gt; AF_MAP = Collections.synchronizedMap(</span>
       new HashMap&lt;&gt;());
-<span class="fc" id="L45">  private static final Map&lt;String, AFAddressFamily&lt;?&gt;&gt; URI_SCHEMES = Collections.synchronizedMap(</span>
+<span class="fc" id="L49">  private static final Map&lt;String, AFAddressFamily&lt;?&gt;&gt; URI_SCHEMES = Collections.synchronizedMap(</span>
       new HashMap&lt;&gt;());
-<span class="fc" id="L47">  private static final AtomicBoolean DEFERRED_INIT_DONE = new AtomicBoolean(false);</span>
+<span class="fc" id="L51">  private static final AtomicBoolean DEFERRED_INIT_DONE = new AtomicBoolean(false);</span>
 
   private final int domain;
   private AFSocketAddressConstructor&lt;A&gt; addressConstructor;
@@ -59,116 +63,118 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
   private AFServerSocket.Constructor&lt;A&gt; serverSocketConstructor;
   private AFSocketAddressConfig&lt;A&gt; addressConfig;
 
-  static {
-<span class="fc" id="L63">    NativeUnixSocket.isLoaded(); // trigger init</span>
-<span class="fc" id="L64">  }</span>
+<span class="fc" id="L66">  private SelectorProvider selectorProvider = null;</span>
 
-<span class="fc" id="L66">  private AFAddressFamily(String juxString, int domain, String addressClassname) {</span>
-<span class="fc" id="L67">    this.juxString = juxString;</span>
-<span class="fc" id="L68">    this.domain = domain; // FIXME validate</span>
-<span class="fc" id="L69">    this.addressClassname = addressClassname;</span>
-<span class="fc" id="L70">    this.juxInetAddressSuffix = &quot;.&quot; + juxString + AFInetAddress.INETADDR_SUFFIX;</span>
-<span class="fc" id="L71">  }</span>
+  static {
+<span class="fc" id="L69">    NativeUnixSocket.isLoaded(); // trigger init</span>
+<span class="fc" id="L70">  }</span>
+
+<span class="fc" id="L72">  private AFAddressFamily(String juxString, int domain, String addressClassname) {</span>
+<span class="fc" id="L73">    this.juxString = juxString;</span>
+<span class="fc" id="L74">    this.domain = domain; // FIXME validate</span>
+<span class="fc" id="L75">    this.addressClassname = addressClassname;</span>
+<span class="fc" id="L76">    this.juxInetAddressSuffix = &quot;.&quot; + juxString + AFInetAddress.INETADDR_SUFFIX;</span>
+<span class="fc" id="L77">  }</span>
 
   @SuppressWarnings(&quot;unchecked&quot;)
   static synchronized &lt;A extends AFSocketAddress&gt; @NonNull AFAddressFamily&lt;A&gt; registerAddressFamily(
       String juxString, int domain, String addressClassname) {
-<span class="fc" id="L76">    AFAddressFamily&lt;?&gt; af = AF_MAP.get(juxString);</span>
-<span class="pc bpc" id="L77" title="1 of 2 branches missed.">    if (af != null) {</span>
-<span class="nc bnc" id="L78" title="All 2 branches missed.">      if (af.getDomain() != domain) {</span>
-<span class="nc" id="L79">        throw new IllegalStateException(&quot;Wrong domain for address family &quot; + juxString + &quot;: &quot; + af</span>
-<span class="nc" id="L80">            .getDomain() + &quot; vs. &quot; + domain);</span>
+<span class="fc" id="L82">    AFAddressFamily&lt;?&gt; af = AF_MAP.get(juxString);</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">    if (af != null) {</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">      if (af.getDomain() != domain) {</span>
+<span class="nc" id="L85">        throw new IllegalStateException(&quot;Wrong domain for address family &quot; + juxString + &quot;: &quot; + af</span>
+<span class="nc" id="L86">            .getDomain() + &quot; vs. &quot; + domain);</span>
       }
-<span class="nc" id="L82">      return (AFAddressFamily&lt;A&gt;) af;</span>
+<span class="nc" id="L88">      return (AFAddressFamily&lt;A&gt;) af;</span>
     }
 
-<span class="fc" id="L85">    af = new AFAddressFamily&lt;&gt;(juxString, domain, addressClassname);</span>
-<span class="fc" id="L86">    AF_MAP.put(juxString, af);</span>
+<span class="fc" id="L91">    af = new AFAddressFamily&lt;&gt;(juxString, domain, addressClassname);</span>
+<span class="fc" id="L92">    AF_MAP.put(juxString, af);</span>
 
-<span class="fc" id="L88">    return (AFAddressFamily&lt;A&gt;) af;</span>
+<span class="fc" id="L94">    return (AFAddressFamily&lt;A&gt;) af;</span>
   }
 
   static synchronized void triggerInit() {
-<span class="fc bfc" id="L92" title="All 2 branches covered.">    for (AFAddressFamily&lt;?&gt; af : new HashSet&lt;&gt;(AF_MAP.values())) {</span>
-<span class="pc bpc" id="L93" title="1 of 2 branches missed.">      if (af.addressClassname != null) {</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">    for (AFAddressFamily&lt;?&gt; af : new HashSet&lt;&gt;(AF_MAP.values())) {</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">      if (af.addressClassname != null) {</span>
         try {
-<span class="fc" id="L95">          Class&lt;?&gt; clz = Class.forName(af.addressClassname);</span>
-<span class="fc" id="L96">          clz.getMethod(&quot;addressFamily&quot;).invoke(null);</span>
-<span class="nc" id="L97">        } catch (Exception e) {</span>
+<span class="fc" id="L101">          Class&lt;?&gt; clz = Class.forName(af.addressClassname);</span>
+<span class="fc" id="L102">          clz.getMethod(&quot;addressFamily&quot;).invoke(null);</span>
+<span class="nc" id="L103">        } catch (Exception e) {</span>
           // ignore
-<span class="fc" id="L99">        }</span>
+<span class="fc" id="L105">        }</span>
       }
-<span class="fc" id="L101">    }</span>
-<span class="fc" id="L102">  }</span>
+<span class="fc" id="L107">    }</span>
+<span class="fc" id="L108">  }</span>
 
   static synchronized AFAddressFamily&lt;?&gt; getAddressFamily(String juxString) {
-<span class="fc" id="L105">    return AF_MAP.get(juxString);</span>
+<span class="fc" id="L111">    return AF_MAP.get(juxString);</span>
   }
 
   static AFAddressFamily&lt;?&gt; getAddressFamily(URI uri) {
-<span class="fc" id="L109">    checkDeferredInit();</span>
-<span class="fc" id="L110">    Objects.requireNonNull(uri, &quot;uri&quot;);</span>
-<span class="fc" id="L111">    String scheme = uri.getScheme();</span>
-<span class="fc" id="L112">    return URI_SCHEMES.get(scheme);</span>
+<span class="fc" id="L115">    checkDeferredInit();</span>
+<span class="fc" id="L116">    Objects.requireNonNull(uri, &quot;uri&quot;);</span>
+<span class="fc" id="L117">    String scheme = uri.getScheme();</span>
+<span class="fc" id="L118">    return URI_SCHEMES.get(scheme);</span>
   }
 
   static void checkDeferredInit() {
-<span class="fc bfc" id="L116" title="All 2 branches covered.">    if (DEFERRED_INIT_DONE.compareAndSet(false, true)) {</span>
-<span class="fc" id="L117">      NativeUnixSocket.isLoaded();</span>
-<span class="fc" id="L118">      AFAddressFamily.triggerInit();</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">    if (DEFERRED_INIT_DONE.compareAndSet(false, true)) {</span>
+<span class="fc" id="L123">      NativeUnixSocket.isLoaded();</span>
+<span class="fc" id="L124">      AFAddressFamily.triggerInit();</span>
     }
-<span class="fc" id="L120">  }</span>
+<span class="fc" id="L126">  }</span>
 
   int getDomain() {
-<span class="fc" id="L123">    return domain;</span>
+<span class="fc" id="L129">    return domain;</span>
   }
 
   String getJuxString() {
-<span class="fc" id="L127">    return juxString;</span>
+<span class="fc" id="L133">    return juxString;</span>
   }
 
   AFSocketAddressConstructor&lt;A&gt; getAddressConstructor() {
-<span class="pc bpc" id="L131" title="1 of 2 branches missed.">    if (addressConstructor == null) {</span>
-<span class="nc" id="L132">      throw new UnsupportedAddressTypeException();</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">    if (addressConstructor == null) {</span>
+<span class="nc" id="L138">      throw new UnsupportedAddressTypeException();</span>
     }
-<span class="fc" id="L134">    return addressConstructor;</span>
+<span class="fc" id="L140">    return addressConstructor;</span>
   }
 
-  private void checkProvider() {
-<span class="pc bpc" id="L138" title="1 of 4 branches missed.">    if (socketConstructor == null &amp;&amp; selectorProviderClassname != null) {</span>
+  private synchronized void checkProvider() {
+<span class="pc bpc" id="L144" title="1 of 4 branches missed.">    if (socketConstructor == null &amp;&amp; selectorProvider == null) {</span>
       try {
-<span class="fc" id="L140">        Class.forName(selectorProviderClassname);</span>
-<span class="nc" id="L141">      } catch (ClassNotFoundException e) {</span>
+<span class="fc" id="L146">        getSelectorProvider();</span>
+<span class="nc" id="L147">      } catch (IllegalStateException e) {</span>
         // ignore
-<span class="fc" id="L143">      }</span>
+<span class="fc" id="L149">      }</span>
     }
-<span class="fc" id="L145">  }</span>
+<span class="fc" id="L151">  }</span>
 
   AFSocket.Constructor&lt;A&gt; getSocketConstructor() {
-<span class="fc" id="L148">    checkProvider();</span>
-<span class="pc bpc" id="L149" title="1 of 2 branches missed.">    if (socketConstructor == null) {</span>
-<span class="nc" id="L150">      throw new UnsupportedAddressTypeException();</span>
+<span class="fc" id="L154">    checkProvider();</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">    if (socketConstructor == null) {</span>
+<span class="nc" id="L156">      throw new UnsupportedAddressTypeException();</span>
     }
-<span class="fc" id="L152">    return socketConstructor;</span>
+<span class="fc" id="L158">    return socketConstructor;</span>
   }
 
   AFServerSocket.Constructor&lt;A&gt; getServerSocketConstructor() {
-<span class="fc" id="L156">    checkProvider();</span>
-<span class="pc bpc" id="L157" title="1 of 2 branches missed.">    if (serverSocketConstructor == null) {</span>
-<span class="nc" id="L158">      throw new UnsupportedAddressTypeException();</span>
+<span class="fc" id="L162">    checkProvider();</span>
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">    if (serverSocketConstructor == null) {</span>
+<span class="nc" id="L164">      throw new UnsupportedAddressTypeException();</span>
     }
-<span class="fc" id="L160">    return serverSocketConstructor;</span>
+<span class="fc" id="L166">    return serverSocketConstructor;</span>
   }
 
   Class&lt;A&gt; getSocketAddressClass() {
-<span class="pc bpc" id="L164" title="1 of 2 branches missed.">    if (addressClass == null) {</span>
-<span class="nc" id="L165">      throw new UnsupportedAddressTypeException();</span>
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">    if (addressClass == null) {</span>
+<span class="nc" id="L171">      throw new UnsupportedAddressTypeException();</span>
     }
-<span class="fc" id="L167">    return addressClass;</span>
+<span class="fc" id="L173">    return addressClass;</span>
   }
 
   String getJuxInetAddressSuffix() {
-<span class="fc" id="L171">    return juxInetAddressSuffix;</span>
+<span class="fc" id="L177">    return juxInetAddressSuffix;</span>
   }
 
   /**
@@ -184,36 +190,38 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
   public static synchronized &lt;A extends AFSocketAddress&gt; AFAddressFamily&lt;A&gt; registerAddressFamily(
       String juxString, //
       Class&lt;A&gt; addressClass, AFSocketAddressConfig&lt;A&gt; config) {
-<span class="fc" id="L187">    AFAddressFamily&lt;?&gt; af = getAddressFamily(juxString);</span>
-<span class="pc bpc" id="L188" title="1 of 2 branches missed.">    if (af == null) {</span>
-<span class="nc" id="L189">      throw new IllegalStateException(&quot;Address family not supported by native code: &quot; + juxString);</span>
+<span class="fc" id="L193">    AFAddressFamily&lt;?&gt; af = getAddressFamily(juxString);</span>
+<span class="pc bpc" id="L194" title="1 of 2 branches missed.">    if (af == null) {</span>
+<span class="nc" id="L195">      throw new IllegalStateException(&quot;Address family not supported by native code: &quot; + juxString);</span>
     }
-<span class="pc bpc" id="L191" title="2 of 4 branches missed.">    if (af.addressClassname != null &amp;&amp; !addressClass.getName().equals(af.addressClassname)) {</span>
-<span class="nc" id="L192">      throw new IllegalStateException(&quot;Unexpected classname for address family &quot; + juxString + &quot;: &quot;</span>
-<span class="nc" id="L193">          + addressClass.getName());</span>
+<span class="pc bpc" id="L197" title="2 of 4 branches missed.">    if (af.addressClassname != null &amp;&amp; !addressClass.getName().equals(af.addressClassname)) {</span>
+<span class="nc" id="L198">      throw new IllegalStateException(&quot;Unexpected classname for address family &quot; + juxString + &quot;: &quot;</span>
+<span class="nc" id="L199">          + addressClass.getName());</span>
     }
-<span class="pc bpc" id="L195" title="2 of 4 branches missed.">    if (af.addressConstructor != null || af.addressClass != null) {</span>
-<span class="nc" id="L196">      throw new IllegalStateException(&quot;Already registered: &quot; + juxString);</span>
+<span class="pc bpc" id="L201" title="2 of 4 branches missed.">    if (af.addressConstructor != null || af.addressClass != null) {</span>
+<span class="nc" id="L202">      throw new IllegalStateException(&quot;Already registered: &quot; + juxString);</span>
     }
-<span class="fc" id="L198">    af.addressConfig = (AFSocketAddressConfig) config;</span>
-<span class="fc" id="L199">    af.addressConstructor = (AFSocketAddressConstructor) config.addressConstructor();</span>
-<span class="fc" id="L200">    af.addressClass = (Class) addressClass;</span>
-<span class="fc" id="L201">    af.selectorProviderClassname = config.selectorProviderClassname();</span>
+<span class="fc" id="L204">    af.addressConfig = (AFSocketAddressConfig) config;</span>
+<span class="fc" id="L205">    af.addressConstructor = (AFSocketAddressConstructor) config.addressConstructor();</span>
+<span class="fc" id="L206">    af.addressClass = (Class) addressClass;</span>
+<span class="fc" id="L207">    synchronized (af) { // work-around for likely false positive Spotbugs error</span>
+<span class="fc" id="L208">      af.selectorProviderClassname = config.selectorProviderClassname();</span>
+<span class="fc" id="L209">    }</span>
 
-<span class="fc bfc" id="L203" title="All 2 branches covered.">    for (String scheme : config.uriSchemes()) {</span>
-<span class="pc bpc" id="L204" title="1 of 2 branches missed.">      if (scheme.isEmpty()) {</span>
-<span class="nc" id="L205">        throw new IllegalStateException(&quot;Invalid URI scheme; cannot register &quot; + scheme + &quot; for &quot;</span>
+<span class="fc bfc" id="L211" title="All 2 branches covered.">    for (String scheme : config.uriSchemes()) {</span>
+<span class="pc bpc" id="L212" title="1 of 2 branches missed.">      if (scheme.isEmpty()) {</span>
+<span class="nc" id="L213">        throw new IllegalStateException(&quot;Invalid URI scheme; cannot register &quot; + scheme + &quot; for &quot;</span>
             + juxString);
 
       }
-<span class="pc bpc" id="L209" title="1 of 2 branches missed.">      if (URI_SCHEMES.containsKey(scheme)) {</span>
-<span class="nc" id="L210">        throw new IllegalStateException(&quot;URI scheme already registered; cannot register &quot; + scheme</span>
+<span class="pc bpc" id="L217" title="1 of 2 branches missed.">      if (URI_SCHEMES.containsKey(scheme)) {</span>
+<span class="nc" id="L218">        throw new IllegalStateException(&quot;URI scheme already registered; cannot register &quot; + scheme</span>
             + &quot; for &quot; + juxString);
       }
-<span class="fc" id="L213">      URI_SCHEMES.put(scheme, af);</span>
-<span class="fc" id="L214">    }</span>
+<span class="fc" id="L221">      URI_SCHEMES.put(scheme, af);</span>
+<span class="fc" id="L222">    }</span>
 
-<span class="fc" id="L216">    return (AFAddressFamily&lt;A&gt;) af;</span>
+<span class="fc" id="L224">    return (AFAddressFamily&lt;A&gt;) af;</span>
   }
 
   /**
@@ -231,34 +239,34 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
       String juxString, //
       AFAddressFamily&lt;A&gt; addressFamily, //
       AFAddressFamilyConfig&lt;A&gt; config) {
-<span class="fc" id="L234">    Objects.requireNonNull(addressFamily);</span>
-<span class="fc" id="L235">    Objects.requireNonNull(config);</span>
+<span class="fc" id="L242">    Objects.requireNonNull(addressFamily);</span>
+<span class="fc" id="L243">    Objects.requireNonNull(config);</span>
 
-<span class="fc" id="L237">    AFAddressFamily&lt;?&gt; af = getAddressFamily(juxString);</span>
-<span class="pc bpc" id="L238" title="1 of 2 branches missed.">    if (af == null) {</span>
-<span class="nc" id="L239">      throw new IllegalStateException(&quot;Unknown address family: &quot; + juxString);</span>
+<span class="fc" id="L245">    AFAddressFamily&lt;?&gt; af = getAddressFamily(juxString);</span>
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">    if (af == null) {</span>
+<span class="nc" id="L247">      throw new IllegalStateException(&quot;Unknown address family: &quot; + juxString);</span>
     }
-<span class="pc bpc" id="L241" title="1 of 2 branches missed.">    if (addressFamily != af) { // NOPMD.CompareObjectsWithEquals</span>
-<span class="nc" id="L242">      throw new IllegalStateException(&quot;Address family inconsistency: &quot; + juxString);</span>
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">    if (addressFamily != af) { // NOPMD.CompareObjectsWithEquals</span>
+<span class="nc" id="L250">      throw new IllegalStateException(&quot;Address family inconsistency: &quot; + juxString);</span>
     }
-<span class="pc bpc" id="L244" title="1 of 2 branches missed.">    if (af.socketConstructor != null) {</span>
-<span class="nc" id="L245">      throw new IllegalStateException(&quot;Already registered: &quot; + juxString);</span>
+<span class="pc bpc" id="L252" title="1 of 2 branches missed.">    if (af.socketConstructor != null) {</span>
+<span class="nc" id="L253">      throw new IllegalStateException(&quot;Already registered: &quot; + juxString);</span>
     }
-<span class="fc" id="L247">    af.socketConstructor = (AFSocket.Constructor) config.socketConstructor();</span>
-<span class="fc" id="L248">    af.serverSocketConstructor = (AFServerSocket.Constructor) config.serverSocketConstructor();</span>
+<span class="fc" id="L255">    af.socketConstructor = (AFSocket.Constructor) config.socketConstructor();</span>
+<span class="fc" id="L256">    af.serverSocketConstructor = (AFServerSocket.Constructor) config.serverSocketConstructor();</span>
 
-<span class="fc" id="L250">    FileDescriptorCast.registerCastingProviders(config);</span>
+<span class="fc" id="L258">    FileDescriptorCast.registerCastingProviders(config);</span>
 
-<span class="fc" id="L252">    return (AFAddressFamily&lt;A&gt;) af;</span>
+<span class="fc" id="L260">    return (AFAddressFamily&lt;A&gt;) af;</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
   AFSocketImplExtensions&lt;A&gt; initImplExtensions(AncillaryDataSupport ancillaryDataSupport) {
-<span class="nc bnc" id="L257" title="All 2 branches missed.">    switch (getDomain()) {</span>
+<span class="pc bpc" id="L265" title="1 of 2 branches missed.">    switch (getDomain()) {</span>
       case NativeUnixSocket.DOMAIN_TIPC:
-<span class="nc" id="L259">        return (AFSocketImplExtensions&lt;A&gt;) new AFTIPCSocketImplExtensions(ancillaryDataSupport);</span>
+<span class="fc" id="L267">        return (AFSocketImplExtensions&lt;A&gt;) new AFTIPCSocketImplExtensions(ancillaryDataSupport);</span>
       default:
-<span class="nc" id="L261">        throw new UnsupportedOperationException();</span>
+<span class="nc" id="L269">        throw new UnsupportedOperationException();</span>
     }
   }
 
@@ -270,9 +278,9 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
    */
   public AFSocket&lt;?&gt; newSocket() throws IOException {
     try {
-<span class="fc" id="L273">      return getSocketConstructor().newInstance(null, null);</span>
-<span class="nc" id="L274">    } catch (UnsupportedOperationException e) {</span>
-<span class="nc" id="L275">      throw (SocketException) new SocketException().initCause(e);</span>
+<span class="fc" id="L281">      return getSocketConstructor().newInstance(null, null);</span>
+<span class="nc" id="L282">    } catch (UnsupportedOperationException e) {</span>
+<span class="nc" id="L283">      throw (SocketException) new SocketException().initCause(e);</span>
     }
   }
 
@@ -284,17 +292,38 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
    */
   public AFServerSocket&lt;?&gt; newServerSocket() throws IOException {
     try {
-<span class="fc" id="L287">      return getServerSocketConstructor().newInstance(null);</span>
-<span class="nc" id="L288">    } catch (UnsupportedOperationException e) {</span>
-<span class="nc" id="L289">      throw (SocketException) new SocketException().initCause(e);</span>
+<span class="fc" id="L295">      return getServerSocketConstructor().newInstance(null);</span>
+<span class="nc" id="L296">    } catch (UnsupportedOperationException e) {</span>
+<span class="nc" id="L297">      throw (SocketException) new SocketException().initCause(e);</span>
     }
   }
 
+  /**
+   * Creates a new, unconnected, unbound {@link SocketChannel} compatible with this socket address.
+   * 
+   * @return The socket instance.
+   * @throws IOException on error.
+   */
+  public AFSocketChannel&lt;?&gt; newSocketChannel() throws IOException {
+<span class="fc" id="L308">    return newSocket().getChannel();</span>
+  }
+
+  /**
+   * Creates a new, unconnected, unbound {@link ServerSocketChannel} compatible with this socket
+   * address.
+   * 
+   * @return The socket instance.
+   * @throws IOException on error.
+   */
+  public AFServerSocketChannel&lt;?&gt; newServerSocketChannel() throws IOException {
+<span class="fc" id="L319">    return newServerSocket().getChannel();</span>
+  }
+
   AFSocketAddress parseURI(URI u, int overridePort) throws SocketException {
-<span class="pc bpc" id="L294" title="1 of 2 branches missed.">    if (addressConfig == null) {</span>
-<span class="nc" id="L295">      throw new SocketException(&quot;Cannot instantiate addresses of type &quot; + addressClass);</span>
+<span class="pc bpc" id="L323" title="1 of 2 branches missed.">    if (addressConfig == null) {</span>
+<span class="nc" id="L324">      throw new SocketException(&quot;Cannot instantiate addresses of type &quot; + addressClass);</span>
     }
-<span class="fc" id="L297">    return addressConfig.parseURI(u, overridePort);</span>
+<span class="fc" id="L326">    return addressConfig.parseURI(u, overridePort);</span>
   }
 
   /**
@@ -306,8 +335,33 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
    * @return The set of supported URI schemes.
    */
   public static synchronized Set&lt;String&gt; uriSchemes() {
-<span class="fc" id="L309">    checkDeferredInit();</span>
-<span class="fc" id="L310">    return Collections.unmodifiableSet(URI_SCHEMES.keySet());</span>
+<span class="fc" id="L338">    checkDeferredInit();</span>
+<span class="fc" id="L339">    return Collections.unmodifiableSet(URI_SCHEMES.keySet());</span>
+  }
+
+  /**
+   * Returns the {@link SelectorProvider} associated with this address family, or {@code null} if no
+   * such instance is registered.
+   * 
+   * @return The {@link SelectorProvider}.
+   * @throws IllegalStateException on error.
+   */
+  public synchronized SelectorProvider getSelectorProvider() {
+<span class="fc bfc" id="L350" title="All 2 branches covered.">    if (selectorProvider != null) {</span>
+<span class="fc" id="L351">      return selectorProvider;</span>
+    }
+<span class="pc bpc" id="L353" title="1 of 2 branches missed.">    if (selectorProviderClassname == null) {</span>
+<span class="nc" id="L354">      return null;</span>
+    }
+    try {
+<span class="fc" id="L357">      selectorProvider = (SelectorProvider) Class.forName(selectorProviderClassname).getMethod(</span>
+<span class="fc" id="L358">          &quot;provider&quot;, new Class[0]).invoke(null);</span>
+<span class="nc" id="L359">    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException</span>
+        | ClassNotFoundException | RuntimeException e) {
+<span class="nc" id="L361">      throw new IllegalStateException(&quot;Cannot instantiate selector provider for &quot;</span>
+          + addressClassname, e);
+<span class="fc" id="L363">    }</span>
+<span class="fc" id="L364">    return selectorProvider;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

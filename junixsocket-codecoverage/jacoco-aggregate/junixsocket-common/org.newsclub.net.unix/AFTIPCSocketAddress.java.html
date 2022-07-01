@@ -419,8 +419,8 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFTIPCSocketAddress ofTopologyService() throws SocketException {
-<span class="nc" id="L422">    return resolveAddress(toBytes(AddressType.SERVICE_ADDR, Scope.SCOPE_NOT_SPECIFIED, TIPC_TOP_SRV,</span>
-<span class="nc" id="L423">        TIPC_TOP_SRV, 0), 0, addressFamily());</span>
+<span class="fc" id="L422">    return resolveAddress(toBytes(AddressType.SERVICE_ADDR, Scope.SCOPE_NOT_SPECIFIED, TIPC_TOP_SRV,</span>
+<span class="fc" id="L423">        TIPC_TOP_SRV, 0), 0, addressFamily());</span>
   }
 
   private static int parseUnsignedInt(String v) {
@@ -457,7 +457,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFTIPCSocketAddress unwrap(String hostname, int port) throws SocketException {
-<span class="nc" id="L460">    return AFSocketAddress.unwrap(hostname, port, addressFamily());</span>
+<span class="fc" id="L460">    return AFSocketAddress.unwrap(hostname, port, addressFamily());</span>
   }
 
   /**
@@ -482,11 +482,11 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @return The scope.
    */
   public Scope getScope() {
-<span class="nc" id="L485">    byte[] bytes = getBytes();</span>
-<span class="nc bnc" id="L486" title="All 2 branches missed.">    if (bytes.length != (5 * 4)) {</span>
+<span class="fc" id="L485">    byte[] bytes = getBytes();</span>
+<span class="pc bpc" id="L486" title="1 of 2 branches missed.">    if (bytes.length != (5 * 4)) {</span>
 <span class="nc" id="L487">      return Scope.SCOPE_NOT_SPECIFIED;</span>
     }
-<span class="nc" id="L489">    return Scope.ofValue(ByteBuffer.wrap(bytes, 4, 4).getInt());</span>
+<span class="fc" id="L489">    return Scope.ofValue(ByteBuffer.wrap(bytes, 4, 4).getInt());</span>
   }
 
   /**
@@ -550,9 +550,9 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @return The ref identifier.
    */
   public int getTIPCRef() {
-<span class="nc" id="L553">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L554">    int a = bb.getInt(2 * 4);</span>
-<span class="nc" id="L555">    return a;</span>
+<span class="fc" id="L553">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="fc" id="L554">    int a = bb.getInt(2 * 4);</span>
+<span class="fc" id="L555">    return a;</span>
   }
 
   /**
@@ -561,9 +561,9 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @return The node hash.
    */
   public int getTIPCNodeHash() {
-<span class="nc" id="L564">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L565">    int a = bb.getInt(3 * 4);</span>
-<span class="nc" id="L566">    return a;</span>
+<span class="fc" id="L564">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="fc" id="L565">    int a = bb.getInt(3 * 4);</span>
+<span class="fc" id="L566">    return a;</span>
   }
 
   @Override
@@ -592,7 +592,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   @Override
   public boolean hasFilename() {
-<span class="nc" id="L595">    return false;</span>
+<span class="fc" id="L595">    return false;</span>
   }
 
   @Override
@@ -666,10 +666,10 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
             }
           });
       try {
-<span class="nc" id="L669">        Class.forName(&quot;org.newsclub.net.unix.tipc.AFTIPCSelectorProvider&quot;);</span>
+<span class="fc" id="L669">        Class.forName(&quot;org.newsclub.net.unix.tipc.AFTIPCSelectorProvider&quot;);</span>
 <span class="fc" id="L670">      } catch (ClassNotFoundException e) {</span>
         // ignore
-<span class="nc" id="L672">      }</span>
+<span class="fc" id="L672">      }</span>
     }
 <span class="fc" id="L674">    return afTipc;</span>
   }

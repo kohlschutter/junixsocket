@@ -62,10 +62,10 @@ class AFSocketCore extends AFCore {
 <span class="fc" id="L62">  }</span>
 
   AFSocketAddress receive(ByteBuffer dst) throws IOException {
-<span class="nc" id="L65">    ByteBuffer socketAddressBuffer = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();</span>
-<span class="nc" id="L66">    int read = read(dst, socketAddressBuffer, 0);</span>
-<span class="nc bnc" id="L67" title="All 2 branches missed.">    if (read &gt; 0) {</span>
-<span class="nc" id="L68">      return AFSocketAddress.ofInternal(socketAddressBuffer, af);</span>
+<span class="fc" id="L65">    ByteBuffer socketAddressBuffer = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();</span>
+<span class="fc" id="L66">    int read = read(dst, socketAddressBuffer, 0);</span>
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">    if (read &gt; 0) {</span>
+<span class="fc" id="L68">      return AFSocketAddress.ofInternal(socketAddressBuffer, af);</span>
     } else {
 <span class="nc" id="L70">      return null;</span>
     }
@@ -93,44 +93,44 @@ class AFSocketCore extends AFCore {
 
   @SuppressWarnings({&quot;unchecked&quot;, &quot;null&quot;})
   &lt;T&gt; T getOption(AFSocketOption&lt;T&gt; name) throws IOException {
-<span class="nc" id="L96">    Class&lt;T&gt; type = name.type();</span>
-<span class="nc bnc" id="L97" title="All 2 branches missed.">    if (Boolean.class.isAssignableFrom(type)) {</span>
-<span class="nc" id="L98">      return (T) (Object) (NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(),</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">          Integer.class).intValue() != 0);</span>
-<span class="nc bnc" id="L100" title="All 2 branches missed.">    } else if (NamedInteger.HasOfValue.class.isAssignableFrom(type)) {</span>
-<span class="nc" id="L101">      int v = NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), Integer.class);</span>
+<span class="fc" id="L96">    Class&lt;T&gt; type = name.type();</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (Boolean.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L98">      return (T) (Object) (NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(),</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">          Integer.class).intValue() != 0);</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">    } else if (NamedInteger.HasOfValue.class.isAssignableFrom(type)) {</span>
+<span class="fc" id="L101">      int v = NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), Integer.class);</span>
       try {
-<span class="nc" id="L103">        return (T) type.getMethod(&quot;ofValue&quot;, int.class).invoke(null, v);</span>
+<span class="fc" id="L103">        return (T) type.getMethod(&quot;ofValue&quot;, int.class).invoke(null, v);</span>
 <span class="nc" id="L104">      } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException</span>
           | NoSuchMethodException | SecurityException e) {
 <span class="nc" id="L106">        throw new IOException(&quot;Value casting problem&quot;, e);</span>
       }
     } else {
-<span class="nc" id="L109">      return NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), type);</span>
+<span class="fc" id="L109">      return NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), type);</span>
     }
   }
 
   &lt;T&gt; void setOption(AFSocketOption&lt;T&gt; name, T value) throws IOException {
     final Object val;
-<span class="nc bnc" id="L115" title="All 2 branches missed.">    if (value instanceof Boolean) {</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">      val = (((Boolean) value).booleanValue() ? 1 : 0);</span>
-<span class="nc bnc" id="L117" title="All 2 branches missed.">    } else if (value instanceof NamedInteger) {</span>
-<span class="nc" id="L118">      val = ((NamedInteger) value).value();</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">    if (value instanceof Boolean) {</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">      val = (((Boolean) value).booleanValue() ? 1 : 0);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    } else if (value instanceof NamedInteger) {</span>
+<span class="fc" id="L118">      val = ((NamedInteger) value).value();</span>
     } else {
-<span class="nc" id="L120">      val = value;</span>
+<span class="fc" id="L120">      val = value;</span>
     }
-<span class="nc" id="L122">    int level = name.level();</span>
-<span class="nc" id="L123">    int optionName = name.optionName();</span>
-<span class="nc" id="L124">    NativeUnixSocket.setSocketOption(fd, level, optionName, val);</span>
-<span class="nc bnc" id="L125" title="All 4 branches missed.">    if (level == 271 &amp;&amp; optionName == 135) {</span>
+<span class="fc" id="L122">    int level = name.level();</span>
+<span class="fc" id="L123">    int optionName = name.optionName();</span>
+<span class="fc" id="L124">    NativeUnixSocket.setSocketOption(fd, level, optionName, val);</span>
+<span class="pc bpc" id="L125" title="1 of 4 branches missed.">    if (level == 271 &amp;&amp; optionName == 135) {</span>
       // AFTIPCSocketOptions.TIPC_GROUP_JOIN
       // unclear why, but sleeping for at least 1ms prevents issues with GROUP_JOIN
       try {
-<span class="nc" id="L129">        Thread.sleep(1);</span>
+<span class="fc" id="L129">        Thread.sleep(1);</span>
 <span class="nc" id="L130">      } catch (InterruptedException e) {</span>
         // ignore
-<span class="nc" id="L132">      }</span>
+<span class="fc" id="L132">      }</span>
     }
-<span class="nc" id="L134">  }</span>
+<span class="fc" id="L134">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
