@@ -107,9 +107,9 @@ a script to run the demo classes from the command-line.
 
 The files can be found in
 
-   * `junixsocket/junixsocket-dist/target/junixsocket-dist-2.5.0-bin`
-   * `junixsocket/junixsocket-dist/target/junixsocket-dist-2.5.0-bin.tar.gz`
-   * `junixsocket/junixsocket-dist/target/junixsocket-dist-2.5.0-bin.zip`
+   * `junixsocket/junixsocket-dist/target/junixsocket-dist-(VERSION)-bin`
+   * `junixsocket/junixsocket-dist/target/junixsocket-dist-(VERSION)-bin.tar.gz`
+   * `junixsocket/junixsocket-dist/target/junixsocket-dist-(VERSION)-bin.zip`
 
 ### Deploy code to Maven central
 
@@ -119,7 +119,7 @@ The files can be found in
     mvn clean install -Pstrict -Prelease
 
     # after gpgkeyname, specify the key you want to use for signing
-    mvn deploy -Pstrict -Prelease -Psigned -Dgpgkeyname=your@email.com -Dgpg.executable=$(which gpg)
+    mvn deploy -Pstrict -Prelease -Psigned -Dgpgkeyname=$(git config --get user.email) -Dgpg.executable=$(which gpg)
     
 ##### Notes
 
