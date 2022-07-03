@@ -17,3 +17,4 @@ interpolated-pom.xml
 .*.swp
 .checkstyle
 hs_err_pid*.log
+.idea
