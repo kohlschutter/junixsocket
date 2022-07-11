@@ -64,11 +64,13 @@ java -jar junixsocket-selftest-VERSION-jar-with-dependencies.jar
 
 To include the core junixsocket functionality in your project, add the following Maven dependency
 
+> **NOTE** Since version 2.4.0, `junixsocket-core` is POM-only (that's why you need to specify `<type>pom</type>`)
+
 ```
 <dependency>
   <groupId>com.kohlschutter.junixsocket</groupId>
   <artifactId>junixsocket-core</artifactId>
-  <version>2.5.0</version>
+  <version>2.5.1</version>
   <type>pom</type>
 </dependency>
 ```
