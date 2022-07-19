@@ -35,17 +35,17 @@ import org.newsclub.net.unix.AFTIPCSocketAddress;
  */
 public class AFTIPCServerSocket extends AFServerSocket&lt;AFTIPCSocketAddress&gt; {
   AFTIPCServerSocket(FileDescriptor fdObj) throws IOException {
-<span class="fc" id="L38">    super(fdObj);</span>
-<span class="fc" id="L39">  }</span>
+<span class="nc" id="L38">    super(fdObj);</span>
+<span class="nc" id="L39">  }</span>
 
   @Override
   protected AFServerSocketChannel&lt;AFTIPCSocketAddress&gt; newChannel() {
-<span class="fc" id="L43">    return new AFTIPCServerSocketChannel(this);</span>
+<span class="nc" id="L43">    return new AFTIPCServerSocketChannel(this);</span>
   }
 
   @Override
   public AFTIPCServerSocketChannel getChannel() {
-<span class="fc" id="L48">    return (AFTIPCServerSocketChannel) super.getChannel();</span>
+<span class="nc" id="L48">    return (AFTIPCServerSocketChannel) super.getChannel();</span>
   }
 
   /**
@@ -55,7 +55,7 @@ public class AFTIPCServerSocket extends AFServerSocket&lt;AFTIPCSocketAddress&gt
    * @throws IOException if the operation fails.
    */
   public static AFTIPCServerSocket newInstance() throws IOException {
-<span class="fc" id="L58">    return (AFTIPCServerSocket) AFServerSocket.newInstance(AFTIPCServerSocket::new);</span>
+<span class="nc" id="L58">    return (AFTIPCServerSocket) AFServerSocket.newInstance(AFTIPCServerSocket::new);</span>
   }
 
   static AFTIPCServerSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
@@ -73,7 +73,7 @@ public class AFTIPCServerSocket extends AFServerSocket&lt;AFTIPCSocketAddress&gt
    * @throws IOException if the operation fails.
    */
   public static AFTIPCServerSocket bindOn(final AFTIPCSocketAddress addr) throws IOException {
-<span class="fc" id="L76">    return (AFTIPCServerSocket) AFServerSocket.bindOn(AFTIPCServerSocket::new, addr);</span>
+<span class="nc" id="L76">    return (AFTIPCServerSocket) AFServerSocket.bindOn(AFTIPCServerSocket::new, addr);</span>
   }
 
   /**
@@ -87,7 +87,7 @@ public class AFTIPCServerSocket extends AFServerSocket&lt;AFTIPCSocketAddress&gt
    */
   public static AFTIPCServerSocket bindOn(final AFTIPCSocketAddress addr, boolean deleteOnClose)
       throws IOException {
-<span class="fc" id="L90">    return (AFTIPCServerSocket) AFServerSocket.bindOn(AFTIPCServerSocket::new, addr, deleteOnClose);</span>
+<span class="nc" id="L90">    return (AFTIPCServerSocket) AFServerSocket.bindOn(AFTIPCServerSocket::new, addr, deleteOnClose);</span>
   }
 
   /**
@@ -105,17 +105,17 @@ public class AFTIPCServerSocket extends AFServerSocket&lt;AFTIPCSocketAddress&gt
 
   @Override
   protected AFTIPCSocketImpl newImpl(FileDescriptor fdObj) throws SocketException {
-<span class="fc" id="L108">    return new AFTIPCSocketImpl(fdObj);</span>
+<span class="nc" id="L108">    return new AFTIPCSocketImpl(fdObj);</span>
   }
 
   @Override
   protected AFSocket&lt;AFTIPCSocketAddress&gt; newSocketInstance() throws IOException {
-<span class="fc" id="L113">    return AFTIPCSocket.newInstance();</span>
+<span class="nc" id="L113">    return AFTIPCSocket.newInstance();</span>
   }
 
   @Override
   public AFTIPCSocket accept() throws IOException {
-<span class="fc" id="L118">    return (AFTIPCSocket) super.accept();</span>
+<span class="nc" id="L118">    return (AFTIPCSocket) super.accept();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -30,9 +30,9 @@ public final class AFTIPCSocketImplExtensions implements
     AFSocketImplExtensions&lt;AFTIPCSocketAddress&gt; {
   private final AncillaryDataSupport ancillaryDataSupport;
 
-<span class="fc" id="L33">  AFTIPCSocketImplExtensions(AncillaryDataSupport ancillaryDataSupport) {</span>
-<span class="fc" id="L34">    this.ancillaryDataSupport = ancillaryDataSupport;</span>
-<span class="fc" id="L35">  }</span>
+<span class="nc" id="L33">  AFTIPCSocketImplExtensions(AncillaryDataSupport ancillaryDataSupport) {</span>
+<span class="nc" id="L34">    this.ancillaryDataSupport = ancillaryDataSupport;</span>
+<span class="nc" id="L35">  }</span>
 
   /**
    * Returns the TIPC &quot;ErrInfo&quot; data from the ancillary receive buffer.
@@ -42,7 +42,7 @@ public final class AFTIPCSocketImplExtensions implements
    * @return The errinfo.
    */
   public int[] getTIPCErrInfo() {
-<span class="fc" id="L45">    return ancillaryDataSupport.getTIPCErrorInfo();</span>
+<span class="nc" id="L45">    return ancillaryDataSupport.getTIPCErrorInfo();</span>
   }
 
   /**
@@ -53,7 +53,7 @@ public final class AFTIPCSocketImplExtensions implements
    * @return The DestName.
    */
   public int[] getTIPCDestName() {
-<span class="fc" id="L56">    return ancillaryDataSupport.getTIPCDestName();</span>
+<span class="nc" id="L56">    return ancillaryDataSupport.getTIPCDestName();</span>
   }
 
   /**
@@ -64,7 +64,7 @@ public final class AFTIPCSocketImplExtensions implements
    * @throws IOException on error.
    */
   public byte[] getTIPCNodeId(int peer) throws IOException {
-<span class="fc" id="L67">    return NativeUnixSocket.tipcGetNodeId(peer);</span>
+<span class="nc" id="L67">    return NativeUnixSocket.tipcGetNodeId(peer);</span>
   }
 
   /**
@@ -76,8 +76,8 @@ public final class AFTIPCSocketImplExtensions implements
    * @throws IOException on error.
    */
   public String getTIPCLinkName(int peer, int bearerId) throws IOException {
-<span class="fc" id="L79">    byte[] name = NativeUnixSocket.tipcGetLinkName(peer, bearerId);</span>
-<span class="pc bpc" id="L80" title="1 of 2 branches missed.">    return name == null ? null : new String(name, StandardCharsets.UTF_8);</span>
+<span class="nc" id="L79">    byte[] name = NativeUnixSocket.tipcGetLinkName(peer, bearerId);</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    return name == null ? null : new String(name, StandardCharsets.UTF_8);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

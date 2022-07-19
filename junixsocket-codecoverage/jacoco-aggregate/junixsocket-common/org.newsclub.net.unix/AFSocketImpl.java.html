@@ -117,10 +117,10 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
 <span class="fc" id="L117">            createSocket(tmpFd, AFSocketType.SOCK_STREAM);</span>
 <span class="fc" id="L118">            ByteBuffer ab = socketAddress.getNativeAddressDirectBuffer();</span>
 <span class="fc" id="L119">            NativeUnixSocket.connect(ab, ab.limit(), tmpFd, inode.get());</span>
-<span class="fc" id="L120">          } catch (IOException e) {</span>
+<span class="nc" id="L120">          } catch (IOException e) {</span>
             // there's nothing more we can do to unlock these accepts
             // (e.g., SocketException: No such file or directory)
-<span class="fc" id="L123">            return;</span>
+<span class="nc" id="L123">            return;</span>
 <span class="fc" id="L124">          }</span>
           try {
 <span class="fc" id="L126">            NativeUnixSocket.shutdown(tmpFd, SHUT_RD_WR);</span>
@@ -238,8 +238,8 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
     }
 
 <span class="fc" id="L240">    AFSocketAddress socketAddress = core.socketAddress;</span>
-<span class="fc bfc" id="L241" title="All 2 branches covered.">    if (socketAddress == null) {</span>
-<span class="fc" id="L242">      core.socketAddress = socketAddress = getLocalSocketAddress();</span>
+<span class="pc bpc" id="L241" title="1 of 2 branches missed.">    if (socketAddress == null) {</span>
+<span class="nc" id="L242">      core.socketAddress = socketAddress = getLocalSocketAddress();</span>
     }
 <span class="pc bpc" id="L244" title="1 of 2 branches missed.">    if (socketAddress == null) {</span>
 <span class="nc" id="L245">      throw new SocketException(&quot;Socket is not bound&quot;);</span>
@@ -352,8 +352,8 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
 
   @Override
   protected final void connect(SocketAddress addr, int connectTimeout) throws IOException {
-<span class="fc" id="L355">    connect0(addr, connectTimeout);</span>
-<span class="fc" id="L356">  }</span>
+<span class="nc" id="L355">    connect0(addr, connectTimeout);</span>
+<span class="nc" id="L356">  }</span>
 
   final boolean connect0(SocketAddress addr, int connectTimeout) throws IOException {
 <span class="fc bfc" id="L359" title="All 2 branches covered.">    if (addr == AFSocketAddress.INTERNAL_DUMMY_CONNECT) { // NOPMD</span>
@@ -370,7 +370,7 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
 <span class="fc" id="L370">    AFSocketAddress socketAddress = (AFSocketAddress) addr;</span>
 <span class="fc" id="L371">    ByteBuffer ab = socketAddress.getNativeAddressDirectBuffer();</span>
 <span class="fc" id="L372">    boolean success = NativeUnixSocket.connect(ab, ab.limit(), fd, -1);</span>
-<span class="fc bfc" id="L373" title="All 2 branches covered.">    if (success) {</span>
+<span class="pc bpc" id="L373" title="1 of 2 branches missed.">    if (success) {</span>
 <span class="fc" id="L374">      setSocketAddress(socketAddress);</span>
 <span class="fc" id="L375">      this.connected.set(true);</span>
     }
@@ -512,13 +512,13 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
 
   private static boolean checkWriteInterruptedException(int bytesTransferred)
       throws InterruptedIOException {
-<span class="pc bpc" id="L515" title="1 of 2 branches missed.">    if (Thread.interrupted()) {</span>
+<span class="nc bnc" id="L515" title="All 2 branches missed.">    if (Thread.interrupted()) {</span>
 <span class="nc" id="L516">      InterruptedIOException ex = new InterruptedIOException(&quot;Thread interrupted during write&quot;);</span>
 <span class="nc" id="L517">      ex.bytesTransferred = bytesTransferred;</span>
 <span class="nc" id="L518">      Thread.currentThread().interrupt();</span>
 <span class="nc" id="L519">      throw ex;</span>
     }
-<span class="fc" id="L521">    return true;</span>
+<span class="nc" id="L521">    return true;</span>
   }
 
 <span class="fc" id="L524">  private final class AFOutputStreamImpl extends AFOutputStream {</span>
@@ -563,7 +563,7 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
 <span class="fc" id="L563">        len -= written;</span>
 <span class="fc" id="L564">        off += written;</span>
 <span class="fc" id="L565">        writtenTotal += written;</span>
-<span class="pc bpc" id="L566" title="1 of 4 branches missed.">      } while (len &gt; 0 &amp;&amp; checkWriteInterruptedException(writtenTotal));</span>
+<span class="pc bpc" id="L566" title="3 of 4 branches missed.">      } while (len &gt; 0 &amp;&amp; checkWriteInterruptedException(writtenTotal));</span>
 <span class="fc" id="L567">    }</span>
 
     @Override
@@ -702,11 +702,11 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
   protected final Object getOptionLenient(int optID) throws SocketException {
     try {
 <span class="fc" id="L704">      return getOption0(optID);</span>
-<span class="fc" id="L705">    } catch (SocketException e) {</span>
-<span class="pc bpc" id="L706" title="1 of 2 branches missed.">      switch (optID) {</span>
+<span class="nc" id="L705">    } catch (SocketException e) {</span>
+<span class="nc bnc" id="L706" title="All 2 branches missed.">      switch (optID) {</span>
         case SocketOptions.TCP_NODELAY:
         case SocketOptions.SO_KEEPALIVE:
-<span class="fc" id="L709">          return false;</span>
+<span class="nc" id="L709">          return false;</span>
         default:
 <span class="nc" id="L711">          throw e;</span>
       }
@@ -909,9 +909,9 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
 
   @Override
   protected &lt;T&gt; void setOption(SocketOption&lt;T&gt; name, T value) throws IOException {
-<span class="fc bfc" id="L912" title="All 2 branches covered.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="fc" id="L913">      ((AFSocketImpl&lt;?&gt;) this).getCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
-<span class="fc" id="L914">      return;</span>
+<span class="pc bpc" id="L912" title="1 of 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L913">      ((AFSocketImpl&lt;?&gt;) this).getCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
+<span class="nc" id="L914">      return;</span>
     }
 <span class="fc" id="L916">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
 <span class="pc bpc" id="L917" title="1 of 2 branches missed.">    if (optionId == null) {</span>
@@ -924,8 +924,8 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
   @SuppressWarnings(&quot;unchecked&quot;)
   @Override
   protected &lt;T&gt; T getOption(SocketOption&lt;T&gt; name) throws IOException {
-<span class="fc bfc" id="L927" title="All 2 branches covered.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="fc" id="L928">      return ((AFSocketImpl&lt;?&gt;) this).getCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
+<span class="pc bpc" id="L927" title="1 of 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L928">      return ((AFSocketImpl&lt;?&gt;) this).getCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
     }
 <span class="fc" id="L930">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
 <span class="fc bfc" id="L931" title="All 2 branches covered.">    if (optionId == null) {</span>
@@ -948,10 +948,10 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
    *           type.
    */
   protected final synchronized AFSocketImplExtensions&lt;A&gt; getImplExtensions() {
-<span class="fc bfc" id="L951" title="All 2 branches covered.">    if (implExtensions == null) {</span>
-<span class="fc" id="L952">      implExtensions = addressFamily.initImplExtensions(ancillaryDataSupport);</span>
+<span class="nc bnc" id="L951" title="All 2 branches missed.">    if (implExtensions == null) {</span>
+<span class="nc" id="L952">      implExtensions = addressFamily.initImplExtensions(ancillaryDataSupport);</span>
     }
-<span class="fc" id="L954">    return implExtensions;</span>
+<span class="nc" id="L954">    return implExtensions;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

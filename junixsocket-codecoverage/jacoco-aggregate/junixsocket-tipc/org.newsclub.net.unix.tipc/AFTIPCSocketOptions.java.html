@@ -38,7 +38,7 @@ public final class AFTIPCSocketOptions {
    * @see #TIPC_GROUP_LEAVE
    */
   @SuppressWarnings({&quot;null&quot;})
-<span class="fc" id="L41">  public static final Void VOID = (@NonNull Void) null;</span>
+<span class="nc" id="L41">  public static final Void VOID = (@NonNull Void) null;</span>
 
   /**
    * This option governs how likely a message sent by the socket is to be affected by congestion. A
@@ -47,13 +47,13 @@ public final class AFTIPCSocketOptions {
    * 
    * @see MessageImportance
    */
-<span class="fc" id="L50">  public static final AFSocketOption&lt;MessageImportance&gt; TIPC_IMPORTANCE = new AFSocketOption&lt;&gt;(</span>
+<span class="nc" id="L50">  public static final AFSocketOption&lt;MessageImportance&gt; TIPC_IMPORTANCE = new AFSocketOption&lt;&gt;(</span>
       &quot;TIPC_IMPORTANCE&quot;, MessageImportance.class, 271, 127);
 
   /**
    * Controls whether a message should be discarded when link congestion occurs.
    */
-<span class="fc" id="L56">  public static final AFSocketOption&lt;Boolean&gt; TIPC_SRC_DROPPABLE = new AFSocketOption&lt;&gt;(</span>
+<span class="nc" id="L56">  public static final AFSocketOption&lt;Boolean&gt; TIPC_SRC_DROPPABLE = new AFSocketOption&lt;&gt;(</span>
       &quot;TIPC_SRC_DROPPABLE&quot;, Boolean.class, 271, 128);
 
   /**
@@ -62,46 +62,46 @@ public final class AFTIPCSocketOptions {
    * 
    * By default, this option is enabled for SOCK_RDM and SOCK_DGRAM sockets, and disabled otherwise.
    */
-<span class="fc" id="L65">  public static final AFSocketOption&lt;Boolean&gt; TIPC_DEST_DROPPABLE = new AFSocketOption&lt;&gt;(</span>
+<span class="nc" id="L65">  public static final AFSocketOption&lt;Boolean&gt; TIPC_DEST_DROPPABLE = new AFSocketOption&lt;&gt;(</span>
       &quot;TIPC_DEST_DROPPABLE&quot;, Boolean.class, 271, 129);
 
   /**
    * Specifies the number of milliseconds connect() will wait before giving up because of lack of
    * response. The default value is 8000 ms.
    */
-<span class="fc" id="L72">  public static final AFSocketOption&lt;Integer&gt; TIPC_CONN_TIMEOUT = new AFSocketOption&lt;&gt;(</span>
+<span class="nc" id="L72">  public static final AFSocketOption&lt;Integer&gt; TIPC_CONN_TIMEOUT = new AFSocketOption&lt;&gt;(</span>
       &quot;TIPC_CONN_TIMEOUT&quot;, Integer.class, 271, 130);
 
   /**
    * Returns the number of messages in the node's receive queue (get only).
    */
-<span class="fc" id="L78">  public static final AFSocketOption&lt;Integer&gt; TIPC_NODE_RECVQ_DEPTH = new AFSocketOption&lt;&gt;(</span>
+<span class="nc" id="L78">  public static final AFSocketOption&lt;Integer&gt; TIPC_NODE_RECVQ_DEPTH = new AFSocketOption&lt;&gt;(</span>
       &quot;TIPC_NODE_RECVQ_DEPTH&quot;, Integer.class, 271, 131);
 
   /**
    * Returns the number of messages in the socket's receive queue (get only).
    */
-<span class="fc" id="L84">  public static final AFSocketOption&lt;Integer&gt; TIPC_SOCK_RECVQ_DEPTH = new AFSocketOption&lt;&gt;(</span>
+<span class="nc" id="L84">  public static final AFSocketOption&lt;Integer&gt; TIPC_SOCK_RECVQ_DEPTH = new AFSocketOption&lt;&gt;(</span>
       &quot;TIPC_SOCK_RECVQ_DEPTH&quot;, Integer.class, 271, 132);
 
   /**
    * Force datagram multicasts from this socket to be transmitted as bearer broadcast/multicast
    * (instead of replicated unicast) whenever possible..
    */
-<span class="fc" id="L91">  public static final AFSocketOption&lt;Boolean&gt; TIPC_MCAST_BROADCAST = new AFSocketOption&lt;&gt;(</span>
+<span class="nc" id="L91">  public static final AFSocketOption&lt;Boolean&gt; TIPC_MCAST_BROADCAST = new AFSocketOption&lt;&gt;(</span>
       &quot;TIPC_MCAST_BROADCAST&quot;, Boolean.class, 271, 133);
 
   /**
    * Force datagram multicasts from this socket to be transmitted as replicated unicast instead of
    * bearer broadcast/multicast..
    */
-<span class="fc" id="L98">  public static final AFSocketOption&lt;Boolean&gt; TIPC_MCAST_REPLICAST = new AFSocketOption&lt;&gt;(</span>
+<span class="nc" id="L98">  public static final AFSocketOption&lt;Boolean&gt; TIPC_MCAST_REPLICAST = new AFSocketOption&lt;&gt;(</span>
       &quot;TIPC_MCAST_REPLICAST&quot;, Boolean.class, 271, 134);
 
   /**
    * Join a communication group.
    */
-<span class="fc" id="L104">  public static final AFSocketOption&lt;AFTIPCGroupRequest&gt; TIPC_GROUP_JOIN = new AFSocketOption&lt;&gt;(</span>
+<span class="nc" id="L104">  public static final AFSocketOption&lt;AFTIPCGroupRequest&gt; TIPC_GROUP_JOIN = new AFSocketOption&lt;&gt;(</span>
       &quot;TIPC_GROUP_JOIN&quot;, AFTIPCGroupRequest.class, 271, 135);
 
   /**
@@ -109,7 +109,7 @@ public final class AFTIPCSocketOptions {
    * 
    * Only valid for setOption. The value is ignored. Use {@link #VOID}.
    */
-<span class="fc" id="L112">  public static final AFSocketOption&lt;Void&gt; TIPC_GROUP_LEAVE = new AFSocketOption&lt;&gt;(</span>
+<span class="nc" id="L112">  public static final AFSocketOption&lt;Void&gt; TIPC_GROUP_LEAVE = new AFSocketOption&lt;&gt;(</span>
       &quot;TIPC_GROUP_LEAVE&quot;, Void.class, 271, 136);
 
   /**
@@ -119,14 +119,14 @@ public final class AFTIPCSocketOptions {
    * TIPC_SOCK_RECVQ_USED returns the current allocated bytes of the receive socket buffer. This
    * helps user space applications dimension its buffer usage to avoid buffer overload issue.
    */
-<span class="fc" id="L122">  public static final AFSocketOption&lt;Integer&gt; TIPC_SOCK_RECVQ_USED = new AFSocketOption&lt;&gt;(</span>
+<span class="nc" id="L122">  public static final AFSocketOption&lt;Integer&gt; TIPC_SOCK_RECVQ_USED = new AFSocketOption&lt;&gt;(</span>
       &quot;TIPC_SOCK_RECVQ_USED&quot;, Integer.class, 271, 137);
 
   /**
    * If enabled, the Nagle algorithm is disabled. Similar to
    * {@link StandardSocketOptions#TCP_NODELAY}.
    */
-<span class="fc" id="L129">  public static final AFSocketOption&lt;Boolean&gt; TIPC_NODELAY = new AFSocketOption&lt;&gt;(&quot;TIPC_NODELAY&quot;,</span>
+<span class="nc" id="L129">  public static final AFSocketOption&lt;Boolean&gt; TIPC_NODELAY = new AFSocketOption&lt;&gt;(&quot;TIPC_NODELAY&quot;,</span>
       Boolean.class, 271, 138);
 
 <span class="nc" id="L132">  private AFTIPCSocketOptions() {</span>
@@ -164,7 +164,7 @@ public final class AFTIPCSocketOptions {
      */
     public static final MessageImportance CRITICAL;
 
-<span class="fc" id="L167">    private static final @NonNull MessageImportance[] VALUES = init(</span>
+<span class="nc" id="L167">    private static final @NonNull MessageImportance[] VALUES = init(</span>
         new @NonNull MessageImportance[] {
             LOW = new MessageImportance(&quot;LOW&quot;, 0), //
             MEDIUM = new MessageImportance(&quot;MEDIUM&quot;, 1), //
@@ -173,12 +173,12 @@ public final class AFTIPCSocketOptions {
         });
 
     private MessageImportance(int id) {
-<span class="fc" id="L176">      super(id);</span>
-<span class="fc" id="L177">    }</span>
+<span class="nc" id="L176">      super(id);</span>
+<span class="nc" id="L177">    }</span>
 
     private MessageImportance(String name, int id) {
-<span class="fc" id="L180">      super(name, id);</span>
-<span class="fc" id="L181">    }</span>
+<span class="nc" id="L180">      super(name, id);</span>
+<span class="nc" id="L181">    }</span>
 
     /**
      * Returns a {@link MessageImportance} instance for the given value.
@@ -187,7 +187,7 @@ public final class AFTIPCSocketOptions {
      * @return The instance.
      */
     public static MessageImportance ofValue(int v) {
-<span class="fc" id="L190">      return ofValue(VALUES, MessageImportance::new, v);</span>
+<span class="nc" id="L190">      return ofValue(VALUES, MessageImportance::new, v);</span>
     }
   }
 }

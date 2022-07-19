@@ -221,7 +221,7 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
 
   @Override
   public final boolean isConnected() {
-<span class="fc bfc" id="L224" title="All 4 branches covered.">    return super.isConnected() || impl.isConnected();</span>
+<span class="pc bpc" id="L224" title="1 of 4 branches missed.">    return super.isConnected() || impl.isConnected();</span>
   }
 
   @Override
@@ -263,7 +263,7 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
     }
 
 <span class="fc" id="L265">    boolean success = getAFImpl().connect0(address, timeout);</span>
-<span class="fc bfc" id="L266" title="All 2 branches covered.">    if (success) {</span>
+<span class="pc bpc" id="L266" title="1 of 2 branches missed.">    if (success) {</span>
 <span class="fc" id="L267">      int port = address.getPort();</span>
 <span class="fc bfc" id="L268" title="All 2 branches covered.">      if (port &gt; 0) {</span>
 <span class="fc" id="L269">        getAFImpl().updatePorts(getLocalPort(), port);</span>
@@ -274,8 +274,8 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
   }
 
   final void internalDummyConnect() throws IOException {
-<span class="fc bfc" id="L277" title="All 2 branches covered.">    if (!isConnected()) {</span>
-<span class="fc" id="L278">      super.connect(AFSocketAddress.INTERNAL_DUMMY_CONNECT, 0);</span>
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">    if (!isConnected()) {</span>
+<span class="nc" id="L278">      super.connect(AFSocketAddress.INTERNAL_DUMMY_CONNECT, 0);</span>
     }
 <span class="fc" id="L280">  }</span>
 
@@ -515,7 +515,7 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
    *           type.
    */
   protected final AFSocketImplExtensions&lt;A&gt; getImplExtensions() {
-<span class="fc" id="L518">    return getAFImpl(false).getImplExtensions();</span>
+<span class="nc" id="L518">    return getAFImpl(false).getImplExtensions();</span>
   }
 
   /**

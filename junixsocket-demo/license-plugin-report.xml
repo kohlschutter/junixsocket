@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1656675920428">
-    <module artifactId="junixsocket-demo" groupId="com.kohlschutter.junixsocket" version="2.5.1"/>
+<licensePluginReport goal="CHECK" timestamp="1658236193297">
+    <module artifactId="junixsocket-demo" groupId="com.kohlschutter.junixsocket" version="2.6.0-SNAPSHOT"/>
     <files>
         <file path="src/main/java/org/newsclub/net/mysql/demo/AFUNIXDatabaseSocketFactoryDemo.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/demo/DemoHelper.java" result="PRESENT"/>

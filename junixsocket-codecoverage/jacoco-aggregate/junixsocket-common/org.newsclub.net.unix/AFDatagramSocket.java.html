@@ -248,7 +248,7 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
     }
 <span class="fc" id="L249">    getAFImpl().close();</span>
 <span class="fc" id="L250">    boolean wasBound = isBound();</span>
-<span class="pc bpc" id="L251" title="1 of 4 branches missed.">    if (wasBound &amp;&amp; deleteOnClose.get()) {</span>
+<span class="pc bpc" id="L251" title="2 of 4 branches missed.">    if (wasBound &amp;&amp; deleteOnClose.get()) {</span>
 <span class="fc" id="L252">      InetAddress addr = getLocalAddress();</span>
 <span class="pc bpc" id="L253" title="1 of 2 branches missed.">      if (AFInetAddress.isSupportedAddress(addr, addressFamily())) {</span>
         try {
@@ -271,7 +271,7 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
   public final synchronized void bind(SocketAddress addr) throws SocketException {
 <span class="fc" id="L272">    boolean isBound = isBound();</span>
 <span class="fc bfc" id="L273" title="All 2 branches covered.">    if (isBound) {</span>
-<span class="fc bfc" id="L274" title="All 2 branches covered.">      if (addr == AFSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD</span>
+<span class="pc bpc" id="L274" title="1 of 2 branches missed.">      if (addr == AFSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD</span>
 <span class="fc" id="L275">        return;</span>
       }
       // getAFImpl().bind(null); // try unbind (may not succeed)
@@ -279,7 +279,7 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
 <span class="pc bpc" id="L279" title="1 of 2 branches missed.">    if (isClosed()) {</span>
 <span class="nc" id="L280">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
-<span class="fc bfc" id="L282" title="All 2 branches covered.">    if (!isBound) {</span>
+<span class="pc bpc" id="L282" title="1 of 2 branches missed.">    if (!isBound) {</span>
       try {
 <span class="fc" id="L284">        super.bind(AFSocketAddress.INTERNAL_DUMMY_BIND);</span>
 <span class="nc" id="L285">      } catch (AlreadyBoundException e) {</span>
@@ -390,7 +390,7 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
 
   @Override
   public final boolean isClosed() {
-<span class="fc bfc" id="L393" title="All 4 branches covered.">    return super.isClosed() || getAFImpl().isClosed();</span>
+<span class="pc bpc" id="L393" title="1 of 4 branches missed.">    return super.isClosed() || getAFImpl().isClosed();</span>
   }
 
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)

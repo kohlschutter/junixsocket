@@ -361,7 +361,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
     try {
 <span class="fc" id="L362">      closeables.close(superException);</span>
     } finally {
-<span class="pc bpc" id="L364" title="1 of 6 branches missed.">      if (endpoint != null &amp;&amp; endpoint.hasFilename() &amp;&amp; localSocketAddressValid</span>
+<span class="pc bpc" id="L364" title="2 of 6 branches missed.">      if (endpoint != null &amp;&amp; endpoint.hasFilename() &amp;&amp; localSocketAddressValid</span>
 <span class="pc bpc" id="L365" title="1 of 2 branches missed.">          &amp;&amp; isDeleteOnClose()) {</span>
 <span class="fc" id="L366">        File f = endpoint.getFile();</span>
 <span class="pc bpc" id="L367" title="1 of 4 branches missed.">        if (!f.delete() &amp;&amp; f.exists()) {</span>

@@ -251,14 +251,14 @@ public abstract class AFRegistry implements Registry {
 
         AFRMIService service;
         try {
-<span class="fc" id="L254">          service = naming.getRMIService(this);</span>
-<span class="fc" id="L255">          service.unregisterForShutdown(boundCloser);</span>
+<span class="nc" id="L254">          service = naming.getRMIService(this);</span>
+<span class="nc" id="L255">          service.unregisterForShutdown(boundCloser);</span>
 <span class="fc" id="L256">        } catch (NoSuchObjectException | NotBoundException e) {</span>
 <span class="fc" id="L257">          return;</span>
         } finally {
 <span class="fc" id="L259">          AFNaming.unexportObject(boundCloser);</span>
         }
-<span class="fc" id="L261">      }</span>
+<span class="nc" id="L261">      }</span>
 <span class="fc bfc" id="L262" title="All 2 branches covered.">    } else if (!boundCloserExported) {</span>
 <span class="fc" id="L263">      AFNaming.exportObject(boundCloser, naming.getSocketFactory());</span>
 <span class="fc" id="L264">      boundCloserExported = true;</span>

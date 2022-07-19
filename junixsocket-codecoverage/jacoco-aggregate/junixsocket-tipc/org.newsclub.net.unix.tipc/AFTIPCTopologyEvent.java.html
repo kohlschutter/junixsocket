@@ -77,7 +77,7 @@ public final class AFTIPCTopologyEvent {
      */
     public static final Type UNDEFINED;
 
-<span class="fc" id="L80">    private static final @NonNull Type[] VALUES = init(new @NonNull Type[] {</span>
+<span class="nc" id="L80">    private static final @NonNull Type[] VALUES = init(new @NonNull Type[] {</span>
         UNDEFINED = new Type(&quot;UNDEFINED&quot;, 0), //
         TIPC_PUBLISHED = new Type(&quot;TIPC_PUBLISHED&quot;, 1), //
         TIPC_WITHDRAWN = new Type(&quot;TIPC_WITHDRAWN&quot;, 2), //
@@ -89,8 +89,8 @@ public final class AFTIPCTopologyEvent {
 <span class="nc" id="L89">    }</span>
 
     private Type(String name, int id) {
-<span class="fc" id="L92">      super(name, id);</span>
-<span class="fc" id="L93">    }</span>
+<span class="nc" id="L92">      super(name, id);</span>
+<span class="nc" id="L93">    }</span>
 
     /**
      * Returns an {@link Type} instance given an integer.
@@ -99,29 +99,29 @@ public final class AFTIPCTopologyEvent {
      * @return The instance.
      */
     public static Type ofValue(int v) {
-<span class="fc" id="L102">      return ofValue(VALUES, Type::new, v);</span>
+<span class="nc" id="L102">      return ofValue(VALUES, Type::new, v);</span>
     }
   }
 
   private AFTIPCTopologyEvent(Type type, int foundLower, int foundUpper,
-<span class="fc" id="L107">      AFTIPCSocketAddress address, AFTIPCTopologySubscription subscription) {</span>
-<span class="fc" id="L108">    this.type = type;</span>
-<span class="fc" id="L109">    this.foundLower = foundLower;</span>
-<span class="fc" id="L110">    this.foundUpper = foundUpper;</span>
-<span class="fc" id="L111">    this.address = address;</span>
-<span class="fc" id="L112">    this.subscription = subscription;</span>
-<span class="fc" id="L113">  }</span>
+<span class="nc" id="L107">      AFTIPCSocketAddress address, AFTIPCTopologySubscription subscription) {</span>
+<span class="nc" id="L108">    this.type = type;</span>
+<span class="nc" id="L109">    this.foundLower = foundLower;</span>
+<span class="nc" id="L110">    this.foundUpper = foundUpper;</span>
+<span class="nc" id="L111">    this.address = address;</span>
+<span class="nc" id="L112">    this.subscription = subscription;</span>
+<span class="nc" id="L113">  }</span>
 
   @SuppressWarnings(&quot;null&quot;)
   static AFTIPCTopologyEvent readFromBuffer(ByteBuffer buf) throws SocketException {
-<span class="fc" id="L117">    buf = buf.order(ByteOrder.BIG_ENDIAN);</span>
-<span class="fc" id="L118">    Type type = Type.ofValue(buf.getInt());</span>
-<span class="fc" id="L119">    int foundLower = buf.getInt();</span>
-<span class="fc" id="L120">    int foundUpper = buf.getInt();</span>
-<span class="fc" id="L121">    AFTIPCSocketAddress address = AFTIPCSocketAddress.ofSocket(buf.getInt(), buf.getInt());</span>
-<span class="fc" id="L122">    AFTIPCTopologySubscription sub = AFTIPCTopologySubscription.readFromBuffer(buf);</span>
+<span class="nc" id="L117">    buf = buf.order(ByteOrder.BIG_ENDIAN);</span>
+<span class="nc" id="L118">    Type type = Type.ofValue(buf.getInt());</span>
+<span class="nc" id="L119">    int foundLower = buf.getInt();</span>
+<span class="nc" id="L120">    int foundUpper = buf.getInt();</span>
+<span class="nc" id="L121">    AFTIPCSocketAddress address = AFTIPCSocketAddress.ofSocket(buf.getInt(), buf.getInt());</span>
+<span class="nc" id="L122">    AFTIPCTopologySubscription sub = AFTIPCTopologySubscription.readFromBuffer(buf);</span>
 
-<span class="fc" id="L124">    return new AFTIPCTopologyEvent(type, foundLower, foundUpper, address, sub);</span>
+<span class="nc" id="L124">    return new AFTIPCTopologyEvent(type, foundLower, foundUpper, address, sub);</span>
   }
 
   @Override
@@ -175,7 +175,7 @@ public final class AFTIPCTopologyEvent {
    * @return The lower value.
    */
   public int getFoundLower() {
-<span class="fc" id="L178">    return foundLower;</span>
+<span class="nc" id="L178">    return foundLower;</span>
   }
 
   /**
@@ -184,7 +184,7 @@ public final class AFTIPCTopologyEvent {
    * @return The upper value.
    */
   public int getFoundUpper() {
-<span class="fc" id="L187">    return foundUpper;</span>
+<span class="nc" id="L187">    return foundUpper;</span>
   }
 
   /**
@@ -194,7 +194,7 @@ public final class AFTIPCTopologyEvent {
    */
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   public AFTIPCSocketAddress getAddress() {
-<span class="fc" id="L197">    return address;</span>
+<span class="nc" id="L197">    return address;</span>
   }
 
   /**
@@ -213,7 +213,7 @@ public final class AFTIPCTopologyEvent {
    * @return {@code true} if this a &quot;published&quot; event.
    */
   public boolean isPublished() {
-<span class="fc bfc" id="L216" title="All 2 branches covered.">    return type == Type.TIPC_PUBLISHED; // NOPMD.CompareObjectsWithEquals</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">    return type == Type.TIPC_PUBLISHED; // NOPMD.CompareObjectsWithEquals</span>
   }
 
   /**
@@ -222,7 +222,7 @@ public final class AFTIPCTopologyEvent {
    * @return {@code true} if this a &quot;withdrawn&quot; event.
    */
   public boolean isWithdrawn() {
-<span class="pc bpc" id="L225" title="1 of 2 branches missed.">    return type == Type.TIPC_WITHDRAWN; // NOPMD.CompareObjectsWithEquals</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">    return type == Type.TIPC_WITHDRAWN; // NOPMD.CompareObjectsWithEquals</span>
   }
 
   /**
@@ -231,7 +231,7 @@ public final class AFTIPCTopologyEvent {
    * @return {@code true} if this a &quot;timeout&quot; event.
    */
   public boolean isTimeout() {
-<span class="fc bfc" id="L234" title="All 2 branches covered.">    return type == Type.TIPC_SUBSCR_TIMEOUT; // NOPMD.CompareObjectsWithEquals</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">    return type == Type.TIPC_SUBSCR_TIMEOUT; // NOPMD.CompareObjectsWithEquals</span>
   }
 
   /**
@@ -241,7 +241,7 @@ public final class AFTIPCTopologyEvent {
    * @return {@code true} if this a event referring to a &quot;port&quot; subscription.
    */
   public boolean isPort() {
-<span class="fc" id="L244">    return subscription.isPort();</span>
+<span class="nc" id="L244">    return subscription.isPort();</span>
   }
 
   /**
@@ -251,7 +251,7 @@ public final class AFTIPCTopologyEvent {
    * @return {@code true} if this a event referring to a &quot;service&quot; subscription.
    */
   public boolean isService() {
-<span class="fc" id="L254">    return subscription.isService();</span>
+<span class="nc" id="L254">    return subscription.isService();</span>
   }
 
   /**
@@ -261,7 +261,7 @@ public final class AFTIPCTopologyEvent {
    * @return {@code true} if this a event referring to a &quot;cancellation&quot; subscription request.
    */
   public boolean isCancellationRequest() {
-<span class="fc" id="L264">    return subscription.isCancellation();</span>
+<span class="nc" id="L264">    return subscription.isCancellation();</span>
   }
 
   @Override
@@ -295,9 +295,9 @@ public final class AFTIPCTopologyEvent {
    */
   public @Nullable String getLinkName() throws IOException {
     // this only works if getSubscription().getType() == AFTIPCSubscription.TIPC_LINK_STATE
-<span class="fc" id="L298">    int node = getFoundLower();</span>
-<span class="fc" id="L299">    int ref = getAddress().getTIPCRef();</span>
-<span class="fc" id="L300">    return AFTIPCSocket.getLinkName(node, ref &amp; 0xFFFF);</span>
+<span class="nc" id="L298">    int node = getFoundLower();</span>
+<span class="nc" id="L299">    int ref = getAddress().getTIPCRef();</span>
+<span class="nc" id="L300">    return AFTIPCSocket.getLinkName(node, ref &amp; 0xFFFF);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

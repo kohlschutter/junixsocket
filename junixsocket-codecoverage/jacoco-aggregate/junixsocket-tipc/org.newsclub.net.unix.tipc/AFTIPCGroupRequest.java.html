@@ -80,7 +80,7 @@ public final class AFTIPCGroupRequest {
      * @return The instance.
      */
     public static GroupRequestFlags ofValue(int v) {
-<span class="fc" id="L83">      return resolve(VALUES, NONE, GroupRequestFlags::new, v);</span>
+<span class="nc" id="L83">      return resolve(VALUES, NONE, GroupRequestFlags::new, v);</span>
     }
 
     /**
@@ -124,10 +124,10 @@ public final class AFTIPCGroupRequest {
    */
   public static AFTIPCGroupRequest with(int type, int instance, Scope scope,
       GroupRequestFlags flags) {
-<span class="pc bpc" id="L127" title="3 of 8 branches missed.">    if (type == 0 &amp;&amp; instance == 0 &amp;&amp; scope.value() == 0 &amp;&amp; flags.value() == 0) {</span>
-<span class="fc" id="L128">      return NONE;</span>
+<span class="nc bnc" id="L127" title="All 8 branches missed.">    if (type == 0 &amp;&amp; instance == 0 &amp;&amp; scope.value() == 0 &amp;&amp; flags.value() == 0) {</span>
+<span class="nc" id="L128">      return NONE;</span>
     } else {
-<span class="fc" id="L130">      return new AFTIPCGroupRequest(type, instance, scope, flags);</span>
+<span class="nc" id="L130">      return new AFTIPCGroupRequest(type, instance, scope, flags);</span>
     }
   }
 
@@ -145,7 +145,7 @@ public final class AFTIPCGroupRequest {
   }
 
   static AFTIPCGroupRequest fromNative(int type, int instance, int scopeId, int flags) {
-<span class="fc" id="L148">    return with(type, instance, Scope.ofValue(scopeId), GroupRequestFlags.ofValue(flags));</span>
+<span class="nc" id="L148">    return with(type, instance, Scope.ofValue(scopeId), GroupRequestFlags.ofValue(flags));</span>
   }
 
   /**
@@ -154,7 +154,7 @@ public final class AFTIPCGroupRequest {
    * @return The group type.
    */
   public int getType() {
-<span class="fc" id="L157">    return type;</span>
+<span class="nc" id="L157">    return type;</span>
   }
 
   /**
@@ -163,7 +163,7 @@ public final class AFTIPCGroupRequest {
    * @return The group instance.
    */
   public int getInstance() {
-<span class="fc" id="L166">    return instance;</span>
+<span class="nc" id="L166">    return instance;</span>
   }
 
   /**
@@ -176,11 +176,11 @@ public final class AFTIPCGroupRequest {
   }
 
   int getScopeId() {
-<span class="fc" id="L179">    return scope.value();</span>
+<span class="nc" id="L179">    return scope.value();</span>
   }
 
   int getFlagsValue() {
-<span class="fc" id="L183">    return flags.value();</span>
+<span class="nc" id="L183">    return flags.value();</span>
   }
 
   /**

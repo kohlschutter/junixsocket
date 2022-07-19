@@ -137,12 +137,12 @@ public abstract class AFDatagramChannel&lt;A extends AFSocketAddress&gt; extends
 
   @Override
   public final A receive(ByteBuffer dst) throws IOException {
-<span class="fc" id="L140">    return afSocket.getAFImpl().receive(dst);</span>
+<span class="nc" id="L140">    return afSocket.getAFImpl().receive(dst);</span>
   }
 
   @Override
   public final int send(ByteBuffer src, SocketAddress target) throws IOException {
-<span class="fc" id="L145">    return afSocket.getAFImpl().send(src, target);</span>
+<span class="nc" id="L145">    return afSocket.getAFImpl().send(src, target);</span>
   }
 
   @Override
@@ -201,9 +201,9 @@ public abstract class AFDatagramChannel&lt;A extends AFSocketAddress&gt; extends
   @Override
   public final &lt;T&gt; AFDatagramChannel&lt;A&gt; setOption(SocketOption&lt;T&gt; name, T value)
       throws IOException {
-<span class="pc bpc" id="L204" title="1 of 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="fc" id="L205">      getAFCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
-<span class="fc" id="L206">      return this;</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L205">      getAFCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
+<span class="nc" id="L206">      return this;</span>
     }
 <span class="nc" id="L208">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
 <span class="nc bnc" id="L209" title="All 2 branches missed.">    if (optionId == null) {</span>
@@ -217,8 +217,8 @@ public abstract class AFDatagramChannel&lt;A extends AFSocketAddress&gt; extends
   @SuppressWarnings(&quot;unchecked&quot;)
   @Override
   public final &lt;T&gt; T getOption(SocketOption&lt;T&gt; name) throws IOException {
-<span class="fc bfc" id="L220" title="All 2 branches covered.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="fc" id="L221">      return getAFCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L221">      return getAFCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
     }
 <span class="fc" id="L223">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
 <span class="pc bpc" id="L224" title="1 of 2 branches missed.">    if (optionId == null) {</span>

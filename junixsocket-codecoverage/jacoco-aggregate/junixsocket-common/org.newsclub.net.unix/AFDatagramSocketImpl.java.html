@@ -180,8 +180,8 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
 <span class="fc" id="L180">        options, ancillaryDataSupport, socketTimeout.get());</span>
 <span class="pc bpc" id="L181" title="1 of 2 branches missed.">    if (count &gt; len) {</span>
 <span class="nc" id="L182">      throw new IllegalStateException(&quot;count &gt; len: &quot; + count + &quot; &gt; &quot; + len);</span>
-<span class="fc bfc" id="L183" title="All 2 branches covered.">    } else if (count == -1) {</span>
-<span class="fc" id="L184">      throw new SocketTimeoutException();</span>
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">    } else if (count == -1) {</span>
+<span class="nc" id="L184">      throw new SocketTimeoutException();</span>
 <span class="pc bpc" id="L185" title="1 of 2 branches missed.">    } else if (count &lt; 0) {</span>
 <span class="nc" id="L186">      throw new IllegalStateException(&quot;count: &quot; + count + &quot; &lt; 0&quot;);</span>
     }
@@ -299,7 +299,7 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
   @SuppressWarnings(&quot;unchecked&quot;)
   final A receive(ByteBuffer dst) throws IOException {
     try {
-<span class="fc" id="L302">      return (A) core.receive(dst);</span>
+<span class="nc" id="L302">      return (A) core.receive(dst);</span>
 <span class="nc" id="L303">    } catch (SocketClosedException e) {</span>
 <span class="nc" id="L304">      throw (ClosedChannelException) new ClosedChannelException().initCause(e);</span>
     }
@@ -307,7 +307,7 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
 
   final int send(ByteBuffer src, SocketAddress target) throws IOException {
     try {
-<span class="fc" id="L310">      return core.write(src, target, 0);</span>
+<span class="nc" id="L310">      return core.write(src, target, 0);</span>
 <span class="nc" id="L311">    } catch (SocketClosedException e) {</span>
 <span class="nc" id="L312">      throw (ClosedChannelException) new ClosedChannelException().initCause(e);</span>
     }
@@ -316,8 +316,8 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
   final int read(ByteBuffer dst, ByteBuffer socketAddressBuffer) throws IOException {
     try {
 <span class="fc" id="L318">      return core.read(dst, socketAddressBuffer, 0);</span>
-<span class="fc" id="L319">    } catch (SocketClosedException e) {</span>
-<span class="fc" id="L320">      throw (ClosedChannelException) new ClosedChannelException().initCause(e);</span>
+<span class="nc" id="L319">    } catch (SocketClosedException e) {</span>
+<span class="nc" id="L320">      throw (ClosedChannelException) new ClosedChannelException().initCause(e);</span>
     }
   }
 
@@ -347,8 +347,8 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
 <span class="fc bfc" id="L347" title="All 2 branches covered.">    if (bound.get()) {</span>
 <span class="fc" id="L348">      return true;</span>
     }
-<span class="fc bfc" id="L350" title="All 2 branches covered.">    if (isClosed()) {</span>
-<span class="fc" id="L351">      return false;</span>
+<span class="pc bpc" id="L350" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L351">      return false;</span>
     }
 <span class="fc bfc" id="L353" title="All 2 branches covered.">    if (core.isConnected(true)) {</span>
 <span class="fc" id="L354">      bound.set(true);</span>

@@ -54,11 +54,11 @@ public final class AFTIPCDestName implements Serializable {
    * @param upper The &quot;upper&quot; service range value (or the service &quot;instance&quot; if {@code lower} and
    *          {@code upper} are the same).
    */
-<span class="fc" id="L57">  public AFTIPCDestName(int type, int lower, int upper) {</span>
-<span class="fc" id="L58">    this.type = type;</span>
-<span class="fc" id="L59">    this.lower = lower;</span>
-<span class="fc" id="L60">    this.upper = upper;</span>
-<span class="fc" id="L61">  }</span>
+<span class="nc" id="L57">  public AFTIPCDestName(int type, int lower, int upper) {</span>
+<span class="nc" id="L58">    this.type = type;</span>
+<span class="nc" id="L59">    this.lower = lower;</span>
+<span class="nc" id="L60">    this.upper = upper;</span>
+<span class="nc" id="L61">  }</span>
 
   /**
    * Returns the &quot;type&quot; value.
@@ -96,7 +96,7 @@ public final class AFTIPCDestName implements Serializable {
    *         value.
    */
   public boolean isServiceRange() {
-<span class="pc bpc" id="L99" title="1 of 2 branches missed.">    return lower != upper;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">    return lower != upper;</span>
   }
 
   /**
@@ -110,10 +110,10 @@ public final class AFTIPCDestName implements Serializable {
    */
   public AFTIPCSocketAddress toSocketAddress(Scope scope, boolean alwaysRange) {
     try {
-<span class="pc bpc" id="L113" title="2 of 4 branches missed.">      if (alwaysRange || isServiceRange()) {</span>
+<span class="nc bnc" id="L113" title="All 4 branches missed.">      if (alwaysRange || isServiceRange()) {</span>
 <span class="nc" id="L114">        return AFTIPCSocketAddress.ofServiceRange(scope, type, lower, upper);</span>
       } else {
-<span class="fc" id="L116">        return AFTIPCSocketAddress.ofService(scope, type, lower);</span>
+<span class="nc" id="L116">        return AFTIPCSocketAddress.ofService(scope, type, lower);</span>
       }
 <span class="nc" id="L118">    } catch (SocketException e) {</span>
 <span class="nc" id="L119">      throw new IllegalStateException(e);</span>
@@ -122,13 +122,13 @@ public final class AFTIPCDestName implements Serializable {
 
   @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   static AFTIPCDestName of(int[] tipcDestName) {
-<span class="pc bpc" id="L125" title="1 of 2 branches missed.">    if (tipcDestName == null) {</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">    if (tipcDestName == null) {</span>
 <span class="nc" id="L126">      return null;</span>
     }
-<span class="pc bpc" id="L128" title="1 of 2 branches missed.">    if (tipcDestName.length != 3) {</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">    if (tipcDestName.length != 3) {</span>
 <span class="nc" id="L129">      throw new IllegalArgumentException();</span>
     }
-<span class="fc" id="L131">    return new AFTIPCDestName(tipcDestName[0], tipcDestName[1], tipcDestName[2]);</span>
+<span class="nc" id="L131">    return new AFTIPCDestName(tipcDestName[0], tipcDestName[1], tipcDestName[2]);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

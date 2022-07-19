@@ -28,12 +28,12 @@ import org.newsclub.net.unix.AFTIPCSocketAddress;
 public final class AFTIPCSocketChannel extends AFSocketChannel&lt;AFTIPCSocketAddress&gt; implements
     AFTIPCSocketExtensions {
   AFTIPCSocketChannel(AFTIPCSocket socket) {
-<span class="fc" id="L31">    super(socket, AFTIPCSelectorProvider.getInstance());</span>
-<span class="fc" id="L32">  }</span>
+<span class="nc" id="L31">    super(socket, AFTIPCSelectorProvider.getInstance());</span>
+<span class="nc" id="L32">  }</span>
 
   @Override
   public AFTIPCErrInfo getErrInfo() {
-<span class="fc" id="L36">    return ((AFTIPCSocketExtensions) getAFSocket()).getErrInfo();</span>
+<span class="nc" id="L36">    return ((AFTIPCSocketExtensions) getAFSocket()).getErrInfo();</span>
   }
 
   @Override
