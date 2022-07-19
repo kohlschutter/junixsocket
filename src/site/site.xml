@@ -35,7 +35,8 @@
       <item name="Quick Start" href="quickstart.html" />
       <item name="Compatibility" href="compatibility.html" />
       <item name="Selftest" href="selftest.html" />
-      <item name="Add junixsocket to your project" href="dependency.html" />
+      <item name="Add junixsocket to your project"
+        href="dependency.html" />
       <!-- <item name="FAQ" href="faq.html" /> -->
     </menu>
 
@@ -73,5 +74,42 @@
 
     <menu ref="modules" />
     <menu ref="reports" />
+
+    <footer><![CDATA[
+      <p id="giscus-parent" style="margin-top:20pt;padding-top:20pt;border-top:thin solid #bbb;">
+        <script src="https://giscus.app/client.js"
+          data-repo="kohlschutter/junixsocket"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkyNzA2NDIwMQ=="
+          data-category="Giscus"
+          data-category-id="DIC_kwDOAZz3ic4CQT9j"
+          data-mapping="pathname"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="light"
+          data-lang="en"
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async="async">
+        </script>
+        <small>
+          Discussions widget provided by giscus.app —
+          <a
+            href="https://github.com/giscus/giscus/blob/main/PRIVACY-POLICY.md"
+            target="_top">
+            giscus.app privacy policy
+          </a>
+        </small>
+      </p>
+      <script><!--
+      document.addEventListener("DOMContentLoaded", function(event) {
+        document.getElementById("bodyColumn").appendChild(document.getElementById("giscus-parent"));
+      });
+      // --></script>
+      <p>Copyright 2009–2022
+         <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>
+      </p>
+      ]]>
+    </footer>
   </body>
 </project>

@@ -71,6 +71,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     <junixsocket.custom.arch></junixsocket.custom.arch>
     <junixsocket.custom.classifier>default</junixsocket.custom.classifier>
 
+    <junixsocket.skip.native>${m2e.version}</junixsocket.skip.native>
+
     <kohlschutter.multirelease.java8.release>8</kohlschutter.multirelease.java8.release>
   </properties>
 
@@ -124,13 +126,12 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
       <id>with-native</id>
       <activation>
         <property>
-          <name>!m2e.version</name>
+          <name>!junixsocket.skip.native</name>
         </property>
       </activation>
       <modules>
         <module>junixsocket-native</module>
         <module>junixsocket-native-cross</module>
-        <module>junixsocket-native-custom</module>
         <module>junixsocket-native-common</module>
       </modules>
       <properties>
