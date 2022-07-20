@@ -278,7 +278,8 @@
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-native-custom</artifactId>
             <version>${project.version}</version>
-            <classifier>default</classifier>
+	    <!--<classifier>default</classifier>-->
+	    <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
