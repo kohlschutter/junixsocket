@@ -60,7 +60,7 @@
       <!-- https://issues.apache.org/jira/browse/MPIR-374 -->
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.3.3</version>
+      <version>42.4.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
