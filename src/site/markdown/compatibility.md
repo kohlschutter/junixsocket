@@ -71,7 +71,7 @@ Please reach out if you have some feature in mind that may be supported on these
 ## Additional Platforms and Architectures
 
 Upon request, support for additional systems, platforms and architectures may be added,
-such as OpenVMS, FUJITSU BS2000/OSD, Unisys ClearPath OS 2200, unQNX, VxWorks, HP-UX, Haiku, etc.
+such as OpenVMS, FUJITSU BS2000/OSD, Unisys ClearPath OS 2200, QNX, VxWorks, HP-UX, Haiku, etc.
 
 If you are interested in using junixsocket on another platform, or willing to sponsor development
 (by providing access to such platforms, covering licensing costs, etc.), feel free to
