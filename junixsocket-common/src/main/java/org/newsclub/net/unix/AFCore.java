@@ -30,10 +30,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Christian Kohlschütter
  */
 class AFCore extends CleanableState {
-  private static final ThreadLocal<ByteBuffer> DATAGRAMPACKET_BUFFER_TL = new ThreadLocal<>();
+  private static final ThreadLocal<ByteBuffer> TL_BUFFER = new ThreadLocal<>();
 
-  private static final int DATAGRAMPACKET_BUFFER_MIN_CAPACITY = 8192;
-  private static final int DATAGRAMPACKET_BUFFER_MAX_CAPACITY = 1 * 1024 * 1024;
+  private static final String PROP_TL_BUFFER_MAX_CAPACITY =
+      "org.newsclub.net.unix.thread-local-buffer.max-capacity"; // 0 means "no limit" (discouraged)
+
+  private static final int TL_BUFFER_MIN_CAPACITY = 8192; // 8 kb per thread
+  private static final int TL_BUFFER_MAX_CAPACITY = Integer.parseInt(System.getProperty(
+      PROP_TL_BUFFER_MAX_CAPACITY, Integer.toString(8 * 1024 * 1024))); // 8 MB per thread,
+                                                                        // realistic upper limit
 
   private final AtomicBoolean closed = new AtomicBoolean(false);
 
@@ -205,18 +210,19 @@ class AFCore extends CleanableState {
   }
 
   ByteBuffer getThreadLocalDirectByteBuffer(int capacity) {
-    if (capacity > DATAGRAMPACKET_BUFFER_MAX_CAPACITY) {
-      capacity = DATAGRAMPACKET_BUFFER_MAX_CAPACITY;
-    } else if (capacity < DATAGRAMPACKET_BUFFER_MIN_CAPACITY) {
-      capacity = DATAGRAMPACKET_BUFFER_MIN_CAPACITY;
+    if (capacity > TL_BUFFER_MAX_CAPACITY && TL_BUFFER_MAX_CAPACITY > 0) {
+      capacity = TL_BUFFER_MAX_CAPACITY;
     }
-    ByteBuffer datagramPacketBuffer = DATAGRAMPACKET_BUFFER_TL.get();
-    if (datagramPacketBuffer == null || capacity > datagramPacketBuffer.capacity()) {
-      datagramPacketBuffer = ByteBuffer.allocateDirect(capacity);
-      DATAGRAMPACKET_BUFFER_TL.set(datagramPacketBuffer);
+    if (capacity < TL_BUFFER_MIN_CAPACITY) {
+      capacity = TL_BUFFER_MIN_CAPACITY;
     }
-    datagramPacketBuffer.clear();
-    return datagramPacketBuffer;
+    ByteBuffer buffer = TL_BUFFER.get();
+    if (buffer == null || capacity > buffer.capacity()) {
+      buffer = ByteBuffer.allocateDirect(capacity);
+      TL_BUFFER.set(buffer);
+    }
+    buffer.clear();
+    return buffer;
   }
 
   void implConfigureBlocking(boolean block) throws IOException {
