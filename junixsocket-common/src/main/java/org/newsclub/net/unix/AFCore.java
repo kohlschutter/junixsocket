@@ -37,8 +37,7 @@ class AFCore extends CleanableState {
 
   private static final int TL_BUFFER_MIN_CAPACITY = 8192; // 8 kb per thread
   private static final int TL_BUFFER_MAX_CAPACITY = Integer.parseInt(System.getProperty(
-      PROP_TL_BUFFER_MAX_CAPACITY, Integer.toString(8 * 1024 * 1024))); // 8 MB per thread,
-                                                                        // realistic upper limit
+      PROP_TL_BUFFER_MAX_CAPACITY, Integer.toString(1 * 1024 * 1024))); // 1 MB per thread
 
   private final AtomicBoolean closed = new AtomicBoolean(false);
 
@@ -209,9 +208,22 @@ class AFCore extends CleanableState {
     return written;
   }
 
+  /**
+   * Returns a per-thread reusable byte buffer for a given capacity.
+   * 
+   * If a thread-local buffer currently uses a smaller capacity, the buffer is replaced by a larger
+   * one. If the capacity exceeds a configurable maximum, a new direct buffer is allocated but not
+   * cached (i.e., the previously cached one is kept but not immediately returned to the caller).
+   * 
+   * @param capacity The desired capacity.
+   * @return A byte buffer satisfying the requested capacity.
+   */
   ByteBuffer getThreadLocalDirectByteBuffer(int capacity) {
     if (capacity > TL_BUFFER_MAX_CAPACITY && TL_BUFFER_MAX_CAPACITY > 0) {
-      capacity = TL_BUFFER_MAX_CAPACITY;
+      // Capacity exceeds configurable maximum limit;
+      // allocate but do not cache direct buffer.
+      // This may incur a performance penalty at the cost of correctness when using such capacities.
+      return ByteBuffer.allocateDirect(capacity);
     }
     if (capacity < TL_BUFFER_MIN_CAPACITY) {
       capacity = TL_BUFFER_MIN_CAPACITY;
