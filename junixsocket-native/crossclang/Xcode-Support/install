@@ -36,4 +36,8 @@ for sdk in $(ls -1 | grep '\.sdk$'); do
     ( cd "$sdksPath" ; ln -sf "$pwd/$sdk" )
 done
 
-echo Done. Now please restart XCode
+if [ $? -eq 0 ]; then
+    echo Done. Now please restart XCode and run \"Clean Build Folder\".
+else
+    echo There were errors. Try running with sudo.
+fi
