@@ -128,7 +128,7 @@ static jbyteArray sockAddrUnToBytes(JNIEnv *env, struct sockaddr_un *addr, sockl
         return NULL;
     }
 #if defined(junixsocket_have_sun_len)
-    len = MIN(len, sizeof(struct sockaddr_un)-2);
+    len = MIN(len, sizeof(struct sockaddr_un) - 2);
     if(len < 256 && addr->sun_len < len) {
         len = addr->sun_len;
     }
@@ -158,6 +158,12 @@ static jbyteArray sockAddrUnToBytes(JNIEnv *env, struct sockaddr_un *addr, sockl
     if(len == 0) {
         return NULL;
     }
+
+#if defined(__linux__)
+    if(firstZero && addr->sun_path[len-1] == 0) {
+        len -= 1;
+    }
+#endif
 
     jbyteArray array = (*env)->NewByteArray(env, len);
     (*env)->SetByteArrayRegion(env, array, 0, len, (jbyte*)addr->sun_path);
@@ -353,8 +359,9 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAdd
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAddr
 (JNIEnv *env, jclass clazz CK_UNUSED, jint domain, jobject directByteBuf, jbyteArray addressBytes) {
-    domain = domainToNative(domain);
     size_t sockAddrLen;
+
+    domain = domainToNative(domain);
     switch(domain) {
         case AF_UNIX:
             sockAddrLen = sizeof(struct sockaddr_un);
@@ -395,9 +402,16 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAd
         {
             struct sockaddr_un *addrUn = (struct sockaddr_un *) addr;
 #if defined(junixsocket_have_sun_len)
-            addrUn->sun_len = ((socklen_t)len >= SUN_NAME_MAX_LEN) ? SUN_NAME_MAX_LEN : len + 1; // including zero byte
+            addrUn->sun_len = ((socklen_t)len >= SUN_NAME_MAX_LEN) ? SUN_NAME_MAX_LEN :
+                (socklen_t)len + 1; // including zero byte
 #endif
             (*env)->GetByteArrayRegion(env, addressBytes, 0, len, (signed char*)addrUn->sun_path);
+
+#if defined(__linux__)
+            if(addrUn->sun_path[0] == 0) {
+                sockAddrLen = MIN((size_t)(len + sizeof(sa_family_t)), sockAddrLen);
+            }
+#endif
         }
             break;
 #if junixsocket_have_tipc

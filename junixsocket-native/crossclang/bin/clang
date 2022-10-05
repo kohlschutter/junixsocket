@@ -127,6 +127,8 @@ while [ $# -gt 0 ]; do
       -Wshorten-64-to-32 ) skipGccArg=1 ;;
       -Wobjc-literal-conversion ) skipGccArg=1 ;;
       -Wnon-literal-null-conversion ) skipGccArg=1 ;;
+      -Wno-c++11-extensions ) skipGccArg=1 ;;
+      -Wno-declaration-after-statement ) skipGccArg=1 ;;
       -Wbool-conversion ) skipGccArg=1 ;;
       -Wconstant-conversion ) skipGccArg=1 ;;
       -Wquoted-include-in-framework-header ) skipGccArg=1 ;;

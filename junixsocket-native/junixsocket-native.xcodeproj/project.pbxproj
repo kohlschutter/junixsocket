@@ -4378,6 +4378,7 @@
 					"-Wint-conversion",
 					"-Wno-unused-command-line-argument",
 					"-Werror-implicit-function-declaration",
+					"-Wno-declaration-after-statement",
 				);
 			};
 			name = Debug;
@@ -4456,6 +4457,7 @@
 					"-Wint-conversion",
 					"-Wno-unused-command-line-argument",
 					"-Werror-implicit-function-declaration",
+					"-Wno-declaration-after-statement",
 				);
 			};
 			name = Release;

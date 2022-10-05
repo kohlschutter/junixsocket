@@ -42,6 +42,8 @@ public class SelftestProvider {
 
     registerTest("junixsocket-common", org.newsclub.net.unix.AFUNIXSocketAddressTest.class);
 
+    registerTest(org.newsclub.net.unix.domain.AbstractNamespaceTest.class);
+
     registerTest(org.newsclub.net.unix.domain.AcceptTimeoutTest.class);
 
     // AncillaryMesageTest: currently only in junixsocket-tipc

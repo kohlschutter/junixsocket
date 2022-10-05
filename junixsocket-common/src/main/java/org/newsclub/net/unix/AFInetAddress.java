@@ -134,7 +134,7 @@ class AFInetAddress {
 
     byte[] bytes = createUnresolvedHostname(socketAddress, af).getBytes(StandardCharsets.UTF_8);
     if (bytes.length > 255) {
-      throw new IllegalStateException("Address too long");
+      throw new IllegalStateException("junixsocket address is too long to wrap as InetAddress");
     }
     byte[] serializedData = new byte[SERIALIZED_INET_ADDRESS_START.length + 1 + bytes.length + 1];
     System.arraycopy(SERIALIZED_INET_ADDRESS_START, 0, serializedData, 0,

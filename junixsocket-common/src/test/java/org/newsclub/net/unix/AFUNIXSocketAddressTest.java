@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -125,5 +126,11 @@ public class AFUNIXSocketAddressTest {
     } else {
       assertTrue(socatString.contains(":"));
     }
+  }
+
+  @Test
+  public void testAbstractNamespace() throws Exception {
+    assertNotNull(AFUNIXSocketAddress.inAbstractNamespace("test"));
+    assertNotNull(AFUNIXSocketAddress.inAbstractNamespace("test", 1234));
   }
 }
