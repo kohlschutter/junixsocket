@@ -31,6 +31,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -87,6 +88,7 @@ class AFInetAddress {
   };
 
   private static final char PREFIX = '[';
+  private static final String MARKER_HEX_ENCODING = "%%";
   static final String INETADDR_SUFFIX = ".junixsocket";
 
   /**
@@ -111,6 +113,23 @@ class AFInetAddress {
     } catch (UnsupportedEncodingException e) {
       throw new IllegalStateException(e);
     }
+    sb.append('.');
+    sb.append(af.getJuxString());
+    sb.append(INETADDR_SUFFIX);
+
+    String str = sb.toString();
+
+    if (str.length() < 64 || str.getBytes(StandardCharsets.UTF_8).length <= 255) {
+      return str;
+    }
+
+    sb.setLength(0);
+    sb.append(PREFIX);
+    sb.append(MARKER_HEX_ENCODING);
+    for (int i = 0, n = socketAddress.length; i < n; i++) {
+      sb.append(String.format(Locale.ENGLISH, "%02x", socketAddress[i]));
+    }
+
     sb.append('.');
     sb.append(af.getJuxString());
     sb.append(INETADDR_SUFFIX);
@@ -185,11 +204,26 @@ class AFInetAddress {
     }
 
     String encodedHostname = hostname.substring(1, domDot);
-    try {
-      return URLDecoder.decode(encodedHostname, StandardCharsets.ISO_8859_1.toString()).getBytes(
-          StandardCharsets.ISO_8859_1);
-    } catch (UnsupportedEncodingException e) {
-      throw new IllegalStateException(e);
+    if (encodedHostname.startsWith(MARKER_HEX_ENCODING)) {
+      // Hex-only encoding
+      int len = encodedHostname.length();
+      if ((len & 1) == 1) {
+        throw new IllegalStateException("Length of hex-encoded wrapping must be even");
+      }
+      byte[] unwrapped = new byte[(len - 2) / 2];
+      for (int i = 2, n = encodedHostname.length(), o = 0; i < n; i += 2, o++) {
+        int v = Integer.parseInt(encodedHostname.substring(i, i + 2), 16);
+        unwrapped[o] = (byte) v;
+      }
+      return unwrapped;
+    } else {
+      // URL-encoding
+      try {
+        return URLDecoder.decode(encodedHostname, StandardCharsets.ISO_8859_1.toString()).getBytes(
+            StandardCharsets.ISO_8859_1);
+      } catch (UnsupportedEncodingException e) {
+        throw new IllegalStateException(e);
+      }
     }
   }
 

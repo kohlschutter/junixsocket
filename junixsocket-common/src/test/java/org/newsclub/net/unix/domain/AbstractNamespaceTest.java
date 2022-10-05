@@ -82,4 +82,12 @@ public class AbstractNamespaceTest extends SocketTestBase<AFUNIXSocketAddress> {
     // any sequence of 0's -> null
     testBind(AFUNIXSocketAddress.of(new byte[] {0, 0, 0}), null);
   }
+
+  @Test
+  public void testBindLongAbstractAddress() throws Exception {
+    byte[] addr = new byte[108];
+    addr[1] = '1';
+    addr[79] = 'X';
+    testBind(AFUNIXSocketAddress.of(addr));
+  }
 }
