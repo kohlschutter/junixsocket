@@ -1,6 +1,6 @@
 # How to release junixsocket
 
-NOTE: This is probably not interesting unless you're the project admin or going to fork it.
+This is mostly relevant only if you're the project admin or going to fork the project.
 
 ## Prerequisites
 
@@ -29,25 +29,24 @@ Instructions for macOS
 
     brew install gpg gpg2 gpg-agent pinentry-mac
 
-
  * Enable pinentry-mac
  
    This gives a nice GUI for the passphrase, and allows us to store the GPG key passphrase in the macOS keychain)
 
-    # open or create ~/.gnupg/gpg-agent.conf 
-    # then add the following line if it doesn't exist yet:
-    pinentry-program /usr/local/bin/pinentry-mac
+ * Open or create `~/.gnupg/gpg-agent.conf`
+   then add the following line if it doesn't exist yet:
+
+		pinentry-program /usr/local/bin/pinentry-mac
     
- * Generate GPG key
+ * Generate a GPG key
  
- 
-    gpg2 --generate-key 
+		gpg2 --generate-key
    
    Follow on-screen instructions. Use a long, memorable passphrase.
    
-   Remember the GPG key ID. Publish the corresponding GPG public key on the GPG keyservers:
+ * Remember the GPG key ID. Publish the corresponding GPG public key on the GPG keyservers:
    
-    gpg2 --keyserver hkp://hkps.pool.sks-keyservers.net --send-key THEKEYID
+		gpg2 --send-key THEKEYID
     
 ### Build environment for other platforms
 
