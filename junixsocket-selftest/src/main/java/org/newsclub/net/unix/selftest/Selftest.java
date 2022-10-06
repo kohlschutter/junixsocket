@@ -89,6 +89,39 @@ public class Selftest {
     SKIP, PASS, DONE, NONE, FAIL
   }
 
+  private enum SkipMode {
+    UNDECLARED(false), KEEP(false), SKIP(true), SKIP_FORCE(true);
+
+    boolean skip;
+
+    SkipMode(boolean skip) {
+      this.skip = skip;
+    }
+
+    boolean isSkip() {
+      return skip;
+    }
+
+    boolean isDeclared() {
+      return this != UNDECLARED;
+    }
+
+    boolean isForce() {
+      return this == SKIP_FORCE;
+    }
+
+    public static final SkipMode parse(String skipMode) {
+      if (skipMode == null || skipMode.isEmpty()) {
+        return SkipMode.UNDECLARED;
+      } else if ("force".equalsIgnoreCase(skipMode)) {
+        return SkipMode.SKIP_FORCE;
+      } else {
+        return Boolean.valueOf(skipMode) ? SkipMode.SKIP : SkipMode.KEEP;
+      }
+    }
+
+  }
+
   /**
    * maven-shade-plugin's minimizeJar isn't perfect, so we give it a little hint by adding static
    * references to classes that are otherwise only found via reflection.
@@ -108,6 +141,26 @@ public class Selftest {
   public Selftest() {
   }
 
+  public void checkVM() {
+    boolean isSubstrateVM = "Substrate VM".equals(System.getProperty("java.vm.name"));
+
+    if (isSubstrateVM) {
+      important.add("Substrate VM detected: Support for native-images is work in progress");
+
+      if (!getSkipModeForModule("junixsocket-rmi").isDeclared()) {
+        important.add("Auto-skipping junixsocket-rmi tests due to Substrate VM");
+        System.setProperty("selftest.skip.junixsocket-rmi", "force");
+        withIssues = true;
+      }
+
+      if (!getSkipModeForClass("org.newsclub.net.unix.FileDescriptorCastTest").isDeclared()) {
+        important.add("Auto-skipping junixsocket-rmi tests due to Substrate VM");
+        System.setProperty("selftest.skip.FileDescriptorCastTest", "force");
+        withIssues = true;
+      }
+    }
+  }
+
   /**
    * Run this from the command line to ensure junixsocket works correctly on the target system.
    * 
@@ -121,6 +174,7 @@ public class Selftest {
   public static void main(String[] args) throws Exception {
     Selftest st = new Selftest();
 
+    st.checkVM();
     st.printExplanation();
     st.dumpSystemProperties();
     st.dumpOSReleaseFiles();
@@ -331,7 +385,7 @@ public class Selftest {
 
       String result = res == null ? null : res.result.name();
       String extra;
-      if (res == null) {
+      if (res == null || (res.result == Result.SKIP && res.throwable == null)) {
         result = "SKIP";
         extra = "(skipped by user request)";
       } else if (res.summary == null) {
@@ -417,6 +471,24 @@ public class Selftest {
     return true;
   }
 
+  private SkipMode getSkipModeForModule(String moduleName) {
+    return SkipMode.parse(System.getProperty("selftest.skip." + moduleName));
+  }
+
+  private SkipMode getSkipModeForClass(String className) {
+    SkipMode skipMode = SkipMode.parse(System.getProperty("selftest.skip." + className));
+    if (skipMode.isDeclared()) {
+      return skipMode;
+    }
+    int i = className.indexOf('.');
+    if (i < 0) {
+      return SkipMode.UNDECLARED;
+    }
+
+    className = className.substring(i + 1);
+    return SkipMode.parse(System.getProperty("selftest.skip." + className));
+  }
+
   /**
    * Runs the given test classes for the specified module.
    * 
@@ -435,11 +507,19 @@ public class Selftest {
       modified = true;
     }
 
+    boolean skipped = false;
+
     final ModuleResult moduleResult;
-    if (Boolean.valueOf(System.getProperty("selftest.skip." + module, "false"))) {
-      out.println("Skipping module " + module + "; skipped by request");
-      withIssues = true;
-      modified = true;
+
+    SkipMode skipMode;
+
+    if ((skipMode = getSkipModeForModule(module)).isSkip()) {
+      out.println("Skipping module " + module + "; skipped by request" + (skipMode.isForce()
+          ? " (force)" : ""));
+      if (!skipMode.isForce()) {
+        withIssues = true;
+        modified = true;
+      }
       moduleResult = new ModuleResult(Result.SKIP, null, null);
     } else {
       List<Class<?>> list = new ArrayList<>(testClasses.length);
@@ -455,15 +535,13 @@ public class Selftest {
           continue;
         }
 
-        String skipFullyQualifiedProp = System.getProperty("selftest.skip." + className, "");
-        boolean skipFullyQualified = !skipFullyQualifiedProp.isEmpty() && Boolean.valueOf(
-            skipFullyQualifiedProp);
-
-        if (skipFullyQualified || Boolean.valueOf(System.getProperty("selftest.skip." + simpleName,
-            "false"))) {
-          out.println("Skipping test class " + className + "; skipped by request");
-          modified = true;
-          withIssues = true;
+        if ((skipMode = getSkipModeForClass(className)).isSkip()) {
+          out.println("Skipping test class " + className + "; skipped by request" + (skipMode
+              .isForce() ? " (force)" : ""));
+          if (!skipMode.isForce()) {
+            modified = true;
+            withIssues = true;
+          }
         } else if (checkIfCapabilitiesSupported(className)) {
           list.add(testClass);
         }
@@ -503,7 +581,9 @@ public class Selftest {
         exception = e;
       }
 
-      if (exception != null || summary == null) {
+      if (skipped) {
+        moduleResult = new ModuleResult(Result.SKIP, null, exception);
+      } else if (exception != null || summary == null) {
         moduleResult = new ModuleResult(Result.FAIL, null, exception);
         fail = true;
       } else {
