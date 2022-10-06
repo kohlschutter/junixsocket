@@ -182,7 +182,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     protected abstract void handleConnection(Socket sock) throws IOException;
 
     /**
-     * Called from within {@link #handleConnection(AFSocket)} to tell the server to no longer accept
+     * Called from within {@link #handleConnection(Socket)} to tell the server to no longer accept
      * new calls and to terminate the server thread.
      * 
      * Note that this will lead to existing client connections to be closed.
