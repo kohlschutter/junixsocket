@@ -7,6 +7,15 @@ Please tend to always use the latest version; the existing API should always be 
 When upgrading from versions older than 2.4.0, please note that junixsocket-core is now a POM-only
 artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.html) for details.
 
+### _(2022-10-06)_ **junixsocket 2.5.2**
+
+ - Fix address handling in the Abstract Namespace
+ - Fix support for very large datagrams (> 1MB)
+ - Fix InetAddress-wrapping of long addresses
+ - Update Xcode support script, crossclang
+ - Bump postgresql version in demo code 
+ - Fix dependency for custom architecture artifact
+
 ### _(2022-07-01)_ **junixsocket 2.5.1**
 
  - Add support for IBM z/OS (experimental, binary not included)

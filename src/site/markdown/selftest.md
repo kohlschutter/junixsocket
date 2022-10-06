@@ -43,13 +43,13 @@ indicates success:
     If the selftest failed, please visit https://github.com/kohlschutter/junixsocket/issues
     and file a new bug report with the output below.
     
-    junixsocket selftest version 2.5.1-SNAPSHOT
+    junixsocket selftest version X.Y.Z-SNAPSHOT
     
     System properties:
     
     file.encoding: UTF-8
     file.separator: /
-    java.class.path: junixsocket-selftest/target/junixsocket-selftest-2.5.1-SNAPSHOT-jar-with-dependencies.jar
+    java.class.path: junixsocket-selftest/target/junixsocket-selftest-X.Y.Z-SNAPSHOT-jar-with-dependencies.jar
     java.class.version: 62.0
     java.home: /usr/lib/jvm/java-18-openjdk
     java.io.tmpdir: /tmp
@@ -83,7 +83,7 @@ indicates success:
     sun.boot.library.path: /usr/lib/jvm/java-18-openjdk/lib
     sun.cpu.endian: little
     sun.io.unicode.encoding: UnicodeLittle
-    sun.java.command: junixsocket-selftest/target/junixsocket-selftest-2.5.1-SNAPSHOT-jar-with-dependencies.jar
+    sun.java.command: junixsocket-selftest/target/junixsocket-selftest-X.Y.Z-SNAPSHOT-jar-with-dependencies.jar
     sun.java.launcher: SUN_STANDARD
     sun.jnu.encoding: UTF-8
     sun.management.compiler: HotSpot 64-Bit Tiered Compilers

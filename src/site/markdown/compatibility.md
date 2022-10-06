@@ -2,18 +2,21 @@
 
 ## Versioning
 
-junixsocket versions consist of three parts: major, minor and patch (for example, 2.5.1).
+junixsocket versions consist of three parts: major, minor and patch (for example, 2.5.2).
 
 "Minor version" updates (e.g., 2.4.0 -> 2.5.0) can still bring "major" new features but they
 should be backwards compatible to releases of the same "major version" (e.g., 2.x).
 
 `-SNAPSHOT` builds are not considered releases, but merely previews of a future release.
 
-### junixsocket 2.5.1
+### junixsocket 2.5.2
 
-junixsocket 2.5.1 is fully compatible with Java 8 and newer (tested up to Java 19).
+junixsocket 2.5.2 is fully compatible with Java 8 and newer (tested up to Java 19).
 
 junixsocket has been tested to work with Oracle's Java 8 JDK, and OpenJDK for newer versions.
+
+junxisoocket should also run with GraalVM, however native-image support still needs some work;
+tracked in [issue 114](https://github.com/kohlschutter/junixsocket/issues/114).
 
 ## Supported Platforms
 
@@ -82,7 +85,7 @@ or [contact Christian Kohlschütter via email](mailto:christian@kohlschutter.com
 
 A reliable way to ensure that junixsocket works in your environment is to run the "[selftest](selftest.html)".
 
-    java -jar junixsocket-selftest-2.5.1-jar-with-dependencies.jar
+    java -jar junixsocket-selftest-2.5.2-jar-with-dependencies.jar
 
 The last line should say "Selftest PASSED", and you're good to go.
 

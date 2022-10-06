@@ -67,7 +67,7 @@ install Java, Maven and junixsocket, and you should be good to go.
 ### Bump project version
 
     cd junixsocket
-    mvn versions:set -DnewVersion=2.5.1
+    mvn versions:set -DnewVersion=2.5.2
     # git add / commit here...
     
 ### Build native libraries on other supported, common platforms
@@ -85,8 +85,8 @@ The platform-dependent nar files should now be available in the local maven repo
 Use the provided script to copy the corresponding nar to a project folder:
 
     cd junixsocket
-    # replace 2.5.1 with the desired version number
-    junixsocket-native-prebuilt/bin/copy-nar-from-m2repo.sh 2.5.1
+    # replace 2.5.2 with the desired version number
+    junixsocket-native-prebuilt/bin/copy-nar-from-m2repo.sh 2.5.2
 
 Now copy the nar files from the target machine to your development computer (from where you do the release).
 By convention, copy the files to the same folder as on the target machine (*junixsocket/junixsocket-native-prebuilt/bin*)
@@ -176,7 +176,7 @@ NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in
 
 2. Select the newly created tag (= search for the version).
 
-3. Release title = "junixsocket" + version>, e.g., "junixsocket 2.5.1"
+3. Release title = "junixsocket" + version>, e.g., "junixsocket 2.5.2"
 
 4. Paste changelog contents to text field
 
