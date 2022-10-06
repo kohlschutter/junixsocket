@@ -1,0 +1,94 @@
+#!/usr/bin/env zsh
+#
+# Script to generate GraalVM native-image metadata and a native binary for junixsocket-selftest.
+#
+# junixsocket
+# Copyright 2009-2022 Christian Kohlschütter
+# SPDX-License-Identifier: Apache-2.0
+#
+cd "$(dirname $0)/../"
+
+mkdir -p target
+cd target
+
+tmpDir=$(pwd)/junixsocket-selftest
+rm -rf "$tmpDir"
+mkdir -p "$tmpDir"
+
+echo Checking presence of required commands
+
+which which >/dev/null
+if [[ $? -ne 0 ]]; then
+    echo "Error: \"which\" command not found" >&2
+    exit 1
+fi
+
+hasGraalVM=$(java -version 2>&1 | grep GraalVM)
+[[ -n "$hasGraalVM" ]] && echo Java: $hasGraalVM
+if [[ -z "$hasGraalVM" ]]; then
+    echo "Error: java/GraalVM not in PATH" >&2
+    exit 1
+fi
+
+hasNativeImage=$(which native-image)
+if [[ $? -ne 0 || -z "$hasNativeImage" ]]; then
+    ( set -x ; gu install native-image )
+fi
+hasNativeImage=$(which native-image)
+if [[ $? -ne 0 || -z "$hasNativeImage" ]]; then
+    echo "Error: Could not find \"native-image\" command in PATH" >&2
+    exit 1
+fi
+echo native-image: $hasNativeImage
+
+hasNativeImageConfigure=$(which native-image-configure)
+if [[ $? -ne 0 || -z "$hasNativeImageConfigure" ]]; then
+    ( set -x ; native-image --macro:native-image-configure-launcher )
+fi
+hasNativeImageConfigure=$(which native-image-configure)
+if [[ $? -ne 0 || -z "$hasNativeImageConfigure" ]]; then
+    echo "Error: Could not find \"native-image-configure\" command in PATH" >&2
+    exit 1
+fi
+echo native-image-configure: $hasNativeImageConfigure
+
+echo
+echo Finding junixsocket-selftest jar
+jar=$(find ../../junixsocket-selftest/target -maxdepth 1 -name "junixsocket-selftest-*-jar-with-dependencies.jar")
+if [[ -z "$jar" ]]; then
+    echo "Error: Could not find junixsocket-selftest jar" >&2
+    echo "Please run \"mvn clean install\" (or similar) from the junixsocket project directory" >&2
+    exit 1
+fi
+jar=$(cd $(dirname "$jar"); pwd)/$(basename "$jar")
+echo jar: $jar
+
+echo
+echo Running junixsocket-selftest with GraalVM native-image-agent...
+( set -x ; java -agentlib:native-image-agent=config-output-dir=${tmpDir}/native-image.{pid} -jar "$jar" >/dev/null )
+
+if [[ $? -ne 0 ]]; then
+    echo "Error: junixsocket-selftest failed" >&2
+    exit 1
+fi
+
+echo
+echo Combining native-image configs...
+mkdir -p "$tmpDir"/META-INF/native-image
+( set -x ; native-image-configure generate $(find "$tmpDir" -maxdepth 1 -type d -name "native-image.*" -exec echo "--input-dir={}" \;) --output-dir="$tmpDir"/META-INF/native-image )
+
+echo
+echo Running native-image...
+( set -x ; native-image -cp "$tmpDir" --initialize-at-build-time=sun.rmi.transport.GC --report-unsupported-elements-at-runtime --no-fallback -jar "$jar" )
+if [[ $? -ne 0 ]]; then
+    echo "Error: Failed to run native-image" >&2
+    exit 1
+fi
+
+nativeBinary="$(pwd)/${$(basename "$jar")%%.jar}"
+if [[ ! -e "$nativeBinary" ]]; then
+    echo "Error: Native binary expected but not found at: $nativeBinary" >&2
+    exit 1
+fi
+echo
+echo Native binary created successfully: $nativeBinary
