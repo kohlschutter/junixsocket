@@ -9,14 +9,20 @@ should be backwards compatible to releases of the same "major version" (e.g., 2.
 
 `-SNAPSHOT` builds are not considered releases, but merely previews of a future release.
 
-### junixsocket 2.5.2
+## Supported Java versions
 
 junixsocket 2.5.2 is fully compatible with Java 8 and newer (tested up to Java 19).
 
-junixsocket has been tested to work with Oracle's Java 8 JDK, and OpenJDK for newer versions.
+## Supported Java VMs
 
-junxisoocket should also run with GraalVM, however native-image support still needs some work;
-tracked in [issue 114](https://github.com/kohlschutter/junixsocket/issues/114).
+junixsocket has been tested to work with Oracle's Java 8 JDK, and OpenJDK for newer versions,
+as well as other platform-specific VMs listed below. 
+
+junixsocket also works with GraalVM, however native-image support still
+[needs some work](https://github.com/kohlschutter/junixsocket/issues/114).
+
+See `junixsocket-native-graalvm/bin/build-selftest` for a script that builds a native selftest
+binary that runs a Substrate VM.
 
 ## Supported Platforms
 
