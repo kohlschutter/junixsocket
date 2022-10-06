@@ -31,6 +31,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -48,8 +49,8 @@ import java.util.Objects;
  * 
  * @author Christian Kohlschütter
  */
-<span class="nc" id="L51">class AFInetAddress {</span>
-<span class="fc" id="L52">  private static final byte[] SERIALIZED_INET_ADDRESS_START = {</span>
+<span class="nc" id="L52">class AFInetAddress {</span>
+<span class="fc" id="L53">  private static final byte[] SERIALIZED_INET_ADDRESS_START = {</span>
       (byte) 0xac, (byte) 0xed, // STREAM_MAGIC
       0x00, 0x05, // STREAM_VERSION
       0x73, // TC_OBJECT
@@ -87,6 +88,7 @@ import java.util.Objects;
   };
 
   private static final char PREFIX = '[';
+  private static final String MARKER_HEX_ENCODING = &quot;%%&quot;;
   static final String INETADDR_SUFFIX = &quot;.junixsocket&quot;;
 
   /**
@@ -103,18 +105,35 @@ import java.util.Objects;
    *         {@link InetSocketAddress#InetSocketAddress(String, int)}, etc.
    */
   static final String createUnresolvedHostname(byte[] socketAddress, AFAddressFamily&lt;?&gt; af) {
-<span class="fc" id="L106">    StringBuilder sb = new StringBuilder(1 + socketAddress.length + INETADDR_SUFFIX.length() + 8);</span>
-<span class="fc" id="L107">    sb.append(PREFIX);</span>
+<span class="fc" id="L108">    StringBuilder sb = new StringBuilder(1 + socketAddress.length + INETADDR_SUFFIX.length() + 8);</span>
+<span class="fc" id="L109">    sb.append(PREFIX);</span>
     try {
-<span class="fc" id="L109">      sb.append(URLEncoder.encode(new String(socketAddress, StandardCharsets.ISO_8859_1),</span>
-<span class="fc" id="L110">          StandardCharsets.ISO_8859_1.toString()));</span>
-<span class="nc" id="L111">    } catch (UnsupportedEncodingException e) {</span>
-<span class="nc" id="L112">      throw new IllegalStateException(e);</span>
-<span class="fc" id="L113">    }</span>
-<span class="fc" id="L114">    sb.append('.');</span>
-<span class="fc" id="L115">    sb.append(af.getJuxString());</span>
-<span class="fc" id="L116">    sb.append(INETADDR_SUFFIX);</span>
-<span class="fc" id="L117">    return sb.toString();</span>
+<span class="fc" id="L111">      sb.append(URLEncoder.encode(new String(socketAddress, StandardCharsets.ISO_8859_1),</span>
+<span class="fc" id="L112">          StandardCharsets.ISO_8859_1.toString()));</span>
+<span class="nc" id="L113">    } catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L114">      throw new IllegalStateException(e);</span>
+<span class="fc" id="L115">    }</span>
+<span class="fc" id="L116">    sb.append('.');</span>
+<span class="fc" id="L117">    sb.append(af.getJuxString());</span>
+<span class="fc" id="L118">    sb.append(INETADDR_SUFFIX);</span>
+
+<span class="fc" id="L120">    String str = sb.toString();</span>
+
+<span class="pc bpc" id="L122" title="1 of 4 branches missed.">    if (str.length() &lt; 64 || str.getBytes(StandardCharsets.UTF_8).length &lt;= 255) {</span>
+<span class="fc" id="L123">      return str;</span>
+    }
+
+<span class="nc" id="L126">    sb.setLength(0);</span>
+<span class="nc" id="L127">    sb.append(PREFIX);</span>
+<span class="nc" id="L128">    sb.append(MARKER_HEX_ENCODING);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">    for (int i = 0, n = socketAddress.length; i &lt; n; i++) {</span>
+<span class="nc" id="L130">      sb.append(String.format(Locale.ENGLISH, &quot;%02x&quot;, socketAddress[i]));</span>
+    }
+
+<span class="nc" id="L133">    sb.append('.');</span>
+<span class="nc" id="L134">    sb.append(af.getJuxString());</span>
+<span class="nc" id="L135">    sb.append(INETADDR_SUFFIX);</span>
+<span class="nc" id="L136">    return sb.toString();</span>
   }
 
   /**
@@ -127,27 +146,27 @@ import java.util.Objects;
    * @return The {@link InetAddress}.
    */
   static final InetAddress wrapAddress(byte[] socketAddress, AFAddressFamily&lt;?&gt; af) {
-<span class="fc" id="L130">    Objects.requireNonNull(af);</span>
-<span class="pc bpc" id="L131" title="2 of 4 branches missed.">    if (socketAddress == null || socketAddress.length == 0) {</span>
-<span class="nc" id="L132">      return null;</span>
+<span class="fc" id="L149">    Objects.requireNonNull(af);</span>
+<span class="pc bpc" id="L150" title="2 of 4 branches missed.">    if (socketAddress == null || socketAddress.length == 0) {</span>
+<span class="nc" id="L151">      return null;</span>
     }
 
-<span class="fc" id="L135">    byte[] bytes = createUnresolvedHostname(socketAddress, af).getBytes(StandardCharsets.UTF_8);</span>
-<span class="pc bpc" id="L136" title="1 of 2 branches missed.">    if (bytes.length &gt; 255) {</span>
-<span class="nc" id="L137">      throw new IllegalStateException(&quot;Address too long&quot;);</span>
+<span class="fc" id="L154">    byte[] bytes = createUnresolvedHostname(socketAddress, af).getBytes(StandardCharsets.UTF_8);</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">    if (bytes.length &gt; 255) {</span>
+<span class="nc" id="L156">      throw new IllegalStateException(&quot;junixsocket address is too long to wrap as InetAddress&quot;);</span>
     }
-<span class="fc" id="L139">    byte[] serializedData = new byte[SERIALIZED_INET_ADDRESS_START.length + 1 + bytes.length + 1];</span>
-<span class="fc" id="L140">    System.arraycopy(SERIALIZED_INET_ADDRESS_START, 0, serializedData, 0,</span>
+<span class="fc" id="L158">    byte[] serializedData = new byte[SERIALIZED_INET_ADDRESS_START.length + 1 + bytes.length + 1];</span>
+<span class="fc" id="L159">    System.arraycopy(SERIALIZED_INET_ADDRESS_START, 0, serializedData, 0,</span>
         SERIALIZED_INET_ADDRESS_START.length);
-<span class="fc" id="L142">    serializedData[SERIALIZED_INET_ADDRESS_START.length] = (byte) bytes.length;</span>
-<span class="fc" id="L143">    System.arraycopy(bytes, 0, serializedData, SERIALIZED_INET_ADDRESS_START.length + 1,</span>
+<span class="fc" id="L161">    serializedData[SERIALIZED_INET_ADDRESS_START.length] = (byte) bytes.length;</span>
+<span class="fc" id="L162">    System.arraycopy(bytes, 0, serializedData, SERIALIZED_INET_ADDRESS_START.length + 1,</span>
         bytes.length);
-<span class="fc" id="L145">    serializedData[serializedData.length - 1] = 0x78; // TC_ENDBLOCKDATA</span>
+<span class="fc" id="L164">    serializedData[serializedData.length - 1] = 0x78; // TC_ENDBLOCKDATA</span>
 
-<span class="fc" id="L147">    try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(serializedData))) {</span>
-<span class="fc" id="L148">      return (InetAddress) ois.readObject();</span>
-<span class="nc" id="L149">    } catch (ClassNotFoundException | IOException e) {</span>
-<span class="nc" id="L150">      throw new IllegalStateException(e);</span>
+<span class="fc" id="L166">    try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(serializedData))) {</span>
+<span class="fc" id="L167">      return (InetAddress) ois.readObject();</span>
+<span class="nc" id="L168">    } catch (ClassNotFoundException | IOException e) {</span>
+<span class="nc" id="L169">      throw new IllegalStateException(e);</span>
     }
   }
 
@@ -155,50 +174,65 @@ import java.util.Objects;
       throws SocketException {
     // FIXME
 
-<span class="fc bfc" id="L158" title="All 2 branches covered.">    if (!isSupportedAddress(addr, af)) {</span>
-<span class="fc" id="L159">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">    if (!isSupportedAddress(addr, af)) {</span>
+<span class="fc" id="L178">      throw new SocketException(&quot;Unsupported address&quot;);</span>
     }
 
-<span class="fc" id="L162">    String hostname = addr.getHostName();</span>
-<span class="fc" id="L163">    return unwrapAddress(hostname, af);</span>
+<span class="fc" id="L181">    String hostname = addr.getHostName();</span>
+<span class="fc" id="L182">    return unwrapAddress(hostname, af);</span>
   }
 
   static final byte[] unwrapAddress(String hostname, AFAddressFamily&lt;?&gt; af) throws SocketException {
-<span class="pc bpc" id="L167" title="1 of 2 branches missed.">    if (!hostname.endsWith(INETADDR_SUFFIX)) {</span>
-<span class="nc" id="L168">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+<span class="pc bpc" id="L186" title="1 of 2 branches missed.">    if (!hostname.endsWith(INETADDR_SUFFIX)) {</span>
+<span class="nc" id="L187">      throw new SocketException(&quot;Unsupported address&quot;);</span>
     }
 
-<span class="fc" id="L171">    final int end = hostname.length() - INETADDR_SUFFIX.length();</span>
+<span class="fc" id="L190">    final int end = hostname.length() - INETADDR_SUFFIX.length();</span>
     char c;
-<span class="fc" id="L173">    int domDot = -1;</span>
-<span class="pc bpc" id="L174" title="1 of 2 branches missed.">    for (int i = end - 1; i &gt;= 0; i--) {</span>
-<span class="fc" id="L175">      c = hostname.charAt(i);</span>
-<span class="fc bfc" id="L176" title="All 2 branches covered.">      if (c == '.') {</span>
-<span class="fc" id="L177">        domDot = i;</span>
-<span class="fc" id="L178">        break;</span>
+<span class="fc" id="L192">    int domDot = -1;</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">    for (int i = end - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L194">      c = hostname.charAt(i);</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">      if (c == '.') {</span>
+<span class="fc" id="L196">        domDot = i;</span>
+<span class="fc" id="L197">        break;</span>
       }
     }
 
-<span class="fc" id="L182">    String juxString = hostname.substring(domDot + 1, end);</span>
-<span class="pc bpc" id="L183" title="1 of 2 branches missed.">    if (AFAddressFamily.getAddressFamily(juxString) != af) { // NOPMD</span>
-<span class="nc" id="L184">      throw new SocketException(&quot;Incompatible address&quot;);</span>
+<span class="fc" id="L201">    String juxString = hostname.substring(domDot + 1, end);</span>
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">    if (AFAddressFamily.getAddressFamily(juxString) != af) { // NOPMD</span>
+<span class="nc" id="L203">      throw new SocketException(&quot;Incompatible address&quot;);</span>
     }
 
-<span class="fc" id="L187">    String encodedHostname = hostname.substring(1, domDot);</span>
-    try {
-<span class="fc" id="L189">      return URLDecoder.decode(encodedHostname, StandardCharsets.ISO_8859_1.toString()).getBytes(</span>
-          StandardCharsets.ISO_8859_1);
-<span class="nc" id="L191">    } catch (UnsupportedEncodingException e) {</span>
-<span class="nc" id="L192">      throw new IllegalStateException(e);</span>
+<span class="fc" id="L206">    String encodedHostname = hostname.substring(1, domDot);</span>
+<span class="pc bpc" id="L207" title="1 of 2 branches missed.">    if (encodedHostname.startsWith(MARKER_HEX_ENCODING)) {</span>
+      // Hex-only encoding
+<span class="nc" id="L209">      int len = encodedHostname.length();</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">      if ((len &amp; 1) == 1) {</span>
+<span class="nc" id="L211">        throw new IllegalStateException(&quot;Length of hex-encoded wrapping must be even&quot;);</span>
+      }
+<span class="nc" id="L213">      byte[] unwrapped = new byte[(len - 2) / 2];</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">      for (int i = 2, n = encodedHostname.length(), o = 0; i &lt; n; i += 2, o++) {</span>
+<span class="nc" id="L215">        int v = Integer.parseInt(encodedHostname.substring(i, i + 2), 16);</span>
+<span class="nc" id="L216">        unwrapped[o] = (byte) v;</span>
+      }
+<span class="nc" id="L218">      return unwrapped;</span>
+    } else {
+      // URL-encoding
+      try {
+<span class="fc" id="L222">        return URLDecoder.decode(encodedHostname, StandardCharsets.ISO_8859_1.toString()).getBytes(</span>
+            StandardCharsets.ISO_8859_1);
+<span class="nc" id="L224">      } catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L225">        throw new IllegalStateException(e);</span>
+      }
     }
   }
 
   static boolean isSupportedAddress(InetAddress addr, AFAddressFamily&lt;?&gt; af) {
-<span class="pc bpc" id="L197" title="1 of 4 branches missed.">    if (addr instanceof Inet4Address &amp;&amp; addr.isLoopbackAddress()) {</span>
-<span class="fc" id="L198">      String hostname = addr.getHostName();</span>
-<span class="fc" id="L199">      return hostname.endsWith(af.getJuxInetAddressSuffix());</span>
+<span class="pc bpc" id="L231" title="1 of 4 branches missed.">    if (addr instanceof Inet4Address &amp;&amp; addr.isLoopbackAddress()) {</span>
+<span class="fc" id="L232">      String hostname = addr.getHostName();</span>
+<span class="fc" id="L233">      return hostname.endsWith(af.getJuxInetAddressSuffix());</span>
     }
-<span class="fc" id="L201">    return false;</span>
+<span class="fc" id="L235">    return false;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

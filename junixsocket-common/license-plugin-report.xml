@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1658240128827">
-    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.6.0-SNAPSHOT"/>
+<licensePluginReport goal="CHECK" timestamp="1665068939953">
+    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.5.2"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamily.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamilyConfig.java" result="PRESENT"/>
@@ -105,6 +105,7 @@
         <file path="src/test/java/org/newsclub/net/unix/TcpNoDelayTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/ThroughputTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/domain/AFUNIXAddressSpecifics.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/domain/AbstractNamespaceTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/domain/AcceptTimeoutTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/domain/AvailableTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/domain/BufferOverflowTest.java" result="PRESENT"/>

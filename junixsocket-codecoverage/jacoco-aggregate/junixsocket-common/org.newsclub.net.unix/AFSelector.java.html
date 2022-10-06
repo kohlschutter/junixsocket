@@ -271,8 +271,8 @@ final class AFSelector extends AbstractSelector {
 <span class="fc" id="L271">          pipeMsgWakeUp.clear();</span>
           try {
 <span class="fc" id="L273">            selectorPipe.sink().write(pipeMsgWakeUp);</span>
-<span class="nc" id="L274">          } catch (SocketException e) {</span>
-<span class="nc bnc" id="L275" title="All 2 branches missed.">            if (selectorPipe.sinkFD().valid()) {</span>
+<span class="fc" id="L274">          } catch (SocketException e) {</span>
+<span class="pc bpc" id="L275" title="1 of 2 branches missed.">            if (selectorPipe.sinkFD().valid()) {</span>
 <span class="nc" id="L276">              throw e;</span>
             } else {
               // ignore (Broken pipe, etc)

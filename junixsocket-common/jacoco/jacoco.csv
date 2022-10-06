@@ -63,7 +63,7 @@ junixsocket-common,org.newsclub.net.unix,AFServerSocketChannel,78,46,8,2,21,13,1
 junixsocket-common,org.newsclub.net.unix,AFTIPCSocketAddress.Scope,0,51,0,0,0,6,0,4,0,4
 junixsocket-common,org.newsclub.net.unix,AFUNIXServerSocket,27,39,0,0,7,10,5,9,5,9
 junixsocket-common,org.newsclub.net.unix,AFSelector,90,522,28,40,27,126,21,28,0,15
-junixsocket-common,org.newsclub.net.unix,AFCore,40,302,9,39,11,88,10,29,1,14
+junixsocket-common,org.newsclub.net.unix,AFCore,42,308,11,39,11,90,11,29,1,14
 junixsocket-common,org.newsclub.net.unix,AFUNIXDatagramSocket,21,52,5,5,5,12,7,8,2,8
 junixsocket-common,org.newsclub.net.unix,AFUNIXServerSocketChannel,3,9,0,0,1,3,1,2,1,2
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketFactory.SystemProperty,0,25,0,4,0,7,0,4,0,2
@@ -87,7 +87,7 @@ junixsocket-common,org.newsclub.net.unix,AFDatagramChannel,109,98,10,2,29,29,19,
 junixsocket-common,org.newsclub.net.unix,AFSocketCore,145,46,18,7,30,17,12,9,3,5
 junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader.StandardLibraryCandidate,25,0,4,0,8,0,6,0,4,0
 junixsocket-common,org.newsclub.net.unix,NamedInteger,54,71,9,7,12,15,9,8,4,5
-junixsocket-common,org.newsclub.net.unix,AFInetAddress,38,616,7,13,11,41,8,9,1,6
+junixsocket-common,org.newsclub.net.unix,AFInetAddress,139,632,15,17,28,44,13,10,1,6
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketChannel,43,10,6,0,10,3,9,2,6,2
 junixsocket-common,org.newsclub.net.unix,AFTIPCSocketAddress,265,503,23,67,64,127,35,48,17,18
 junixsocket-common,org.newsclub.net.unix,AFTIPCSocketImplExtensions,31,0,2,0,8,0,6,0,5,0

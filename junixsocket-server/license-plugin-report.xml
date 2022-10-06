@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1658240155673">
-    <module artifactId="junixsocket-server" groupId="com.kohlschutter.junixsocket" version="2.6.0-SNAPSHOT"/>
+<licensePluginReport goal="CHECK" timestamp="1665068970525">
+    <module artifactId="junixsocket-server" groupId="com.kohlschutter.junixsocket" version="2.5.2"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/server/AFSocketServer.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/server/AFUNIXSocketServer.java" result="PRESENT"/>
