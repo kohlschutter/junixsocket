@@ -154,7 +154,7 @@ public class Selftest {
       }
 
       if (!getSkipModeForClass("org.newsclub.net.unix.FileDescriptorCastTest").isDeclared()) {
-        important.add("Auto-skipping junixsocket-rmi tests due to Substrate VM");
+        important.add("Auto-skipping FileDescriptorCastTest tests due to Substrate VM");
         System.setProperty("selftest.skip.FileDescriptorCastTest", "force");
         withIssues = true;
       }
