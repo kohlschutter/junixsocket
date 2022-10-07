@@ -1,0 +1,15 @@
+{
+  "resources":{
+  "includes":[
+    {
+      "pattern":"\\QMETA-INF/services/org.junit.platform.engine.TestEngine\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.TestExecutionListener\\E"
+    }, 
+    {
+      "pattern":"^lib/aarch64-MacOSX-clang/jni/libjunixsocket-native-.*\\.dylib$"
+    }
+  ]},
+  "bundles":[]
+}

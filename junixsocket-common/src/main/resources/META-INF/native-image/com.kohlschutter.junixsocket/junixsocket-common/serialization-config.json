@@ -1,0 +1,9 @@
+{
+  "types":[
+    {
+      "name":"java.net.InetAddress"
+    }
+  ],
+  "lambdaCapturingTypes":[
+  ]
+}

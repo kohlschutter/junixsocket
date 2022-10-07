@@ -1,0 +1,10 @@
+[
+{
+  "name":"org.newsclub.net.unix.StdinSocketApp",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.newsclub.net.unix.selftest.Selftest",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+}
+]

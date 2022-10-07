@@ -1,0 +1,141 @@
+[
+{
+  "name":"java.io.FileDescriptor",
+  "fields":[{"name":"fd"}],
+  "methods":[{"name":"attach","parameterTypes":["java.io.Closeable"] }]
+},
+{
+  "name":"java.lang.Boolean",
+  "methods":[{"name":"getBoolean","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.IllegalStateException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.IndexOutOfBoundsException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Integer",
+  "methods":[
+    {"name":"<init>","parameterTypes":["int"] }, 
+    {"name":"intValue","parameterTypes":[] }
+  ]
+},
+{
+  "name":"java.lang.NullPointerException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.ProcessBuilder$RedirectPipeImpl",
+  "fields":[{"name":"fd"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.String",
+  "methods":[
+    {"name":"lastIndexOf","parameterTypes":["int"] }, 
+    {"name":"substring","parameterTypes":["int"] }
+  ]
+},
+{
+  "name":"java.lang.System",
+  "methods":[
+    {"name":"getProperty","parameterTypes":["java.lang.String"] }, 
+    {"name":"setProperty","parameterTypes":["java.lang.String","java.lang.String"] }
+  ]
+},
+{
+  "name":"java.net.DatagramSocket"
+},
+{
+  "name":"java.net.InetSocketAddress",
+  "fields":[{"name":"holder"}]
+},
+{
+  "name":"java.net.InetSocketAddress$InetSocketAddressHolder",
+  "fields":[{"name":"port"}]
+},
+{
+  "name":"java.net.NoRouteToHostException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.net.ServerSocket",
+  "fields":[{"name":"impl"}]
+},
+{
+  "name":"java.net.Socket"
+},
+{
+  "name":"java.net.SocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.net.SocketTimeoutException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.nio.channels.ClosedChannelException",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"java.nio.channels.spi.AbstractSelectableChannel",
+  "methods":[{"name":"removeKey","parameterTypes":["java.nio.channels.SelectionKey"] }]
+},
+{
+  "name":"org.newsclub.net.unix.AFSelector$PollFd",
+  "fields":[
+    {"name":"fds"}, 
+    {"name":"ops"}, 
+    {"name":"rops"}
+  ]
+},
+{
+  "name":"org.newsclub.net.unix.AFTIPCSocketAddress"
+},
+{
+  "name":"org.newsclub.net.unix.AFUNIXDatagramSocket"
+},
+{
+  "name":"org.newsclub.net.unix.AFUNIXServerSocket"
+},
+{
+  "name":"org.newsclub.net.unix.AFUNIXSocket"
+},
+{
+  "name":"org.newsclub.net.unix.AFUNIXSocketAddress"
+},
+{
+  "name":"org.newsclub.net.unix.AFUNIXSocketCredentials",
+  "fields":[
+    {"name":"gids"}, 
+    {"name":"pid"}, 
+    {"name":"uid"}
+  ],
+  "methods":[{"name":"setUUID","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"org.newsclub.net.unix.AncillaryDataSupport",
+  "fields":[
+    {"name":"ancillaryReceiveBuffer"}, 
+    {"name":"pendingFileDescriptors"}
+  ],
+  "methods":[
+    {"name":"receiveFileDescriptors","parameterTypes":["int[]"] }, 
+    {"name":"setTipcDestName","parameterTypes":["int","int","int"] }, 
+    {"name":"setTipcErrorInfo","parameterTypes":["int","int"] }
+  ]
+},
+{
+  "name":"org.newsclub.net.unix.tipc.AFTIPCGroupRequest",
+  "methods":[
+    {"name":"fromNative","parameterTypes":["int","int","int","int"] }, 
+    {"name":"getFlagsValue","parameterTypes":[] }, 
+    {"name":"getInstance","parameterTypes":[] }, 
+    {"name":"getScopeId","parameterTypes":[] }, 
+    {"name":"getType","parameterTypes":[] }
+  ]
+}
+]

@@ -63,6 +63,7 @@
                     <include>**/*.srvpgm</include>
                     <include>**/*.dll</include>
                     <include>META-INF/**/pom.properties</include>
+                    <include>META-INF/native-image/**/*</include>
                   </includes>
                 </filter>
               </filters>

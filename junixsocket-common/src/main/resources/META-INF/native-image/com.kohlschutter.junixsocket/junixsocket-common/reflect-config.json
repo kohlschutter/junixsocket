@@ -1,0 +1,22 @@
+[
+{
+  "name":"java.nio.channels.spi.AbstractSelectableChannel"
+},
+{
+  "name":"org.newsclub.lib.junixsocket.common.NarMetadata"
+},
+{
+  "name":"org.newsclub.lib.junixsocket.custom.NarMetadata"
+},
+{
+  "name":"org.newsclub.net.unix.AFTIPCSocketAddress",
+  "methods":[{"name":"addressFamily","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.AFUNIXSocketAddress",
+  "methods":[{"name":"addressFamily","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.tipc.AFTIPCSelectorProvider"
+}
+]

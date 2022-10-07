@@ -34,7 +34,7 @@
       move them to the clang-specific property below -->
     <junixsocket.native.clang.c.options>${junixsocket.native.default.c.options}</junixsocket.native.clang.c.options>
     <junixsocket.native.clang.cpp.options>${junixsocket.native.default.cpp.options}</junixsocket.native.clang.cpp.options>
-
+    <junixsocket.native.aol.llvm>${junixsocket.native.aol}</junixsocket.native.aol.llvm>
     <junixsocket.install.skip></junixsocket.install.skip>
   </properties>
   <profiles>
@@ -187,6 +187,7 @@
             <configuration>
               <!-- nar-maven-plugin may hardcode jnilib extension, but we
                 need dylib -->
+              <!-- also add GraalVM native-image metadata for the native library --> 
               <target>
                 <move todir="${project.build.directory}/nar">
                   <fileset dir="${project.build.directory}/nar" />
@@ -204,6 +205,18 @@
                     from="**/${junixsocket.native.jnilib.strip.prefix}*"
                     to="*" />
                 </move>
+
+                <mkdir dir="${project.build.directory}/nar/junixsocket-native-${project.version}-${junixsocket.native.aol.llvm}-jni/META-INF/native-image/com.kohlschutter.junixsocket/junixsocket-native-${junixsocket.native.aol.llvm}-jni" />
+                <echo file="${project.build.directory}/nar/junixsocket-native-${project.version}-${junixsocket.native.aol.llvm}-jni/META-INF/native-image/com.kohlschutter.junixsocket/junixsocket-native-${junixsocket.native.aol.llvm}-jni/resource-config.json" append="false">{
+  "resources":{
+  "includes":[
+    {
+      "pattern":"^lib/${junixsocket.native.aol.llvm}/jni/.*"
+    }
+  ]},
+  "bundles":[]
+}
+</echo>
               </target>
             </configuration>
             <goals>
