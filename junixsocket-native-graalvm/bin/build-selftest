@@ -8,10 +8,12 @@
 #
 cd "$(dirname $0)/../"
 
-mkdir -p target
-cd target
+outputDir="output"
+mkdir -p "$outputDir" "${outputDir}/bin" "${outputDir}/tmp"
+cd "$outputDir"
+outputDir="$(pwd)"
 
-tmpDir=$(pwd)/junixsocket-selftest
+tmpDir=$(pwd)/tmp/junixsocket-selftest
 rm -rf "$tmpDir"
 mkdir -p "$tmpDir"
 
@@ -65,7 +67,7 @@ echo jar: $jar
 
 echo
 echo Running junixsocket-selftest with GraalVM native-image-agent...
-( set -x ; java -agentlib:native-image-agent=config-output-dir=${tmpDir}/native-image.{pid} -jar "$jar" >/dev/null )
+( set -x ; java -agentlib:native-image-agent=config-output-dir=${tmpDir}/native-image.{pid} -Dselftest.skip.junixsocket-rmi=force -Dselftest.skip.FileDescriptorCastTest=force -jar "$jar" >/dev/null )
 
 if [[ $? -ne 0 ]]; then
     echo "Error: junixsocket-selftest failed" >&2
@@ -74,8 +76,11 @@ fi
 
 echo
 echo Combining native-image configs...
-mkdir -p "$tmpDir"/META-INF/native-image
-( set -x ; native-image-configure generate $(find "$tmpDir" -maxdepth 1 -type d -name "native-image.*" -exec echo "--input-dir={}" \;) --output-dir="$tmpDir"/META-INF/native-image )
+combinedDir="${outputDir}/META-INF/native-image/com.kohlschutter.junixsocket/junixsocket-native-graalvm"
+mkdir -p "$combinedDir"
+( set -x ; native-image-configure generate $(find "$tmpDir" -maxdepth 1 -type d -name "native-image.*" -exec echo "--input-dir={}" \;) --output-dir="$combinedDir" )
+
+cd bin
 
 echo
 echo Running native-image...

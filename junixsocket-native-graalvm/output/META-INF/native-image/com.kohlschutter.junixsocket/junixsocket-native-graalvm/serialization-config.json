@@ -1,0 +1,12 @@
+{
+  "types":[
+    {
+      "name":"java.net.InetAddress"
+    },
+    {
+      "name":"org.junit.platform.launcher.TestIdentifier$SerializedForm"
+    }
+  ],
+  "lambdaCapturingTypes":[
+  ]
+}
