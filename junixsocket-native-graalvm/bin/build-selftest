@@ -67,7 +67,7 @@ echo jar: $jar
 
 echo
 echo Running junixsocket-selftest with GraalVM native-image-agent...
-( set -x ; java -agentlib:native-image-agent=config-output-dir=${tmpDir}/native-image.{pid} -Dselftest.skip.junixsocket-rmi=force -Dselftest.skip.FileDescriptorCastTest=force -jar "$jar" >/dev/null )
+( set -x ; java -agentlib:native-image-agent=config-output-dir=${tmpDir}/native-image.{pid} -Dselftest.skip.junixsocket-rmi=force -jar "$jar" >/dev/null )
 
 if [[ $? -ne 0 ]]; then
     echo "Error: junixsocket-selftest failed" >&2
@@ -97,3 +97,9 @@ if [[ ! -e "$nativeBinary" ]]; then
 fi
 echo
 echo Native binary created successfully: $nativeBinary
+
+changes=$(git status -s "$combinedDir")
+if [[ -n "$changes" ]]; then
+    echo "Metadata changes detected:"
+    git status -s "$combinedDir"
+fi
