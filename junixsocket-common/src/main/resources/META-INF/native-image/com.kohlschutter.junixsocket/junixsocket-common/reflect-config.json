@@ -17,6 +17,9 @@
   "methods":[{"name":"addressFamily","parameterTypes":[] }]
 },
 {
+  "name":"org.newsclub.net.unix.AFUNIXSocketCapabilityRequirement"
+},
+{
   "name":"org.newsclub.net.unix.tipc.AFTIPCSelectorProvider"
 }
 ]

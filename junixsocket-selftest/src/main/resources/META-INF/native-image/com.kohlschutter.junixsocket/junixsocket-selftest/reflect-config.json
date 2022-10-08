@@ -393,7 +393,13 @@
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "queryAllDeclaredConstructors":true
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+     {"name":"<init>","parameterTypes":[] },
+     {"name":"testBind","parameterTypes":[] },
+     {"name":"testBindLongAbstractAddress","parameterTypes":[] },
+     {"name":"testBindTrailingZeroes","parameterTypes":[] }
+  ]
 },
 {
   "name":"org.newsclub.net.unix.domain.AcceptTimeoutTest",

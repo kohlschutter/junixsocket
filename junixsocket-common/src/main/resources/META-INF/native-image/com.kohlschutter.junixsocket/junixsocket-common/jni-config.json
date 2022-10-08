@@ -129,6 +129,9 @@
   ]
 },
 {
+  "name":"org.newsclub.net.unix.tipc.AFTIPCDatagramSocket"
+},
+{
   "name":"org.newsclub.net.unix.tipc.AFTIPCGroupRequest",
   "methods":[
     {"name":"fromNative","parameterTypes":["int","int","int","int"] }, 
@@ -137,5 +140,8 @@
     {"name":"getScopeId","parameterTypes":[] }, 
     {"name":"getType","parameterTypes":[] }
   ]
+},
+{
+  "name":"org.newsclub.net.unix.tipc.AFTIPCSocket"
 }
 ]
