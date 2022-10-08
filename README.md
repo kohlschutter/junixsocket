@@ -77,3 +77,19 @@ To include the core junixsocket functionality in your project, add the following
 
 For more, optional packages (RMI, MySQL, Jetty, TIPC, server, etc.) see
 [here](https://kohlschutter.github.io/junixsocket/dependency.html)
+
+If you're testing a `-SNAPSHOT` version, make sure that the Sonatype snapshot repository is enabled in your POM:
+
+```
+<repositories>
+    <repository>
+        <id>sonatype.snapshots</id>
+        <name>Sonatype snapshot repository</name>
+        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        <layout>default</layout>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+```

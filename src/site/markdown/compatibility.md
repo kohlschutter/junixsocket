@@ -15,14 +15,10 @@ junixsocket 2.5.2 is fully compatible with Java 8 and newer (tested up to Java 1
 
 ## Supported Java VMs
 
-junixsocket has been tested to work with Oracle's Java 8 JDK, and OpenJDK for newer versions,
+junixsocket has been tested to work with Oracle's Java 8 JDK, and OpenJDK (and its flavors) for newer versions,
 as well as other platform-specific VMs listed below. 
 
-junixsocket also works with GraalVM, however native-image support still
-[needs some work](https://github.com/kohlschutter/junixsocket/issues/114).
-
-See `junixsocket-native-graalvm/bin/build-selftest` for a script that builds a native selftest
-binary that runs a Substrate VM.
+junixsocket also works with GraalVM (tested with *graalvm-ce-java17-22.2.0*) both in OpenJDK mode and (since version 2.6.0, partially) in Native Image mode with Substrate VM. More [details here](graalvm.html).
 
 ## Supported Platforms
 
@@ -98,7 +94,7 @@ The last line should say "Selftest PASSED", and you're good to go.
 If not, please [file a bug report](https://github.com/kohlschutter/junixsocket/issues) with the
 output of the selftest.
 
-Note: If your target platform supports both 32-bit and 64-bit Java VMs, make sure to use the
+> **NOTE:** If your target platform supports both 32-bit and 64-bit Java VMs, make sure to use the
 64-bit version first.
 
 ## Workarounds/testing for broken setups

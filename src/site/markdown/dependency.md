@@ -59,7 +59,25 @@ If you're going to use the Jetty connectors, add the following dependency:
       <artifactId>junixsocket-jetty</artifactId>
       <version>2.5.2</version>
     </dependency>
- 
+
+### Snapshot versions
+
+If you're testing a `-SNAPSHOT` version, make sure that the Sonatype snapshot repository is enabled in your POM:
+
+```
+<repositories>
+    <repository>
+        <id>sonatype.snapshots</id>
+        <name>Sonatype snapshot repository</name>
+        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        <layout>default</layout>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+```
+
 ## Gradle
  
  Minimum requirement:
@@ -82,6 +100,14 @@ If you're going to use the Jetty connectors, add the following dependency:
  
     compile 'com.kohlschutter.junixsocket:junixsocket-jetty:2.5.2'
 
+### Snapshot versions
+
+```
+repositories {
+		maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+```
+
 ## jars only
 
 If you don't use Maven or Gradle, etc., simply download the binary distribution from the
@@ -101,7 +127,6 @@ databases such as PostgreSQL.
 
 Make sure that the following jars are on your classpath:
 
- * junixsocket-core-2.5.2.jar
  * junixsocket-common-2.5.2.jar
  * junixsocket-mysql-2.5.2.jar
  * mysql-connector-java-8.0.14.jar (or newer; earlier versions should work, too)
@@ -134,7 +159,6 @@ to disable SSL with older versions of Connector/J.
 
 Make sure that the following jars are on your classpath:
 
- * junixsocket-core-2.5.2.jar
  * junixsocket-common-2.5.2.jar
  * postgresql-42.2.5.jar (or newer; earlier versions should work, too)
  * (typically, omit if you use the custom library below) junixsocket-native-common-2.5.2.jar
@@ -184,7 +208,7 @@ There are currently three distinct ways (socket factories) how to configure the 
     If the plain URL is `file:///tmp/.s.PGSQL.5432`, then the URL-encoded version is `file%3A%2F%2F%2Ftmp%2F.s.PGSQL.5432`.
     
     **Performance trick:** By placing a square bracket (`[`) in front of the host name, we can prevent
-    any attempt to lookup the hostname in DNS. This is trick not necessary, however.
+    any attempt to lookup the hostname in DNS. However, this is not mandatory.
     
     Connection URL: `jdbc:postgresql://[file%3A%2F%2F%2Ftmp%2F.s.PGSQL.5432/postgres`
     
@@ -193,6 +217,7 @@ There are currently three distinct ways (socket factories) how to configure the 
     | `socketFactory` | `org.newsclub.net.unix.AFUNIXSocketFactory$URIScheme` | |
     | `sslMode` | `disable` | (2) |
 
+#### Remarks
 
 (1) This is the full path to the PostgreSQL socket. The location on your system may be different.
     Try `/var/run/postgresql/.s.PGSQL.5432` if you can't find it in /tmp.
