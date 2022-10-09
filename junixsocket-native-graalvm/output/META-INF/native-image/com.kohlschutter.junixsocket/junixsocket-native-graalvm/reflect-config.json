@@ -1,13 +1,5 @@
 [
 {
-  "name":"com.kohlschutter.testutil.AvailabilityExecutionCondition",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.kohlschutter.testutil.AvailabilityRequirement",
-  "queryAllPublicMethods":true
-},
-{
   "name":"com.kohlschutter.testutil.ProcessUtilCondition",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -17,9 +9,6 @@
 },
 {
   "name":"java.lang.ProcessBuilder$RedirectPipeImpl"
-},
-{
-  "name":"java.lang.ProcessHandle"
 },
 {
   "name":"java.nio.channels.spi.AbstractSelectableChannel"
@@ -372,6 +361,8 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "methods":[
+    {"name":"afterEach","parameterTypes":[] }, 
+    {"name":"beforeEach","parameterTypes":[] }, 
     {"name":"testSocketOptions","parameterTypes":[] }, 
     {"name":"testUnconnectedServerSocketOptions","parameterTypes":[] }
   ]

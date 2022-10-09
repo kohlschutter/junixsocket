@@ -9,15 +9,15 @@
   "name":"org.newsclub.lib.junixsocket.custom.NarMetadata"
 },
 {
+  "name":"org.newsclub.net.unix.AFSocketCapabilityRequirement"
+},
+{
   "name":"org.newsclub.net.unix.AFTIPCSocketAddress",
   "methods":[{"name":"addressFamily","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.AFUNIXSocketAddress",
   "methods":[{"name":"addressFamily","parameterTypes":[] }]
-},
-{
-  "name":"org.newsclub.net.unix.AFUNIXSocketCapabilityRequirement"
 },
 {
   "name":"org.newsclub.net.unix.tipc.AFTIPCSelectorProvider"

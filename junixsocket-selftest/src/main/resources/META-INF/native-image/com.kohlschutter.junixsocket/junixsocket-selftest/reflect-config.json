@@ -355,6 +355,8 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "methods":[
+    {"name":"afterEach","parameterTypes":[] },
+    {"name":"beforeEach","parameterTypes":[] },
     {"name":"testSocketOptions","parameterTypes":[] }, 
     {"name":"testUnconnectedServerSocketOptions","parameterTypes":[] }
   ]
