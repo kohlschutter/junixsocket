@@ -104,7 +104,9 @@ public class UnixDomainTest {
     AFSocketServerConnector connector = new AFSocketServerConnector(server, factories);
     String dir = System.getProperty("jetty.unixdomain.dir", System.getProperty("java.io.tmpdir"));
     assertNotNull(dir);
-    unixDomainPath = Files.createTempFile(new File(dir).toPath(), "unix_", ".sock");
+    File dirFile = new File(dir);
+    dirFile.mkdirs();
+    unixDomainPath = Files.createTempFile(dirFile.toPath(), "unix_", ".sock");
     assertTrue(unixDomainPath.toAbsolutePath().toString().length() < 108,
         "Unix-Domain path too long");
     Files.delete(unixDomainPath);
