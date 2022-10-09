@@ -56,7 +56,7 @@ To verify that the software works as expected on your platform, you can run the
 located in the "junixsocket-dist" distribution package, and also released on GitHub.
 
 ```
-java -jar junixsocket-selftest-VERSION-jar-with-dependencies.jar 
+java -jar junixsocket-selftest-VERSION-jar-with-dependencies.jar
 ```
 
 (with VERSION being the corresponding junixsocket version).
@@ -94,3 +94,5 @@ If you're testing a `-SNAPSHOT` version, make sure that the Sonatype snapshot re
     </repository>
 </repositories>
 ```
+
+> **NOTE** Never rely on -SNAPSHOT builds. They can break any time.
