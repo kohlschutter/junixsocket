@@ -33,7 +33,7 @@ We use the coding conventions from [https://github.com/kohlschutter/coding-style
 
 The first time you run `mvn clean install` on junixsocket, these configurations will be automatically
 installed into a `coding-style` folder in the top-level project (unless the projects exists one level
-above the junixsocket-parent project).
+above the `junixsocket` parent project).
 
 You are encouraged to import the corresponding configuration files to your Eclipse workspace.
 

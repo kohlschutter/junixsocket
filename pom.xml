@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.kohlschutter.junixsocket</groupId>
-  <artifactId>junixsocket-parent</artifactId>
+  <artifactId>junixsocket</artifactId>
   <version>2.6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <parent>
@@ -13,7 +13,7 @@
     <version>1.4.8</version>
     <relativePath>../kohlschutter-parent/kohlschutter-parent-multirelease/pom.xml</relativePath>
   </parent>
-  <name>junixsocket-parent</name>
+  <name>junixsocket</name>
   <inceptionYear>2009</inceptionYear>
   <description>junixsocket is a Java/JNI library that allows the use of Unix Domain Sockets (AF_UNIX sockets) from Java.
 
