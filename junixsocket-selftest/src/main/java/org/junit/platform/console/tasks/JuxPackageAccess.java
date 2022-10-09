@@ -13,6 +13,7 @@ import org.junit.platform.launcher.TestExecutionListener;
 public final class JuxPackageAccess {
   public static TestExecutionListener newTreePrintingListener(PrintWriter out,
       boolean disableAnsiColors, Theme theme) {
-    return new TreePrintingListener(out, disableAnsiColors, theme);
+    return new TreePrintingListener(out, disableAnsiColors ? ColorPalette.NONE
+        : ColorPalette.DEFAULT, theme);
   }
 }
