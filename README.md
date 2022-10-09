@@ -11,7 +11,7 @@ other address/protocol families (such as [AF_TIPC](http://tipc.io/)), from Java.
 * Comes with pre-built native libraries for most operating systems and platforms, including
   macOS, Linux, Windows, Solaris, FreeBSD, NetBSD, OpenBSD, DragonFlyBSD, AIX, IBM i.
 * Additionally, you can build and run junixsocket natively on IBM z/OS (experimental).
-* Supports all Java versions since Java 8.
+* Supports all Java versions since Java 8*
 * Supports both the Java Socket API and NIO (`java.net.Socket`, `java.net.SocketChannel`, etc.)
 * Supports streams and datagrams.
 * Supports Remote Method Invocation (RMI) over AF_UNIX.
@@ -24,6 +24,7 @@ other address/protocol families (such as [AF_TIPC](http://tipc.io/)), from Java.
 * Supports socketpair, and instantiating socket classes from file descriptors.
 * Supports [HTTP over UNIX sockets](https://kohlschutter.github.io/junixsocket/http.html) (using [NanoHTTPD](https://github.com/NanoHttpd/nanohttpd), [OkHttp](https://github.com/square/okhttp), and [jetty](https://github.com/eclipse/jetty.project/)).
 * Supports JPMS/Jigsaw modules. The project is modularized so you can install only what you need.
+* Supports GraalVM native-image AOT/ahead-of-time compilation (since 2.6.0)
 * Provides a selftest package with 100+ tests to ensure compatibility with any target platform.
 * Apache 2.0 licensed.
 
@@ -75,7 +76,7 @@ To include the core junixsocket functionality in your project, add the following
 </dependency>
 ```
 
-For more, optional packages (RMI, MySQL, Jetty, TIPC, server, etc.) see
+For more, optional packages (RMI, MySQL, Jetty, TIPC, server, etc.) and Gradle instructions see
 [here](https://kohlschutter.github.io/junixsocket/dependency.html)
 
 If you're testing a `-SNAPSHOT` version, make sure that the Sonatype snapshot repository is enabled in your POM:
