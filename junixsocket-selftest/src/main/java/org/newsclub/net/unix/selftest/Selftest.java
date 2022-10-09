@@ -24,8 +24,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -71,9 +69,6 @@ import com.kohlschutter.util.SystemPropertyUtil;
  */
 @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.CognitiveComplexity"})
 public class Selftest {
-  private static final Class<? extends Annotation> CAP_ANNOTATION_CLASS =
-      getAFUNIXSocketCapabilityRequirementClass();
-
   private final ConsolePrintStream out = ConsolePrintStream.wrapSystemOut();
   private final Map<String, ModuleResult> results = new LinkedHashMap<>();
   private final List<AFSocketCapability> supportedCapabilites = new ArrayList<>();
@@ -430,47 +425,6 @@ public class Selftest {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private static Class<? extends Annotation> getAFUNIXSocketCapabilityRequirementClass() {
-    try {
-      return (Class<? extends Annotation>) Class.forName(
-          "org.newsclub.net.unix.AFUNIXSocketCapabilityRequirement");
-    } catch (ClassNotFoundException e1) {
-      return null;
-    }
-  }
-
-  private boolean checkIfCapabilitiesSupported(String className) {
-    if (CAP_ANNOTATION_CLASS != null) {
-      try {
-        Class<?> klass = Class.forName(className);
-        Annotation annotation = klass.getAnnotation(CAP_ANNOTATION_CLASS);
-        if (annotation != null) {
-          try {
-            AFSocketCapability[] caps = (AFSocketCapability[]) annotation.getClass().getMethod(
-                "value").invoke(annotation);
-            if (caps != null) {
-              for (AFSocketCapability cap : caps) {
-                if (!AFSocket.supports(cap)) {
-                  out.println("Skipping class " + className + "; unsupported capability: " + cap);
-                  return false;
-                }
-              }
-            }
-          } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-              | NoSuchMethodException | SecurityException e) {
-            // ignore
-          }
-        }
-      } catch (ClassNotFoundException e) {
-        out.println("Class not found: " + className);
-        withIssues = true;
-      }
-    }
-
-    return true;
-  }
-
   private SkipMode getSkipModeForModule(String moduleName) {
     return SkipMode.parse(System.getProperty("selftest.skip." + moduleName));
   }
@@ -542,7 +496,7 @@ public class Selftest {
             modified = true;
             withIssues = true;
           }
-        } else if (checkIfCapabilitiesSupported(className)) {
+        } else {
           list.add(testClass);
         }
       }
@@ -593,7 +547,6 @@ public class Selftest {
           fail = true;
         } else if (summary.getTestsFoundCount() == 0) {
           result = Result.NONE;
-          fail = true;
         } else if ((summary.getTestsSucceededCount() + summary.getTestsSkippedCount()
             + numAbortedNonIssues) == summary.getTestsFoundCount()) {
           result = Result.PASS;
