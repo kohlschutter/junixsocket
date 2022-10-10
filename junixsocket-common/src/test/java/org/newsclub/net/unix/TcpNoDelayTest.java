@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 import org.junit.jupiter.api.Test;
 
@@ -56,7 +57,13 @@ public abstract class TcpNoDelayTest<A extends SocketAddress> extends SocketTest
     }) {
 
       try (Socket sock = newStrictSocket()) {
-        sock.connect(serverThread.getServerAddress());
+        try {
+          sock.connect(serverThread.getServerAddress());
+        } catch (SocketTimeoutException e) {
+          // report and try again
+          e.printStackTrace();
+          sock.connect(serverThread.getServerAddress());
+        }
         boolean gotException = false;
         try {
           sock.setTcpNoDelay(true);
