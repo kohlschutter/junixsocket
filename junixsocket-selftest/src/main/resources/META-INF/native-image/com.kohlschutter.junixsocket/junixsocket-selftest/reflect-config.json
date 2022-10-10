@@ -49,10 +49,6 @@
   "queryAllPublicMethods":true
 },
 {
-  "name":"org.junit.jupiter.engine.extension.TimeoutExtension$ExecutorResource",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"org.junit.jupiter.engine.extension.TimeoutInvocationFactory$SingleThreadExecutorResource",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
