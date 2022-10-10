@@ -53,6 +53,10 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"org.junit.jupiter.engine.extension.TimeoutInvocationFactory$SingleThreadExecutorResource",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"org.junit.platform.commons.annotation.Testable",
   "queryAllPublicMethods":true
 },
