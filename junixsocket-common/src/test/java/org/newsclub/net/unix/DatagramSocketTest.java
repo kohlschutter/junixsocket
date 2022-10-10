@@ -117,12 +117,14 @@ public abstract class DatagramSocketTest<A extends SocketAddress> extends Socket
       assertUnconnectedDatagramSocket(ds1);
 
       ds1.bind(ds1Addr);
+      ds1Addr = (AFSocketAddress)ds1.getLocalSocketAddress();
       assertNull(ds1.getRemoteSocketAddress());
 
       assertBoundDatagramSocket(ds1, ds1Addr);
 
       if (!ds2.isBound()) {
         ds2.bind(ds2Addr);
+        ds2Addr = (AFSocketAddress)ds2.getLocalSocketAddress();
       }
       ds1.connect(ds2Addr);
 

@@ -238,9 +238,12 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     }
 
     AFSocketAddress socketAddress = core.socketAddress;
-    if (socketAddress == null) {
-      core.socketAddress = socketAddress = getLocalSocketAddress();
+    AFSocketAddress boundSocketAddress = getLocalSocketAddress();
+    if (boundSocketAddress != null) {
+      // Always resolve bound address from wildcard address, etc.
+      core.socketAddress = socketAddress = boundSocketAddress;
     }
+
     if (socketAddress == null) {
       throw new SocketException("Socket is not bound");
     }

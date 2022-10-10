@@ -418,12 +418,14 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
         DatagramChannel dc = newDatagramChannel();) {
       if (!ds.socket().isBound()) {
         ds.bind(dsAddr);
+        dsAddr = ds.getLocalAddress();
       }
       if (!dc.socket().isBound()) {
         dc.bind(dcAddr);
+        dcAddr = dc.getLocalAddress();
       }
-      dc.connect(ds.getLocalAddress());
-      ds.connect(dc.getLocalAddress());
+      dc.connect(dsAddr);
+      ds.connect(dcAddr);
 
       SelectorProvider sp;
       if (blocking) {

@@ -58,7 +58,7 @@ public interface AddressSpecifics<A extends SocketAddress> {
   default CloseablePair<? extends Socket> newInterconnectedSockets() throws IOException {
     final SocketAddress address = newTempAddress();
     ServerSocket server = newServerSocketBindOn(address);
-    Socket client = connectTo(address);
+    Socket client = connectTo(server.getLocalSocketAddress());
     final Socket socket = server.accept();
     return new CloseablePair<AFSocket<?>>((AFSocket<?>) client, (AFSocket<?>) socket, server);
   }

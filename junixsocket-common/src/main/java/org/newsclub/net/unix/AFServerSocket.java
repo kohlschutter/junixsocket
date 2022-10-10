@@ -245,6 +245,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
       throw new IllegalArgumentException("Can only bind to endpoints of type "
           + AFSocketAddress.class.getName() + ": " + endpoint);
     }
+
     A endpointCast;
     try {
       endpointCast = (A) endpoint;
@@ -262,7 +263,10 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
         throw e;
       }
     }
-    setBoundEndpoint(endpointCast);
+    setBoundEndpoint(getAFImpl().getLocalSocketAddress());
+    if (boundEndpoint == null) {
+      setBoundEndpoint(endpointCast);
+    }
 
     if (endpoint == AFSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD
       return;
