@@ -135,6 +135,8 @@ code](https://kohlschutter.github.io/junixsocket/junixsocket-vsock/xref/index.ht
 [junixsocket-vsock unit
 tests](https://kohlschutter.github.io/junixsocket/junixsocket-vsock/xref-test/index.html)
 
+* [AF_VSOCK: nested VMs and loopback support available](https://stefano-garzarella.github.io/posts/2020-02-20-vsock-nested-vms-loopback/) ... since Linux 5.5/5.6
+
 ## See also
 
 * [Hyper-V](https://de.wikipedia.org/wiki/Hyper-V) (related technology); Wikipedia page
