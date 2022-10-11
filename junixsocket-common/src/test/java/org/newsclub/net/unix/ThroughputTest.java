@@ -330,15 +330,17 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
           public void run() {
             try {
               while (!Thread.interrupted() && !ds.isClosed()) {
-                ds.receive(dp);
+                try {
+                  ds.receive(dp);
+                } catch (SocketTimeoutException e) {
+                  continue;
+                }
                 int read = dp.getLength();
                 if (read != PAYLOAD_SIZE && read != 0) {
                   throw new IOException("Unexpected response length: " + read);
                 }
                 readTotal.addAndGet(dp.getLength());
               }
-            } catch (SocketTimeoutException e) {
-              // continue
             } catch (SocketException e) {
               if (keepRunning.get()) {
                 e.printStackTrace();
@@ -378,6 +380,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
                     / (float) sentTotal))));
       }
     });
+
   }
 
   @Test
