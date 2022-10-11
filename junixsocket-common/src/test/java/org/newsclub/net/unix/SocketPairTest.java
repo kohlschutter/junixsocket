@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -39,6 +40,20 @@ public abstract class SocketPairTest<A extends SocketAddress> extends SocketTest
 
   protected SocketPairTest(AddressSpecifics<A> asp) {
     super(asp);
+  }
+
+  private static void assertCovered(SocketAddress addr, SocketAddress covered) {
+    if (addr instanceof AFSocketAddress && covered instanceof AFSocketAddress) {
+      assertCovered((AFSocketAddress) addr, (AFSocketAddress) covered);
+    } else {
+      assertEquals(addr, covered);
+    }
+  }
+
+  private static void assertCovered(AFSocketAddress addr, AFSocketAddress covered) {
+    if (!addr.covers(covered)) {
+      fail("Address not covered by " + addr + ": " + covered);
+    }
   }
 
   @Test
@@ -78,8 +93,8 @@ public abstract class SocketPairTest<A extends SocketAddress> extends SocketTest
       assertNull(pair.getFirst().getRemoteAddress());
       assertNull(pair.getSecond().getRemoteAddress());
     } else {
-      assertEquals(pair.getFirst().getLocalAddress(), pair.getSecond().getRemoteAddress());
-      assertEquals(pair.getSecond().getLocalAddress(), pair.getFirst().getRemoteAddress());
+      assertCovered(pair.getFirst().getLocalAddress(), pair.getSecond().getRemoteAddress());
+      assertCovered(pair.getSecond().getLocalAddress(), pair.getFirst().getRemoteAddress());
     }
   }
 
@@ -121,8 +136,8 @@ public abstract class SocketPairTest<A extends SocketAddress> extends SocketTest
       assertNull(pair.getFirst().getRemoteAddress());
       assertNull(pair.getSecond().getRemoteAddress());
     } else {
-      assertEquals(pair.getFirst().getLocalAddress(), pair.getSecond().getRemoteAddress());
-      assertEquals(pair.getSecond().getLocalAddress(), pair.getFirst().getRemoteAddress());
+      assertCovered(pair.getFirst().getLocalAddress(), pair.getSecond().getRemoteAddress());
+      assertCovered(pair.getSecond().getLocalAddress(), pair.getFirst().getRemoteAddress());
     }
   }
 }

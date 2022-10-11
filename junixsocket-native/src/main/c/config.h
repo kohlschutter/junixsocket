@@ -216,6 +216,10 @@ extern "C" {
 #include <arpa/inet.h>
 #define junixsocket_have_tipc 1
 
+#if defined(AF_VSOCK) && __has_include(<linux/vm_sockets.h>)
+#include <linux/vm_sockets.h>
+#define junixsocket_have_vsock 1
+#endif
 #endif
 
 // Solaris
@@ -250,6 +254,11 @@ typedef unsigned long socklen_t; /* 64-bits */
 #if defined(__MACH__)
 #  if !defined(_DARWIN_C_SOURCE)
 #    define _DARWIN_C_SOURCE 1
+#  endif
+
+#  if defined(AF_VSOCK) && __has_include(<sys/vsock.h>)
+#    include <sys/vsock.h>
+#    define junixsocket_have_vsock 1
 #  endif
 #endif
 

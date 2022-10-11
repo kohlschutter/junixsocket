@@ -20,6 +20,13 @@
   "methods":[{"name":"addressFamily","parameterTypes":[] }]
 },
 {
+  "name":"org.newsclub.net.unix.AFVSOCKSocketAddress",
+  "methods":[{"name":"addressFamily","parameterTypes":[] }]
+},
+{
   "name":"org.newsclub.net.unix.tipc.AFTIPCSelectorProvider"
+},
+{
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider"
 }
 ]

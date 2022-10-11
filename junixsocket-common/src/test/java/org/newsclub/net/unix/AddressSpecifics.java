@@ -56,7 +56,7 @@ public interface AddressSpecifics<A extends SocketAddress> {
   ServerSocket newServerSocketBindOn(SocketAddress addr, boolean deleteOnClose) throws IOException;
 
   default CloseablePair<? extends Socket> newInterconnectedSockets() throws IOException {
-    final SocketAddress address = newTempAddress();
+    final SocketAddress address = initServerSocketBindAddress();
     ServerSocket server = newServerSocketBindOn(address);
     Socket client = connectTo(server.getLocalSocketAddress());
     final Socket socket = server.accept();

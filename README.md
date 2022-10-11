@@ -2,12 +2,12 @@
 
 junixsocket is a Java/JNI library that allows the use of
 [Unix Domain Sockets](https://en.wikipedia.org/wiki/Unix_domain_socket) (AF_UNIX sockets), and
-other address/protocol families (such as [AF_TIPC](http://tipc.io/)), from Java.
+other address/protocol families (such as [AF_TIPC](http://tipc.io/) and AF_VSOCK), from Java.
 
 ## Unix sockets API, in Java, AF.
 
 * *junixsocket* is the most complete implementation of AF_UNIX sockets for the Java ecosystem.
-* Supports other socket types, such as TIPC (on Linux), as well!
+* Supports other socket types, such as TIPC (on Linux) and VSOCK (on Linux, and certain macOS VMs), as well!
 * Comes with pre-built native libraries for most operating systems and platforms, including
   macOS, Linux, Windows, Solaris, FreeBSD, NetBSD, OpenBSD, DragonFlyBSD, AIX, IBM i.
 * Additionally, you can build and run junixsocket natively on IBM z/OS (experimental).
@@ -42,6 +42,7 @@ other address/protocol families (such as [AF_TIPC](http://tipc.io/)), from Java.
   * [API Javadocs](https://kohlschutter.github.io/junixsocket/apidocs/)
   * [Unix Domain Socket Reference](https://kohlschutter.github.io/junixsocket/unixsockets.html)
   * [TIPC documentation](https://kohlschutter.github.io/junixsocket/junixsocket-tipc/index.html)
+  * [VSOCK documentation](https://kohlschutter.github.io/junixsocket/junixsocket-vsock/index.html)
 
 ## Licensing
 

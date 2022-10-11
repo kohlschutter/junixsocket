@@ -322,11 +322,7 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
     if (!isBound()) {
       return null;
     }
-    try {
-      return AFSocketAddress.unwrap(getLocalAddress(), getLocalPort(), addressFamily());
-    } catch (SocketException e) {
-      return null;
-    }
+    return getAFImpl().getLocalSocketAddress();
   }
 
   /**

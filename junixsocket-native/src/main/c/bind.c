@@ -57,6 +57,12 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
         return 0;
     }
 
+#if junixsocket_have_vsock
+    if(addr->addr.sa_family == AF_VSOCK) {
+        fixupSocketAddress(serverHandle, (struct sockaddr*)&(addr->vsock));
+    }
+#endif
+
     if(
 #if defined(_OS400) || __TOS_MVS__
        JNI_TRUE

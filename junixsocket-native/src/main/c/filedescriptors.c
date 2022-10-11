@@ -41,12 +41,20 @@ typedef enum {
     kFDTypeAFTIPCStreamSocket,
     kFDTypeAFTIPCDatagramSocket,
 #endif
+#if junixsocket_have_vsock
+    kFDTypeAFVSOCKStreamSocket,
+    kFDTypeAFVSOCKDatagramSocket,
+#endif
     kFDTypeMaxExcl
 } FileDescriptorType;
 
 #if junixsocket_have_tipc
 static char* const kClassnameAFTIPCSocket = "org/newsclub/net/unix/tipc/AFTIPCSocket";
 static char* const kClassnameAFTIPCDatagramSocket = "org/newsclub/net/unix/tipc/AFTIPCDatagramSocket";
+#endif
+#if junixsocket_have_vsock
+static char* const kClassnameAFVSOCKSocket = "org/newsclub/net/unix/vsock/AFVSOCKSocket";
+static char* const kClassnameAFVSOCKDatagramSocket = "org/newsclub/net/unix/vsock/AFVSOCKDatagramSocket";
 #endif
 
 // NOTE: The exceptions must all be either inherit from IOException or RuntimeException/Error
@@ -60,6 +68,10 @@ static char *kFDTypeClassNames[kFDTypeMaxExcl] = {
 #if junixsocket_have_tipc
     kClassnameAFTIPCSocket,
     kClassnameAFTIPCDatagramSocket,
+#endif
+#if junixsocket_have_vsock
+    kClassnameAFVSOCKSocket,
+    kClassnameAFVSOCKDatagramSocket,
 #endif
 };
 
@@ -79,12 +91,16 @@ void init_filedescriptors(JNIEnv *env) {
 
         kFDTypeClasses[i] = findClassAndGlobalRef0
         (env, classname,
+         JNI_FALSE
 #if junixsocket_have_tipc
          // Even if TIPC is technically available, the junixsocket-tipc jar may not be in the classpath,
          // therefore it's OK if these classes are missing
-         (classname == kClassnameAFTIPCSocket || classname == kClassnameAFTIPCDatagramSocket)
-#else
-        JNI_FALSE
+         || (classname == kClassnameAFTIPCSocket || classname == kClassnameAFTIPCDatagramSocket)
+#endif
+#if junixsocket_have_vsock
+         // Even if VSOCK is technically available, the junixsocket-vsock jar may not be in the classpath,
+         // therefore it's OK if these classes are missing
+         || (classname == kClassnameAFVSOCKSocket || classname == kClassnameAFVSOCKDatagramSocket)
 #endif
 );
     }
@@ -420,6 +436,17 @@ JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
                      return kFDTypeClasses[kFDTypeAFTIPCStreamSocket];
                  case SOCK_DGRAM:
                      return kFDTypeClasses[kFDTypeAFTIPCDatagramSocket];
+                 default:
+                     return kFDTypeClasses[kFDTypeOtherSocket];
+             }
+#endif
+#if junixsocket_have_vsock
+         case AF_VSOCK:
+             switch(type) {
+                 case SOCK_STREAM:
+                     return kFDTypeClasses[kFDTypeAFVSOCKStreamSocket];
+                 case SOCK_DGRAM:
+                     return kFDTypeClasses[kFDTypeAFVSOCKDatagramSocket];
                  default:
                      return kFDTypeClasses[kFDTypeOtherSocket];
              }

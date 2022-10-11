@@ -29,6 +29,8 @@
 
 static jboolean cap_supports_unix = false;
 static jboolean cap_supports_tipc = false;
+static jboolean cap_supports_vsock = false;
+static jboolean cap_supports_vsock_dgram = false;
 
 static void init_unix(void) {
 
@@ -62,11 +64,43 @@ static void init_tipc(void) {
 }
 #endif
 
+#if defined(junixsocket_have_vsock)
+static void init_vsock(void) {
+    int ret;
+
+    ret = socket(AF_VSOCK, SOCK_STREAM
+#if defined(junixsocket_have_socket_cloexec)
+                     | SOCK_CLOEXEC
+#endif
+                     , 0);
+    if(ret >= 0) {
+        cap_supports_vsock = true;
+        close(ret);
+    }
+
+    ret = socket(AF_VSOCK, SOCK_DGRAM
+#if defined(junixsocket_have_socket_cloexec)
+                     | SOCK_CLOEXEC
+#endif
+                     , 0);
+    if(ret >= 0) {
+        cap_supports_vsock_dgram = true;
+        close(ret);
+    }
+}
+#endif
+
 jboolean supportsUNIX(void) {
     return cap_supports_unix;
 }
 jboolean supportsTIPC(void) {
     return cap_supports_tipc;
+}
+jboolean supportsVSOCK(void) {
+    return cap_supports_vsock;
+}
+jboolean supportsVSOCK_dgram(void) {
+    return cap_supports_vsock_dgram;
 }
 
 /*
@@ -97,6 +131,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init
 
 #if defined(junixsocket_have_tipc)
     init_tipc();
+#endif
+#if defined(junixsocket_have_vsock)
+    init_vsock();
 #endif
     init_poll(env);
     init_socketoptions(env);

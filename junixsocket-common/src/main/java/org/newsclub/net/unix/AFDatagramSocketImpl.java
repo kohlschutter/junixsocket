@@ -215,6 +215,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
     FileDescriptor fdesc = core.validFdOrException();
 
     int len = p.getLength();
+
     ByteBuffer datagramPacketBuffer = core.getThreadLocalDirectByteBuffer(len);
     datagramPacketBuffer.clear();
     datagramPacketBuffer.put(p.getData(), p.getOffset(), p.getLength());

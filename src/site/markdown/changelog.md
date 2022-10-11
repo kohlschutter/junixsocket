@@ -11,6 +11,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
  - Add support for GraalVM native-image
  - Add support for native-image selftest
+ - Add support for AF_VSOCK (on Linux, and some macOS VMs)
 
 ### _(2022-10-06)_ **junixsocket 2.5.2**
 

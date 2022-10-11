@@ -679,4 +679,20 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     }
     return sb.toString();
   }
+
+  /**
+   * Checks if the given address could cover another address.
+   * 
+   * By default, this is only true if both addresses are regarded equal using
+   * {@link #equals(Object)}.
+   * 
+   * However, implementations may support "wildcard" addresses, and this method would compare a
+   * wildcard address against some non-wildcard address, for example.
+   * 
+   * @param other The other address that could be covered by this address.
+   * @return {@code true} if the other address could be covered.
+   */
+  public boolean covers(AFSocketAddress other) {
+    return this.equals(other);
+  }
 }

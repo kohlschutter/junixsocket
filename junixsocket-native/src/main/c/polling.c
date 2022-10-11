@@ -286,8 +286,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available
 #endif
     if(ret == -1) {
         int myerr = socket_errno;
-        if(myerr == ENOTTY) {
-            // e.g., TIPC on Linux may not implement this call
+        if(myerr == ENOTTY || myerr == EOPNOTSUPP) {
+            // e.g., TIPC/VSOCK on Linux may not implement this call
             // we resort to polling and peeking with recv's MSG_PEEK
 
             struct pollfd pollFd = {

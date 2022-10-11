@@ -111,21 +111,23 @@ public abstract class DatagramSocketTest<A extends SocketAddress> extends Socket
   public void testBindConnect() throws SocketException, IOException, InterruptedException {
     AFSocketAddress ds1Addr = (AFSocketAddress) newTempAddress();
     AFSocketAddress ds2Addr = (AFSocketAddress) newTempAddress();
-    assertNotEquals(ds1Addr, ds2Addr);
 
     try (DatagramSocket ds1 = newDatagramSocket(); DatagramSocket ds2 = newDatagramSocket()) {
       assertUnconnectedDatagramSocket(ds1);
 
       ds1.bind(ds1Addr);
-      ds1Addr = (AFSocketAddress)ds1.getLocalSocketAddress();
+      ds1Addr = (AFSocketAddress) ds1.getLocalSocketAddress();
       assertNull(ds1.getRemoteSocketAddress());
 
       assertBoundDatagramSocket(ds1, ds1Addr);
 
       if (!ds2.isBound()) {
         ds2.bind(ds2Addr);
-        ds2Addr = (AFSocketAddress)ds2.getLocalSocketAddress();
+        ds2Addr = (AFSocketAddress) ds2.getLocalSocketAddress();
       }
+
+      assertNotEquals(ds1Addr, ds2Addr);
+
       ds1.connect(ds2Addr);
 
       assertConnectedDatagramSocket(ds1, ds1Addr, ds2Addr);
@@ -162,29 +164,6 @@ public abstract class DatagramSocketTest<A extends SocketAddress> extends Socket
       assertClosedDatagramSocket(ds2);
     }
   }
-
-  // @Test
-  // public void testPeek() throws IOException {
-  // AFSocketAddress ds2Addr = (AFSocketAddress) newTempAddress();
-  //
-  // try (DatagramSocket ds1 = newDatagramSocket(); //
-  // AFDatagramSocket<?> ds2 = (AFDatagramSocket<?>) newDatagramSocket();) {
-  // ds2.bind(ds2Addr);
-  // DatagramPacket dp1 = //
-  // AFDatagramUtil.datagramWithCapacityAndPayload(1024, "Hello".getBytes(
-  // StandardCharsets.UTF_8));
-  // dp1.setAddress(ds2Addr.wrapAddress());
-  // ds1.send(dp1);
-  // DatagramPacket dp2 = AFDatagramUtil.datagramWithCapacity(1024);
-  // ds2.peek(dp2); // yay
-  // assertEquals("Hello", new String(dp2.getData(), dp2.getOffset(), dp2.getLength(),
-  // StandardCharsets.UTF_8));
-  // DatagramPacket dp3 = AFDatagramUtil.datagramWithCapacity(1024);
-  // ds2.receive(dp3);
-  // assertEquals("Hello", new String(dp3.getData(), dp3.getOffset(), dp3.getLength(),
-  // StandardCharsets.UTF_8));
-  // }
-  // }
 
   @Test
   public void testReadTimeout() throws IOException {

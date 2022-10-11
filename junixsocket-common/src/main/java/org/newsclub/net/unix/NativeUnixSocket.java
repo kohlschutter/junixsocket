@@ -44,6 +44,7 @@ final class NativeUnixSocket {
 
   static final int DOMAIN_UNIX = 1;
   static final int DOMAIN_TIPC = 30;
+  static final int DOMAIN_VSOCK = 40;
 
   static final int SOCK_STREAM = 1;
   static final int SOCK_DGRAM = 2;
@@ -88,6 +89,8 @@ final class NativeUnixSocket {
         "org.newsclub.net.unix.AFUNIXSocketAddress");
     AFAddressFamily.registerAddressFamily("tipc", NativeUnixSocket.DOMAIN_TIPC,
         "org.newsclub.net.unix.AFTIPCSocketAddress");
+    AFAddressFamily.registerAddressFamily("vsock", NativeUnixSocket.DOMAIN_VSOCK,
+        "org.newsclub.net.unix.AFVSOCKSocketAddress");
   }
 
   static boolean isLoaded() {

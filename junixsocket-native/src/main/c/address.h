@@ -27,11 +27,16 @@ typedef union {
 #if junixsocket_have_tipc
     struct sockaddr_tipc tipc;
 #endif
+#if junixsocket_have_vsock
+    struct sockaddr_vm vsock;
+#endif
     char bytes[128];
 } jux_sockaddr_t;
 
 
 socklen_t initSu(JNIEnv * env, struct sockaddr_un *su, jbyteArray addr);
 int domainToNative(int domain);
+
+void fixupSocketAddress(int handle, struct sockaddr *sa);
 
 #endif /* address_h */

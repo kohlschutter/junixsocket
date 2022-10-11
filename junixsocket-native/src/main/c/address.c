@@ -35,6 +35,12 @@ struct __attribute__((__packed__)) jux_tipc_addr {
     jint c;
 };
 
+struct __attribute__((__packed__)) jux_vsock_addr {
+    jint reserved1;
+    jint port;
+    jint cid;
+};
+
 int domainToNative(int domain) {
     switch(domain) {
         case org_newsclub_net_unix_NativeUnixSocket_DOMAIN_UNIX:
@@ -42,6 +48,10 @@ int domainToNative(int domain) {
 #if junixsocket_have_tipc
         case org_newsclub_net_unix_NativeUnixSocket_DOMAIN_TIPC:
             return AF_TIPC;
+#endif
+#if junixsocket_have_vsock
+        case org_newsclub_net_unix_NativeUnixSocket_DOMAIN_VSOCK:
+            return AF_VSOCK;
 #endif
         default:
             // do not throw: _throwException(env, kExceptionSocketException, "Unsupported domain");
@@ -117,6 +127,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrLengt
         case AF_TIPC:
             return sizeof(struct sockaddr_tipc);
 #endif
+#if junixsocket_have_vsock
+        case AF_VSOCK:
+            return sizeof(struct sockaddr_vm);
+#endif
         default:
             _throwException(env, kExceptionSocketException, "Unsupported domain");
             return -1;
@@ -186,6 +200,24 @@ static jbyteArray sockAddrTipcToBytes(JNIEnv *env, struct sockaddr_tipc *addr) {
 
     jbyteArray array = (*env)->NewByteArray(env, sizeof(struct jux_tipc_addr));
     (*env)->SetByteArrayRegion(env, array, 0, sizeof(struct jux_tipc_addr), (jbyte*)&buf);
+    return array;
+}
+
+#endif
+
+#if junixsocket_have_vsock
+
+static jbyteArray sockAddrVsockToBytes(JNIEnv *env, struct sockaddr_vm *addr) {
+    CK_IGNORE_RESERVED_IDENTIFIER_BEGIN // htonl
+    struct jux_vsock_addr buf = {
+        .reserved1 = htonl(addr->svm_reserved1),
+        .port = htonl(addr->svm_port),
+        .cid = htonl(addr->svm_cid),
+    };
+    CK_IGNORE_RESERVED_IDENTIFIER_END
+
+    jbyteArray array = (*env)->NewByteArray(env, sizeof(typeof(buf)));
+    (*env)->SetByteArrayRegion(env, array, 0, sizeof(typeof(buf)), (jbyte*)&buf);
     return array;
 }
 
@@ -286,6 +318,15 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
             }
             return sockAddrTipcToBytes(env, &addr.tipc);
 #endif
+#if junixsocket_have_vsock
+        case AF_VSOCK:
+            if(len > (socklen_t)sizeof(struct sockaddr_vm)) {
+                _throwException(env, kExceptionSocketException,
+                                peerName ? "peer sockname too long" : "sockname too long");
+                return NULL;
+            }
+            return sockAddrVsockToBytes(env, &addr.vsock);
+#endif
         default:
             _throwException(env, kExceptionSocketException,
                             "Unsupported socket family");
@@ -309,6 +350,11 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAdd
 #if junixsocket_have_tipc
         case AF_TIPC:
             sockAddrLen = sizeof(struct sockaddr_tipc);
+            break;
+#endif
+#if junixsocket_have_vsock
+        case AF_VSOCK:
+            sockAddrLen = sizeof(struct sockaddr_vm);
             break;
 #endif
         default:
@@ -346,6 +392,10 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAdd
         case AF_TIPC:
             return sockAddrTipcToBytes(env, (struct sockaddr_tipc *)addr);
 #endif
+#if junixsocket_have_vsock
+        case AF_VSOCK:
+            return sockAddrVsockToBytes(env, (struct sockaddr_vm *)addr);
+#endif
         default:
             _throwException(env, kExceptionSocketException, "Unsupported domain");
             return NULL;
@@ -369,6 +419,11 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAd
 #if junixsocket_have_tipc
         case AF_TIPC:
             sockAddrLen = sizeof(struct sockaddr_tipc);
+            break;
+#endif
+#if junixsocket_have_vsock
+        case AF_VSOCK:
+            sockAddrLen = sizeof(struct sockaddr_vm);
             break;
 #endif
         default:
@@ -430,6 +485,23 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAd
         }
             break;
 #endif
+#if junixsocket_have_vsock
+        case AF_VSOCK:
+        {
+            struct jux_vsock_addr jaddr = {0};
+            (*env)->GetByteArrayRegion(env, addressBytes, 0, sizeof(struct jux_vsock_addr), (void*)&jaddr);
+
+            CK_IGNORE_RESERVED_IDENTIFIER_BEGIN // ntohl
+#if defined(junixsocket_have_sun_len)
+            addr->vsock.svm_len = sizeof(struct sockaddr_vm);
+#endif
+            addr->vsock.svm_reserved1 = ntohl(jaddr.reserved1);
+            addr->vsock.svm_port = ntohl(jaddr.port);
+            addr->vsock.svm_cid = ntohl(jaddr.cid);
+            CK_IGNORE_RESERVED_IDENTIFIER_END
+        }
+            break;
+#endif
     }
 
     return (jint)sockAddrLen;
@@ -453,4 +525,25 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrNativ
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrNativeFamilyOffset
  (JNIEnv *env CK_UNUSED, jclass klazz CK_UNUSED) {
     return offsetof(struct sockaddr, sa_family);
+}
+
+void fixupSocketAddress(int handle, struct sockaddr *sa) {
+    CK_ARGUMENT_POTENTIALLY_UNUSED(handle);
+    CK_ARGUMENT_POTENTIALLY_UNUSED(sa);
+
+#if defined(__MACH__) && junixsocket_have_vsock
+    if(sa->sa_family == AF_VSOCK) {
+        struct sockaddr_vm *vm = (struct sockaddr_vm *)sa;
+        jint cid = vm->svm_cid;
+
+        if(cid == VMADDR_CID_RESERVED) {
+            // VMADDR_CID_LOCAL seems to be not supported in macOS;
+            // get local CID via ioctl and adjust address accordingly.
+            int ret = ioctl(handle, IOCTL_VM_SOCKETS_GET_LOCAL_CID, &cid);
+            if(ret == 0) {
+                vm->svm_cid = cid;
+            }
+        }
+    }
+#endif
 }

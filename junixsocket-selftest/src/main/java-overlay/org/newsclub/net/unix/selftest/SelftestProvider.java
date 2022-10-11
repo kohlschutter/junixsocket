@@ -16,6 +16,8 @@ public class SelftestProvider {
       new org.newsclub.net.unix.SelftestProvider();
   private final org.newsclub.net.unix.tipc.SelftestProvider tipcSelftests =
       new org.newsclub.net.unix.tipc.SelftestProvider();
+  private final org.newsclub.net.unix.vsock.SelftestProvider vsockSelftests =
+      new org.newsclub.net.unix.vsock.SelftestProvider();
   private final org.newsclub.net.unix.rmi.SelftestProvider rmiSelftests =
       new org.newsclub.net.unix.rmi.SelftestProvider();
 
@@ -23,6 +25,7 @@ public class SelftestProvider {
     Map<String, Class<?>[]> tests = new LinkedHashMap<>();
     tests.putAll(commonSelftests.tests());
     tests.putAll(tipcSelftests.tests());
+    tests.putAll(vsockSelftests.tests());
     tests.putAll(rmiSelftests.tests());
 
     return tests;
@@ -32,6 +35,7 @@ public class SelftestProvider {
     Set<String> set = new HashSet<>();
     set.addAll(commonSelftests.modulesDisabledByDefault());
     set.addAll(tipcSelftests.modulesDisabledByDefault());
+    set.addAll(vsockSelftests.modulesDisabledByDefault());
     set.addAll(rmiSelftests.modulesDisabledByDefault());
     return set;
   }

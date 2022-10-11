@@ -143,5 +143,14 @@
 },
 {
   "name":"org.newsclub.net.unix.tipc.AFTIPCSocket"
+},
+{
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKDatagramSocket"
+},
+{
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKSocket"
+},
+{
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKServerSocket"
 }
 ]

@@ -33,6 +33,8 @@ static int CAPABILITY_NATIVE_SOCKETPAIR = (1 << 5);
 static int CAPABILITY_FD_AS_REDIRECT = (1 << 6);
 static int CAPABILITY_TIPC = (1 << 7);
 static int CAPABILITY_UNIX_DOMAIN = (1 << 8);
+static int CAPABILITY_VSOCK = (1 << 9);
+static int CAPABILITY_VSOCK_DGRAM = (1 << 10);
 CK_IGNORE_UNUSED_VARIABLE_END
 
 void init_capabilities(JNIEnv *env CK_UNUSED) {
@@ -92,6 +94,14 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
 
     if(supportsTIPC()) {
         capabilities |= CAPABILITY_TIPC;
+    }
+
+    if(supportsVSOCK()) {
+        capabilities |= CAPABILITY_VSOCK;
+
+        if(supportsVSOCK_dgram()) {
+            capabilities |= CAPABILITY_VSOCK_DGRAM;
+        }
     }
 
     return capabilities;

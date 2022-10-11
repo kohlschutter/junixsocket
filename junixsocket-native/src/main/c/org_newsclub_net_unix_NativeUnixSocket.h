@@ -11,6 +11,8 @@ extern "C" {
 #define org_newsclub_net_unix_NativeUnixSocket_DOMAIN_UNIX 1L
 #undef org_newsclub_net_unix_NativeUnixSocket_DOMAIN_TIPC
 #define org_newsclub_net_unix_NativeUnixSocket_DOMAIN_TIPC 30L
+#undef org_newsclub_net_unix_NativeUnixSocket_DOMAIN_VSOCK
+#define org_newsclub_net_unix_NativeUnixSocket_DOMAIN_VSOCK 40L
 #undef org_newsclub_net_unix_NativeUnixSocket_SOCK_STREAM
 #define org_newsclub_net_unix_NativeUnixSocket_SOCK_STREAM 1L
 #undef org_newsclub_net_unix_NativeUnixSocket_SOCK_DGRAM

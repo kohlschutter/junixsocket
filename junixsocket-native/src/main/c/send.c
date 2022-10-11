@@ -80,7 +80,7 @@ ssize_t send_wrapper(int handle, jbyte *buf, jint length, struct sockaddr_un *se
         if(socket_errno == EINTR) {
             continue;
         }
-        if(errno == ENOBUFS) {
+        if((errno == ENOBUFS || errno == ENOMEM)) {
             if(!dgramMode) {
                 break;
             }
@@ -169,7 +169,7 @@ ssize_t sendmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
         }
     } while(count == -1 && (socket_errno == EINTR ||
                             (
-                             errno == ENOBUFS
+                             (errno == ENOBUFS || errno == ENOMEM)
                              && (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) == 0
                              && sleepForRetryWriting()
                              )
@@ -287,7 +287,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_send
     ssize_t ret = sendmsg_wrapper(env, handle, dataBufferRef.buf, length, sendTo, sendToLen, opt, ancSupp);
     if(ret < 0) {
         ret = 0;
-        if(socket_errno != EAGAIN && errno != EWOULDBLOCK && (errno != ENOBUFS || (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) == 0 )) {
+        if(socket_errno != EAGAIN && errno != EWOULDBLOCK && ((errno != ENOBUFS && errno != ENOMEM) || (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) == 0 )) {
             if(!(*env)->ExceptionCheck(env)) {
                 _throwErrnumException(env, errno, fd);
             }

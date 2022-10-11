@@ -145,5 +145,11 @@
     {"name":"getScopeId","parameterTypes":[] }, 
     {"name":"getType","parameterTypes":[] }
   ]
+},
+{
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKDatagramSocket"
+},
+{
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKSocket"
 }
 ]

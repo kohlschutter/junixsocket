@@ -35,7 +35,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
 
   @Test
   public void testNonBlockingConnect() throws IOException {
-    SocketAddress sa = newTempAddress();
+    SocketAddress sa = initServerSocketBindAddress();
 
     ServerSocketChannel ssc = selectorProvider().openServerSocketChannel();
     ssc.configureBlocking(false);

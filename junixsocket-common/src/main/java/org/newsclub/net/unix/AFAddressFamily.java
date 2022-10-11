@@ -265,6 +265,8 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
     switch (getDomain()) {
       case NativeUnixSocket.DOMAIN_TIPC:
         return (AFSocketImplExtensions<A>) new AFTIPCSocketImplExtensions(ancillaryDataSupport);
+      case NativeUnixSocket.DOMAIN_VSOCK:
+        return (AFSocketImplExtensions<A>) new AFVSOCKSocketImplExtensions(ancillaryDataSupport);
       default:
         throw new UnsupportedOperationException();
     }

@@ -48,8 +48,12 @@ public enum AFSocketCapability {
    * A pair of interconnected sockets can be created natively as AF_UNIX sockets.
    * 
    * This currently not possible on Windows, but instead emulated via anonymous AF_INET ports when
-   * you use {@link AFSocketPair}. Other systems, such as OSv, may provide partial implementations
-   * of pipe-based (i.e., non-socket) pairs.
+   * you use {@link AFSocketPair}. Other systems may provide partial implementations of pipe-based
+   * (i.e., non-socket) pairs.
+   * 
+   * This capability is specific to AF_UNIX sockets. Other sockets, such as AF_VSOCK, may not
+   * implement socketpair natively even if this capability is set, but would work-around that
+   * limitation in a similar fashion but maybe without resorting to AF_INET.
    */
   CAPABILITY_NATIVE_SOCKETPAIR(5),
 
@@ -80,6 +84,25 @@ public enum AFSocketCapability {
    * disabled. Therefore, it is still recommended to check for this capability.
    */
   CAPABILITY_UNIX_DOMAIN(8),
+
+  /**
+   * Support for AF_VSOCK.
+   *
+   * Availability of this feature is checked upon launch and therefore enabling vsock at a later
+   * point may not be properly reflected.
+   * 
+   * @see #CAPABILITY_VSOCK_DGRAM
+   */
+  CAPABILITY_VSOCK(9),
+
+  /**
+   * Support for AF_VSOCK datagrams (not all platforms/kernel versions or configurations support
+   * this).
+   *
+   * Availability of this feature is checked upon launch and therefore enabling vsock at a later
+   * point may not be properly reflected.
+   */
+  CAPABILITY_VSOCK_DGRAM(10),
 
   ; // end of list
 
