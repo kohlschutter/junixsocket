@@ -27,6 +27,7 @@ import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -291,7 +292,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
     if (vsockPort >= -1) {
       vsockPortString = Integer.toString(vsockPort);
     } else {
-      vsockPortString = String.format("0x%08x", vsockPort);
+      vsockPortString = String.format(Locale.ENGLISH, "0x%08x", vsockPort);
     }
 
     String typeString = (reserved1 == 0 ? "" : "reserved1=" + reserved1 + ";") + "vsockPort="
@@ -456,6 +457,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
           break;
         default:
           cid = parseInt(cidStr);
+          break;
       }
 
       int port;
@@ -466,6 +468,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
           break;
         default:
           port = parseInt(portStr);
+          break;
       }
 
       int javaPort = overridePort != -1 ? overridePort : uri.getPort();
@@ -506,6 +509,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
         break;
       default:
         portStr = Integer.toUnsignedString(port);
+        break;
     }
 
     sb.append(portStr);
@@ -527,6 +531,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
         break;
       default:
         cidStr = Integer.toUnsignedString(cid);
+        break;
     }
 
     sb.append(cidStr);
