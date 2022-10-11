@@ -366,10 +366,6 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     return asp.newServerSocketBindOn(addr, deleteOnClose);
   }
 
-  // protected final Socket connectToServer() throws IOException {
-  // return asp.connectTo(getServerAddress());
-  // }
-
   protected final SocketAddress newTempAddressForDatagram() throws IOException {
     return asp.newTempAddressForDatagram();
   }
