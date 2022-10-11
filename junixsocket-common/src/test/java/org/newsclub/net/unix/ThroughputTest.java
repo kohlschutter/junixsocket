@@ -337,6 +337,8 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
                 }
                 readTotal.addAndGet(dp.getLength());
               }
+            } catch (SocketTimeoutException e) {
+              // continue
             } catch (SocketException e) {
               if (keepRunning.get()) {
                 e.printStackTrace();
