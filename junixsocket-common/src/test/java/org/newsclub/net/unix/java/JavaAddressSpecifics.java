@@ -51,7 +51,7 @@ public final class JavaAddressSpecifics implements AddressSpecifics<InetSocketAd
   }
 
   @Override
-  public SocketAddress initServerSocketBindAddress() throws IOException {
+  public SocketAddress newTempAddress() throws IOException {
     return wildcardBindAddress();
   }
 
@@ -81,7 +81,7 @@ public final class JavaAddressSpecifics implements AddressSpecifics<InetSocketAd
   }
 
   @Override
-  public SocketAddress newTempAddress() throws IOException {
+  public SocketAddress newTempAddressForDatagram() throws IOException {
     return new InetSocketAddress(InetAddress.getLoopbackAddress(), 0);
   }
 

@@ -29,7 +29,6 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 
 public interface AddressSpecifics<A extends SocketAddress> {
-  SocketAddress initServerSocketBindAddress() throws IOException;
 
   Socket newStrictSocket() throws IOException;
 
@@ -40,6 +39,8 @@ public interface AddressSpecifics<A extends SocketAddress> {
   ServerSocket newServerSocket() throws IOException;
 
   SocketAddress newTempAddress() throws IOException;
+
+  SocketAddress newTempAddressForDatagram() throws IOException;
 
   SocketAddress unwrap(InetAddress addr, int port) throws SocketException;
 
@@ -56,7 +57,7 @@ public interface AddressSpecifics<A extends SocketAddress> {
   ServerSocket newServerSocketBindOn(SocketAddress addr, boolean deleteOnClose) throws IOException;
 
   default CloseablePair<? extends Socket> newInterconnectedSockets() throws IOException {
-    final SocketAddress address = initServerSocketBindAddress();
+    final SocketAddress address = newTempAddress();
     ServerSocket server = newServerSocketBindOn(address);
     Socket client = connectTo(server.getLocalSocketAddress());
     final Socket socket = server.accept();

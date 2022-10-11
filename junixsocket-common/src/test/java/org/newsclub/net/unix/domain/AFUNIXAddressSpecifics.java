@@ -47,7 +47,7 @@ public final class AFUNIXAddressSpecifics implements AddressSpecifics<AFUNIXSock
   }
 
   @Override
-  public AFSocketAddress initServerSocketBindAddress() throws IOException {
+  public AFSocketAddress newTempAddress() throws IOException {
     return AFUNIXSocketAddress.of(SocketTestBase.socketFile());
   }
 
@@ -77,7 +77,7 @@ public final class AFUNIXAddressSpecifics implements AddressSpecifics<AFUNIXSock
   }
 
   @Override
-  public AFSocketAddress newTempAddress() throws IOException {
+  public AFSocketAddress newTempAddressForDatagram() throws IOException {
     return AFUNIXSocketAddress.of(SocketTestBase.newTempFile());
   }
 

@@ -48,7 +48,7 @@ public final class AFTIPCAddressSpecifics implements AddressSpecifics<AFTIPCSock
   }
 
   @Override
-  public AFSocketAddress initServerSocketBindAddress() throws IOException {
+  public AFSocketAddress newTempAddress() throws IOException {
     return AFTIPCSocketAddress.ofService(Scope.SCOPE_NODE, TIPC_TYPE, INSTANCE_COUNTER
         .incrementAndGet());
   }
@@ -79,7 +79,7 @@ public final class AFTIPCAddressSpecifics implements AddressSpecifics<AFTIPCSock
   }
 
   @Override
-  public AFSocketAddress newTempAddress() throws IOException {
+  public AFSocketAddress newTempAddressForDatagram() throws IOException {
     return AFTIPCSocketAddress.ofService(Scope.SCOPE_NODE, TIPC_TYPE, INSTANCE_COUNTER
         .incrementAndGet());
   }

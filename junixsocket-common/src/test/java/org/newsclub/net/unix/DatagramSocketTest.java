@@ -109,8 +109,8 @@ public abstract class DatagramSocketTest<A extends SocketAddress> extends Socket
 
   @Test
   public void testBindConnect() throws SocketException, IOException, InterruptedException {
-    AFSocketAddress ds1Addr = (AFSocketAddress) newTempAddress();
-    AFSocketAddress ds2Addr = (AFSocketAddress) newTempAddress();
+    AFSocketAddress ds1Addr = (AFSocketAddress) newTempAddressForDatagram();
+    AFSocketAddress ds2Addr = (AFSocketAddress) newTempAddressForDatagram();
 
     try (DatagramSocket ds1 = newDatagramSocket(); DatagramSocket ds2 = newDatagramSocket()) {
       assertUnconnectedDatagramSocket(ds1);
@@ -167,7 +167,7 @@ public abstract class DatagramSocketTest<A extends SocketAddress> extends Socket
 
   @Test
   public void testReadTimeout() throws IOException {
-    SocketAddress dsAddr = newTempAddress();
+    SocketAddress dsAddr = newTempAddressForDatagram();
 
     assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
       try (DatagramSocket ds = newDatagramSocket()) {
@@ -182,7 +182,7 @@ public abstract class DatagramSocketTest<A extends SocketAddress> extends Socket
 
   @Test
   public void testPeekTimeout() throws IOException {
-    SocketAddress dsAddr = newTempAddress();
+    SocketAddress dsAddr = newTempAddressForDatagram();
 
     assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
       try (AFDatagramSocket<?> ds = (AFDatagramSocket<?>) newDatagramSocket()) {

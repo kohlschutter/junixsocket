@@ -64,7 +64,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
   protected SocketTestBase(AddressSpecifics<A> asp) {
     this.asp = asp;
     try {
-      this.serverAddress = initServerSocketBindAddress();
+      this.serverAddress = newTempAddress();
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }
@@ -78,8 +78,8 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     return SOCKET_FILE;
   }
 
-  protected final SocketAddress initServerSocketBindAddress() throws IOException {
-    return asp.initServerSocketBindAddress();
+  protected final SocketAddress newTempAddress() throws IOException {
+    return asp.newTempAddress();
   }
 
   @BeforeEach
@@ -370,8 +370,8 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
   // return asp.connectTo(getServerAddress());
   // }
 
-  protected final SocketAddress newTempAddress() throws IOException {
-    return asp.newTempAddress();
+  protected final SocketAddress newTempAddressForDatagram() throws IOException {
+    return asp.newTempAddressForDatagram();
   }
 
   protected final SocketAddress unwrap(InetAddress addr, int port) throws SocketException {

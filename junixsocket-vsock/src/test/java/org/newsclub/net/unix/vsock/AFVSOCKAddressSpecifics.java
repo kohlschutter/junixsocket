@@ -42,7 +42,7 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
   }
 
   @Override
-  public AFSocketAddress initServerSocketBindAddress() throws IOException {
+  public AFSocketAddress newTempAddress() throws IOException {
     return AFVSOCKSocketAddress.ofAnyLocalPort();
   }
 
@@ -72,7 +72,7 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
   }
 
   @Override
-  public AFSocketAddress newTempAddress() throws IOException {
+  public AFSocketAddress newTempAddressForDatagram() throws IOException {
     return AFVSOCKSocketAddress.ofAnyPort();
   }
 

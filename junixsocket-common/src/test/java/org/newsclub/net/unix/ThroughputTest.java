@@ -297,8 +297,8 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   @SuppressWarnings("PMD.CognitiveComplexity")
   public void testDatagramPacket() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
-      SocketAddress dsAddr = newTempAddress();
-      SocketAddress dcAddr = newTempAddress();
+      SocketAddress dsAddr = newTempAddressForDatagram();
+      SocketAddress dcAddr = newTempAddressForDatagram();
 
       try (DatagramSocket ds = newDatagramSocket(); DatagramSocket dc = newDatagramSocket()) {
         if (!ds.isBound()) {
@@ -416,8 +416,8 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   }
 
   private void testDatagramChannel(boolean direct, boolean blocking) throws Exception {
-    SocketAddress dsAddr = newTempAddress();
-    SocketAddress dcAddr = newTempAddress();
+    SocketAddress dsAddr = newTempAddressForDatagram();
+    SocketAddress dcAddr = newTempAddressForDatagram();
 
     try (DatagramChannel ds = newDatagramChannel(); //
         DatagramChannel dc = newDatagramChannel();) {
