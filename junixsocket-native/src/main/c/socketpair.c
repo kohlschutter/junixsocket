@@ -23,7 +23,7 @@ typedef int socklen_t;
 #    define closesocket close
 
 #  endif
-static void simulateSocketPair(JNIEnv *env, int domain, int type, jobject fd1, jobject fd2, socklen_t addrLen, struct sockaddr *addr) {
+static void simulateSocketPair(JNIEnv *env, int domain, int type, jobject fd1, jobject fd2, jux_sockaddr_t *addr, socklen_t addrLen) {
     int handleListen = socket(domain, type, 0);
     if(handleListen < 0) {
         _throwErrnumException(env, socket_errno, NULL);
@@ -32,8 +32,11 @@ static void simulateSocketPair(JNIEnv *env, int domain, int type, jobject fd1, j
 
     int ret;
 
-    fixupSocketAddress(handleListen, addr);
+    fixupSocketAddress(handleListen, addr, addrLen);
     ret = bind(handleListen, (struct sockaddr*)addr, addrLen);
+    if(ret != 0 && fixupSocketAddressPostError(handleListen, addr, addrLen, socket_errno)) {
+        ret = bind(handleListen, (struct sockaddr*)addr, addrLen);
+    }
     if(ret != 0) {
         _throwErrnumException(env, socket_errno, NULL);
         return;
@@ -124,7 +127,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
         .sin_addr.s_addr = htonl(0x7F000001), // loopback
         .sin_port = 0
     };
-    simulateSocketPair(env, AF_INET, type, fd1, fd2, sizeof(struct sockaddr_in), (struct sockaddr *)&addr);
+    simulateSocketPair(env, AF_INET, type, fd1, fd2, (jux_sockaddr_t*)&addr, sizeof(struct sockaddr_in));
 #else
     int socket_vector[2];
     int ret;
@@ -156,16 +159,17 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
 #  if defined(junixsocket_have_sun_len)
                     .svm_len = sizeof(struct sockaddr_vm),
 #  endif
+                    .svm_reserved1 = 0,
                     .svm_family = AF_VSOCK,
                     .svm_port = VMADDR_PORT_ANY,
 #  if defined(VMADDR_CID_LOCAL)
-                    .svm_cid =VMADDR_CID_LOCAL
+                    .svm_cid = VMADDR_CID_LOCAL
 #  else
                         .svm_cid = VMADDR_CID_RESERVED
 #  endif
                 };
-                simulateSocketPair(env, domain, type, fd1, fd2,
-                                   sizeof(struct sockaddr_vm), (struct sockaddr *)&addr);
+                simulateSocketPair(env, domain, type, fd1, fd2, (jux_sockaddr_t*)&addr,
+                                   sizeof(struct sockaddr_vm));
                 return;
             }
 #endif

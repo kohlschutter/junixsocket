@@ -23,6 +23,7 @@
 #include "filedescriptors.h"
 #include "jniutil.h"
 #include "socket.h"
+#include "vsock.h"
 
 // Either we have sun_len (and we can skip the null byte), or we add the null byte at the end
 static const socklen_t SUN_NAME_MAX_LEN = (socklen_t)(sizeof(struct sockaddr_un) - 2);
@@ -527,23 +528,60 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrNativ
     return offsetof(struct sockaddr, sa_family);
 }
 
-void fixupSocketAddress(int handle, struct sockaddr *sa) {
+void fixupSocketAddress(int handle, jux_sockaddr_t *sa, socklen_t addrLen) {
     CK_ARGUMENT_POTENTIALLY_UNUSED(handle);
     CK_ARGUMENT_POTENTIALLY_UNUSED(sa);
+    CK_ARGUMENT_POTENTIALLY_UNUSED(addrLen);
 
 #if defined(__MACH__) && junixsocket_have_vsock
-    if(sa->sa_family == AF_VSOCK) {
-        struct sockaddr_vm *vm = (struct sockaddr_vm *)sa;
-        jint cid = vm->svm_cid;
+    if(sa != NULL && addrLen >= sizeof(struct sockaddr_vm) && sa->addr.sa_family == AF_VSOCK) {
+        jint cid = sa->vsock.svm_cid;
 
         if(cid == VMADDR_CID_RESERVED) {
-            // VMADDR_CID_LOCAL seems to be not supported in macOS;
-            // get local CID via ioctl and adjust address accordingly.
-            int ret = ioctl(handle, IOCTL_VM_SOCKETS_GET_LOCAL_CID, &cid);
-            if(ret == 0) {
-                vm->svm_cid = cid;
-            }
+            // VMADDR_CID_RESERVED is not supported on macOS; retrieve CID via ioctl
+            sa->vsock.svm_cid = vsock_get_local_cid(handle);
         }
     }
 #endif
+}
+
+bool fixupSocketAddressPostError(int handle, jux_sockaddr_t *sa, socklen_t addrLen, int errnum) {
+    CK_ARGUMENT_POTENTIALLY_UNUSED(handle);
+    CK_ARGUMENT_POTENTIALLY_UNUSED(sa);
+    CK_ARGUMENT_POTENTIALLY_UNUSED(addrLen);
+    CK_ARGUMENT_POTENTIALLY_UNUSED(errnum);
+#if defined(__linux__) && junixsocket_have_vsock
+    if(sa != NULL && addrLen >= sizeof(struct sockaddr_vm) && sa->addr.sa_family == AF_VSOCK) {
+        switch(errnum) {
+            case EINVAL:
+            case EADDRNOTAVAIL:
+            case EOPNOTSUPP:
+                // try to fix
+                break;
+            default:
+                // other error
+                return false;
+        }
+        switch(sa->vsock.svm_cid) {
+            case VMADDR_CID_ANY:
+            case 1: /* VMADDR_CID_LOCAL */
+                // try to fix
+                break;
+            default:
+                return false;
+        }
+        int newCid = vsock_get_local_cid(handle);
+        switch(newCid) {
+            case VMADDR_CID_ANY:
+            case 1: /* VMADDR_CID_LOCAL */
+                // not fixed
+                return false;
+            default:
+                sa->vsock.svm_cid = newCid;
+                return true;
+        }
+
+    }
+#endif
+    return false;
 }

@@ -590,6 +590,46 @@
 		4304A61F266DFCEF003BCEDF /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
 		4304A620266DFCEF003BCEDF /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
 		4304A621266DFCEF003BCEDF /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		4355474928F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355474A28F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355474B28F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355474C28F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355474D28F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355474E28F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355474F28F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475028F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475128F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475228F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475328F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475428F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475528F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475628F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475728F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475828F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475928F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475A28F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475B28F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475C28F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
+		4355475D28F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355475E28F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355475F28F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476028F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476128F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476228F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476328F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476428F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476528F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476628F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476728F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476828F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476928F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476A28F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476B28F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476C28F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476D28F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476E28F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355476F28F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
+		4355477028F6E6310042E830 /* vsock.h in Headers */ = {isa = PBXBuildFile; fileRef = 4355474828F6E6310042E830 /* vsock.h */; };
 		43684D82282EE24B005F2989 /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
 		43684D83282EE24B005F2989 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
 		43684D84282EE24B005F2989 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
@@ -1198,6 +1238,8 @@
 		432EF1F4261ADE4900F4A583 /* libjunixsocket-riscv64-redhat-linux.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-riscv64-redhat-linux.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF203261ADEDD00F4A583 /* libjunixsocket-armv6--linux-gnueabihf.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-armv6--linux-gnueabihf.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF212261AE29200F4A583 /* libjunixsocket-x86_64-apple-darwin18.2.0.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-apple-darwin18.2.0.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4355474728F6E6310042E830 /* vsock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsock.c; path = src/main/c/vsock.c; sourceTree = "<group>"; };
+		4355474828F6E6310042E830 /* vsock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vsock.h; path = src/main/c/vsock.h; sourceTree = "<group>"; };
 		43663EE2261AECC400CEED08 /* libjunixsocket-current.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-current.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43684DB7282EE24B005F2989 /* libjunixsocket-aarch64-w64-mingw32.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-aarch64-w64-mingw32.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		436B5AB728244CB500574CD4 /* libjunixsocket-powerpc-ibm-aix7.2.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-powerpc-ibm-aix7.2.so"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1424,6 +1466,8 @@
 				43B3DFB6266082000024822F /* socketpair.h */,
 				436E166027FBB70B00A553EC /* tipc.c */,
 				436E165F27FBB70B00A553EC /* tipc.h */,
+				4355474728F6E6310042E830 /* vsock.c */,
+				4355474828F6E6310042E830 /* vsock.h */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -1491,6 +1535,7 @@
 				4304A5F8266DFCEF003BCEDF /* listen.h in Headers */,
 				4304A5F9266DFCEF003BCEDF /* config.h in Headers */,
 				4304A5FA266DFCEF003BCEDF /* socketpair.h in Headers */,
+				4355477028F6E6310042E830 /* vsock.h in Headers */,
 				4304A5FB266DFCEF003BCEDF /* connect.h in Headers */,
 				4304A5FC266DFCEF003BCEDF /* jniutil.h in Headers */,
 				4304A5FD266DFCEF003BCEDF /* socketoptions.h in Headers */,
@@ -1524,6 +1569,7 @@
 				430234C42650AB4E00823167 /* listen.h in Headers */,
 				430234102650AB4E00823167 /* config.h in Headers */,
 				43B3DFC4266082000024822F /* socketpair.h in Headers */,
+				4355475E28F6E6310042E830 /* vsock.h in Headers */,
 				4302344C2650AB4E00823167 /* connect.h in Headers */,
 				430234042650AB4E00823167 /* jniutil.h in Headers */,
 				430233D42650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1557,6 +1603,7 @@
 				430234CE2650AB4E00823167 /* listen.h in Headers */,
 				4302341A2650AB4E00823167 /* config.h in Headers */,
 				43B3DFCE266082000024822F /* socketpair.h in Headers */,
+				4355476C28F6E6310042E830 /* vsock.h in Headers */,
 				430234562650AB4E00823167 /* connect.h in Headers */,
 				4302340E2650AB4E00823167 /* jniutil.h in Headers */,
 				430233DE2650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1590,6 +1637,7 @@
 				430234C72650AB4E00823167 /* listen.h in Headers */,
 				430234132650AB4E00823167 /* config.h in Headers */,
 				43B3DFC7266082000024822F /* socketpair.h in Headers */,
+				4355476228F6E6310042E830 /* vsock.h in Headers */,
 				4302344F2650AB4E00823167 /* connect.h in Headers */,
 				430234072650AB4E00823167 /* jniutil.h in Headers */,
 				430233D72650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1623,6 +1671,7 @@
 				430234CA2650AB4E00823167 /* listen.h in Headers */,
 				430234162650AB4E00823167 /* config.h in Headers */,
 				43B3DFCA266082000024822F /* socketpair.h in Headers */,
+				4355476728F6E6310042E830 /* vsock.h in Headers */,
 				430234522650AB4E00823167 /* connect.h in Headers */,
 				4302340A2650AB4E00823167 /* jniutil.h in Headers */,
 				430233DA2650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1656,6 +1705,7 @@
 				430234CD2650AB4E00823167 /* listen.h in Headers */,
 				430234192650AB4E00823167 /* config.h in Headers */,
 				43B3DFCD266082000024822F /* socketpair.h in Headers */,
+				4355476A28F6E6310042E830 /* vsock.h in Headers */,
 				430234552650AB4E00823167 /* connect.h in Headers */,
 				4302340D2650AB4E00823167 /* jniutil.h in Headers */,
 				430233DD2650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1689,6 +1739,7 @@
 				430234C82650AB4E00823167 /* listen.h in Headers */,
 				430234142650AB4E00823167 /* config.h in Headers */,
 				43B3DFC8266082000024822F /* socketpair.h in Headers */,
+				4355476328F6E6310042E830 /* vsock.h in Headers */,
 				430234502650AB4E00823167 /* connect.h in Headers */,
 				430234082650AB4E00823167 /* jniutil.h in Headers */,
 				430233D82650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1722,6 +1773,7 @@
 				430234C92650AB4E00823167 /* listen.h in Headers */,
 				430234152650AB4E00823167 /* config.h in Headers */,
 				43B3DFC9266082000024822F /* socketpair.h in Headers */,
+				4355476628F6E6310042E830 /* vsock.h in Headers */,
 				430234512650AB4E00823167 /* connect.h in Headers */,
 				430234092650AB4E00823167 /* jniutil.h in Headers */,
 				430233D92650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1755,6 +1807,7 @@
 				430234C62650AB4E00823167 /* listen.h in Headers */,
 				430234122650AB4E00823167 /* config.h in Headers */,
 				43B3DFC6266082000024822F /* socketpair.h in Headers */,
+				4355476128F6E6310042E830 /* vsock.h in Headers */,
 				4302344E2650AB4E00823167 /* connect.h in Headers */,
 				430234062650AB4E00823167 /* jniutil.h in Headers */,
 				430233D62650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1788,6 +1841,7 @@
 				430234CC2650AB4E00823167 /* listen.h in Headers */,
 				430234182650AB4E00823167 /* config.h in Headers */,
 				43B3DFCC266082000024822F /* socketpair.h in Headers */,
+				4355476928F6E6310042E830 /* vsock.h in Headers */,
 				430234542650AB4E00823167 /* connect.h in Headers */,
 				4302340C2650AB4E00823167 /* jniutil.h in Headers */,
 				430233DC2650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1821,6 +1875,7 @@
 				430234C32650AB4E00823167 /* listen.h in Headers */,
 				4302340F2650AB4E00823167 /* config.h in Headers */,
 				43B3DFC3266082000024822F /* socketpair.h in Headers */,
+				4355475D28F6E6310042E830 /* vsock.h in Headers */,
 				4302344B2650AB4E00823167 /* connect.h in Headers */,
 				430234032650AB4E00823167 /* jniutil.h in Headers */,
 				430233D32650AB4E00823167 /* socketoptions.h in Headers */,
@@ -1854,6 +1909,7 @@
 				43684D88282EE24B005F2989 /* listen.h in Headers */,
 				43684D89282EE24B005F2989 /* config.h in Headers */,
 				43684D8A282EE24B005F2989 /* socketpair.h in Headers */,
+				4355476B28F6E6310042E830 /* vsock.h in Headers */,
 				43684D8B282EE24B005F2989 /* connect.h in Headers */,
 				43684D8C282EE24B005F2989 /* jniutil.h in Headers */,
 				43684D8D282EE24B005F2989 /* socketoptions.h in Headers */,
@@ -1887,6 +1943,7 @@
 				436B5A8828244CB500574CD4 /* listen.h in Headers */,
 				436B5A8928244CB500574CD4 /* config.h in Headers */,
 				436B5A8A28244CB500574CD4 /* socketpair.h in Headers */,
+				4355476428F6E6310042E830 /* vsock.h in Headers */,
 				436B5A8B28244CB500574CD4 /* connect.h in Headers */,
 				436B5A8C28244CB500574CD4 /* jniutil.h in Headers */,
 				436B5A8D28244CB500574CD4 /* socketoptions.h in Headers */,
@@ -1920,6 +1977,7 @@
 				436B5AC22826F49A00574CD4 /* listen.h in Headers */,
 				436B5AC32826F49A00574CD4 /* config.h in Headers */,
 				436B5AC42826F49A00574CD4 /* socketpair.h in Headers */,
+				4355476528F6E6310042E830 /* vsock.h in Headers */,
 				436B5AC52826F49A00574CD4 /* connect.h in Headers */,
 				436B5AC62826F49A00574CD4 /* jniutil.h in Headers */,
 				436B5AC72826F49A00574CD4 /* socketoptions.h in Headers */,
@@ -1953,6 +2011,7 @@
 				43B3DFD626660A2D0024822F /* listen.h in Headers */,
 				43B3DFD726660A2D0024822F /* config.h in Headers */,
 				43B3DFD826660A2D0024822F /* socketpair.h in Headers */,
+				4355476D28F6E6310042E830 /* vsock.h in Headers */,
 				43B3DFD926660A2D0024822F /* connect.h in Headers */,
 				43B3DFDA26660A2D0024822F /* jniutil.h in Headers */,
 				43B3DFDB26660A2D0024822F /* socketoptions.h in Headers */,
@@ -1986,6 +2045,7 @@
 				43B3E00E26672FD30024822F /* listen.h in Headers */,
 				43B3E00F26672FD30024822F /* config.h in Headers */,
 				43B3E01026672FD30024822F /* socketpair.h in Headers */,
+				4355476E28F6E6310042E830 /* vsock.h in Headers */,
 				43B3E01126672FD30024822F /* connect.h in Headers */,
 				43B3E01226672FD30024822F /* jniutil.h in Headers */,
 				43B3E01326672FD30024822F /* socketoptions.h in Headers */,
@@ -2019,6 +2079,7 @@
 				43B3E046266756540024822F /* listen.h in Headers */,
 				43B3E047266756540024822F /* config.h in Headers */,
 				43B3E048266756540024822F /* socketpair.h in Headers */,
+				4355475F28F6E6310042E830 /* vsock.h in Headers */,
 				43B3E049266756540024822F /* connect.h in Headers */,
 				43B3E04A266756540024822F /* jniutil.h in Headers */,
 				43B3E04B266756540024822F /* socketoptions.h in Headers */,
@@ -2052,6 +2113,7 @@
 				43B3E07E266971630024822F /* listen.h in Headers */,
 				43B3E07F266971630024822F /* config.h in Headers */,
 				43B3E080266971630024822F /* socketpair.h in Headers */,
+				4355476F28F6E6310042E830 /* vsock.h in Headers */,
 				43B3E081266971630024822F /* connect.h in Headers */,
 				43B3E082266971630024822F /* jniutil.h in Headers */,
 				43B3E083266971630024822F /* socketoptions.h in Headers */,
@@ -2085,6 +2147,7 @@
 				430234C52650AB4E00823167 /* listen.h in Headers */,
 				430234112650AB4E00823167 /* config.h in Headers */,
 				43B3DFC5266082000024822F /* socketpair.h in Headers */,
+				4355476028F6E6310042E830 /* vsock.h in Headers */,
 				4302344D2650AB4E00823167 /* connect.h in Headers */,
 				430234052650AB4E00823167 /* jniutil.h in Headers */,
 				430233D52650AB4E00823167 /* socketoptions.h in Headers */,
@@ -2118,6 +2181,7 @@
 				430234CB2650AB4E00823167 /* listen.h in Headers */,
 				430234172650AB4E00823167 /* config.h in Headers */,
 				43B3DFCB266082000024822F /* socketpair.h in Headers */,
+				4355476828F6E6310042E830 /* vsock.h in Headers */,
 				430234532650AB4E00823167 /* connect.h in Headers */,
 				4302340B2650AB4E00823167 /* jniutil.h in Headers */,
 				430233DB2650AB4E00823167 /* socketoptions.h in Headers */,
@@ -2543,6 +2607,7 @@
 				4304A60D266DFCEF003BCEDF /* filedescriptors.c in Sources */,
 				4304A60E266DFCEF003BCEDF /* bind.c in Sources */,
 				4304A60F266DFCEF003BCEDF /* address.c in Sources */,
+				4355475C28F6E6310042E830 /* vsock.c in Sources */,
 				4304A610266DFCEF003BCEDF /* send.c in Sources */,
 				4304A611266DFCEF003BCEDF /* socket.c in Sources */,
 				4304A612266DFCEF003BCEDF /* pipe.c in Sources */,
@@ -2572,6 +2637,7 @@
 				4302359C2650AB4F00823167 /* filedescriptors.c in Sources */,
 				430235902650AB4F00823167 /* bind.c in Sources */,
 				430233C82650AB4E00823167 /* address.c in Sources */,
+				4355474A28F6E6310042E830 /* vsock.c in Sources */,
 				430234D02650AB4F00823167 /* send.c in Sources */,
 				430235842650AB4F00823167 /* socket.c in Sources */,
 				43B3DF90265EEC930024822F /* pipe.c in Sources */,
@@ -2601,6 +2667,7 @@
 				430235A62650AB4F00823167 /* filedescriptors.c in Sources */,
 				4302359A2650AB4F00823167 /* bind.c in Sources */,
 				430233D22650AB4E00823167 /* address.c in Sources */,
+				4355475828F6E6310042E830 /* vsock.c in Sources */,
 				430234DA2650AB4F00823167 /* send.c in Sources */,
 				4302358E2650AB4F00823167 /* socket.c in Sources */,
 				43B3DF9A265EEC930024822F /* pipe.c in Sources */,
@@ -2630,6 +2697,7 @@
 				4302359F2650AB4F00823167 /* filedescriptors.c in Sources */,
 				430235932650AB4F00823167 /* bind.c in Sources */,
 				430233CB2650AB4E00823167 /* address.c in Sources */,
+				4355474E28F6E6310042E830 /* vsock.c in Sources */,
 				430234D32650AB4F00823167 /* send.c in Sources */,
 				430235872650AB4F00823167 /* socket.c in Sources */,
 				43B3DF93265EEC930024822F /* pipe.c in Sources */,
@@ -2659,6 +2727,7 @@
 				430235A22650AB4F00823167 /* filedescriptors.c in Sources */,
 				430235962650AB4F00823167 /* bind.c in Sources */,
 				430233CE2650AB4E00823167 /* address.c in Sources */,
+				4355475328F6E6310042E830 /* vsock.c in Sources */,
 				430234D62650AB4F00823167 /* send.c in Sources */,
 				4302358A2650AB4F00823167 /* socket.c in Sources */,
 				43B3DF96265EEC930024822F /* pipe.c in Sources */,
@@ -2688,6 +2757,7 @@
 				430235A52650AB4F00823167 /* filedescriptors.c in Sources */,
 				430235992650AB4F00823167 /* bind.c in Sources */,
 				430233D12650AB4E00823167 /* address.c in Sources */,
+				4355475628F6E6310042E830 /* vsock.c in Sources */,
 				430234D92650AB4F00823167 /* send.c in Sources */,
 				4302358D2650AB4F00823167 /* socket.c in Sources */,
 				43B3DF99265EEC930024822F /* pipe.c in Sources */,
@@ -2717,6 +2787,7 @@
 				430235A02650AB4F00823167 /* filedescriptors.c in Sources */,
 				430235942650AB4F00823167 /* bind.c in Sources */,
 				430233CC2650AB4E00823167 /* address.c in Sources */,
+				4355474F28F6E6310042E830 /* vsock.c in Sources */,
 				430234D42650AB4F00823167 /* send.c in Sources */,
 				430235882650AB4F00823167 /* socket.c in Sources */,
 				43B3DF94265EEC930024822F /* pipe.c in Sources */,
@@ -2746,6 +2817,7 @@
 				430235A12650AB4F00823167 /* filedescriptors.c in Sources */,
 				430235952650AB4F00823167 /* bind.c in Sources */,
 				430233CD2650AB4E00823167 /* address.c in Sources */,
+				4355475228F6E6310042E830 /* vsock.c in Sources */,
 				430234D52650AB4F00823167 /* send.c in Sources */,
 				430235892650AB4F00823167 /* socket.c in Sources */,
 				43B3DF95265EEC930024822F /* pipe.c in Sources */,
@@ -2775,6 +2847,7 @@
 				4302359E2650AB4F00823167 /* filedescriptors.c in Sources */,
 				430235922650AB4F00823167 /* bind.c in Sources */,
 				430233CA2650AB4E00823167 /* address.c in Sources */,
+				4355474D28F6E6310042E830 /* vsock.c in Sources */,
 				430234D22650AB4F00823167 /* send.c in Sources */,
 				430235862650AB4F00823167 /* socket.c in Sources */,
 				43B3DF92265EEC930024822F /* pipe.c in Sources */,
@@ -2804,6 +2877,7 @@
 				430235A42650AB4F00823167 /* filedescriptors.c in Sources */,
 				430235982650AB4F00823167 /* bind.c in Sources */,
 				430233D02650AB4E00823167 /* address.c in Sources */,
+				4355475528F6E6310042E830 /* vsock.c in Sources */,
 				430234D82650AB4F00823167 /* send.c in Sources */,
 				4302358C2650AB4F00823167 /* socket.c in Sources */,
 				43B3DF98265EEC930024822F /* pipe.c in Sources */,
@@ -2833,6 +2907,7 @@
 				4302359B2650AB4F00823167 /* filedescriptors.c in Sources */,
 				4302358F2650AB4F00823167 /* bind.c in Sources */,
 				430233C72650AB4E00823167 /* address.c in Sources */,
+				4355474928F6E6310042E830 /* vsock.c in Sources */,
 				430234CF2650AB4F00823167 /* send.c in Sources */,
 				430235832650AB4F00823167 /* socket.c in Sources */,
 				43B3DF8F265EEC930024822F /* pipe.c in Sources */,
@@ -2862,6 +2937,7 @@
 				43684D9D282EE24B005F2989 /* filedescriptors.c in Sources */,
 				43684D9E282EE24B005F2989 /* bind.c in Sources */,
 				43684D9F282EE24B005F2989 /* address.c in Sources */,
+				4355475728F6E6310042E830 /* vsock.c in Sources */,
 				43684DA0282EE24B005F2989 /* send.c in Sources */,
 				43684DA1282EE24B005F2989 /* socket.c in Sources */,
 				43684DA2282EE24B005F2989 /* pipe.c in Sources */,
@@ -2891,6 +2967,7 @@
 				436B5A9D28244CB500574CD4 /* filedescriptors.c in Sources */,
 				436B5A9E28244CB500574CD4 /* bind.c in Sources */,
 				436B5A9F28244CB500574CD4 /* address.c in Sources */,
+				4355475028F6E6310042E830 /* vsock.c in Sources */,
 				436B5AA028244CB500574CD4 /* send.c in Sources */,
 				436B5AA128244CB500574CD4 /* socket.c in Sources */,
 				436B5AA228244CB500574CD4 /* pipe.c in Sources */,
@@ -2920,6 +2997,7 @@
 				436B5AD72826F49A00574CD4 /* filedescriptors.c in Sources */,
 				436B5AD82826F49A00574CD4 /* bind.c in Sources */,
 				436B5AD92826F49A00574CD4 /* address.c in Sources */,
+				4355475128F6E6310042E830 /* vsock.c in Sources */,
 				436B5ADA2826F49A00574CD4 /* send.c in Sources */,
 				436B5ADB2826F49A00574CD4 /* socket.c in Sources */,
 				436B5ADC2826F49A00574CD4 /* pipe.c in Sources */,
@@ -2949,6 +3027,7 @@
 				43B3DFEB26660A2D0024822F /* filedescriptors.c in Sources */,
 				43B3DFEC26660A2D0024822F /* bind.c in Sources */,
 				43B3DFED26660A2D0024822F /* address.c in Sources */,
+				4355475928F6E6310042E830 /* vsock.c in Sources */,
 				43B3DFEE26660A2D0024822F /* send.c in Sources */,
 				43B3DFEF26660A2D0024822F /* socket.c in Sources */,
 				43B3DFF026660A2D0024822F /* pipe.c in Sources */,
@@ -2978,6 +3057,7 @@
 				43B3E02326672FD30024822F /* filedescriptors.c in Sources */,
 				43B3E02426672FD30024822F /* bind.c in Sources */,
 				43B3E02526672FD30024822F /* address.c in Sources */,
+				4355475A28F6E6310042E830 /* vsock.c in Sources */,
 				43B3E02626672FD30024822F /* send.c in Sources */,
 				43B3E02726672FD30024822F /* socket.c in Sources */,
 				43B3E02826672FD30024822F /* pipe.c in Sources */,
@@ -3007,6 +3087,7 @@
 				43B3E05B266756540024822F /* filedescriptors.c in Sources */,
 				43B3E05C266756540024822F /* bind.c in Sources */,
 				43B3E05D266756540024822F /* address.c in Sources */,
+				4355474B28F6E6310042E830 /* vsock.c in Sources */,
 				43B3E05E266756540024822F /* send.c in Sources */,
 				43B3E05F266756540024822F /* socket.c in Sources */,
 				43B3E060266756540024822F /* pipe.c in Sources */,
@@ -3036,6 +3117,7 @@
 				43B3E093266971630024822F /* filedescriptors.c in Sources */,
 				43B3E094266971630024822F /* bind.c in Sources */,
 				43B3E095266971630024822F /* address.c in Sources */,
+				4355475B28F6E6310042E830 /* vsock.c in Sources */,
 				43B3E096266971630024822F /* send.c in Sources */,
 				43B3E097266971630024822F /* socket.c in Sources */,
 				43B3E098266971630024822F /* pipe.c in Sources */,
@@ -3065,6 +3147,7 @@
 				4302359D2650AB4F00823167 /* filedescriptors.c in Sources */,
 				430235912650AB4F00823167 /* bind.c in Sources */,
 				430233C92650AB4E00823167 /* address.c in Sources */,
+				4355474C28F6E6310042E830 /* vsock.c in Sources */,
 				430234D12650AB4F00823167 /* send.c in Sources */,
 				430235852650AB4F00823167 /* socket.c in Sources */,
 				43B3DF91265EEC930024822F /* pipe.c in Sources */,
@@ -3094,6 +3177,7 @@
 				430235A32650AB4F00823167 /* filedescriptors.c in Sources */,
 				430235972650AB4F00823167 /* bind.c in Sources */,
 				430233CF2650AB4E00823167 /* address.c in Sources */,
+				4355475428F6E6310042E830 /* vsock.c in Sources */,
 				430234D72650AB4F00823167 /* send.c in Sources */,
 				4302358B2650AB4F00823167 /* socket.c in Sources */,
 				43B3DF97265EEC930024822F /* pipe.c in Sources */,

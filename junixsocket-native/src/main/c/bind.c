@@ -22,6 +22,7 @@
 #include "exceptions.h"
 #include "address.h"
 #include "filedescriptors.h"
+#include "vsock.h"
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -57,11 +58,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
         return 0;
     }
 
-#if junixsocket_have_vsock
-    if(addr->addr.sa_family == AF_VSOCK) {
-        fixupSocketAddress(serverHandle, (struct sockaddr*)&(addr->vsock));
-    }
-#endif
+    fixupSocketAddress(serverHandle, addr, suLength);
 
     if(
 #if defined(_OS400) || __TOS_MVS__
@@ -70,10 +67,18 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
        addr->addr.sa_family != AF_UNIX
 #endif
     ) {
+        int errnum = 0;
         int bindRes = bind(serverHandle, &addr->addr, suLength);
-        int myErr = socket_errno;
         if(bindRes < 0) {
-            _throwErrnumException(env, myErr, NULL);
+            errnum = socket_errno;
+        }
+        if(bindRes < 0 && fixupSocketAddressPostError(serverHandle, addr, suLength, errnum)) {
+            // address fixed, try again
+            bindRes = bind(serverHandle, &addr->addr, suLength);
+            errnum = socket_errno;
+        }
+        if(bindRes < 0) {
+            _throwErrnumException(env, errnum, NULL);
             return -1;
         }
         _initFD(env, fd, serverHandle);

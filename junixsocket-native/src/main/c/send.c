@@ -24,6 +24,7 @@
 #include "ancillary.h"
 #include "receive.h"
 #include "jniutil.h"
+#include "vsock.h"
 
 #if __TOS_MVS__
 #  include <sched.h>
@@ -43,11 +44,13 @@ static jboolean sleepForRetryWriting(void) {
 }
 #endif
 
-ssize_t send_wrapper(int handle, jbyte *buf, jint length, struct sockaddr_un *sendTo, socklen_t sendToLen, jint opt) {
+ssize_t send_wrapper(int handle, jbyte *buf, jint length, jux_sockaddr_t *sendTo, socklen_t sendToLen, jint opt) {
     ssize_t count = 0;
 
     const jboolean dgramMode = (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_DGRAM_MODE) != 0;
     const jboolean nonBlockingMode = (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) != 0;
+
+    fixupSocketAddress(handle, sendTo, sendToLen);
 
 //    if(!dgramMode) {
 //        int sndBuf;
@@ -77,10 +80,15 @@ ssize_t send_wrapper(int handle, jbyte *buf, jint length, struct sockaddr_un *se
         if(count >= 0) {
             break;
         }
-        if(socket_errno == EINTR) {
+        int myErr = socket_errno;
+        if(myErr == EINTR) {
             continue;
         }
-        if((errno == ENOBUFS || errno == ENOMEM)) {
+        if(fixupSocketAddressPostError(myErr, sendTo, sendToLen, myErr)) {
+            // try again
+            continue;
+        }
+        if((myErr == ENOBUFS || myErr == ENOMEM)) {
             if(!dgramMode) {
                 break;
             }
@@ -112,7 +120,7 @@ ssize_t send_wrapper(int handle, jbyte *buf, jint length, struct sockaddr_un *se
     return count;
 }
 
-ssize_t sendmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struct sockaddr_un *sendTo, socklen_t sendToLen, jint opt, jobject ancSupp) {
+ssize_t sendmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, jux_sockaddr_t *sendTo, socklen_t sendToLen, jint opt, jobject ancSupp) {
 #if !defined(junixsocket_have_ancillary)
     CK_ARGUMENT_POTENTIALLY_UNUSED(env);
     CK_ARGUMENT_POTENTIALLY_UNUSED(ancSupp);
@@ -123,6 +131,8 @@ ssize_t sendmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
     if (ancFds == NULL) {
         return send_wrapper(handle, buf, length, sendTo, sendToLen, opt);
     }
+
+    fixupSocketAddress(handle, sendTo, sendToLen);
 
     struct iovec iov = {.iov_base = buf, .iov_len = (size_t)length};
     struct msghdr msg = {.msg_name = (struct sockaddr*)sendTo, .msg_namelen =
@@ -161,15 +171,24 @@ ssize_t sendmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, struc
     ssize_t count;
 
     errno = 0;
+    int myErr = 0;
     do {
         if (msg.msg_controllen == 0) {
             count = send(handle, msg.msg_iov->iov_base, msg.msg_iov->iov_len, 0);
         } else {
             count = sendmsg(handle, &msg, 0);
         }
-    } while(count == -1 && (socket_errno == EINTR ||
+        if(count >= 0) {
+            break;
+        }
+        myErr = socket_errno;
+        if(fixupSocketAddressPostError(myErr, sendTo, sendToLen, myErr)) {
+            // try again
+            continue;
+        }
+    } while((myErr == EINTR ||
                             (
-                             (errno == ENOBUFS || errno == ENOMEM)
+                             (myErr == ENOBUFS || myErr == ENOMEM)
                              && (opt & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) == 0
                              && sleepForRetryWriting()
                              )
@@ -275,13 +294,13 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_send
     }
 
     struct jni_direct_byte_buffer_ref addressBufferRef =
-    getDirectByteBufferRef (env, addressBuffer, 0, sizeof(struct sockaddr_un));
+    getDirectByteBufferRef (env, addressBuffer, 0, sizeof(jux_sockaddr_t));
     if(addressBufferRef.size == -1) {
         _throwException(env, kExceptionSocketException, "Cannot get addressBuffer");
         return -1;
     }
 
-    struct sockaddr_un *sendTo = (struct sockaddr_un *)(addressBufferRef.buf);
+    jux_sockaddr_t *sendTo = (jux_sockaddr_t *)(addressBufferRef.buf);
     socklen_t sendToLen = (socklen_t) MIN(SOCKLEN_MAX, MIN((unsigned)addressLen, (unsigned)addressBufferRef.size));
 
     ssize_t ret = sendmsg_wrapper(env, handle, dataBufferRef.buf, length, sendTo, sendToLen, opt, ancSupp);

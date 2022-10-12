@@ -22,6 +22,7 @@
 #include "exceptions.h"
 #include "address.h"
 #include "filedescriptors.h"
+#include "vsock.h"
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -67,19 +68,28 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
         }
     }
 
-    int errnum = errno;
+    int myErr = 0;
 
     int ret;
     do {
         ret = connect(socketHandle, (struct sockaddr *)addr, addrLength);
-    } while(ret == -1 && (errnum = socket_errno) == EINTR);
+        if(ret != -1) {
+            break;
+        }
+        myErr = socket_errno;
+#if junixsocket_have_vsock
+        if(myErr != 0 && fixupSocketAddressPostError(socketHandle, addr, addrLength, myErr)) {
+            continue;
+        }
+#endif
+    } while(ret == -1 && myErr == EINTR);
 
     if(ret == -1) {
-        if(checkNonBlocking(socketHandle, errnum)) {
+        if(checkNonBlocking(socketHandle, myErr)) {
             // non-blocking connect
             return false;
         } else {
-            _throwErrnumException(env, errnum, NULL);
+            _throwErrnumException(env, myErr, NULL);
             return false;
         }
     }

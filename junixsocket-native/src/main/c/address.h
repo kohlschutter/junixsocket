@@ -37,6 +37,7 @@ typedef union {
 socklen_t initSu(JNIEnv * env, struct sockaddr_un *su, jbyteArray addr);
 int domainToNative(int domain);
 
-void fixupSocketAddress(int handle, struct sockaddr *sa);
+void fixupSocketAddress(int handle, jux_sockaddr_t *sa, socklen_t addrLen);
+bool fixupSocketAddressPostError(int handle, jux_sockaddr_t *sa, socklen_t addrLen, int errnum);
 
 #endif /* address_h */

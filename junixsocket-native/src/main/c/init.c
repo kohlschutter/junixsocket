@@ -68,23 +68,27 @@ static void init_tipc(void) {
 static void init_vsock(void) {
     int ret;
 
-    ret = socket(AF_VSOCK, SOCK_STREAM
-#if defined(junixsocket_have_socket_cloexec)
-                     | SOCK_CLOEXEC
-#endif
-                     , 0);
+    ret = socket(AF_VSOCK, SOCK_STREAM, 0);
     if(ret >= 0) {
         cap_supports_vsock = true;
         close(ret);
     }
 
-    ret = socket(AF_VSOCK, SOCK_DGRAM
-#if defined(junixsocket_have_socket_cloexec)
-                     | SOCK_CLOEXEC
-#endif
-                     , 0);
+    ret = socket(AF_VSOCK, SOCK_DGRAM, 0);
     if(ret >= 0) {
-        cap_supports_vsock_dgram = true;
+        struct sockaddr_vm addr = {
+#if defined(junixsocket_have_sun_len)
+            .svm_len = sizeof(struct sockaddr_vm),
+#endif
+            .svm_reserved1 = 0,
+            .svm_port = VMADDR_PORT_ANY,
+            .svm_cid = VMADDR_CID_ANY
+        };
+
+        if(bind(ret, (struct sockaddr*)&addr, sizeof(struct sockaddr_vm)) == 0) {
+            // older Linux versions may only complain upon bind
+            cap_supports_vsock_dgram = true;
+        }
         close(ret);
     }
 }
