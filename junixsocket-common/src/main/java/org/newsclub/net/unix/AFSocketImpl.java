@@ -29,6 +29,7 @@ import java.net.SocketException;
 import java.net.SocketImpl;
 import java.net.SocketOption;
 import java.net.SocketOptions;
+import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -372,7 +373,30 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
     AFSocketAddress socketAddress = (AFSocketAddress) addr;
     ByteBuffer ab = socketAddress.getNativeAddressDirectBuffer();
-    boolean success = NativeUnixSocket.connect(ab, ab.limit(), fd, -1);
+    boolean success = false;
+    boolean ignoreSpuriousTimeout = true;
+    do {
+      try {
+        success = NativeUnixSocket.connect(ab, ab.limit(), fd, -1);
+        break;
+      } catch (SocketTimeoutException e) {
+        // Ignore spurious timeout once when SO_TIMEOUT==0
+        // seen on older Linux kernels with AF_VSOCK running in qemu
+        if (ignoreSpuriousTimeout) {
+          Object o = getOption(SocketOptions.SO_TIMEOUT);
+          if (o instanceof Integer) {
+            if (((Integer) o).intValue() == 0) {
+              ignoreSpuriousTimeout = false;
+              continue;
+            }
+          } else if (o == null) {
+            ignoreSpuriousTimeout = false;
+            continue;
+          }
+        }
+        throw e;
+      }
+    } while (!Thread.interrupted());
     if (success) {
       setSocketAddress(socketAddress);
       this.connected.set(true);
