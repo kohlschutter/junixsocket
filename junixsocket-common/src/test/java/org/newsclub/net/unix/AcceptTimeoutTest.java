@@ -30,6 +30,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
@@ -99,6 +100,8 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
             "We should roughly get the same timeout back that we set before, but was "
                 + actualTimeout + " instead of " + timeoutMillis);
 
+        final AtomicBoolean accepted = new AtomicBoolean(false);
+
         new Thread() {
           private final Socket socket = newSocket();
 
@@ -108,16 +111,26 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
 
           @Override
           public void run() {
-            try {
-              Thread.sleep(connectDelayMillis);
-            } catch (InterruptedException e) {
-              return;
-            }
+            for (int i = 1; i <= 10; i++) {
+              try {
+                Thread.sleep(connectDelayMillis);
+              } catch (InterruptedException e) {
+                return;
+              }
 
-            try {
-              socket.connect(serverSock.getLocalSocketAddress());
-            } catch (IOException e) {
-              e.printStackTrace();
+              try {
+                socket.connect(serverSock.getLocalSocketAddress());
+              } catch (SocketTimeoutException e) {
+                System.out.println("SocketTimeout, trying connect again (" + i + ")");
+                e.printStackTrace();
+                continue;
+              } catch (IOException e) {
+                // ignore "connection reset by peer", etc. after connection was accepted
+                if (!accepted.get()) {
+                  e.printStackTrace();
+                }
+              }
+              break;
             }
 
           }
@@ -126,6 +139,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
         long time = System.currentTimeMillis();
         try (Socket socket = serverSock.accept();) {
           assertNotNull(socket);
+          accepted.set(true);
         }
         time = System.currentTimeMillis() - time;
 
