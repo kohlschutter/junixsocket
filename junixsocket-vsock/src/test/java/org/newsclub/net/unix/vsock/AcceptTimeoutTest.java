@@ -17,11 +17,17 @@
  */
 package org.newsclub.net.unix.vsock;
 
+import java.net.SocketTimeoutException;
+
+import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
+import org.opentest4j.TestAbortedException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_VSOCK)
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
@@ -30,5 +36,20 @@ public final class AcceptTimeoutTest extends
 
   public AcceptTimeoutTest() {
     super(AFVSOCKAddressSpecifics.INSTANCE);
+  }
+
+  @Override
+  @Test
+  public void testTimeoutAfterDelay() throws Exception {
+    try {
+      super.testTimeoutAfterDelay();
+    } catch (SocketTimeoutException e) {
+      try {
+        newInterconnectedSockets();
+      } catch (TestAbortedException e2) {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, AFVSOCKAddressSpecifics.KERNEL_TOO_OLD, e);
+      }
+    }
   }
 }

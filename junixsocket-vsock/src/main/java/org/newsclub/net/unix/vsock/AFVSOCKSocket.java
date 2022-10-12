@@ -123,6 +123,20 @@ public final class AFVSOCKSocket extends AFSocket<AFVSOCKSocketAddress> implemen
   }
 
   /**
+   * Returns the local CID.
+   * 
+   * If the system does not support vsock, or status about support cannot be retrieved, -1
+   * ({@link AFVSOCKSocketAddress#VMADDR_CID_ANY}) is returned. The value may be cached upon
+   * initialization of the library.
+   *
+   * @return The CID, or -1.
+   * @throws IOException
+   */
+  public static int getLocalCID() throws IOException {
+    return getStaticImplExtensions().getLocalCID();
+  }
+
+  /**
    * Very basic self-test function.
    * 
    * Prints "supported" and "capabilities" status to System.out.

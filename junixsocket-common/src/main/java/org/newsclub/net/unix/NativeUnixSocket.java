@@ -283,4 +283,6 @@ final class NativeUnixSocket {
   static native int sockAddrNativeFamilyOffset();
 
   static native int sockTypeToNative(int type) throws IOException;
+
+  static native int vsockGetLocalCID() throws IOException;
 }

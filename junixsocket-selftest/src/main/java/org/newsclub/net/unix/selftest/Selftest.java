@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -77,7 +78,7 @@ public class Selftest {
   private boolean fail = false;
   private boolean modified = false;
   private boolean isSupportedAFUNIX = false;
-  private final List<String> important = new ArrayList<>();
+  private final LinkedHashSet<String> important = new LinkedHashSet<>();
   private boolean inconclusive = false;
 
   private enum Result {

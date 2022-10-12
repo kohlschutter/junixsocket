@@ -425,6 +425,14 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrNativ
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockTypeToNative
   (JNIEnv *, jclass, jint);
 
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    vsockGetLocalCID
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_vsockGetLocalCID
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

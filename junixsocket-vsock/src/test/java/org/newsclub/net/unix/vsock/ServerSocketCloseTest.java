@@ -22,6 +22,8 @@ import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_VSOCK)
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
@@ -30,5 +32,15 @@ public final class ServerSocketCloseTest extends
 
   public ServerSocketCloseTest() {
     super(AFVSOCKAddressSpecifics.INSTANCE);
+  }
+
+  @Override
+  protected void checkFailedTestActuallySupported() {
+    switch (((AFVSOCKSocketAddress) getServerBindAddress()).getVSOCKCID()) {
+      case AFVSOCKSocketAddress.VMADDR_CID_HOST:
+      case AFVSOCKSocketAddress.VMADDR_CID_LOCAL:
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_INFORMATIONAL, AFVSOCKAddressSpecifics.KERNEL_TOO_OLD);
+    }
   }
 }

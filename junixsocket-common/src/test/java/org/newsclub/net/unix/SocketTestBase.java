@@ -386,8 +386,17 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     return asp.newDatagramSocketPair();
   }
 
-  protected Socket connectTo(SocketAddress socket) throws IOException {
-    return asp.connectTo(socket);
+  protected Socket connectTo(SocketAddress endpoint) throws IOException {
+    return asp.connectTo(endpoint);
+  }
+
+  protected final void connectSocket(Socket socket, SocketAddress endpoint) throws IOException {
+    asp.connectSocket(socket, endpoint);
+  }
+
+  protected final boolean connectSocket(SocketChannel socketChannel, SocketAddress endpoint)
+      throws IOException {
+    return asp.connectSocket(socketChannel, endpoint);
   }
 
   protected CloseablePair<? extends Socket> newInterconnectedSockets() throws IOException {

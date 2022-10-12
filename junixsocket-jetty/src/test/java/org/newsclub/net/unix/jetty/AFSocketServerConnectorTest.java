@@ -47,7 +47,8 @@ public class AFSocketServerConnectorTest {
 
   @Test
   public void testServerAFUNIX() throws Exception {
-    AFSocketAddress addr = (AFSocketAddress) AFUNIXAddressSpecifics.INSTANCE.newTempAddressForDatagram();
+    AFSocketAddress addr = (AFSocketAddress) AFUNIXAddressSpecifics.INSTANCE
+        .newTempAddressForDatagram();
     Server server1 = newServer(addr);
     checkConnection(addr);
     assertTrue(server1.isRunning());

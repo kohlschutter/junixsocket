@@ -40,6 +40,8 @@ public class SelftestProvider {
 
   @SuppressWarnings({"PMD.ExcessiveMethodLength", "PMD.UnnecessaryFullyQualifiedName"})
   public SelftestProvider() {
+    registerTest(AFVSOCKExtensionsTest.class);
+
     registerTest(AcceptTimeoutTest.class);
 
     registerTest(AncillaryMessageTest.class);

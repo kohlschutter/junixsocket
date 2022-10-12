@@ -58,11 +58,11 @@ public abstract class TcpNoDelayTest<A extends SocketAddress> extends SocketTest
 
       try (Socket sock = newStrictSocket()) {
         try {
-          sock.connect(serverThread.getServerAddress());
+          connectSocket(sock, serverThread.getServerAddress());
         } catch (SocketTimeoutException e) {
           // report and try again
           e.printStackTrace();
-          sock.connect(serverThread.getServerAddress());
+          connectSocket(sock, serverThread.getServerAddress());
         }
         boolean gotException = false;
         try {

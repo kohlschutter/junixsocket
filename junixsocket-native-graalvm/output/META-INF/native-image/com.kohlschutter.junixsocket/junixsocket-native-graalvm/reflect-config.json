@@ -823,6 +823,18 @@
   "queryAllDeclaredConstructors":true
 },
 {
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKExtensionsTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"testGetLocalID","parameterTypes":[] }
+  ]
+},
+{
   "name":"org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider"
 },
 {

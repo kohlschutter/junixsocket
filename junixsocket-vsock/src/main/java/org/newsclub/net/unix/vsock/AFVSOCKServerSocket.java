@@ -87,12 +87,13 @@ public class AFVSOCKServerSocket extends AFServerSocket<AFVSOCKSocketAddress> {
    */
   public static AFVSOCKServerSocket bindOn(final AFVSOCKSocketAddress addr, boolean deleteOnClose)
       throws IOException {
-    return (AFVSOCKServerSocket) AFServerSocket.bindOn(AFVSOCKServerSocket::new, addr, deleteOnClose);
+    return (AFVSOCKServerSocket) AFServerSocket.bindOn(AFVSOCKServerSocket::new, addr,
+        deleteOnClose);
   }
 
   /**
-   * Returns a new, <em>unbound</em> AF_VSOCK {@link ServerSocket} that will always bind to the given
-   * address, regardless of any socket address used in a call to <code>bind</code>.
+   * Returns a new, <em>unbound</em> AF_VSOCK {@link ServerSocket} that will always bind to the
+   * given address, regardless of any socket address used in a call to <code>bind</code>.
    * 
    * @param forceAddr The address to use.
    * @return The new, yet unbound {@link AFServerSocket}.

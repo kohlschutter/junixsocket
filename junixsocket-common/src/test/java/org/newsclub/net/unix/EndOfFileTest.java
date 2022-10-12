@@ -91,7 +91,7 @@ public abstract class EndOfFileTest<A extends SocketAddress> extends SocketTestB
 
     Thread.sleep(100);
 
-    clientSocket.connect(server.getLocalSocketAddress());
+    connectSocket(clientSocket, server.getLocalSocketAddress());
 
     Socket serverSocket = serverAcceptFuture.get(5, TimeUnit.SECONDS);
 

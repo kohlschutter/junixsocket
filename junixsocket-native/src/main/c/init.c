@@ -26,6 +26,7 @@
 #include "filedescriptors.h"
 #include "polling.h"
 #include "socketoptions.h"
+#include "vsock.h"
 
 static jboolean cap_supports_unix = false;
 static jboolean cap_supports_tipc = false;
@@ -71,6 +72,7 @@ static void init_vsock(void) {
     ret = socket(AF_VSOCK, SOCK_STREAM, 0);
     if(ret >= 0) {
         cap_supports_vsock = true;
+        vsock_get_local_cid(ret); // cache CID
         close(ret);
     }
 

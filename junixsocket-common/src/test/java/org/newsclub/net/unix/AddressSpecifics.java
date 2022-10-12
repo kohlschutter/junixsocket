@@ -52,7 +52,16 @@ public interface AddressSpecifics<A extends SocketAddress> {
 
   ServerSocket newServerSocketBindOn(SocketAddress addr) throws IOException;
 
-  Socket connectTo(SocketAddress socket) throws IOException;
+  Socket connectTo(SocketAddress endpoint) throws IOException;
+
+  default void connectSocket(Socket sock, SocketAddress endpoint) throws IOException {
+    sock.connect(endpoint);
+  }
+
+  default boolean connectSocket(SocketChannel socketChannel, SocketAddress endpoint)
+      throws IOException {
+    return socketChannel.connect(endpoint);
+  }
 
   ServerSocket newServerSocketBindOn(SocketAddress addr, boolean deleteOnClose) throws IOException;
 

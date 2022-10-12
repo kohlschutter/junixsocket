@@ -30,11 +30,13 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 
 /**
  * Verifies that accept properly times out when an soTimeout was specified.
@@ -101,6 +103,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
                 + actualTimeout + " instead of " + timeoutMillis);
 
         final AtomicBoolean accepted = new AtomicBoolean(false);
+        final CompletableFuture<RuntimeException> runtimeExceptionCF = new CompletableFuture<>();
 
         new Thread() {
           private final Socket socket = newSocket();
@@ -119,11 +122,14 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
               }
 
               try {
-                socket.connect(serverSock.getLocalSocketAddress());
+                connectSocket(socket, serverSock.getLocalSocketAddress());
+                runtimeExceptionCF.complete(null);
               } catch (SocketTimeoutException e) {
                 System.out.println("SocketTimeout, trying connect again (" + i + ")");
                 e.printStackTrace();
                 continue;
+              } catch (TestAbortedWithImportantMessageException e) {
+                runtimeExceptionCF.complete(e);
               } catch (IOException e) {
                 // ignore "connection reset by peer", etc. after connection was accepted
                 if (!accepted.get()) {
@@ -142,6 +148,11 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
           accepted.set(true);
         }
         time = System.currentTimeMillis() - time;
+
+        RuntimeException re = runtimeExceptionCF.get();
+        if (re != null) {
+          throw re;
+        }
 
         assertTrue(time >= connectDelayMillis && (time < timeoutMillis || (time
             - connectDelayMillis) <= TIMING_INACCURACY_MILLIS),

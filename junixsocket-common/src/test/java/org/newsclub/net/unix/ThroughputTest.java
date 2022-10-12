@@ -202,7 +202,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
 
     runTestSocketChannel(stbTestType() + " SocketChannel", getServerBindAddress(), ssc, () -> {
       SocketChannel sc = sp.openSocketChannel();
-      sc.connect(ssc.getLocalAddress());
+      connectSocket(sc, ssc.getLocalAddress());
       return sc;
     }, direct);
   }

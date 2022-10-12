@@ -19,11 +19,15 @@ package org.newsclub.net.unix.vsock;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
+import org.opentest4j.TestAbortedException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_VSOCK)
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
@@ -32,4 +36,17 @@ public final class SelectorTest extends org.newsclub.net.unix.SelectorTest<AFVSO
   public SelectorTest() throws IOException {
     super(AFVSOCKAddressSpecifics.INSTANCE);
   }
+
+  @Override
+  @Test
+  public void testNonBlockingAccept() throws IOException, InterruptedException {
+    try {
+      newInterconnectedSockets();
+    } catch (TestAbortedException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          AFVSOCKAddressSpecifics.KERNEL_TOO_OLD);
+    }
+    super.testNonBlockingAccept();
+  }
+
 }

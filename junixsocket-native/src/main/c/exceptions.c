@@ -31,6 +31,7 @@ static char *kExceptionClassnames[kExceptionMaxExcl] = {
     "java/lang/NullPointerException", // kExceptionNullPointerException
     "java/net/NoRouteToHostException", // kExceptionNoRouteToHostException
     "java/nio/channels/ClosedChannelException", // kExceptionClosedChannelException
+    "org/newsclub/net/unix/InvalidArgumentSocketException", // kExceptionInvalidArgumentSocketException
 };
 
 static jclass *kExceptionClasses;
@@ -104,6 +105,9 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
             break;
         case EHOSTUNREACH:
             exceptionType = kExceptionNoRouteToHostException;
+            break;
+        case EINVAL:
+            exceptionType = kExceptionInvalidArgumentSocketException;
             break;
         case EPIPE:
         case EBADF:

@@ -33,10 +33,19 @@ import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 import org.newsclub.net.unix.AddressSpecifics;
 import org.newsclub.net.unix.CloseablePair;
+import org.newsclub.net.unix.InvalidArgumentSocketException;
+
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSocketAddress> {
   public static final AddressSpecifics<AFVSOCKSocketAddress> INSTANCE =
       new AFVSOCKAddressSpecifics();
+
+  /**
+   * Older kernels are unable to communicate locally when CID == 2 (VMADDR_CID_HOST)
+   */
+  static final String KERNEL_TOO_OLD = "Kernel may be too old for full VSOCK support";
 
   private AFVSOCKAddressSpecifics() {
   }
@@ -88,12 +97,20 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
 
   @Override
   public CloseablePair<? extends SocketChannel> newSocketPair() throws IOException {
-    return AFVSOCKSocketPair.open();
+    try {
+      return AFVSOCKSocketPair.open();
+    } catch (InvalidArgumentSocketException e) {
+      throw handleSocketException(e, "");
+    }
   }
 
   @Override
   public CloseablePair<? extends DatagramChannel> newDatagramSocketPair() throws IOException {
-    return AFVSOCKSocketPair.openDatagram();
+    try {
+      return AFVSOCKSocketPair.openDatagram();
+    } catch (InvalidArgumentSocketException e) {
+      throw handleSocketException(e, "");
+    }
   }
 
   @Override
@@ -101,9 +118,56 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
     return AFVSOCKServerSocket.bindOn((AFVSOCKSocketAddress) addr);
   }
 
+  private static SocketException handleSocketException(InvalidArgumentSocketException e, String msg)
+      throws SocketException, IOException {
+    if (AFVSOCKSocket.getLocalCID() == AFVSOCKSocketAddress.VMADDR_CID_HOST) {
+      throw new TestAbortedWithImportantMessageException(
+          MessageType.TEST_ABORTED_SHORT_INFORMATIONAL, msg == null || msg.isEmpty()
+              ? KERNEL_TOO_OLD : KERNEL_TOO_OLD + ": " + msg, e);
+    } else {
+      return e;
+    }
+  }
+
+  private static SocketException handleSocketException(InvalidArgumentSocketException e,
+      AFVSOCKSocketAddress sa) throws IOException {
+    switch (sa.getVSOCKCID()) {
+      case AFVSOCKSocketAddress.VMADDR_CID_HOST:
+      case AFVSOCKSocketAddress.VMADDR_CID_LOCAL:
+        return handleSocketException(e, "Cannot connect to addresses with CID=" + sa.getVSOCKCID());
+      default:
+        return e;
+    }
+  }
+
   @Override
-  public Socket connectTo(SocketAddress socket) throws IOException {
-    return AFVSOCKSocket.connectTo((AFVSOCKSocketAddress) socket);
+  public Socket connectTo(SocketAddress addr) throws IOException {
+    AFVSOCKSocketAddress sa = (AFVSOCKSocketAddress) addr;
+    try {
+      return AFVSOCKSocket.connectTo(sa);
+    } catch (InvalidArgumentSocketException e) {
+      throw handleSocketException(e, sa);
+    }
+  }
+
+  @Override
+  public void connectSocket(Socket sock, SocketAddress addr) throws IOException {
+    AFVSOCKSocketAddress sa = (AFVSOCKSocketAddress) addr;
+    try {
+      sock.connect(sa);
+    } catch (InvalidArgumentSocketException e) {
+      throw handleSocketException(e, sa);
+    }
+  }
+
+  @Override
+  public boolean connectSocket(SocketChannel sock, SocketAddress addr) throws IOException {
+    AFVSOCKSocketAddress sa = (AFVSOCKSocketAddress) addr;
+    try {
+      return sock.connect(sa);
+    } catch (InvalidArgumentSocketException e) {
+      throw handleSocketException(e, sa);
+    }
   }
 
   @Override
@@ -117,5 +181,4 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
     CloseablePair<? extends SocketChannel> sp = newSocketPair();
     return new CloseablePair<>(sp.getFirst().socket(), sp.getSecond().socket());
   }
-
 }

@@ -617,6 +617,14 @@
   "allDeclaredConstructors":true
 },
 {
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKExtensionsTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
   "name":"org.newsclub.net.unix.vsock.AcceptTimeoutTest",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,

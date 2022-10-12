@@ -104,8 +104,15 @@ public abstract class ServerSocketCloseTest<A extends SocketAddress> extends Soc
         threadPool.shutdown();
         threadPool.awaitTermination(5, TimeUnit.SECONDS);
 
-        assertEquals(0, threadPool.getActiveCount(), "There should be no pending accepts");
+        int active = threadPool.getActiveCount();
+        if (active == numThreads) {
+          checkFailedTestActuallySupported();
+        }
+        assertEquals(0, active, "There should be no pending accepts");
       }
     });
+  }
+
+  protected void checkFailedTestActuallySupported() {
   }
 }

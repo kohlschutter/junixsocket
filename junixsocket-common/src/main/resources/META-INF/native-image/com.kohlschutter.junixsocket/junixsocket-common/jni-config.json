@@ -129,6 +129,10 @@
   ]
 },
 {
+  "name":"org.newsclub.net.unix.InvalidArgumentSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
   "name":"org.newsclub.net.unix.tipc.AFTIPCDatagramSocket"
 },
 {

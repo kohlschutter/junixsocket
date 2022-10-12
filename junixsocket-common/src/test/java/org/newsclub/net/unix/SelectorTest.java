@@ -103,8 +103,8 @@ public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBa
             try {
               // connect from a different thread
               // TIPC doesn't like being called from the same thread
-              future.complete(sc.connect(ssc.getLocalAddress()));
-            } catch (IOException e) {
+              future.complete(connectSocket(sc, ssc.getLocalAddress()));
+            } catch (RuntimeException | IOException e) {
               future.completeExceptionally(e);
             }
           }).start();
@@ -318,6 +318,16 @@ public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBa
 
       mayCloseSema.release();
 
+      if (numAcceptable == 0 && threadFuture.isDone()) {
+        try {
+          threadFuture.get();
+        } catch (ExecutionException e) {
+          Throwable t = e.getCause();
+          if (t instanceof RuntimeException) {
+            throw (RuntimeException) t;
+          }
+        }
+      }
       assertEquals(1, numAcceptable);
 
       if (!checkInvalid) {
