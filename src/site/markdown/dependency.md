@@ -7,6 +7,8 @@ database via unix sockets.
 
 ## Maven dependencies
 
+### Common dependency
+
 Add the following dependency to your Maven project
 
     <dependency>
@@ -18,7 +20,24 @@ Add the following dependency to your Maven project
 
 > **IMPORTANT:** Make sure to include the `<type>pom</type>` line (this has changed in junixsocket 2.4.0).
 
-[See here](customarch.html) how to add support for custom architectures that aren't supported out of the box.
+Some applications may have problems with this POM dependency.  You can also manually specify the
+following two dependencies instead:
+
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-common</artifactId>
+      <version>2.5.2</version>
+    </dependency>
+
+and
+
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-native-common</artifactId>
+      <version>2.5.2</version>
+    </dependency>
+ 
+### Optional dependencies
     
 If you're going to use AFUNIXSocketServer code, add the following dependency:
     
@@ -51,6 +70,14 @@ If you're going to use TIPC, add the following dependency:
       <artifactId>junixsocket-tipc</artifactId>
       <version>2.5.2</version>
     </dependency>
+ 
+If you're going to use VSOCK, add the following dependency:
+
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-vsock</artifactId>
+      <version>2.5.2</version>
+    </dependency>
   
 If you're going to use the Jetty connectors, add the following dependency:
 
@@ -60,9 +87,16 @@ If you're going to use the Jetty connectors, add the following dependency:
       <version>2.5.2</version>
     </dependency>
 
+
+### Custom architectures (usually not required)
+
+[See here](customarch.html) how to add support for custom architectures that aren't supported out of
+the box.
+
 ### Snapshot versions
 
-If you're testing a `-SNAPSHOT` version, make sure that the Sonatype snapshot repository is enabled in your POM:
+If you're testing a `-SNAPSHOT` version, make sure that the Sonatype snapshot repository is enabled
+in your POM:
 
 ```
 <repositories>
@@ -95,6 +129,10 @@ If you're testing a `-SNAPSHOT` version, make sure that the Sonatype snapshot re
  For TIPC support, add:
  
     compile 'com.kohlschutter.junixsocket:junixsocket-tipc:2.5.2'
+ 
+ For VSOCK support, add:
+ 
+    compile 'com.kohlschutter.junixsocket:junixsocket-vsock:2.5.2'
  
  For Jetty support, add:
  
@@ -133,7 +171,8 @@ Make sure that the following jars are on your classpath:
  * (typically, omit if you use the custom library below) junixsocket-native-common-2.5.2.jar
  * (optionally, if you have a custom architecture) junixsocket-native-custom-2.5.2.jar
 
-Use the following connection properties (along with `user`, `password`, and other properties you may have).
+Use the following connection properties (along with `user`, `password`, and other properties you may
+have).
 
 | property name | value | remarks |
 | ------------- | ----- | ------- |
@@ -165,13 +204,17 @@ Make sure that the following jars are on your classpath:
  * (optionally, if you have a custom architecture) junixsocket-native-custom-2.5.2.jar
 
 
-Use the following connection properties (along with `user`, `password`, and other properties you may have).
+Use the following connection properties (along with `user`, `password`, and other properties you may
+have).
 
-There are currently three distinct ways (socket factories) how to configure the connection to your database:
+There are currently three distinct ways (socket factories) how to configure the connection to your
+database:
 
  1. **org.newsclub.net.unix.AFUNIXSocketFactory$FactoryArg**
  
     You provide the socket path via the `socketFactoryArg` JDBC property.
+
+    > *NOTE*    This is the recommended way for graphical database applications.
 
     The connection hostname must be set to "localhost", any other value will not work.
     
@@ -181,9 +224,8 @@ There are currently three distinct ways (socket factories) how to configure the 
     | ------------- | ----- | ------- |
     | `socketFactory` | `org.newsclub.net.unix.AFUNIXSocketFactory$FactoryArg` | |
     | `socketFactoryArg` | `/tmp/.s.PGSQL.5432` | (1) |
-    | `sslMode` | `disable` | (2) |
+    | `sslmode` | `disable` | (2) |
 
-    
  2. **org.newsclub.net.unix.AFUNIXSocketFactory$SystemProperty**
  
     You provide the socket path via the system property `org.newsclub.net.unix.socket.default`
@@ -207,8 +249,8 @@ There are currently three distinct ways (socket factories) how to configure the 
     somehow to pacify PostgreSQL's connection parser. This can be achieved using URL encoding:
     If the plain URL is `file:///tmp/.s.PGSQL.5432`, then the URL-encoded version is `file%3A%2F%2F%2Ftmp%2F.s.PGSQL.5432`.
     
-    **Performance trick:** By placing a square bracket (`[`) in front of the host name, we can prevent
-    any attempt to lookup the hostname in DNS. However, this is not mandatory.
+    **Performance trick:** By placing a square bracket (`[`) in front of the host name, we can
+    prevent any attempt to lookup the hostname in DNS.  However, this is not mandatory.
     
     Connection URL: `jdbc:postgresql://[file%3A%2F%2F%2Ftmp%2F.s.PGSQL.5432/postgres`
     
@@ -225,8 +267,24 @@ There are currently three distinct ways (socket factories) how to configure the 
 (2) This is optional, and forcibly disables the use of SSL. Since the connection is local, there's
 no point in encrypting the communication. Disabling SSL may improve performance.
 
+## Specifying dependencies in third-party apps
+
+### DBeaver
+
+[DBeaver](https://dbeaver.io) is an Open-Source universal database tool.  To use junixsocket with
+DBeaver, for example to connect to PostgreSQL or MySQL databases, add junixsocket to the
+corresponding driver settings.
+
+Select "Connect by URL" (not Host), then specify a JDBC URL from the variants above.  Click "Driver
+properties" and adjust the driver properties as instructed above.
+
+In the "Connect to a database" dialog, click "Edit Driver Settings".  Under the "Libraries" tab,
+then add both `junixsocket-common` and `junixsocket-native-common` dependencies via "Add Artifact"
+each; make sure to copy the full `<dependency>...</dependency>` XML fragment from the _Common
+dependency_ section above.  Afterwards, click "Download/Update" to ensure the drivers are
+accessible.
 
 # Compatibility of future versions
- 
+
 We have documented some [Compatibility Considerations](compatibility.html), please keep them
 in mind before updating your dependencies.
