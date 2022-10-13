@@ -47,8 +47,10 @@ public final class AcceptTimeoutTest extends
       try {
         newInterconnectedSockets();
       } catch (TestAbortedException e2) {
-        throw new TestAbortedWithImportantMessageException(
+        TestAbortedWithImportantMessageException e3 = new TestAbortedWithImportantMessageException(
             MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, AFVSOCKAddressSpecifics.KERNEL_TOO_OLD, e);
+        e3.addSuppressed(e2);
+        throw e3; // NOPMD.PreserveStackTrace
       }
     }
   }

@@ -84,6 +84,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
   }
 
   @Test
+  @SuppressWarnings("PMD.CognitiveComplexity")
   public void testTimeoutAfterDelay() throws Exception {
     final int timeoutMillis = 5000;
     assertTimeoutPreemptively(Duration.ofMillis(2 * timeoutMillis), () -> {
@@ -136,7 +137,8 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
                   e.printStackTrace();
                 }
               }
-              break;
+
+              break; // NOPMD.AvoidBranchingStatementAsLastInLoop
             }
 
           }

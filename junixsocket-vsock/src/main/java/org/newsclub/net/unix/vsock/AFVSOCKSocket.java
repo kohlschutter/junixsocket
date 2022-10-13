@@ -130,7 +130,7 @@ public final class AFVSOCKSocket extends AFSocket<AFVSOCKSocketAddress> implemen
    * initialization of the library.
    *
    * @return The CID, or -1.
-   * @throws IOException
+   * @throws IOException on error.
    */
   public static int getLocalCID() throws IOException {
     return getStaticImplExtensions().getLocalCID();

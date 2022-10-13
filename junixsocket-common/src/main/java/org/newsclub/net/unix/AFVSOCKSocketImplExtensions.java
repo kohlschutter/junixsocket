@@ -43,7 +43,7 @@ public final class AFVSOCKSocketImplExtensions implements
    * The value may be cached upon initialization of the library.
    * 
    * @return The CID, or -1.
-   * @throws IOException
+   * @throws IOException on error.
    */
   public int getLocalCID() throws IOException {
     return NativeUnixSocket.vsockGetLocalCID();

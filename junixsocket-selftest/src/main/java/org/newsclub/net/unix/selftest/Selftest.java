@@ -78,7 +78,7 @@ public class Selftest {
   private boolean fail = false;
   private boolean modified = false;
   private boolean isSupportedAFUNIX = false;
-  private final LinkedHashSet<String> important = new LinkedHashSet<>();
+  private final Set<String> important = new LinkedHashSet<>();
   private boolean inconclusive = false;
 
   private enum Result {

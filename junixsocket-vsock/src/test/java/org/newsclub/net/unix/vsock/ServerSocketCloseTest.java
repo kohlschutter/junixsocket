@@ -41,6 +41,8 @@ public final class ServerSocketCloseTest extends
       case AFVSOCKSocketAddress.VMADDR_CID_LOCAL:
         throw new TestAbortedWithImportantMessageException(
             MessageType.TEST_ABORTED_SHORT_INFORMATIONAL, AFVSOCKAddressSpecifics.KERNEL_TOO_OLD);
+      default:
+        break;
     }
   }
 }

@@ -46,7 +46,7 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
       new AFVSOCKAddressSpecifics();
 
   /**
-   * Older kernels are unable to communicate locally when CID == 2 (VMADDR_CID_HOST)
+   * Older kernels are unable to communicate locally when CID == 2 (VMADDR_CID_HOST).
    */
   static final String KERNEL_TOO_OLD = "Kernel may be too old for full VSOCK support";
 
