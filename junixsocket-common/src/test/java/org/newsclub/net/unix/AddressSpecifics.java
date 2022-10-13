@@ -25,9 +25,23 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 
+/**
+ * Test-related methods to work with a particular {@link AFSocket} implementation.
+ * 
+ * It is essential to use these methods in tests instead of directly calling the {@link AFSocket}
+ * etc. methods: Some socket implementations (and sometimes only in certain kernel/environment
+ * configurations) may expose unexpected behavior that is otherwise hard to catch.
+ * 
+ * This is especially relevant when connecting/binding sockets.
+ * 
+ * @param <A> The socket address.
+ * @author Christian Kohlschütter
+ * @see SocketTestBase
+ */
 public interface AddressSpecifics<A extends SocketAddress> {
 
   Socket newStrictSocket() throws IOException;
@@ -53,6 +67,26 @@ public interface AddressSpecifics<A extends SocketAddress> {
   ServerSocket newServerSocketBindOn(SocketAddress addr) throws IOException;
 
   Socket connectTo(SocketAddress endpoint) throws IOException;
+
+  default void bindServerSocket(ServerSocket serverSocket, SocketAddress bindpoint)
+      throws IOException {
+    serverSocket.bind(bindpoint);
+  }
+
+  default void bindServerSocket(ServerSocket serverSocket, SocketAddress bindpoint, int backlog)
+      throws IOException {
+    serverSocket.bind(bindpoint, backlog);
+  }
+
+  default void bindServerSocket(ServerSocketChannel serverSocketChannel, SocketAddress bindpoint)
+      throws IOException {
+    serverSocketChannel.bind(bindpoint);
+  }
+
+  default void bindServerSocket(ServerSocketChannel serverSocketChannel, SocketAddress bindpoint,
+      int backlog) throws IOException {
+    serverSocketChannel.bind(bindpoint, backlog);
+  }
 
   default void connectSocket(Socket sock, SocketAddress endpoint) throws IOException {
     sock.connect(endpoint);

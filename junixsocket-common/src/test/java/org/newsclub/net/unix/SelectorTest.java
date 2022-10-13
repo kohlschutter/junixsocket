@@ -86,7 +86,7 @@ public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBa
       assertTrue(sscSel.selectedKeys().isEmpty());
 
       try (ServerSocketChannel ssc = selectorProvider().openServerSocketChannel()) {
-        ssc.bind(newTempAddress());
+        bindServerSocket(ssc, newTempAddress());
         assertChangeToNonBlocking(ssc);
 
         SelectionKey key = ssc.register(sscSel, SelectionKey.OP_ACCEPT);
@@ -239,7 +239,7 @@ public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBa
 
     SelectorProvider provider = selectorProvider();
     try (ServerSocketChannel server = provider.openServerSocketChannel()) {
-      server.bind(newTempAddress());
+      bindServerSocket(server, newTempAddress());
       server.configureBlocking(false);
 
       Selector selector = provider.openSelector();

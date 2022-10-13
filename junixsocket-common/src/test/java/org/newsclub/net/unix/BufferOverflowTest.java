@@ -58,7 +58,7 @@ public abstract class BufferOverflowTest<A extends SocketAddress> extends Socket
   @BeforeEach
   public void setUp() throws IOException {
     server = newServerSocket();
-    server.bind(getServerBindAddress());
+    bindServerSocket(server, getServerBindAddress());
 
     executor = Executors.newFixedThreadPool(2);
   }

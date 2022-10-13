@@ -8,7 +8,7 @@ import java.net.SocketException;
  * 
  * @author Christian Kohlschütter
  */
-public class InvalidArgumentSocketException extends SocketException {
+public class InvalidArgumentSocketException extends InvalidSocketException {
   private static final long serialVersionUID = 1L;
 
   /**

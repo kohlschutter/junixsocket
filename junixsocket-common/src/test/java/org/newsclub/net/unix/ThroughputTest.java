@@ -215,7 +215,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
 
       @Override
       protected ServerSocket startServer() throws IOException {
-        ssc.bind(sba);
+        bindServerSocket(ssc, sba);
         return null;
       }
 

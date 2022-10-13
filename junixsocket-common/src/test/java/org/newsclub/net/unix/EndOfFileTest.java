@@ -59,7 +59,7 @@ public abstract class EndOfFileTest<A extends SocketAddress> extends SocketTestB
   @BeforeEach
   public void setUp() throws IOException {
     server = newServerSocket();
-    server.bind(getServerBindAddress());
+    bindServerSocket(server, getServerBindAddress());
 
     executor = Executors.newFixedThreadPool(2);
   }

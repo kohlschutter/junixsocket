@@ -30,6 +30,7 @@ typedef enum {
     kExceptionNoRouteToHostException,
     kExceptionClosedChannelException,
     kExceptionInvalidArgumentSocketException,
+    kExceptionAddressUnavailableSocketException,
     kExceptionMaxExcl
 } ExceptionType;
 

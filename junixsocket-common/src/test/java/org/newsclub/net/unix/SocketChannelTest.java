@@ -39,7 +39,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
 
     ServerSocketChannel ssc = selectorProvider().openServerSocketChannel();
     ssc.configureBlocking(false);
-    ssc.bind(sa, 1);
+    bindServerSocket(ssc, sa, 1);
     sa = ssc.getLocalAddress();
 
     {

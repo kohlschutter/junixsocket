@@ -550,6 +550,7 @@ bool fixupSocketAddressPostError(int handle, jux_sockaddr_t *sa, socklen_t addrL
     CK_ARGUMENT_POTENTIALLY_UNUSED(sa);
     CK_ARGUMENT_POTENTIALLY_UNUSED(addrLen);
     CK_ARGUMENT_POTENTIALLY_UNUSED(errnum);
+
 #if defined(__linux__) && junixsocket_have_vsock
     if(sa != NULL && addrLen >= sizeof(struct sockaddr_vm) && sa->addr.sa_family == AF_VSOCK) {
         switch(errnum) {
@@ -583,5 +584,6 @@ bool fixupSocketAddressPostError(int handle, jux_sockaddr_t *sa, socklen_t addrL
 
     }
 #endif
+
     return false;
 }

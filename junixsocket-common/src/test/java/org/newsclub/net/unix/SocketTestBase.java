@@ -29,6 +29,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.nio.file.Files;
@@ -45,6 +46,16 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Some base functionality for socket tests.
+ * 
+ * This class provides access to the {@link AddressSpecifics} methods for the socket implementation
+ * under test. It is essential to use these wrapper methods in tests instead of directly calling the
+ * {@link AFSocket} etc. methods: Some socket implementations (and sometimes only in certain
+ * kernel/environment configurations) may expose unexpected behavior that is otherwise hard to
+ * catch.
+ * 
+ * This is especially relevant when connecting/binding sockets (see
+ * {@link #connectSocket(Socket, SocketAddress)}, #bindServerSocket(ServerSocket, SocketAddress)},
+ * etc.)
  * 
  * @author Christian Kohlschuetter
  */
@@ -115,10 +126,10 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     final ServerSocket server = newServerSocket();
     SocketAddress bindAddr = getServerBindAddress();
     try {
-      server.bind(getServerBindAddress());
+      asp.bindServerSocket(server, getServerBindAddress());
     } catch (BindException e) {
       if (asp instanceof JavaAddressSpecifics && ((InetSocketAddress) bindAddr).getPort() == 0) {
-        server.bind(null);
+        asp.bindServerSocket(server, null);
       } else {
         throw e;
       }
@@ -388,6 +399,21 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
   protected Socket connectTo(SocketAddress endpoint) throws IOException {
     return asp.connectTo(endpoint);
+  }
+
+  protected final void bindServerSocket(ServerSocket serverSocket, SocketAddress bindpoint)
+      throws IOException {
+    asp.bindServerSocket(serverSocket, bindpoint);
+  }
+
+  protected final void bindServerSocket(ServerSocketChannel serverSocketChannel,
+      SocketAddress bindpoint) throws IOException {
+    asp.bindServerSocket(serverSocketChannel, bindpoint);
+  }
+
+  protected final void bindServerSocket(ServerSocketChannel serverSocketChannel,
+      SocketAddress bindpoint, int backlog) throws IOException {
+    asp.bindServerSocket(serverSocketChannel, bindpoint, backlog);
   }
 
   protected final void connectSocket(Socket socket, SocketAddress endpoint) throws IOException {

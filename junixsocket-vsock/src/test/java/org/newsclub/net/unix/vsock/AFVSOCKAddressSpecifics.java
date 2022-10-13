@@ -19,10 +19,12 @@ package org.newsclub.net.unix.vsock;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
 import org.newsclub.net.unix.AFDatagramSocket;
@@ -32,8 +34,9 @@ import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 import org.newsclub.net.unix.AddressSpecifics;
+import org.newsclub.net.unix.AddressUnavailableSocketException;
 import org.newsclub.net.unix.CloseablePair;
-import org.newsclub.net.unix.InvalidArgumentSocketException;
+import org.newsclub.net.unix.InvalidSocketException;
 
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
@@ -46,6 +49,11 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
    * Older kernels are unable to communicate locally when CID == 2 (VMADDR_CID_HOST)
    */
   static final String KERNEL_TOO_OLD = "Kernel may be too old for full VSOCK support";
+
+  /**
+   * Access denied...
+   */
+  static final String ACCESS_DENIED = "Access to VSOCK resources (e.g., /dev/vsock) were denied";
 
   private AFVSOCKAddressSpecifics() {
   }
@@ -99,7 +107,7 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
   public CloseablePair<? extends SocketChannel> newSocketPair() throws IOException {
     try {
       return AFVSOCKSocketPair.open();
-    } catch (InvalidArgumentSocketException e) {
+    } catch (InvalidSocketException e) {
       throw handleSocketException(e, "");
     }
   }
@@ -108,29 +116,47 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
   public CloseablePair<? extends DatagramChannel> newDatagramSocketPair() throws IOException {
     try {
       return AFVSOCKSocketPair.openDatagram();
-    } catch (InvalidArgumentSocketException e) {
+    } catch (InvalidSocketException e) {
       throw handleSocketException(e, "");
     }
   }
 
   @Override
   public AFServerSocket<?> newServerSocketBindOn(SocketAddress addr) throws IOException {
-    return AFVSOCKServerSocket.bindOn((AFVSOCKSocketAddress) addr);
+    try {
+      return AFVSOCKServerSocket.bindOn((AFVSOCKSocketAddress) addr);
+    } catch (InvalidSocketException e) {
+      throw handleSocketException(e, addr);
+    }
   }
 
-  private static SocketException handleSocketException(InvalidArgumentSocketException e, String msg)
+  private static SocketException handleSocketException(SocketException e, String msg)
       throws SocketException, IOException {
+
+    final String shortMsg;
+    if (e instanceof AddressUnavailableSocketException) {
+      shortMsg = ACCESS_DENIED;
+    } else if (e instanceof InvalidSocketException) {
+      shortMsg = KERNEL_TOO_OLD;
+    } else {
+      return e;
+    }
+
     if (AFVSOCKSocket.getLocalCID() == AFVSOCKSocketAddress.VMADDR_CID_HOST) {
       throw new TestAbortedWithImportantMessageException(
-          MessageType.TEST_ABORTED_SHORT_INFORMATIONAL, msg == null || msg.isEmpty()
-              ? KERNEL_TOO_OLD : KERNEL_TOO_OLD + ": " + msg, e);
+          MessageType.TEST_ABORTED_SHORT_INFORMATIONAL, msg == null || msg.isEmpty() ? shortMsg
+              : shortMsg + ": " + msg, e);
     } else {
       return e;
     }
   }
 
-  private static SocketException handleSocketException(InvalidArgumentSocketException e,
-      AFVSOCKSocketAddress sa) throws IOException {
+  private static SocketException handleSocketException(SocketException e, SocketAddress addr)
+      throws IOException {
+    if (!(addr instanceof AFVSOCKSocketAddress)) {
+      return e;
+    }
+    AFVSOCKSocketAddress sa = (AFVSOCKSocketAddress) addr;
     switch (sa.getVSOCKCID()) {
       case AFVSOCKSocketAddress.VMADDR_CID_HOST:
       case AFVSOCKSocketAddress.VMADDR_CID_LOCAL:
@@ -141,39 +167,81 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
   }
 
   @Override
+  public void bindServerSocket(ServerSocket serverSocket, SocketAddress bindpoint)
+      throws IOException {
+    try {
+      serverSocket.bind(bindpoint);
+    } catch (InvalidSocketException e) {
+      throw handleSocketException(e, bindpoint);
+    }
+  }
+
+  @Override
+  public void bindServerSocket(ServerSocket serverSocket, SocketAddress bindpoint, int backlog)
+      throws IOException {
+    try {
+      serverSocket.bind(bindpoint, backlog);
+    } catch (InvalidSocketException e) {
+      throw handleSocketException(e, bindpoint);
+    }
+  }
+
+  @Override
+  public void bindServerSocket(ServerSocketChannel serverSocketChannel, SocketAddress bindpoint)
+      throws IOException {
+    try {
+      serverSocketChannel.bind(bindpoint);
+    } catch (InvalidSocketException e) {
+      throw handleSocketException(e, bindpoint);
+    }
+  }
+
+  @Override
+  public void bindServerSocket(ServerSocketChannel serverSocketChannel, SocketAddress bindpoint,
+      int backlog) throws IOException {
+    try {
+      serverSocketChannel.bind(bindpoint, backlog);
+    } catch (InvalidSocketException e) {
+      throw handleSocketException(e, bindpoint);
+    }
+  }
+
+  @Override
   public Socket connectTo(SocketAddress addr) throws IOException {
     AFVSOCKSocketAddress sa = (AFVSOCKSocketAddress) addr;
     try {
       return AFVSOCKSocket.connectTo(sa);
-    } catch (InvalidArgumentSocketException e) {
+    } catch (InvalidSocketException e) {
       throw handleSocketException(e, sa);
     }
   }
 
   @Override
   public void connectSocket(Socket sock, SocketAddress addr) throws IOException {
-    AFVSOCKSocketAddress sa = (AFVSOCKSocketAddress) addr;
     try {
-      sock.connect(sa);
-    } catch (InvalidArgumentSocketException e) {
-      throw handleSocketException(e, sa);
+      sock.connect(addr);
+    } catch (InvalidSocketException e) {
+      throw handleSocketException(e, addr);
     }
   }
 
   @Override
   public boolean connectSocket(SocketChannel sock, SocketAddress addr) throws IOException {
-    AFVSOCKSocketAddress sa = (AFVSOCKSocketAddress) addr;
     try {
-      return sock.connect(sa);
-    } catch (InvalidArgumentSocketException e) {
-      throw handleSocketException(e, sa);
+      return sock.connect(addr);
+    } catch (InvalidSocketException e) {
+      throw handleSocketException(e, addr);
     }
   }
 
   @Override
   public AFServerSocket<?> newServerSocketBindOn(SocketAddress addr, boolean deleteOnClose)
       throws IOException {
-    return AFVSOCKServerSocket.bindOn((AFVSOCKSocketAddress) addr, deleteOnClose);
+    try {
+      return AFVSOCKServerSocket.bindOn((AFVSOCKSocketAddress) addr, deleteOnClose);
+    } catch (InvalidSocketException e) {
+      throw handleSocketException(e, addr);
+    }
   }
 
   @Override
