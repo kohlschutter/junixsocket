@@ -36,16 +36,25 @@ to the user).
 `AF_VSOCK` sockets are not available on all Operating systems, and may only be available from within
 a VM.  Moreover, not all connection types (such as datagrams) may be available.
 
-Generally, support for `AF_VSOCK` may differ from a system that is not set up for virtualization, a system that is a host running a hypervisor, and a system being run as a guest on such a host.
+Generally, support for `AF_VSOCK` may differ from a system that is not set up for virtualization, a
+system that is a host running a hypervisor, and a system being run as a guest on such a host.
 
 On Linux, depending on kernel version and configuration, no support may be available, some support
-(stream sockets only), or both streams and datagrams. Host kernel and guest kernel implementations
-may be different (VHOST vs VIRTIO). Permissions may prevent a user from accessing VSOCK (e.g., when `/dev/vsock` is inaccessible).
+(stream sockets only), or both streams and datagrams.  Host kernel and guest kernel implementations
+may be different (VHOST vs VIRTIO).  Permissions may prevent a user from accessing VSOCK (e.g., when
+`/dev/vsock` is inaccessible).
 
 On macOS, `AF_VSOCK` is currently only available from within a virtual machine, and, when using
 `Virtualization.framework`, a `VZVirtioSocketDeviceConfiguration` must be present.  In that case,
 the communication with the outside world is implementation-specific (via a `VZVirtioSocketDevice`
-configured for a `VZVirtualMachine`.). Communication with the guest from the host is then facilitated via custom means, for example via a shared host-side `AF_UNIX` socket that acts as a proxy to the guest-side `AF_VSOCK` sockets.
+configured for a `VZVirtualMachine`.).  Communication with the guest from the host is then
+facilitated via custom means, for example via a shared host-side `AF_UNIX` socket that acts as a
+proxy to the guest-side `AF_VSOCK` sockets.
+
+When using qemu (from Linux), add `-device vhost-vsock-pci,guest-cid=3` to enable VSOCK in the guest
+VM (optionally, change 3 to the desired guest CID).  Make sure that, on the host, `/dev/vhost-vsock`
+is accessible by your process, and maybe use `modprobe vhost_vsock` to ensure that the host-side
+vsock implementation is loaded,
 
 ## How can I use `AF_VSOCK` sockets in Java with junixsocket?
 
@@ -99,20 +108,25 @@ problems.
 
 ### "Local CID"
 
-Inspired by support in modern Linux kernels, a special CID of `VMADDR_CID_HOST` (=`1`) is available in junixsocket.
+Inspired by support in modern Linux kernels, a special CID of `VMADDR_CID_HOST` (=`1`) is available
+in junixsocket.
 
-If no native support for this CID is available in the kernel, an attempt is made to use the system's local CID instead (which is resolved upon initialization of the native library).
+If no native support for this CID is available in the kernel, an attempt is made to use the system's
+local CID instead (which is resolved upon initialization of the native library).
 
 The resolved local CID can be obtained via `AFVSOCKSocket.getLocalCID()`.
 
-If the system's local CID cannot be resolved, `VMADDR_CID_ANY` (=`-1`) is used as a fallback, unless access to `/dev/vsock` was denied, which implies `VMADDR_CID_HOST` (=`2`).
+If the system's local CID cannot be resolved, `VMADDR_CID_ANY` (=`-1`) is used as a fallback, unless
+access to `/dev/vsock` was denied, which implies `VMADDR_CID_HOST` (=`2`).
 
 ### Capabilities, Exceptions
 
-junixsocket provides capability checks (via `AFSocketCapability`, `CAPABILITY_VSOCK` and `CAPABILITY_VSOCK_DGRAM`) to ensure that the environment the
-program runs in is well-understood before execution.
+junixsocket provides capability checks (via `AFSocketCapability`, `CAPABILITY_VSOCK` and
+`CAPABILITY_VSOCK_DGRAM`) to ensure that the environment the program runs in is well-understood
+before execution.
 
-Moreover, if some known issues are detected during `connect` or `bind`, a custom `InvalidSocketException` may be thrown.
+Moreover, if some known issues are detected during `connect` or `bind`, a custom
+`InvalidSocketException` may be thrown.
 
 ## Security aspects, known vulnerabilities
 
@@ -140,18 +154,19 @@ vulnerabilities in older versions of the Linux/qemu/Firecracker kernel.
 
 * [vsock(7)](https://man7.org/linux/man-pages/man7/vsock.7.html) Linux manual
 
-* [VSOCK(4)](https://keith.github.io/xcode-man-pages/vsock.4.html) macOS Device Drivers Manual (xcode man-page, mirror)
+* [VSOCK(4)](https://keith.github.io/xcode-man-pages/vsock.4.html) macOS Device Drivers Manual
+(xcode man-page, mirror)
 
 * [Features/VirtioVsock](https://wiki.qemu.org/Features/VirtioVsock) QEMU Wiki
 
-* [junixsocket-vsock
-javadoc](https://kohlschutter.github.io/junixsocket/junixsocket-vsock/apidocs/org.newsclub.net.unix.vsock/org/newsclub/net/unix/vsock/package-summary.html)
-* [junixsocket-vsock source
-code](https://kohlschutter.github.io/junixsocket/junixsocket-vsock/xref/index.html) *
-[junixsocket-vsock unit
-tests](https://kohlschutter.github.io/junixsocket/junixsocket-vsock/xref-test/index.html)
+* [junixsocket-vsock javadoc](https://kohlschutter.github.io/junixsocket/junixsocket-vsock/apidocs/org.newsclub.net.unix.vsock/org/newsclub/net/unix/vsock/package-summary.html)
 
-* [AF_VSOCK: nested VMs and loopback support available](https://stefano-garzarella.github.io/posts/2020-02-20-vsock-nested-vms-loopback/) ... since Linux 5.5/5.6
+* [junixsocket-vsock source code](https://kohlschutter.github.io/junixsocket/junixsocket-vsock/xref/index.html)
+
+* [junixsocket-vsock unit tests](https://kohlschutter.github.io/junixsocket/junixsocket-vsock/xref-test/index.html)
+
+* [AF_VSOCK: nested VMs and loopback support available](https://stefano-garzarella.github.io/posts/2020-02-20-vsock-nested-vms-loopback/)
+   ... since Linux 5.5/5.6
 
 ## See also
 
