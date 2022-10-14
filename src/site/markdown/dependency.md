@@ -210,6 +210,11 @@ have).
 There are currently three distinct ways (socket factories) how to configure the connection to your
 database:
 
+> *NOTE* When specifying these class names from the command line, you may need to put them in single
+quotes (or escape the `$` sign), otherwise your shell may erroneously interpret `$FactoryArg` etc.
+as a variable and fail with `java.lang.ClassNotFoundException:
+org.newsclub.net.unix.AFUNIXSocketFactory`
+
  1. **org.newsclub.net.unix.AFUNIXSocketFactory$FactoryArg**
  
     You provide the socket path via the `socketFactoryArg` JDBC property.
