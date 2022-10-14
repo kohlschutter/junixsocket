@@ -133,4 +133,15 @@ public final class SocketAddressTest extends SocketTestBase<AFUNIXSocketAddress>
     assertTrue(AFUNIXSocketAddress.isSupportedAddress(addr2.wrapAddress()));
     assertNull(addr2.getAddress()); // sadly
   }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testLegacyConstructor() throws Exception {
+    assertEquals(AFUNIXSocketAddress.of(new File("/tmp/socket")), new AFUNIXSocketAddress(new File(
+        "/tmp/socket")));
+    assertEquals(AFUNIXSocketAddress.of(new File("/tmp/socket")), new AFUNIXSocketAddress(new File(
+        "/tmp/socket"), 0));
+    assertEquals(AFUNIXSocketAddress.of(new File("/tmp/socket"), 1234), new AFUNIXSocketAddress(
+        new File("/tmp/socket"), 1234));
+  }
 }

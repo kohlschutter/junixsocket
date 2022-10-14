@@ -4,14 +4,16 @@
 
 Please tend to always use the latest version; the existing API should always be backwards compatible between minor releases (e.g., 2.4.0 -> 2.5.1) unless explicitly mentioned in the changelog below (e.g., dropping Java 7 support in 2.5.0)
 
-When upgrading from versions older than 2.4.0, please note that junixsocket-core is now a POM-only
+When upgrading from versions older than 2.4.0, please note that `junixsocket-core` is now a POM-only
 artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.html) for details.
 
-### _(2022_XX_XX)_ **junixsocket 2.6.0**
+### _(2022-XX-XX)_ **junixsocket 2.6.0**
 
  - Add support for GraalVM native-image
  - Add support for native-image selftest
  - Add support for AF_VSOCK (on Linux, and some macOS VMs)
+ - Reintroduce deprecated legacy constructors for AFUNIXSocketAddress that were removed in 2.5.0.
+ - Parent POM has been renamed from junixsocket-parent to junixsocket
 
 ### _(2022-10-06)_ **junixsocket 2.5.2**
 
@@ -48,6 +50,8 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
  - Javadoc improvements, Code cleanup
  - Deprecate AFUNIXSocketCapability in favor of AFSocketCapability
  - Drop support for Java 7
+
+ Backwards-incompatible change: `new AFUNIXSocketAddress(File)` constructor has been dropped; use 2.6.0 or newer if you can't change the source code.
 
 ### _(2021-07-30)_ **junixsocket 2.4.0**
 

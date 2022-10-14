@@ -85,6 +85,34 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * file and port. <b>Legacy constructor, do not use!</b>
+   * 
+   * @param socketFile The socket to connect to.
+   * @throws SocketException if the operation fails.
+   * @deprecated Use {@link #of(File)} instead.
+   * @see #of(File)
+   */
+  public AFUNIXSocketAddress(File socketFile) throws SocketException {
+    this(socketFile, 0);
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * file. <b>Legacy constructor, do not use!</b>
+   * 
+   * @param socketFile The socket to connect to.
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @throws SocketException if the operation fails.
+   * @deprecated Use {@link #of(File, int)} instead.
+   * @see #of(File, int)
+   */
+  public AFUNIXSocketAddress(File socketFile, int port) throws SocketException {
+    this(port, of(socketFile, port).getPathAsBytes(), of(socketFile, port)
+        .getNativeAddressDirectBuffer());
+  }
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
    * file.
    * 
    * @param socketFile The socket to connect to.
