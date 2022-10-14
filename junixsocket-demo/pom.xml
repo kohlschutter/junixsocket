@@ -50,6 +50,19 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.30</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.protobuf</groupId>
+                    <artifactId>protobuf-java</artifactId>
+                    <!-- CVE-2022-3171: 3.19.4 -->
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <!-- CVE-2022-3171: replace 3.19.4 (dependency of mysql-connector-java) -->
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.19.6</version>
         </dependency>
         <dependency>
             <!-- NOTE: Due to this dependency, maven-project-info-reports-plugin
