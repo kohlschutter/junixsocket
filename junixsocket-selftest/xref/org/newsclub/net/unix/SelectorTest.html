@@ -1,11 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<title>/Users/ck/Entwicklung/workspace/junixsocket/junixsocket-common/src/test/java/org/newsclub/net/unix/SelectorTest.java xref</title>
+<title>SelectorTest xref</title>
 <link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
 </head>
 <body>
-<div id="overview"><a href="../../../../../apidocs/org/newsclub/net/unix">View Javadoc</a></div><pre>
+<div id="overview"><a href="../../../../../apidocs/org/newsclub/net/unix/SelectorTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
@@ -94,7 +94,7 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>        assertTrue(sscSel.selectedKeys().isEmpty());
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>  
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>        <strong class="jxr_keyword">try</strong> (ServerSocketChannel ssc = selectorProvider().openServerSocketChannel()) {
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          ssc.bind(newTempAddress());
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          bindServerSocket(ssc, newTempAddress());
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>          assertChangeToNonBlocking(ssc);
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          SelectionKey key = ssc.register(sscSel, SelectionKey.OP_ACCEPT);
@@ -111,8 +111,8 @@
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>             <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>               <em class="jxr_comment">// connect from a different thread</em>
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>               <em class="jxr_comment">// TIPC doesn't like being called from the same thread</em>
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>               future.complete(sc.connect(ssc.getLocalAddress()));
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>             } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>               future.complete(connectSocket(sc, ssc.getLocalAddress()));
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>             } <strong class="jxr_keyword">catch</strong> (RuntimeException | IOException e) {
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>               future.completeExceptionally(e);
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>             }
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>           }).start();
@@ -247,7 +247,7 @@
 <a class="jxr_linenumber" name="L239" href="#L239">239</a> 
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>     SelectorProvider provider = selectorProvider();
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>     <strong class="jxr_keyword">try</strong> (ServerSocketChannel server = provider.openServerSocketChannel()) {
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>       server.bind(newTempAddress());
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>       bindServerSocket(server, newTempAddress());
 <a class="jxr_linenumber" name="L243" href="#L243">243</a>       server.configureBlocking(false);
 <a class="jxr_linenumber" name="L244" href="#L244">244</a> 
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>       Selector selector = provider.openSelector();
@@ -326,47 +326,57 @@
 <a class="jxr_linenumber" name="L318" href="#L318">318</a> 
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>       mayCloseSema.release();
 <a class="jxr_linenumber" name="L320" href="#L320">320</a> 
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>       assertEquals(1, numAcceptable);
-<a class="jxr_linenumber" name="L322" href="#L322">322</a> 
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>       <strong class="jxr_keyword">if</strong> (!checkInvalid) {
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>         <em class="jxr_comment">// invalid</em>
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>       } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>         <strong class="jxr_keyword">if</strong> (numClosedChannelException == 0) { <em class="jxr_comment">// either the client closed and data didn't make it</em>
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>                                               <em class="jxr_comment">// through, or the second select correctly said</em>
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>                                               <em class="jxr_comment">// nothing was readable</em>
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>           <strong class="jxr_keyword">if</strong> (clientCloseImmediately) {
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>             <strong class="jxr_keyword">if</strong> (numReadable != 0) {
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>               assertEquals(1, numReadable);
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>             }
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>           }
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>           assertEquals(2, numReadable);
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>           assertEquals(1, numClosedChannelException);
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>         }
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>       }
-<a class="jxr_linenumber" name="L339" href="#L339">339</a> 
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>       threadFuture.get(1, TimeUnit.SECONDS);
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>     }
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>   }
-<a class="jxr_linenumber" name="L343" href="#L343">343</a> 
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>   @Test
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testClosedSelectorSelect() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>     assertThrows(ClosedSelectorException.<strong class="jxr_keyword">class</strong>, () -&gt; {
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>       @SuppressWarnings(<span class="jxr_string">"resource"</span>)
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>       Selector sel = selectorProvider().openSelector();
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>       sel.close();
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>       sel.select();
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>     });
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>       <strong class="jxr_keyword">if</strong> (numAcceptable == 0 &amp;&amp; threadFuture.isDone()) {
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>           threadFuture.get();
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>         } <strong class="jxr_keyword">catch</strong> (ExecutionException e) {
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>           Throwable t = e.getCause();
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>           <strong class="jxr_keyword">if</strong> (t instanceof RuntimeException) {
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>             <strong class="jxr_keyword">throw</strong> (RuntimeException) t;
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>           }
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>         }
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>       }
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>       assertEquals(1, numAcceptable);
+<a class="jxr_linenumber" name="L332" href="#L332">332</a> 
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>       <strong class="jxr_keyword">if</strong> (!checkInvalid) {
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>         <em class="jxr_comment">// invalid</em>
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>       } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>         <strong class="jxr_keyword">if</strong> (numClosedChannelException == 0) { <em class="jxr_comment">// either the client closed and data didn't make it</em>
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>                                               <em class="jxr_comment">// through, or the second select correctly said</em>
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>                                               <em class="jxr_comment">// nothing was readable</em>
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>           <strong class="jxr_keyword">if</strong> (clientCloseImmediately) {
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>             <strong class="jxr_keyword">if</strong> (numReadable != 0) {
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>               assertEquals(1, numReadable);
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>             }
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>           }
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>           assertEquals(2, numReadable);
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>           assertEquals(1, numClosedChannelException);
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>         }
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>       }
+<a class="jxr_linenumber" name="L349" href="#L349">349</a> 
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>       threadFuture.get(1, TimeUnit.SECONDS);
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>     }
 <a class="jxr_linenumber" name="L352" href="#L352">352</a>   }
 <a class="jxr_linenumber" name="L353" href="#L353">353</a> 
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>   @Test
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testClosedSelectorWakeup() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>     @SuppressWarnings(<span class="jxr_string">"resource"</span>)
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>     Selector sel = selectorProvider().openSelector();
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>     sel.close();
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>     assertEquals(sel, sel.wakeup());
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>   }
-<a class="jxr_linenumber" name="L361" href="#L361">361</a> }
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testClosedSelectorSelect() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>     assertThrows(ClosedSelectorException.<strong class="jxr_keyword">class</strong>, () -&gt; {
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>       @SuppressWarnings(<span class="jxr_string">"resource"</span>)
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>       Selector sel = selectorProvider().openSelector();
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>       sel.close();
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>       sel.select();
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>     });
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>   }
+<a class="jxr_linenumber" name="L363" href="#L363">363</a> 
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>   @Test
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testClosedSelectorWakeup() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>     @SuppressWarnings(<span class="jxr_string">"resource"</span>)
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>     Selector sel = selectorProvider().openSelector();
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>     sel.close();
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>     assertEquals(sel, sel.wakeup());
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>   }
+<a class="jxr_linenumber" name="L371" href="#L371">371</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2022 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

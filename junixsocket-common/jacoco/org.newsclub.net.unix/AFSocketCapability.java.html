@@ -48,17 +48,21 @@ import java.lang.ProcessBuilder.Redirect;
    * A pair of interconnected sockets can be created natively as AF_UNIX sockets.
    * 
    * This currently not possible on Windows, but instead emulated via anonymous AF_INET ports when
-   * you use {@link AFSocketPair}. Other systems, such as OSv, may provide partial implementations
-   * of pipe-based (i.e., non-socket) pairs.
+   * you use {@link AFSocketPair}. Other systems may provide partial implementations of pipe-based
+   * (i.e., non-socket) pairs.
+   * 
+   * This capability is specific to AF_UNIX sockets. Other sockets, such as AF_VSOCK, may not
+   * implement socketpair natively even if this capability is set, but would work-around that
+   * limitation in a similar fashion but maybe without resorting to AF_INET.
    */
-<span class="fc" id="L54">  CAPABILITY_NATIVE_SOCKETPAIR(5),</span>
+<span class="fc" id="L58">  CAPABILITY_NATIVE_SOCKETPAIR(5),</span>
 
   /**
    * A file descriptor can be converted to {@link Redirect}.
    * 
    * This feature currently uses Java SDK internals that may change/disappear.
    */
-<span class="fc" id="L61">  CAPABILITY_FD_AS_REDIRECT(6),</span>
+<span class="fc" id="L65">  CAPABILITY_FD_AS_REDIRECT(6),</span>
 
   /**
    * Support for AF_TIPC.
@@ -66,7 +70,7 @@ import java.lang.ProcessBuilder.Redirect;
    * Availability of this feature is checked upon launch and therefore loading the &quot;tipc&quot; kernel
    * module at a later point may not be properly reflected.
    */
-<span class="fc" id="L69">  CAPABILITY_TIPC(7),</span>
+<span class="fc" id="L73">  CAPABILITY_TIPC(7),</span>
 
   /**
    * Support for AF_UNIX.
@@ -79,18 +83,37 @@ import java.lang.ProcessBuilder.Redirect;
    * AFUNIX.SYS was included, etc.) and on systems where support for UNIX domain sockets is actively
    * disabled. Therefore, it is still recommended to check for this capability.
    */
-<span class="fc" id="L82">  CAPABILITY_UNIX_DOMAIN(8),</span>
+<span class="fc" id="L86">  CAPABILITY_UNIX_DOMAIN(8),</span>
+
+  /**
+   * Support for AF_VSOCK.
+   *
+   * Availability of this feature is checked upon launch and therefore enabling vsock at a later
+   * point may not be properly reflected.
+   * 
+   * @see #CAPABILITY_VSOCK_DGRAM
+   */
+<span class="fc" id="L96">  CAPABILITY_VSOCK(9),</span>
+
+  /**
+   * Support for AF_VSOCK datagrams (not all platforms/kernel versions or configurations support
+   * this).
+   *
+   * Availability of this feature is checked upon launch and therefore enabling vsock at a later
+   * point may not be properly reflected.
+   */
+<span class="fc" id="L105">  CAPABILITY_VSOCK_DGRAM(10),</span>
 
   ; // end of list
 
   private final int bitmask;
 
-<span class="fc" id="L88">  AFSocketCapability(int bit) {</span>
-<span class="fc" id="L89">    this.bitmask = 1 &lt;&lt; bit;</span>
-<span class="fc" id="L90">  }</span>
+<span class="fc" id="L111">  AFSocketCapability(int bit) {</span>
+<span class="fc" id="L112">    this.bitmask = 1 &lt;&lt; bit;</span>
+<span class="fc" id="L113">  }</span>
 
   int getBitmask() {
-<span class="fc" id="L93">    return bitmask;</span>
+<span class="fc" id="L116">    return bitmask;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

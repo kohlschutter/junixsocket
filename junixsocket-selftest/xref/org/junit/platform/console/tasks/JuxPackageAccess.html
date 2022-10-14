@@ -21,9 +21,10 @@
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="JuxPackageAccess" href="../../../../../org/junit/platform/console/tasks/JuxPackageAccess.html#JuxPackageAccess">JuxPackageAccess</a> {
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> TestExecutionListener newTreePrintingListener(PrintWriter out,
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>        <strong class="jxr_keyword">boolean</strong> disableAnsiColors, Theme theme) {
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TreePrintingListener(out, disableAnsiColors, theme);
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>    }
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  }
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> TreePrintingListener(out, disableAnsiColors ? ColorPalette.NONE
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>          : ColorPalette.DEFAULT, theme);
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>    }
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2022 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

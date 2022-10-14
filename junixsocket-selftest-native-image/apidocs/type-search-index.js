@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.newsclub.net.unix.selftest.nativeimage","l":"Main"}];updateSearchResults();

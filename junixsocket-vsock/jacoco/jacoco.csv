@@ -1,0 +1,16 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKServerSocket,51,0,0,0,12,0,11,0,11,0
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSocketChannel,0,5,0,0,0,2,0,1,0,1
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKProtocolFamily,9,0,0,0,2,0,1,0,1,0
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSocketPair,11,0,0,0,4,0,3,0,3,0
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSocketOptions,10,0,0,0,3,0,2,0,2,0
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSocketImpl,9,5,0,0,3,2,2,1,2,1
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKServerSocketChannel,8,0,0,0,3,0,2,0,2,0
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKDatagramSocketImpl,6,0,0,0,2,0,1,0,1,0
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSelectorProvider,47,14,0,0,13,4,13,2,13,2
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSocketFactory.FixedAddress,15,0,0,0,6,0,3,0,3,0
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSocket,46,33,5,1,10,9,10,5,7,5
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSelectorProvider.new AFAddressFamilyConfig() {...},2,19,0,0,1,9,1,9,1,9
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKDatagramSocket,37,0,0,0,9,0,7,0,7,0
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKDatagramChannel,12,0,0,0,4,0,3,0,3,0
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSocketFactory,15,0,0,0,5,0,4,0,4,0

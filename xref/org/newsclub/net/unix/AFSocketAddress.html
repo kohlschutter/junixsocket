@@ -687,7 +687,23 @@
 <a class="jxr_linenumber" name="L679" href="#L679">679</a>     }
 <a class="jxr_linenumber" name="L680" href="#L680">680</a>     <strong class="jxr_keyword">return</strong> sb.toString();
 <a class="jxr_linenumber" name="L681" href="#L681">681</a>   }
-<a class="jxr_linenumber" name="L682" href="#L682">682</a> }
+<a class="jxr_linenumber" name="L682" href="#L682">682</a> 
+<a class="jxr_linenumber" name="L683" href="#L683">683</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L684" href="#L684">684</a> <em class="jxr_javadoccomment">   * Checks if the given address could cover another address.</em>
+<a class="jxr_linenumber" name="L685" href="#L685">685</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L686" href="#L686">686</a> <em class="jxr_javadoccomment">   * By default, this is only true if both addresses are regarded equal using</em>
+<a class="jxr_linenumber" name="L687" href="#L687">687</a> <em class="jxr_javadoccomment">   * {@link #equals(Object)}.</em>
+<a class="jxr_linenumber" name="L688" href="#L688">688</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L689" href="#L689">689</a> <em class="jxr_javadoccomment">   * However, implementations may support "wildcard" addresses, and this method would compare a</em>
+<a class="jxr_linenumber" name="L690" href="#L690">690</a> <em class="jxr_javadoccomment">   * wildcard address against some non-wildcard address, for example.</em>
+<a class="jxr_linenumber" name="L691" href="#L691">691</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L692" href="#L692">692</a> <em class="jxr_javadoccomment">   * @param other The other address that could be covered by this address.</em>
+<a class="jxr_linenumber" name="L693" href="#L693">693</a> <em class="jxr_javadoccomment">   * @return {@code true} if the other address could be covered.</em>
+<a class="jxr_linenumber" name="L694" href="#L694">694</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L695" href="#L695">695</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> covers(<a name="AFSocketAddress" href="../../../../org/newsclub/net/unix/AFSocketAddress.html#AFSocketAddress">AFSocketAddress</a> other) {
+<a class="jxr_linenumber" name="L696" href="#L696">696</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.equals(other);
+<a class="jxr_linenumber" name="L697" href="#L697">697</a>   }
+<a class="jxr_linenumber" name="L698" href="#L698">698</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2022 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

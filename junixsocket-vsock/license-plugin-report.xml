@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="CHECK" timestamp="1665780104906">
+    <module artifactId="junixsocket-vsock" groupId="com.kohlschutter.junixsocket" version="2.6.0"/>
+    <files>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKDatagramChannel.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKDatagramSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKDatagramSocketImpl.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKProtocolFamily.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKSelectorProvider.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKServerSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKServerSocketChannel.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKSocketChannel.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKSocketExtensions.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKSocketFactory.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKSocketImpl.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKSocketOptions.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKSocketPair.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/AFVSOCKAddressSpecifics.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/AFVSOCKExtensionsTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/AcceptTimeoutTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/AncillaryMessageTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/AvailableTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/BufferOverflowTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/CancelAcceptTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/DatagramSocketTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/EndOfFileTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/FinalizeTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/ReadWriteTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/SelectorTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/SelftestProvider.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/ServerSocketCloseTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/ServerSocketTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/SoTimeoutTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/SocketChannelTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/SocketOptionsTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/SocketPairTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/SocketTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/StandardSocketOptionsTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/TcpNoDelayTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/vsock/ThroughputTest.java" result="PRESENT"/>
+    </files>
+</licensePluginReport>

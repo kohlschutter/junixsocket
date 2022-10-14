@@ -174,8 +174,8 @@ import java.util.Objects;
       throws SocketException {
     // FIXME
 
-<span class="fc bfc" id="L177" title="All 2 branches covered.">    if (!isSupportedAddress(addr, af)) {</span>
-<span class="fc" id="L178">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+<span class="pc bpc" id="L177" title="1 of 2 branches missed.">    if (!isSupportedAddress(addr, af)) {</span>
+<span class="nc" id="L178">      throw new SocketException(&quot;Unsupported address&quot;);</span>
     }
 
 <span class="fc" id="L181">    String hostname = addr.getHostName();</span>

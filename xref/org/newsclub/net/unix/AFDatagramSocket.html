@@ -330,113 +330,109 @@
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>     <strong class="jxr_keyword">if</strong> (!isBound()) {
 <a class="jxr_linenumber" name="L323" href="#L323">323</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L324" href="#L324">324</a>     }
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>       <strong class="jxr_keyword">return</strong> AFSocketAddress.unwrap(getLocalAddress(), getLocalPort(), addressFamily());
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>     } <strong class="jxr_keyword">catch</strong> (SocketException e) {
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>     }
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>   }
-<a class="jxr_linenumber" name="L331" href="#L331">331</a> 
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L333" href="#L333">333</a> <em class="jxr_javadoccomment">   * Checks if this {@link AFDatagramSocket}'s bound filename should be removed upon</em>
-<a class="jxr_linenumber" name="L334" href="#L334">334</a> <em class="jxr_javadoccomment">   * {@link #close()}.</em>
-<a class="jxr_linenumber" name="L335" href="#L335">335</a> <em class="jxr_javadoccomment">   * </em>
-<a class="jxr_linenumber" name="L336" href="#L336">336</a> <em class="jxr_javadoccomment">   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract</em>
-<a class="jxr_linenumber" name="L337" href="#L337">337</a> <em class="jxr_javadoccomment">   * namespace).</em>
-<a class="jxr_linenumber" name="L338" href="#L338">338</a> <em class="jxr_javadoccomment">   * </em>
-<a class="jxr_linenumber" name="L339" href="#L339">339</a> <em class="jxr_javadoccomment">   * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.</em>
-<a class="jxr_linenumber" name="L340" href="#L340">340</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> isDeleteOnClose() {
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>     <strong class="jxr_keyword">return</strong> deleteOnClose.get();
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>   }
-<a class="jxr_linenumber" name="L344" href="#L344">344</a> 
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L346" href="#L346">346</a> <em class="jxr_javadoccomment">   * Enables/disables deleting this {@link AFDatagramSocket}'s bound filename upon {@link #close()}.</em>
-<a class="jxr_linenumber" name="L347" href="#L347">347</a> <em class="jxr_javadoccomment">   * </em>
-<a class="jxr_linenumber" name="L348" href="#L348">348</a> <em class="jxr_javadoccomment">   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract</em>
-<a class="jxr_linenumber" name="L349" href="#L349">349</a> <em class="jxr_javadoccomment">   * namespace).</em>
-<a class="jxr_linenumber" name="L350" href="#L350">350</a> <em class="jxr_javadoccomment">   * </em>
-<a class="jxr_linenumber" name="L351" href="#L351">351</a> <em class="jxr_javadoccomment">   * @param b Enabled if {@code true}.</em>
-<a class="jxr_linenumber" name="L352" href="#L352">352</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> setDeleteOnClose(<strong class="jxr_keyword">boolean</strong> b) {
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>     deleteOnClose.set(b);
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>   }
-<a class="jxr_linenumber" name="L356" href="#L356">356</a> 
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>   <strong class="jxr_keyword">final</strong> AFDatagramSocketImpl&lt;A&gt; getAFImpl() {
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>     <strong class="jxr_keyword">if</strong> (created.compareAndSet(false, <strong class="jxr_keyword">true</strong>)) {
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>         getSoTimeout(); <em class="jxr_comment">// trigger create via java.net.Socket</em>
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>       } <strong class="jxr_keyword">catch</strong> (SocketException e) {
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>         <em class="jxr_comment">// ignore</em>
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>       }
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>     }
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>     <strong class="jxr_keyword">return</strong> impl;
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>   }
-<a class="jxr_linenumber" name="L367" href="#L367">367</a> 
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>   <strong class="jxr_keyword">final</strong> AFDatagramSocketImpl&lt;A&gt; getAFImpl(<strong class="jxr_keyword">boolean</strong> create) {
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>     <strong class="jxr_keyword">if</strong> (create) {
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>       <strong class="jxr_keyword">return</strong> getAFImpl();
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L372" href="#L372">372</a>       <strong class="jxr_keyword">return</strong> impl;
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>     }
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>   }
-<a class="jxr_linenumber" name="L375" href="#L375">375</a> 
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>   @Override
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> getAncillaryReceiveBufferSize() {
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>     <strong class="jxr_keyword">return</strong> ancillaryDataSupport.getAncillaryReceiveBufferSize();
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>   }
-<a class="jxr_linenumber" name="L380" href="#L380">380</a> 
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>   @Override
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> setAncillaryReceiveBufferSize(<strong class="jxr_keyword">int</strong> size) {
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>     ancillaryDataSupport.setAncillaryReceiveBufferSize(size);
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>   }
-<a class="jxr_linenumber" name="L385" href="#L385">385</a> 
-<a class="jxr_linenumber" name="L386" href="#L386">386</a>   @Override
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> ensureAncillaryReceiveBufferSize(<strong class="jxr_keyword">int</strong> minSize) {
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>     ancillaryDataSupport.ensureAncillaryReceiveBufferSize(minSize);
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>   }
-<a class="jxr_linenumber" name="L390" href="#L390">390</a> 
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>   @Override
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> isClosed() {
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">super</strong>.isClosed() || getAFImpl().isClosed();
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>   }
-<a class="jxr_linenumber" name="L395" href="#L395">395</a> 
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>   @SuppressFBWarnings(<span class="jxr_string">"EI_EXPOSE_REP"</span>)
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>   @Override
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>   <strong class="jxr_keyword">public</strong> AFDatagramChannel&lt;A&gt; getChannel() {
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>     <strong class="jxr_keyword">return</strong> channel;
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>   }
-<a class="jxr_linenumber" name="L401" href="#L401">401</a> 
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>   @Override
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> FileDescriptor getFileDescriptor() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>     <strong class="jxr_keyword">return</strong> getAFImpl().getFileDescriptor();
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>   }
-<a class="jxr_linenumber" name="L406" href="#L406">406</a> 
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>   @Override
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> receive(DatagramPacket p) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>     getAFImpl().receive(p);
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>   }
-<a class="jxr_linenumber" name="L411" href="#L411">411</a> 
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L413" href="#L413">413</a> <em class="jxr_javadoccomment">   * Returns the address family supported by this implementation.</em>
-<a class="jxr_linenumber" name="L414" href="#L414">414</a> <em class="jxr_javadoccomment">   * </em>
-<a class="jxr_linenumber" name="L415" href="#L415">415</a> <em class="jxr_javadoccomment">   * @return The family.</em>
-<a class="jxr_linenumber" name="L416" href="#L416">416</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> AFAddressFamily&lt;A&gt; addressFamily() {
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>     <strong class="jxr_keyword">return</strong> getAFImpl().getAddressFamily();
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>   }
-<a class="jxr_linenumber" name="L420" href="#L420">420</a> 
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L422" href="#L422">422</a> <em class="jxr_javadoccomment">   * Returns the internal helper instance for address-specific extensions.</em>
-<a class="jxr_linenumber" name="L423" href="#L423">423</a> <em class="jxr_javadoccomment">   * </em>
-<a class="jxr_linenumber" name="L424" href="#L424">424</a> <em class="jxr_javadoccomment">   * @return The helper instance.</em>
-<a class="jxr_linenumber" name="L425" href="#L425">425</a> <em class="jxr_javadoccomment">   * @throws UnsupportedOperationException if such extensions are not supported for this address</em>
-<a class="jxr_linenumber" name="L426" href="#L426">426</a> <em class="jxr_javadoccomment">   *           type.</em>
-<a class="jxr_linenumber" name="L427" href="#L427">427</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>   <strong class="jxr_keyword">protected</strong> AFSocketImplExtensions&lt;A&gt; getImplExtensions() {
-<a class="jxr_linenumber" name="L429" href="#L429">429</a>     <strong class="jxr_keyword">return</strong> getAFImpl(false).getImplExtensions();
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>   }
-<a class="jxr_linenumber" name="L431" href="#L431">431</a> }
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>     <strong class="jxr_keyword">return</strong> getAFImpl().getLocalSocketAddress();
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>   }
+<a class="jxr_linenumber" name="L327" href="#L327">327</a> 
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L329" href="#L329">329</a> <em class="jxr_javadoccomment">   * Checks if this {@link AFDatagramSocket}'s bound filename should be removed upon</em>
+<a class="jxr_linenumber" name="L330" href="#L330">330</a> <em class="jxr_javadoccomment">   * {@link #close()}.</em>
+<a class="jxr_linenumber" name="L331" href="#L331">331</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L332" href="#L332">332</a> <em class="jxr_javadoccomment">   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract</em>
+<a class="jxr_linenumber" name="L333" href="#L333">333</a> <em class="jxr_javadoccomment">   * namespace).</em>
+<a class="jxr_linenumber" name="L334" href="#L334">334</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L335" href="#L335">335</a> <em class="jxr_javadoccomment">   * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.</em>
+<a class="jxr_linenumber" name="L336" href="#L336">336</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> isDeleteOnClose() {
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>     <strong class="jxr_keyword">return</strong> deleteOnClose.get();
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>   }
+<a class="jxr_linenumber" name="L340" href="#L340">340</a> 
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L342" href="#L342">342</a> <em class="jxr_javadoccomment">   * Enables/disables deleting this {@link AFDatagramSocket}'s bound filename upon {@link #close()}.</em>
+<a class="jxr_linenumber" name="L343" href="#L343">343</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L344" href="#L344">344</a> <em class="jxr_javadoccomment">   * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract</em>
+<a class="jxr_linenumber" name="L345" href="#L345">345</a> <em class="jxr_javadoccomment">   * namespace).</em>
+<a class="jxr_linenumber" name="L346" href="#L346">346</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L347" href="#L347">347</a> <em class="jxr_javadoccomment">   * @param b Enabled if {@code true}.</em>
+<a class="jxr_linenumber" name="L348" href="#L348">348</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> setDeleteOnClose(<strong class="jxr_keyword">boolean</strong> b) {
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>     deleteOnClose.set(b);
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>   }
+<a class="jxr_linenumber" name="L352" href="#L352">352</a> 
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>   <strong class="jxr_keyword">final</strong> AFDatagramSocketImpl&lt;A&gt; getAFImpl() {
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>     <strong class="jxr_keyword">if</strong> (created.compareAndSet(false, <strong class="jxr_keyword">true</strong>)) {
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>         getSoTimeout(); <em class="jxr_comment">// trigger create via java.net.Socket</em>
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>       } <strong class="jxr_keyword">catch</strong> (SocketException e) {
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>         <em class="jxr_comment">// ignore</em>
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>       }
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>     }
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>     <strong class="jxr_keyword">return</strong> impl;
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>   }
+<a class="jxr_linenumber" name="L363" href="#L363">363</a> 
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>   <strong class="jxr_keyword">final</strong> AFDatagramSocketImpl&lt;A&gt; getAFImpl(<strong class="jxr_keyword">boolean</strong> create) {
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>     <strong class="jxr_keyword">if</strong> (create) {
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>       <strong class="jxr_keyword">return</strong> getAFImpl();
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>       <strong class="jxr_keyword">return</strong> impl;
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>     }
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>   }
+<a class="jxr_linenumber" name="L371" href="#L371">371</a> 
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>   @Override
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> getAncillaryReceiveBufferSize() {
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>     <strong class="jxr_keyword">return</strong> ancillaryDataSupport.getAncillaryReceiveBufferSize();
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>   }
+<a class="jxr_linenumber" name="L376" href="#L376">376</a> 
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>   @Override
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> setAncillaryReceiveBufferSize(<strong class="jxr_keyword">int</strong> size) {
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>     ancillaryDataSupport.setAncillaryReceiveBufferSize(size);
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>   }
+<a class="jxr_linenumber" name="L381" href="#L381">381</a> 
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>   @Override
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> ensureAncillaryReceiveBufferSize(<strong class="jxr_keyword">int</strong> minSize) {
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>     ancillaryDataSupport.ensureAncillaryReceiveBufferSize(minSize);
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>   }
+<a class="jxr_linenumber" name="L386" href="#L386">386</a> 
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>   @Override
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> isClosed() {
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">super</strong>.isClosed() || getAFImpl().isClosed();
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>   }
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> 
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>   @SuppressFBWarnings(<span class="jxr_string">"EI_EXPOSE_REP"</span>)
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>   @Override
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>   <strong class="jxr_keyword">public</strong> AFDatagramChannel&lt;A&gt; getChannel() {
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>     <strong class="jxr_keyword">return</strong> channel;
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>   }
+<a class="jxr_linenumber" name="L397" href="#L397">397</a> 
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>   @Override
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> FileDescriptor getFileDescriptor() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>     <strong class="jxr_keyword">return</strong> getAFImpl().getFileDescriptor();
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>   }
+<a class="jxr_linenumber" name="L402" href="#L402">402</a> 
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>   @Override
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> receive(DatagramPacket p) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>     getAFImpl().receive(p);
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>   }
+<a class="jxr_linenumber" name="L407" href="#L407">407</a> 
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L409" href="#L409">409</a> <em class="jxr_javadoccomment">   * Returns the address family supported by this implementation.</em>
+<a class="jxr_linenumber" name="L410" href="#L410">410</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L411" href="#L411">411</a> <em class="jxr_javadoccomment">   * @return The family.</em>
+<a class="jxr_linenumber" name="L412" href="#L412">412</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> AFAddressFamily&lt;A&gt; addressFamily() {
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>     <strong class="jxr_keyword">return</strong> getAFImpl().getAddressFamily();
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>   }
+<a class="jxr_linenumber" name="L416" href="#L416">416</a> 
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L418" href="#L418">418</a> <em class="jxr_javadoccomment">   * Returns the internal helper instance for address-specific extensions.</em>
+<a class="jxr_linenumber" name="L419" href="#L419">419</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L420" href="#L420">420</a> <em class="jxr_javadoccomment">   * @return The helper instance.</em>
+<a class="jxr_linenumber" name="L421" href="#L421">421</a> <em class="jxr_javadoccomment">   * @throws UnsupportedOperationException if such extensions are not supported for this address</em>
+<a class="jxr_linenumber" name="L422" href="#L422">422</a> <em class="jxr_javadoccomment">   *           type.</em>
+<a class="jxr_linenumber" name="L423" href="#L423">423</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>   <strong class="jxr_keyword">protected</strong> AFSocketImplExtensions&lt;A&gt; getImplExtensions() {
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>     <strong class="jxr_keyword">return</strong> getAFImpl(false).getImplExtensions();
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>   }
+<a class="jxr_linenumber" name="L427" href="#L427">427</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2022 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

@@ -657,12 +657,12 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     }
 
 <span class="fc" id="L659">    int family = (nativeAddress.get(SOCKADDR_NATIVE_FAMILY_OFFSET) &amp; 0xFF);</span>
-<span class="pc bpc" id="L660" title="1 of 2 branches missed.">    int type = socketType == null ? -1 : NativeUnixSocket.sockTypeToNative(socketType.getId());</span>
+<span class="fc bfc" id="L660" title="All 2 branches covered.">    int type = socketType == null ? -1 : NativeUnixSocket.sockTypeToNative(socketType.getId());</span>
 <span class="fc" id="L661">    StringBuilder sb = new StringBuilder();</span>
 <span class="fc" id="L662">    sb.append(family);</span>
-<span class="pc bpc" id="L663" title="1 of 2 branches missed.">    if (type != -1) {</span>
-<span class="nc" id="L664">      sb.append(':');</span>
-<span class="nc" id="L665">      sb.append(type);</span>
+<span class="fc bfc" id="L663" title="All 2 branches covered.">    if (type != -1) {</span>
+<span class="fc" id="L664">      sb.append(':');</span>
+<span class="fc" id="L665">      sb.append(type);</span>
     }
 <span class="pc bpc" id="L667" title="1 of 2 branches missed.">    if (socketProtocol != null) {</span>
 <span class="fc" id="L668">      sb.append(':');</span>
@@ -678,6 +678,22 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 <span class="fc" id="L678">      sb.append(String.format(Locale.ENGLISH, &quot;%02x&quot;, b));</span>
     }
 <span class="fc" id="L680">    return sb.toString();</span>
+  }
+
+  /**
+   * Checks if the given address could cover another address.
+   * 
+   * By default, this is only true if both addresses are regarded equal using
+   * {@link #equals(Object)}.
+   * 
+   * However, implementations may support &quot;wildcard&quot; addresses, and this method would compare a
+   * wildcard address against some non-wildcard address, for example.
+   * 
+   * @param other The other address that could be covered by this address.
+   * @return {@code true} if the other address could be covered.
+   */
+  public boolean covers(AFSocketAddress other) {
+<span class="nc" id="L696">    return this.equals(other);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

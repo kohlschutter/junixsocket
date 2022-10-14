@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFVSOCKSocketFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-vsock</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.vsock</a> &gt; <span class="el_source">AFVSOCKSocketFactory.java</span></div><h1>AFVSOCKSocketFactory.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.vsock;
+
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
+
+import org.newsclub.net.unix.AFSocketFactory;
+import org.newsclub.net.unix.AFVSOCKSocketAddress;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+/**
+ * The base for a SocketFactory that connects to VSOCK sockets.
+ */
+public abstract class AFVSOCKSocketFactory extends AFSocketFactory&lt;AFVSOCKSocketAddress&gt; {
+  /**
+   * Creates a {@link AFVSOCKSocketFactory}.
+   */
+  protected AFVSOCKSocketFactory() {
+<span class="nc" id="L37">    super();</span>
+<span class="nc" id="L38">  }</span>
+
+  @Override
+  public final Socket createSocket() throws SocketException {
+<span class="nc" id="L42">    return configure(AFVSOCKSocket.newInstance(this));</span>
+  }
+
+  @Override
+  protected final AFVSOCKSocket connectTo(AFVSOCKSocketAddress addr) throws IOException {
+<span class="nc" id="L47">    return configure(AFVSOCKSocket.connectTo(addr));</span>
+  }
+
+  /**
+   * Performs some optional configuration on a newly created socket.
+   * 
+   * @param sock The socket.
+   * @return The very socket.
+   * @throws SocketException on error.
+   */
+  protected AFVSOCKSocket configure(AFVSOCKSocket sock) throws SocketException {
+<span class="nc" id="L58">    return sock;</span>
+  }
+
+  /**
+   * Always connects sockets to the given VSOCK type and instance.
+   *
+   * @author Christian Kohlschütter
+   */
+  public static class FixedAddress extends AFVSOCKSocketFactory {
+    private final AFVSOCKSocketAddress addr;
+
+    /**
+     * Creates an {@link AFVSOCKSocketFactory} that always uses the given VSOCK address.
+     *
+     * @param port The VSOCK port.
+     * @param cid The VSOCK CID.
+     * @throws SocketException on internal error.
+     */
+    public FixedAddress(int port, int cid) throws SocketException {
+<span class="nc" id="L77">      this(AFVSOCKSocketAddress.ofPortAndCID(port, cid));</span>
+<span class="nc" id="L78">    }</span>
+
+    /**
+     * Creates an {@link AFVSOCKSocketFactory} that always uses the given VSOCK address.
+     *
+     * @param addr The address.
+     */
+    @SuppressFBWarnings(&quot;EI_EXPOSE_REP2&quot;)
+    public FixedAddress(AFVSOCKSocketAddress addr) {
+<span class="nc" id="L87">      super();</span>
+<span class="nc" id="L88">      this.addr = addr;</span>
+<span class="nc" id="L89">    }</span>
+
+    @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
+    @Override
+    public final AFVSOCKSocketAddress addressFromHost(String host, int javaPort)
+        throws SocketException {
+<span class="nc" id="L95">      return addr;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

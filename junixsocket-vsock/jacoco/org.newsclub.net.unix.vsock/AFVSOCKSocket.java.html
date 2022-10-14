@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFVSOCKSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-vsock</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.vsock</a> &gt; <span class="el_source">AFVSOCKSocket.java</span></div><h1>AFVSOCKSocket.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.vsock;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
+
+import org.newsclub.net.unix.AFSocket;
+import org.newsclub.net.unix.AFSocketCapability;
+import org.newsclub.net.unix.AFSocketFactory;
+import org.newsclub.net.unix.AFVSOCKSocketAddress;
+import org.newsclub.net.unix.AFVSOCKSocketImplExtensions;
+
+/**
+ * Implementation of an {@code AF_VSOCK} socket.
+ * 
+ * @author Christian Kohlschütter
+ */
+public final class AFVSOCKSocket extends AFSocket&lt;AFVSOCKSocketAddress&gt; implements
+    AFVSOCKSocketExtensions {
+<span class="fc" id="L38">  private static AFVSOCKSocketImplExtensions staticExtensions = null;</span>
+
+  AFVSOCKSocket(FileDescriptor fdObj, AFSocketFactory&lt;AFVSOCKSocketAddress&gt; factory)
+      throws SocketException {
+<span class="fc" id="L42">    super(new AFVSOCKSocketImpl(fdObj), factory);</span>
+<span class="fc" id="L43">  }</span>
+
+  @SuppressWarnings(&quot;unused&quot;)
+  private static synchronized AFVSOCKSocketImplExtensions getStaticImplExtensions()
+      throws IOException {
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">    if (staticExtensions == null) {</span>
+<span class="fc" id="L49">      try (AFVSOCKSocket socket = new AFVSOCKSocket(null, null)) {</span>
+<span class="fc" id="L50">        staticExtensions = (AFVSOCKSocketImplExtensions) socket.getImplExtensions();</span>
+      }
+    }
+<span class="fc" id="L53">    return staticExtensions;</span>
+  }
+
+  /**
+   * Returns &lt;code&gt;true&lt;/code&gt; iff {@link AFVSOCKSocket}s (sockets of type &quot;AF_VSOCK&quot;) are supported
+   * by the current Java VM and the kernel.
+   * 
+   * To support {@link AFVSOCKSocket}s, a custom JNI library must be loaded that is supplied with
+   * &lt;em&gt;junixsocket&lt;/em&gt;, and the system must support AF_VSOCK sockets.
+   * 
+   * This call is equivalent to checking {@link AFSocket#isSupported()} and
+   * {@link AFSocket#supports(AFSocketCapability)} with {@link AFSocketCapability#CAPABILITY_VSOCK}.
+   * 
+   * @return {@code true} iff supported.
+   */
+  public static boolean isSupported() {
+<span class="nc bnc" id="L69" title="All 4 branches missed.">    return AFSocket.isSupported() &amp;&amp; AFSocket.supports(AFSocketCapability.CAPABILITY_VSOCK);</span>
+  }
+
+  @Override
+  protected AFVSOCKSocketChannel newChannel() {
+<span class="fc" id="L74">    return new AFVSOCKSocketChannel(this);</span>
+  }
+
+  /**
+   * Creates a new, unbound {@link AFSocket}.
+   * 
+   * This &quot;default&quot; implementation is a bit &quot;lenient&quot; with respect to the specification.
+   * 
+   * In particular, we ignore calls to {@link Socket#getTcpNoDelay()} and
+   * {@link Socket#setTcpNoDelay(boolean)}.
+   * 
+   * @return A new, unbound socket.
+   * @throws IOException if the operation fails.
+   */
+  public static AFVSOCKSocket newInstance() throws IOException {
+<span class="nc" id="L89">    return (AFVSOCKSocket) AFSocket.newInstance(AFVSOCKSocket::new, (AFVSOCKSocketFactory) null);</span>
+  }
+
+  static AFVSOCKSocket newInstance(AFVSOCKSocketFactory factory) throws SocketException {
+<span class="nc" id="L93">    return (AFVSOCKSocket) AFSocket.newInstance(AFVSOCKSocket::new, factory);</span>
+  }
+
+  /**
+   * Creates a new, unbound, &quot;strict&quot; {@link AFSocket}.
+   * 
+   * This call uses an implementation that tries to be closer to the specification than
+   * {@link #newInstance()}, at least for some cases.
+   * 
+   * @return A new, unbound socket.
+   * @throws IOException if the operation fails.
+   */
+  public static AFVSOCKSocket newStrictInstance() throws IOException {
+<span class="nc" id="L106">    return (AFVSOCKSocket) AFSocket.newInstance(AFVSOCKSocket::new, (AFVSOCKSocketFactory) null);</span>
+  }
+
+  /**
+   * Creates a new {@link AFSocket} and connects it to the given {@link AFVSOCKSocketAddress}.
+   * 
+   * @param addr The address to connect to.
+   * @return A new, connected socket.
+   * @throws IOException if the operation fails.
+   */
+  public static AFVSOCKSocket connectTo(AFVSOCKSocketAddress addr) throws IOException {
+<span class="nc" id="L117">    return (AFVSOCKSocket) AFSocket.connectTo(AFVSOCKSocket::new, addr);</span>
+  }
+
+  @Override
+  public AFVSOCKSocketChannel getChannel() {
+<span class="nc" id="L122">    return (AFVSOCKSocketChannel) super.getChannel();</span>
+  }
+
+  /**
+   * Returns the local CID.
+   * 
+   * If the system does not support vsock, or status about support cannot be retrieved, -1
+   * ({@link AFVSOCKSocketAddress#VMADDR_CID_ANY}) is returned. The value may be cached upon
+   * initialization of the library.
+   *
+   * @return The CID, or -1.
+   * @throws IOException on error.
+   */
+  public static int getLocalCID() throws IOException {
+<span class="fc" id="L136">    return getStaticImplExtensions().getLocalCID();</span>
+  }
+
+  /**
+   * Very basic self-test function.
+   * 
+   * Prints &quot;supported&quot; and &quot;capabilities&quot; status to System.out.
+   * 
+   * @param args ignored.
+   */
+  public static void main(String[] args) {
+    // If you want to run this directly from within Eclipse, see
+    // org.newsclub.net.unix.vsock.SocketTest#testMain.
+<span class="nc" id="L149">    System.out.print(AFVSOCKSocket.class.getName() + &quot;.isSupported(): &quot;);</span>
+<span class="nc" id="L150">    System.out.flush();</span>
+<span class="nc" id="L151">    System.out.println(AFVSOCKSocket.isSupported());</span>
+<span class="nc" id="L152">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

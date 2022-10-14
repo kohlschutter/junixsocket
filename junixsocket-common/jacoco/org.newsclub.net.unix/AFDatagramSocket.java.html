@@ -322,11 +322,7 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
 <span class="fc bfc" id="L322" title="All 2 branches covered.">    if (!isBound()) {</span>
 <span class="fc" id="L323">      return null;</span>
     }
-    try {
-<span class="fc" id="L326">      return AFSocketAddress.unwrap(getLocalAddress(), getLocalPort(), addressFamily());</span>
-<span class="fc" id="L327">    } catch (SocketException e) {</span>
-<span class="fc" id="L328">      return null;</span>
-    }
+<span class="fc" id="L325">    return getAFImpl().getLocalSocketAddress();</span>
   }
 
   /**
@@ -339,7 +335,7 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
    * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
    */
   public final boolean isDeleteOnClose() {
-<span class="nc" id="L342">    return deleteOnClose.get();</span>
+<span class="nc" id="L338">    return deleteOnClose.get();</span>
   }
 
   /**
@@ -351,63 +347,63 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
    * @param b Enabled if {@code true}.
    */
   public final void setDeleteOnClose(boolean b) {
-<span class="fc" id="L354">    deleteOnClose.set(b);</span>
-<span class="fc" id="L355">  }</span>
+<span class="fc" id="L350">    deleteOnClose.set(b);</span>
+<span class="fc" id="L351">  }</span>
 
   final AFDatagramSocketImpl&lt;A&gt; getAFImpl() {
-<span class="fc bfc" id="L358" title="All 2 branches covered.">    if (created.compareAndSet(false, true)) {</span>
+<span class="fc bfc" id="L354" title="All 2 branches covered.">    if (created.compareAndSet(false, true)) {</span>
       try {
-<span class="fc" id="L360">        getSoTimeout(); // trigger create via java.net.Socket</span>
-<span class="nc" id="L361">      } catch (SocketException e) {</span>
+<span class="fc" id="L356">        getSoTimeout(); // trigger create via java.net.Socket</span>
+<span class="nc" id="L357">      } catch (SocketException e) {</span>
         // ignore
-<span class="fc" id="L363">      }</span>
+<span class="fc" id="L359">      }</span>
     }
-<span class="fc" id="L365">    return impl;</span>
+<span class="fc" id="L361">    return impl;</span>
   }
 
   final AFDatagramSocketImpl&lt;A&gt; getAFImpl(boolean create) {
-<span class="nc bnc" id="L369" title="All 2 branches missed.">    if (create) {</span>
-<span class="nc" id="L370">      return getAFImpl();</span>
+<span class="nc bnc" id="L365" title="All 2 branches missed.">    if (create) {</span>
+<span class="nc" id="L366">      return getAFImpl();</span>
     } else {
-<span class="nc" id="L372">      return impl;</span>
+<span class="nc" id="L368">      return impl;</span>
     }
   }
 
   @Override
   public final int getAncillaryReceiveBufferSize() {
-<span class="nc" id="L378">    return ancillaryDataSupport.getAncillaryReceiveBufferSize();</span>
+<span class="nc" id="L374">    return ancillaryDataSupport.getAncillaryReceiveBufferSize();</span>
   }
 
   @Override
   public final void setAncillaryReceiveBufferSize(int size) {
-<span class="fc" id="L383">    ancillaryDataSupport.setAncillaryReceiveBufferSize(size);</span>
-<span class="fc" id="L384">  }</span>
+<span class="fc" id="L379">    ancillaryDataSupport.setAncillaryReceiveBufferSize(size);</span>
+<span class="fc" id="L380">  }</span>
 
   @Override
   public final void ensureAncillaryReceiveBufferSize(int minSize) {
-<span class="nc" id="L388">    ancillaryDataSupport.ensureAncillaryReceiveBufferSize(minSize);</span>
-<span class="nc" id="L389">  }</span>
+<span class="nc" id="L384">    ancillaryDataSupport.ensureAncillaryReceiveBufferSize(minSize);</span>
+<span class="nc" id="L385">  }</span>
 
   @Override
   public final boolean isClosed() {
-<span class="pc bpc" id="L393" title="1 of 4 branches missed.">    return super.isClosed() || getAFImpl().isClosed();</span>
+<span class="pc bpc" id="L389" title="1 of 4 branches missed.">    return super.isClosed() || getAFImpl().isClosed();</span>
   }
 
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   @Override
   public AFDatagramChannel&lt;A&gt; getChannel() {
-<span class="fc" id="L399">    return channel;</span>
+<span class="fc" id="L395">    return channel;</span>
   }
 
   @Override
   public final FileDescriptor getFileDescriptor() throws IOException {
-<span class="fc" id="L404">    return getAFImpl().getFileDescriptor();</span>
+<span class="fc" id="L400">    return getAFImpl().getFileDescriptor();</span>
   }
 
   @Override
   public final void receive(DatagramPacket p) throws IOException {
-<span class="fc" id="L409">    getAFImpl().receive(p);</span>
-<span class="fc" id="L410">  }</span>
+<span class="fc" id="L405">    getAFImpl().receive(p);</span>
+<span class="fc" id="L406">  }</span>
 
   /**
    * Returns the address family supported by this implementation.
@@ -415,7 +411,7 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
    * @return The family.
    */
   protected final AFAddressFamily&lt;A&gt; addressFamily() {
-<span class="fc" id="L418">    return getAFImpl().getAddressFamily();</span>
+<span class="fc" id="L414">    return getAFImpl().getAddressFamily();</span>
   }
 
   /**
@@ -426,7 +422,7 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
    *           type.
    */
   protected AFSocketImplExtensions&lt;A&gt; getImplExtensions() {
-<span class="nc" id="L429">    return getAFImpl(false).getImplExtensions();</span>
+<span class="nc" id="L425">    return getAFImpl(false).getImplExtensions();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

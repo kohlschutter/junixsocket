@@ -47,37 +47,38 @@
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      ServerSocketChannel ssc = selectorProvider().openServerSocketChannel();
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>      ssc.configureBlocking(false);
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>      ssc.bind(sa, 1);
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>      {
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>        SocketChannel sc = selectorProvider().openSocketChannel();
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>        sc.configureBlocking(false);
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>        <strong class="jxr_keyword">if</strong> (!sc.connect(sa)) {
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>          <em class="jxr_comment">// connect pending</em>
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>          assertTrue(sc.isConnected() || sc.isConnectionPending());
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>          <strong class="jxr_keyword">long</strong> now = System.currentTimeMillis();
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <strong class="jxr_keyword">do</strong> {
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>            <strong class="jxr_keyword">if</strong> (sc.finishConnect()) {
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>              <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>            }
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>            <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>              Thread.sleep(100);
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>            } <strong class="jxr_keyword">catch</strong> (InterruptedException e) {
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>              <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>            }
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>            <strong class="jxr_keyword">if</strong> ((System.currentTimeMillis() - now) &gt; 1000) {
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>              fail(<span class="jxr_string">"Non-blocking connect not connected after 1s"</span>);
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>              <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>            }
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          } <strong class="jxr_keyword">while</strong> (!Thread.interrupted());
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          assertTrue(sc.finishConnect());
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>        }
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>        assertTrue(sc.isConnected());
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>        assertFalse(sc.isConnectionPending());
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      }
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>    }
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>  }
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      bindServerSocket(ssc, sa, 1);
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      sa = ssc.getLocalAddress();
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>        SocketChannel sc = selectorProvider().openSocketChannel();
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>        sc.configureBlocking(false);
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>        <strong class="jxr_keyword">if</strong> (!sc.connect(sa)) {
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          <em class="jxr_comment">// connect pending</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          assertTrue(sc.isConnected() || sc.isConnectionPending());
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          <strong class="jxr_keyword">long</strong> now = System.currentTimeMillis();
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          <strong class="jxr_keyword">do</strong> {
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>            <strong class="jxr_keyword">if</strong> (sc.finishConnect()) {
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>              <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>            }
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>            <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>              Thread.sleep(100);
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>            } <strong class="jxr_keyword">catch</strong> (InterruptedException e) {
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>              <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>            }
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>            <strong class="jxr_keyword">if</strong> ((System.currentTimeMillis() - now) &gt; 1000) {
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>              fail(<span class="jxr_string">"Non-blocking connect not connected after 1s"</span>);
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>              <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>            }
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          } <strong class="jxr_keyword">while</strong> (!Thread.interrupted());
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          assertTrue(sc.finishConnect());
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>        }
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>        assertTrue(sc.isConnected());
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>        assertFalse(sc.isConnectionPending());
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>      }
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>    }
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2022 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

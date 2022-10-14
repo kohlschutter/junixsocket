@@ -85,6 +85,34 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * file and port. &lt;b&gt;Legacy constructor, do not use!&lt;/b&gt;
+   * 
+   * @param socketFile The socket to connect to.
+   * @throws SocketException if the operation fails.
+   * @deprecated Use {@link #of(File)} instead.
+   * @see #of(File)
+   */
+  public AFUNIXSocketAddress(File socketFile) throws SocketException {
+<span class="fc" id="L96">    this(socketFile, 0);</span>
+<span class="fc" id="L97">  }</span>
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
+   * file. &lt;b&gt;Legacy constructor, do not use!&lt;/b&gt;
+   * 
+   * @param socketFile The socket to connect to.
+   * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
+   * @throws SocketException if the operation fails.
+   * @deprecated Use {@link #of(File, int)} instead.
+   * @see #of(File, int)
+   */
+  public AFUNIXSocketAddress(File socketFile, int port) throws SocketException {
+<span class="fc" id="L110">    this(port, of(socketFile, port).getPathAsBytes(), of(socketFile, port)</span>
+<span class="fc" id="L111">        .getNativeAddressDirectBuffer());</span>
+<span class="fc" id="L112">  }</span>
+
+  /**
+   * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
    * file.
    * 
    * @param socketFile The socket to connect to.
@@ -92,7 +120,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(final File socketFile) throws SocketException {
-<span class="fc" id="L95">    return of(socketFile, 0);</span>
+<span class="fc" id="L123">    return of(socketFile, 0);</span>
   }
 
   /**
@@ -105,7 +133,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(final File socketFile, int port) throws SocketException {
-<span class="fc" id="L108">    return of(socketFile.getPath().getBytes(ADDRESS_CHARSET), port);</span>
+<span class="fc" id="L136">    return of(socketFile.getPath().getBytes(ADDRESS_CHARSET), port);</span>
   }
 
   /**
@@ -121,7 +149,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @see AFUNIXSocketAddress#inAbstractNamespace(String)
    */
   public static AFUNIXSocketAddress of(final byte[] socketAddress) throws SocketException {
-<span class="fc" id="L124">    return of(socketAddress, 0);</span>
+<span class="fc" id="L152">    return of(socketAddress, 0);</span>
   }
 
   /**
@@ -139,7 +167,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    */
   public static AFUNIXSocketAddress of(final byte[] socketAddress, int port)
       throws SocketException {
-<span class="fc" id="L142">    return AFSocketAddress.resolveAddress(socketAddress, port, AF_UNIX);</span>
+<span class="fc" id="L170">    return AFSocketAddress.resolveAddress(socketAddress, port, AF_UNIX);</span>
   }
 
   /**
@@ -151,7 +179,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(final Path socketPath) throws SocketException {
-<span class="nc" id="L154">    return of(socketPath, 0);</span>
+<span class="nc" id="L182">    return of(socketPath, 0);</span>
   }
 
   /**
@@ -164,7 +192,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(final Path socketPath, int port) throws SocketException {
-<span class="nc" id="L167">    return of(socketPath.toString().getBytes(ADDRESS_CHARSET), port);</span>
+<span class="nc" id="L195">    return of(socketPath.toString().getBytes(ADDRESS_CHARSET), port);</span>
   }
 
   /**
@@ -175,7 +203,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(URI u) throws SocketException {
-<span class="fc" id="L178">    return of(u, -1);</span>
+<span class="fc" id="L206">    return of(u, -1);</span>
   }
 
   /**
@@ -187,25 +215,25 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress of(URI u, int overridePort) throws SocketException {
-<span class="pc bpc" id="L190" title="1 of 3 branches missed.">    switch (u.getScheme()) {</span>
+<span class="pc bpc" id="L218" title="1 of 3 branches missed.">    switch (u.getScheme()) {</span>
       case &quot;file&quot;:
       case &quot;unix&quot;:
-<span class="fc" id="L193">        String path = u.getPath();</span>
-<span class="pc bpc" id="L194" title="1 of 4 branches missed.">        if (path == null || path.isEmpty()) {</span>
-<span class="fc" id="L195">          String auth = u.getAuthority();</span>
-<span class="pc bpc" id="L196" title="3 of 6 branches missed.">          if (auth != null &amp;&amp; !auth.isEmpty() &amp;&amp; u.getRawSchemeSpecificPart().indexOf('@') == -1) {</span>
-<span class="fc" id="L197">            path = auth;</span>
+<span class="fc" id="L221">        String path = u.getPath();</span>
+<span class="pc bpc" id="L222" title="1 of 4 branches missed.">        if (path == null || path.isEmpty()) {</span>
+<span class="fc" id="L223">          String auth = u.getAuthority();</span>
+<span class="pc bpc" id="L224" title="3 of 6 branches missed.">          if (auth != null &amp;&amp; !auth.isEmpty() &amp;&amp; u.getRawSchemeSpecificPart().indexOf('@') == -1) {</span>
+<span class="fc" id="L225">            path = auth;</span>
           } else {
-<span class="nc" id="L199">            throw new SocketException(&quot;Cannot find UNIX socket path component from URI: &quot; + u);</span>
+<span class="nc" id="L227">            throw new SocketException(&quot;Cannot find UNIX socket path component from URI: &quot; + u);</span>
           }
         }
-<span class="pc bpc" id="L202" title="1 of 2 branches missed.">        return of(new File(path), overridePort != -1 ? overridePort : u.getPort());</span>
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">        return of(new File(path), overridePort != -1 ? overridePort : u.getPort());</span>
       case &quot;http+unix&quot;:
       case &quot;https+unix&quot;:
-<span class="fc" id="L205">        HostAndPort hp = HostAndPort.parseFrom(u);</span>
-<span class="pc bpc" id="L206" title="1 of 2 branches missed.">        return of(new File(hp.getHostname()), overridePort != -1 ? overridePort : hp.getPort());</span>
+<span class="fc" id="L233">        HostAndPort hp = HostAndPort.parseFrom(u);</span>
+<span class="pc bpc" id="L234" title="1 of 2 branches missed.">        return of(new File(hp.getHostname()), overridePort != -1 ? overridePort : hp.getPort());</span>
       default:
-<span class="nc" id="L208">        throw new SocketException(&quot;Invalid URI&quot;);</span>
+<span class="nc" id="L236">        throw new SocketException(&quot;Invalid URI&quot;);</span>
     }
   }
 
@@ -217,7 +245,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @throws IOException if the operation fails.
    */
   public static AFUNIXSocketAddress ofNewTempFile() throws IOException {
-<span class="fc" id="L220">    return ofNewTempPath(0);</span>
+<span class="fc" id="L248">    return ofNewTempPath(0);</span>
   }
 
   /**
@@ -229,18 +257,18 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @throws IOException if the operation fails.
    */
   public static AFUNIXSocketAddress ofNewTempPath(int port) throws IOException {
-<span class="fc" id="L232">    return of(newTempPath(true), port);</span>
+<span class="fc" id="L260">    return of(newTempPath(true), port);</span>
   }
 
   static File newTempPath(boolean deleteOnExit) throws IOException {
-<span class="fc" id="L236">    File f = File.createTempFile(&quot;jux&quot;, &quot;.sock&quot;);</span>
-<span class="fc bfc" id="L237" title="All 2 branches covered.">    if (deleteOnExit) {</span>
-<span class="fc" id="L238">      f.deleteOnExit(); // always delete on exit to clean-up sockets created under that name</span>
+<span class="fc" id="L264">    File f = File.createTempFile(&quot;jux&quot;, &quot;.sock&quot;);</span>
+<span class="fc bfc" id="L265" title="All 2 branches covered.">    if (deleteOnExit) {</span>
+<span class="fc" id="L266">      f.deleteOnExit(); // always delete on exit to clean-up sockets created under that name</span>
     }
-<span class="pc bpc" id="L240" title="3 of 4 branches missed.">    if (!f.delete() &amp;&amp; f.exists()) {</span>
-<span class="nc" id="L241">      throw new IOException(&quot;Could not delete temporary file that we just created: &quot; + f);</span>
+<span class="pc bpc" id="L268" title="3 of 4 branches missed.">    if (!f.delete() &amp;&amp; f.exists()) {</span>
+<span class="nc" id="L269">      throw new IOException(&quot;Could not delete temporary file that we just created: &quot; + f);</span>
     }
-<span class="fc" id="L243">    return f;</span>
+<span class="fc" id="L271">    return f;</span>
   }
 
   /**
@@ -254,7 +282,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFUNIXSocketAddress unwrap(InetAddress address, int port) throws SocketException {
-<span class="fc" id="L257">    return AFSocketAddress.unwrap(address, port, AF_UNIX);</span>
+<span class="fc" id="L285">    return AFSocketAddress.unwrap(address, port, AF_UNIX);</span>
   }
 
   /**
@@ -267,11 +295,11 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    */
   public static AFUNIXSocketAddress unwrap(SocketAddress address) throws SocketException {
     // FIXME: add support for UnixDomainSocketAddress
-<span class="nc" id="L270">    Objects.requireNonNull(address);</span>
-<span class="nc bnc" id="L271" title="All 2 branches missed.">    if (!isSupportedAddress(address)) {</span>
-<span class="nc" id="L272">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+<span class="nc" id="L298">    Objects.requireNonNull(address);</span>
+<span class="nc bnc" id="L299" title="All 2 branches missed.">    if (!isSupportedAddress(address)) {</span>
+<span class="nc" id="L300">      throw new SocketException(&quot;Unsupported address&quot;);</span>
     }
-<span class="nc" id="L274">    return (AFUNIXSocketAddress) address;</span>
+<span class="nc" id="L302">    return (AFUNIXSocketAddress) address;</span>
   }
 
   /**
@@ -286,7 +314,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFUNIXSocketAddress unwrap(String hostname, int port) throws SocketException {
-<span class="nc" id="L289">    return AFSocketAddress.unwrap(hostname, port, AF_UNIX);</span>
+<span class="nc" id="L317">    return AFSocketAddress.unwrap(hostname, port, AF_UNIX);</span>
   }
 
   /**
@@ -301,7 +329,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFUNIXSocketAddress inAbstractNamespace(String name) throws SocketException {
-<span class="fc" id="L304">    return inAbstractNamespace(name, 0);</span>
+<span class="fc" id="L332">    return inAbstractNamespace(name, 0);</span>
   }
 
   /**
@@ -318,35 +346,35 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    */
   public static AFUNIXSocketAddress inAbstractNamespace(String name, int port)
       throws SocketException {
-<span class="fc" id="L321">    byte[] bytes = name.getBytes(ADDRESS_CHARSET);</span>
-<span class="fc" id="L322">    byte[] addr = new byte[bytes.length + 1];</span>
-<span class="fc" id="L323">    System.arraycopy(bytes, 0, addr, 1, bytes.length);</span>
-<span class="fc" id="L324">    return AFUNIXSocketAddress.of(addr, port);</span>
+<span class="fc" id="L349">    byte[] bytes = name.getBytes(ADDRESS_CHARSET);</span>
+<span class="fc" id="L350">    byte[] addr = new byte[bytes.length + 1];</span>
+<span class="fc" id="L351">    System.arraycopy(bytes, 0, addr, 1, bytes.length);</span>
+<span class="fc" id="L352">    return AFUNIXSocketAddress.of(addr, port);</span>
   }
 
   private static String prettyPrint(byte[] data) {
-<span class="fc" id="L328">    final int dataLength = data.length;</span>
-<span class="pc bpc" id="L329" title="1 of 2 branches missed.">    if (dataLength == 0) {</span>
-<span class="nc" id="L330">      return &quot;&quot;;</span>
+<span class="fc" id="L356">    final int dataLength = data.length;</span>
+<span class="pc bpc" id="L357" title="1 of 2 branches missed.">    if (dataLength == 0) {</span>
+<span class="nc" id="L358">      return &quot;&quot;;</span>
     }
-<span class="fc" id="L332">    StringBuilder sb = new StringBuilder(dataLength + 16);</span>
-<span class="fc bfc" id="L333" title="All 2 branches covered.">    for (int i = 0; i &lt; dataLength; i++) {</span>
-<span class="fc" id="L334">      byte c = data[i];</span>
-<span class="fc bfc" id="L335" title="All 4 branches covered.">      if (c &gt;= 32 &amp;&amp; c &lt; 127) {</span>
-<span class="fc" id="L336">        sb.append((char) c);</span>
+<span class="fc" id="L360">    StringBuilder sb = new StringBuilder(dataLength + 16);</span>
+<span class="fc bfc" id="L361" title="All 2 branches covered.">    for (int i = 0; i &lt; dataLength; i++) {</span>
+<span class="fc" id="L362">      byte c = data[i];</span>
+<span class="fc bfc" id="L363" title="All 4 branches covered.">      if (c &gt;= 32 &amp;&amp; c &lt; 127) {</span>
+<span class="fc" id="L364">        sb.append((char) c);</span>
       } else {
-<span class="fc" id="L338">        sb.append(&quot;\\x&quot;);</span>
-<span class="fc" id="L339">        sb.append(String.format(Locale.ENGLISH, &quot;%02x&quot;, c));</span>
+<span class="fc" id="L366">        sb.append(&quot;\\x&quot;);</span>
+<span class="fc" id="L367">        sb.append(String.format(Locale.ENGLISH, &quot;%02x&quot;, c));</span>
       }
     }
-<span class="fc" id="L342">    return sb.toString();</span>
+<span class="fc" id="L370">    return sb.toString();</span>
   }
 
   @Override
   public String toString() {
-<span class="fc" id="L347">    int port = getPort();</span>
-<span class="pc bpc" id="L348" title="1 of 2 branches missed.">    return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port + &quot;;&quot;) + &quot;path=&quot;</span>
-<span class="fc" id="L349">        + prettyPrint(getBytes()) + &quot;]&quot;;</span>
+<span class="fc" id="L375">    int port = getPort();</span>
+<span class="pc bpc" id="L376" title="1 of 2 branches missed.">    return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port + &quot;;&quot;) + &quot;path=&quot;</span>
+<span class="fc" id="L377">        + prettyPrint(getBytes()) + &quot;]&quot;;</span>
   }
 
   /**
@@ -360,25 +388,25 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @see #getPathAsBytes()
    */
   public String getPath() {
-<span class="fc" id="L363">    byte[] bytes = getBytes();</span>
-<span class="pc bpc" id="L364" title="1 of 2 branches missed.">    if (bytes.length == 0) {</span>
-<span class="nc" id="L365">      return &quot;&quot;;</span>
-<span class="fc bfc" id="L366" title="All 2 branches covered.">    } else if (bytes[0] != 0) {</span>
-<span class="fc" id="L367">      return new String(bytes, ADDRESS_CHARSET);</span>
+<span class="fc" id="L391">    byte[] bytes = getBytes();</span>
+<span class="pc bpc" id="L392" title="1 of 2 branches missed.">    if (bytes.length == 0) {</span>
+<span class="nc" id="L393">      return &quot;&quot;;</span>
+<span class="fc bfc" id="L394" title="All 2 branches covered.">    } else if (bytes[0] != 0) {</span>
+<span class="fc" id="L395">      return new String(bytes, ADDRESS_CHARSET);</span>
     }
 
-<span class="fc" id="L370">    byte[] by = bytes.clone();</span>
-<span class="fc bfc" id="L371" title="All 2 branches covered.">    for (int i = 0; i &lt; by.length; i++) {</span>
-<span class="fc" id="L372">      byte b = by[i];</span>
-<span class="fc bfc" id="L373" title="All 2 branches covered.">      if (b == 0) {</span>
-<span class="fc" id="L374">        by[i] = '@';</span>
-<span class="fc bfc" id="L375" title="All 4 branches covered.">      } else if (b &gt;= 32 &amp;&amp; b &lt; 127) {</span>
+<span class="fc" id="L398">    byte[] by = bytes.clone();</span>
+<span class="fc bfc" id="L399" title="All 2 branches covered.">    for (int i = 0; i &lt; by.length; i++) {</span>
+<span class="fc" id="L400">      byte b = by[i];</span>
+<span class="fc bfc" id="L401" title="All 2 branches covered.">      if (b == 0) {</span>
+<span class="fc" id="L402">        by[i] = '@';</span>
+<span class="fc bfc" id="L403" title="All 4 branches covered.">      } else if (b &gt;= 32 &amp;&amp; b &lt; 127) {</span>
         // print as-is
       } else {
-<span class="fc" id="L378">        by[i] = '.';</span>
+<span class="fc" id="L406">        by[i] = '.';</span>
       }
     }
-<span class="fc" id="L381">    return new String(by, StandardCharsets.US_ASCII);</span>
+<span class="fc" id="L409">    return new String(by, StandardCharsets.US_ASCII);</span>
   }
 
   /**
@@ -390,7 +418,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @return The charset.
    */
   public static Charset addressCharset() {
-<span class="fc" id="L393">    return ADDRESS_CHARSET;</span>
+<span class="fc" id="L421">    return ADDRESS_CHARSET;</span>
   }
 
   /**
@@ -400,7 +428,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @see #getPath()
    */
   public byte[] getPathAsBytes() {
-<span class="fc" id="L403">    return getBytes().clone();</span>
+<span class="fc" id="L431">    return getBytes().clone();</span>
   }
 
   /**
@@ -409,27 +437,27 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @return {@code true} if the address is in the abstract namespace.
    */
   public boolean isInAbstractNamespace() {
-<span class="fc" id="L412">    byte[] bytes = getBytes();</span>
-<span class="pc bpc" id="L413" title="1 of 4 branches missed.">    return bytes.length &gt; 0 &amp;&amp; bytes[0] == 0;</span>
+<span class="fc" id="L440">    byte[] bytes = getBytes();</span>
+<span class="pc bpc" id="L441" title="1 of 4 branches missed.">    return bytes.length &gt; 0 &amp;&amp; bytes[0] == 0;</span>
   }
 
   @Override
   public boolean hasFilename() {
-<span class="fc" id="L418">    byte[] bytes = getBytes();</span>
-<span class="pc bpc" id="L419" title="1 of 4 branches missed.">    return bytes.length &gt; 0 &amp;&amp; bytes[0] != 0;</span>
+<span class="fc" id="L446">    byte[] bytes = getBytes();</span>
+<span class="pc bpc" id="L447" title="1 of 4 branches missed.">    return bytes.length &gt; 0 &amp;&amp; bytes[0] != 0;</span>
   }
 
   @Override
   public File getFile() throws FileNotFoundException {
-<span class="fc bfc" id="L424" title="All 2 branches covered.">    if (isInAbstractNamespace()) {</span>
-<span class="fc" id="L425">      throw new FileNotFoundException(&quot;Socket is in abstract namespace&quot;);</span>
+<span class="fc bfc" id="L452" title="All 2 branches covered.">    if (isInAbstractNamespace()) {</span>
+<span class="fc" id="L453">      throw new FileNotFoundException(&quot;Socket is in abstract namespace&quot;);</span>
     }
-<span class="fc" id="L427">    byte[] bytes = getBytes();</span>
+<span class="fc" id="L455">    byte[] bytes = getBytes();</span>
 
-<span class="pc bpc" id="L429" title="1 of 2 branches missed.">    if (bytes.length == 0) {</span>
-<span class="nc" id="L430">      throw new FileNotFoundException(&quot;No name&quot;);</span>
+<span class="pc bpc" id="L457" title="1 of 2 branches missed.">    if (bytes.length == 0) {</span>
+<span class="nc" id="L458">      throw new FileNotFoundException(&quot;No name&quot;);</span>
     }
-<span class="fc" id="L432">    return new File(new String(bytes, ADDRESS_CHARSET));</span>
+<span class="fc" id="L460">    return new File(new String(bytes, ADDRESS_CHARSET));</span>
   }
 
   /**
@@ -441,7 +469,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @see #unwrap(InetAddress, int)
    */
   public static boolean isSupportedAddress(InetAddress addr) {
-<span class="fc" id="L444">    return AFInetAddress.isSupportedAddress(addr, AF_UNIX);</span>
+<span class="fc" id="L472">    return AFInetAddress.isSupportedAddress(addr, AF_UNIX);</span>
   }
 
   /**
@@ -452,7 +480,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @see #unwrap(InetAddress, int)
    */
   public static boolean isSupportedAddress(SocketAddress addr) {
-<span class="fc" id="L455">    return (addr instanceof AFUNIXSocketAddress);</span>
+<span class="fc" id="L483">    return (addr instanceof AFUNIXSocketAddress);</span>
   }
 
   /**
@@ -462,45 +490,45 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    */
   @SuppressWarnings(&quot;null&quot;)
   public static AFAddressFamily&lt;AFUNIXSocketAddress&gt; addressFamily() {
-<span class="fc" id="L465">    return AFUNIXSelectorProvider.getInstance().addressFamily();</span>
+<span class="fc" id="L493">    return AFUNIXSelectorProvider.getInstance().addressFamily();</span>
   }
 
   @Override
   public URI toURI(String scheme, URI template) throws IOException {
-<span class="pc bpc" id="L470" title="2 of 3 branches missed.">    switch (scheme) {</span>
+<span class="pc bpc" id="L498" title="2 of 3 branches missed.">    switch (scheme) {</span>
       case &quot;unix&quot;:
       case &quot;file&quot;:
         try {
-<span class="nc bnc" id="L474" title="All 4 branches missed.">          if (getPort() &gt; 0 &amp;&amp; !&quot;file&quot;.equals(scheme)) {</span>
-<span class="nc" id="L475">            return new URI(scheme, null, &quot;localhost&quot;, getPort(), getPath(), null, (String) null);</span>
+<span class="nc bnc" id="L502" title="All 4 branches missed.">          if (getPort() &gt; 0 &amp;&amp; !&quot;file&quot;.equals(scheme)) {</span>
+<span class="nc" id="L503">            return new URI(scheme, null, &quot;localhost&quot;, getPort(), getPath(), null, (String) null);</span>
           } else {
-<span class="nc" id="L477">            return new URI(scheme, null, null, -1, getPath(), null, null);</span>
+<span class="nc" id="L505">            return new URI(scheme, null, null, -1, getPath(), null, null);</span>
           }
-<span class="nc" id="L479">        } catch (URISyntaxException e) {</span>
-<span class="nc" id="L480">          throw new IOException(e);</span>
+<span class="nc" id="L507">        } catch (URISyntaxException e) {</span>
+<span class="nc" id="L508">          throw new IOException(e);</span>
         }
       case &quot;http+unix&quot;:
       case &quot;https+unix&quot;:
-<span class="fc" id="L484">        HostAndPort hp = new HostAndPort(getPath(), getPort());</span>
-<span class="fc" id="L485">        return hp.toURI(scheme, template);</span>
+<span class="fc" id="L512">        HostAndPort hp = new HostAndPort(getPath(), getPort());</span>
+<span class="fc" id="L513">        return hp.toURI(scheme, template);</span>
       default:
-<span class="nc" id="L487">        return super.toURI(scheme, template);</span>
+<span class="nc" id="L515">        return super.toURI(scheme, template);</span>
     }
   }
 
   @Override
   public AFUNIXSocket newConnectedSocket() throws IOException {
-<span class="nc" id="L493">    return (AFUNIXSocket) super.newConnectedSocket();</span>
+<span class="nc" id="L521">    return (AFUNIXSocket) super.newConnectedSocket();</span>
   }
 
   @Override
   public AFUNIXServerSocket newBoundServerSocket() throws IOException {
-<span class="nc" id="L498">    return (AFUNIXServerSocket) super.newBoundServerSocket();</span>
+<span class="nc" id="L526">    return (AFUNIXServerSocket) super.newBoundServerSocket();</span>
   }
 
   @Override
   public AFUNIXServerSocket newForceBoundServerSocket() throws IOException {
-<span class="nc" id="L503">    return (AFUNIXServerSocket) super.newForceBoundServerSocket();</span>
+<span class="nc" id="L531">    return (AFUNIXServerSocket) super.newForceBoundServerSocket();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
