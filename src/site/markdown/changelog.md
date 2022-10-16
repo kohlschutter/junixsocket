@@ -7,6 +7,11 @@ Please tend to always use the latest version; the existing API should always be 
 When upgrading from versions older than 2.4.0, please note that `junixsocket-core` is now a POM-only
 artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.html) for details.
 
+### _(XXXX-XX-XX)_ **junixsocket 2.6.1**
+
+ - Make builds reproducible, align timestamps with git commit
+ - Add git commit info to selftest
+
 ### _(2022-10-14)_ **junixsocket 2.6.0**
 
  - Add support for GraalVM native-image
