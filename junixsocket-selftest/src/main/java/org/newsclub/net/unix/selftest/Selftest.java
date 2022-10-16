@@ -20,6 +20,7 @@ package org.newsclub.net.unix.selftest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -38,8 +39,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.junit.jupiter.engine.JupiterTestEngine;
 import org.junit.jupiter.engine.discovery.DiscoverySelectorResolver;
@@ -234,6 +237,19 @@ public class Selftest {
     out.println("and file a new bug report with the output below.");
     out.println();
     out.println("junixsocket selftest version " + AFUNIXSocket.getVersion());
+    try (InputStream in = getClass().getResourceAsStream(
+        "/META-INF/maven/com.kohlschutter.junixsocket/junixsocket-selftest/git.properties")) {
+      Properties props = new Properties();
+      if (in != null) {
+        props.load(in);
+        out.println();
+        out.println("Git properties:");
+        out.println();
+        for (String key : new TreeSet<>(props.stringPropertyNames())) {
+          out.println(key + ": " + props.getProperty(key));
+        }
+      }
+    }
     out.println();
   }
 
