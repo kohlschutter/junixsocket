@@ -14,7 +14,7 @@
     <description>The native JNI library</description>
 
     <properties>
-        <project.build.outputTimestamp>10</project.build.outputTimestamp>
+        <project.build.outputTimestamp>${git.commit.time}</project.build.outputTimestamp>
         <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
         <nar.aolProperties>${project.build.outputDirectory}/aol.properties</nar.aolProperties>
         <!-- <nar.aolProperties>${project.basedir}/aol.properties</nar.aolProperties> -->
@@ -217,7 +217,7 @@
   "bundles":[]
 }
 </echo>
-                                <touch millis="${project.build.outputTimestamp}">
+                                <touch datetime="${project.build.outputTimestamp}" pattern="yyyy-MM-dd'T'HH:mm:ssXXX">
                                     <fileset dir="${project.build.directory}/nar" includes="**/*" />
                                 </touch>
                             </target>
