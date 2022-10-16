@@ -14,6 +14,7 @@
     <description>The native JNI library</description>
 
     <properties>
+        <project.build.outputTimestamp>10</project.build.outputTimestamp>
         <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
         <nar.aolProperties>${project.build.outputDirectory}/aol.properties</nar.aolProperties>
         <!-- <nar.aolProperties>${project.basedir}/aol.properties</nar.aolProperties> -->
@@ -81,7 +82,6 @@
                     <plugin>
                         <groupId>com.github.maven-nar</groupId>
                         <artifactId>nar-maven-plugin</artifactId>
-                        <version>3.6.0</version>
                         <configuration>
                             <aol>${junixsocket.native.aol.llvm}</aol>
                             <c>
@@ -200,7 +200,15 @@
                             <!-- nar-maven-plugin may hardcode jnilib extension, but we
                 need dylib -->
                             <!-- also add GraalVM native-image metadata for the native library -->
+                            <!-- and make build more reproducible by removing property timestamp -->
+                            <!-- as well as setting file timestamps -->
                             <target>
+                                <delete>
+                                    <fileset dir="${project.build.directory}/nar" includes="**/history.xml" />
+                                </delete>
+                                <replaceregexp match="^\#[^N][^A][^R].*" replace="#" byline="true" encoding="UTF-8">
+                                    <fileset dir="${project.build.directory}" includes="**/nar.properties" />
+                                </replaceregexp>
                                 <move todir="${project.build.directory}/nar">
                                     <fileset dir="${project.build.directory}/nar" />
                                     <globmapper from="*.so" to="*.${junixsocket.native.jnilib.extension}" />
@@ -225,6 +233,9 @@
   "bundles":[]
 }
 </echo>
+                                <touch millis="${project.build.outputTimestamp}">
+                                    <fileset dir="${project.build.directory}/nar" includes="**/*" />
+                                </touch>
                             </target>
                         </configuration>
                         <goals>
