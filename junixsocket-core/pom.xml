@@ -1,39 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>junixsocket-core</artifactId>
-  <packaging>pom</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>junixsocket-core</artifactId>
+    <packaging>pom</packaging>
 
-  <parent>
-    <groupId>com.kohlschutter.junixsocket</groupId>
-    <artifactId>junixsocket</artifactId>
-    <version>2.6.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
-  <name>junixsocket-core</name>
-  <properties>
-    <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+    <parent>
+        <groupId>com.kohlschutter.junixsocket</groupId>
+        <artifactId>junixsocket</artifactId>
+        <version>2.6.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <name>junixsocket-core</name>
+    <properties>
+        <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
 
-    <!-- Work-around the fact that this artifact doesn't have a public class -->
-    <!-- maven-javadoc-plugin currently fails to handle this properly -->
-    <!-- https://issues.apache.org/jira/browse/MJAVADOC-274 -->
-    <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
-  </properties>
+        <!-- Work-around the fact that this artifact doesn't have a public class -->
+        <!-- maven-javadoc-plugin currently fails to handle this properly -->
+        <!-- https://issues.apache.org/jira/browse/MJAVADOC-274 -->
+        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+    </properties>
 
-  <description>The core system dependency; the one you want to add to your project</description>
+    <description>The core system dependency; the one you want to add to your project</description>
 
-  <dependencies>
-    <dependency>
-      <groupId>com.kohlschutter.junixsocket</groupId>
-      <artifactId>junixsocket-native-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.kohlschutter.junixsocket</groupId>
-      <artifactId>junixsocket-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-native-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>
