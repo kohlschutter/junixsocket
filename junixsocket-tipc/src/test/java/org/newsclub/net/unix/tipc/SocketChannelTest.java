@@ -17,6 +17,10 @@
  */
 package org.newsclub.net.unix.tipc;
 
+import java.io.IOException;
+import java.net.SocketAddress;
+import java.nio.channels.ServerSocketChannel;
+
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFTIPCSocketAddress;
@@ -30,5 +34,18 @@ public final class SocketChannelTest extends
 
   public SocketChannelTest() {
     super(AFTIPCAddressSpecifics.INSTANCE);
+  }
+
+  @Override
+  protected SocketAddress resolveAddressForSecondBind(SocketAddress originalAddress,
+      ServerSocketChannel ssc) throws IOException {
+    // TIPC: Can't bind on local socket address
+    return originalAddress;
+  }
+
+  @Override
+  protected boolean socketDomainPermitsDoubleBind() {
+    // TIPC: Binding on service address/range is generally allowed
+    return true;
   }
 }

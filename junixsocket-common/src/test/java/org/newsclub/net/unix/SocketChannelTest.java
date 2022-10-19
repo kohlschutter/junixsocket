@@ -23,8 +23,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
@@ -70,4 +74,144 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
     }
   }
 
+  @Test
+  public void testDoubleBindAddressNotReusable() throws Exception {
+    testDoubleBind(false);
+  }
+
+  @Test
+  public void testDoubleBindAddressReusable() throws Exception {
+    testDoubleBind(true);
+  }
+
+  private void testDoubleBind(boolean reuseAddress) throws Exception {
+    SocketAddress sa0 = newTempAddress();
+
+    final CompletableFuture<SocketChannel> acceptCall;
+    CompletableFuture<SocketChannel> acceptCall2 = null;
+
+    try (ServerSocketChannel ssc1 = selectorProvider().openServerSocketChannel()) {
+      bindServerSocket(ssc1, sa0, 1);
+      final SocketAddress sa = resolveAddressForSecondBind(sa0, ssc1);
+
+      AtomicBoolean connectMustSucceed = new AtomicBoolean(false);
+      AtomicBoolean socketDomainWillAcceptCallOnFirstBind = new AtomicBoolean(true);
+
+      acceptCall = CompletableFuture.supplyAsync(() -> {
+        try {
+          SocketChannel sc = ssc1.accept();
+          socketDomainWillAcceptCallOnFirstBind.set(false);
+          Objects.requireNonNull(sc);
+          if (reuseAddress && !connectMustSucceed.get()) {
+            fail("Did not throw SocketException");
+          }
+          return sc;
+        } catch (SocketException e) {
+          if (reuseAddress) {
+            // expected (Software caused connection abort)
+          } else {
+            fail(e);
+          }
+        } catch (IOException e) {
+          fail(e);
+        }
+        return null;
+      });
+
+      try (ServerSocketChannel ssc2 = selectorProvider().openServerSocketChannel()) {
+        ssc2.socket().setReuseAddress(reuseAddress);
+
+        try {
+          bindServerSocket(ssc2, sa, 1);
+          if (!reuseAddress && !socketDomainPermitsDoubleBind()) {
+            fail("Did not throw expected SocketException (Address already in use)");
+          }
+        } catch (SocketException e) {
+          if (!reuseAddress) {
+            // expected
+          } else {
+            // permissible, depending on socket domain
+            // but connecting to the first server must succeed
+            connectMustSucceed.set(true);
+          }
+        }
+
+        if (reuseAddress) {
+          acceptCall2 = CompletableFuture.supplyAsync(() -> {
+            try {
+              SocketChannel sc = ssc2.accept();
+              socketDomainWillAcceptCallOnFirstBind.set(false);
+              Objects.requireNonNull(sc);
+              return sc;
+            } catch (InvalidArgumentSocketException e) {
+              if (!acceptCall.isDone()) {
+                socketDomainWillAcceptCallOnFirstBind.set(true);
+                // some socket domains will permit a bind but not another accept until the first one
+                // is done (e.g., VSOCK).
+              } else {
+                fail(e);
+              }
+            } catch (IOException e) {
+              fail(e);
+            }
+            return null;
+          });
+        } else {
+          acceptCall2 = null;
+        }
+
+        // unblock accept of any successful bind
+        if (!acceptCall.isDone() && socketDomainWillAcceptCallOnFirstBind.get()) {
+          CompletableFuture.runAsync(() -> {
+            try {
+              newSocket().connect(sa);
+            } catch (SocketException e) {
+              if (connectMustSucceed.get()) {
+                fail("Connect should have succeeded", e);
+              } else {
+                // ignore
+              }
+            } catch (IOException e) {
+              fail(e);
+            }
+          });
+        }
+      }
+    }
+
+    // Assert that eventually all accept jobs have terminated.
+    for (int i = 0; i < 10; i++) {
+      if (acceptCall.isDone() && (acceptCall2 == null || acceptCall2.isDone())) {
+        break;
+      }
+      Thread.sleep(100);
+    }
+  }
+
+  /**
+   * Returns the temporary address usable to binding on for a second bind.
+   * 
+   * Depending on the socket domain, a wildcard address may be permittable or not for a second bind.
+   * 
+   * @param originalAddress The original temporary address (e.g., a wildcard address).
+   * @param ssc The socket that was bound to that address.
+   * @return The local bound address, or the {@code originalAddress}.
+   * @throws IOException on error.
+   * @see {@link #testDoubleBindAddressReusable()}
+   */
+  protected SocketAddress resolveAddressForSecondBind(SocketAddress originalAddress,
+      ServerSocketChannel ssc) throws IOException {
+    return ssc.getLocalAddress();
+  }
+
+  /**
+   * Override to declare that a certain socket domain permits double-binding an address,
+   * particularly when the address is comparable to a wildcard address.
+   * 
+   * @return {@code true} iff double-binding the same address is allowed.
+   * @see {@link #testDoubleBindAddressReusable()}
+   */
+  protected boolean socketDomainPermitsDoubleBind() {
+    return false;
+  }
 }
