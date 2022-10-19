@@ -85,8 +85,10 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
         return 0;
     }
 
+    bool reuse = ((options & org_newsclub_net_unix_NativeUnixSocket_BIND_OPT_REUSE) != 0) && addr->addr.sa_family == AF_UNIX;
+
 #if defined(_WIN32)
-    if(addr->addr.sa_family == AF_UNIX && addr->un.sun_path[0] != 0) {
+    if(reuse && addr->addr.sa_family == AF_UNIX && addr->un.sun_path[0] != 0) {
         DeleteFileA(addr->un.sun_path);
     }
 
@@ -103,7 +105,6 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
         return 0;
     }
 #else
-    bool reuse = ((options & org_newsclub_net_unix_NativeUnixSocket_BIND_OPT_REUSE) != 0) && addr->addr.sa_family == AF_UNIX;
     bool useSuTmp = false;
     struct sockaddr_un suTmp;
     if(reuse) {
