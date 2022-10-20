@@ -23,6 +23,37 @@
 #include "filedescriptors.h"
 #include "address.h"
 #include "polling.h"
+#include "socket.h"
+
+#if defined(_WIN32)
+static jboolean checkAcceptable(JNIEnv * env, jobject fdServer, jobject fd, int serverHandle, int socketHandle) {
+    jux_sockaddr_t localAddr = {0};
+    socklen_t len = sizeof(jux_sockaddr_t);
+    int ret = getsockname(serverHandle, (struct sockaddr *)&localAddr, &len);
+    if(ret == 0 && localAddr.un.sun_path[0] != 0) {
+        int attr = GetFileAttributesA(&localAddr.un.sun_path);
+
+        if(attr == INVALID_FILE_ATTRIBUTES) {
+            // socket was deleted -- probably being re-bound.
+            // shutdown sockets and throw execption
+            if(socketHandle >= 0 && fd != NULL) {
+                shutdown(socketHandle, SHUT_RDWR);
+                closesocket(socketHandle);
+                _initFD(env, fd, -1);
+            }
+
+            shutdown(serverHandle, SHUT_RDWR);
+            closesocket(serverHandle);
+            _initFD(env, fdServer, -1);
+
+            _throwErrnumException(env, ECONNABORTED, NULL);
+            return false;
+        }
+    }
+
+    return true;
+}
+#endif
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -52,20 +83,12 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
         }
 
         if(addr->un.sun_path[0] != 0) {
-            struct stat fdStat;
-
-            // It's OK when the file's gone, but not OK if it refers to another inode.
-            int statRes = stat(addr->un.sun_path, &fdStat);
-            if(statRes == 0) {
-                ino_t statInode = fdStat.st_ino;
-
-                if(statInode != (ino_t)expectedInode) {
-                    // inode mismatch -> someone else took over this socket address
-                    _closeFd(env, fdServer, serverHandle);
-                    _throwErrnumException(env,
-                                          ECONNABORTED, NULL);
-                    return false;
-                }
+            jlong statInode = getInodeIdentifier(addr->un.sun_path);
+            if(statInode != expectedInode) {
+                // inode mismatch -> someone else took over this socket address
+                _closeFd(env, fdServer, serverHandle);
+                _throwErrnumException(env, ECONNABORTED, NULL);
+                return false;
             }
         }
     }
@@ -114,29 +137,11 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 #  endif
 #endif
 
-#  if defined(_WIN32)
-    jux_sockaddr_t localAddr = {0};
-    socklen_t len = sizeof(jux_sockaddr_t);
-    int ret = getsockname(socketHandle, (struct sockaddr *)&localAddr, &len);
-    if(ret == 0 && localAddr.un.sun_path[0] != 0) {
-        int attr = GetFileAttributesA(&localAddr.un.sun_path);
-        if(attr == INVALID_FILE_ATTRIBUTES) {
-            // socket was deleted -- probably being re-bound.
-            // shutdown sockets and throw execption
-            shutdown(socketHandle, SHUT_RDWR);
-            closesocket(socketHandle);
-            shutdown(serverHandle, SHUT_RDWR);
-            closesocket(serverHandle);
-
-            _initFD(env, fdServer, -1);
-            _initFD(env, fd, -1);
-
-            // mimic UNIX behavior
-            _throwErrnumException(env, ECONNABORTED, NULL);
-            return false;
-        }
+#if defined(_WIN32)
+    if(!checkAcceptable(env, fdServer, fd, serverHandle, socketHandle)) {
+        return false;
     }
-#  endif
+#endif
 
     _initFD(env, fd, socketHandle);
 

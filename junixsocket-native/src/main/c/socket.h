@@ -21,6 +21,14 @@
 
 #include "config.h"
 
+/**
+ * Return some kind of "inode"-like identifier for the file at the given path, to be used
+ * for identity checking.
+ *
+ * This could be the creation date, if no inode information is available.
+ */
+jlong getInodeIdentifier(char *filename);
+
 int sockTypeToNative(JNIEnv *env, int type);
 
 #endif /* socket_h */

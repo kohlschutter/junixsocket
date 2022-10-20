@@ -23,6 +23,7 @@
 #include "address.h"
 #include "filedescriptors.h"
 #include "vsock.h"
+#include "socket.h"
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -53,18 +54,12 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
             _throwException(env, kExceptionSocketException, "Cannot check inode for this type of socket");
             return false;
         }
-        struct stat fdStat;
-
         // It's OK when the file's gone, but not OK if it refers to another inode.
-        int statRes = stat(addr->un.sun_path, &fdStat);
-        if(statRes == 0) {
-            ino_t statInode = fdStat.st_ino;
-
-            if(statInode != (ino_t)expectedInode) {
-                // inode mismatch -> someone else took over this socket address
-                _throwErrnumException(env, ECONNABORTED, NULL);
-                return false;
-            }
+        jlong statInode = getInodeIdentifier(addr->un.sun_path);
+        if(statInode != expectedInode) {
+            // inode mismatch -> someone else took over this socket address
+            _throwErrnumException(env, ECONNABORTED, NULL);
+            return false;
         }
     }
 

@@ -24,6 +24,57 @@
 #include "exceptions.h"
 #include "address.h"
 
+jlong getInodeIdentifier(char *filename) {
+    if(filename == NULL) {
+        return 0;
+    }
+
+#if defined(_WIN32)
+    // FILE_FLAG_OPEN_REPARSE_POINT is required to get Handle of a Unix socket file
+    // kudos to Yuriy O'Donnell of https://gitlab.kitware.com/cmake/cmake/-/issues/22743 for
+    // writing a well-googleable bug report on a somewhat related issue that made me try this
+    HANDLE h = CreateFileA(filename, FILE_WRITE_ATTRIBUTES,
+                           FILE_SHARE_READ | FILE_SHARE_WRITE,
+                           NULL,
+                           OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT,
+                           0);
+    if(h > 0) {
+        jlong id = 0;
+
+        FILETIME fTime;
+        if(GetFileTime(h, &fTime, NULL, NULL)) {
+            id = fTime.dwHighDateTime << 32 | fTime.dwLowDateTime;
+        }
+
+        BY_HANDLE_FILE_INFORMATION fileInfo = {0};
+        if(GetFileInformationByHandle(h, &fileInfo)) {
+            // file index is not as reliable as a true inode value, but we can still mix it in
+            jlong index = fileInfo.nFileIndexHigh << 32 | fileInfo.nFileIndexLow;
+            if(index != 0) {
+                id ^= index;
+            }
+        }
+
+        CloseHandle(h);
+
+        return id;
+    }
+#else
+    struct stat fdStat = {0};
+
+    int statRes = stat(filename, &fdStat);
+    if(statRes == -1) {
+        if (errno == EINVAL) {
+            return 0;
+        } else {
+            return -1;
+        }
+    } else {
+        return (jlong)fdStat.st_ino;
+    }
+#endif
+}
+
 int sockTypeToNative(JNIEnv *env, int type) {
     switch(type) {
         case org_newsclub_net_unix_NativeUnixSocket_SOCK_STREAM:

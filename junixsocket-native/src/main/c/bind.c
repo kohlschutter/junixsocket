@@ -23,6 +23,7 @@
 #include "address.h"
 #include "filedescriptors.h"
 #include "vsock.h"
+#include "socket.h"
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -35,8 +36,6 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 #if defined(_WIN32)
     CK_ARGUMENT_POTENTIALLY_UNUSED(options);
 #endif
-
-    // FIXME domain
 
     jux_sockaddr_t *addr = (*env)->GetDirectBufferAddress(env, ab);
     socklen_t suLength = (socklen_t)abLen;
@@ -128,8 +127,12 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
                     ret = connect(hnd, (struct sockaddr*)&addr2, sizeof(struct sockaddr_un));
                 } while(ret == -1 && (errno = socket_errno) == EINTR);
                 closesocket(hnd);
+            } else {
+                // rename failed -- old accept may still hang
             }
             DeleteFileA(&tempFileName);
+        } else {
+            // couldn't create temporary file -- old accept may still hang
         }
         DeleteFileA(addr->un.sun_path);
     }
@@ -141,6 +144,30 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
     if(bindRes < 0) {
         _throwErrnumException(env, myErr, NULL);
         return -1;
+    } else if(addr->addr.sa_family == AF_UNIX && addr->un.sun_path[0] != 0) {
+        // Update creation time of the socket file; Windows apparently doesn't do that!
+
+        HANDLE h = CreateFileA(addr->un.sun_path, FILE_WRITE_ATTRIBUTES,
+                               FILE_SHARE_READ | FILE_SHARE_WRITE,
+                               NULL,
+                               OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT,
+                               0);
+        if(h > 0) {
+            FILETIME fTime;
+            if(GetFileTime(h, NULL, NULL, &fTime)) {
+                SetFileTime(h, &fTime, NULL, NULL);
+            }
+
+            CloseHandle(h);
+        }
+
+        struct stat fdStat;
+        jlong inode = getInodeIdentifier(addr->un.sun_path);
+        if(inode == -1) {
+            _throwErrnumException(env, errno, NULL);
+            return -1;
+        }
+        return inode;
     } else {
         return 0;
     }
@@ -287,31 +314,18 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 
     _initFD(env, fd, serverHandle);
 
-    struct stat fdStat;
-    ino_t inode;
-
+    jlong inode;
     if(addr->addr.sa_family != AF_UNIX) {
         inode = 0;
     } else if(addr->un.sun_path[0] == 0) {
         // no inodes in the abstract namespace
         inode = 0;
     } else {
-#if !defined(_WIN32)
-        int statRes = stat(addr->un.sun_path, &fdStat);
-        if(statRes == -1) {
-            if (errno == EINVAL) {
-                inode = 0;
-            } else {
-                myErr = errno;
-                _throwErrnumException(env, myErr, NULL);
-                return -1;
-            }
-        } else {
-            inode = fdStat.st_ino;
+        inode = getInodeIdentifier(addr->un.sun_path);
+        if(inode == -1) {
+            _throwErrnumException(env, errno, NULL);
+            return -1;
         }
-#else
-        inode = 0;
-#endif
     }
 
     if(useSuTmp) {
