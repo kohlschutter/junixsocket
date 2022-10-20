@@ -114,6 +114,29 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 #  endif
 #endif
 
+#  if defined(_WIN32)
+    jux_sockaddr_t localAddr = {0};
+    socklen_t len = sizeof(jux_sockaddr_t);
+    int ret = getsockname(socketHandle, (struct sockaddr *)&localAddr, &len);
+    if(ret == 0 && localAddr.un.sun_path[0] != 0) {
+        int attr = GetFileAttributesA(&localAddr.un.sun_path);
+        if(attr == INVALID_FILE_ATTRIBUTES) {
+            // socket was deleted -- probably being re-bound.
+            // shutdown sockets and throw execption
+            shutdown(socketHandle, SHUT_RDWR);
+            closesocket(socketHandle);
+            shutdown(serverHandle, SHUT_RDWR);
+            closesocket(serverHandle);
+
+            _initFD(env, fdServer, -1);
+            _initFD(env, fd, -1);
+
+            // mimic UNIX behavior
+            _throwErrnumException(env, ECONNABORTED, NULL);
+            return false;
+        }
+    }
+#  endif
 
     _initFD(env, fd, socketHandle);
 

@@ -89,13 +89,53 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 
 #if defined(_WIN32)
     if(reuse && addr->addr.sa_family == AF_UNIX && addr->un.sun_path[0] != 0) {
+        // Windows AF_UNIX does not terminate existing accept threads after another thread
+        // has called bind/accept on the same unix socket.
+
+        // Tell any (junixsocket) accept to close the serversocket
+        // by renaming the unix socket file and connecting to it
+        // see accept.c how we handle this.
+
+        char tempFileName[MAX_PATH + 1] = ".";
+        int len = strnlen(addr->un.sun_path, MIN(MAX_PATH, sizeof(struct sockaddr_un) - 2));
+
+        int lastSlash = -1;
+        for(int i = len-1; i >= 0; i--) {
+            switch(addr->un.sun_path[i]) {
+                case '\\':
+                case '/':
+                    lastSlash = i;
+                    i = -1;
+                    break;
+            }
+        }
+        if(lastSlash > 0) {
+            memcpy(&tempFileName, addr->un.sun_path, lastSlash);
+        }
+
+        if(GetTempFileNameA(&tempFileName, "jux", 0, &tempFileName) != 0) {
+            DeleteFileA(&tempFileName);
+
+            if(rename(addr->un.sun_path, &tempFileName) == 0) {
+                struct sockaddr_un addr2 = { 0 };
+                addr2.sun_family = AF_UNIX;
+                memcpy(&(addr2.sun_path), &tempFileName,
+                       strnlen(&tempFileName, sizeof(struct sockaddr_un)-1));
+
+                int hnd = socket(AF_UNIX, SOCK_STREAM, 0);
+                int ret;
+                do {
+                    ret = connect(hnd, (struct sockaddr*)&addr2, sizeof(struct sockaddr_un));
+                } while(ret == -1 && (errno = socket_errno) == EINTR);
+                closesocket(hnd);
+            }
+            DeleteFileA(&tempFileName);
+        }
         DeleteFileA(addr->un.sun_path);
     }
 
-    int bindRes;
-
-    bindRes = bind(serverHandle, (struct sockaddr *)&addr->addr, suLength);
-    int myErr = socket_errno;
+    int bindRes = bind(serverHandle, (struct sockaddr *)&addr->addr, suLength);
+    int myErr = bindRes == 0 ? 0 : socket_errno;
     _initFD(env, fd, serverHandle);
 
     if(bindRes < 0) {
