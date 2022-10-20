@@ -96,7 +96,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
         // see accept.c how we handle this.
 
         char tempFileName[MAX_PATH + 1] = ".";
-        int len = strnlen(addr->un.sun_path, MIN(MAX_PATH, sizeof(struct sockaddr_un) - 2));
+        int len = strnlen((const char *)addr->un.sun_path, MIN(MAX_PATH, sizeof(struct sockaddr_un) - 2));
 
         int lastSlash = -1;
         for(int i = len-1; i >= 0; i--) {
@@ -112,14 +112,14 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
             memcpy(&tempFileName, addr->un.sun_path, lastSlash);
         }
 
-        if(GetTempFileNameA(&tempFileName, "jux", 0, &tempFileName) != 0) {
-            DeleteFileA(&tempFileName);
+        if(GetTempFileNameA((const char *)&tempFileName, "jux", 0, (char *)&tempFileName) != 0) {
+            DeleteFileA((const char *)&tempFileName);
 
-            if(rename(addr->un.sun_path, &tempFileName) == 0) {
+            if(rename(addr->un.sun_path, (const char *)&tempFileName) == 0) {
                 struct sockaddr_un addr2 = { 0 };
                 addr2.sun_family = AF_UNIX;
                 memcpy(&(addr2.sun_path), &tempFileName,
-                       strnlen(&tempFileName, sizeof(struct sockaddr_un)-1));
+                       strnlen((const char *)&tempFileName, sizeof(struct sockaddr_un)-1));
 
                 int hnd = socket(AF_UNIX, SOCK_STREAM, 0);
                 int ret;
@@ -130,11 +130,11 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
             } else {
                 // rename failed -- old accept may still hang
             }
-            DeleteFileA(&tempFileName);
+            DeleteFileA((const char *)&tempFileName);
         } else {
             // couldn't create temporary file -- old accept may still hang
         }
-        DeleteFileA(addr->un.sun_path);
+        DeleteFileA((const char *)addr->un.sun_path);
     }
 
     int bindRes = bind(serverHandle, (struct sockaddr *)&addr->addr, suLength);
@@ -152,7 +152,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
                                NULL,
                                OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT,
                                0);
-        if(h > 0) {
+        if(h != INVALID_HANDLE_VALUE) {
             FILETIME fTime;
             if(GetFileTime(h, NULL, NULL, &fTime)) {
                 SetFileTime(h, &fTime, NULL, NULL);
@@ -161,7 +161,6 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
             CloseHandle(h);
         }
 
-        struct stat fdStat;
         jlong inode = getInodeIdentifier(addr->un.sun_path);
         if(inode == -1) {
             _throwErrnumException(env, errno, NULL);

@@ -31,7 +31,7 @@ static jboolean checkAcceptable(JNIEnv * env, jobject fdServer, jobject fd, int 
     socklen_t len = sizeof(jux_sockaddr_t);
     int ret = getsockname(serverHandle, (struct sockaddr *)&localAddr, &len);
     if(ret == 0 && localAddr.un.sun_path[0] != 0) {
-        int attr = GetFileAttributesA(&localAddr.un.sun_path);
+        DWORD attr = GetFileAttributesA((const char *)&localAddr.un.sun_path);
 
         if(attr == INVALID_FILE_ATTRIBUTES) {
             // socket was deleted -- probably being re-bound.

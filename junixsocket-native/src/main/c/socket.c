@@ -38,18 +38,18 @@ jlong getInodeIdentifier(char *filename) {
                            NULL,
                            OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT,
                            0);
-    if(h > 0) {
+    if(h != INVALID_HANDLE_VALUE) {
         jlong id = 0;
 
         FILETIME fTime;
         if(GetFileTime(h, &fTime, NULL, NULL)) {
-            id = fTime.dwHighDateTime << 32 | fTime.dwLowDateTime;
+            id = (uint64_t)(fTime.dwHighDateTime) << 32 | fTime.dwLowDateTime;
         }
 
         BY_HANDLE_FILE_INFORMATION fileInfo = {0};
         if(GetFileInformationByHandle(h, &fileInfo)) {
             // file index is not as reliable as a true inode value, but we can still mix it in
-            jlong index = fileInfo.nFileIndexHigh << 32 | fileInfo.nFileIndexLow;
+            jlong index = (uint64_t)(fileInfo.nFileIndexHigh) << 32 | fileInfo.nFileIndexLow;
             if(index != 0) {
                 id ^= index;
             }
@@ -58,6 +58,8 @@ jlong getInodeIdentifier(char *filename) {
         CloseHandle(h);
 
         return id;
+    } else {
+        return 0;
     }
 #else
     struct stat fdStat = {0};
