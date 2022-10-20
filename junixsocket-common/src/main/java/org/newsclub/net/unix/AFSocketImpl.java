@@ -220,7 +220,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     return core;
   }
 
-  private boolean isClosed() {
+  boolean isClosed() {
     return core.isClosed();
   }
   // CPD-ON

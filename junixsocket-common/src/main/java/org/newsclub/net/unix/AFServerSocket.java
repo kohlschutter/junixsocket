@@ -282,7 +282,8 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
 
   @Override
   public final boolean isClosed() {
-    return super.isClosed() || (isBound() && !implementation.getFD().valid());
+    return super.isClosed() || (isBound() && !implementation.getFD().valid()) || implementation
+        .isClosed();
   }
 
   @Override

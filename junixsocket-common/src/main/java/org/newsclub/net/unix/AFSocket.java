@@ -351,7 +351,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   @Override
   public final boolean isClosed() {
-    return super.isClosed() || (isConnected() && !impl.getFD().valid());
+    return super.isClosed() || (isConnected() && !impl.getFD().valid()) || impl.isClosed();
   }
 
   @Override
