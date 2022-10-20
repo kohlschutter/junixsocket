@@ -28,6 +28,9 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
@@ -89,13 +92,15 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
 
     final CompletableFuture<SocketChannel> acceptCall;
     CompletableFuture<SocketChannel> acceptCall2 = null;
+    CompletableFuture<Void> connectCall = null;
+
+    AtomicBoolean socketDomainWillAcceptCallOnFirstBind = new AtomicBoolean(true);
 
     try (ServerSocketChannel ssc1 = selectorProvider().openServerSocketChannel()) {
       bindServerSocket(ssc1, sa0, 1);
       final SocketAddress sa = resolveAddressForSecondBind(sa0, ssc1);
 
       AtomicBoolean connectMustSucceed = new AtomicBoolean(false);
-      AtomicBoolean socketDomainWillAcceptCallOnFirstBind = new AtomicBoolean(true);
 
       acceptCall = CompletableFuture.supplyAsync(() -> {
         try {
@@ -162,7 +167,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
 
         // unblock accept of any successful bind
         if (!acceptCall.isDone() && socketDomainWillAcceptCallOnFirstBind.get()) {
-          CompletableFuture.runAsync(() -> {
+          connectCall = CompletableFuture.runAsync(() -> {
             try {
               newSocket().connect(sa);
             } catch (SocketException e) {
@@ -180,11 +185,30 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
     }
 
     // Assert that eventually all accept jobs have terminated.
-    for (int i = 0; i < 10; i++) {
-      if (acceptCall.isDone() && (acceptCall2 == null || acceptCall2.isDone())) {
-        break;
+    if (acceptCall2 != null) {
+      try {
+        acceptCall2.get(1, TimeUnit.SECONDS);
+      } catch (ExecutionException e) {
+        // ignore socket closed etc.
+      } catch (TimeoutException e) {
+        fail("Second accept call did not terminate");
       }
-      Thread.sleep(100);
+    }
+    try {
+      acceptCall.get(1, TimeUnit.SECONDS);
+    } catch (ExecutionException e) {
+      // ignore socket closed etc.
+    } catch (TimeoutException e) {
+      fail("First accept call did not terminate");
+    }
+    if (connectCall != null) {
+      try {
+        connectCall.get(1, TimeUnit.SECONDS);
+      } catch (ExecutionException e) {
+        // ignore socket closed etc.
+      } catch (TimeoutException e) {
+        fail("Connect call did not terminate");
+      }
     }
   }
 
