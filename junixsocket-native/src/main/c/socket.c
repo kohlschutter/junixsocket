@@ -30,8 +30,8 @@ jlong getInodeIdentifier(char *filename) {
     }
 
 #if defined(_WIN32)
-    // FILE_FLAG_OPEN_REPARSE_POINT is required to get Handle of a Unix socket file
-    // kudos to Yuriy O'Donnell of https://gitlab.kitware.com/cmake/cmake/-/issues/22743 for
+    // FILE_FLAG_OPEN_REPARSE_POINT is required to get the HANDLE of a Unix socket file.
+    // Kudos to Yuriy O'Donnell of https://gitlab.kitware.com/cmake/cmake/-/issues/22743 for
     // writing a well-googleable bug report on a somewhat related issue that made me try this
     HANDLE h = CreateFileA(filename, FILE_WRITE_ATTRIBUTES,
                            FILE_SHARE_READ | FILE_SHARE_WRITE,
