@@ -251,26 +251,36 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
     @SuppressWarnings("unchecked")
     final AFSocketImpl<A> si = (AFSocketImpl<A>) socket;
+    core.incPendingAccepts();
     try {
-      core.incPendingAccepts();
       ByteBuffer ab = socketAddress.getNativeAddressDirectBuffer();
-      if (!NativeUnixSocket.accept(ab, ab.limit(), fdesc, si.fd, core.inode.get(), socketTimeout
-          .get())) {
-        return false;
-      }
 
-      if (!isBound() || isClosed()) {
-        try {
-          NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
-        } catch (Exception e) {
-          // ignore
+      SocketException caught = null;
+      try {
+        if (!NativeUnixSocket.accept(ab, ab.limit(), fdesc, si.fd, core.inode.get(), socketTimeout
+            .get())) {
+          return false;
         }
-        try {
-          NativeUnixSocket.close(si.fd);
-        } catch (Exception e) {
-          // ignore
+      } catch (SocketException e) {
+        caught = e;
+      } finally {
+        if (!isBound() || isClosed()) {
+          try {
+            NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
+          } catch (Exception e) {
+            // ignore
+          }
+          try {
+            NativeUnixSocket.close(si.fd);
+          } catch (Exception e) {
+            // ignore
+          }
+          if (caught != null) {
+            throw caught;
+          } else {
+            throw new SocketException("Socket is closed");
+          }
         }
-        throw new SocketException("Socket is closed");
       }
     } finally {
       core.decPendingAccepts();
