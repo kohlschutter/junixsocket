@@ -437,7 +437,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   @Override
   protected final AFInputStream getInputStream() throws IOException {
     if (!isConnected() && !isBound()) {
-      throw new IOException("Not connected/not bound");
+      throw new SocketClosedException("Not connected/not bound");
     }
     core.validFdOrException();
     return in;
@@ -446,7 +446,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   @Override
   protected final AFOutputStream getOutputStream() throws IOException {
     if (!isClosed() && !isBound()) {
-      throw new IOException("Not connected/not bound");
+      throw new SocketClosedException("Not connected/not bound");
     }
     core.validFdOrException();
     return out;
@@ -480,7 +480,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     @Override
     public int read(byte[] buf, int off, int len) throws IOException {
       if (streamClosed) {
-        throw new IOException("This InputStream has already been closed.");
+        throw new SocketClosedException("This InputStream has already been closed.");
       }
       if (eofReached.get()) {
         return -1;
@@ -535,7 +535,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     @Override
     public int available() throws IOException {
       if (streamClosed) {
-        throw new IOException("This InputStream has already been closed.");
+        throw new SocketClosedException("This InputStream has already been closed.");
       }
 
       return AFSocketImpl.this.available();
@@ -585,9 +585,9 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         throw new IndexOutOfBoundsException();
       }
       FileDescriptor fdesc = core.validFdOrException();
-      if (len == 0) {
-        return;
-      }
+
+      // NOTE: writing messages with len == 0 should be permissible (unless ignored in native code)
+      // For certain sockets, empty messages can be used to probe if the remote connection is alive
 
       int writtenTotal = 0;
 

@@ -42,6 +42,8 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   private static final String PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX =
       "org.newsclub.net.unix.library.disable.";
 
+  private static final byte[] ZERO_BYTES = new byte[0];
+
   @SuppressWarnings("PMD.MutableStaticState")
   static String loadedLibrary; // set by NativeLibraryLoader
 
@@ -216,12 +218,12 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   @Override
   public final boolean isBound() {
-    return super.isBound() || impl.isBound();
+    return impl.getFD().valid() && (super.isBound() || impl.isBound());
   }
 
   @Override
   public final boolean isConnected() {
-    return super.isConnected() || impl.isConnected();
+    return impl.getFD().valid() && (super.isConnected() || impl.isConnected());
   }
 
   @Override
@@ -543,5 +545,32 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   public final AFSocket<A> connectHook(SocketAddressFilter hook) {
     this.connectFilter = hook;
     return this;
+  }
+
+  /**
+   * Probes the status of the socket connection.
+   * 
+   * This usually involves checking for {@link #isConnected()}, and if assumed connected, also
+   * sending a zero-length message to the remote.
+   * 
+   * @return The connection status, which may be unknown.
+   * @throws IOException on an unexpected error.
+   */
+  public ConnectionStatus getConnectionStatus() throws IOException {
+    if (!isConnected()) {
+      return ConnectionStatus.NOT_CONNECTED;
+    }
+    try {
+      getOutputStream().write(ZERO_BYTES);
+      return ConnectionStatus.CONNECTED;
+    } catch (SocketClosedException e) {
+      return ConnectionStatus.NOT_CONNECTED;
+    } catch (IOException e) {
+      if (!isConnected()) {
+        return ConnectionStatus.NOT_CONNECTED;
+      } else {
+        throw e;
+      }
+    }
   }
 }

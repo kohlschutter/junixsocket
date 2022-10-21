@@ -277,7 +277,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
 
   @Override
   public final boolean isBound() {
-    return boundEndpoint != null;
+    return boundEndpoint != null && implementation.getFD().valid();
   }
 
   @Override
@@ -297,7 +297,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     boolean success = implementation.accept0(as.getAFImpl(false));
     if (isClosed()) {
       // We may have connected to the socket to unblock it
-      throw new SocketException("Socket is closed");
+      throw new SocketClosedException("Socket is closed");
     }
 
     if (!success) {

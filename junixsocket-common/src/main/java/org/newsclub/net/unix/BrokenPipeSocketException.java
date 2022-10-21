@@ -20,26 +20,26 @@ package org.newsclub.net.unix;
 import java.net.SocketException;
 
 /**
- * A {@link SocketException} indicating that a socket was closed or is not open for other reasons.
+ * A {@link SocketException} indicating that a socket connection was broken ("broken pipe").
  * 
  * @author Christian Kohlschütter
  */
-public final class SocketClosedException extends SocketException {
+public final class BrokenPipeSocketException extends SocketException {
   private static final long serialVersionUID = 1L;
 
   /**
-   * Constructs a new {@link SocketClosedException}.
+   * Constructs a new {@link BrokenPipeSocketException}.
    */
-  public SocketClosedException() {
+  public BrokenPipeSocketException() {
     super();
   }
 
   /**
-   * Constructs a new {@link SocketClosedException}.
+   * Constructs a new {@link BrokenPipeSocketException}.
    * 
    * @param msg The error message.
    */
-  public SocketClosedException(String msg) {
+  public BrokenPipeSocketException(String msg) {
     super(msg);
   }
 }
