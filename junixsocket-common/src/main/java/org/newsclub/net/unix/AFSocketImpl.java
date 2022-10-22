@@ -278,8 +278,10 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
           if (caught != null) {
             throw caught;
           } else {
-            throw new SocketException("Socket is closed");
+            throw new SocketClosedException("Socket is closed");
           }
+        } else if (caught != null) {
+          throw caught;
         }
       }
     } finally {
