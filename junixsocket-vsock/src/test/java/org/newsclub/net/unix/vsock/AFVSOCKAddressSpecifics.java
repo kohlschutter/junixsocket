@@ -142,13 +142,8 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
       return e;
     }
 
-    if (AFVSOCKSocket.getLocalCID() == AFVSOCKSocketAddress.VMADDR_CID_HOST) {
-      throw new TestAbortedWithImportantMessageException(
-          MessageType.TEST_ABORTED_SHORT_INFORMATIONAL, msg == null || msg.isEmpty() ? shortMsg
-              : shortMsg + ": " + msg, e);
-    } else {
-      return e;
-    }
+    throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+        msg == null || msg.isEmpty() ? shortMsg : shortMsg + ": " + msg, e);
   }
 
   private static SocketException handleSocketException(SocketException e, SocketAddress addr)
