@@ -39,7 +39,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  */
 public abstract class AFSocket<A extends AFSocketAddress> extends Socket implements AFSomeSocket,
     AFSocketExtensions {
-  private static final String PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX =
+  static final String PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX =
       "org.newsclub.net.unix.library.disable.";
 
   private static final byte[] ZERO_BYTES = new byte[0];
@@ -47,7 +47,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   @SuppressWarnings("PMD.MutableStaticState")
   static String loadedLibrary; // set by NativeLibraryLoader
 
-  private static Integer capabilities = null;
+  private static final int CAPABILITIES = initCapabilities();
 
   private final AFSocketImpl<A> impl;
 
@@ -371,26 +371,29 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
     impl.ensureAncillaryReceiveBufferSize(minSize);
   }
 
-  private static synchronized int getCapabilities() {
-    if (capabilities == null) {
-      if (!isSupported()) {
-        capabilities = 0;
-      } else {
-        int v = NativeUnixSocket.capabilities();
+  private static int initCapabilities() {
+    if (!isSupported()) {
+      return 0;
+    } else {
+      int v = NativeUnixSocket.capabilities();
 
-        if (System.getProperty("osv.version") != null) {
-          // no fork, no redirect...
-          v &= ~(AFSocketCapability.CAPABILITY_FD_AS_REDIRECT.getBitmask());
-        }
-
-        capabilities = v;
+      if (System.getProperty("osv.version") != null) {
+        // no fork, no redirect...
+        v &= ~(AFSocketCapability.CAPABILITY_FD_AS_REDIRECT.getBitmask());
       }
+
+      for (AFSocketCapability cap : AFSocketCapability.values()) {
+        if (isCapDisabled(cap)) {
+          v &= ~(cap.getBitmask());
+        }
+      }
+
+      return v;
     }
-    return capabilities.intValue();
   }
 
-  private static boolean isCapDisabled(String name) {
-    return Boolean.valueOf(System.getProperty(PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX + name,
+  private static boolean isCapDisabled(AFSocketCapability cap) {
+    return Boolean.valueOf(System.getProperty(PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX + cap.name(),
         "false"));
   }
 
@@ -409,7 +412,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
    */
   @Deprecated
   public static final boolean supports(AFUNIXSocketCapability capability) {
-    return !isCapDisabled(capability.name()) && (getCapabilities() & capability.getBitmask()) != 0;
+    return (CAPABILITIES & capability.getBitmask()) != 0;
   }
 
   /**
@@ -423,7 +426,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
    * @return true if supported.
    */
   public static final boolean supports(AFSocketCapability capability) {
-    return !isCapDisabled(capability.name()) && (getCapabilities() & capability.getBitmask()) != 0;
+    return (CAPABILITIES & capability.getBitmask()) != 0;
   }
 
   @Override
@@ -561,6 +564,9 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
       return ConnectionStatus.NOT_CONNECTED;
     }
     try {
+      if (!AFSocket.supports(AFSocketCapability.CAPABILITY_ZERO_LENGTH_SEND)) {
+        return ConnectionStatus.UNKNOWN;
+      }
       getOutputStream().write(ZERO_BYTES);
       return ConnectionStatus.CONNECTED;
     } catch (SocketClosedException e) {

@@ -35,6 +35,7 @@ static int CAPABILITY_TIPC = (1 << 7);
 static int CAPABILITY_UNIX_DOMAIN = (1 << 8);
 static int CAPABILITY_VSOCK = (1 << 9);
 static int CAPABILITY_VSOCK_DGRAM = (1 << 10);
+static int CAPABILITY_ZERO_LENGTH_SEND = (1 << 11);
 CK_IGNORE_UNUSED_VARIABLE_END
 
 void init_capabilities(JNIEnv *env CK_UNUSED) {
@@ -51,39 +52,38 @@ void destroy_capabilities(JNIEnv *env CK_UNUSED) {
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
                                                                                 JNIEnv *env CK_UNUSED, jclass clazz CK_UNUSED)
 {
-
     int capabilities = 0;
 
     if(supportsUNIX()) {
         capabilities |= CAPABILITY_UNIX_DOMAIN;
 
 #if defined(LOCAL_PEERCRED) || defined(LOCAL_PEEREPID) || defined(LOCAL_PEEREUUID) || \
-    defined(SO_PEERCRED) || defined(SO_PEERID) || defined(__NetBSD__) || defined(__sun) || defined(__sun__) || defined(SIO_AF_UNIX_GETPEERPID)
+defined(SO_PEERCRED) || defined(SO_PEERID) || defined(__NetBSD__) || defined(__sun) || defined(__sun__) || defined(SIO_AF_UNIX_GETPEERPID)
 #if defined(_OS400)
-    // SO_PEERID appears to be not implemented
+        // SO_PEERID appears to be not implemented
 #else
-    capabilities |= CAPABILITY_PEER_CREDENTIALS;
+        capabilities |= CAPABILITY_PEER_CREDENTIALS;
 #endif
 #endif
 
 #if defined(junixsocket_have_ancillary)
-    capabilities |= CAPABILITY_ANCILLARY_MESSAGES;
-    capabilities |= CAPABILITY_FILE_DESCRIPTORS;
+        capabilities |= CAPABILITY_ANCILLARY_MESSAGES;
+        capabilities |= CAPABILITY_FILE_DESCRIPTORS;
 #endif
 
 #if defined(__linux__)
-    // despite earlier claims [1], it's not supported in Windows 10 (yet) [2]
-    // [1] https://devblogs.microsoft.com/commandline/af_unix-comes-to-windows/
-    // [2] https://github.com/microsoft/WSL/issues/4240
-    capabilities |= CAPABILITY_ABSTRACT_NAMESPACE;
+        // despite earlier claims [1], it's not supported in Windows 10 (yet) [2]
+        // [1] https://devblogs.microsoft.com/commandline/af_unix-comes-to-windows/
+        // [2] https://github.com/microsoft/WSL/issues/4240
+        capabilities |= CAPABILITY_ABSTRACT_NAMESPACE;
 #endif
 
 #if !defined(_WIN32)
-    capabilities |= CAPABILITY_UNIX_DATAGRAMS;
+        capabilities |= CAPABILITY_UNIX_DATAGRAMS;
 #endif
 
 #if !defined(_WIN32)
-    capabilities |= CAPABILITY_NATIVE_SOCKETPAIR;
+        capabilities |= CAPABILITY_NATIVE_SOCKETPAIR;
 #endif
 
     } // supportsUNIX()
@@ -95,13 +95,17 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
     if(supportsTIPC()) {
         capabilities |= CAPABILITY_TIPC;
     }
-
+    
     if(supportsVSOCK()) {
         capabilities |= CAPABILITY_VSOCK;
 
         if(supportsVSOCK_dgram()) {
             capabilities |= CAPABILITY_VSOCK_DGRAM;
         }
+    }
+
+    if(supportsZeroLengthSend()) {
+        capabilities |= CAPABILITY_ZERO_LENGTH_SEND;
     }
 
     return capabilities;

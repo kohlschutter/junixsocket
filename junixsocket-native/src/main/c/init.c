@@ -32,6 +32,7 @@ static jboolean cap_supports_unix = false;
 static jboolean cap_supports_tipc = false;
 static jboolean cap_supports_vsock = false;
 static jboolean cap_supports_vsock_dgram = false;
+static jboolean cap_supports_zero_length_send = false;
 
 static void init_unix(void) {
 
@@ -48,6 +49,15 @@ static void init_unix(void) {
         close(ret);
 #endif
     }
+
+#if defined(_WIN32)
+    cap_supports_zero_length_send = true;
+#elif defined(_OS400)
+    cap_supports_zero_length_send = false;
+#else
+    // other unixes?
+    cap_supports_zero_length_send = true;
+#endif
 }
 
 #if defined(junixsocket_have_tipc)
@@ -107,6 +117,9 @@ jboolean supportsVSOCK(void) {
 }
 jboolean supportsVSOCK_dgram(void) {
     return cap_supports_vsock_dgram;
+}
+jboolean supportsZeroLengthSend(void) {
+    return cap_supports_zero_length_send;
 }
 
 /*

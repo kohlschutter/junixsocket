@@ -28,4 +28,6 @@ jboolean supportsTIPC(void);
 jboolean supportsVSOCK(void);
 jboolean supportsVSOCK_dgram(void);
 
+jboolean supportsZeroLengthSend(void);
+
 #endif /* init_h */

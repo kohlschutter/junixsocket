@@ -104,6 +104,17 @@ public enum AFSocketCapability {
    */
   CAPABILITY_VSOCK_DGRAM(10),
 
+  /**
+   * Support for zero-length send(2).
+   * 
+   * This can be used to perform a connection check, but not all operating systems support this or
+   * behave correctly.
+   * 
+   * If not supported, junixsocket will simply ignore writes of zero-length, and connection checking
+   * with {@link AFSocket#getConnectionStatus()} may return {@link ConnectionStatus#UNKNOWN}.
+   */
+  CAPABILITY_ZERO_LENGTH_SEND(11),
+
   ; // end of list
 
   private final int bitmask;

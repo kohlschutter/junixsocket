@@ -590,13 +590,27 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
       // NOTE: writing messages with len == 0 should be permissible (unless ignored in native code)
       // For certain sockets, empty messages can be used to probe if the remote connection is alive
+      if (len == 0 && !AFSocket.supports(AFSocketCapability.CAPABILITY_ZERO_LENGTH_SEND)) {
+        return;
+      }
 
       int writtenTotal = 0;
 
       do {
         final int written = NativeUnixSocket.write(fdesc, buf, off, len, opt, ancillaryDataSupport);
         if (written < 0) {
-          throw new IOException("Unspecific error while writing");
+          if (len == 0) {
+            // FIXME: before releasing the next version, replace the exception by a simple return
+            // This exception is only useful to detect OS-level bugs that we need to work-around
+            // in native code.
+            throw new IOException("Error while writing zero-length byte array; try -D"
+                + AFSocket.PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX
+                + AFSocketCapability.CAPABILITY_ZERO_LENGTH_SEND.name() + "=true");
+            // // ignore
+            // return;
+          } else {
+            throw new IOException("Unspecific error while writing");
+          }
         }
 
         len -= written;
