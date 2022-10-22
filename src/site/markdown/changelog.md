@@ -7,10 +7,13 @@ Please tend to always use the latest version; the existing API should always be 
 When upgrading from versions older than 2.4.0, please note that `junixsocket-core` is now a POM-only
 artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.html) for details.
 
-### _(XXXX-XX-XX)_ **junixsocket 2.6.1**
+### _(2022-XX-XX)_ **junixsocket 2.6.1**
 
+ - Add AFSocket.getConnectionStatus to probe connection status
+ - Fix connection status checks and error handling
+ - Fix bind behavior on Windows, support re-bind with reuseAddress
  - Make builds reproducible, align timestamps with git commit
- - Add git commit info to selftest
+ - Improve unit tests/selftests
 
 ### _(2022-10-14)_ **junixsocket 2.6.0**
 
