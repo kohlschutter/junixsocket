@@ -51,11 +51,12 @@ static void init_unix(void) {
     }
 
 #if defined(_WIN32)
+    // Surprisingly, yes.
     cap_supports_zero_length_send = true;
-#elif defined(_OS400) || defined(__TOS_MVS__)
+#elif defined(_OS400) || defined(__TOS_MVS__) || defined(_AIX)
+    // At least IBM is consistent here ...
     cap_supports_zero_length_send = false;
 #else
-    // other unixes?
     cap_supports_zero_length_send = true;
 #endif
 }
