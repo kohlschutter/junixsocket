@@ -451,7 +451,7 @@ public class Selftest {
     if (skipMode.isDeclared()) {
       return skipMode;
     }
-    int i = className.indexOf('.');
+    int i = className.lastIndexOf('.');
     if (i < 0) {
       return SkipMode.UNDECLARED;
     }
