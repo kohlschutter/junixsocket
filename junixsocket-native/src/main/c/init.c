@@ -52,7 +52,7 @@ static void init_unix(void) {
 
 #if defined(_WIN32)
     cap_supports_zero_length_send = true;
-#elif defined(_OS400)
+#elif defined(_OS400) || defined(__TOS_MVS__)
     cap_supports_zero_length_send = false;
 #else
     // other unixes?
