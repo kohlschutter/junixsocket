@@ -21,13 +21,12 @@ typedef int socklen_t;
 #if defined(_WIN32) || junixsocket_have_vsock
 #  if !defined(_WIN32)
 #    define closesocket close
-
 #  endif
-static void simulateSocketPair(JNIEnv *env, int domain, int type, jobject fd1, jobject fd2, jux_sockaddr_t *addr, socklen_t addrLen) {
+static int simulateSocketPair(JNIEnv *env, int domain, int type, jobject fd1, jobject fd2, jux_sockaddr_t *addr, socklen_t addrLen) {
     int handleListen = socket(domain, type, 0);
     if(handleListen < 0) {
-        _throwErrnumException(env, socket_errno, NULL);
-        return;
+        errno = socket_errno;
+        return -1;
     }
 
     int ret;
@@ -38,27 +37,28 @@ static void simulateSocketPair(JNIEnv *env, int domain, int type, jobject fd1, j
         ret = bind(handleListen, (struct sockaddr*)addr, addrLen);
     }
     if(ret != 0) {
-        _throwErrnumException(env, socket_errno, NULL);
-        return;
+        errno = socket_errno;
+        return -1;
     }
     ret = listen(handleListen, 1);
     if(ret != 0) {
-        _throwErrnumException(env, socket_errno, NULL);
-        return;
+        errno = socket_errno;
+        return -1;
     }
 
     socklen_t len = addrLen;
     ret = getsockname(handleListen, (struct sockaddr *)addr, &len);
     if(ret != 0) {
-        _throwErrnumException(env, socket_errno, NULL);
-        return;
+        errno = socket_errno;
+        return -1;
     }
 
     int handleConnect = socket(domain, type, 0);
     if(handleConnect < 0) {
+        int errnum = socket_errno;
         closesocket(handleListen);
-        _throwErrnumException(env, socket_errno, NULL);
-        return;
+        errno = errnum;
+        return -1;
     }
 
 #if defined(_WIN32)
@@ -67,22 +67,22 @@ static void simulateSocketPair(JNIEnv *env, int domain, int type, jobject fd1, j
         int errnum = socket_errno;
         closesocket(handleListen);
         closesocket(handleConnect);
-        _throwErrnumException(env, errnum, NULL);
-        return;
+        errno = errnum;
+        return -1;
     }
 #endif
 
     ret = connect(handleConnect, (struct sockaddr*)addr, addrLen);
     if(ret != 0 && socket_errno != EWOULDBLOCK) {
-        _throwErrnumException(env, errno, NULL);
-        return;
+        errno = socket_errno;
+        return -1;
     }
 
     len = addrLen;
     int handleAccept = accept(handleListen, (struct sockaddr *)addr, &len);
     if(handleAccept < 0) {
-        _throwErrnumException(env, socket_errno, NULL);
-        return;
+        errno = socket_errno;
+        return -1;
     }
 
     closesocket(handleListen);
@@ -93,8 +93,8 @@ static void simulateSocketPair(JNIEnv *env, int domain, int type, jobject fd1, j
         int errnum = socket_errno;
         closesocket(handleAccept);
         closesocket(handleConnect);
-        _throwErrnumException(env, errnum, NULL);
-        return;
+        errno = errnum;
+        return -1;
     }
 #endif
 
@@ -121,16 +121,21 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
         return;
     }
 
+    int ret;
+    
 #if defined(_WIN32)
     struct sockaddr_in addr = {
         .sin_family = AF_INET,
         .sin_addr.s_addr = htonl(0x7F000001), // loopback
         .sin_port = 0
     };
-    simulateSocketPair(env, AF_INET, type, fd1, fd2, (jux_sockaddr_t*)&addr, sizeof(struct sockaddr_in));
+    ret = simulateSocketPair(env, AF_INET, type, fd1, fd2, (jux_sockaddr_t*)&addr, sizeof(struct sockaddr_in));
+    if(ret == -1) {
+        _throwErrnumException(env, errno, NULL);
+        return;
+    }
 #else
     int socket_vector[2];
-    int ret;
 #if defined(junixsocket_have_socket_cloexec)
     if(supportsUNIX()) {
         ret = socketpair(domain, type, SOCK_CLOEXEC, socket_vector);
@@ -150,6 +155,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
 #else
     ret = socketpair(domain, type, 0, socket_vector);
 #endif
+
     if(ret == -1) {
         int myerr = socket_errno;
         if(myerr == EOPNOTSUPP) {
@@ -168,8 +174,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
                         .svm_cid = VMADDR_CID_RESERVED
 #  endif
                 };
-                simulateSocketPair(env, domain, type, fd1, fd2, (jux_sockaddr_t*)&addr,
-                                   sizeof(struct sockaddr_vm));
+                if(simulateSocketPair(env, domain, type, fd1, fd2, (jux_sockaddr_t*)&addr,
+                                      sizeof(struct sockaddr_vm)) != 0) {
+                    _throwErrnumException(env, myerr, NULL);
+                    return;
+                }
                 return;
             }
 #endif
