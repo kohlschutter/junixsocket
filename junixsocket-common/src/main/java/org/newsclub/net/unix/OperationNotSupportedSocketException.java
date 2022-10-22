@@ -20,30 +20,27 @@ package org.newsclub.net.unix;
 import java.net.SocketException;
 
 /**
- * A {@link SocketException} that may be thrown upon some "invalid" state, mostly detected in native
- * code.
+ * A {@link SocketException} that may be thrown upon some "unsupported operation" condition from
+ * native code (e.g., EOPNOTSUPP is returned).
  * 
  * @author Christian Kohlschütter
- * @see InvalidArgumentSocketException
- * @see AddressUnavailableSocketException
- * @see OperationNotSupportedSocketException
  */
-public class InvalidSocketException extends SocketException {
+public class OperationNotSupportedSocketException extends InvalidSocketException {
   private static final long serialVersionUID = 1L;
 
   /**
-   * Constructs a new {@link InvalidSocketException}.
+   * Constructs a new {@link OperationNotSupportedSocketException}.
    */
-  public InvalidSocketException() {
+  public OperationNotSupportedSocketException() {
     super();
   }
 
   /**
-   * Constructs a new {@link InvalidSocketException}.
+   * Constructs a new {@link OperationNotSupportedSocketException}.
    * 
    * @param msg The error message.
    */
-  public InvalidSocketException(String msg) {
+  public OperationNotSupportedSocketException(String msg) {
     super(msg);
   }
 }

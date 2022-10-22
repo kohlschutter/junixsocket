@@ -33,6 +33,7 @@ static char *kExceptionClassnames[kExceptionMaxExcl] = {
     "java/nio/channels/ClosedChannelException", // kExceptionClosedChannelException
     "org/newsclub/net/unix/InvalidArgumentSocketException", // kExceptionInvalidArgumentSocketException
     "org/newsclub/net/unix/AddressUnavailableSocketException", // kExceptionAddressUnavailableSocketException
+    "org/newsclub/net/unix/OperationNotSupportedSocketException", // kExceptionOperationNotSupportedSocketException
 };
 
 static jclass *kExceptionClasses;
@@ -111,6 +112,9 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
             exceptionType = kExceptionInvalidArgumentSocketException;
             break;
         case EADDRNOTAVAIL:
+            exceptionType = kExceptionAddressUnavailableSocketException;
+            break;
+        case EOPNOTSUPP:
             exceptionType = kExceptionAddressUnavailableSocketException;
             break;
         case EPIPE:
