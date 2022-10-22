@@ -12,6 +12,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
  - Add AFSocket.getConnectionStatus to probe connection status
  - Fix connection status checks and error handling
  - Fix bind behavior on Windows, support re-bind with reuseAddress
+ - Fix selftest on OpenBSD
  - Make builds reproducible, align timestamps with git commit
  - Improve unit tests/selftests
 

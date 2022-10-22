@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
@@ -127,9 +128,32 @@ public class FileDescriptorCastTest {
       // We can cast a server socket (which is listening by default) to a socket, but we can't
       // connect
 
-      assertThrows(SocketException.class, () -> sock.connect(ass2.getLocalSocketAddress()));
-      assertThrows(SocketException.class, () -> sock.connect(ass.getLocalSocketAddress()));
-      assertThrows(SocketException.class, () -> sock.getInputStream().read());
+      // NOTE: OpenBSD blocks on such a non-permissible cast, so we set a timeout
+      // This will cause a SocketTimeoutException, which we change to a SocketException
+      // so our tests can still pass
+      sock.setSoTimeout(1);
+
+      assertThrows(SocketException.class, () -> {
+        try {
+          sock.connect(ass2.getLocalSocketAddress());
+        } catch (SocketTimeoutException e) {
+          throw new SocketException().initCause(e);
+        }
+      });
+      assertThrows(SocketException.class, () -> {
+        try {
+          sock.connect(ass.getLocalSocketAddress());
+        } catch (SocketTimeoutException e) {
+          throw new SocketException().initCause(e);
+        }
+      });
+      assertThrows(SocketException.class, () -> {
+        try {
+          sock.getInputStream().read();
+        } catch (SocketTimeoutException e) {
+          throw new SocketException().initCause(e);
+        }
+      });
 
       assertNull(sock.getRemoteSocketAddress());
       assertFalse(sock.isConnected());
