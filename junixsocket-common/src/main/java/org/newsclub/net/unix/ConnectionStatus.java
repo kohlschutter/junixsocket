@@ -39,12 +39,18 @@ public enum ConnectionStatus {
   CONNECTED;
 
   /**
-   * Checks if the status can be assumed "connected".
+   * Checks if the status can be assumed "connected", or if the state is unknown.
    * 
    * @return {@code true} if connected.
    */
-  public boolean isConnected() {
-    return this == CONNECTED;
+  public boolean isConnectedOrUnknown() {
+    switch (this) {
+      case CONNECTED:
+      case UNKNOWN:
+        return true;
+      default:
+        return false;
+    }
   }
 
   /**
