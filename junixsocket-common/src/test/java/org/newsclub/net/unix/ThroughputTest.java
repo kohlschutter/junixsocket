@@ -207,6 +207,11 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
     }, direct);
   }
 
+  @Override
+  protected boolean shouldDoConnectionCheckUponAccept() {
+    return true;
+  }
+
   protected void runTestSocketChannel(String implId, SocketAddress sba, ServerSocketChannel ssc,
       SupplierWithException<SocketChannel, IOException> sscSupp, boolean direct) throws Exception {
     final AtomicBoolean keepRunning = new AtomicBoolean(true);

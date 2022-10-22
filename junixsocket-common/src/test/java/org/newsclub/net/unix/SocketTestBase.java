@@ -122,7 +122,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
   }
 
   protected ServerSocket startServer() throws IOException {
-    caller = new Exception();
+    caller = new Exception("Test server stacktrace");
     final ServerSocket server = newServerSocket();
     SocketAddress bindAddr = getServerBindAddress();
     try {
@@ -135,6 +135,18 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
       }
     }
     return server;
+  }
+
+  /**
+   * Checks if an optional connection check via {@link AFSocket#getConnectionStatus()}, is to be run
+   * upon {@link AFServerSocket#accept()}.
+   * 
+   * Override to enable.
+   * 
+   * @return {@code true} if enabled; default is {@code false} = disabled.
+   */
+  protected boolean shouldDoConnectionCheckUponAccept() {
+    return false;
   }
 
   protected enum ExceptionHandlingDecision {
@@ -252,7 +264,16 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
         }
         acceptSuccess = true;
 
-        handleConnection(sock);
+        if (sock instanceof AFSocket<?>) {
+          AFSocket<?> afs = (AFSocket<?>) sock;
+          if (shouldDoConnectionCheckUponAccept() && afs.getConnectionStatus().isNotConnected()) {
+            acceptSuccess = false;
+          }
+        }
+
+        if (acceptSuccess) {
+          handleConnection(sock);
+        }
       } catch (IOException e) {
         if (!acceptSuccess) {
           // ignore: connection closed before accept could complete
