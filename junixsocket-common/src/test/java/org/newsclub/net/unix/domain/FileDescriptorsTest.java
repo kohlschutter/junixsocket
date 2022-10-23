@@ -240,7 +240,16 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
 
           // NOTE: send an arbitrary byte — we can't send fds without any in-band data
           try (OutputStream outputStream = socket.getOutputStream()) {
-            outputStream.write(123);
+            try {
+              outputStream.write(123);
+            } catch (SocketException e) {
+              if (!socket.isConnected()) {
+                // permit "Broken pipe" exception, which may be thrown in some OSes
+                // seen with Linux 5.4.0-1094-azure / Microsoft CBL-Mariner 2.0
+              } else {
+                throw e;
+              }
+            }
           }
 
           assertFalse(socket.hasOutboundFileDescriptors());
