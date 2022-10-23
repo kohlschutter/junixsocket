@@ -31,6 +31,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 /**
  * Tests breaking out of accept.
@@ -40,6 +42,8 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class CancelAcceptTest<A extends SocketAddress> extends SocketTestBase<A> {
+  protected static final String NO_SOCKETEXCEPTION_WHEN_CONNECTING_TO_CLOSED_SERVER =
+      "Did not throw SocketException when connecting to closed server socket";
   private boolean serverSocketClosed = false;
 
   protected CancelAcceptTest(AddressSpecifics<A> asp) {
@@ -90,12 +94,22 @@ public abstract class CancelAcceptTest<A extends SocketAddress> extends SocketTe
       // serverSocket.close() may throw a "Socket is closed" exception in the server thread
       // so let's make sure we ignore that error when the auto-closing ServerThread
       ignoreServerSocketClosedException.set(true);
+
+      SocketAddress serverAddress = serverThread.getServerAddress();
+
       serverSocket.close();
       try {
-        try (Socket sock = connectTo(serverThread.getServerAddress())) {
+        try (Socket sock = connectTo(serverAddress)) {
           // open and close
         }
-        fail("Did not throw SocketException");
+
+        String noticeNoSocketException = checkKnownConditionDidNotThrowSocketException();
+        if (noticeNoSocketException == null) {
+          fail(NO_SOCKETEXCEPTION_WHEN_CONNECTING_TO_CLOSED_SERVER);
+        } else {
+          throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
+              noticeNoSocketException);
+        }
       } catch (SocketException e) {
         // as expected
       }
@@ -104,15 +118,31 @@ public abstract class CancelAcceptTest<A extends SocketAddress> extends SocketTe
           "ServerSocket should be closed now");
 
       try {
-        try (Socket sock = connectTo(serverThread.getServerAddress())) {
+        try (Socket sock = connectTo(serverAddress)) {
           fail("ServerSocket should have been closed already");
         }
-        fail("Did not throw SocketException");
+        String noticeNoSocketException = checkKnownConditionDidNotThrowSocketException();
+        if (noticeNoSocketException == null) {
+          fail(NO_SOCKETEXCEPTION_WHEN_CONNECTING_TO_CLOSED_SERVER);
+        } else {
+          throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
+              noticeNoSocketException);
+        }
       } catch (SocketException e) {
         // as expected
       }
     } catch (SocketException e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * Subclasses may override this to tell that there is a known condition where an otherwise
+   * expected SocketException is not thrown.
+   * 
+   * @return An explanation iff this should not cause a test failure but just add a notice.
+   */
+  protected String checkKnownConditionDidNotThrowSocketException() {
+    return null;
   }
 }

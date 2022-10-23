@@ -31,4 +31,19 @@ public final class SocketChannelTest extends
   public SocketChannelTest() {
     super(AFVSOCKAddressSpecifics.INSTANCE);
   }
+
+  @Override
+  protected String checkKnownBugFirstAcceptCallNotTerminated() {
+    int[] mm = getLinuxMajorMinorVersion();
+    if (mm == null) {
+      return null;
+    } else if (mm[0] >= 6) {
+      return null;
+    } else if (mm[0] < 5 || mm[1] < 10 /* 5.10 */) {
+      // seen in Linux 5.4.17-2136.305.5.3.el8uek.x86_64 on Oracle Cloud
+      return AFVSOCKAddressSpecifics.KERNEL_TOO_OLD + ": First accept call did not terminate";
+    } else {
+      return null;
+    }
+  }
 }

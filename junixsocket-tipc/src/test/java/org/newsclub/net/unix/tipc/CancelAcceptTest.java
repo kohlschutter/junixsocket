@@ -31,4 +31,21 @@ public final class CancelAcceptTest extends
   public CancelAcceptTest() {
     super(AFTIPCAddressSpecifics.INSTANCE);
   }
+
+  @Override
+  protected String checkKnownConditionDidNotThrowSocketException() {
+    int[] mm = getLinuxMajorMinorVersion();
+
+    boolean oldKernel = false;
+    if (mm != null && (mm[0] < 5 || (mm[0] == 5 && mm[1] < 10 /* 5.10 */))) {
+      oldKernel = true;
+    }
+
+    if (oldKernel) {
+      return "Kernel may be too old for full TIPC support: "
+          + NO_SOCKETEXCEPTION_WHEN_CONNECTING_TO_CLOSED_SERVER;
+    } else {
+      return null;
+    }
+  }
 }

@@ -35,6 +35,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
+
 public abstract class SocketChannelTest<A extends SocketAddress> extends SocketTestBase<A> {
   protected SocketChannelTest(AddressSpecifics<A> asp) {
     super(asp);
@@ -187,29 +190,50 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
     // Assert that eventually all accept jobs have terminated.
     if (acceptCall2 != null) {
       try {
-        acceptCall2.get(1, TimeUnit.SECONDS);
+        acceptCall2.get(5, TimeUnit.SECONDS);
       } catch (ExecutionException e) {
         // ignore socket closed etc.
       } catch (TimeoutException e) {
         fail("Second accept call did not terminate");
       }
     }
+
+    String triggerWithIssues = null;
+
     try {
-      acceptCall.get(1, TimeUnit.SECONDS);
+      acceptCall.get(5, TimeUnit.SECONDS);
     } catch (ExecutionException e) {
       // ignore socket closed etc.
     } catch (TimeoutException e) {
-      fail("First accept call did not terminate");
+      triggerWithIssues = checkKnownBugFirstAcceptCallNotTerminated();
+      if (triggerWithIssues == null) {
+        fail("First accept call did not terminate");
+      }
     }
     if (connectCall != null) {
       try {
-        connectCall.get(1, TimeUnit.SECONDS);
+        connectCall.get(5, TimeUnit.SECONDS);
       } catch (ExecutionException e) {
         // ignore socket closed etc.
       } catch (TimeoutException e) {
         fail("Connect call did not terminate");
       }
     }
+
+    if (triggerWithIssues != null) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
+          triggerWithIssues);
+    }
+  }
+
+  /**
+   * Subclasses may override this to tell that there is a known issue with "First accept call did
+   * not terminate".
+   * 
+   * @return An explanation iff this should not cause a test failure but trigger "With issues".
+   */
+  protected String checkKnownBugFirstAcceptCallNotTerminated() {
+    return null;
   }
 
   /**
