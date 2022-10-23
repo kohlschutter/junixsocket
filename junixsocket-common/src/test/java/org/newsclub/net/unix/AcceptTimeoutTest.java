@@ -86,7 +86,8 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
   }
 
   @Test
-  @SuppressWarnings("PMD.CognitiveComplexity")
+  @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.ExcessiveMethodLength"})
+  @SuppressFBWarnings("NP_NONNULL_PARAM_VIOLATION")
   public void testTimeoutAfterDelay() throws Exception {
     final int timeoutMillis = 5000;
 
@@ -183,7 +184,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
         throw e;
       } else {
         throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
-            msg);
+            msg, e);
       }
     } finally {
       keepRunning.set(false);

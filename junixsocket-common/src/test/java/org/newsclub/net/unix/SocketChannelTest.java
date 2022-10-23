@@ -90,11 +90,12 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
     testDoubleBind(true);
   }
 
+  @SuppressWarnings({"PMD.ExcessiveMethodLength", "PMD.CognitiveComplexity", "PMD.NPathComplexity"})
   private void testDoubleBind(boolean reuseAddress) throws Exception {
     SocketAddress sa0 = newTempAddress();
 
     final CompletableFuture<SocketChannel> acceptCall;
-    CompletableFuture<SocketChannel> acceptCall2 = null;
+    final CompletableFuture<SocketChannel> acceptCall2;
     CompletableFuture<Void> connectCall = null;
 
     AtomicBoolean socketDomainWillAcceptCallOnFirstBind = new AtomicBoolean(true);

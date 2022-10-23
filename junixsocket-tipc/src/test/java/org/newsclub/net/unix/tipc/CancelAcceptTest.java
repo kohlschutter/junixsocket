@@ -42,8 +42,7 @@ public final class CancelAcceptTest extends
     }
 
     if (oldKernel) {
-      return "Kernel may be too old for full TIPC support: "
-          + NO_SOCKETEXCEPTION_WHEN_CONNECTING_TO_CLOSED_SERVER;
+      return "Kernel may be too old for full TIPC support: " + NO_SOCKETEXCEPTION_CLOSED_SERVER;
     } else {
       return null;
     }

@@ -464,18 +464,18 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
    * int[]{5,10}}), or {@code null} if the running system isn't Linux or the version could not be
    * determined.
    * 
-   * @return The running Linux kernels' major and minor version as an integer arrray, or
+   * @return The running Linux kernels' major and minor version as an integer array, or
    *         {@code null}.
    */
   protected int[] getLinuxMajorMinorVersion() {
     if (!"Linux".equals(System.getProperty("os.name"))) {
-      return null;
+      return null; // NOPMD.PMD.ReturnEmptyCollectionRatherThanNull
     }
     Matcher m = PAT_LINUX_VERSION.matcher(System.getProperty("os.version", ""));
     if (m.find()) {
       return new int[] {Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2))};
     } else {
-      return null;
+      return null; // NOPMD.PMD.ReturnEmptyCollectionRatherThanNull
     }
   }
 }

@@ -42,7 +42,7 @@ import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.Messag
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class CancelAcceptTest<A extends SocketAddress> extends SocketTestBase<A> {
-  protected static final String NO_SOCKETEXCEPTION_WHEN_CONNECTING_TO_CLOSED_SERVER =
+  protected static final String NO_SOCKETEXCEPTION_CLOSED_SERVER =
       "Did not throw SocketException when connecting to closed server socket";
   private boolean serverSocketClosed = false;
 
@@ -105,7 +105,7 @@ public abstract class CancelAcceptTest<A extends SocketAddress> extends SocketTe
 
         String noticeNoSocketException = checkKnownConditionDidNotThrowSocketException();
         if (noticeNoSocketException == null) {
-          fail(NO_SOCKETEXCEPTION_WHEN_CONNECTING_TO_CLOSED_SERVER);
+          fail(NO_SOCKETEXCEPTION_CLOSED_SERVER);
         } else {
           throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
               noticeNoSocketException);
@@ -123,7 +123,7 @@ public abstract class CancelAcceptTest<A extends SocketAddress> extends SocketTe
         }
         String noticeNoSocketException = checkKnownConditionDidNotThrowSocketException();
         if (noticeNoSocketException == null) {
-          fail(NO_SOCKETEXCEPTION_WHEN_CONNECTING_TO_CLOSED_SERVER);
+          fail(NO_SOCKETEXCEPTION_CLOSED_SERVER);
         } else {
           throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
               noticeNoSocketException);
