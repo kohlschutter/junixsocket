@@ -600,14 +600,14 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         final int written = NativeUnixSocket.write(fdesc, buf, off, len, opt, ancillaryDataSupport);
         if (written < 0) {
           if (len == 0) {
-            // FIXME: before releasing the next version, replace the exception by a simple return
             // This exception is only useful to detect OS-level bugs that we need to work-around
             // in native code.
-            throw new IOException("Error while writing zero-length byte array; try -D"
-                + AFSocket.PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX
-                + AFSocketCapability.CAPABILITY_ZERO_LENGTH_SEND.name() + "=true");
-            // // ignore
-            // return;
+            // throw new IOException("Error while writing zero-length byte array; try -D"
+            // + AFSocket.PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX
+            // + AFSocketCapability.CAPABILITY_ZERO_LENGTH_SEND.name() + "=true");
+
+            // ignore
+            return;
           } else {
             throw new IOException("Unspecific error while writing");
           }
