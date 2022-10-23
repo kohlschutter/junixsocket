@@ -117,6 +117,10 @@
   "methods":[{"name":"setUUID","parameterTypes":["java.lang.String"] }]
 },
 {
+  "name":"org.newsclub.net.unix.AddressUnavailableSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
   "name":"org.newsclub.net.unix.AncillaryDataSupport",
   "fields":[
     {"name":"ancillaryReceiveBuffer"}, 
@@ -130,6 +134,10 @@
 },
 {
   "name":"org.newsclub.net.unix.InvalidArgumentSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"org.newsclub.net.unix.OperationNotSupportedSocketException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {

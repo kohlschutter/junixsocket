@@ -314,7 +314,11 @@
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"testNonBlockingConnect","parameterTypes":[] }]
+  "methods":[
+    {"name":"testDoubleBindAddressNotReusable","parameterTypes":[] }, 
+    {"name":"testDoubleBindAddressReusable","parameterTypes":[] }, 
+    {"name":"testNonBlockingConnect","parameterTypes":[] }
+  ]
 },
 {
   "name":"org.newsclub.net.unix.SocketOptionsTest",
@@ -576,6 +580,7 @@
     {"name":"testByteConstructor","parameterTypes":[] }, 
     {"name":"testEmptyAddress","parameterTypes":[] }, 
     {"name":"testInetAddress","parameterTypes":[] }, 
+    {"name":"testLegacyConstructor","parameterTypes":[] }, 
     {"name":"testPath","parameterTypes":[] }, 
     {"name":"testPort","parameterTypes":[] }
   ]
