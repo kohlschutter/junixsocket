@@ -48,7 +48,8 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
   /**
    * Older kernels are unable to communicate locally when CID == 2 (VMADDR_CID_HOST).
    */
-  static final String KERNEL_TOO_OLD = "Kernel may be too old for full VSOCK support";
+  static final String KERNEL_TOO_OLD =
+      "Kernel may be too old or not configured for full VSOCK support";
 
   /**
    * Access denied...
@@ -154,8 +155,10 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
     AFVSOCKSocketAddress sa = (AFVSOCKSocketAddress) addr;
     switch (sa.getVSOCKCID()) {
       case AFVSOCKSocketAddress.VMADDR_CID_HOST:
-      case AFVSOCKSocketAddress.VMADDR_CID_LOCAL:
         return handleSocketException(e, "Cannot connect to addresses with CID=" + sa.getVSOCKCID());
+      case AFVSOCKSocketAddress.VMADDR_CID_LOCAL:
+        return handleSocketException(e, "Cannot connect to addresses with CID=" + sa.getVSOCKCID()
+            + "; try \"modprobe vsock_loopback\"");
       default:
         return e;
     }
