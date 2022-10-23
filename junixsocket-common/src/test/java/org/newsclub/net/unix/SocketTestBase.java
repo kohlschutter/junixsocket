@@ -37,6 +37,8 @@ import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,6 +66,9 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs to be public for
                                                                 // junit
+
+  private static final Pattern PAT_LINUX_VERSION = Pattern.compile("^([0-9]+)\\.([0-9]+)\\.");
+
   private static final File SOCKET_FILE = initSocketFile();
   private static final Random RANDOM = new Random();
 
@@ -452,5 +457,25 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
   protected Random getRandom() {
     return RANDOM;
+  }
+
+  /**
+   * Returns the Linux kernel's major and minor version as an integer array (i.e., {@code 5.10.2 ->
+   * int[]{5,10}}), or {@code null} if the running system isn't Linux or the version could not be
+   * determined.
+   * 
+   * @return The running Linux kernels' major and minor version as an integer arrray, or
+   *         {@code null}.
+   */
+  protected int[] getLinuxMajorMinorVersion() {
+    if (!"Linux".equals(System.getProperty("os.name"))) {
+      return null;
+    }
+    Matcher m = PAT_LINUX_VERSION.matcher(System.getProperty("os.version", ""));
+    if (m.find()) {
+      return new int[] {Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2))};
+    } else {
+      return null;
+    }
   }
 }
