@@ -87,81 +87,93 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
   @SuppressWarnings("PMD.CognitiveComplexity")
   public void testTimeoutAfterDelay() throws Exception {
     final int timeoutMillis = 5000;
-    assertTimeoutPreemptively(Duration.ofMillis(2 * timeoutMillis), () -> {
-      try (ServerSocket serverSock = startServer()) {
-        final int connectDelayMillis = 50;
-        serverSock.setSoTimeout(timeoutMillis);
 
-        long actualTimeout = serverSock.getSoTimeout();
-        if (actualTimeout == 0) {
-          // timeout not supported. So far we know this is only true for z/OS
-          if ("z/OS".equals(System.getProperty("os.name"))) {
-            return;
+    AtomicBoolean keepRunning = new AtomicBoolean(true);
+
+    try {
+      assertTimeoutPreemptively(Duration.ofMillis(2 * timeoutMillis), () -> {
+        try (ServerSocket serverSock = startServer()) {
+          final int connectDelayMillis = 50;
+          serverSock.setSoTimeout(timeoutMillis);
+
+          long actualTimeout = serverSock.getSoTimeout();
+          if (actualTimeout == 0) {
+            // timeout not supported. So far we know this is only true for z/OS
+            if ("z/OS".equals(System.getProperty("os.name"))) {
+              return;
+            }
           }
-        }
-        assertTrue(Math.abs(timeoutMillis - actualTimeout) <= 10,
-            "We should roughly get the same timeout back that we set before, but was "
-                + actualTimeout + " instead of " + timeoutMillis);
+          assertTrue(Math.abs(timeoutMillis - actualTimeout) <= 10,
+              "We should roughly get the same timeout back that we set before, but was "
+                  + actualTimeout + " instead of " + timeoutMillis);
 
-        final AtomicBoolean accepted = new AtomicBoolean(false);
-        final CompletableFuture<RuntimeException> runtimeExceptionCF = new CompletableFuture<>();
+          final AtomicBoolean accepted = new AtomicBoolean(false);
+          final CompletableFuture<RuntimeException> runtimeExceptionCF = new CompletableFuture<>();
 
-        new Thread() {
-          private final Socket socket = newSocket();
+          final SocketAddress serverAddress = serverSock.getLocalSocketAddress();
 
-          {
-            setDaemon(true);
-          }
+          new Thread() {
+            private final Socket socket = newSocket();
 
-          @Override
-          public void run() {
-            for (int i = 1; i <= 10; i++) {
-              try {
-                Thread.sleep(connectDelayMillis);
-              } catch (InterruptedException e) {
-                return;
-              }
-
-              try {
-                connectSocket(socket, serverSock.getLocalSocketAddress());
-                runtimeExceptionCF.complete(null);
-              } catch (SocketTimeoutException e) {
-                System.out.println("SocketTimeout, trying connect again (" + i + ")");
-                e.printStackTrace();
-                continue;
-              } catch (TestAbortedWithImportantMessageException e) {
-                runtimeExceptionCF.complete(e);
-              } catch (IOException e) {
-                // ignore "connection reset by peer", etc. after connection was accepted
-                if (!accepted.get()) {
-                  e.printStackTrace();
-                }
-              }
-
-              break; // NOPMD.AvoidBranchingStatementAsLastInLoop
+            {
+              setDaemon(true);
             }
 
+            @Override
+            public void run() {
+              for (int i = 1; i <= 10 && keepRunning.get(); i++) {
+                try {
+                  Thread.sleep(connectDelayMillis);
+                } catch (InterruptedException e) {
+                  return;
+                }
+
+                try {
+                  connectSocket(socket, serverAddress);
+                  runtimeExceptionCF.complete(null);
+                } catch (SocketTimeoutException e) {
+                  if (!keepRunning.get()) {
+                    return;
+                  }
+
+                  System.out.println("SocketTimeout, trying connect again (" + i + ")");
+                  e.printStackTrace();
+                  continue;
+                } catch (TestAbortedWithImportantMessageException e) {
+                  runtimeExceptionCF.complete(e);
+                } catch (IOException e) {
+                  // ignore "connection reset by peer", etc. after connection was accepted
+                  if (!accepted.get()) {
+                    e.printStackTrace();
+                  }
+                }
+
+                break; // NOPMD.AvoidBranchingStatementAsLastInLoop
+              }
+            }
+          }.start();
+
+          long time = System.currentTimeMillis();
+          try (Socket socket = serverSock.accept();) {
+            assertNotNull(socket);
+            accepted.set(true);
           }
-        }.start();
+          time = System.currentTimeMillis() - time;
 
-        long time = System.currentTimeMillis();
-        try (Socket socket = serverSock.accept();) {
-          assertNotNull(socket);
-          accepted.set(true);
+          RuntimeException re = runtimeExceptionCF.get();
+          if (re != null) {
+            throw re;
+          }
+
+          assertTrue(time >= connectDelayMillis && (time < timeoutMillis || (time
+              - connectDelayMillis) <= TIMING_INACCURACY_MILLIS),
+              "Timeout not properly honored. Accept succeeded after " + time + "ms vs. expected "
+                  + timeoutMillis + "ms");
         }
-        time = System.currentTimeMillis() - time;
-
-        RuntimeException re = runtimeExceptionCF.get();
-        if (re != null) {
-          throw re;
-        }
-
-        assertTrue(time >= connectDelayMillis && (time < timeoutMillis || (time
-            - connectDelayMillis) <= TIMING_INACCURACY_MILLIS),
-            "Timeout not properly honored. Accept succeeded after " + time + "ms vs. expected "
-                + timeoutMillis + "ms");
-      }
-    });
+      });
+    } finally {
+      keepRunning.set(false);
+    }
   }
 
   @Test
