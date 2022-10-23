@@ -18,6 +18,7 @@
 package org.newsclub.net.unix.vsock;
 
 import java.io.IOException;
+import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,7 @@ public final class AcceptTimeoutTest extends
     try {
       super.testTimeoutAfterDelay();
     } catch (SocketTimeoutException e) {
+      e.printStackTrace();
       try {
         newInterconnectedSockets();
       } catch (TestAbortedException e2) {
@@ -57,12 +59,12 @@ public final class AcceptTimeoutTest extends
   }
 
   @Override
-  protected String checkKnownBugAcceptTimeout() {
+  protected String checkKnownBugAcceptTimeout(SocketAddress serverAddress) {
     boolean vsockNotAvailable = false;
 
     Integer cid = null;
     try {
-      if ((cid = AFVSOCKSocket.getLocalCID()) == -1) {
+      if ((cid = AFVSOCKSocket.getLocalCID()) == AFVSOCKSocketAddress.VMADDR_CID_ANY) {
         vsockNotAvailable = true;
       }
     } catch (IOException e) {
@@ -73,9 +75,15 @@ public final class AcceptTimeoutTest extends
     if (vsockNotAvailable) {
       return "Server accept timed out. " + (cid != null ? "Local CID=" + cid
           : "Local CID could not be retrieved") + ". VSOCK may not be available";
-    } else {
-      return null;
+    } else if ((serverAddress instanceof AFVSOCKSocketAddress)) {
+      AFVSOCKSocketAddress sa = (AFVSOCKSocketAddress) serverAddress;
+      if (sa.getVSOCKCID() == AFVSOCKSocketAddress.VMADDR_CID_LOCAL) {
+        // seen on Amazon EC2
+        return "Server accept timed out. Requested VMADDR_CID_LOCAL with local CID=" + cid
+            + ". VSOCK may not be available";
+      }
     }
+    return null;
   }
 
 }

@@ -34,7 +34,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.JUnitException;
 import org.opentest4j.AssertionFailedError;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
@@ -93,6 +92,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
 
     AtomicBoolean keepRunning = new AtomicBoolean(true);
 
+    CompletableFuture<SocketAddress> serverAddressCF = new CompletableFuture<>();
     try {
       assertTimeoutPreemptively(Duration.ofMillis(2 * timeoutMillis), () -> {
         try (ServerSocket serverSock = startServer()) {
@@ -113,7 +113,8 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
           final AtomicBoolean accepted = new AtomicBoolean(false);
           final CompletableFuture<RuntimeException> runtimeExceptionCF = new CompletableFuture<>();
 
-          final SocketAddress serverAddress = serverSock.getLocalSocketAddress();
+          SocketAddress serverAddress = serverSock.getLocalSocketAddress();
+          serverAddressCF.complete(serverAddress);
 
           new Thread() {
             private final Socket socket = newSocket();
@@ -124,7 +125,9 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
 
             @Override
             public void run() {
-              for (int i = 1; i <= 10 && keepRunning.get(); i++) {
+              int i = 0;
+              while (keepRunning.get()) {
+                i++;
                 try {
                   Thread.sleep(connectDelayMillis);
                 } catch (InterruptedException e) {
@@ -175,7 +178,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
         }
       });
     } catch (AssertionFailedError e) {
-      String msg = checkKnownBugAcceptTimeout();
+      String msg = checkKnownBugAcceptTimeout(serverAddressCF.getNow(null));
       if (msg == null) {
         throw e;
       } else {
@@ -193,7 +196,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
    * 
    * @return An explanation iff this should not cause a test failure but trigger "With issues".
    */
-  protected String checkKnownBugAcceptTimeout() {
+  protected String checkKnownBugAcceptTimeout(SocketAddress serverAddr) {
     return null;
   }
 
