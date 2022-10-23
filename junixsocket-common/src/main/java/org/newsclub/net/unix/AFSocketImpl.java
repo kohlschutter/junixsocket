@@ -263,7 +263,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         }
       } catch (SocketException e) {
         caught = e;
-      } finally {
+      } finally { // NOPMD.DoNotThrowExceptionInFinally
         if (!isBound() || isClosed()) {
           try {
             NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);

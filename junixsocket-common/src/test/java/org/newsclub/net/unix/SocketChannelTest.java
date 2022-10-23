@@ -245,7 +245,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
    * @param ssc The socket that was bound to that address.
    * @return The local bound address, or the {@code originalAddress}.
    * @throws IOException on error.
-   * @see {@link #testDoubleBindAddressReusable()}
+   * @see #testDoubleBindAddressReusable()
    */
   protected SocketAddress resolveAddressForSecondBind(SocketAddress originalAddress,
       ServerSocketChannel ssc) throws IOException {
@@ -257,7 +257,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
    * particularly when the address is comparable to a wildcard address.
    * 
    * @return {@code true} iff double-binding the same address is allowed.
-   * @see {@link #testDoubleBindAddressReusable()}
+   * @see #testDoubleBindAddressReusable()
    */
   protected boolean socketDomainPermitsDoubleBind() {
     return false;

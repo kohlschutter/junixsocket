@@ -143,8 +143,8 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
   }
 
   /**
-   * Checks if an optional connection check via {@link AFSocket#getConnectionStatus()}, is to be run
-   * upon {@link AFServerSocket#accept()}.
+   * Checks if an optional connection check via {@link AFSocket#checkConnectionClosed()}, is to be
+   * run upon {@link AFServerSocket#accept()}.
    * 
    * Override to enable.
    * 
