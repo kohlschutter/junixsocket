@@ -34,9 +34,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.JUnitException;
+import org.opentest4j.AssertionFailedError;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 /**
  * Verifies that accept properly times out when an soTimeout was specified.
@@ -171,9 +174,27 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
                   + timeoutMillis + "ms");
         }
       });
+    } catch (AssertionFailedError e) {
+      String msg = checkKnownBugAcceptTimeout();
+      if (msg == null) {
+        throw e;
+      } else {
+        throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
+            msg);
+      }
     } finally {
       keepRunning.set(false);
     }
+  }
+
+  /**
+   * Subclasses may override this to tell that there is a known issue with "Accept timeout after
+   * delay".
+   * 
+   * @return An explanation iff this should not cause a test failure but trigger "With issues".
+   */
+  protected String checkKnownBugAcceptTimeout() {
+    return null;
   }
 
   @Test

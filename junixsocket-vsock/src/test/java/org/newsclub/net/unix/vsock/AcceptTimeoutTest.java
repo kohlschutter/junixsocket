@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix.vsock;
 
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import org.junit.jupiter.api.Test;
@@ -54,4 +55,27 @@ public final class AcceptTimeoutTest extends
       }
     }
   }
+
+  @Override
+  protected String checkKnownBugAcceptTimeout() {
+    boolean vsockNotAvailable = false;
+
+    Integer cid = null;
+    try {
+      if ((cid = AFVSOCKSocket.getLocalCID()) == -1) {
+        vsockNotAvailable = true;
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+      vsockNotAvailable = true;
+    }
+
+    if (vsockNotAvailable) {
+      return "Server accept timed out. " + (cid != null ? "Local CID=" + cid
+          : "Local CID could not be retrieved") + ". VSOCK may not be available";
+    } else {
+      return null;
+    }
+  }
+
 }
