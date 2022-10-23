@@ -113,36 +113,55 @@ in your POM:
 ```
 
 ## Gradle
+
+Add the following statements to `build.gradle`; if you have existing dependencies, append to the `dependencies` clause accordingly.
  
- Minimum requirement:
+For the common Java code and common native libraries, add:
+
+	dependencies {
+		implementation 'com.kohlschutter.junixsocket:junixsocket-core:2.6.0'
+	}
+
+Some older Gradle versions require `compile` instead of `implementation`, and some older versions have trouble resolving the `junixsocket-core` POM artifact. If you're running into problems (and only then), try the following:
+
+	dependencies {
+		implementation 'com.kohlschutter.junixsocket:junixsocket-common:2.6.0'
+		implementation 'com.kohlschutter.junixsocket:junixsocket-native-scommon:2.6.0'
+	}
  
-    compile 'com.kohlschutter.junixsocket:junixsocket-core:2.6.0'
+For RMI support, add:
  
- For RMI support, add:
+		implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.6.0'
  
-    compile 'com.kohlschutter.junixsocket:junixsocket-rmi:2.6.0'
+For MySQL support, add:
  
- For MySQL support, add:
+		implementation 'com.kohlschutter.junixsocket:junixsocket-mysql:2.6.0'
  
-    compile 'com.kohlschutter.junixsocket:junixsocket-mysql:2.6.0'
+For TIPC support, add:
  
- For TIPC support, add:
+		implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.6.0'
  
-    compile 'com.kohlschutter.junixsocket:junixsocket-tipc:2.6.0'
+For VSOCK support, add:
  
- For VSOCK support, add:
+		implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.6.0'
  
-    compile 'com.kohlschutter.junixsocket:junixsocket-vsock:2.6.0'
+For Jetty support, add:
  
- For Jetty support, add:
- 
-    compile 'com.kohlschutter.junixsocket:junixsocket-jetty:2.6.0'
+		implementation 'com.kohlschutter.junixsocket:junixsocket-jetty:2.6.0'
 
 ### Snapshot versions
 
+Add the following "maven" line to `settings.gradle`, or update accordingly:
+
 ```
-repositories {
-		maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+dependencyResolutionManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        repositories {
+			  maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+        }
+    }
 }
 ```
 
