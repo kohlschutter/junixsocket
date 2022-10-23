@@ -100,6 +100,7 @@ static int simulateSocketPair(JNIEnv *env, int domain, int type, jobject fd1, jo
 
     _initFD(env, fd1, handleAccept);
     _initFD(env, fd2, handleConnect);
+    return 0;
 }
 #endif
 
