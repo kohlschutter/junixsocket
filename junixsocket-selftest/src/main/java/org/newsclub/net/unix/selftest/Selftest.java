@@ -538,7 +538,7 @@ public class Selftest {
 
             MessageType messageType = ime.messageType();
             if (messageType.isIncludeTestInfo()) {
-              important.add(key + ": " + ime.getMessage());
+              important.add(ime.getMessage() + "; " + key);
             } else {
               important.add(ime.getMessage());
             }
