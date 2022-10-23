@@ -12,9 +12,9 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
  - Add AFSocket.checkConnectionClosed to probe connection status
  - Fix connection status checks and error handling
  - Fix bind behavior on Windows, support re-bind with reuseAddress
- - Fix selftest on OpenBSD
  - Make builds reproducible, align timestamps with git commit
- - Improve unit tests/selftests
+ - Fix and improve unit tests/selftests, remove several false-positive errors found in the wild (Azure Cloudshell/Microsoft CBL-Mariner 2.0, Amazon EC2, OpenBSD, etc.)
+ - Fix SimpleTestServer demo, actually counting now to 5, not 6.
 
 ### _(2022-10-14)_ **junixsocket 2.6.0**
 
