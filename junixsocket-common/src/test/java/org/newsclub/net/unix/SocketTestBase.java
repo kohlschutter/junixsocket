@@ -271,7 +271,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
         if (sock instanceof AFSocket<?>) {
           AFSocket<?> afs = (AFSocket<?>) sock;
-          if (shouldDoConnectionCheckUponAccept() && afs.getConnectionStatus().isNotConnected()) {
+          if (shouldDoConnectionCheckUponAccept() && afs.checkConnectionClosed()) {
             acceptSuccess = false;
           }
         }

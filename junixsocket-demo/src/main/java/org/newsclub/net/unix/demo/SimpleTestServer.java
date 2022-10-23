@@ -96,7 +96,7 @@ public final class SimpleTestServer {
           // The check involves sending a zero-byte message to the peer, and catching exceptions
           // as we go. Note that this is deliberately not automated to allow code perform and detect
           // "(port) knocking".
-          if (sock.getConnectionStatus().isNotConnected()) {
+          if (sock.checkConnectionClosed()) {
             System.out.println("Peer closed socket right after connecting");
             continue;
           }

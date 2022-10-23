@@ -556,24 +556,25 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
    * This usually involves checking for {@link #isConnected()}, and if assumed connected, also
    * sending a zero-length message to the remote.
    * 
-   * @return The connection status, which may be unknown.
+   * @return {@code true} if the connection is known to be closed, {@code false} if the connection
+   *         is open/not closed or the condition is unknown.
    * @throws IOException on an unexpected error.
    */
-  public ConnectionStatus getConnectionStatus() throws IOException {
+  public boolean checkConnectionClosed() throws IOException {
     if (!isConnected()) {
-      return ConnectionStatus.NOT_CONNECTED;
+      return true;
     }
     try {
       if (!AFSocket.supports(AFSocketCapability.CAPABILITY_ZERO_LENGTH_SEND)) {
-        return ConnectionStatus.UNKNOWN;
+        return false;
       }
       getOutputStream().write(ZERO_BYTES);
-      return ConnectionStatus.CONNECTED;
+      return false;
     } catch (SocketClosedException e) {
-      return ConnectionStatus.NOT_CONNECTED;
+      return true;
     } catch (IOException e) {
       if (!isConnected()) {
-        return ConnectionStatus.NOT_CONNECTED;
+        return true;
       } else {
         throw e;
       }

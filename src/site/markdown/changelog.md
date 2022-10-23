@@ -9,7 +9,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ### _(2022-XX-XX)_ **junixsocket 2.6.1**
 
- - Add AFSocket.getConnectionStatus to probe connection status
+ - Add AFSocket.checkConnectionClosed to probe connection status
  - Fix connection status checks and error handling
  - Fix bind behavior on Windows, support re-bind with reuseAddress
  - Fix selftest on OpenBSD
