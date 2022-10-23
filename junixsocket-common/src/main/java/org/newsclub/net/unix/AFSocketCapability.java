@@ -111,7 +111,7 @@ public enum AFSocketCapability {
    * behave correctly.
    * 
    * If not supported, junixsocket will simply ignore writes of zero-length, and connection checking
-   * with {@link AFSocket#checkConnectionClosed()} may return {@link false#UNKNOWN}.
+   * with {@link AFSocket#checkConnectionClosed()} may return {@code false}.
    */
   CAPABILITY_ZERO_LENGTH_SEND(11),
 
