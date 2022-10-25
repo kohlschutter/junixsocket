@@ -135,6 +135,10 @@ The files can be found in
 
 Run `java -jar junixsocket-selftest/target/junixsocket-selftest-X.Y.Z-jar-with-dependencies.jar`. It should end with `Selftest PASSED`.
 
+Also run the selftest with Java 8, e.g.:
+
+	/Library/Java/JavaVirtualMachines/1.8.0.jdk/Contents/Home/bin/java -jar junixsocket-selftest/target/junixsocket-selftest-2.6.1-jar-with-dependencies.jar
+
 Run `junixsocket-native-graalvm/bin/graalvm mvn package -pl junixsocket-selftest-native-image -Pnative` (on all native-image supported platforms) to build the GraalVM native-image. Test the native-image by running `junixsocket-selftest-native-image/target/junixsocket-selftest-native-image-X.Y.Z`.
 
 > **NOTE:** (Replace X.Y.Z with the actual version)
@@ -198,7 +202,7 @@ Download `junixsocket-selftest-X.Y.Z-jar-with-dependencies.jar` from staging to 
 https://oss.sonatype.org/content/groups/staging/com/kohlschutter/junixsocket/junixsocket-selftest/X.Y.Z/junixsocket-selftest-X.Y.Z-jar-with-dependencies.jar
 ```
 
-Run `java -jar junixsocket-selftest-X.Y.Z-jar-with-dependencies.jar` on all supported platforms.
+Run `java -jar junixsocket-selftest-X.Y.Z-jar-with-dependencies.jar` on all supported platforms and supported JDK combinations.
 
 Depending on the platform, it should end with `Selftest PASSED` or `Selftest PASSED WITH ISSUES`.
 
