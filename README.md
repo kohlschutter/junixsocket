@@ -72,12 +72,14 @@ To include the core junixsocket functionality in your project, add the following
 <dependency>
   <groupId>com.kohlschutter.junixsocket</groupId>
   <artifactId>junixsocket-core</artifactId>
-  <version>2.6.0</version>
+  <version>2.6.1</version>
   <type>pom</type>
 </dependency>
 ```
 
-For more, optional packages (RMI, MySQL, Jetty, TIPC, server, etc.) and Gradle instructions see
+While you should definitely pin your dependency to a specific version, you are very much encouraged to always update to the most recent version. Check back frequently.
+
+For more, optional packages (RMI, MySQL, Jetty, TIPC, VSOCK, server, GraalVM, etc.) and Gradle instructions see
 [here](https://kohlschutter.github.io/junixsocket/dependency.html)
 
 If you're testing a `-SNAPSHOT` version, make sure that the Sonatype snapshot repository is enabled in your POM:
