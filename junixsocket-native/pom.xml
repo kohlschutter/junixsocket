@@ -110,7 +110,6 @@
                 </plugins>
             </build>
         </profile>
-
         <profile>
             <id>custom-build-directory</id>
             <activation>
@@ -120,6 +119,49 @@
             </activation>
             <build>
                 <directory>${junixsocket.build.directory}</directory>
+            </build>
+        </profile>
+        <profile>
+            <id>codeql-skip-c</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.github.maven-nar</groupId>
+                        <artifactId>nar-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-nar-compile</id>
+                                <configuration>
+                                    <skip>true</skip>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>codeql-nar-compile</id>
+                                <goals>
+                                    <goal>nar-compile</goal>
+                                </goals>
+                                <configuration>
+                                    <c>
+                                        <sourceDirectory>${basedir}/src/main/c-codeql</sourceDirectory>
+                                        <toolPath>${junixsocket.native.default.toolPath}</toolPath>
+                                    </c>
+                                    <linker>
+                                        <prefix>${junixsocket.native.default.toolPath}</prefix>
+                                        <toolPath></toolPath>
+                                        <name>${junixsocket.native.default.linkerName}</name>
+                                    </linker>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
     </profiles>
