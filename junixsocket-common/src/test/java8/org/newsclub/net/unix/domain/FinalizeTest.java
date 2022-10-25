@@ -46,68 +46,16 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
     return "UNIX";
   }
 
-  @SuppressFBWarnings({"RV_DONT_JUST_NULL_CHECK_READLINE"})
-  private static int lsofUnixSockets(long pid) throws IOException, TestAbortedException,
-      InterruptedException {
-    assertTrue(pid > 0);
-
-    Process p;
-    try {
-      p = Runtime.getRuntime().exec(new String[] {"lsof", "-U", "-a", "-p", String.valueOf(pid)});
-    } catch (Exception e) {
-      assumeTrue(false, e.getMessage());
-      return -1;
-    }
-    int lines = 0;
-    try (BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream(), Charset
-        .defaultCharset()))) {
-      String l;
-      while ((l = in.readLine()) != null) {
-        lines++;
-        if (l.contains("busybox")) {
-          assumeTrue(false, "incompatible lsof binary");
-        }
-      }
-    }
-    assumeTrue(p.waitFor() == 0, "lsof should terminate with RC=0");
-    return lines;
-  }
-
   @Override
   protected Object preRunCheck(Process process) throws TestAbortedException, IOException,
       InterruptedException {
-    int linesBefore = lsofUnixSockets(process.pid());
-    // If that's not true, we need to skip the test
-    assumeTrue(linesBefore > 0);
-    return linesBefore;
+    // not supported in Java 8
+    return null;
   }
 
   @Override
   protected void postRunCheck(Process process, Object linesBeforeObj) throws TestAbortedException,
       IOException, InterruptedException {
-    assertNotNull(linesBeforeObj);
-    int linesBefore = (int) linesBeforeObj;
-    try {
-      int linesAfter = 0;
-      for (int i = 0; i < 10; i++) {
-        Thread.sleep(100);
-        linesAfter = lsofUnixSockets(process.pid());
-        if (linesAfter != linesBefore) {
-          break;
-        }
-        if (!process.isAlive()) {
-          break;
-        }
-      }
-
-      assumeTrue(linesAfter > 0, "lsof may fail to return anything");
-
-      assertTrue(linesAfter < linesBefore,
-          "Our unix socket file handle should have been cleared out");
-    } finally {
-      process.destroy();
-      process.waitFor();
-    }
+    // not supported in Java 8
   }
-
 }

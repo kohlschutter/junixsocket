@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.IOException;
 import java.net.SocketAddress;
 
 import org.junit.jupiter.api.Test;
@@ -55,4 +56,13 @@ public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBa
   }
 
   protected abstract String socketType();
+
+  protected Object preRunCheck(Process process) throws TestAbortedException, IOException,
+      InterruptedException {
+    return null;
+  }
+
+  protected void postRunCheck(Process process, Object linesBeforeObj) throws TestAbortedException,
+      IOException, InterruptedException {
+  }
 }

@@ -17,20 +17,15 @@
  */
 package org.newsclub.net.unix;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +34,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
 import org.junit.jupiter.api.Test;
-import org.opentest4j.TestAbortedException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.CommandAvailabilityRequirement;
@@ -71,7 +65,7 @@ public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBa
   public void testLeak() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
       Semaphore sema = new Semaphore(0);
-      CompletableFuture<Integer> future = new CompletableFuture<>();
+      CompletableFuture<Object> future = new CompletableFuture<>();
 
       try (ServerThread serverThread = new ServerThread() {
         @Override
@@ -83,16 +77,13 @@ public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBa
         protected void handleConnection(final Socket socket) throws IOException {
           try {
             assumeTrue(process.pid() > 0);
-            int linesBefore = -1;
+            Object preRunCheck = null;
             try (OutputStream out = socket.getOutputStream();
                 InputStream in = socket.getInputStream()) {
-              linesBefore = lsofUnixSockets(process.pid());
+              preRunCheck = preRunCheck(process);
               out.write('@');
-
-              // If that's not true, we need to skip the test
-              assumeTrue(linesBefore > 0);
             } finally {
-              future.complete(linesBefore);
+              future.complete(preRunCheck);
             }
           } catch (Exception e) {
             future.completeExceptionally(e);
@@ -104,30 +95,9 @@ public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBa
         sema.acquire();
         this.process = launchServerProcess(socketType(), ((AFSocketAddress) serverThread
             .getServerAddress()).getHostString());
-        Integer linesBefore = future.get();
-        assertNotNull(linesBefore);
+        Object preRunCheck = future.get();
 
-        try {
-          int linesAfter = 0;
-          for (int i = 0; i < 10; i++) {
-            Thread.sleep(100);
-            linesAfter = lsofUnixSockets(process.pid());
-            if (linesAfter != linesBefore) {
-              break;
-            }
-            if (!process.isAlive()) {
-              break;
-            }
-          }
-
-          assumeTrue(linesAfter > 0, "lsof may fail to return anything");
-
-          assertTrue(linesAfter < linesBefore,
-              "Our unix socket file handle should have been cleared out");
-        } finally {
-          process.destroy();
-          process.waitFor();
-        }
+        postRunCheck(process, preRunCheck);
       } catch (ExecutionException e) {
         throw ExceptionUtil.unwrapExecutionException(e);
       } finally {
@@ -138,6 +108,14 @@ public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBa
         this.process = null;
       }
     });
+  }
+
+  protected Object preRunCheck(Process p) throws IOException, InterruptedException {
+    return null;
+  }
+
+  protected void postRunCheck(Process p, Object preRunCheck) throws IOException,
+      InterruptedException {
   }
 
   private Process launchServerProcess(String socketType, String socketPath) throws IOException {
@@ -158,33 +136,6 @@ public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBa
     vm.setRedirectOutput(Redirect.INHERIT);
 
     return vm.fork();
-  }
-
-  @SuppressFBWarnings({"RV_DONT_JUST_NULL_CHECK_READLINE"})
-  private static int lsofUnixSockets(long pid) throws IOException, TestAbortedException,
-      InterruptedException {
-    assertTrue(pid > 0);
-
-    Process p;
-    try {
-      p = Runtime.getRuntime().exec(new String[] {"lsof", "-U", "-a", "-p", String.valueOf(pid)});
-    } catch (Exception e) {
-      assumeTrue(false, e.getMessage());
-      return -1;
-    }
-    int lines = 0;
-    try (BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream(), Charset
-        .defaultCharset()))) {
-      String l;
-      while ((l = in.readLine()) != null) {
-        lines++;
-        if (l.contains("busybox")) {
-          assumeTrue(false, "incompatible lsof binary");
-        }
-      }
-    }
-    assumeTrue(p.waitFor() == 0, "lsof should terminate with RC=0");
-    return lines;
   }
 
   protected abstract String socketType();
