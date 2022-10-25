@@ -2,12 +2,14 @@
 
 ### General remarks
 
-Please tend to always use the latest version; the existing API should always be backwards compatible between minor releases (e.g., 2.4.0 -> 2.5.1) unless explicitly mentioned in the changelog below (e.g., dropping Java 7 support in 2.5.0)
+Please tend to always use the latest version.
+
+The existing API should always be backwards compatible between minor releases (e.g., 2.4.0 -> 2.5.1) unless explicitly mentioned in the changelog below (e.g., dropping Java 7 support in 2.5.0)
 
 When upgrading from versions older than 2.4.0, please note that `junixsocket-core` is now a POM-only
 artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.html) for details.
 
-### _(2022-XX-XX)_ **junixsocket 2.6.1**
+### _(2022-10-26)_ **junixsocket 2.6.1**
 
  - Add AFSocket.checkConnectionClosed to probe connection status
  - Fix connection status checks and error handling

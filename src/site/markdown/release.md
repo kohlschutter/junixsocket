@@ -56,6 +56,10 @@ install Java, Maven and junixsocket, and you should be good to go.
     
 ## Common tasks
 
+### Update changelog
+
+Update `junixsocket/src/site/markdown/changelog.md` with a section for the new version and all noteworthy changes.
+
 ### Ensure GraalVM native configs are still up-to-date
 
 Run `junixsocket-native-graalvm/bin/graalvm junixsocket-native-graalvm/bin/build-selftest`
@@ -191,6 +195,12 @@ https://oss.sonatype.org/content/groups/staging/com/kohlschutter/junixsocket/jun
 Run `java -jar junixsocket-selftest-X.Y.Z-jar-with-dependencies.jar` on all supported platforms.
 
 Depending on the platform, it should end with `Selftest PASSED` or `Selftest PASSED WITH ISSUES`.
+
+Also check the header, especially the `Git properties` at the beginning of the output:
+
+* The version numbers (`junixsocket selftest version` and `git.build.version`) should match the expected version number
+* `git.dirty` should be `false`
+* `git.commit.id.describe` should match the new git tag.
 
 #### Release artifact to Maven Central
   
