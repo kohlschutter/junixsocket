@@ -302,6 +302,21 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
                 </repository>
             </repositories>
         </profile>
+        <profile>
+            <id>use-staging</id>
+            <repositories>
+                <repository>
+                    <id>snapshots-staging</id>
+                    <url>https://oss.sonatype.org/content/groups/staging/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
     </profiles>
 
     <dependencies>
