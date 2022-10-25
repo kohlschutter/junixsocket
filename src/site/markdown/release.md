@@ -56,9 +56,13 @@ install Java, Maven and junixsocket, and you should be good to go.
     
 ## Common tasks
 
-### Update changelog
+### Update changelog, website
 
-Update `junixsocket/src/site/markdown/changelog.md` with a section for the new version and all noteworthy changes.
+Update `src/site/markdown/changelog.md` with a section for the new version and all noteworthy changes.
+
+Check all mentions of the current junixsocket under `junixsocket/src/site/markdown`, and replace accordingly: `grep X.Y.Z src/site/markdown/*`
+
+> **NOTE:** (Replace X.Y.Z with the current version)
 
 ### Ensure GraalVM native configs are still up-to-date
 
@@ -80,7 +84,7 @@ If, at the end, you see changes to the json files in `junixsocket-native-graalvm
     mvn versions:set -DnewVersion=X.Y.Z
     # git add / commit here...
     
-> **NOTE:** (Replace X.Y.Z with the actual version)
+> **NOTE:** (Replace X.Y.Z with the actual new version)
 
 ### Build native libraries on other supported, common platforms
 
