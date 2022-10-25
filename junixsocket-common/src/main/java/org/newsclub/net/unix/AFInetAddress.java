@@ -178,7 +178,7 @@ class AFInetAddress {
       throw new SocketException("Unsupported address");
     }
 
-    String hostname = addr.getHostName();
+    String hostname = addr.getHostName(); // lgtm[java/tainted-numeric-cast] suppress CodeQL warning
     return unwrapAddress(hostname, af);
   }
 
