@@ -172,7 +172,7 @@ class AFInetAddress {
 
   static final byte[] unwrapAddress(InetAddress addr, AFAddressFamily<?> af)
       throws SocketException {
-    // FIXME
+    Objects.requireNonNull(addr);
 
     if (!isSupportedAddress(addr, af)) {
       throw new SocketException("Unsupported address");
@@ -183,6 +183,7 @@ class AFInetAddress {
   }
 
   static final byte[] unwrapAddress(String hostname, AFAddressFamily<?> af) throws SocketException {
+    Objects.requireNonNull(hostname);
     if (!hostname.endsWith(INETADDR_SUFFIX)) {
       throw new SocketException("Unsupported address");
     }
