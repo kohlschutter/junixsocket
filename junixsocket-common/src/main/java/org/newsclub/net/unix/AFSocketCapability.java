@@ -108,10 +108,11 @@ public enum AFSocketCapability {
    * Support for zero-length send(2).
    * 
    * This can be used to perform a connection check, but not all operating systems support this or
-   * behave correctly.
+   * behave correctly (particularly, IBM AIX, IBM i, and IBM z/OS) at the moment.
    * 
    * If not supported, junixsocket will simply ignore writes of zero-length, and connection checking
-   * with {@link AFSocket#checkConnectionClosed()} may return {@code false}.
+   * with {@link AFSocket#checkConnectionClosed()} may return {@code false} regardless of the actual
+   * condition.
    */
   CAPABILITY_ZERO_LENGTH_SEND(11),
 
