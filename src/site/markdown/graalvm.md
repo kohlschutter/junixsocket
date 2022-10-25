@@ -1,6 +1,8 @@
 # GraalVM support
 
-junixsocket supports running in [GraalVM](https://www.graalvm.org), both in Hotspot/OpenJDK-mode as well as in [Native Image](https://www.graalvm.org/22.2/reference-manual/native-image/) mode with Substrate VM (ahead-of-time compilation).
+junixsocket supports running in [GraalVM](https://www.graalvm.org), both in Hotspot/OpenJDK-mode as
+well as in [Native Image](https://www.graalvm.org/22.2/reference-manual/native-image/) mode with
+Substrate VM (ahead-of-time compilation).
 
 Some optional features, such as `junixsocket-rmi`, are currently unavailable in Native Image mode.
 
@@ -12,19 +14,35 @@ In this mode, GraalVM behaves mostly like OpenJDK.
 
 ## Native Image/Substrate VM mode
 
-In this mode, GraalVM attempts ahead-of-time compilation of our code, resulting in an executable binary of your entire Java application.
+In this mode, GraalVM attempts ahead-of-time compilation of our code, resulting in an executable
+binary of your entire Java application.
 
-To achieve this with junixsocket, GraalVM needs some specific "[Reachability Metadata](https://www.graalvm.org/22.2/reference-manual/native-image/metadata/)". Since junixsocket 2.6.0, this metadata is included with `junixsocket-common` and `junixsocket-selftest` artifacts.
+To achieve this with junixsocket, GraalVM needs some specific "[Reachability
+Metadata](https://www.graalvm.org/22.2/reference-manual/native-image/metadata/)".  Since junixsocket
+2.6.0, this metadata is included with `junixsocket-common` and `junixsocket-selftest` artifacts.
 
 ## junixsocket selftest Native Image
 
-You can try junixsocket's Native Image integration by running its selftests natively:
+You can try junixsocket's Native Image integration by running its selftests natively.
+
+### Prerequisites
+
+#### Make sure GraalVM is enabled
+
+For example:
+
+	# export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java17-22.2.0/Contents/Home
+	# export PATH=$JAVA_HOME/bin:$PATH
+
+#### Make sure your build system works
 
 ```
-# Make sure GraalVM is enabled, e.g.:
-# export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java17-22.2.0/Contents/Home
-# export PATH=$JAVA_HOME/bin:$PATH
+    ## Add dependencies if necessary, e.g.:
+	sudo apt-get install gcc zlib1g-dev
+```
 
+#### Build the native image
+```
 # Build the platform-native executable:
 cd junixsocket/junixsocket-selftest-native-image
 mvn -Pnative clean package
@@ -34,6 +52,13 @@ mvn -Pnative clean package
 ```
 
 > **NOTE:** (Replace X.Y.Z with the actual version)
+
+#### musl / Alpine Linux compatibility
+
+The above binary, even though it currently cannot be built on Alpine Linux (musl), will run after
+adding `gcompat`:
+
+	sudo apk add gcompat
 
 ## Building and Maintaining junixsocket's Reachability Metadata
 
@@ -51,4 +76,15 @@ cd junixsocket/junixsocket-native-graalvm
 bin/build-selftest
 ```
 
-Before a new release is drafted, this script needs to be run. If there are metadata changes, they will be reported using the above script. The new metadata files are stored under `junixsocket/junixsocket-native-graalvm/output/META-INF/native-image/`. Their content needs to be analyzed and distributed among `junixsocket-common`, `junixsocket-selftest`, etc., by storing the relevant metadata in the corresponding files under `src/main/resources/META-INF/native-image` (subdirectories *`artifactId/groupId`*, e.g., `com.kohlschutter.junixsocket/junixsocket-native-graalvm`).
+Before a new release is drafted, this script needs to be run.
+
+If there are metadata changes, they will be reported using the above script.
+
+The new metadata files are stored under
+`junixsocket/junixsocket-native-graalvm/output/META-INF/native-image/`.
+
+Their content needs to be
+analyzed and distributed among `junixsocket-common`, `junixsocket-selftest`, etc., by storing the
+relevant metadata in the corresponding files under `src/main/resources/META-INF/native-image`
+(subdirectories *`artifactId/groupId`*, e.g.,
+`com.kohlschutter.junixsocket/junixsocket-native-graalvm`).
