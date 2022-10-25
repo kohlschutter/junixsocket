@@ -8,6 +8,13 @@
 #
 cd "$(dirname $0)/../"
 
+java -version 2>&1 | grep -q GraalVM
+if [[ $? -ne 0 ]]; then
+	echo Error: JVM is not a GraalVM. >&2
+        echo Make sure that GraalVM is in PATH -- run with bin/graalvm bin/build-selftest
+	exit 1
+fi
+
 outputDir="output"
 mkdir -p "$outputDir" "${outputDir}/bin" "${outputDir}/tmp"
 cd "$outputDir"
