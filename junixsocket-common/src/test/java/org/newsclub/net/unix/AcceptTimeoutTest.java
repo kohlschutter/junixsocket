@@ -195,6 +195,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
    * Subclasses may override this to tell that there is a known issue with "Accept timeout after
    * delay".
    * 
+   * @param serverAddr The server address.
    * @return An explanation iff this should not cause a test failure but trigger "With issues".
    */
   protected String checkKnownBugAcceptTimeout(SocketAddress serverAddr) {
