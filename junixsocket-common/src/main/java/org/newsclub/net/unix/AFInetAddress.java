@@ -178,8 +178,12 @@ class AFInetAddress {
       throw new SocketException("Unsupported address");
     }
 
-    String hostname = addr.getHostName(); // lgtm[java/tainted-numeric-cast] suppress CodeQL warning
-    return unwrapAddress(hostname, af);
+    String hostname = addr.getHostName();
+    try {
+      return unwrapAddress(hostname, af);
+    } catch (IllegalStateException | IllegalArgumentException e) {
+      throw new SocketException("Unsupported address");
+    }
   }
 
   static final byte[] unwrapAddress(String hostname, AFAddressFamily<?> af) throws SocketException {
@@ -214,7 +218,7 @@ class AFInetAddress {
       byte[] unwrapped = new byte[(len - 2) / 2];
       for (int i = 2, n = encodedHostname.length(), o = 0; i < n; i += 2, o++) {
         int v = Integer.parseInt(encodedHostname.substring(i, i + 2), 16);
-        unwrapped[o] = (byte) v;
+        unwrapped[o] = (byte) (v & 0xFF);
       }
       return unwrapped;
     } else {
