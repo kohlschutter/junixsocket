@@ -40,7 +40,7 @@
                         <configuration>
                             <skip>false</skip>
                             <useArgFile>false</useArgFile>
-                            <imageName>${imageName}</imageName>
+                            <imageName>${project.name}-${project.version}</imageName>
                             <fallback>false</fallback>
                         </configuration>
                     </plugin>
