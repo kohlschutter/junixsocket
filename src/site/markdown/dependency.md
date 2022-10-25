@@ -299,6 +299,10 @@ no point in encrypting the communication. Disabling SSL may improve performance.
 DBeaver, for example to connect to PostgreSQL or MySQL databases, add junixsocket to the
 corresponding driver settings.
 
+DBeaver has [problems](https://github.com/kohlschutter/junixsocket/issues/120) with the POM-only
+`junixsocket-core` artifact, so we have to specify both `junixsocket-common` and
+`junixsocket-native-common`:
+
 Select "Connect by URL" (not Host), then specify a JDBC URL from the variants above.  Click "Driver
 properties" and adjust the driver properties as instructed above.
 
