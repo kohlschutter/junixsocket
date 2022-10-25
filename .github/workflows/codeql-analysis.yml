@@ -53,8 +53,8 @@ jobs:
         # queries: security-extended,security-and-quality
 
     - run: |
-       echo "Build junixsocket with Maven (compile only)"
-       mvn clean compile -Puse-snapshots
+       echo "Build junixsocket with Maven"
+       mvn clean install
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
