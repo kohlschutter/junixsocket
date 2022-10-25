@@ -54,11 +54,9 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <url>https://github.com/kohlschutter/junixsocket/issues</url>
     </issueManagement>
     <properties>
-        <project.build.outputTimestamp>${git.commit.time}</project.build.outputTimestamp>
         <kohlschutter.project.base.directory>${project.basedir}</kohlschutter.project.base.directory>
         <kohlschutter.project.notice.file>${kohlschutter.project.base.directory}/NOTICE</kohlschutter.project.notice.file>
 
-        <junit.version>5.7.1</junit.version>
         <junixsocket.native.aol></junixsocket.native.aol>
         <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
         <junixsocket.native.crossclang.toolPath>${kohlschutter.project.base.directory}/junixsocket-native/crossclang/bin/</junixsocket.native.crossclang.toolPath>
@@ -89,38 +87,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     </modules>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>io.github.git-commit-id</groupId>
-                <artifactId>git-commit-id-maven-plugin</artifactId>
-                <version>5.0.0</version>
-                <executions>
-                    <execution>
-                        <id>get-the-git-infos</id>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                        <phase>initialize</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${project.build.outputDirectory}/META-INF/maven/${project.groupId}/${project.artifactId}/git.properties</generateGitPropertiesFilename>
-                    <includeOnlyProperties>
-                        <includeOnlyProperty>^git.build.version$</includeOnlyProperty>
-                        <includeOnlyProperty>^git.commit.id.(abbrev|full|describe)$</includeOnlyProperty>
-                        <includeOnlyProperty>^git.commit.time$</includeOnlyProperty>
-                        <includeOnlyProperty>^git.dirty$</includeOnlyProperty>
-                    </includeOnlyProperties>
-                    <commitIdGenerationMode>full</commitIdGenerationMode>
-                    <dateFormat>yyyy-MM-dd'T'HH:mm:ssXXX</dateFormat>
-                    <gitDescribe>
-                        <dirty>-dirty</dirty>
-                        <tags>true</tags>
-                    </gitDescribe>
-                </configuration>
-            </plugin>
-        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
