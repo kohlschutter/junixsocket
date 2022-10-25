@@ -49,6 +49,8 @@ public class FinalizeTestClient {
       addr = AFUNIXSocketAddress.unwrap(socketName, 0);
     } else if ("TIPC".equals(socketType)) {
       addr = AFTIPCSocketAddress.unwrap(socketName, 0);
+    } else if ("VSOCK".equals(socketType)) {
+      addr = AFVSOCKSocketAddress.unwrap(socketName, 0);
     } else {
       throw new IllegalArgumentException("Unsupported socket type: " + socketType);
     }
