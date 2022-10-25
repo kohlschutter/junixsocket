@@ -14,7 +14,7 @@ Add the following dependency to your Maven project
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-core</artifactId>
-      <version>2.6.0</version>
+      <version>2.6.1</version>
       <type>pom</type>
     </dependency>
 
@@ -26,7 +26,7 @@ following two dependencies instead:
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-common</artifactId>
-      <version>2.6.0</version>
+      <version>2.6.1</version>
     </dependency>
 
 and
@@ -34,7 +34,7 @@ and
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-native-common</artifactId>
-      <version>2.6.0</version>
+      <version>2.6.1</version>
     </dependency>
  
 ### Optional dependencies
@@ -44,7 +44,7 @@ If you're going to use AFUNIXSocketServer code, add the following dependency:
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-server</artifactId>
-      <version>2.6.0</version>
+      <version>2.6.1</version>
     </dependency>
     
 If you're going to use RMI over Unix sockets, add the following dependency:
@@ -52,7 +52,7 @@ If you're going to use RMI over Unix sockets, add the following dependency:
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-rmi</artifactId>
-      <version>2.6.0</version>
+      <version>2.6.1</version>
     </dependency>
 
 If you're going to use the mySQL Connector for Unix sockets, add the following dependency:
@@ -60,7 +60,7 @@ If you're going to use the mySQL Connector for Unix sockets, add the following d
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-mysql</artifactId>
-      <version>2.6.0</version>
+      <version>2.6.1</version>
     </dependency>
  
 If you're going to use TIPC, add the following dependency:
@@ -68,7 +68,7 @@ If you're going to use TIPC, add the following dependency:
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-tipc</artifactId>
-      <version>2.6.0</version>
+      <version>2.6.1</version>
     </dependency>
  
 If you're going to use VSOCK, add the following dependency:
@@ -76,7 +76,7 @@ If you're going to use VSOCK, add the following dependency:
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-vsock</artifactId>
-      <version>2.6.0</version>
+      <version>2.6.1</version>
     </dependency>
   
 If you're going to use the Jetty connectors, add the following dependency:
@@ -84,7 +84,7 @@ If you're going to use the Jetty connectors, add the following dependency:
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-jetty</artifactId>
-      <version>2.6.0</version>
+      <version>2.6.1</version>
     </dependency>
 
 
@@ -119,35 +119,35 @@ Add the following statements to `build.gradle`; if you have existing dependencie
 For the common Java code and common native libraries, add:
 
 	dependencies {
-		implementation 'com.kohlschutter.junixsocket:junixsocket-core:2.6.0'
+		implementation 'com.kohlschutter.junixsocket:junixsocket-core:2.6.1'
 	}
 
 Some older Gradle versions require `compile` instead of `implementation`, and some older versions have trouble resolving the `junixsocket-core` POM artifact. If you're running into problems (and only then), try the following:
 
 	dependencies {
-		implementation 'com.kohlschutter.junixsocket:junixsocket-common:2.6.0'
-		implementation 'com.kohlschutter.junixsocket:junixsocket-native-scommon:2.6.0'
+		implementation 'com.kohlschutter.junixsocket:junixsocket-common:2.6.1'
+		implementation 'com.kohlschutter.junixsocket:junixsocket-native-scommon:2.6.1'
 	}
  
 For RMI support, add:
  
-		implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.6.0'
+		implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.6.1'
  
 For MySQL support, add:
  
-		implementation 'com.kohlschutter.junixsocket:junixsocket-mysql:2.6.0'
+		implementation 'com.kohlschutter.junixsocket:junixsocket-mysql:2.6.1'
  
 For TIPC support, add:
  
-		implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.6.0'
+		implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.6.1'
  
 For VSOCK support, add:
  
-		implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.6.0'
+		implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.6.1'
  
 For Jetty support, add:
  
-		implementation 'com.kohlschutter.junixsocket:junixsocket-jetty:2.6.0'
+		implementation 'com.kohlschutter.junixsocket:junixsocket-jetty:2.6.1'
 
 ### Snapshot versions
 
@@ -184,11 +184,11 @@ databases such as PostgreSQL.
 
 Make sure that the following jars are on your classpath:
 
- * junixsocket-common-2.6.0.jar
- * junixsocket-mysql-2.6.0.jar
+ * junixsocket-common-2.6.1.jar
+ * junixsocket-mysql-2.6.1.jar
  * mysql-connector-java-8.0.14.jar (or newer; earlier versions should work, too)
- * (typically, omit if you use the custom library below) junixsocket-native-common-2.6.0.jar
- * (optionally, if you have a custom architecture) junixsocket-native-custom-2.6.0.jar
+ * (typically, omit if you use the custom library below) junixsocket-native-common-2.6.1.jar
+ * (optionally, if you have a custom architecture) junixsocket-native-custom-2.6.1.jar
 
 Use the following connection properties (along with `user`, `password`, and other properties you may
 have).
@@ -217,10 +217,10 @@ to disable SSL with older versions of Connector/J.
 
 Make sure that the following jars are on your classpath:
 
- * junixsocket-common-2.6.0.jar
+ * junixsocket-common-2.6.1.jar
  * postgresql-42.2.5.jar (or newer; earlier versions should work, too)
- * (typically, omit if you use the custom library below) junixsocket-native-common-2.6.0.jar
- * (optionally, if you have a custom architecture) junixsocket-native-custom-2.6.0.jar
+ * (typically, omit if you use the custom library below) junixsocket-native-common-2.6.1.jar
+ * (optionally, if you have a custom architecture) junixsocket-native-custom-2.6.1.jar
 
 
 Use the following connection properties (along with `user`, `password`, and other properties you may

@@ -22,16 +22,18 @@ You can try junixsocket's Native Image integration by running its selftests nati
 
 ```
 # Make sure GraalVM is enabled, e.g.:
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java17-22.2.0/Contents/Home
-export PATH=$JAVA_HOME/bin:$PATH      
+# export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java17-22.2.0/Contents/Home
+# export PATH=$JAVA_HOME/bin:$PATH
 
 # Build the platform-native executable:
 cd junixsocket/junixsocket-selftest-native-image
 mvn -Pnative clean package
 
 # Run the platform-native executable:
-./target/junixsocket-selftest-native-image
+./target/junixsocket-selftest-native-image-X.Y.Z
 ```
+
+> **NOTE:** (Replace X.Y.Z with the actual version)
 
 ## Building and Maintaining junixsocket's Reachability Metadata
 

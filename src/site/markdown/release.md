@@ -60,7 +60,7 @@ install Java, Maven and junixsocket, and you should be good to go.
 
 Update `src/site/markdown/changelog.md` with a section for the new version and all noteworthy changes.
 
-Check all mentions of the current junixsocket under `junixsocket/src/site/markdown`, and replace accordingly: `grep X.Y.Z src/site/markdown/*`
+Check all mentions (execpet for `changelog.md`) of the current junixsocket under `junixsocket/src/site/markdown`, and replace accordingly: `grep X.Y.Z src/site/markdown/* | grep -v changelog.md:`
 
 > **NOTE:** (Replace X.Y.Z with the current version)
 
