@@ -22,7 +22,7 @@
 #include "ckmacros.h"
 
 #if !defined(DEBUG)
-#define DEBUG 1
+// #define DEBUG 1
 #endif
 
 CK_IGNORE_UNUSED_MACROS_BEGIN
