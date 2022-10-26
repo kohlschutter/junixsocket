@@ -181,8 +181,8 @@ class AFInetAddress {
     String hostname = addr.getHostName();
     try {
       return unwrapAddress(hostname, af);
-    } catch (IllegalStateException | IllegalArgumentException e) {
-      throw new SocketException("Unsupported address");
+    } catch (IllegalArgumentException e) {
+      throw (SocketException)new SocketException("Unsupported address").initCause(e);
     }
   }
 
