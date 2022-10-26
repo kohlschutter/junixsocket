@@ -52,7 +52,7 @@
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>        newInterconnectedSockets();
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>      } <strong class="jxr_keyword">catch</strong> (TestAbortedException e) {
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>        TestAbortedWithImportantMessageException e2 = <strong class="jxr_keyword">new</strong> TestAbortedWithImportantMessageException(
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, AFVSOCKAddressSpecifics.KERNEL_TOO_OLD);
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>            MessageType.TEST_ABORTED_SHORT_INFORMATIONAL, AFVSOCKAddressSpecifics.KERNEL_TOO_OLD);
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>        e2.addSuppressed(e);
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>        <strong class="jxr_keyword">throw</strong> e2; <em class="jxr_comment">// NOPMD.PreserveStackTrace</em>
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      }

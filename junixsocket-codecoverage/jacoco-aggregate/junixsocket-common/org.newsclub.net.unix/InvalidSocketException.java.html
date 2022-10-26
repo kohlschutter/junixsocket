@@ -26,6 +26,7 @@ import java.net.SocketException;
  * @author Christian Kohlschütter
  * @see InvalidArgumentSocketException
  * @see AddressUnavailableSocketException
+ * @see OperationNotSupportedSocketException
  */
 public class InvalidSocketException extends SocketException {
   private static final long serialVersionUID = 1L;
@@ -34,8 +35,8 @@ public class InvalidSocketException extends SocketException {
    * Constructs a new {@link InvalidSocketException}.
    */
   public InvalidSocketException() {
-<span class="nc" id="L37">    super();</span>
-<span class="nc" id="L38">  }</span>
+<span class="nc" id="L38">    super();</span>
+<span class="nc" id="L39">  }</span>
 
   /**
    * Constructs a new {@link InvalidSocketException}.
@@ -43,7 +44,7 @@ public class InvalidSocketException extends SocketException {
    * @param msg The error message.
    */
   public InvalidSocketException(String msg) {
-<span class="fc" id="L46">    super(msg);</span>
-<span class="fc" id="L47">  }</span>
+<span class="fc" id="L47">    super(msg);</span>
+<span class="fc" id="L48">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

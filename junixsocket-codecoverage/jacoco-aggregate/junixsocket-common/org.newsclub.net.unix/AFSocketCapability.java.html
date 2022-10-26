@@ -104,16 +104,28 @@ import java.lang.ProcessBuilder.Redirect;
    */
 <span class="fc" id="L105">  CAPABILITY_VSOCK_DGRAM(10),</span>
 
+  /**
+   * Support for zero-length send(2).
+   * 
+   * This can be used to perform a connection check, but not all operating systems support this or
+   * behave correctly (particularly, IBM AIX, IBM i, and IBM z/OS) at the moment.
+   * 
+   * If not supported, junixsocket will simply ignore writes of zero-length, and connection checking
+   * with {@link AFSocket#checkConnectionClosed()} may return {@code false} regardless of the actual
+   * condition.
+   */
+<span class="fc" id="L117">  CAPABILITY_ZERO_LENGTH_SEND(11),</span>
+
   ; // end of list
 
   private final int bitmask;
 
-<span class="fc" id="L111">  AFSocketCapability(int bit) {</span>
-<span class="fc" id="L112">    this.bitmask = 1 &lt;&lt; bit;</span>
-<span class="fc" id="L113">  }</span>
+<span class="fc" id="L123">  AFSocketCapability(int bit) {</span>
+<span class="fc" id="L124">    this.bitmask = 1 &lt;&lt; bit;</span>
+<span class="fc" id="L125">  }</span>
 
   int getBitmask() {
-<span class="fc" id="L116">    return bitmask;</span>
+<span class="fc" id="L128">    return bitmask;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

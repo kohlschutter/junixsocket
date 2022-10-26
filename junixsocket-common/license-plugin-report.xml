@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1665780070114">
-    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.6.0"/>
+<licensePluginReport goal="CHECK" timestamp="1666772980303">
+    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.6.1"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamily.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamilyConfig.java" result="PRESENT"/>
@@ -55,6 +55,7 @@
         <file path="src/main/java/org/newsclub/net/unix/AFVSOCKSocketImplExtensions.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AddressUnavailableSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AncillaryDataSupport.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/BrokenPipeSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/CleanableState.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/CloseablePair.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/Closeables.java" result="PRESENT"/>
@@ -68,6 +69,7 @@
         <file path="src/main/java/org/newsclub/net/unix/NamedIntegerBitmask.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NativeLibraryLoader.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NativeUnixSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/OperationNotSupportedSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/RAFChannelProvider.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SentinelSocketAddress.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SocketAddressFilter.java" result="PRESENT"/>

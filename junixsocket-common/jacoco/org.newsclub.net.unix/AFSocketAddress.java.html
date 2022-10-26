@@ -207,8 +207,8 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    */
   protected static final &lt;A extends AFSocketAddress&gt; @Nullable A getSocketAddress(
       FileDescriptor fdesc, boolean peerName, int port, AFAddressFamily&lt;A&gt; af) {
-<span class="pc bpc" id="L210" title="1 of 2 branches missed.">    if (!fdesc.valid()) {</span>
-<span class="nc" id="L211">      return null;</span>
+<span class="fc bfc" id="L210" title="All 2 branches covered.">    if (!fdesc.valid()) {</span>
+<span class="fc" id="L211">      return null;</span>
     }
 <span class="fc" id="L213">    byte[] addr = NativeUnixSocket.sockname(af.getDomain(), fdesc, peerName); // FIXME</span>
 <span class="fc bfc" id="L214" title="All 2 branches covered.">    if (addr == null) {</span>

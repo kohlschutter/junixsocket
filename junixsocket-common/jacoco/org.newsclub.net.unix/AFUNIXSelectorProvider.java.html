@@ -119,7 +119,7 @@ public final class AFUNIXSelectorProvider extends AFSelectorProvider&lt;AFUNIXSo
   @SuppressWarnings(&quot;unchecked&quot;)
   @Override
   public AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt; openDatagramChannelPair() throws IOException {
-<span class="fc" id="L122">    return (AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt;) super.openDatagramChannelPair();</span>
+<span class="nc" id="L122">    return (AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt;) super.openDatagramChannelPair();</span>
   }
 
   @Override
@@ -134,7 +134,7 @@ public final class AFUNIXSelectorProvider extends AFSelectorProvider&lt;AFUNIXSo
 
   @Override
   public AFUNIXDatagramChannel openDatagramChannel(ProtocolFamily family) throws IOException {
-<span class="fc" id="L137">    return (AFUNIXDatagramChannel) super.openDatagramChannel(family);</span>
+<span class="nc" id="L137">    return (AFUNIXDatagramChannel) super.openDatagramChannel(family);</span>
   }
 
   @Override
@@ -159,7 +159,7 @@ public final class AFUNIXSelectorProvider extends AFSelectorProvider&lt;AFUNIXSo
 
   @Override
   protected ProtocolFamily protocolFamily() {
-<span class="fc" id="L162">    return AFUNIXProtocolFamily.UNIX;</span>
+<span class="nc" id="L162">    return AFUNIXProtocolFamily.UNIX;</span>
   }
 
   @Override

@@ -19,15 +19,28 @@ package org.newsclub.net.unix;
 
 import java.net.SocketException;
 
-final class SocketClosedException extends SocketException {
+/**
+ * A {@link SocketException} indicating that a socket was closed or is not open for other reasons.
+ * 
+ * @author Christian Kohlschütter
+ */
+public final class SocketClosedException extends SocketException {
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Constructs a new {@link SocketClosedException}.
+   */
   public SocketClosedException() {
-<span class="nc" id="L26">    super();</span>
-<span class="nc" id="L27">  }</span>
+<span class="nc" id="L34">    super();</span>
+<span class="nc" id="L35">  }</span>
 
+  /**
+   * Constructs a new {@link SocketClosedException}.
+   * 
+   * @param msg The error message.
+   */
   public SocketClosedException(String msg) {
-<span class="fc" id="L30">    super(msg);</span>
-<span class="fc" id="L31">  }</span>
+<span class="fc" id="L43">    super(msg);</span>
+<span class="fc" id="L44">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

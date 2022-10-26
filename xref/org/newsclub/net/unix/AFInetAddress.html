@@ -180,69 +180,74 @@
 <a class="jxr_linenumber" name="L172" href="#L172">172</a> 
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>   <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> byte[] unwrapAddress(InetAddress addr, AFAddressFamily&lt;?&gt; af)
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>       <strong class="jxr_keyword">throws</strong> SocketException {
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>     <em class="jxr_comment">// FIXME</em>
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>     Objects.requireNonNull(addr);
 <a class="jxr_linenumber" name="L176" href="#L176">176</a> 
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>     <strong class="jxr_keyword">if</strong> (!isSupportedAddress(addr, af)) {
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SocketException(<span class="jxr_string">"Unsupported address"</span>);
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>     }
 <a class="jxr_linenumber" name="L180" href="#L180">180</a> 
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>     String hostname = addr.getHostName();
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>     <strong class="jxr_keyword">return</strong> unwrapAddress(hostname, af);
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>   }
-<a class="jxr_linenumber" name="L184" href="#L184">184</a> 
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>   <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> byte[] unwrapAddress(String hostname, AFAddressFamily&lt;?&gt; af) <strong class="jxr_keyword">throws</strong> SocketException {
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>     <strong class="jxr_keyword">if</strong> (!hostname.endsWith(INETADDR_SUFFIX)) {
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SocketException(<span class="jxr_string">"Unsupported address"</span>);
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>     }
-<a class="jxr_linenumber" name="L189" href="#L189">189</a> 
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> end = hostname.length() - INETADDR_SUFFIX.length();
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">char</strong> c;
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>     <strong class="jxr_keyword">int</strong> domDot = -1;
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>     <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = end - 1; i &gt;= 0; i--) {
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>       c = hostname.charAt(i);
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>       <strong class="jxr_keyword">if</strong> (c == '.') {
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>         domDot = i;
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>         <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>       }
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>     }
-<a class="jxr_linenumber" name="L200" href="#L200">200</a> 
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>     String juxString = hostname.substring(domDot + 1, end);
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>     <strong class="jxr_keyword">if</strong> (AFAddressFamily.getAddressFamily(juxString) != af) { <em class="jxr_comment">// NOPMD</em>
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SocketException(<span class="jxr_string">"Incompatible address"</span>);
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>       <strong class="jxr_keyword">return</strong> unwrapAddress(hostname, af);
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>     } <strong class="jxr_keyword">catch</strong> (IllegalArgumentException e) {
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>       <strong class="jxr_keyword">throw</strong> (SocketException)<strong class="jxr_keyword">new</strong> SocketException(<span class="jxr_string">"Unsupported address"</span>).initCause(e);
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>     }
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>   }
+<a class="jxr_linenumber" name="L188" href="#L188">188</a> 
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>   <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> byte[] unwrapAddress(String hostname, AFAddressFamily&lt;?&gt; af) <strong class="jxr_keyword">throws</strong> SocketException {
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>     Objects.requireNonNull(hostname);
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">if</strong> (!hostname.endsWith(INETADDR_SUFFIX)) {
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SocketException(<span class="jxr_string">"Unsupported address"</span>);
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>     }
+<a class="jxr_linenumber" name="L194" href="#L194">194</a> 
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>     <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> end = hostname.length() - INETADDR_SUFFIX.length();
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>     <strong class="jxr_keyword">char</strong> c;
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>     <strong class="jxr_keyword">int</strong> domDot = -1;
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>     <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = end - 1; i &gt;= 0; i--) {
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>       c = hostname.charAt(i);
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>       <strong class="jxr_keyword">if</strong> (c == '.') {
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>         domDot = i;
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>         <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>       }
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>     }
 <a class="jxr_linenumber" name="L205" href="#L205">205</a> 
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>     String encodedHostname = hostname.substring(1, domDot);
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>     <strong class="jxr_keyword">if</strong> (encodedHostname.startsWith(MARKER_HEX_ENCODING)) {
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>       <em class="jxr_comment">// Hex-only encoding</em>
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>       <strong class="jxr_keyword">int</strong> len = encodedHostname.length();
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>       <strong class="jxr_keyword">if</strong> ((len &amp; 1) == 1) {
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"Length of hex-encoded wrapping must be even"</span>);
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>       }
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>       byte[] unwrapped = <strong class="jxr_keyword">new</strong> byte[(len - 2) / 2];
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>       <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 2, n = encodedHostname.length(), o = 0; i &lt; n; i += 2, o++) {
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>         <strong class="jxr_keyword">int</strong> v = Integer.parseInt(encodedHostname.substring(i, i + 2), 16);
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>         unwrapped[o] = (byte) v;
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>     String juxString = hostname.substring(domDot + 1, end);
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>     <strong class="jxr_keyword">if</strong> (AFAddressFamily.getAddressFamily(juxString) != af) { <em class="jxr_comment">// NOPMD</em>
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SocketException(<span class="jxr_string">"Incompatible address"</span>);
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>     }
+<a class="jxr_linenumber" name="L210" href="#L210">210</a> 
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>     String encodedHostname = hostname.substring(1, domDot);
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>     <strong class="jxr_keyword">if</strong> (encodedHostname.startsWith(MARKER_HEX_ENCODING)) {
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>       <em class="jxr_comment">// Hex-only encoding</em>
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>       <strong class="jxr_keyword">int</strong> len = encodedHostname.length();
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>       <strong class="jxr_keyword">if</strong> ((len &amp; 1) == 1) {
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"Length of hex-encoded wrapping must be even"</span>);
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>       }
-<a class="jxr_linenumber" name="L218" href="#L218">218</a>       <strong class="jxr_keyword">return</strong> unwrapped;
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>       <em class="jxr_comment">// URL-encoding</em>
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>         <strong class="jxr_keyword">return</strong> URLDecoder.decode(encodedHostname, StandardCharsets.ISO_8859_1.toString()).getBytes(
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>             StandardCharsets.ISO_8859_1);
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>       } <strong class="jxr_keyword">catch</strong> (UnsupportedEncodingException e) {
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(e);
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>       }
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>     }
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>   }
-<a class="jxr_linenumber" name="L229" href="#L229">229</a> 
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>   <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> isSupportedAddress(InetAddress addr, AFAddressFamily&lt;?&gt; af) {
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>     <strong class="jxr_keyword">if</strong> (addr instanceof Inet4Address &amp;&amp; addr.isLoopbackAddress()) {
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>       String hostname = addr.getHostName();
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>       <strong class="jxr_keyword">return</strong> hostname.endsWith(af.getJuxInetAddressSuffix());
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>     }
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>     <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>   }
-<a class="jxr_linenumber" name="L237" href="#L237">237</a> }
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>       byte[] unwrapped = <strong class="jxr_keyword">new</strong> byte[(len - 2) / 2];
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>       <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 2, n = encodedHostname.length(), o = 0; i &lt; n; i += 2, o++) {
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>         <strong class="jxr_keyword">int</strong> v = Integer.parseInt(encodedHostname.substring(i, i + 2), 16);
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>         unwrapped[o] = (byte) (v &amp; 0xFF);
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>       }
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>       <strong class="jxr_keyword">return</strong> unwrapped;
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>       <em class="jxr_comment">// URL-encoding</em>
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>         <strong class="jxr_keyword">return</strong> URLDecoder.decode(encodedHostname, StandardCharsets.ISO_8859_1.toString()).getBytes(
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>             StandardCharsets.ISO_8859_1);
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>       } <strong class="jxr_keyword">catch</strong> (UnsupportedEncodingException e) {
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(e);
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>       }
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>     }
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>   }
+<a class="jxr_linenumber" name="L234" href="#L234">234</a> 
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>   <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> isSupportedAddress(InetAddress addr, AFAddressFamily&lt;?&gt; af) {
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>     <strong class="jxr_keyword">if</strong> (addr instanceof Inet4Address &amp;&amp; addr.isLoopbackAddress()) {
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>       String hostname = addr.getHostName();
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>       <strong class="jxr_keyword">return</strong> hostname.endsWith(af.getJuxInetAddressSuffix());
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>     }
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>     <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>   }
+<a class="jxr_linenumber" name="L242" href="#L242">242</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2022 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

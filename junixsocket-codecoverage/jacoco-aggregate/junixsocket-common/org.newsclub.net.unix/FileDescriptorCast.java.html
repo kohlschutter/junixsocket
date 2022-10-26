@@ -139,7 +139,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
         }
       });
 
-<span class="pc bpc" id="L142" title="1 of 2 branches missed.">      if (AFSocket.supports(AFSocketCapability.CAPABILITY_FD_AS_REDIRECT)) {</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">      if (AFSocket.supports(AFSocketCapability.CAPABILITY_FD_AS_REDIRECT)) {</span>
 <span class="fc" id="L143">        addProvider(Redirect.class, new CastingProvider&lt;Redirect&gt;() {</span>
           @Override
           public Redirect provideAs(FileDescriptorCast fdc, Class&lt;? super Redirect&gt; desiredType)

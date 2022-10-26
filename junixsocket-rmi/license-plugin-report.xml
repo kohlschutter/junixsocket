@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1665780124115">
-    <module artifactId="junixsocket-rmi" groupId="com.kohlschutter.junixsocket" version="2.6.0"/>
+<licensePluginReport goal="CHECK" timestamp="1666773041435">
+    <module artifactId="junixsocket-rmi" groupId="com.kohlschutter.junixsocket" version="2.6.1"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/rmi/AFNaming.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/rmi/AFNamingProvider.java" result="PRESENT"/>
