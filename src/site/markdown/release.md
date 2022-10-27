@@ -31,7 +31,8 @@ Instructions for macOS
 
  * Enable pinentry-mac
  
-   This gives a nice GUI for the passphrase, and allows us to store the GPG key passphrase in the macOS keychain)
+   This gives a nice GUI for the passphrase, and allows us to store the GPG key passphrase in the
+   macOS keychain)
 
  * Open or create `~/.gnupg/gpg-agent.conf`
    then add the following line if it doesn't exist yet:
@@ -51,16 +52,19 @@ Instructions for macOS
 ### Build environment for other platforms
 
 Currently, the easiest way to build for other platforms is to have a working Java 9 (or later)
-environment, Maven 3+ and the junixsocket project ready. Just spin up a virtual machine (or emulator),
-install Java, Maven and junixsocket, and you should be good to go.
+environment, Maven 3+ and the junixsocket project ready.  Just spin up a virtual machine (or
+emulator), install Java, Maven and junixsocket, and you should be good to go.
     
 ## Common tasks
 
 ### Update changelog, website, README.md
 
-Update `junixsocket/src/site/markdown/changelog.md` with a section for the new version and all noteworthy changes.
+Update `junixsocket/src/site/markdown/changelog.md` with a section for the new version and all
+noteworthy changes.
 
-Check all mentions (execpet for `changelog.md`) of the current junixsocket under `junixsocket/src/site/markdown`, and replace accordingly: `grep X.Y.Z src/site/markdown/* | grep -v changelog.md:`
+Check all mentions (execpet for `changelog.md`) of the current junixsocket under
+`junixsocket/src/site/markdown`, and replace accordingly:
+`grep X.Y.Z src/site/markdown/* | grep -v changelog.md:`
 
 Also update the dependency statement in `junixsocket/README.md`.
 
@@ -68,9 +72,12 @@ Also update the dependency statement in `junixsocket/README.md`.
 
 ### Ensure GraalVM native configs are still up-to-date
 
-Run `junixsocket-native-graalvm/bin/graalvm junixsocket-native-graalvm/bin/build-selftest`
+Run `junixsocket-native-graalvm/bin/with-graalvm junixsocket-native-graalvm/bin/build-selftest`
 
-If, at the end, you see changes to the json files in `junixsocket-native-graalvm/output`, review them, modify the json files in `junixsocket-{common,tipc,vsock,selftest,...}/src/main/resources/META-INF/native-image` accordingly, and add/commit both sets of changes.
+If, at the end, you see changes to the json files in `junixsocket-native-graalvm/output`, review
+them, modify the json files in
+`junixsocket-{common,tipc,vsock,selftest,...}/src/main/resources/META-INF/native-image` accordingly,
+and add/commit both sets of changes.
 
 ### Ensure the code is properly formatted and licenses are in place
 
@@ -139,7 +146,9 @@ Also run the selftest with Java 8, e.g.:
 
 	/Library/Java/JavaVirtualMachines/1.8.0.jdk/Contents/Home/bin/java -jar junixsocket-selftest/target/junixsocket-selftest-2.6.1-jar-with-dependencies.jar
 
-Run `junixsocket-native-graalvm/bin/graalvm mvn package -pl junixsocket-selftest-native-image -Pnative` (on all native-image supported platforms) to build the GraalVM native-image. Test the native-image by running `junixsocket-selftest-native-image/target/junixsocket-selftest-native-image-X.Y.Z`.
+Run `junixsocket-native-graalvm/bin/with-graalvm mvn package -pl junixsocket-selftest-native-image -Pnative`
+(on all native-image supported platforms) to build the GraalVM native-image.  Test the native-image
+by running `junixsocket-selftest-native-image/target/junixsocket-selftest-native-image-X.Y.Z`.
 
 > **NOTE:** (Replace X.Y.Z with the actual version)
 

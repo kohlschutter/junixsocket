@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#
+# junixsocket
+# Copyright 2009-2022 Christian Kohlschütter
+# SPDX-License-Identifier: Apache-2.0
+#
+# Script to detect and enable GraalVM.
+#
+# When run without arguments, an eval-able string like "GRAALVM_HOME=/path/to/graalvm" is emitted.
+# Otherwise, the arguments are executed with the determined GraalVM in path (GRAALVM_HOME, JAVA_HOME and PATH set accordingly).
+#
+java -version 2>&1 | grep -q GraalVM
+if [[ $? -eq 0 ]]; then
+    exec $@
+fi
+
+if [[ -z "$GRAALVM_HOME" ]]; then
+    for d in $(find /Library/Java/JavaVirtualMachines /usr/lib/jvm -maxdepth 1 -type d -name "*graalvm*" 2>/dev/null | sort -r); do
+        if [[ -e "$d/bin/java" ]]; then
+            export GRAALVM_HOME="$d"
+            break
+        elif [[ -e "$d/Contents/Home/bin/java" ]]; then
+            export GRAALVM_HOME="$d/Contents/Home"
+            break
+        fi
+    done
+fi
+
+if [[ -z "$GRAALVM_HOME" ]]; then
+    echo "Error: Could not determine GRAALVM_HOME -- Please set manually" >&2
+    exit 1
+else
+    if [[ $# -eq 0 ]]; then
+        echo "GRAALVM_HOME=$GRAALVM_HOME"
+    fi
+fi
+
+export JAVA_HOME="$GRAALVM_HOME"
+export PATH=$JAVA_HOME/bin:$PATH
+exec -- $@
