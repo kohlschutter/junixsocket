@@ -90,7 +90,7 @@ public abstract class ReadWriteTest<A extends SocketAddress> extends SocketTestB
   }
 
   private final class ByteArrayWritingServerThread extends ServerThread {
-    public ByteArrayWritingServerThread() throws IOException {
+    public ByteArrayWritingServerThread() throws IOException, InterruptedException {
       super();
     }
 
@@ -110,7 +110,7 @@ public abstract class ReadWriteTest<A extends SocketAddress> extends SocketTestB
   }
 
   private final class ByteForByteWritingServerThread extends ServerThread {
-    public ByteForByteWritingServerThread() throws IOException {
+    public ByteForByteWritingServerThread() throws IOException, InterruptedException {
       super();
     }
 

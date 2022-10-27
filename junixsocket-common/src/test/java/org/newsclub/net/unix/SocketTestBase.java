@@ -164,14 +164,16 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     private volatile Error error = null;
     private final AtomicBoolean loop = new AtomicBoolean(true);
     private final Semaphore sema = new Semaphore(1);
+    private final Semaphore readySema = new Semaphore(0);
 
     @SuppressFBWarnings("SC_START_IN_CTOR")
-    protected ServerThread() throws IOException {
+    protected ServerThread() throws IOException, InterruptedException {
       super();
       serverSocket = startServer(); // NOPMD
       setDaemon(true);
 
       start();
+      readySema.acquire();
     }
 
     protected ServerSocket startServer() throws IOException {
@@ -299,6 +301,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     public final void run() {
       try {
         loop.set(true);
+        readySema.release();
         onServerReady();
         while (loop.get()) {
           acceptAndHandleConnection();
@@ -343,7 +346,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
   }
 
   protected abstract class AFUNIXServerThread extends ServerThread {
-    protected AFUNIXServerThread() throws IOException {
+    protected AFUNIXServerThread() throws IOException, InterruptedException {
       super();
     }
 

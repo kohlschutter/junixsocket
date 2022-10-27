@@ -144,7 +144,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
                   }
 
                   System.out.println("SocketTimeout, trying connect again (" + i + ")");
-                  e.printStackTrace();
+                  // e.printStackTrace();
                   continue;
                 } catch (TestAbortedWithImportantMessageException e) {
                   runtimeExceptionCF.complete(e);
