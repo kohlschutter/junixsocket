@@ -108,7 +108,6 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
         }
       });
       addProvider(ReadableByteChannel.class, new CastingProvider<ReadableByteChannel>() {
-        @SuppressWarnings("resource")
         @Override
         public ReadableByteChannel provideAs(FileDescriptorCast fdc,
             Class<? super ReadableByteChannel> desiredType) throws IOException {

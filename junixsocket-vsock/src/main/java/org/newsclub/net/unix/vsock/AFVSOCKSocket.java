@@ -42,7 +42,6 @@ public final class AFVSOCKSocket extends AFSocket<AFVSOCKSocketAddress> implemen
     super(new AFVSOCKSocketImpl(fdObj), factory);
   }
 
-  @SuppressWarnings("unused")
   private static synchronized AFVSOCKSocketImplExtensions getStaticImplExtensions()
       throws IOException {
     if (staticExtensions == null) {
