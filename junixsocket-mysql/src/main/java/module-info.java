@@ -8,7 +8,8 @@
   requires java.sql;
   requires java.base;
 
-  requires mysql.connector.java;
+  // requires mysql.connector.java; // until 8.0.30
+  requires mysql.connector.j; // from 8.0.31
 
   requires static com.kohlschutter.annotations.compiletime;
   requires static org.eclipse.jdt.annotation;
