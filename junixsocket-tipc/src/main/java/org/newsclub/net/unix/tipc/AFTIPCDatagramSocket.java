@@ -28,7 +28,7 @@ import org.newsclub.net.unix.AFTIPCSocketImplExtensions;
 
 /**
  * A {@link DatagramSocket} implementation that works with {@code AF_TIPC} sockets.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFTIPCDatagramSocket extends AFDatagramSocket<AFTIPCSocketAddress> implements
@@ -54,7 +54,7 @@ public final class AFTIPCDatagramSocket extends AFDatagramSocket<AFTIPCSocketAdd
   /**
    * Returns a new {@link AFTIPCDatagramSocket} instance, using the default
    * {@link AFSocketType#SOCK_DGRAM} socket type.
-   * 
+   *
    * @return The new instance.
    * @throws IOException on error.
    */
@@ -64,7 +64,7 @@ public final class AFTIPCDatagramSocket extends AFDatagramSocket<AFTIPCSocketAdd
 
   /**
    * Returns a new {@link AFTIPCDatagramSocket} instance for the given socket type.
-   * 
+   *
    * @param socketType The socket type.
    * @return The new instance.
    * @throws IOException on error.

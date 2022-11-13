@@ -24,7 +24,7 @@ import org.newsclub.net.unix.AFUNIXSocketCredentials;
 
 /**
  * A test service.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public interface TestService extends Remote {

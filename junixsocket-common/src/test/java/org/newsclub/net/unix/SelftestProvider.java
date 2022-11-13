@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * Provides references to all "junixsocket-common" tests that should be included in
  * junixsocket-selftest.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @SuppressWarnings("PMD.CouplingBetweenObjects")

@@ -28,7 +28,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Tests some otherwise uncovered methods of {@link AFTIPCSocket}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_TIPC)

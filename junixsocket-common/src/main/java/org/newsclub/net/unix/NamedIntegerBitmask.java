@@ -28,7 +28,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Describes a 32-bit bitmask that supports named flags.
- * 
+ *
  * @param <T> The subclass's type itself.
  * @author Christian Kohlschütter
  */
@@ -49,7 +49,7 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
 
   /**
    * Creates a new named flag.
-   * 
+   *
    * @param name The name of the flag / flag set.
    * @param flags The flag value.
    */
@@ -60,7 +60,7 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
 
   /**
    * Returns the name of the flag / flag set.
-   * 
+   *
    * @return The name.
    */
   public final String name() {
@@ -69,7 +69,7 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
 
   /**
    * Returns the value of the flag / flag set.
-   * 
+   *
    * @return The value.
    */
   public final int value() {
@@ -78,7 +78,7 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
 
   /**
    * Checks if the given flag is set.
-   * 
+   *
    * @param flag The flag to check.
    * @return {@code true} iff set.
    */
@@ -95,7 +95,7 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
   /**
    * Combines two flags / flag sets (use this to implement
    * {@link #combineWith(NamedIntegerBitmask)}).
-   * 
+   *
    * @param allFlags The array of all defined flags, expected "none".
    * @param flagsNone The "none" flag set.
    * @param constr The constructor.
@@ -109,7 +109,7 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
 
   /**
    * Combines two flags / flag sets.
-   * 
+   *
    * @param other The other flag / flag set.
    * @return An instance combining both.
    */
@@ -118,14 +118,14 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
 
   /**
    * Creates a new instance.
-   * 
+   *
    * @param <T> This type.
    */
   @FunctionalInterface
   protected interface Constructor<T extends NamedIntegerBitmask<T>> {
     /**
      * Creates a new instance.
-     * 
+     *
      * @param name The name.
      * @param flags The flag value.
      * @return The instance.
@@ -135,7 +135,7 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
 
   /**
    * Returns a {@link NamedIntegerBitmask} instance given a flag value.
-   * 
+   *
    * @param <T> The subclass's type itself.
    * @param allFlags The array of all defined flags, expected "none".
    * @param flagsNone The "none" flag set.
@@ -167,7 +167,7 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
 
   /**
    * Returns a {@link NamedIntegerBitmask} instance given a series of flags.
-   * 
+   *
    * @param <T> The subclass's type itself.
    * @param allFlags The array of all defined flags, expected "none".
    * @param flagsNone The "none" flag set.

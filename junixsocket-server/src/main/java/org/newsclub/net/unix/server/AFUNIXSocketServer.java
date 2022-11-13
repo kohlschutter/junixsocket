@@ -27,16 +27,16 @@ import org.newsclub.net.unix.AFSocketAddress;
 
 /**
  * A base implementation for a simple, multi-threaded socket server.
- * 
+ *
  * This class supports both AF_UNIX and "regular" sockets.
- * 
+ *
  * @author Christian Kohlschütter
  * @deprecated Use {@link SocketServer} or {@link AFSocketServer}
  */
 public abstract class AFUNIXSocketServer extends SocketServer<SocketAddress, Socket, ServerSocket> {
   /**
    * Creates a server using the given, bound {@link ServerSocket}.
-   * 
+   *
    * @param serverSocket The server socket to use (must be bound).
    */
   public AFUNIXSocketServer(ServerSocket serverSocket) {
@@ -45,7 +45,7 @@ public abstract class AFUNIXSocketServer extends SocketServer<SocketAddress, Soc
 
   /**
    * Creates a server using the given {@link SocketAddress}.
-   * 
+   *
    * @param listenAddress The address to bind the socket on.
    */
   public AFUNIXSocketServer(SocketAddress listenAddress) {
@@ -54,7 +54,7 @@ public abstract class AFUNIXSocketServer extends SocketServer<SocketAddress, Soc
 
   /**
    * Starts the server and waits until it is ready or had to shop due to an error.
-   * 
+   *
    * @param duration The duration wait.
    * @param unit The duration's time unit.
    * @return {@code true} if the server is ready to serve requests.

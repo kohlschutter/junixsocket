@@ -40,10 +40,10 @@ import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Describes an {@link InetSocketAddress} that actually uses AF_UNIX sockets instead of AF_INET.
- * 
+ *
  * The ability to specify a port number is not specified by AF_UNIX sockets, but we need it
  * sometimes, for example for RMI-over-AF_UNIX.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @SuppressWarnings("PMD.ShortMethodName")
@@ -86,7 +86,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
    * file and port. <b>Legacy constructor, do not use!</b>
-   * 
+   *
    * @param socketFile The socket to connect to.
    * @throws SocketException if the operation fails.
    * @deprecated Use {@link #of(File)} instead.
@@ -99,7 +99,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
    * file. <b>Legacy constructor, do not use!</b>
-   * 
+   *
    * @param socketFile The socket to connect to.
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
    * @throws SocketException if the operation fails.
@@ -114,7 +114,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
    * file.
-   * 
+   *
    * @param socketFile The socket to connect to.
    * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws SocketException if the operation fails.
@@ -126,7 +126,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
    * file, assigning the given port to it.
-   * 
+   *
    * @param socketFile The socket to connect to.
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
    * @return A corresponding {@link AFUNIXSocketAddress} instance.
@@ -139,10 +139,10 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
    * byte sequence.
-   * 
+   *
    * NOTE: By specifying a byte array that starts with a zero byte, you indicate that the abstract
    * namespace is to be used. This feature is not available on all target platforms.
-   * 
+   *
    * @param socketAddress The socket address (as bytes).
    * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws SocketException if the operation fails.
@@ -155,7 +155,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
    * byte sequence, assigning the given port to it.
-   * 
+   *
    * NOTE: By specifying a byte array that starts with a zero byte, you indicate that the abstract
    * namespace is to be used. This feature is not available on all target platforms.
    *
@@ -173,7 +173,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
    * path.
-   * 
+   *
    * @param socketPath The socket to connect to.
    * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws SocketException if the operation fails.
@@ -185,7 +185,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFUNIXSocketAddress} that points to the AF_UNIX socket specified by the given
    * path, assigning the given port to it.
-   * 
+   *
    * @param socketPath The socket to connect to.
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
    * @return A corresponding {@link AFUNIXSocketAddress} instance.
@@ -197,7 +197,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Returns an {@link AFUNIXSocketAddress} for the given URI, if possible.
-   * 
+   *
    * @param u The URI.
    * @return The address.
    * @throws SocketException if the operation fails.
@@ -208,7 +208,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Returns an {@link AFUNIXSocketAddress} for the given URI, if possible.
-   * 
+   *
    * @param u The URI.
    * @param overridePort The port to forcibly use, or {@code -1} for "don't override".
    * @return The address.
@@ -240,7 +240,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFUNIXSocketAddress} that points to a temporary, non-existent but accessible
    * path in the file system.
-   * 
+   *
    * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws IOException if the operation fails.
    */
@@ -251,7 +251,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFUNIXSocketAddress} that points to a temporary, non-existent but accessible
    * path in the file system, assigning the given port to it.
-   * 
+   *
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
    * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws IOException if the operation fails.
@@ -274,7 +274,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFUNIXSocketAddress} given a special {@link InetAddress} that encodes the
    * byte sequence of an AF_UNIX socket address, like those returned by {@link #wrapAddress()}.
-   * 
+   *
    * @param address The "special" {@link InetAddress}.
    * @param port The port (use 0 for "none").
    * @return The {@link AFUNIXSocketAddress} instance.
@@ -287,7 +287,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Returns an {@link AFUNIXSocketAddress} given a generic {@link SocketAddress}.
-   * 
+   *
    * @param address The address to unwrap.
    * @return The {@link AFUNIXSocketAddress} instance.
    * @throws SocketException if the operation fails, for example when an unsupported address is
@@ -306,7 +306,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * Returns an {@link AFUNIXSocketAddress} given a special {@link InetAddress} hostname that
    * encodes the byte sequence of an AF_UNIX socket address, like those returned by
    * {@link #wrapAddress()}.
-   * 
+   *
    * @param hostname The "special" hostname, as provided by {@link InetAddress#getHostName()}.
    * @param port The port (use 0 for "none").
    * @return The {@link AFUNIXSocketAddress} instance.
@@ -319,11 +319,11 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Convenience method to create an {@link AFUNIXSocketAddress} in the abstract namespace.
-   * 
+   *
    * The returned socket address will use the byte representation of this identifier (using the
    * system's default character encoding), prefixed with a null byte (to indicate the abstract
    * namespace is used).
-   * 
+   *
    * @param name The identifier in the abstract namespace, without trailing zero or @.
    * @return The address.
    * @throws SocketException if the operation fails.
@@ -334,11 +334,11 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Convenience method to create an {@link AFUNIXSocketAddress} in the abstract namespace.
-   * 
+   *
    * The returned socket address will use the byte representation of this identifier (using the
    * system's default character encoding), prefixed with a null byte (to indicate the abstract
    * namespace is used).
-   * 
+   *
    * @param name The identifier in the abstract namespace, without trailing zero or @.
    * @param port The port associated with this socket, or {@code 0} when no port should be assigned.
    * @return The address.
@@ -380,10 +380,10 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   /**
    * Returns the path to the UNIX domain socket, as a human-readable string using the default
    * encoding.
-   * 
+   *
    * For addresses in the abstract namespace, the US_ASCII encoding is used; zero-bytes are
    * converted to '@', other non-printable bytes are converted to '.'
-   * 
+   *
    * @return The path.
    * @see #getPathAsBytes()
    */
@@ -411,10 +411,10 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Returns the {@link Charset} used to encode/decode {@link AFUNIXSocketAddress}es.
-   * 
+   *
    * This is usually the system default charset, unless that is {@link StandardCharsets#US_ASCII}
    * (7-bit), in which case {@link StandardCharsets#ISO_8859_1} is used instead.
-   * 
+   *
    * @return The charset.
    */
   public static Charset addressCharset() {
@@ -423,7 +423,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Returns the path to the UNIX domain socket, as bytes.
-   * 
+   *
    * @return The path.
    * @see #getPath()
    */
@@ -433,7 +433,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Checks if the address is in the abstract namespace.
-   * 
+   *
    * @return {@code true} if the address is in the abstract namespace.
    */
   public boolean isInAbstractNamespace() {
@@ -462,7 +462,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Checks if an {@link InetAddress} can be unwrapped to an {@link AFUNIXSocketAddress}.
-   * 
+   *
    * @param addr The instance to check.
    * @return {@code true} if so.
    * @see #wrapAddress()
@@ -474,7 +474,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Checks if a {@link SocketAddress} can be unwrapped to an {@link AFUNIXSocketAddress}.
-   * 
+   *
    * @param addr The instance to check.
    * @return {@code true} if so.
    * @see #unwrap(InetAddress, int)
@@ -485,7 +485,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
   /**
    * Returns the corresponding {@link AFAddressFamily}.
-   * 
+   *
    * @return The address family instance.
    */
   @SuppressWarnings("null")

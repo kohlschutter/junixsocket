@@ -25,10 +25,10 @@ import org.newsclub.net.unix.AFSocket;
 
 /**
  * Tests whether we can get the junixsocket version (which is encoded in a properties file).
- * 
+ *
  * This can't easily be tested from within the Maven build for junixsocket-common, which is why we
  * have it in junixsocket-rmi.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class JunixsocketVersionTest {

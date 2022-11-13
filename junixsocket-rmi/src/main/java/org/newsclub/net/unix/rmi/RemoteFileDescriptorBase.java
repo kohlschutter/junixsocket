@@ -46,7 +46,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A wrapper that allows a {@link FileDescriptor} be sent via RMI over AF_UNIX sockets.
- * 
+ *
  * @author Christian Kohlschütter
  * @see RemoteFileInput subclass for sending {@link FileInputStream}s.
  * @see RemoteFileOutput subclass for sending {@link FileOutputStream}s.
@@ -75,7 +75,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
   /**
    * An optional, closeable resource that is related to this instance. If the reference is non-null,
    * this will be closed upon {@link #close()}.
-   * 
+   *
    * For unidirectional implementations, this could be the corresponding input/output stream. For
    * bidirectional implementations (e.g., a Socket, Pipe, etc.), this should close both directions.
    */
@@ -87,7 +87,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
 
   /**
    * Creates an uninitialized instance; used for externalization.
-   * 
+   *
    * @see #readExternal(ObjectInput)
    */
   RemoteFileDescriptorBase() {
@@ -223,10 +223,10 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
 
   /**
    * Returns the file descriptor.
-   * 
+   *
    * This is either the original one that was specified in the constructor or a copy that was sent
    * via RMI over an AF_UNIX connection as part of an ancillary message.
-   * 
+   *
    * @return The file descriptor.
    */
   @Override
@@ -237,11 +237,11 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
 
   /**
    * Returns the "magic value" for this type of file descriptor.
-   * 
+   *
    * The magic value consists of an indicator ("this is a file descriptor") as well as its
    * capabilities (read/write). It is used to prevent, for example, converting an output stream to
    * an input stream.
-   * 
+   *
    * @return The magic value.
    */
   protected final int getMagicValue() {

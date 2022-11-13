@@ -25,7 +25,7 @@ import org.newsclub.net.unix.AFTIPCSocketAddress.Scope;
 
 /**
  * The TIPC-specific DestName response that may be included as ancillary data.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFTIPCDestName implements Serializable {
@@ -47,7 +47,7 @@ public final class AFTIPCDestName implements Serializable {
 
   /**
    * Creates a new instance.
-   * 
+   *
    * @param type The "type" value.
    * @param lower The "lower" service range value (or the service "instance" if {@code lower} and
    *          {@code upper} are the same).
@@ -62,7 +62,7 @@ public final class AFTIPCDestName implements Serializable {
 
   /**
    * Returns the "type" value.
-   * 
+   *
    * @return The type.
    */
   public int getType() {
@@ -72,7 +72,7 @@ public final class AFTIPCDestName implements Serializable {
   /**
    * Returns the "lower" value of the service range (or the service "instance" if identical to the
    * upper value).
-   * 
+   *
    * @return The lower value.
    */
   public int getLower() {
@@ -82,7 +82,7 @@ public final class AFTIPCDestName implements Serializable {
   /**
    * Returns the "upper" value of the service range (or the service "instance" if identical to the
    * lower value).
-   * 
+   *
    * @return The upper value.
    */
   public int getUpper() {
@@ -91,7 +91,7 @@ public final class AFTIPCDestName implements Serializable {
 
   /**
    * Checks if this DestName describes a service range (as opposed to a service) address.
-   * 
+   *
    * @return {@code true} if the {@link #getLower()} value is different from the {@link #getUpper()}
    *         value.
    */
@@ -102,7 +102,7 @@ public final class AFTIPCDestName implements Serializable {
   /**
    * Converts this DestName to a proper {@link AFTIPCSocketAddress}, by using the given
    * {@link Scope} (which is otherwise not included).
-   * 
+   *
    * @param scope The scope to use.
    * @param alwaysRange If {@code true}, a service range address is even returned when a service
    *          address would suffice.

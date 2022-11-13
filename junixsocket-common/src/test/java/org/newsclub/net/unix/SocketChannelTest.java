@@ -230,7 +230,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
   /**
    * Subclasses may override this to tell that there is a known issue with "First accept call did
    * not terminate".
-   * 
+   *
    * @return An explanation iff this should not cause a test failure but trigger "With issues".
    */
   protected String checkKnownBugFirstAcceptCallNotTerminated() {
@@ -239,9 +239,9 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
 
   /**
    * Returns the temporary address usable to binding on for a second bind.
-   * 
+   *
    * Depending on the socket domain, a wildcard address may be permittable or not for a second bind.
-   * 
+   *
    * @param originalAddress The original temporary address (e.g., a wildcard address).
    * @param ssc The socket that was bound to that address.
    * @return The local bound address, or the {@code originalAddress}.
@@ -256,7 +256,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
   /**
    * Override to declare that a certain socket domain permits double-binding an address,
    * particularly when the address is comparable to a wildcard address.
-   * 
+   *
    * @return {@code true} iff double-binding the same address is allowed.
    * @see #testDoubleBindAddressReusable()
    */

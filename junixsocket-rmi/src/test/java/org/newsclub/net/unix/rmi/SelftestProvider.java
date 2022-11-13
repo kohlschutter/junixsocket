@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * Provides references to all "junixsocket-rmi" tests that should be included in
  * junixsocket-selftest.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class SelftestProvider {

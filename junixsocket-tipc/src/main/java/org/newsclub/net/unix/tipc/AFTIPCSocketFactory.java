@@ -27,7 +27,7 @@ import org.newsclub.net.unix.AFTIPCSocketAddress.Scope;
 
 /**
  * The base for a SocketFactory that connects to TIPC sockets.
- * 
+ *
  * Typically, the "hostname" is used as a reference to a socketFile on the file system. The actual
  * mapping is left to the implementor.
  */
@@ -51,7 +51,7 @@ public abstract class AFTIPCSocketFactory extends AFSocketFactory<AFTIPCSocketAd
 
   /**
    * Performs some optional configuration on a newly created socket.
-   * 
+   *
    * @param sock The socket.
    * @return The very socket.
    * @throws SocketException on error.
@@ -62,7 +62,7 @@ public abstract class AFTIPCSocketFactory extends AFSocketFactory<AFTIPCSocketAd
 
   /**
    * Always connects sockets to the given TIPC type and instance.
-   * 
+   *
    * @author Christian Kohlschütter
    */
   public static class ServiceAddress extends AFTIPCSocketFactory {
@@ -72,7 +72,7 @@ public abstract class AFTIPCSocketFactory extends AFSocketFactory<AFTIPCSocketAd
     /**
      * Creates an {@link AFTIPCSocketFactory} that always uses the given TIPC service type and
      * instance, implying cluster scope.
-     * 
+     *
      * @param type The service type.
      * @param instance The service instance.
      */

@@ -43,7 +43,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A base implementation for a simple, multi-threaded socket server.
- * 
+ *
  * @author Christian Kohlschütter
  * @see AFSocketServer
  */
@@ -70,7 +70,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Creates a server using the given, bound {@link ServerSocket}.
-   * 
+   *
    * @param serverSocket The server socket to use (must be bound).
    */
   @SuppressWarnings({"null", "unchecked"})
@@ -80,7 +80,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Creates a server using the given {@link SocketAddress}.
-   * 
+   *
    * @param listenAddress The address to bind the socket on.
    */
   @SuppressWarnings("null")
@@ -98,7 +98,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Returns the maximum number of concurrent connections.
-   * 
+   *
    * @return The maximum number of concurrent connections.
    */
   public int getMaxConcurrentConnections() {
@@ -107,7 +107,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Sets the maximum number of concurrent connections.
-   * 
+   *
    * @param maxConcurrentConnections The new maximum.
    */
   public void setMaxConcurrentConnections(int maxConcurrentConnections) {
@@ -119,7 +119,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Returns the server timeout (in milliseconds).
-   * 
+   *
    * @return The server timeout in milliseconds (0 = no timeout).
    */
   public int getServerTimeout() {
@@ -128,7 +128,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Sets the server timeout (in milliseconds).
-   * 
+   *
    * @param timeout The new timeout in milliseconds (0 = no timeout).
    */
   public void setServerTimeout(int timeout) {
@@ -142,7 +142,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Returns the socket timeout (in milliseconds).
-   * 
+   *
    * @return The socket timeout in milliseconds (0 = no timeout).
    */
   public int getSocketTimeout() {
@@ -151,7 +151,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Sets the socket timeout (in milliseconds).
-   * 
+   *
    * @param timeout The new timeout in milliseconds (0 = no timeout).
    */
   public void setSocketTimeout(int timeout) {
@@ -160,7 +160,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Returns the server-busy timeout (in milliseconds).
-   * 
+   *
    * @return The server-busy timeout in milliseconds (0 = no timeout).
    */
   public int getServerBusyTimeout() {
@@ -169,7 +169,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Sets the server-busy timeout (in milliseconds).
-   * 
+   *
    * @param timeout The new timeout in milliseconds (0 = no timeout).
    */
   public void setServerBusyTimeout(int timeout) {
@@ -178,7 +178,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Checks if the server is running.
-   * 
+   *
    * @return {@code true} if the server is alive.
    */
   public boolean isRunning() {
@@ -189,7 +189,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Checks if the server is running and accepting new connections.
-   * 
+   *
    * @return {@code true} if the server is alive and ready to accept new connections.
    */
   public boolean isReady() {
@@ -198,7 +198,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Starts the server, and returns immediately.
-   * 
+   *
    * @see #startAndWaitToBecomeReady(long, TimeUnit)
    */
   public void start() {
@@ -229,7 +229,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Starts the server and waits until it is ready or had to shop due to an error.
-   * 
+   *
    * @param duration The duration wait.
    * @param unit The duration's time unit.
    * @return {@code true} if the server is ready to serve requests.
@@ -253,7 +253,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Returns a new server socket.
-   * 
+   *
    * @return The new socket (an {@link AFServerSocket} if the listen address is an
    *         {@link AFSocketAddress}).
    * @throws IOException on error.
@@ -365,7 +365,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Stops the server.
-   * 
+   *
    * @throws IOException If there was an error.
    */
   @SuppressWarnings("null")
@@ -424,7 +424,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
   /**
    * Requests that the server will be stopped after the given time delay. If the server is not
    * started yet (and {@link #stop()} was not called yet, it will be started first.
-   * 
+   *
    * @param delay The delay.
    * @param unit The time unit for the delay.
    * @return A scheduled future that can be used to monitor progress / cancel the request. If there
@@ -460,7 +460,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Called when a socket is ready to be served.
-   * 
+   *
    * @param socket The socket to serve.
    * @throws IOException If there was an error.
    */
@@ -474,9 +474,9 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Called when the server has been bound to a socket.
-   * 
+   *
    * This is not called when you instantiated the server with a pre-bound socket.
-   * 
+   *
    * @param address The bound address.
    */
   protected void onServerBound(A address) {
@@ -484,7 +484,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Called when the server is ready to accept a new connection.
-   * 
+   *
    * @param activeCount The current number of active tasks (= serving sockets).
    */
   protected void onServerReady(int activeCount) {
@@ -492,10 +492,10 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Called when the server is busy / not ready to accept a new connection.
-   * 
+   *
    * The frequency on how often this method is called when the server is busy is determined by
    * {@link #getServerBusyTimeout()}.
-   * 
+   *
    * @param busyStartTime The time stamp since the server became busy.
    */
   protected void onServerBusy(long busyStartTime) {
@@ -503,7 +503,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Called when the server has been stopped.
-   * 
+   *
    * @param socket The server's socket that stopped.
    */
   protected void onServerStopped(V socket) {
@@ -511,7 +511,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Called when a socket gets submitted into the process queue.
-   * 
+   *
    * @param socket The socket.
    * @param submission The {@link Future} referencing the submission; it's "done" after the socket
    *          has been served.
@@ -527,7 +527,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Called when a {@link SocketException} was thrown during "accept".
-   * 
+   *
    * @param e The exception.
    */
   protected void onSocketExceptionDuringAccept(SocketException e) {
@@ -535,7 +535,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Called when a {@link SocketException} was thrown during "accept".
-   * 
+   *
    * @param socket The socket.
    * @param e The exception.
    */
@@ -544,7 +544,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Called before serving the socket.
-   * 
+   *
    * @param socket The socket.
    */
   protected void onBeforeServingSocket(S socket) {
@@ -552,7 +552,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Called when an exception was thrown while serving a socket.
-   * 
+   *
    * @param socket The socket.
    * @param e The exception.
    */
@@ -561,7 +561,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Called after the socket has been served.
-   * 
+   *
    * @param socket The socket.
    */
   protected void onAfterServingSocket(S socket) {
@@ -569,7 +569,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Called when an exception was thrown while listening on the server socket.
-   * 
+   *
    * @param e The exception.
    */
   protected void onListenException(Exception e) {
@@ -577,7 +577,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   /**
    * Returns the address the server listens to.
-   * 
+   *
    * @return The listen address.
    */
   protected @NonNull A getListenAddress() {

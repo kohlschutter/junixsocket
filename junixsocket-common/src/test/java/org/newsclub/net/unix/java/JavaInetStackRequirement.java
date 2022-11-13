@@ -26,10 +26,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Flags a test that requires the Java Internet stack to function as expected.
- * 
+ *
  * This currently checks if we can bind to an unspecified (0) port on the loopback device, which
  * unfortunately may not always succeed. In the failure case, the annotated tests will be skipped.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @Target({ElementType.TYPE, ElementType.METHOD})

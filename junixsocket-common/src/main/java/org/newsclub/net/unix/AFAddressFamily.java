@@ -39,7 +39,7 @@ import org.newsclub.net.unix.AFSocketAddress.AFSocketAddressConstructor;
 
 /**
  * Describes an address family supported by junixsocket.
- * 
+ *
  * @param <A> The corresponding {@link AFSocketAddress} subclass.
  * @author Christian Kohlschütter
  */
@@ -179,7 +179,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
 
   /**
    * Registers an address family.
-   * 
+   *
    * @param <A> The supported address type.
    * @param juxString The sockaddr_* identifier as registered in native code.
    * @param addressClass The supported address subclass.
@@ -226,7 +226,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
 
   /**
    * Registers an implementation.
-   * 
+   *
    * @param <A> The supported address type.
    * @param juxString The sockaddr_* identifier as registered in native code.
    * @param addressFamily The supported address family as registered via
@@ -274,7 +274,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
 
   /**
    * Creates a new, unconnected, unbound socket compatible with this socket address.
-   * 
+   *
    * @return The socket instance.
    * @throws IOException on error.
    */
@@ -288,7 +288,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
 
   /**
    * Creates a new, unconnected, unbound server socket compatible with this socket address.
-   * 
+   *
    * @return The server socket instance.
    * @throws IOException on error.
    */
@@ -302,7 +302,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
 
   /**
    * Creates a new, unconnected, unbound {@link SocketChannel} compatible with this socket address.
-   * 
+   *
    * @return The socket instance.
    * @throws IOException on error.
    */
@@ -313,7 +313,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
   /**
    * Creates a new, unconnected, unbound {@link ServerSocketChannel} compatible with this socket
    * address.
-   * 
+   *
    * @return The socket instance.
    * @throws IOException on error.
    */
@@ -330,10 +330,10 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
 
   /**
    * Returns the set of supported URI schemes that can be parsed to some {@link AFSocketAddress}.
-   * 
+   *
    * The set is dependent on which {@link AFSocketAddress} implementations are registered with
    * junixsocket.
-   * 
+   *
    * @return The set of supported URI schemes.
    */
   public static synchronized Set<String> uriSchemes() {
@@ -344,7 +344,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
   /**
    * Returns the {@link SelectorProvider} associated with this address family, or {@code null} if no
    * such instance is registered.
-   * 
+   *
    * @return The {@link SelectorProvider}.
    * @throws IllegalStateException on error.
    */

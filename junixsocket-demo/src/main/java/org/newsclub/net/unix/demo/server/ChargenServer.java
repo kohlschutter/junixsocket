@@ -28,7 +28,7 @@ import java.net.SocketException;
 /**
  * A multi-threaded unix socket server that implements a TCP-style character generator compliant
  * with RFC864.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class ChargenServer extends DemoServerBase {
@@ -38,7 +38,7 @@ public final class ChargenServer extends DemoServerBase {
 
   /**
    * Defines a TCP-style character generator compliant with RFC864.
-   * 
+   *
    * @see <a href="https://tools.ietf.org/html/rfc864">RFC864</a>
    */
   private interface Chargen {
@@ -83,9 +83,9 @@ public final class ChargenServer extends DemoServerBase {
 
   /**
    * A simple chargen implementation.
-   * 
+   *
    * Even though this looks straightforward, it's not the fastest implementation.
-   * 
+   *
    * @see FastChargen
    */
   private static final class SimpleChargen implements Chargen {
@@ -113,7 +113,7 @@ public final class ChargenServer extends DemoServerBase {
   /**
    * A fast chargen implementation, using a pre-built data buffer that is just large enough to
    * always send a full array of bytes matching the socket's send buffer capacity.
-   * 
+   *
    * @see SimpleChargen
    */
   private static final class FastChargen implements Chargen {

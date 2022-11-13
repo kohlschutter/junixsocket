@@ -22,13 +22,13 @@ import java.rmi.Remote;
 
 /**
  * A very simple "hello" service.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public interface Hello extends Remote {
   /**
    * Returns "Hello".
-   * 
+   *
    * @return "Hello"
    * @throws IOException if the operation fails.
    */

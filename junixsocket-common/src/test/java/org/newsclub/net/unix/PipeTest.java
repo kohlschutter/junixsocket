@@ -38,7 +38,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Tests the behavior of {@link AFPipe}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @SuppressFBWarnings("THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION")
@@ -47,7 +47,7 @@ public final class PipeTest {
 
   /**
    * Tests sequential writing/reading.
-   * 
+   *
    * @throws IOException on error.
    */
   @Test
@@ -78,7 +78,7 @@ public final class PipeTest {
 
   /**
    * Tests concurrent writing/reading from the pipe.
-   * 
+   *
    * @throws IOException on error.
    * @throws InterruptedException on error.
    * @throws ExecutionException on error.

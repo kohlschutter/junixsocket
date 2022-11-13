@@ -26,7 +26,7 @@ import org.newsclub.net.unix.AFUNIXSocket;
 
 /**
  * An {@link AFUNIXSocket} client that's just good for demo purposes.
- * 
+ *
  * @author Christian Kohlschütter
  */
 abstract class DemoClientBase {

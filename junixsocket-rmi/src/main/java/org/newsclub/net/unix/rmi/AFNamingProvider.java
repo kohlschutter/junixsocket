@@ -21,17 +21,17 @@ import java.io.IOException;
 
 /**
  * The key to accessing to {@link AFNaming} instances.
- * 
+ *
  * Implementors must guarantee that {@link #hashCode()} and {@link #equals(Object)} correctly
  * identify duplicate providers.
- * 
+ *
  * @param <T> The actual {@link AFNaming} subclass.
  * @author Christian Kohlschütter
  */
 public interface AFNamingProvider<T extends AFNaming> {
   /**
    * Creates a new {@link AFNaming} instance using the given registry port.
-   * 
+   *
    * @param registryPort The registry port.
    * @return The {@link AFNaming} instance.
    * @throws IOException on error.

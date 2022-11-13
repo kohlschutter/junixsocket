@@ -24,7 +24,7 @@ import java.lang.ref.Cleaner;
 /**
  * This wrapper (along with the Java 8-specific counterpart in src/main/java8) allows us to
  * implement cleanup logic for objects that are garbage-collectable/no longer reachable.
- * 
+ *
  * <p>
  * Usage:
  * <ol>
@@ -46,7 +46,7 @@ import java.lang.ref.Cleaner;
  * <li>In Java 8 or earlier, {@link #finalize()} calls {@link #doClean()} directly.</li>
  * </ul>
  * </p>
- * 
+ *
  * @author Christian Kohlschütter
  */
 abstract class CleanableState implements Closeable {
@@ -56,7 +56,7 @@ abstract class CleanableState implements Closeable {
   /**
    * Creates a state object to be used as an implementation detail of the specified observed
    * instance.
-   * 
+   *
    * @param observed The observed instance (the outer class referencing this
    *          {@link CleanableState}).
    */

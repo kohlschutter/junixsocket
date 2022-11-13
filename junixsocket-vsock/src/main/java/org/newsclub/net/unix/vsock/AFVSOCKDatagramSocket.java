@@ -27,7 +27,7 @@ import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
 /**
  * A {@link DatagramSocket} implementation that works with {@code AF_VSOCK} sockets.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFVSOCKDatagramSocket extends AFDatagramSocket<AFVSOCKSocketAddress> implements
@@ -53,7 +53,7 @@ public final class AFVSOCKDatagramSocket extends AFDatagramSocket<AFVSOCKSocketA
   /**
    * Returns a new {@link AFVSOCKDatagramSocket} instance, using the default
    * {@link AFSocketType#SOCK_DGRAM} socket type.
-   * 
+   *
    * @return The new instance.
    * @throws IOException on error.
    */
@@ -63,7 +63,7 @@ public final class AFVSOCKDatagramSocket extends AFDatagramSocket<AFVSOCKSocketA
 
   /**
    * Returns a new {@link AFVSOCKDatagramSocket} instance for the given socket type.
-   * 
+   *
    * @param socketType The socket type.
    * @return The new instance.
    * @throws IOException on error.

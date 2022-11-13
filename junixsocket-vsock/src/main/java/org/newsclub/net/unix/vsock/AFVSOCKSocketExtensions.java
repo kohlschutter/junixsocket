@@ -22,7 +22,7 @@ import org.newsclub.net.unix.AFSocketExtensions;
 /**
  * Defines certain methods that all junixsocket AF_VSOCK socket implementations share and extend
  * beyond the standard socket API.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public interface AFVSOCKSocketExtensions extends AFSocketExtensions {

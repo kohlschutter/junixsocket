@@ -22,7 +22,7 @@ import java.util.Objects;
 
 /**
  * A reference to a {@link AFNaming} instance.
- * 
+ *
  * @author Christian Kohlschütter
  */
 final class AFNamingRef {

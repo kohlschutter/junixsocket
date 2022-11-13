@@ -24,14 +24,14 @@ import org.newsclub.net.unix.AFSomeSocket;
 
 /**
  * A pair of sockets.
- * 
+ *
  * @param <T> The socket type.
  * @author Christian Kohlschütter
  */
 public final class AFTIPCSocketPair<T extends AFSomeSocket> extends AFSocketPair<T> {
   /**
    * Creates a new socket pair.
-   * 
+   *
    * @param socket1 The first socket.
    * @param socket2 The second socket.
    */
@@ -41,7 +41,7 @@ public final class AFTIPCSocketPair<T extends AFSomeSocket> extends AFSocketPair
 
   /**
    * Opens a socket pair of interconnected channels.
-   * 
+   *
    * @return The new channel pair.
    * @throws IOException on error.
    */
@@ -51,7 +51,7 @@ public final class AFTIPCSocketPair<T extends AFSomeSocket> extends AFSocketPair
 
   /**
    * Opens a socket pair of interconnected datagram channels.
-   * 
+   *
    * @return The new channel pair.
    * @throws IOException on error.
    */

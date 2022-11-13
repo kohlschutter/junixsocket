@@ -31,7 +31,7 @@ import org.newsclub.net.unix.demo.DemoHelper;
 
 /**
  * Demonstrates how to connect to a local MySQL server.
- * 
+ *
  * @author Christian Kohlschuetter
  */
 public class AFUNIXDatabaseSocketFactoryDemo {

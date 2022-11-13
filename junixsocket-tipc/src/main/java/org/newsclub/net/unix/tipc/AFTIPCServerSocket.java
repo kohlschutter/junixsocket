@@ -30,7 +30,7 @@ import org.newsclub.net.unix.AFTIPCSocketAddress;
 
 /**
  * The server part of an {@code AF_TIPC} socket.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class AFTIPCServerSocket extends AFServerSocket<AFTIPCSocketAddress> {
@@ -50,7 +50,7 @@ public class AFTIPCServerSocket extends AFServerSocket<AFTIPCSocketAddress> {
 
   /**
    * Returns a new, unbound AF_TIPC {@link ServerSocket}.
-   * 
+   *
    * @return The new, unbound {@link AFServerSocket}.
    * @throws IOException if the operation fails.
    */
@@ -67,7 +67,7 @@ public class AFTIPCServerSocket extends AFServerSocket<AFTIPCSocketAddress> {
   /**
    * Returns a new AF_TIPC {@link ServerSocket} that is bound to the given
    * {@link AFTIPCSocketAddress}.
-   * 
+   *
    * @param addr The socket file to bind to.
    * @return The new, bound {@link AFServerSocket}.
    * @throws IOException if the operation fails.
@@ -78,7 +78,7 @@ public class AFTIPCServerSocket extends AFServerSocket<AFTIPCSocketAddress> {
 
   /**
    * Returns a new AF_TIPC {@link ServerSocket} that is bound to the given {@link AFSocketAddress}.
-   * 
+   *
    * @param addr The socket file to bind to.
    * @param deleteOnClose If {@code true}, the socket file (if the address points to a file) will be
    *          deleted upon {@link #close}.
@@ -93,7 +93,7 @@ public class AFTIPCServerSocket extends AFServerSocket<AFTIPCSocketAddress> {
   /**
    * Returns a new, <em>unbound</em> AF_TIPC {@link ServerSocket} that will always bind to the given
    * address, regardless of any socket address used in a call to <code>bind</code>.
-   * 
+   *
    * @param forceAddr The address to use.
    * @return The new, yet unbound {@link AFServerSocket}.
    * @throws IOException if an exception occurs.

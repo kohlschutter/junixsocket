@@ -21,7 +21,7 @@ import org.newsclub.net.unix.selftest.Selftest;
 
 /**
  * Main entry.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class Main { // NOPMD
@@ -31,7 +31,7 @@ public final class Main { // NOPMD
 
   /**
    * Starts junixsocket-selftest.
-   * 
+   *
    * @param args The args.
    * @throws Exception on error.
    */

@@ -21,7 +21,7 @@ import java.net.ProtocolFamily;
 
 /**
  * Describes the protocol family supported by {@link AFUNIXSocketAddress} etc.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public enum AFUNIXProtocolFamily implements ProtocolFamily {

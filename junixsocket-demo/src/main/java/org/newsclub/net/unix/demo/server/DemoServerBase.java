@@ -30,7 +30,7 @@ import org.newsclub.net.unix.server.SocketServer;
 
 /**
  * An {@link SocketServer} that's just good for demo purposes.
- * 
+ *
  * @author Christian Kohlschütter
  */
 abstract class DemoServerBase extends SocketServer<SocketAddress, Socket, ServerSocket> {

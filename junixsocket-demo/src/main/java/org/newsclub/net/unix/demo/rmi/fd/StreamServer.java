@@ -24,14 +24,14 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
 
 /**
  * Demonstrates how to read/write files via FileDescriptors that are exchanged via RMI.
- * 
+ *
  * This allows reading/writing from and to files that are otherwise not even accessible by the user.
  * For example, starting the {@link StreamServer} as root and the {@link StreamClient} as a
  * non-privileged user will allow the non-privileged user to read files only accessible to root.
- * 
+ *
  * NOTE: For obvious security reasons, running this server without modification is not advised for
  * anything other than demo purposes.
- * 
+ *
  * @author Christian Kohlschütter
  * @see StreamClient
  */
@@ -42,7 +42,7 @@ public final class StreamServer {
 
   /**
    * {@link StreamServer} command-line tool.
-   * 
+   *
    * @param args Command-line arguments.
    * @throws IOException on error.
    * @throws AlreadyBoundException if there was already a server running.

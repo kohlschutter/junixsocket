@@ -36,7 +36,7 @@ import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.Messag
 
 /**
  * Tests breaking out of accept.
- * 
+ *
  * @see <a href="http://code.google.com/p/junixsocket/issues/detail?id=6">Issue 6</a>
  */
 @SuppressFBWarnings({
@@ -139,7 +139,7 @@ public abstract class CancelAcceptTest<A extends SocketAddress> extends SocketTe
   /**
    * Subclasses may override this to tell that there is a known condition where an otherwise
    * expected SocketException is not thrown.
-   * 
+   *
    * @return An explanation iff this should not cause a test failure but just add a notice.
    */
   protected String checkKnownConditionDidNotThrowSocketException() {

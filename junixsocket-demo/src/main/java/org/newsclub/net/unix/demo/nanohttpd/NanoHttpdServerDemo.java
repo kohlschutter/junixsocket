@@ -32,9 +32,9 @@ import fi.iki.elonen.NanoHTTPD;
 
 /**
  * Creates a {@link NanoHTTPD} server, bound to {@code /tmp/junixsocket-http-server.sock}.
- * 
+ *
  * Http requests on that socket should return "Hello world from &lt;hostname&gt;".
- * 
+ *
  * @author Christian Kohlschütter
  * @see OkHttpClientDemo
  */

@@ -32,7 +32,7 @@ import org.newsclub.net.unix.demo.DemoHelper;
 
 /**
  * Demonstrates how to connect to a local PostgreSQL server via unix sockets.
- * 
+ *
  * @author Christian Kohlschuetter
  * @see AFUNIXSocketFactory
  */

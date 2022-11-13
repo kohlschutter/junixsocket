@@ -32,7 +32,7 @@ import java.io.IOException;
 public interface AFServerSocketConnector<A extends AFSocketAddress, T extends AFSocketAddress> {
   /**
    * Creates an {@link AFServerSocket} bound to the given address.
-   * 
+   *
    * @param addr The address to bind to.
    * @return The bound socket.
    * @throws IOException on error.

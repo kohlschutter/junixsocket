@@ -22,14 +22,14 @@ import java.rmi.RemoteException;
 
 /**
  * A very simple "world" service.
- * 
+ *
  * @author Christian Kohlschütter
  * @see HelloWorld
  */
 public interface World extends Remote {
   /**
    * Returns "World" (or something else?).
-   * 
+   *
    * @return "World" (usually)
    * @throws RemoteException if the operation fails.
    */

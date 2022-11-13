@@ -81,9 +81,9 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A {@link Connector} implementation for junixsocket server socket channels (Unix domains etc.)
- * 
+ *
  * Based upon jetty's UnixDomainServerConnector.
- * 
+ *
  * This implementation should work with jetty version 9.4.12 or newer.
  */
 @ManagedObject
@@ -105,7 +105,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Creates a new {@link AFSocketServerConnector}.
-   * 
+   *
    * @param server The server this connector will be added to. Must not be null.
    * @param factories The Connection Factories to use.
    */
@@ -115,7 +115,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Creates a new {@link AFSocketServerConnector}.
-   * 
+   *
    * @param server The server this connector will be added to. Must not be null.
    * @param acceptors the number of acceptor threads to use, or -1 for a default value. If 0, then
    *          no acceptor threads will be launched and some other mechanism will need to be used to
@@ -130,7 +130,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Creates a new {@link AFSocketServerConnector}.
-   * 
+   *
    * @param server The server this connector will be added to. Must not be null.
    * @param executor An executor for this connector or null to use the servers executor
    * @param scheduler A scheduler for this connector or null to either a {@link Scheduler} set as a
@@ -172,9 +172,9 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Returns the Unix-Domain path this connector listens to.
-   * 
+   *
    * Added for compatibility with jetty's {@code UnixDomainServerConnector}.
-   * 
+   *
    * @return The Unix-Domain path this connector listens to.
    * @deprecated Use {@link #getListenSocketAddress()} instead.
    * @see #getListenSocketAddress()
@@ -196,9 +196,9 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Sets the Unix-Domain path this connector listens to.
-   * 
+   *
    * Added for compatibility with jetty's {@code UnixDomainServerConnector}.
-   * 
+   *
    * @param unixDomainPath The path.
    * @deprecated Use {@link #setListenSocketAddress(AFSocketAddress)} instead.
    * @see #setListenSocketAddress(AFSocketAddress)
@@ -213,7 +213,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Returns the socket address this connector listens to.
-   * 
+   *
    * @return The socket address, or {@code null} if none set.
    */
   @ManagedAttribute("The socket address this connector listens to")
@@ -224,7 +224,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Sets the socket address this connector listens to.
-   * 
+   *
    * @param addr The socket address, or {@code null}.
    */
   @SuppressFBWarnings("EI_EXPOSE_REP2")
@@ -234,7 +234,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Checks whether this connector uses a server channel inherited from the JVM.
-   * 
+   *
    * @return {@code true} if so.
    */
   @ManagedAttribute("Whether this connector uses a server channel inherited from the JVM")
@@ -244,7 +244,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Sets whether this connector uses a server channel inherited from the JVM.
-   * 
+   *
    * @param inheritChannel {@code true} if so.
    */
   public void setInheritChannel(boolean inheritChannel) {
@@ -253,7 +253,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Returns the accept queue size (backlog) for the server socket.
-   * 
+   *
    * @return The backlog.
    */
   @ManagedAttribute("The accept queue size (backlog) for the server socket")
@@ -263,7 +263,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Sets the accept queue size (backlog) for the server socket.
-   * 
+   *
    * @param acceptQueueSize The backlog.
    */
   public void setAcceptQueueSize(int acceptQueueSize) {
@@ -272,7 +272,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Returns the SO_RCVBUF size for accepted sockets.
-   * 
+   *
    * @return The buffer size.
    */
   @ManagedAttribute("The SO_RCVBUF option for accepted sockets")
@@ -282,7 +282,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Sets the SO_RCVBUF size for accepted sockets.
-   * 
+   *
    * @param acceptedReceiveBufferSize The buffer size.
    */
   public void setAcceptedReceiveBufferSize(int acceptedReceiveBufferSize) {
@@ -291,7 +291,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Returns the SO_SNDBUF size for accepted sockets.
-   * 
+   *
    * @return The buffer size.
    */
   @ManagedAttribute("The SO_SNDBUF option for accepted sockets")
@@ -301,7 +301,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
   /**
    * Sets the SO_SNDBUF size for accepted sockets.
-   * 
+   *
    * @param acceptedSendBufferSize The buffer size.
    */
   public void setAcceptedSendBufferSize(int acceptedSendBufferSize) {
@@ -390,7 +390,7 @@ public class AFSocketServerConnector extends AbstractConnector {
   /**
    * Configures an incoming {@link SocketChannel}, setting socket options such as receive and send
    * buffer sizes.
-   * 
+   *
    * @param channel The socket channel to configure.
    * @throws IOException on error.
    */
@@ -533,7 +533,7 @@ public class AFSocketServerConnector extends AbstractConnector {
   /**
    * Checks if this connector may stop the server when it's no longer able to serve and no other
    * connectors are available.
-   * 
+   *
    * @return {@code true} if so.
    */
   @ManagedAttribute("Whether this connector may stop the server when it's no longer able to"
@@ -545,7 +545,7 @@ public class AFSocketServerConnector extends AbstractConnector {
   /**
    * Sets if this connector may stop the server when it's no longer able to serve and no other
    * connectors are available.
-   * 
+   *
    * @param mayStopServer {@code true} if so.
    */
   public void setMayStopServer(boolean mayStopServer) {

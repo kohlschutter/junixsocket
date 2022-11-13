@@ -47,7 +47,7 @@ import com.kohlschutter.testutil.SoftAssertions;
 
 /**
  * Tests the {@code Socket#getOption(SocketOption)} API available since Java 9.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @SuppressFBWarnings({

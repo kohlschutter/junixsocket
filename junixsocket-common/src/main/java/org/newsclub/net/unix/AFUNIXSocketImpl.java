@@ -29,7 +29,7 @@ class AFUNIXSocketImpl extends AFSocketImpl<AFUNIXSocketAddress> {
 
   /**
    * Changes the behavior to be somewhat lenient with respect to the specification.
-   * 
+   *
    * In particular, we ignore calls to {@link Socket#getTcpNoDelay()} and
    * {@link Socket#setTcpNoDelay(boolean)}.
    */

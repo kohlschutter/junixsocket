@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 /**
  * To be used by {@link RemoteCloseableTest}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public interface RemoteCloseableThing extends Serializable {

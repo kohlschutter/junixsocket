@@ -30,7 +30,7 @@ import org.newsclub.net.unix.AFVSOCKSocketImplExtensions;
 
 /**
  * Implementation of an {@code AF_VSOCK} socket.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFVSOCKSocket extends AFSocket<AFVSOCKSocketAddress> implements
@@ -55,13 +55,13 @@ public final class AFVSOCKSocket extends AFSocket<AFVSOCKSocketAddress> implemen
   /**
    * Returns <code>true</code> iff {@link AFVSOCKSocket}s (sockets of type "AF_VSOCK") are supported
    * by the current Java VM and the kernel.
-   * 
+   *
    * To support {@link AFVSOCKSocket}s, a custom JNI library must be loaded that is supplied with
    * <em>junixsocket</em>, and the system must support AF_VSOCK sockets.
-   * 
+   *
    * This call is equivalent to checking {@link AFSocket#isSupported()} and
    * {@link AFSocket#supports(AFSocketCapability)} with {@link AFSocketCapability#CAPABILITY_VSOCK}.
-   * 
+   *
    * @return {@code true} iff supported.
    */
   public static boolean isSupported() {
@@ -75,12 +75,12 @@ public final class AFVSOCKSocket extends AFSocket<AFVSOCKSocketAddress> implemen
 
   /**
    * Creates a new, unbound {@link AFSocket}.
-   * 
+   *
    * This "default" implementation is a bit "lenient" with respect to the specification.
-   * 
+   *
    * In particular, we ignore calls to {@link Socket#getTcpNoDelay()} and
    * {@link Socket#setTcpNoDelay(boolean)}.
-   * 
+   *
    * @return A new, unbound socket.
    * @throws IOException if the operation fails.
    */
@@ -94,10 +94,10 @@ public final class AFVSOCKSocket extends AFSocket<AFVSOCKSocketAddress> implemen
 
   /**
    * Creates a new, unbound, "strict" {@link AFSocket}.
-   * 
+   *
    * This call uses an implementation that tries to be closer to the specification than
    * {@link #newInstance()}, at least for some cases.
-   * 
+   *
    * @return A new, unbound socket.
    * @throws IOException if the operation fails.
    */
@@ -107,7 +107,7 @@ public final class AFVSOCKSocket extends AFSocket<AFVSOCKSocketAddress> implemen
 
   /**
    * Creates a new {@link AFSocket} and connects it to the given {@link AFVSOCKSocketAddress}.
-   * 
+   *
    * @param addr The address to connect to.
    * @return A new, connected socket.
    * @throws IOException if the operation fails.
@@ -123,7 +123,7 @@ public final class AFVSOCKSocket extends AFSocket<AFVSOCKSocketAddress> implemen
 
   /**
    * Returns the local CID.
-   * 
+   *
    * If the system does not support vsock, or status about support cannot be retrieved, -1
    * ({@link AFVSOCKSocketAddress#VMADDR_CID_ANY}) is returned. The value may be cached upon
    * initialization of the library.
@@ -137,9 +137,9 @@ public final class AFVSOCKSocket extends AFSocket<AFVSOCKSocketAddress> implemen
 
   /**
    * Very basic self-test function.
-   * 
+   *
    * Prints "supported" and "capabilities" status to System.out.
-   * 
+   *
    * @param args ignored.
    */
   public static void main(String[] args) {

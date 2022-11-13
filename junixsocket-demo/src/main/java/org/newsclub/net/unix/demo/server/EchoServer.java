@@ -25,7 +25,7 @@ import java.net.SocketAddress;
 
 /**
  * A multi-threaded unix socket server that simply echoes all input, byte per byte.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class EchoServer extends DemoServerBase {

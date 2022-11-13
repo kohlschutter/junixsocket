@@ -25,7 +25,7 @@ import org.newsclub.net.unix.AFSocketAddress.AFSocketAddressConstructor;
 
 /**
  * The implementation-specifics for a given {@link AFSocketAddress} subclass implementation.
- * 
+ *
  * @param <A> The supported address type.
  * @author Christian Kohlschütter
  * @see AFAddressFamilyConfig
@@ -40,7 +40,7 @@ public abstract class AFSocketAddressConfig<A extends AFSocketAddress> {
 
   /**
    * Tries to parse the given address-specific URI.
-   * 
+   *
    * @param u The URI.
    * @param port The port to use, or {@code -1} for "unspecified".
    * @return The address.
@@ -50,23 +50,23 @@ public abstract class AFSocketAddressConfig<A extends AFSocketAddress> {
 
   /**
    * Returns the implementation's address constructor.
-   * 
+   *
    * @return The implementation's address constructor.
    */
   protected abstract AFSocketAddressConstructor<A> addressConstructor();
 
   /**
    * Returns the name of the implementation's selector provider class.
-   * 
+   *
    * @return The name of the implementation's selector provider class.
    */
   protected abstract String selectorProviderClassname();
 
   /**
    * Returns the set of supported URI schemes that can be parsed via {@link #parseURI(URI,int)}.
-   * 
+   *
    * These schemes must be unique to this {@link AFSocketAddress} type.
-   * 
+   *
    * @return The set of supported URI schemes.
    */
   protected abstract Set<String> uriSchemes();

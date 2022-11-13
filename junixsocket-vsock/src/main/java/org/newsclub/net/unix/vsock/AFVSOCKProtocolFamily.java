@@ -21,7 +21,7 @@ import java.net.ProtocolFamily;
 
 /**
  * Describes the protocol families supported by junixsocket-vsock.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public enum AFVSOCKProtocolFamily implements ProtocolFamily {

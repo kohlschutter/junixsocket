@@ -45,7 +45,7 @@ import com.kohlschutter.util.ProcessUtil;
 
 /**
  * Verifies that peer credentials are properly set.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @AFSocketCapabilityRequirement({

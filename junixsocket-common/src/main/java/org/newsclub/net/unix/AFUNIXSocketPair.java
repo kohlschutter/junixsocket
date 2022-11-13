@@ -21,7 +21,7 @@ import java.io.IOException;
 
 /**
  * A pair of sockets.
- * 
+ *
  * @param <T> The socket type.
  * @author Christian Kohlschütter
  */
@@ -32,7 +32,7 @@ public final class AFUNIXSocketPair<T extends AFSomeSocket> extends AFSocketPair
 
   /**
    * Opens a socket pair of interconnected channels.
-   * 
+   *
    * @return The new channel pair.
    * @throws IOException on error.
    */
@@ -42,7 +42,7 @@ public final class AFUNIXSocketPair<T extends AFSomeSocket> extends AFSocketPair
 
   /**
    * Opens a socket pair of interconnected datagram channels.
-   * 
+   *
    * @return The new channel pair.
    * @throws IOException on error.
    */

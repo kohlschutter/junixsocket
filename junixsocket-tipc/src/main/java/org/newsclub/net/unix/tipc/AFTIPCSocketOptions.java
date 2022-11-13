@@ -27,14 +27,14 @@ import org.newsclub.net.unix.NamedInteger;
 
 /**
  * TIPC-specific socket options.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @NonNullByDefault
 public final class AFTIPCSocketOptions {
   /**
    * Use as value for {@link SocketOption}s of type {@link Void}.
-   * 
+   *
    * @see #TIPC_GROUP_LEAVE
    */
   @SuppressWarnings({"null"})
@@ -44,7 +44,7 @@ public final class AFTIPCSocketOptions {
    * This option governs how likely a message sent by the socket is to be affected by congestion. A
    * message with higher importance is less likely to be delayed due to link congestion and less
    * likely to be rejected due to receiver congestion.
-   * 
+   *
    * @see MessageImportance
    */
   public static final AFSocketOption<MessageImportance> TIPC_IMPORTANCE = new AFSocketOption<>(
@@ -59,7 +59,7 @@ public final class AFTIPCSocketOptions {
   /**
    * This option governs the handling of a sent message if it cannot be delivered to its
    * destination. If set, the message is discarded; otherwise it is returned to the sender.
-   * 
+   *
    * By default, this option is enabled for SOCK_RDM and SOCK_DGRAM sockets, and disabled otherwise.
    */
   public static final AFSocketOption<Boolean> TIPC_DEST_DROPPABLE = new AFSocketOption<>(
@@ -106,7 +106,7 @@ public final class AFTIPCSocketOptions {
 
   /**
    * Leave the previously joined communication group.
-   * 
+   *
    * Only valid for setOption. The value is ignored. Use {@link #VOID}.
    */
   public static final AFSocketOption<Void> TIPC_GROUP_LEAVE = new AFSocketOption<>(
@@ -115,7 +115,7 @@ public final class AFTIPCSocketOptions {
   /**
    * When using TIPC_SOCK_RECVQ_DEPTH for getsockopt(), it returns the number of buffers in the
    * receive socket buffer which is not so helpful for user space applications.
-   * 
+   *
    * TIPC_SOCK_RECVQ_USED returns the current allocated bytes of the receive socket buffer. This
    * helps user space applications dimension its buffer usage to avoid buffer overload issue.
    */
@@ -135,9 +135,9 @@ public final class AFTIPCSocketOptions {
 
   /**
    * The TIPC message importance.
-   * 
+   *
    * Messages with a higher importance have a lower chance of being dropped when congestion occurs.
-   * 
+   *
    * @author Christian Kohlschütter
    */
   public static final class MessageImportance extends NamedInteger implements
@@ -182,7 +182,7 @@ public final class AFTIPCSocketOptions {
 
     /**
      * Returns a {@link MessageImportance} instance for the given value.
-     * 
+     *
      * @param v The value.
      * @return The instance.
      */

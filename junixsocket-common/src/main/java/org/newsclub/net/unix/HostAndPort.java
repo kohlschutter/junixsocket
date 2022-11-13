@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Hostname and port.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class HostAndPort {
@@ -39,7 +39,7 @@ public final class HostAndPort {
 
   /**
    * Creates a new hostname and port combination.
-   * 
+   *
    * @param hostname The hostname.
    * @param port The port, or {@code -1} for "no port".
    */
@@ -88,7 +88,7 @@ public final class HostAndPort {
 
   /**
    * Tries to extract hostname and port information from the given URI.
-   * 
+   *
    * @param u The URI to extract from.
    * @return The parsed {@link HostAndPort} instance.
    * @throws SocketException on error.
@@ -130,7 +130,7 @@ public final class HostAndPort {
 
   /**
    * Returns the hostname.
-   * 
+   *
    * @return The hostname.
    */
   public String getHostname() {
@@ -139,7 +139,7 @@ public final class HostAndPort {
 
   /**
    * Returns the port, or {@code -1} for "no port specified".
-   * 
+   *
    * @return The port.
    */
   public int getPort() {
@@ -148,7 +148,7 @@ public final class HostAndPort {
 
   /**
    * Returns a URI with this hostname and port.
-   * 
+   *
    * @param scheme The scheme to use.
    * @return The URI.
    */
@@ -159,7 +159,7 @@ public final class HostAndPort {
   /**
    * Returns a URI with this hostname and port, potentially reusing other URI parameters from the
    * given template URI (authority, path, query, fragment).
-   * 
+   *
    * @param scheme The scheme to use.
    * @param template The template. or {@code null}.
    * @return The URI.
@@ -192,7 +192,7 @@ public final class HostAndPort {
   /**
    * Returns a URI with this hostname and port, potentially using other URI parameters from the
    * given set of parameters.
-   * 
+   *
    * @param scheme The scheme to use.
    * @param rawAuthority The raw authority field, or {@code null}.
    * @param rawPath The raw path field, or {@code null}.

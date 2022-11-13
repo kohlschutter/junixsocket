@@ -28,7 +28,7 @@ import org.newsclub.net.unix.rmi.RemotePeerInfo;
 /**
  * A simple RMI client. Locates the RMI registry via AF_UNIX sockets and calls
  * {@link HelloWorld#hello()}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class SimpleRMIClient {

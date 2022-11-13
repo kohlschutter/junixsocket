@@ -30,7 +30,7 @@ import org.newsclub.net.unix.AddressUnavailableSocketException;
 /**
  * Provides access to AF_VSOCK connections that aren't directly accessible but exposed via a
  * proxying/multiplexing Unix domain socket.
- * 
+ *
  * @author Christian Kohlschütter
  * @see #openFirecrackerStyleConnector(File, int)
  * @see #openDirectConnector()
@@ -59,7 +59,7 @@ public final class AFVSOCKProxyServerSocketConnector implements
    * Returns an instance that is configured to support
    * [Firecracker-style](https://github.com/firecracker-microvm/firecracker/blob/main/docs/vsock.md)
    * Unix domain sockets.
-   * 
+   *
    * @param listenAddressPrefix The prefix of any listening socket. The actual socket will have
    *          <code>_<em>vsockPort</em></code> appended to it (with {@code vsockPort} being replaced
    *          by the corresponding port number).
@@ -73,7 +73,7 @@ public final class AFVSOCKProxyServerSocketConnector implements
 
   /**
    * Returns an instance that is configured to connect directly to the given address.
-   * 
+   *
    * @return The direct instance.
    */
   public static AFServerSocketConnector<AFVSOCKSocketAddress, AFSocketAddress> openDirectConnector() {

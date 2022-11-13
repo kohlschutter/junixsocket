@@ -21,7 +21,7 @@ import java.net.SocketException;
 
 /**
  * A {@link SocketException} indicating that a socket connection was broken ("broken pipe").
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class BrokenPipeSocketException extends SocketException {
@@ -36,7 +36,7 @@ public final class BrokenPipeSocketException extends SocketException {
 
   /**
    * Constructs a new {@link BrokenPipeSocketException}.
-   * 
+   *
    * @param msg The error message.
    */
   public BrokenPipeSocketException(String msg) {

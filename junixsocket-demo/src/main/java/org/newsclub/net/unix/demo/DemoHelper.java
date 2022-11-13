@@ -45,7 +45,7 @@ public final class DemoHelper {
   /**
    * Adds a key-value pair to a Properties instance. Takes values from a given system property and
    * overrides the default value with it.
-   * 
+   *
    * @param props The Properties instance to write to.
    * @param key The name of the property.
    * @param defaultValue The default value (for demo purposes)

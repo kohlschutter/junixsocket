@@ -24,17 +24,17 @@ import java.rmi.Remote;
 
 /**
  * A resource that can be exposed remotely, and closed locally as well as remotely.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public interface RemoteCloseable<T> extends Remote, Closeable {
   /**
    * Returns the resource (or the Remote instance of it).
-   * 
+   *
    * If the returned resource is {@link Closeable}, then closing via {@code get().close()}} will
    * affect the client-side (local), but not necessarily the server-side as well (the exact behavior
    * depends on the resource).
-   * 
+   *
    * @return The wrapped resource.
    * @throws NoSuchObjectException if this instance has been closed already.
    * @throws IOException if there was a problem.
@@ -44,7 +44,7 @@ public interface RemoteCloseable<T> extends Remote, Closeable {
   /**
    * Closes the resource on the server-side (i.e., where it was created), and — as long as the
    * wrapped resource returned by {@link #get()} supports it — locally as well.
-   * 
+   *
    * @throws IOException if there was a problem.
    */
   @Override

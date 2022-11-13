@@ -36,7 +36,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * JNI connector to native JNI C code.
- * 
+ *
  * @author Christian Kohlschütter
  */
 final class NativeUnixSocket {
@@ -161,7 +161,7 @@ final class NativeUnixSocket {
 
   /**
    * Reads data from an {@link AFSocketImpl}.
-   * 
+   *
    * @param fd The corresponding file descriptor.
    * @param buf The buffer to read into, or {@code null} if a single byte should be read.
    * @param off The buffer offset.
@@ -177,7 +177,7 @@ final class NativeUnixSocket {
 
   /**
    * Writes data to an {@link AFSocketImpl}.
-   * 
+   *
    * @param fd The corresponding file descriptor.
    * @param buf The buffer to write from, or {@code null} if a single byte should be written.
    * @param off The buffer offset, or the byte to write if {@code buf} is {@code null}.

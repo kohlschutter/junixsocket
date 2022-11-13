@@ -42,7 +42,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * An {@link RMISocketFactory} that supports {@link AFSocket}s.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public abstract class AFRMISocketFactory extends RMISocketFactory implements Externalizable,
@@ -61,7 +61,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Constructor required per definition.
-   * 
+   *
    * @see RMISocketFactory
    */
   public AFRMISocketFactory() {
@@ -71,7 +71,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Creates a new socket factory.
-   * 
+   *
    * @param naming The {@link AFNaming} instance to use.
    * @param defaultClientFactory The default {@link RMIClientSocketFactory}.
    * @param defaultServerFactory The default {@link RMIServerSocketFactory}.
@@ -106,7 +106,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Creates a new socket address for the given RMI port.
-   * 
+   *
    * @param port The port.
    * @return The socket address.
    * @throws IOException on error.
@@ -115,7 +115,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Creates a new socket that is connected to the given socket address.
-   * 
+   *
    * @param addr The socket address.
    * @return The connected socket.
    * @throws IOException on error.
@@ -167,7 +167,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Returns a new free port.
-   * 
+   *
    * @return The new port.
    * @throws IOException on error.
    * @see #returnPort(int)
@@ -178,7 +178,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Returns a port that was previously returned by {@link #newPort()}.
-   * 
+   *
    * @param port The port to return.
    * @throws IOException on error.
    */
@@ -298,7 +298,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Deserializes information necessary to instantiate the {@link AFNaming} instance.
-   * 
+   *
    * @param in The stream.
    * @return The {@link AFNaming} instance.
    * @throws IOException on error.
@@ -307,7 +307,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Serializes information necessary to instantiate the given {@link AFNaming} instance.
-   * 
+   *
    * @param out The stream.
    * @param namingInstance The {@link AFNaming} instance.
    * @throws IOException on error.
@@ -317,7 +317,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Checks if the given port refers to a local server port.
-   * 
+   *
    * @param port The port to check.
    * @return {@code true} if the given port is a local server.
    */
@@ -332,7 +332,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * The naming instance.
-   * 
+   *
    * @return The instance.
    */
   protected AFNaming getNaming() {
@@ -341,7 +341,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Checks if this socket factory has some knowledge about the given port.
-   * 
+   *
    * @param port The port.
    * @return {@code true} if registered.
    */

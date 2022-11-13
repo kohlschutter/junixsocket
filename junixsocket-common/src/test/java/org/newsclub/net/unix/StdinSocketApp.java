@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * This test app responds with "Hello world" over a {@link Socket} that was passed from another
  * process via standard input.
- * 
+ *
  * @author Christian Kohlschütter
  * @see org.newsclub.net.unix.domain.FileDescriptorCastTest#testForkedVMRedirectStdin()
  */

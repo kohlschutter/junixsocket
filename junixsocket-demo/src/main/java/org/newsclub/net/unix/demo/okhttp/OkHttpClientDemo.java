@@ -38,9 +38,9 @@ import okhttp3.ResponseBody;
 /**
  * Connects to {@code /tmp/junixsocket-http-server.sock} and performs an http request over that
  * socket, using the <a href="https://square.github.io/okhttp/">OkHttp</a> HTTP client library.
- * 
+ *
  * If that socket is bound by {@link NanoHttpdServerDemo}, the expected output is "Hello world".
- * 
+ *
  * @author Christian Kohlschütter
  * @see NanoHttpdServerDemo
  */

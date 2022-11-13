@@ -19,7 +19,7 @@ package org.newsclub.net.unix;
 
 /**
  * Describes the "type" of a socket.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public enum AFSocketType {
@@ -40,7 +40,7 @@ public enum AFSocketType {
 
   /**
    * Reliably-delivered datagram messages.
-   * 
+   *
    * Used by {@code AFTIPCDatagramSocket} to differentiate between datagram connects that may or may
    * not permit package loss.
    */

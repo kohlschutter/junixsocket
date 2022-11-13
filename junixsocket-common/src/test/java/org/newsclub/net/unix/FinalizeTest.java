@@ -44,10 +44,10 @@ import com.kohlschutter.util.ExceptionUtil;
 /**
  * This tests the issue reported in
  * <a href="https://github.com/kohlschutter/junixsocket/pull/29">issue 29</a>.
- * 
+ *
  * We need to ensure that the native file descriptor is closed whenever our socket implementation is
  * garbage collected, even when {@link AFSocket#close()} is not called.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @CommandAvailabilityRequirement(commands = {"lsof"})

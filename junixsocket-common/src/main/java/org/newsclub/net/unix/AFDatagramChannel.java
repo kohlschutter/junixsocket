@@ -37,7 +37,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A {@link DatagramChannel} implementation that works with junixsocket.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public abstract class AFDatagramChannel<A extends AFSocketAddress> extends DatagramChannel
@@ -46,7 +46,7 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
 
   /**
    * Creates a new {@link AFDatagramChannel} instance.
-   * 
+   *
    * @param selectorProvider The corresponding {@link SelectorProvider}.
    * @param socket The corresponding {@link Socket}.
    */
@@ -57,7 +57,7 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
 
   /**
    * Returns the corresponding {@link Socket}.
-   * 
+   *
    * @return The socket.
    */
   protected final AFDatagramSocket<A> getAFSocket() {
@@ -91,7 +91,7 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
 
   /**
    * Returns the binding state of the socket.
-   * 
+   *
    * @return true if the socket successfully bound to an address
    */
   public final boolean isBound() {
@@ -244,10 +244,10 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
 
   /**
    * Checks if this {@link DatagramSocket}'s bound filename should be removed upon {@link #close()}.
-   * 
+   *
    * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
    * namespace).
-   * 
+   *
    * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
    */
   public final boolean isDeleteOnClose() {
@@ -256,10 +256,10 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
 
   /**
    * Enables/disables deleting this {@link DatagramSocket}'s bound filename upon {@link #close()}.
-   * 
+   *
    * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
    * namespace).
-   * 
+   *
    * @param b Enabled if {@code true}.
    */
   public final void setDeleteOnClose(boolean b) {

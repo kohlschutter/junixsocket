@@ -33,7 +33,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * junixsocket's base implementation of a {@link Socket}.
- * 
+ *
  * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
  * @author Christian Kohlschütter
  */
@@ -60,7 +60,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Creates a new {@link AFSocket} instance.
-   * 
+   *
    * @param impl The corresponding {@link SocketImpl} class.
    * @param afh The conversion helper to get a socket address from an encoded hostname.
    * @throws SocketException on error.
@@ -74,7 +74,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Returns the {@link AFSocketAddress} type supported by this socket.
-   * 
+   *
    * @return The supported {@link AFSocketAddress}.
    */
   protected final Class<? extends AFSocketAddress> socketAddressClass() {
@@ -83,21 +83,21 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Creates a new {@link AFSocketChannel} for this socket.
-   * 
+   *
    * @return The new instance.
    */
   protected abstract AFSocketChannel<A> newChannel();
 
   /**
    * The reference to the constructor of an {@link AFSocket} subclass.
-   * 
+   *
    * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
    */
   @FunctionalInterface
   public interface Constructor<A extends AFSocketAddress> {
     /**
      * Constructs a new {@link AFSocket} subclass instance.
-     * 
+     *
      * @param fdObj The file descriptor.
      * @param factory The socket factory instance.
      * @return The instance.
@@ -141,12 +141,12 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Creates a new, unbound {@link AFSocket}.
-   * 
+   *
    * This "default" implementation is a bit "lenient" with respect to the specification.
-   * 
+   *
    * In particular, we may ignore calls to {@link Socket#getTcpNoDelay()} and
    * {@link Socket#setTcpNoDelay(boolean)}.
-   * 
+   *
    * @param <A> The corresponding address type.
    * @param constr The implementation's {@link AFSocket} constructor
    * @param factory The corresponding socket factory, or {@code null}.
@@ -166,7 +166,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Creates a new {@link AFSocket} and connects it to the given {@link AFSocketAddress}.
-   * 
+   *
    * @param <A> The corresponding address type.
    * @param constr The implementation's {@link AFSocket} constructor
    * @param addr The address to connect to.
@@ -183,7 +183,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   /**
    * Creates a new {@link AFSocket} and connects it to the given {@link AFSocketAddress} using the
    * default implementation suited for that address type.
-   * 
+   *
    * @param <A> The corresponding address type.
    * @param addr The address to connect to.
    * @return A new, connected socket.
@@ -198,7 +198,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Not supported, since it's not necessary for client sockets.
-   * 
+   *
    * @see AFServerSocket
    */
   @Override
@@ -302,10 +302,10 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Returns <code>true</code> iff {@link AFSocket}s are supported by the current Java VM.
-   * 
+   *
    * To support {@link AFSocket}s, a custom JNI library must be loaded that is supplied with
    * <em>junixsocket</em>.
-   * 
+   *
    * @return {@code true} iff supported.
    */
   public static boolean isSupported() {
@@ -314,9 +314,9 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Checks if {@link AFSocket}s are supported by the current Java VM.
-   * 
+   *
    * If not, an {@link UnsupportedOperationException} is thrown.
-   * 
+   *
    * @throws UnsupportedOperationException if not supported.
    */
   public static void ensureSupported() throws UnsupportedOperationException {
@@ -325,9 +325,9 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Returns the version of the junixsocket library, as a string, for debugging purposes.
-   * 
+   *
    * NOTE: Do not rely on the format of the version identifier, use socket capabilities instead.
-   * 
+   *
    * @return String The version identifier, or {@code null} if it could not be determined.
    * @see #supports(AFSocketCapability)
    */
@@ -342,9 +342,9 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   /**
    * Returns an identifier of the loaded native library, or {@code null} if the library hasn't been
    * loaded yet.
-   * 
+   *
    * The identifier is useful mainly for debugging purposes.
-   * 
+   *
    * @return The identifier of the loaded junixsocket-native library, or {@code null}.
    */
   public static final String getLoadedLibrary() {
@@ -400,12 +400,12 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   /**
    * Checks if the current environment (system platform, native library, etc.) supports a given
    * junixsocket capability.
-   * 
+   *
    * Deprecated. Please use {@link #supports(AFSocketCapability)} instead.
-   * 
+   *
    * NOTE: The result may or may not be cached from a previous call or from a check upon
    * initialization.
-   * 
+   *
    * @param capability The capability.
    * @return true if supported.
    * @see #supports(AFSocketCapability)
@@ -418,10 +418,10 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   /**
    * Checks if the current environment (system platform, native library, etc.) supports a given
    * junixsocket capability.
-   * 
+   *
    * NOTE: The result may or may not be cached from a previous call or from a check upon
    * initialization.
-   * 
+   *
    * @param capability The capability.
    * @return true if supported.
    */
@@ -442,7 +442,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Registers a {@link Closeable} that should be closed when this socket is closed.
-   * 
+   *
    * @param closeable The closeable.
    */
   public final void addCloseable(Closeable closeable) {
@@ -451,7 +451,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Unregisters a previously registered {@link Closeable}.
-   * 
+   *
    * @param closeable The closeable.
    */
   public final void removeCloseable(Closeable closeable) {
@@ -514,7 +514,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Returns the internal helper instance for address-specific extensions.
-   * 
+   *
    * @return The helper instance.
    * @throws UnsupportedOperationException if such extensions are not supported for this address
    *           type.
@@ -526,7 +526,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   /**
    * Forces the address to be used for any subsequent call to {@link #connect(SocketAddress)} to be
    * the given one, regardless of what'll be passed there.
-   * 
+   *
    * @param endpoint The forced endpoint address.
    * @return This instance.
    */
@@ -539,9 +539,9 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   /**
    * Sets the hook for any subsequent call to {@link #connect(SocketAddress)} or
    * {@link #connect(SocketAddress, int)} to be the given function.
-   * 
+   *
    * The function can monitor events or even alter the target address.
-   * 
+   *
    * @param hook The function that gets called for each connect call.
    * @return This instance.
    */
@@ -552,10 +552,10 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
 
   /**
    * Probes the status of the socket connection.
-   * 
+   *
    * This usually involves checking for {@link #isConnected()}, and if assumed connected, also
    * sending a zero-length message to the remote.
-   * 
+   *
    * @return {@code true} if the connection is known to be closed, {@code false} if the connection
    *         is open/not closed or the condition is unknown.
    * @throws IOException on an unexpected error.

@@ -36,7 +36,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 /**
  * Reads and writes data either using byte arrays or byte-for-byte (which may be implemented
  * differently).
- * 
+ *
  * @author Christian Kohlschütter
  */
 @SuppressFBWarnings({

@@ -24,7 +24,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
  * VSOCK-specific socket options.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @NonNullByDefault

@@ -23,7 +23,7 @@ import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGenerated
 
 /**
  * Contains some default ports used by junixsocket for RMI-over-AF_UNIX etc.
- * 
+ *
  * @author Christian Kohlschütter
  * @see AFRMISocketFactory
  * @see AFRMIService
@@ -42,14 +42,14 @@ final class RMIPorts {
 
   /**
    * This is the port reserved for the port assigner.
-   * 
+   *
    * @see AFRMIService
    */
   static final int RMI_SERVICE_PORT = 100002;
 
   /**
    * This is the base for anonymous ports. Any anonymous port will be higher than this number.
-   * 
+   *
    * @see AFRMIService
    */
   static final int ANONYMOUS_PORT_BASE = 110000;

@@ -30,12 +30,12 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 
 /**
  * A simple demo client.
- * 
+ *
  * Reads a server greeting string, then sends a "Hello Server" string as a response.
- * 
+ *
  * Finally, reads integers (via {@link DataInputStream}), then sends twice the sent value each,
  * unless a "-123" magic number is read to indicate the end of the conversation.
- * 
+ *
  * @author Christian Kohlschütter
  * @see SimpleTestServer
  */

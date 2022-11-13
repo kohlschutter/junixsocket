@@ -22,7 +22,7 @@ import java.lang.ProcessBuilder.Redirect;
 /**
  * Describes junixsocket capabilities the current environment (system platform, native library,
  * etc.) may or may not support.
- * 
+ *
  * You can check whether your environment supports a given capability by calling
  * {@link AFSocket#supports(AFSocketCapability)}.
  */
@@ -46,11 +46,11 @@ public enum AFSocketCapability {
 
   /**
    * A pair of interconnected sockets can be created natively as AF_UNIX sockets.
-   * 
+   *
    * This currently not possible on Windows, but instead emulated via anonymous AF_INET ports when
    * you use {@link AFSocketPair}. Other systems may provide partial implementations of pipe-based
    * (i.e., non-socket) pairs.
-   * 
+   *
    * This capability is specific to AF_UNIX sockets. Other sockets, such as AF_VSOCK, may not
    * implement socketpair natively even if this capability is set, but would work-around that
    * limitation in a similar fashion but maybe without resorting to AF_INET.
@@ -59,14 +59,14 @@ public enum AFSocketCapability {
 
   /**
    * A file descriptor can be converted to {@link Redirect}.
-   * 
+   *
    * This feature currently uses Java SDK internals that may change/disappear.
    */
   CAPABILITY_FD_AS_REDIRECT(6),
 
   /**
    * Support for AF_TIPC.
-   * 
+   *
    * Availability of this feature is checked upon launch and therefore loading the "tipc" kernel
    * module at a later point may not be properly reflected.
    */
@@ -74,10 +74,10 @@ public enum AFSocketCapability {
 
   /**
    * Support for AF_UNIX.
-   * 
+   *
    * Availability of this feature is checked upon launch and therefore, on systems adding support at
    * a later point, may not be properly reflected when checking at a later point.
-   * 
+   *
    * NOTE: While this capability is typically supported on most systems that can actually load a
    * junixsocket JNI library, it is unavailable for older Windows versions (such as 8.1, 10 before
    * AFUNIX.SYS was included, etc.) and on systems where support for UNIX domain sockets is actively
@@ -90,7 +90,7 @@ public enum AFSocketCapability {
    *
    * Availability of this feature is checked upon launch and therefore enabling vsock at a later
    * point may not be properly reflected.
-   * 
+   *
    * @see #CAPABILITY_VSOCK_DGRAM
    */
   CAPABILITY_VSOCK(9),
@@ -106,10 +106,10 @@ public enum AFSocketCapability {
 
   /**
    * Support for zero-length send(2).
-   * 
+   *
    * This can be used to perform a connection check, but not all operating systems support this or
    * behave correctly (particularly, IBM AIX, IBM i, and IBM z/OS) at the moment.
-   * 
+   *
    * If not supported, junixsocket will simply ignore writes of zero-length, and connection checking
    * with {@link AFSocket#checkConnectionClosed()} may return {@code false} regardless of the actual
    * condition.

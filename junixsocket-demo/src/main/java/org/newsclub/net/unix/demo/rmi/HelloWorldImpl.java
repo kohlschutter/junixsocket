@@ -29,7 +29,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * The implementation of the very simple {@link HelloWorld} service.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class HelloWorldImpl implements HelloWorld {
@@ -37,7 +37,7 @@ public class HelloWorldImpl implements HelloWorld {
 
   /**
    * Creates a new {@link HelloWorld} implementation.
-   * 
+   *
    * @param naming The naming instance to use.
    */
   @SuppressFBWarnings("EI_EXPOSE_REP")

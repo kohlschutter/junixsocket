@@ -63,12 +63,12 @@ import com.kohlschutter.util.SystemPropertyUtil;
 
 /**
  * Performs a series of self-tests.
- * 
+ *
  * Specifically, we run all unit tests of junixsocket-core and junixsocket-rmi.
- * 
+ *
  * NOTE: The Selftest will fail when run from within Eclipse due to test classes not being present.
  * Invoke via <code>java -jar junixsocket-selftest-...-jar-with-dependencies.jar</code>.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.CognitiveComplexity"})
@@ -124,7 +124,7 @@ public class Selftest {
   /**
    * maven-shade-plugin's minimizeJar isn't perfect, so we give it a little hint by adding static
    * references to classes that are otherwise only found via reflection.
-   * 
+   *
    * @author Christian Kohlschütter
    */
   @SuppressFBWarnings("UUF_UNUSED_FIELD")
@@ -162,9 +162,9 @@ public class Selftest {
 
   /**
    * Run this from the command line to ensure junixsocket works correctly on the target system.
-   * 
+   *
    * A zero error code indicates success.
-   * 
+   *
    * @param args Ignored.
    * @throws IOException on error.
    */
@@ -324,7 +324,7 @@ public class Selftest {
 
   /**
    * Checks if any test has failed so far.
-   * 
+   *
    * @return {@code true} if failed.
    */
   public boolean isFail() {
@@ -368,7 +368,7 @@ public class Selftest {
 
   /**
    * Dumps the results of the selftest.
-   * 
+   *
    */
   public void dumpResults() { // NOPMD
     if (modified) {
@@ -462,7 +462,7 @@ public class Selftest {
 
   /**
    * Runs the given test classes for the specified module.
-   * 
+   *
    * @param module The module name.
    * @param testClasses The test classes.
    */

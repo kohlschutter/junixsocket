@@ -24,7 +24,7 @@ import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
 /**
  * A selectable channel for stream-oriented listening sockets.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFVSOCKServerSocketChannel extends AFServerSocketChannel<AFVSOCKSocketAddress> {

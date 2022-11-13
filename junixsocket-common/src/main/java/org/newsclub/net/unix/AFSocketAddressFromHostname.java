@@ -22,13 +22,13 @@ import java.net.SocketException;
 
 /**
  * Helps converting an internet "hostname" to an {@link AFSocketAddress}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public interface AFSocketAddressFromHostname<A extends AFSocketAddress> {
   /**
    * Translates a "host" string (and port) to an {@link AFSocketAddress}.
-   * 
+   *
    * @param host The hostname
    * @param port The port, or 0.
    * @return The {@link AFSocketAddress}
@@ -40,7 +40,7 @@ public interface AFSocketAddressFromHostname<A extends AFSocketAddress> {
   /**
    * Checks whether the given hostname is supported by this socket factory. If not, calls to
    * createSocket will cause a {@link SocketException}.
-   * 
+   *
    * @param host The host to check.
    * @return {@code true} if supported.
    */

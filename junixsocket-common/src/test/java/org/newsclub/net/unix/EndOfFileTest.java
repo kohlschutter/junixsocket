@@ -43,7 +43,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * See http://code.google.com/p/junixsocket/issues/detail?id=9
- * 
+ *
  * @author Derrick Rice (April, 2010)
  */
 @SuppressFBWarnings({
@@ -234,11 +234,11 @@ public abstract class EndOfFileTest<A extends SocketAddress> extends SocketTestB
       try {
         /*
          * http://www.unixguide.net/network/socketfaq/2.1.shtml http://www.faqs.org/rfcs/rfc793.html
-         * 
+         *
          * The TCP RFC allows the open side to continue sending data. In most (all?)
          * implementations, the closed side will respond with a RST. For this reason, it takes two
          * writes to cause an IOException with TCP sockets. (or more, if there is latency)
-         * 
+         *
          * However, it is expected that the write give an IOException as soon as possible - which
          * means it is OK for our socket implementation to give an IOException on the first write.
          */

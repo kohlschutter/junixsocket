@@ -24,7 +24,7 @@ import java.net.SocketException;
 
 /**
  * A selectable channel for stream-oriented connecting sockets.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFUNIXSocketChannel extends AFSocketChannel<AFUNIXSocketAddress> implements

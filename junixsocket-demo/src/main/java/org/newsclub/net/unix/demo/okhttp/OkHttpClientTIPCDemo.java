@@ -39,10 +39,10 @@ import okhttp3.ResponseBody;
 /**
  * Connects to TIPC service 8080.1 and performs an HTTP request over that socket, using the
  * <a href="https://square.github.io/okhttp/">OkHttp</a> HTTP client library.
- * 
+ *
  * If that socket is bound by {@link NanoHttpdServerDemo}, the expected output is "Hello world from
  * &lt;hostname&gt;" (start {@link NanoHttpdServerDemo} with {@code --url tipc://8080.1}.
- * 
+ *
  * @author Christian Kohlschütter
  * @see NanoHttpdServerDemo
  */

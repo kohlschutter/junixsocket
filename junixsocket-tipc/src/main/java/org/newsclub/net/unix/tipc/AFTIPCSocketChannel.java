@@ -22,7 +22,7 @@ import org.newsclub.net.unix.AFTIPCSocketAddress;
 
 /**
  * A selectable channel for stream-oriented connecting sockets.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFTIPCSocketChannel extends AFSocketChannel<AFTIPCSocketAddress> implements

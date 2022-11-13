@@ -21,7 +21,7 @@ import java.io.File;
 
 /**
  * Some bridging code that allows junixsocket-selftest to do some in-depth diagnostics.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class SelftestDiagnosticsHelper {
@@ -30,7 +30,7 @@ public final class SelftestDiagnosticsHelper {
 
   /**
    * Returns the error that prevented the native library from loading, or {@code null}.
-   * 
+   *
    * @return The error, or {@code null}.
    */
   public static Throwable initError() {
@@ -39,7 +39,7 @@ public final class SelftestDiagnosticsHelper {
 
   /**
    * Returns the temporary directory used for storing the native library, or {@code null}.
-   * 
+   *
    * @return The directory, or {@code null}.
    */
   public static File tempDir() {

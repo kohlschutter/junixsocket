@@ -36,17 +36,17 @@ import java.util.Objects;
 
 /**
  * A workaround to create an {@link InetAddress} for an {@link AFSocketAddress}.
- * 
+ *
  * {@link DatagramPacket} internally requires InetAddress compatibility. Even if it pretends to
  * accept {@link SocketAddress}es, it refuses anything other than {@link InetSocketAddress}
  * <em>and</em> then even stores host and port separately.
- * 
+ *
  * This implementation deserializes a specially crafted {@link InetAddress} with a hostname that
  * encodes the raw bytes of an {@link AFSocketAddress}. We do this because the deserialization code
  * path does not attempt DNS resolution (which would fail one way or another).
- * 
+ *
  * The hostnames we use end with ".junixsocket", to distinguish them from regular hostnames.
- * 
+ *
  * @author Christian Kohlschütter
  */
 class AFInetAddress {
@@ -94,12 +94,12 @@ class AFInetAddress {
   /**
    * Encodes a junixsocket socketAddress into a string that is (somewhat) guaranteed to not be
    * resolved by java.net code.
-   * 
+   *
    * Implementation detail: The "[" prefix (with the corresponding "]" suffix missing from the
    * input) should cause an early {@link UnknownHostException} be thrown, which is caught within
    * {@link InetSocketAddress#InetSocketAddress(String, int)}, causing the hostname be marked as
    * "unresolved" (without an address set).
-   * 
+   *
    * @param socketAddress The socket address.
    * @return A string, to be used when calling
    *         {@link InetSocketAddress#InetSocketAddress(String, int)}, etc.
@@ -141,7 +141,7 @@ class AFInetAddress {
    * address), without actually having to resolve the address via DNS, thus still carrying the
    * "hostname" field containing a hostname as returned by
    * {@link #createUnresolvedHostname(byte[])}.
-   * 
+   *
    * @param socketAddress The socket address.
    * @return The {@link InetAddress}.
    */
@@ -182,7 +182,7 @@ class AFInetAddress {
     try {
       return unwrapAddress(hostname, af);
     } catch (IllegalArgumentException e) {
-      throw (SocketException)new SocketException("Unsupported address").initCause(e);
+      throw (SocketException) new SocketException("Unsupported address").initCause(e);
     }
   }
 

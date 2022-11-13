@@ -21,7 +21,7 @@ import java.net.ProtocolFamily;
 
 /**
  * Describes the protocol families supported by junixsocket-tipc.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public enum AFTIPCProtocolFamily implements ProtocolFamily {

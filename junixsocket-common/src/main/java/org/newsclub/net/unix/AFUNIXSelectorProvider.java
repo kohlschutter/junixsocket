@@ -88,7 +88,7 @@ public final class AFUNIXSelectorProvider extends AFSelectorProvider<AFUNIXSocke
 
   /**
    * Returns the singleton instance.
-   * 
+   *
    * @return The instance.
    */
   @SuppressFBWarnings("MS_EXPOSE_REP")
@@ -98,7 +98,7 @@ public final class AFUNIXSelectorProvider extends AFSelectorProvider<AFUNIXSocke
 
   /**
    * Returns the singleton instance.
-   * 
+   *
    * @return The instance.
    */
   public static AFUNIXSelectorProvider provider() {

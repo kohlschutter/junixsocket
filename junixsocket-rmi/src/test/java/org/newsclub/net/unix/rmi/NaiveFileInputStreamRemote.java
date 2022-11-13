@@ -25,10 +25,10 @@ import java.rmi.RemoteException;
 
 /**
  * Exposes a {@link FileInputStream}'s basic functionality over RMI.
- * 
+ *
  * As opposed to {@link RemoteFileDescriptorBase}, all data is read, then copied and serialized via
  * RMI.
- * 
+ *
  * @author Christian Kohlschütter
  * @see RemoteFileDescriptorBase for a better way.
  */

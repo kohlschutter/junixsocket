@@ -29,7 +29,7 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * Marker interface that combines junixsocket-based {@link SocketChannel}s, {@link Socket}s,
  * {@link DatagramChannel}s and {@link DatagramSocket}s.
- * 
+ *
  * @author Christian Kohlschütter
  * @see AFSocketPair
  * @see AFSocket
@@ -41,7 +41,7 @@ public interface AFSomeSocket extends Closeable, FileDescriptorAccess {
   /**
    * Returns the socket's local socket address, or {@code null} if unavailable or if there was a
    * problem retrieving it.
-   * 
+   *
    * @return The local socket address, or {@code null}.
    */
   @Nullable
@@ -50,7 +50,7 @@ public interface AFSomeSocket extends Closeable, FileDescriptorAccess {
   /**
    * Returns the socket's remote socket address, or {@code null} if unavailable/not connected, or if
    * there was a problem retrieving it.
-   * 
+   *
    * @return The remote socket address, or {@code null}.
    */
   @Nullable

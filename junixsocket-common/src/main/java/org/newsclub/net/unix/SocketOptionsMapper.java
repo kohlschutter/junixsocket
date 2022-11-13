@@ -28,7 +28,7 @@ import java.util.Set;
 
 /**
  * Maps new SocketOption classes to the old integer-based scheme.
- * 
+ *
  * @author Christian Kohlschütter
  */
 final class SocketOptionsMapper {

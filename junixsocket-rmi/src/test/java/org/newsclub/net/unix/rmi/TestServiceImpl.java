@@ -37,7 +37,7 @@ import com.kohlschutter.util.IOUtil;
 
 /**
  * The implementation for the test service.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class TestServiceImpl implements TestService, Closeable {

@@ -24,11 +24,11 @@ import java.util.Set;
 
 /**
  * Provides references to all tests that should be included in junixsocket-selftest.
- * 
+ *
  * Important: This is just a dummy implementation so we can properly develop in Eclipse. The actual
  * provider is in src/main/java-overlay/... and contains references to test classes from
  * junixsocket-common and junixsocket-rmi, which are otherwise not accessible from this artifact.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class SelftestProvider {

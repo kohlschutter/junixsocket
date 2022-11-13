@@ -34,7 +34,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A selectable channel for stream-oriented connecting sockets.
- * 
+ *
  * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
  * @author Christian Kohlschütter
  */
@@ -45,7 +45,7 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
 
   /**
    * Creates a new socket channel for the given socket, using the given {@link SelectorProvider}.
-   * 
+   *
    * @param socket The socket.
    * @param sp The {@link SelectorProvider}.
    */
@@ -57,7 +57,7 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
 
   /**
    * Returns the corresponding {@link AFSocket}.
-   * 
+   *
    * @return The corresponding socket.
    */
   protected final AFSocket<A> getAFSocket() {
@@ -66,14 +66,14 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
 
   /**
    * A reference to a method that provides an {@link AFSocket} instance.
-   * 
+   *
    * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
    */
   @FunctionalInterface
   protected interface AFSocketSupplier<A extends AFSocketAddress> {
     /**
      * Returns a new {@link AFSocket} instance.
-     * 
+     *
      * @return The instance.
      * @throws IOException on error.
      */
@@ -85,7 +85,7 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
    *
    * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
    * @param supplier The AFSocketChannel constructor.
-   * 
+   *
    * @return The new channel
    * @throws IOException on error.
    */

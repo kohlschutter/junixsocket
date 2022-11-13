@@ -25,7 +25,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Simplifies handling shutdown hooks.
- * 
+ *
  * @author Christian Kohlschütter
  */
 final class ShutdownHookSupport {
@@ -34,9 +34,9 @@ final class ShutdownHookSupport {
 
   /**
    * Registers a shutdown hook to be executed upon Runtime shutdown.
-   * 
+   *
    * NOTE: Only a weak reference to the hook is stored.
-   * 
+   *
    * @param hook The hook to register.
    * @return The thread, to be used with #removeShutdownHook
    */
@@ -68,19 +68,19 @@ final class ShutdownHookSupport {
 
   /**
    * Something that wants to be called upon Runtime shutdown.
-   * 
+   *
    * @author Christian Kohlschütter
    */
   interface ShutdownHook {
     /**
      * Called upon Runtime shutdown.
-     * 
+     *
      * When you implement this method, make sure to check that the given Thread matches the current
      * thread, e.g.: <code>
      * if (thread != Thread.currentThread() || !(thread instanceof ShutdownThread)) {
      * throw new IllegalStateException("Illegal caller"); }
      * </code>
-     * 
+     *
      * @param thread The current Thread.
      * @throws Exception Most likely ignored
      */
@@ -90,7 +90,7 @@ final class ShutdownHookSupport {
 
   /**
    * The Thread that will be called upon Runtime shutdown.
-   * 
+   *
    * @author Christian Kohlschütter
    */
   static final class ShutdownThread extends Thread {

@@ -25,7 +25,7 @@ import java.net.SocketAddress;
 /**
  * A multi-threaded unix socket server that simply reads all input, byte per byte, not doing
  * anything else with it.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class NullServer extends DemoServerBase {

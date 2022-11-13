@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A shared core that is common for all AF* sockets (datagrams, streams).
- * 
+ *
  * @author Christian Kohlschütter
  */
 class AFSocketCore extends AFCore {

@@ -63,7 +63,7 @@ public final class AFUNIXSocketCredentials implements Serializable {
 
   /**
    * Returns the "pid" (process ID), or {@code -1} if it could not be retrieved.
-   * 
+   *
    * @return The pid, or -1.
    */
   public long getPid() {
@@ -72,7 +72,7 @@ public final class AFUNIXSocketCredentials implements Serializable {
 
   /**
    * Returns the "uid" (user ID), or {@code -1} if it could not be retrieved.
-   * 
+   *
    * @return The uid, or -1.
    */
   public long getUid() {
@@ -81,7 +81,7 @@ public final class AFUNIXSocketCredentials implements Serializable {
 
   /**
    * Returns the primary "gid" (group ID), or {@code -1} if it could not be retrieved.
-   * 
+   *
    * @return The gid, or -1.
    */
   public long getGid() {
@@ -90,10 +90,10 @@ public final class AFUNIXSocketCredentials implements Serializable {
 
   /**
    * Returns all "gid" values (group IDs), or {@code null} if they could not be retrieved.
-   * 
+   *
    * Note that this list may be incomplete (only the primary gid may be returned), but it is
    * guaranteed that the first one in the list is the primary gid as returned by {@link #getGid()}.
-   * 
+   *
    * @return The gids, or null.
    */
   public long[] getGids() {
@@ -103,7 +103,7 @@ public final class AFUNIXSocketCredentials implements Serializable {
   /**
    * Returns the process' unique identifier, or {@code null} if no such identifier could be
    * retrieved. Note that all processes run by the same Java runtime may share the same UUID.
-   * 
+   *
    * @return The UUID, or null.
    */
   public UUID getUUID() {
@@ -120,7 +120,7 @@ public final class AFUNIXSocketCredentials implements Serializable {
 
   /**
    * Checks if neither of the possible peer credentials are set.
-   * 
+   *
    * @return {@code true} if no credentials set.
    */
   public boolean isEmpty() {
@@ -201,10 +201,10 @@ public final class AFUNIXSocketCredentials implements Serializable {
   /**
    * Returns the {@link AFUNIXSocketCredentials} for the currently active remote session, or
    * {@code null} if it was not possible to retrieve these credentials.
-   * 
+   *
    * NOTE: For now, only RMI remote sessions are supported (RemoteServer sessions during a remote
    * method invocation).
-   * 
+   *
    * If you want to retrieve the peer credentials for an RMI server, see junixsocket-rmi's
    * RemotePeerInfo.
    *

@@ -25,7 +25,7 @@ import org.newsclub.net.unix.demo.DemoHelper;
 
 /**
  * A demo program to configure and run several {@link AFSocket} client demos from the command line.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class DemoClient {

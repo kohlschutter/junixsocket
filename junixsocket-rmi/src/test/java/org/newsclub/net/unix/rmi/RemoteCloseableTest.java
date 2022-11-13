@@ -35,7 +35,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Tests {@link RemoteCloseable}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @SuppressFBWarnings({

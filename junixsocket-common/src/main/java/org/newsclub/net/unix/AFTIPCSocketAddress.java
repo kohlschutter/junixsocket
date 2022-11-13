@@ -40,7 +40,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
  * An {@link AFSocketAddress} for TIPC sockets.
- * 
+ *
  * The TIPC socket API provides three different address types:
  * <ul>
  * <li><em>Service Address.</em>
@@ -106,7 +106,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  * indicated node. If this value is zero, all matching sockets in the whole cluster, as visible from
  * the source node, are eligible.
  * </p>
- * 
+ *
  * @author Christian Kohlschütter (documentation credits to Jon Maloy and the TIPC team).
  */
 public final class AFTIPCSocketAddress extends AFSocketAddress {
@@ -131,7 +131,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * The TIPC address type.
-   * 
+   *
    * @author Christian Kohlschütter
    */
   @NonNullByDefault
@@ -191,7 +191,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
     /**
      * Formats an integer as an unsigned, zero-padded 32-bit hexadecimal number.
-     * 
+     *
      * @param i The number.
      * @return The string.
      */
@@ -211,7 +211,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * The TIPC visibility scope.
-   * 
+   *
    * @author Christian Kohlschütter
    */
   @NonNullByDefault
@@ -249,7 +249,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
     /**
      * Returns a {@link Scope} instance given an integer value.
-     * 
+     *
      * @param v The scope value.
      * @return The {@link Scope} instance.
      */
@@ -294,7 +294,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFTIPCSocketAddress} that refers to a given service type and instance, using
    * the given scope and the given lookup domain.
-   * 
+   *
    * @param scope The address scope.
    * @param type The service type (0-63 are reserved).
    * @param instance The service instance ID.
@@ -434,7 +434,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
   /**
    * Returns an {@link AFTIPCSocketAddress} given a special {@link InetAddress} that encodes the
    * byte sequence of an AF_TIPC socket address, like those returned by {@link #wrapAddress()}.
-   * 
+   *
    * @param address The "special" {@link InetAddress}.
    * @param port The port (use 0 for "none").
    * @return The {@link AFTIPCSocketAddress} instance.
@@ -449,7 +449,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * Returns an {@link AFTIPCSocketAddress} given a special {@link InetAddress} hostname that
    * encodes the byte sequence of an AF_TIPC socket address, like those returned by
    * {@link #wrapAddress()}.
-   * 
+   *
    * @param hostname The "special" hostname, as provided by {@link InetAddress#getHostName()}.
    * @param port The port (use 0 for "none").
    * @return The {@link AFTIPCSocketAddress} instance.
@@ -462,7 +462,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Returns an {@link AFTIPCSocketAddress} given a generic {@link SocketAddress}.
-   * 
+   *
    * @param address The address to unwrap.
    * @return The {@link AFTIPCSocketAddress} instance.
    * @throws SocketException if the operation fails, for example when an unsupported address is
@@ -478,7 +478,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Returns the scope of this address.
-   * 
+   *
    * @return The scope.
    */
   public Scope getScope() {
@@ -491,7 +491,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Returns the TIPC type part of this address.
-   * 
+   *
    * @return The type identifier
    */
   public int getTIPCType() {
@@ -502,7 +502,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Returns the TIPC instance part of this address.
-   * 
+   *
    * @return The instance identifier.
    */
   public int getTIPCInstance() {
@@ -513,7 +513,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Returns the TIPC domain part of this address.
-   * 
+   *
    * @return The domain identifier.
    */
   public int getTIPCDomain() {
@@ -524,7 +524,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Returns the TIPC lower instance of this address.
-   * 
+   *
    * @return The lower instance identifier.
    */
   public int getTIPCLower() {
@@ -535,7 +535,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Returns the TIPC upper instance of this address.
-   * 
+   *
    * @return The lower instance identifier.
    */
   public int getTIPCUpper() {
@@ -546,7 +546,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Returns the TIPC ref of this address.
-   * 
+   *
    * @return The ref identifier.
    */
   public int getTIPCRef() {
@@ -557,7 +557,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Returns the TIPC node hash of this address.
-   * 
+   *
    * @return The node hash.
    */
   public int getTIPCNodeHash() {
@@ -602,7 +602,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Checks if an {@link InetAddress} can be unwrapped to an {@link AFTIPCSocketAddress}.
-   * 
+   *
    * @param addr The instance to check.
    * @return {@code true} if so.
    * @see #wrapAddress()
@@ -614,7 +614,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Checks if a {@link SocketAddress} can be unwrapped to an {@link AFTIPCSocketAddress}.
-   * 
+   *
    * @param addr The instance to check.
    * @return {@code true} if so.
    * @see #unwrap(InetAddress, int)
@@ -636,7 +636,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Returns the corresponding {@link AFAddressFamily}.
-   * 
+   *
    * @return The address family instance.
    */
   @SuppressWarnings("null")
@@ -684,7 +684,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Returns an {@link AFTIPCSocketAddress} for the given URI, if possible.
-   * 
+   *
    * @param uri The URI.
    * @return The address.
    * @throws SocketException if the operation fails.
@@ -696,7 +696,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   /**
    * Returns an {@link AFTIPCSocketAddress} for the given URI, if possible.
-   * 
+   *
    * @param uri The URI.
    * @param overridePort The port to forcibly use, or {@code -1} for "don't override".
    * @return The address.

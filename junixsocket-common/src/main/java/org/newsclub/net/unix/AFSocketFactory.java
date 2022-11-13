@@ -28,10 +28,10 @@ import javax.net.SocketFactory;
 
 /**
  * The base for a SocketFactory that connects to UNIX sockets.
- * 
+ *
  * Typically, the "hostname" is used as a reference to a socketFile on the file system. The actual
  * mapping is left to the implementor.
- * 
+ *
  * @see AFUNIXSocketFactory
  */
 public abstract class AFSocketFactory<A extends AFSocketAddress> extends SocketFactory implements
@@ -47,10 +47,10 @@ public abstract class AFSocketFactory<A extends AFSocketAddress> extends SocketF
   /**
    * Checks whether the given {@link InetAddress} is supported by this socket factory. If not, calls
    * to createSocket will cause a {@link SocketException}.
-   * 
+   *
    * By default, this only checks the hostname part of the address via
    * {@link #isHostnameSupported(String)}.
-   * 
+   *
    * @param address The address to check.
    * @return {@code true} if supported.
    */
@@ -63,7 +63,7 @@ public abstract class AFSocketFactory<A extends AFSocketAddress> extends SocketF
 
   /**
    * Creates a new {@link AFSocket}, connected to the given address.
-   * 
+   *
    * @param addr The address to connect to.
    * @return The socket instance.
    * @throws IOException on error.
@@ -140,7 +140,7 @@ public abstract class AFSocketFactory<A extends AFSocketAddress> extends SocketF
 
     /**
      * Creates a {@link FixedAddressSocketFactory}.
-     * 
+     *
      * @param address The address to use for all connections.
      */
     public FixedAddressSocketFactory(SocketAddress address) {

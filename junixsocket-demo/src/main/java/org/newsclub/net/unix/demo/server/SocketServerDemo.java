@@ -26,7 +26,7 @@ import org.newsclub.net.unix.server.SocketServer;
 
 /**
  * A demo program to configure and run several {@link SocketServer} demos from the command line.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class SocketServerDemo {

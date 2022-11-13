@@ -22,14 +22,14 @@ import org.newsclub.net.unix.AFSocketExtensions;
 /**
  * Defines certain methods that all junixsocket AF_TIPC socket implementations share and extend
  * beyond the standard socket API.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public interface AFTIPCSocketExtensions extends AFSocketExtensions {
   /**
    * Returns the TIPC "ErrInfo" information from the ancillary receive buffer (if any was set), or
    * {@code null} if no error was retrieved.
-   * 
+   *
    * @return The ErrInfo.
    */
   AFTIPCErrInfo getErrInfo();
@@ -37,7 +37,7 @@ public interface AFTIPCSocketExtensions extends AFSocketExtensions {
   /**
    * Returns the TIPC "DestName" information from the ancillary receive buffer (if any was set), or
    * {@code null} if no DestName was retrieved.
-   * 
+   *
    * @return The service address or range (without scope) that was specified by the sender of the
    *         message.
    */

@@ -31,7 +31,7 @@ import org.newsclub.net.unix.rmi.RemoteFileInput;
 
 /**
  * Demonstrates how to read files via FileDescriptors that are exchanged via RMI.
- * 
+ *
  * @author Christian Kohlschütter
  * @see StreamServer
  */
@@ -42,7 +42,7 @@ public final class StreamClient {
 
   /**
    * {@link StreamClient} command-line tool.
-   * 
+   *
    * @param args Command-line arguments.
    * @throws IOException on error.
    * @throws NotBoundException if the server cannot be reached.

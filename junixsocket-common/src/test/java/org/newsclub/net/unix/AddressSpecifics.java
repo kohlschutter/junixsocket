@@ -31,13 +31,13 @@ import java.nio.channels.spi.SelectorProvider;
 
 /**
  * Test-related methods to work with a particular {@link AFSocket} implementation.
- * 
+ *
  * It is essential to use these methods in tests instead of directly calling the {@link AFSocket}
  * etc. methods: Some socket implementations (and sometimes only in certain kernel/environment
  * configurations) may expose unexpected behavior that is otherwise hard to catch.
- * 
+ *
  * This is especially relevant when connecting/binding sockets.
- * 
+ *
  * @param <A> The socket address.
  * @author Christian Kohlschütter
  * @see SocketTestBase

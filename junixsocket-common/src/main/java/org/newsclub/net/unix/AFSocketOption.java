@@ -21,7 +21,7 @@ import java.net.SocketOption;
 
 /**
  * A special socket option supported by some junixsocket-based implementation.
- * 
+ *
  * @param <T> The option's value type.
  * @author Christian Kohlschütter
  */
@@ -33,7 +33,7 @@ public final class AFSocketOption<T> implements SocketOption<T> {
 
   /**
    * Creates a new socket option. This should only be called by {@link AFSocket} implementations.
-   * 
+   *
    * @param name The name of the option.
    * @param type The value type.
    * @param level The socket level (as defined in junixsocket-native).

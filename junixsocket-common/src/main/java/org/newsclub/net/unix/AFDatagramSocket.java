@@ -36,7 +36,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A {@link DatagramSocket} implementation that works with junixsocket.
- * 
+ *
  * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
  * @author Christian Kohlschütter
  */
@@ -52,7 +52,7 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
 
   /**
    * Creates a new {@link AFDatagramSocket} instance.
-   * 
+   *
    * @param impl The corresponding {@link SocketImpl} class.
    * @throws IOException on error.
    */
@@ -64,14 +64,14 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
 
   /**
    * Creates a new {@link DatagramChannel} that is associated with this socket.
-   * 
+   *
    * @return The channel.
    */
   protected abstract AFDatagramChannel<A> newChannel();
 
   /**
    * Returns the {@link AncillaryDataSupport} instance.
-   * 
+   *
    * @return The instance.
    */
   protected final AncillaryDataSupport getAncillaryDataSupport() {
@@ -80,14 +80,14 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
 
   /**
    * A reference to the constructor of an {@link AFDatagramSocket} subclass.
-   * 
+   *
    * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
    */
   @FunctionalInterface
   public interface Constructor<A extends AFSocketAddress> {
     /**
      * Constructs a new {@link DatagramSocket} instance.
-     * 
+     *
      * @param fd The file descriptor.
      * @return The new instance.
      * @throws IOException on error.
@@ -97,7 +97,7 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
 
   /**
    * Returns the {@link AFSocketAddress} type supported by this socket.
-   * 
+   *
    * @return The supported {@link AFSocketAddress}.
    */
   protected final Class<? extends AFSocketAddress> socketAddressClass() {
@@ -119,7 +119,7 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
 
   /**
    * Creates a new {@link AFDatagramSocket}.
-   * 
+   *
    * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
    * @param constructor The supplying constructor.
    * @param fdObj The file descriptor.
@@ -169,12 +169,12 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
 
   /**
    * Reads the next received packet without actually removing it from the queue.
-   * 
+   *
    * In other words, once a packet is received, calling this method multiple times in a row will not
    * have further effects on the packet contents.
-   * 
+   *
    * This call still blocks until at least one packet has been received and added to the queue.
-   * 
+   *
    * @param p The packet.
    * @throws IOException on error.
    */
@@ -328,10 +328,10 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
   /**
    * Checks if this {@link AFDatagramSocket}'s bound filename should be removed upon
    * {@link #close()}.
-   * 
+   *
    * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
    * namespace).
-   * 
+   *
    * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
    */
   public final boolean isDeleteOnClose() {
@@ -340,10 +340,10 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
 
   /**
    * Enables/disables deleting this {@link AFDatagramSocket}'s bound filename upon {@link #close()}.
-   * 
+   *
    * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
    * namespace).
-   * 
+   *
    * @param b Enabled if {@code true}.
    */
   public final void setDeleteOnClose(boolean b) {
@@ -407,7 +407,7 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
 
   /**
    * Returns the address family supported by this implementation.
-   * 
+   *
    * @return The family.
    */
   protected final AFAddressFamily<A> addressFamily() {
@@ -416,7 +416,7 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
 
   /**
    * Returns the internal helper instance for address-specific extensions.
-   * 
+   *
    * @return The helper instance.
    * @throws UnsupportedOperationException if such extensions are not supported for this address
    *           type.

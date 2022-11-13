@@ -22,13 +22,13 @@ import java.io.IOException;
 
 /**
  * Something that has a {@link FileDescriptor}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public interface FileDescriptorAccess {
   /**
    * Returns the corresponding {@link FileDescriptor}.
-   * 
+   *
    * @return The corresponding {@link FileDescriptor}.
    * @throws IOException on error.
    */

@@ -346,7 +346,7 @@ public class FileDescriptorCastTest {
   /**
    * Passes a socket to a newly created Java process as "standard input". The new process sends back
    * "Hello world" over that socket.
-   * 
+   *
    * @throws Exception on failure.
    * @see StdinSocketApp
    */

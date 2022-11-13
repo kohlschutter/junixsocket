@@ -23,7 +23,7 @@ import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGenerated
 
 /**
  * Helper methods for datagrams, but mostly for testing.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFDatagramUtil {

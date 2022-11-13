@@ -25,16 +25,16 @@ import java.util.stream.IntStream;
 
 /**
  * The {@link AFRMIService} assigns and keeps track of anonymous ports, among other things.
- * 
+ *
  * This feature is to be used by {@link AFRMISocketFactory} only.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public interface AFRMIService extends Remote {
   /**
    * Registers a new anonymous port and returns it. When the port is not required anymore, it must
    * be returned via {@link #returnPort(int)}.
-   * 
+   *
    * @return The new port.
    * @throws IOException if the operation fails.
    */
@@ -43,7 +43,7 @@ public interface AFRMIService extends Remote {
   /**
    * Returns a previously registered port. No error is thrown if the given port has not been
    * assigned before.
-   * 
+   *
    * @param port The port.
    * @throws IOException if the operation fails.
    */
@@ -51,7 +51,7 @@ public interface AFRMIService extends Remote {
 
   /**
    * Returns a stream of open ports.
-   * 
+   *
    * @return A sequence of open ports.
    * @throws RemoteException if the operation fails.
    */
@@ -59,9 +59,9 @@ public interface AFRMIService extends Remote {
 
   /**
    * Indicates whether a remote-shutdown of the RMI registry is allowed.
-   * 
+   *
    * NOTE: A call to {@link #shutdown()} may or may not succeed regardless.
-   * 
+   *
    * @return Indication of whether a remote-shutdown of the RMI registry is allowed.
    * @throws RemoteException if the operation fails.
    */
@@ -69,7 +69,7 @@ public interface AFRMIService extends Remote {
 
   /**
    * Asks that this RMI registry gets shut down.
-   * 
+   *
    * @throws RemoteException if the operation fails.
    */
   void shutdown() throws RemoteException;
@@ -77,7 +77,7 @@ public interface AFRMIService extends Remote {
   /**
    * Adds the given {@link Closeable} to the list of instances to be closed upon shutdown of the RMI
    * registry.
-   * 
+   *
    * @param closeable The instance.
    * @throws RemoteException if the operation fails.
    */
@@ -86,9 +86,9 @@ public interface AFRMIService extends Remote {
   /**
    * Removes the given {@link Closeable} from the list of instances to be closed upon shutdown of
    * the RMI registry.
-   * 
+   *
    * No error is returned if the given element was not registered before.
-   * 
+   *
    * @param closeable The instance.
    * @throws RemoteException if the operation fails.
    */

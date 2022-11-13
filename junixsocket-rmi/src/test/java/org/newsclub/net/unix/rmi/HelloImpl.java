@@ -21,7 +21,7 @@ import java.io.IOException;
 
 /**
  * The implementation of the very simple {@link Hello} service.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class HelloImpl implements Hello {

@@ -29,7 +29,7 @@ import org.newsclub.net.unix.SocketTestBase;
 /**
  * Provides references to all "junixsocket-vsock" tests that should be included in
  * junixsocket-selftest.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @SuppressWarnings("PMD.CouplingBetweenObjects")

@@ -27,9 +27,9 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * A "named integer", usually used for constants.
- * 
+ *
  * See the concrete implementations for usage.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @NonNullByDefault
@@ -57,7 +57,7 @@ public class NamedInteger implements Serializable {
   /**
    * Creates a new {@link NamedInteger} instance, without actually naming it. A name of "UNDEFINED"
    * is used.
-   * 
+   *
    * @param id The value.
    */
   protected NamedInteger(int id) {
@@ -66,7 +66,7 @@ public class NamedInteger implements Serializable {
 
   /**
    * Creates a new {@link NamedInteger} instance.
-   * 
+   *
    * @param name The name.
    * @param id The value.
    */
@@ -77,7 +77,7 @@ public class NamedInteger implements Serializable {
 
   /**
    * Returns the name.
-   * 
+   *
    * @return The name.
    */
   public final String name() {
@@ -86,7 +86,7 @@ public class NamedInteger implements Serializable {
 
   /**
    * Returns the value.
-   * 
+   *
    * @return The value.
    */
   public final int value() {
@@ -118,7 +118,7 @@ public class NamedInteger implements Serializable {
 
   /**
    * Ensures that the {@code VALUES} array is configured correctly.
-   * 
+   *
    * @param <T> The instance type.
    * @param values The {@code VALUES} array.
    * @return The verified {@code VALUES} array.
@@ -135,14 +135,14 @@ public class NamedInteger implements Serializable {
 
   /**
    * Constructor for "undefined" values.
-   * 
+   *
    * @param <T> The instance type.
    */
   @FunctionalInterface
   protected interface UndefinedValueConstructor<T extends NamedInteger> {
     /**
      * Creates a new "undefined" value instance.
-     * 
+     *
      * @param id The value.
      * @return The instance.
      */
@@ -151,7 +151,7 @@ public class NamedInteger implements Serializable {
 
   /**
    * Returns an instance given an integer value.
-   * 
+   *
    * @param <T> The instance type.
    * @param values The {@code VALUES} array.
    * @param constr The constructor for undefined values.

@@ -26,7 +26,7 @@ import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
 /**
  * A {@link DatagramChannel} implementation that works with {@code AF_VSOCK} sockets.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFVSOCKDatagramChannel extends AFDatagramChannel<AFVSOCKSocketAddress> implements

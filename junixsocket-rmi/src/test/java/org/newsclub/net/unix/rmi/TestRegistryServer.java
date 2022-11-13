@@ -28,9 +28,9 @@ import com.kohlschutter.util.SystemPropertyUtil;
 /**
  * A simple RMI Registry that is launched as forked Java VM from unit tests such as
  * {@link RemoteRegistryTest}.
- * 
+ *
  * Important: The server will terminate ca. 10 seconds after starting.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class TestRegistryServer {

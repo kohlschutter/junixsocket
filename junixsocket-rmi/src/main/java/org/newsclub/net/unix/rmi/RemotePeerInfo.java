@@ -31,7 +31,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Information about the remote connection.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class RemotePeerInfo {
@@ -45,7 +45,7 @@ public final class RemotePeerInfo {
 
   /**
    * The socket factory used to establish connections.
-   * 
+   *
    * @return The socket factory.
    */
   public RMISocketFactory getSocketFactory() {
@@ -54,7 +54,7 @@ public final class RemotePeerInfo {
 
   /**
    * The hostname.
-   * 
+   *
    * @return The hostname
    */
   public String getHost() {
@@ -63,7 +63,7 @@ public final class RemotePeerInfo {
 
   /**
    * The port.
-   * 
+   *
    * @return The port
    */
   public int getPort() {
@@ -72,7 +72,7 @@ public final class RemotePeerInfo {
 
   /**
    * The remote socket credentials, or {@code null} if they could not be retrieved.
-   * 
+   *
    * @return The peer credentials, or {@code null}.
    */
   @SuppressFBWarnings("EI_EXPOSE_REP")
@@ -94,7 +94,7 @@ public final class RemotePeerInfo {
   /**
    * Returns the {@link AFUNIXSocketCredentials} for the peer (server) of the given {@link Remote}
    * instance, or {@code null} if it was not possible to retrieve these credentials.
-   * 
+   *
    * @param obj The remote object.
    * @return The credentials, or {@code null} if unable to retrieve.
    * @throws IOException if an exception occurs.
@@ -107,9 +107,9 @@ public final class RemotePeerInfo {
    * Returns the connection information ({@link RMISocketFactory}, hostname and port) used for the
    * given {@link Remote} object, or {@code null} if no custom {@link RMISocketFactory} was
    * specified.
-   * 
+   *
    * An {@link IOException} may be thrown if we couldn't determine the socket factory.
-   * 
+   *
    * @param obj The remote object.
    * @return The factory, or {@code null}
    * @throws IOException if the operation fails.
@@ -145,10 +145,10 @@ public final class RemotePeerInfo {
   /**
    * Mimics a Serializer for RemoteRef.writeExternal, so we can extract the information we need
    * about the remote reference without having to break-open internal Java classes.
-   * 
+   *
    * NOTE: The format for the data we extract is assumed to be stable across JVM implementations,
    * otherwise RMI would probably not work.
-   * 
+   *
    * @author Christian Kohlschütter
    */
   static final class ExtractingObjectOutput implements ObjectOutput {

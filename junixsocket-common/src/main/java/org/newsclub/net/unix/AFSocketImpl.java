@@ -40,7 +40,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * junixsocket-based {@link SocketImpl}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @SuppressWarnings({"PMD.CyclomaticComplexity"})
@@ -149,7 +149,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
   /**
    * Creates a new {@link AFSocketImpl} instance.
-   * 
+   *
    * @param addressFamily The address family.
    * @param fdObj The socket's {@link FileDescriptor}.
    * @throws SocketException on error.
@@ -167,7 +167,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
   /**
    * Creates a new {@link InputStream} for this socket.
-   * 
+   *
    * @return The new stream.
    */
   protected final AFInputStream newInputStream() {
@@ -176,7 +176,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
   /**
    * Creates a new {@link OutputStream} for this socket.
-   * 
+   *
    * @return The new stream.
    */
   protected final AFOutputStream newOutputStream() {
@@ -747,7 +747,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
   /**
    * Like {@link #getOption(int)}, but ignores exceptions for certain option IDs.
-   * 
+   *
    * @param optID The option ID.
    * @return The value.
    * @throws SocketException on error.
@@ -768,7 +768,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
   /**
    * Like {@link #setOption(int, Object)}, but ignores exceptions for certain option IDs.
-   * 
+   *
    * @param optID The option ID.
    * @param value The value.
    * @throws SocketException on error.
@@ -844,7 +844,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   /**
    * Shuts down both input and output at once. Equivalent to calling {@link #shutdownInput()} and
    * {@link #shutdownOutput()}.
-   * 
+   *
    * @throws IOException on error.
    */
   protected final void shutdown() throws IOException {
@@ -995,7 +995,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
   /**
    * Returns the internal helper instance for address-specific extensions.
-   * 
+   *
    * @return The helper instance.
    * @throws UnsupportedOperationException if such extensions are not supported for this address
    *           type.

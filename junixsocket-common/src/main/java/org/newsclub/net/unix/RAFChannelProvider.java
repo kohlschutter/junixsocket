@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Hack to get a readable AND writable {@link FileChannel} for a {@link FileDescriptor}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 final class RAFChannelProvider extends RandomAccessFile implements FileDescriptorAccess {

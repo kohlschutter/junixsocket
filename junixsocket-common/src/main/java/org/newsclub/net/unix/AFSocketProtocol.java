@@ -19,7 +19,7 @@ package org.newsclub.net.unix;
 
 /**
  * Describes the "protocol" part of a socket.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public enum AFSocketProtocol {

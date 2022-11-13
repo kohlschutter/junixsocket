@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The core functionality of file descriptor based I/O.
- * 
+ *
  * @author Christian Kohlschütter
  */
 class AFCore extends CleanableState {
@@ -210,11 +210,11 @@ class AFCore extends CleanableState {
 
   /**
    * Returns a per-thread reusable byte buffer for a given capacity.
-   * 
+   *
    * If a thread-local buffer currently uses a smaller capacity, the buffer is replaced by a larger
    * one. If the capacity exceeds a configurable maximum, a new direct buffer is allocated but not
    * cached (i.e., the previously cached one is kept but not immediately returned to the caller).
-   * 
+   *
    * @param capacity The desired capacity.
    * @return A byte buffer satisfying the requested capacity.
    */

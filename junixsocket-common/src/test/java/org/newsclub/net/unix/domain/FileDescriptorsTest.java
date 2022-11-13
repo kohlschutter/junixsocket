@@ -54,7 +54,7 @@ import com.kohlschutter.util.IOUtil;
 
 /**
  * Tests sending and receiving file descriptors.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @AFSocketCapabilityRequirement({

@@ -31,13 +31,13 @@ import com.mysql.jdbc.SocketFactory;
 
 /**
  * Connect to mysql databases (and compatibles) using UNIX domain sockets.
- * 
+ *
  * NOTE: This SocketFactory currently implements the "old" Connector/J SocketFactory. This may
  * change in the future.
- * 
+ *
  * For the time being, see AFUNIXDatabaseSocketFactoryCJ to forcibly use the new "CJ"-style
  * SocketFactory.
- * 
+ *
  * @see AFUNIXDatabaseSocketFactoryCJ
  */
 @SuppressWarnings("deprecation")

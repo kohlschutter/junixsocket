@@ -23,7 +23,7 @@ import java.net.SocketAddress;
 /**
  * A filter that takes a {@link SocketAddress}, and potentially changes it, or throws an exception
  * if certain criteria are met.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @FunctionalInterface
@@ -31,7 +31,7 @@ public interface SocketAddressFilter {
 
   /**
    * Applies the filter on the given address.
-   * 
+   *
    * @param address The address.
    * @return The address itself or a changed address.
    * @throws IOException on error or if a certain error condition is desired.

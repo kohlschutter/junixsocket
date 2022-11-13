@@ -175,11 +175,11 @@ public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBa
   /**
    * Tests a non-blocking server setup where a client connects, sends "Hello" to the server and then
    * disconnects after the server has received the message.
-   * 
+   *
    * In the selection loop, after the client has disconnected, the server should see that the
    * corresponding {@link SelectionKey} is "readable" (even if that means the connection was
    * closed).
-   * 
+   *
    * @throws Exception on error.
    */
   @Test
@@ -193,7 +193,7 @@ public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBa
    *
    * Unlike {@link #testConnectionCloseEventualClientDisconnect()}, this may uncover additional
    * faults, such as an unexpected exception when trying to read the socket name.
-   * 
+   *
    * @throws Exception on error.
    */
   @Test
@@ -204,11 +204,11 @@ public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBa
   /**
    * Tests a non-blocking server setup where a client connects, sends "Hello" to the server and then
    * disconnects after the server has received the message.
-   * 
+   *
    * In the selection loop, after the client has disconnected, the server should see that the
    * corresponding {@link SelectionKey} is "readable" (even if that means the connection was
    * closed).
-   * 
+   *
    * @throws Exception on error.
    */
   @Test
@@ -222,7 +222,7 @@ public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBa
    *
    * Unlike {@link #testConnectionCloseEventualClientDisconnect()}, this may uncover additional
    * faults, such as an unexpected exception when trying to read the socket name.
-   * 
+   *
    * @throws Exception on error.
    */
   @Test

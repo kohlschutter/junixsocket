@@ -31,13 +31,13 @@ import org.newsclub.net.unix.SocketClosedException;
 
 /**
  * A simple demo server.
- * 
+ *
  * Sends a hello message (as a string), then reads back a response string.
- * 
+ *
  * Finally, sends integers (via {@link DataOutputStream}) from 1 to 5, expects an integer response
  * of twice the sent value each, then sends a "-123" magic number to indicate the end of the
  * conversation.
- * 
+ *
  * @author Christian Kohlschütter
  * @see SimpleTestClient
  */
@@ -56,18 +56,18 @@ public final class SimpleTestServer {
     try (AFUNIXServerSocket server = AFUNIXServerSocket.newInstance()) {
       /*
        * Uncomment the code below to change the bind behavior:
-       * 
+       *
        * By default ("reuseAddress" is true), attempting to bind while another server is running on
        * the same address will cause the first server to terminate, and the new server will take
        * over the address. Depending on the operating system, this may involve connecting to the
        * first server in order to "wake up" the accept call.
-       * 
+       *
        * In this demo code, we use AFSocket.getConnectionStatus to see if the accepted connection is
        * alive by sending
-       * 
+       *
        * When "reuseAddress" is false, attempting to bind while another server is running won't
        * disrupt the first connection. The second bind will throw a SocketException instead.
-       * 
+       *
        * NOTE: "reuseAddress=true" may not yet be supported on certain operating systems, such as
        * IBM i and z/OS. On these platforms, the behavior is as if "reuseAddress=false". Please
        * reach out by filing an issue on https://github.com/kohlschutter/junixsocket/issues if this

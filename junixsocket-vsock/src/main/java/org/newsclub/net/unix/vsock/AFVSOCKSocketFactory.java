@@ -49,7 +49,7 @@ public abstract class AFVSOCKSocketFactory extends AFSocketFactory<AFVSOCKSocket
 
   /**
    * Performs some optional configuration on a newly created socket.
-   * 
+   *
    * @param sock The socket.
    * @return The very socket.
    * @throws SocketException on error.

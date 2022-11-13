@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * To be used by {@link RemoteCloseableTest}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 abstract class RemoteCloseableThingImpl implements RemoteCloseableThing {

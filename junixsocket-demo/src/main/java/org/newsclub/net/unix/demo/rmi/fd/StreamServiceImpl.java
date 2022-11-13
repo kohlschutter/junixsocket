@@ -35,7 +35,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * An implementation of {@link StreamService}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class StreamServiceImpl implements StreamService, Closeable {
@@ -43,7 +43,7 @@ public class StreamServiceImpl implements StreamService, Closeable {
 
   /**
    * Creates a new instance.
-   * 
+   *
    * @param socketFactory The socket factory to use.
    * @throws RemoteException on error.
    */
@@ -82,7 +82,7 @@ public class StreamServiceImpl implements StreamService, Closeable {
 
   /**
    * Checks if the given path may be accessed for reading.
-   * 
+   *
    * @param path The path to check.
    * @return {@code true} if permitted.
    */
@@ -92,7 +92,7 @@ public class StreamServiceImpl implements StreamService, Closeable {
 
   /**
    * Checks if the given path may be accessed for writing.
-   * 
+   *
    * @param path The path to check.
    * @return {@code true} if permitted.
    */

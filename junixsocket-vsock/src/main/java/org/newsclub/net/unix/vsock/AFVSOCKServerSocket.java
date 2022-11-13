@@ -30,7 +30,7 @@ import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
 /**
  * The server part of an {@code AF_VSOCK} socket.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class AFVSOCKServerSocket extends AFServerSocket<AFVSOCKSocketAddress> {
@@ -50,7 +50,7 @@ public class AFVSOCKServerSocket extends AFServerSocket<AFVSOCKSocketAddress> {
 
   /**
    * Returns a new, unbound AF_VSOCK {@link ServerSocket}.
-   * 
+   *
    * @return The new, unbound {@link AFServerSocket}.
    * @throws IOException if the operation fails.
    */
@@ -67,7 +67,7 @@ public class AFVSOCKServerSocket extends AFServerSocket<AFVSOCKSocketAddress> {
   /**
    * Returns a new AF_VSOCK {@link ServerSocket} that is bound to the given
    * {@link AFVSOCKSocketAddress}.
-   * 
+   *
    * @param addr The socket file to bind to.
    * @return The new, bound {@link AFServerSocket}.
    * @throws IOException if the operation fails.
@@ -78,7 +78,7 @@ public class AFVSOCKServerSocket extends AFServerSocket<AFVSOCKSocketAddress> {
 
   /**
    * Returns a new AF_VSOCK {@link ServerSocket} that is bound to the given {@link AFSocketAddress}.
-   * 
+   *
    * @param addr The socket file to bind to.
    * @param deleteOnClose If {@code true}, the socket file (if the address points to a file) will be
    *          deleted upon {@link #close}.
@@ -94,7 +94,7 @@ public class AFVSOCKServerSocket extends AFServerSocket<AFVSOCKSocketAddress> {
   /**
    * Returns a new, <em>unbound</em> AF_VSOCK {@link ServerSocket} that will always bind to the
    * given address, regardless of any socket address used in a call to <code>bind</code>.
-   * 
+   *
    * @param forceAddr The address to use.
    * @return The new, yet unbound {@link AFServerSocket}.
    * @throws IOException if an exception occurs.

@@ -20,12 +20,12 @@ package org.newsclub.net.unix;
 /**
  * Describes junixsocket capabilities the current environment (system platform, native library,
  * etc.) may or may not support.
- * 
+ *
  * You can check whether your environment supports a given capability by calling
  * {@link AFUNIXSocket#supports(AFUNIXSocketCapability)}.
- * 
+ *
  * This enum is deprecated. Use {@link AFSocketCapability} instead.
- * 
+ *
  * @see AFSocketCapability
  */
 @Deprecated
@@ -49,7 +49,7 @@ public enum AFUNIXSocketCapability {
 
   /**
    * A pair of interconnected sockets can be created natively.
-   * 
+   *
    * This currently not possible on Windows, but instead emulated via anonymous AF_INET ports when
    * you use {@link AFUNIXSocketPair}.
    */

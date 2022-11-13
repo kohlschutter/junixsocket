@@ -25,7 +25,7 @@ import java.net.SocketAddress;
 /**
  * A multi-threaded unix socket server that simply writes null-bytes, and does not attempt to read
  * anything.
- * 
+ *
  * @author Christian Kohlschütter
  */
 // CPD-OFF

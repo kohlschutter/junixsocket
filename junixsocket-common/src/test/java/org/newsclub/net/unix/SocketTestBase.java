@@ -48,17 +48,17 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Some base functionality for socket tests.
- * 
+ *
  * This class provides access to the {@link AddressSpecifics} methods for the socket implementation
  * under test. It is essential to use these wrapper methods in tests instead of directly calling the
  * {@link AFSocket} etc. methods: Some socket implementations (and sometimes only in certain
  * kernel/environment configurations) may expose unexpected behavior that is otherwise hard to
  * catch.
- * 
+ *
  * This is especially relevant when connecting/binding sockets (see
  * {@link #connectSocket(Socket, SocketAddress)}, #bindServerSocket(ServerSocket, SocketAddress)},
  * etc.)
- * 
+ *
  * @author Christian Kohlschuetter
  */
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
@@ -145,9 +145,9 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
   /**
    * Checks if an optional connection check via {@link AFSocket#checkConnectionClosed()}, is to be
    * run upon {@link AFServerSocket#accept()}.
-   * 
+   *
    * Override to enable.
-   * 
+   *
    * @return {@code true} if enabled; default is {@code false} = disabled.
    */
   protected boolean shouldDoConnectionCheckUponAccept() {
@@ -188,7 +188,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
     /**
      * Stops the server.
-     * 
+     *
      * @throws IOException on error.
      */
     public void shutdown() throws IOException {
@@ -201,11 +201,11 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
     /**
      * Callback used to handle a connection call.
-     * 
+     *
      * After returning from this call, the socket is closed.
-     * 
+     *
      * Use {@link #stopAcceptingConnections()} to stop accepting new calls.
-     * 
+     *
      * @param sock The socket to handle.
      * @throws IOException upon error.
      */
@@ -214,9 +214,9 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     /**
      * Called from within {@link #handleConnection(Socket)} to tell the server to no longer accept
      * new calls and to terminate the server thread.
-     * 
+     *
      * Note that this will lead to existing client connections to be closed.
-     * 
+     *
      * If you want to deny new connections but finish your work on the client side (in another
      * thread), then please use semaphores etc. to ensure reaching a safe state before calling this
      * method.
@@ -231,7 +231,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
     /**
      * Returns the server socket.
-     * 
+     *
      * @return the server socket.
      */
     @SuppressFBWarnings("EI_EXPOSE_REP")
@@ -241,7 +241,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
     /**
      * Returns the server's address to connect to.
-     * 
+     *
      * @return the address.
      */
     public SocketAddress getServerAddress() {
@@ -250,7 +250,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
     /**
      * Called upon receiving an exception that may be handled specifically.
-     * 
+     *
      * @param e The exception
      * @return {@link ExceptionHandlingDecision#RAISE} if we should handle the exception somehow,
      *         {@link ExceptionHandlingDecision#IGNORE} if we should pretend the exception never
@@ -326,9 +326,9 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
     /**
      * Checks if there were any exceptions thrown during the lifetime of this ServerThread.
-     * 
+     *
      * NOTE: This call blocks until the Thread actually terminates.
-     * 
+     *
      * @throws Exception upon error.
      */
     public void checkException() throws Exception {
@@ -360,7 +360,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
   /**
    * Sleeps for the given amount of milliseconds.
-   * 
+   *
    * @param ms The duration in milliseconds.
    * @throws InterruptedIOException when interrupted.
    */
@@ -466,7 +466,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
    * Returns the Linux kernel's major and minor version as an integer array (i.e., {@code 5.10.2 ->
    * int[]{5,10}}), or {@code null} if the running system isn't Linux or the version could not be
    * determined.
-   * 
+   *
    * @return The running Linux kernels' major and minor version as an integer array, or
    *         {@code null}.
    */

@@ -33,7 +33,7 @@ public class RemoteCloseableImpl<T> implements RemoteCloseable<T> {
 
   /**
    * Created a new instance.
-   * 
+   *
    * @param socketFactory The socket factory.
    * @param obj The object to wrap.
    * @throws RemoteException on error.
@@ -51,7 +51,7 @@ public class RemoteCloseableImpl<T> implements RemoteCloseable<T> {
 
   /**
    * Closes the given object.
-   * 
+   *
    * @param obj The object to close.
    * @throws IOException on error.
    */

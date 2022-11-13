@@ -25,7 +25,7 @@ import java.io.ObjectInput;
 /**
  * A specialized subclass of {@link RemoteFileDescriptorBase}, specifically for
  * {@link FileOutputStream}s.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class RemoteFileOutput extends RemoteFileDescriptorBase<FileOutputStream> {
@@ -33,7 +33,7 @@ public final class RemoteFileOutput extends RemoteFileDescriptorBase<FileOutputS
 
   /**
    * Creates an uninitialized instance; used for externalization.
-   * 
+   *
    * @see #readExternal(ObjectInput)
    */
   public RemoteFileOutput() {
@@ -43,7 +43,7 @@ public final class RemoteFileOutput extends RemoteFileDescriptorBase<FileOutputS
   /**
    * Creates a new {@link RemoteFileOutput} instance, encapsulating a {@link FileOutputStream} so
    * that it can be shared with other processes via RMI.
-   * 
+   *
    * @param socketFactory The socket factory.
    * @param fout The {@link FileOutputStream}.
    * @throws IOException if the operation fails.
@@ -57,7 +57,7 @@ public final class RemoteFileOutput extends RemoteFileDescriptorBase<FileOutputS
   /**
    * Returns a FileOutputStream for the given instance. This either is the actual instance provided
    * by the constructor or a new instance created from the file descriptor.
-   * 
+   *
    * @return The FileOutputStream.
    * @throws IOException if the operation fails.
    */

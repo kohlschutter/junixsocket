@@ -39,7 +39,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Some {@link SocketAddress} that is supported by junixsocket, such as {@link AFUNIXSocketAddress}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public abstract class AFSocketAddress extends InetSocketAddress {
@@ -96,7 +96,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Creates a new socket address.
-   * 
+   *
    * @param port The port.
    * @param socketAddress The socket address in junixsocket-specific byte-array representation.
    * @param nativeAddress The socket address in system-native representation.
@@ -108,7 +108,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     /*
      * Initializing the superclass with an unresolved hostname helps us pass the #equals and
      * #hashCode checks, which unfortunately are declared final in InetSocketAddress.
-     * 
+     *
      * Using a resolved address (with the address bit initialized) would be ideal, but resolved
      * addresses can only be IPv4 or IPv6 (at least as of Java 16 and earlier).
      */
@@ -136,7 +136,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Only for {@link SentinelSocketAddress}.
-   * 
+   *
    * @param clazz The {@link SentinelSocketAddress} class.
    * @param port A sentinel port number.
    */
@@ -150,17 +150,17 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Checks if the address can be resolved to a {@link File}.
-   * 
+   *
    * @return {@code true} if the address has a filename.
    */
   public abstract boolean hasFilename();
 
   /**
    * Returns the {@link File} corresponding with this address, if possible.
-   * 
+   *
    * A {@link FileNotFoundException} is thrown if there is no filename associated with the address,
    * which applies to addresses in the abstract namespace, for example.
-   * 
+   *
    * @return The filename.
    * @throws FileNotFoundException if the address is not associated with a filename.
    */
@@ -168,7 +168,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Returns the corresponding {@link AFAddressFamily}.
-   * 
+   *
    * @return The address family instance.
    */
   public final AFAddressFamily<?> getAddressFamily() {
@@ -177,7 +177,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Wraps the socket name/peer name of a file descriptor as an {@link InetAddress}.
-   * 
+   *
    * @param fdesc The file descriptor.
    * @param peerName If {@code true}, the remote peer name (instead of the local name) is retrieved.
    * @param af The address family.
@@ -197,7 +197,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Gets the socket name/peer name of a file descriptor as an {@link AFSocketAddress}.
-   * 
+   *
    * @param <A> The corresponding address type.
    * @param fdesc The file descriptor.
    * @param peerName If {@code true}, the remote peer name (instead of the local name) is retrieved.
@@ -259,7 +259,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Returns the (non-native) byte-level representation of this address.
-   * 
+   *
    * @return The byte array.
    */
   protected final byte[] getBytes() {
@@ -269,12 +269,12 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   /**
    * Returns a "special" {@link InetAddress} that contains information about this
    * {@link AFSocketAddress}.
-   * 
+   *
    * IMPORTANT: This {@link InetAddress} does not properly compare (using
    * {@link InetAddress#equals(Object)} and {@link InetAddress#hashCode()}). It should be used
    * exclusively to circumvent existing APIs like {@link DatagramSocket} that only accept/return
    * {@link InetAddress} and not arbitrary {@link SocketAddress} types.
-   * 
+   *
    * @return The "special" {@link InetAddress}.
    */
   public final InetAddress wrapAddress() {
@@ -283,7 +283,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * A reference to the constructor of an AFSocketAddress subclass.
-   * 
+   *
    * @param <T> The actual subclass.
    * @author Christian Kohlschütter
    */
@@ -291,7 +291,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   protected interface AFSocketAddressConstructor<T extends AFSocketAddress> {
     /**
      * Constructs a new AFSocketAddress instance.
-     * 
+     *
      * @param port The port.
      * @param socketAddress The socket address in junixsocket-specific byte-array representation.
      * @param nativeAddress The socket address in system-native representation.
@@ -306,7 +306,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   /**
    * Resolves a junixsocket-specific byte-array representation of an {@link AFSocketAddress} to an
    * actual {@link AFSocketAddress} instance, possibly reusing a cached instance.
-   * 
+   *
    * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
    * @param socketAddress The socket address in junixsocket-specific byte-array representation.
    * @param port The port.
@@ -408,7 +408,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Wraps an address as an {@link InetAddress}.
-   * 
+   *
    * @param af The address family.
    * @return The {@link InetAddress}.
    */
@@ -421,7 +421,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Wraps this address as an {@link InetAddress}.
-   * 
+   *
    * @return The {@link InetAddress}.
    */
   protected final InetAddress getInetAddress() {
@@ -439,7 +439,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   /**
    * Returns an {@link AFSocketAddress} given a special {@link InetAddress} that encodes the byte
    * sequence of an AF_UNIX etc. socket address, like those returned by {@link #wrapAddress()}.
-   * 
+   *
    * @param <A> The corresponding address type.
    * @param address The "special" {@link InetAddress}.
    * @param port The port (use 0 for "none").
@@ -460,7 +460,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * Returns an {@link AFSocketAddress} given a special {@link InetAddress} hostname that encodes
    * the byte sequence of an AF_UNIX etc. socket address, like those returned by
    * {@link #wrapAddress()}.
-   * 
+   *
    * @param <A> The corresponding address type.
    * @param hostname The "special" hostname, as provided by {@link InetAddress#getHostName()}.
    * @param port The port (use 0 for "none").
@@ -498,7 +498,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   /**
    * Returns a thread-local direct ByteBuffer containing the native socket address representation of
    * this {@link AFSocketAddress}.
-   * 
+   *
    * @return The direct {@link ByteBuffer}.
    */
   final ByteBuffer getNativeAddressDirectBuffer() {
@@ -518,7 +518,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Checks if the given address is supported by this address family.
-   * 
+   *
    * @param addr The address.
    * @param af The address family.
    * @return {@code true} if supported.
@@ -529,9 +529,9 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Writes the native (system-level) representation of this address to the given buffer.
-   * 
+   *
    * The position of the target buffer will be at the end (i.e., after) the written data.
-   * 
+   *
    * @param buf The target buffer.
    * @throws IOException on error.
    */
@@ -544,7 +544,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Creates a new socket connected to this address.
-   * 
+   *
    * @return The socket instance.
    * @throws IOException on error.
    */
@@ -556,7 +556,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Creates a new server socket bound to this address.
-   * 
+   *
    * @return The server socket instance.
    * @throws IOException on error.
    */
@@ -570,7 +570,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * Creates a new server socket force-bound to this address (i.e., any additional call to
    * {@link ServerSocket#bind(SocketAddress)} will ignore the passed address and use this one
    * instead.
-   * 
+   *
    * @return The server socket instance.
    * @throws IOException on error.
    */
@@ -582,10 +582,10 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Tries to parse the given URI and return a corresponding {@link AFSocketAddress} for it.
-   * 
+   *
    * NOTE: Only certain URI schemes are supported, such as {@code unix://} (for
    * {@link AFUNIXSocketAddress}) and {@code tipc://} for {@link AFTIPCSocketAddress}.
-   * 
+   *
    * @param u The URI.
    * @return The address.
    * @throws SocketException on error.
@@ -598,10 +598,10 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Tries to parse the given URI and return a corresponding {@link AFSocketAddress} for it.
-   * 
+   *
    * NOTE: Only certain URI schemes are supported, such as {@code unix://} (for
    * {@link AFUNIXSocketAddress}) and {@code tipc://} for {@link AFTIPCSocketAddress}.
-   * 
+   *
    * @param u The URI.
    * @param overridePort The port to forcibly use, or {@code -1} for "don't override".
    * @return The address.
@@ -619,7 +619,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Tries to create a URI based on this {@link AFSocketAddress}.
-   * 
+   *
    * @param scheme The target scheme.
    * @param template An optional template to reuse certain parameters (e.g., the "path" component
    *          for an {@code http} request), or {@code null}.
@@ -634,10 +634,10 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * Returns a address string that can be used with {@code socat}'s {@code SOCKET-CONNECT},
    * {@code SOCKET-LISTEN}, {@code SOCKET-DATAGRAM}, etc., address types, or {@code null} if the
    * address type is not natively supported by this platform.
-   * 
+   *
    * This call is mostly suited for debugging purposes. The resulting string is specific to the
    * platform the code is executed on, and thus may be different among platforms (or {@code null}).
-   * 
+   *
    * @param socketType The socket type, or {@code null} to omit from string.
    * @param socketProtocol The socket protocol, or {@code null} to omit from string.
    * @return The string (such as 1:0:x2f746d702f796f), or {@code null} if unable to retrieve.
@@ -682,13 +682,13 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Checks if the given address could cover another address.
-   * 
+   *
    * By default, this is only true if both addresses are regarded equal using
    * {@link #equals(Object)}.
-   * 
+   *
    * However, implementations may support "wildcard" addresses, and this method would compare a
    * wildcard address against some non-wildcard address, for example.
-   * 
+   *
    * @param other The other address that could be covered by this address.
    * @return {@code true} if the other address could be covered.
    */

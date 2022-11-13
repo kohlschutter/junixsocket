@@ -30,7 +30,7 @@ import org.newsclub.net.unix.AFUNIXSocketCredentials;
 
 /**
  * Verifies that peer credentials are properly set when communicating over RMI.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @AFSocketCapabilityRequirement({

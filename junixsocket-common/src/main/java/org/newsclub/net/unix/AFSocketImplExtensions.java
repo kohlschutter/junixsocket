@@ -19,7 +19,7 @@ package org.newsclub.net.unix;
 
 /**
  * Placeholder for protocol-specific code that resides in the native library.
- * 
+ *
  * @param <A> The corresponding address type.
  * @author Christian Kohlschütter
  * @see AFTIPCSocketImplExtensions

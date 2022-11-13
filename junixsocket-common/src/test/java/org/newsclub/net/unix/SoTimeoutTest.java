@@ -39,7 +39,7 @@ import com.kohlschutter.testutil.AssertUtil;
 
 /**
  * Tests {@link Socket#setSoTimeout(int)} behavior.
- * 
+ *
  * @see <a href="http://code.google.com/p/junixsocket/issues/detail?id=14">Issue 14</a>
  */
 @SuppressFBWarnings({
@@ -52,7 +52,7 @@ public abstract class SoTimeoutTest<A extends SocketAddress> extends SocketTestB
   /**
    * Triggers a case where {@link Socket#setSoTimeout(int)} fails on some platforms: when the socket
    * is closed.
-   * 
+   *
    * @throws IOException on error.
    */
   @Test
@@ -82,7 +82,7 @@ public abstract class SoTimeoutTest<A extends SocketAddress> extends SocketTestB
 
   /**
    * Triggers a regular case where {@link Socket#setSoTimeout(int)} should work.
-   * 
+   *
    * @throws IOException on error.
    */
   @Test

@@ -34,7 +34,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Tests some otherwise uncovered methods of {@link AFUNIXSocket}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)

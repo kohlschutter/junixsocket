@@ -27,14 +27,14 @@ import org.newsclub.net.unix.AFSocketAddress;
 
 /**
  * A base implementation for a simple, multi-threaded socket server using {@link AFSocket}s.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public abstract class AFSocketServer<A extends AFSocketAddress> extends
     SocketServer<A, AFSocket<? extends A>, AFServerSocket<? extends A>> {
   /**
    * Creates a server using the given, bound {@link ServerSocket}.
-   * 
+   *
    * @param serverSocket The server socket to use (must be bound).
    */
   public AFSocketServer(AFServerSocket<? extends A> serverSocket) {
@@ -43,7 +43,7 @@ public abstract class AFSocketServer<A extends AFSocketAddress> extends
 
   /**
    * Creates a server using the given {@link SocketAddress}.
-   * 
+   *
    * @param listenAddress The address to bind the socket on.
    */
   public AFSocketServer(A listenAddress) {

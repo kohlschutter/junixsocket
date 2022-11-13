@@ -26,7 +26,7 @@ import org.newsclub.net.unix.AFSocket;
 
 /**
  * An implementation of {@link RMIServerSocketFactory}.
- * 
+ *
  * @see AFRMISocketFactory where we deal with {@link AFSocket}.
  */
 public class DefaultRMIServerSocketFactory implements RMIServerSocketFactory, Serializable {
@@ -42,7 +42,7 @@ public class DefaultRMIServerSocketFactory implements RMIServerSocketFactory, Se
 
   /**
    * Returns the singleton instance for DefaultRMIServerSocketFactory.
-   * 
+   *
    * @return The singleton.
    */
   public static DefaultRMIServerSocketFactory getInstance() {

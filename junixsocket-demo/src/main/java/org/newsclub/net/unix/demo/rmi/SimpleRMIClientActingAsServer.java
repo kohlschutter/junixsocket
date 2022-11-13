@@ -30,7 +30,7 @@ import org.newsclub.net.unix.rmi.RemotePeerInfo;
 /**
  * A simple RMI client. Locates the RMI registry via AF_UNIX sockets and calls
  * {@link HelloWorld#hello()}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class SimpleRMIClientActingAsServer {
@@ -59,14 +59,14 @@ public final class SimpleRMIClientActingAsServer {
 
     /**
      * Uncommenting the line below keeps this instance running.
-     * 
+     *
      * Try it and run SimpleRMIClient to see the difference.
      */
     naming.unexportAndUnbind("world", world);
 
     /**
      * Also try to remotely shut down the registry.
-     * 
+     *
      * This will not succeed if the server set {@code naming.setRemoteShutdownAllowed(false)}. See
      * {@link SimpleRMIServer}
      */

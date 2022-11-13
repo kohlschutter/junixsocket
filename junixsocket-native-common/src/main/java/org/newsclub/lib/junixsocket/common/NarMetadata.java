@@ -21,7 +21,7 @@ import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGenerated
 
 /**
  * Marker class to find native libraries in the classpath.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class NarMetadata {

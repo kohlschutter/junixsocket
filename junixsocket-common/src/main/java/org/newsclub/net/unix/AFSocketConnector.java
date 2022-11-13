@@ -31,7 +31,7 @@ import java.io.IOException;
 public interface AFSocketConnector<A extends AFSocketAddress, T extends AFSocketAddress> {
   /**
    * Connect to the socket at the given address.
-   * 
+   *
    * @param addr The address to connect to.
    * @return The connected socket.
    * @throws IOException on error.

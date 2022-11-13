@@ -22,7 +22,7 @@ import java.net.SocketException;
 /**
  * A {@link SocketException} that may be thrown upon some "unsupported operation" condition from
  * native code (e.g., EOPNOTSUPP is returned).
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class OperationNotSupportedSocketException extends InvalidSocketException {
@@ -37,7 +37,7 @@ public class OperationNotSupportedSocketException extends InvalidSocketException
 
   /**
    * Constructs a new {@link OperationNotSupportedSocketException}.
-   * 
+   *
    * @param msg The error message.
    */
   public OperationNotSupportedSocketException(String msg) {

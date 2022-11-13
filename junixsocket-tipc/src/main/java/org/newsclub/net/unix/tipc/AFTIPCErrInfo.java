@@ -26,7 +26,7 @@ import org.newsclub.net.unix.NamedInteger;
 
 /**
  * The TIPC-specific error info response that may be included as ancillary data.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFTIPCErrInfo implements Serializable {
@@ -44,7 +44,7 @@ public final class AFTIPCErrInfo implements Serializable {
 
   /**
    * Some TIPC error code.
-   * 
+   *
    * @author Christian Kohlschütter
    */
   @NonNullByDefault
@@ -100,7 +100,7 @@ public final class AFTIPCErrInfo implements Serializable {
 
     /**
      * Returns an {@link ErrorCode} instance given an integer.
-     * 
+     *
      * @param v The value.
      * @return The instance.
      */
@@ -111,7 +111,7 @@ public final class AFTIPCErrInfo implements Serializable {
 
   /**
    * Creates a new instance.
-   * 
+   *
    * @param errorCode The error code.
    * @param dataLength The length of the returned data.
    */
@@ -122,7 +122,7 @@ public final class AFTIPCErrInfo implements Serializable {
 
   /**
    * Returns the error code.
-   * 
+   *
    * @return The error code.
    */
   public ErrorCode getErrorCode() {
@@ -131,7 +131,7 @@ public final class AFTIPCErrInfo implements Serializable {
 
   /**
    * The length of the corresponding data.
-   * 
+   *
    * @return The length in bytes.
    */
   public int getDataLength() {

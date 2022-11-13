@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * TIPC-specific code that resides in the native library. To be used by {@code AFTIPCSocket} and
  * {@code AFTIPCDatagramSocket} only.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFTIPCSocketImplExtensions implements
@@ -36,9 +36,9 @@ public final class AFTIPCSocketImplExtensions implements
 
   /**
    * Returns the TIPC "ErrInfo" data from the ancillary receive buffer.
-   * 
+   *
    * Invalid for any other use.
-   * 
+   *
    * @return The errinfo.
    */
   public int[] getTIPCErrInfo() {
@@ -47,9 +47,9 @@ public final class AFTIPCSocketImplExtensions implements
 
   /**
    * Returns the TIPC "DestName" data from the ancillary receive buffer.
-   * 
+   *
    * Invalid for any other use.
-   * 
+   *
    * @return The DestName.
    */
   public int[] getTIPCDestName() {
@@ -58,7 +58,7 @@ public final class AFTIPCSocketImplExtensions implements
 
   /**
    * Retrieves the 16-byte TIPC node identity given a node hash.
-   * 
+   *
    * @param peer The node hash.
    * @return The node identity, or {@code  null} if unsupported.
    * @throws IOException on error.
@@ -69,7 +69,7 @@ public final class AFTIPCSocketImplExtensions implements
 
   /**
    * Retrieves the TIPC link name given a node hash and bearer Id.
-   * 
+   *
    * @param peer The node hash.
    * @param bearerId The bearer Id.
    * @return The link name, or {@code  null} if unsupported.

@@ -26,7 +26,7 @@ import org.newsclub.net.unix.AFTIPCSocketAddress;
 
 /**
  * A {@link DatagramChannel} implementation that works with {@code AF_TIPC} sockets.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFTIPCDatagramChannel extends AFDatagramChannel<AFTIPCSocketAddress> implements

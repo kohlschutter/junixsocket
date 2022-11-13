@@ -46,16 +46,16 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * </p>
  * <pre><code>
  * FileDescriptor fd;
- * 
+ *
  * // succeeds if fd refers to an AF_UNIX stream socket
- * AFUNIXSocket socket = FileDescriptorCast.using(fd).as(AFUNIXSocket.class); 
- * 
+ * AFUNIXSocket socket = FileDescriptorCast.using(fd).as(AFUNIXSocket.class);
+ *
  * // succeeds if fd refers to an AF_UNIX datagram socket
- * AFUNIXDatagramChannel channel = FileDescriptorCast.using(fd).as(AFUNIXDatagramChannel.class); 
- * 
+ * AFUNIXDatagramChannel channel = FileDescriptorCast.using(fd).as(AFUNIXDatagramChannel.class);
+ *
  * // always succeeds
- * InputStream in = FileDescriptorCast.using(fd).as(InputStream.class); 
- * OutputStream in = FileDescriptorCast.using(fd).as(OutputStream.class); 
+ * InputStream in = FileDescriptorCast.using(fd).as(InputStream.class);
+ * OutputStream in = FileDescriptorCast.using(fd).as(OutputStream.class);
  * </code></pre>
  * <p>
  * IMPORTANT: On some platforms (e.g., Solaris, Illumos) you may need to re-apply a read timeout
@@ -66,7 +66,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * that do not encode this information directly (such as {@link AFUNIXSocketAddress} and
  * {@link AFTIPCSocketAddress}).
  * </p>
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class FileDescriptorCast implements FileDescriptorAccess {
@@ -269,7 +269,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
 
   /**
    * Creates a {@link FileDescriptorCast} using the given file descriptor.
-   * 
+   *
    * @param fdObj The file descriptor.
    * @return The {@link FileDescriptorCast} instance.
    * @throws IOException on error, especially if the given file descriptor is invalid or
@@ -297,10 +297,10 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
 
   /**
    * Registers the given port number as the "local port" for this file descriptor.
-   * 
+   *
    * Important: This only changes the state of this instance. The actual file descriptor is not
    * affected.
-   * 
+   *
    * @param port The port to assign to (must be &gt;= 0).
    * @return This instance.
    */
@@ -314,10 +314,10 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
 
   /**
    * Registers the given port number as the "remote port" for this file descriptor.
-   * 
+   *
    * Important: This only changes the state of this instance. The actual file descriptor is not
    * affected.
-   * 
+   *
    * @param port The port to assign to (must be &gt;= 0).
    * @return This instance.
    */
@@ -331,7 +331,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
 
   /**
    * Casts this instance to the desired type.
-   * 
+   *
    * @param <K> The desired type.
    * @param desiredType The class of the desired type.
    * @return s An instance of the desired type.
@@ -356,7 +356,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
 
   /**
    * Checks if the instance can be cast as the given desired type (using {@link #as(Class)}).
-   * 
+   *
    * @param desiredType The class of the desired type.
    * @return {@code true} if the cast can be made.
    * @throws IOException on error.
@@ -369,7 +369,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   /**
    * Returns a collection of available types this instance can be cast to (using
    * {@link #as(Class)}).
-   * 
+   *
    * @return The collection of available types.
    */
   public Set<Class<?>> availableTypes() {

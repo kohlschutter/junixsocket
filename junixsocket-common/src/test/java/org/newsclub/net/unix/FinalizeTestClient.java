@@ -25,9 +25,9 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A potentially file descriptor-leaking client.
- * 
+ *
  * See <a href="https://github.com/kohlschutter/junixsocket/pull/29">issue 29</a> for details.
- * 
+ *
  * @see FinalizeTest
  * @author Christian Kohlschütter
  */

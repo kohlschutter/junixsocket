@@ -21,7 +21,7 @@ import java.io.IOException;
 
 /**
  * A selectable channel for stream-oriented listening sockets.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFUNIXServerSocketChannel extends AFServerSocketChannel<AFUNIXSocketAddress> {

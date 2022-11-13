@@ -28,14 +28,14 @@ import org.newsclub.net.unix.rmi.RemoteFileOutput;
 
 /**
  * The {@link StreamServer}'s RMI service.
- * 
+ *
  * @author Christian Kohlschütter
  * @see StreamServer
  */
 public interface StreamService extends Remote {
   /**
    * Opens the given file for reading.
-   * 
+   *
    * @param path The file to open.
    * @return A remote instance for the file.
    * @throws IOException on error.
@@ -44,7 +44,7 @@ public interface StreamService extends Remote {
 
   /**
    * Opens the given file for writing.
-   * 
+   *
    * @param path The file to open.
    * @return A remote instance for the file.
    * @throws IOException on error.
