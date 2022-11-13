@@ -28,7 +28,7 @@ import com.kohlschutter.testutil.AvailabilityRequirement;
 /**
  * Not supported on Java 8 yet, but you can manually verify that it works by running the following
  * commands from three different shells:
- * 
+ *
  * <ol>
  * <li>(shell 1) {@code nc -l -U /tmp/testsocket}</li>
  * <li>(shell 2) {@code java -Dtest.junixsocket.socket=/tmp/testsocket
@@ -37,10 +37,10 @@ import com.kohlschutter.testutil.AvailabilityRequirement;
  * <li>(shell 1) type some text, followed by enter</li>
  * <li>(shell 3) {@code lsof -U -a -p $(jps | grep FinalizeTestClient | cut -f 1 -d' ') | wc -l}
  * </ol>
- * 
+ *
  * The number printed in shell 3 after the second {@code lsof} commands should be one less than the
  * one of the first {@code lsof} command.
- * 
+ *
  * See <a href="https://github.com/kohlschutter/junixsocket/pull/29">issue 29</a> for details.
  */
 public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBase<A> {

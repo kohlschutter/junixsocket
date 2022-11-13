@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * A shim that is filled with Java version-specific overrides. This variant is for Java 7 and 8.
- * 
+ *
  * @author Christian Kohlschütter
  */
 abstract class SocketImplShim extends SocketImpl {

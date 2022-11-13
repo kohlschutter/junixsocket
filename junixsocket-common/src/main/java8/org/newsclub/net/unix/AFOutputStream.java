@@ -16,11 +16,11 @@ public abstract class AFOutputStream extends OutputStream implements FileDescrip
    * Reads all bytes from the given input stream and writes the bytes to this output stream in the
    * order that they are read. On return, this input stream will be at end of stream. This method
    * does not close either stream.
-   * 
+   *
    * This method effectively is the reverse notation of
    * {@link InputStream#transferTo(OutputStream)}, which may or may not be optimized for
    * {@link AFSocket}s.
-   * 
+   *
    * @param in The {@link InputStream} to transfer from.
    * @return The number of bytes transferred.
    * @throws IOException on error.
