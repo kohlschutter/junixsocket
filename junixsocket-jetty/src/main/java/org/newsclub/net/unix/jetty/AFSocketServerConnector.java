@@ -49,9 +49,8 @@ import java.nio.channels.spi.SelectorProvider;
 import java.nio.file.Path;
 import java.util.EventListener;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.jetty.io.ArrayByteBufferPool;
@@ -100,6 +99,7 @@ public class AFSocketServerConnector extends AbstractConnector {
   private int acceptedSendBufferSize;
 
   private boolean mayStopServer = false;
+  private boolean mayStopServerForce = false;
   private final Class<? extends EventListener> selectorManagerListenerClass;
   private final Server server;
 
@@ -342,42 +342,32 @@ public class AFSocketServerConnector extends AbstractConnector {
           takenOver = !((AFServerSocketChannel<?>) sc).isLocalSocketAddressValid();
         }
 
-        if (takenOver) {
-          ExecutorService es = Executors.newSingleThreadExecutor();
-          try {
-            LOG.warn("Another server has taken over our address");
-            es.execute(() -> {
-              Connector[] connectors = server.getConnectors();
-
-              boolean shutdownServer;
-              if (connectors == null) {
-                shutdownServer = true;
-              } else {
-                shutdownServer = true;
-                for (Connector conn : connectors) {
-                  if (conn != AFSocketServerConnector.this && conn.isRunning()) { // NOPMD.CompareObjectsWithEquals
-                    shutdownServer = false;
-                    break;
-                  }
-                }
-              }
-
-              if (shutdownServer && mayStopServer) {
-                LOG.warn("Server has no other connectors; shutting down: " + server); // NOPMD
-
-                try {
-                  server.stop();
-                } catch (Exception e1) {
-                  LOG.warn("Exception upon stopping " + server, e1); // NOPMD
-                }
-              }
-            });
-          } finally {
-            es.shutdown();
-          }
+        if (takenOver && isMayStopServer()) {
+          LOG.warn("Another server has taken over our address");
+          CompletableFuture.runAsync(this::checkServerStop);
         }
         throw (ClosedByInterruptException) new ClosedByInterruptException().initCause(e);
       }
+    }
+  }
+
+  private void checkServerStop() {
+    Connector[] connectors = server.getConnectors();
+
+    if (connectors != null && !isMayStopServerForce()) {
+      for (Connector conn : connectors) {
+        if (conn != AFSocketServerConnector.this && conn.isRunning()) { // NOPMD.CompareObjectsWithEquals
+          return; // don't stop
+        }
+      }
+    }
+
+    LOG.warn("Server has no other connectors; shutting down: " + server); // NOPMD
+
+    try {
+      server.stop();
+    } catch (Exception e1) {
+      LOG.warn("Exception upon stopping " + server, e1); // NOPMD
     }
   }
 
@@ -550,5 +540,30 @@ public class AFSocketServerConnector extends AbstractConnector {
    */
   public void setMayStopServer(boolean mayStopServer) {
     this.mayStopServer = mayStopServer;
+  }
+
+  /**
+   * Checks if this connector may stop the server when it's no longer able to serve, even if other
+   * connectors are available.
+   *
+   * @return {@code true} if so.
+   */
+  @ManagedAttribute("Whether this connector may stop the server when it's no longer able to"
+      + " serve, even if other connectors are available")
+  public boolean isMayStopServerForce() {
+    return mayStopServerForce;
+  }
+
+  /**
+   * Sets if this connector may stop the server when it's no longer able to serve and no other
+   * connectors are available.
+   *
+   * @param b {@code true} if so (which then also implies {@code setMayStopServer(true)}
+   */
+  public void setMayStopServerForce(boolean b) {
+    if (b) {
+      setMayStopServer(true);
+    }
+    this.mayStopServerForce = b;
   }
 }
