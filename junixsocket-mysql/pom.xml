@@ -23,8 +23,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <!-- Starting with 8.0.31, the artifact mysql:mysql-connector-java has been relocated to com.mysql:mysql-connector-j -->
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <version>8.0.31</version>
             <scope>provided</scope>
         </dependency>

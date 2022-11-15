@@ -182,12 +182,12 @@ databases such as PostgreSQL.
 
 ### MySQL
 
-Make sure that the following jars are on your classpath:
+If you can't use Maven (instructions above), make sure that the following jars are on your classpath:
 
  * junixsocket-common-2.6.1.jar
  * junixsocket-mysql-2.6.1.jar
- * mysql-connector-java-8.0.14.jar (or newer; earlier versions should work, too)
- * (typically, omit if you use the custom library below) junixsocket-native-common-2.6.1.jar
+ * mysql-connector-j-8.0.31.jar (or newer)
+ * (typically required; can be skipped if you use the custom library below) junixsocket-native-common-2.6.1.jar
  * (optionally, if you have a custom architecture) junixsocket-native-custom-2.6.1.jar
 
 Use the following connection properties (along with `user`, `password`, and other properties you may
