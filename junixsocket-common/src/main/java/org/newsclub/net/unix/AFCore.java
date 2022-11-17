@@ -176,16 +176,19 @@ class AFCore extends CleanableState {
     }
 
     int pos = src.position();
-
     boolean isDirect = src.isDirect();
     ByteBuffer buf;
+    int bufPos;
     if (isDirect) {
       buf = src;
+      bufPos = pos;
     } else {
       buf = getThreadLocalDirectByteBuffer(remaining);
       remaining = Math.min(remaining, buf.remaining());
 
-      // Java 16: buf.put(buf.position(), src, src.position(), Math.min(buf.limit(), src.limit()));
+      bufPos = buf.position();
+
+      // Java 16: buf.put(bufPos, src, src.position(), Math.min(buf.limit(), src.limit()));
       int limit = src.limit();
       if (limit > buf.limit()) {
         src.limit(buf.limit());
@@ -195,13 +198,13 @@ class AFCore extends CleanableState {
         buf.put(src);
       }
 
-      buf.position(0);
+      buf.position(bufPos);
     }
     if (datagramMode) {
       options |= NativeUnixSocket.OPT_DGRAM_MODE;
     }
 
-    int written = NativeUnixSocket.send(fdesc, buf, pos, remaining, addressTo, addressToLen,
+    int written = NativeUnixSocket.send(fdesc, buf, bufPos, remaining, addressTo, addressToLen,
         options, ancillaryDataSupport);
     src.position(pos + written);
 
