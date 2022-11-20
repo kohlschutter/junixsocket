@@ -92,27 +92,6 @@
                         <artifactId>maven-resources-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>copy-overlay-sources</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/sources-java9</outputDirectory>
-                                    <includeEmptyDirs>true</includeEmptyDirs>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.basedir}/src/main/java-overlay</directory>
-                                            <includes>
-                                                <include>**</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
-                                    <overwrite>true</overwrite>
-                                </configuration>
-                            </execution>
-
-                            <execution>
                                 <id>copy-sources-from-junixsocket-java8</id>
                                 <phase>generate-sources</phase>
                                 <goals>
@@ -123,70 +102,94 @@
                                     <includeEmptyDirs>true</includeEmptyDirs>
                                     <resources>
                                         <resource>
-                                            <directory>${project.basedir}/src/main/java-overlay</directory>
-                                            <includes>
-                                                <include>**</include>
-                                            </includes>
-                                        </resource>
-                                        <resource>
                                             <directory>${project.parent.basedir}/junixsocket-common/src/main/java</directory>
                                             <includes>
                                                 <include>**</include>
                                             </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
                                         </resource>
                                         <resource>
                                             <directory>${project.parent.basedir}/junixsocket-common/src/main/java8</directory>
                                             <includes>
                                                 <include>**</include>
                                             </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
                                         </resource>
                                         <resource>
                                             <directory>${project.parent.basedir}/junixsocket-common/src/test/java</directory>
                                             <includes>
                                                 <include>**</include>
                                             </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
                                         </resource>
                                         <resource>
                                             <directory>${project.parent.basedir}/junixsocket-common/src/test/java8</directory>
                                             <includes>
                                                 <include>**</include>
                                             </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
                                         </resource>
                                         <resource>
                                             <directory>${project.parent.basedir}/junixsocket-tipc/src/test/java</directory>
                                             <includes>
                                                 <include>**</include>
                                             </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
                                         </resource>
                                         <resource>
                                             <directory>${project.parent.basedir}/junixsocket-tipc/src/test/java8</directory>
                                             <includes>
                                                 <include>**</include>
                                             </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
                                         </resource>
                                         <resource>
                                             <directory>${project.parent.basedir}/junixsocket-vsock/src/test/java</directory>
                                             <includes>
                                                 <include>**</include>
                                             </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
                                         </resource>
                                         <resource>
                                             <directory>${project.parent.basedir}/junixsocket-vsock/src/test/java8</directory>
                                             <includes>
                                                 <include>**</include>
                                             </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
                                         </resource>
                                         <resource>
                                             <directory>${project.parent.basedir}/junixsocket-rmi/src/test/java</directory>
                                             <includes>
                                                 <include>**</include>
                                             </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
                                         </resource>
                                         <resource>
                                             <directory>${project.parent.basedir}/junixsocket-rmi/src/test/java8</directory>
                                             <includes>
                                                 <include>**</include>
                                             </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
                                         </resource>
                                     </resources>
                                     <overwrite>true</overwrite>

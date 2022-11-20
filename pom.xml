@@ -71,6 +71,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <junixsocket.skip.native>${m2e.version}</junixsocket.skip.native>
 
         <kohlschutter.multirelease.java8.release>8</kohlschutter.multirelease.java8.release>
+        <kohlschutter.multirelease.java.release>9</kohlschutter.multirelease.java.release>
     </properties>
 
     <modules>
