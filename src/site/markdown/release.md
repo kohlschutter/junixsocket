@@ -81,10 +81,10 @@ and add/commit both sets of changes.
 
 ### Ensure the code is properly formatted and licenses are in place
 
+First, view the `LICENSE` file and verify that it's up to date. Then run the code formatters and commit.
+
     cd junixsocket
-    # review LICENSE file and verify that it's up-to-date
-    mvn formatter:format
-    mvn license:format
+    mvn process-sources -Preformat
     # git add / commit here...
 
 ### Bump project version

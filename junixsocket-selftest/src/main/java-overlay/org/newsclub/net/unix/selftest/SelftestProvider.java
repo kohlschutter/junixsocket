@@ -24,7 +24,7 @@ import java.util.HashSet;
 
 /**
  * Provides references to all tests that should be included in junixsocket-selftest.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class SelftestProvider {
