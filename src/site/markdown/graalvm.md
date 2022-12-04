@@ -59,6 +59,45 @@ The above binary, even though it currently cannot be built on Alpine Linux (musl
 adding `gcompat`:
 
 	sudo apk add gcompat
+	
+## Known issues
+
+### native-image needs a lot of RAM
+
+When you see an error message `Error: Image build request failed with exit status 137` coming from the Maven build of `junixsocket-selftest-native-image`, there was not enough RAM, and the kernel terminated the process. Either add some swap space or more RAM.
+
+### NoSuchMethodException: ...DatagramSocketImpl.peekData
+
+When you see errors like this, try building with a Java 19 GraalVM instead of Java 11 GraalVM:
+
+```
+Fatal error: org.graalvm.compiler.debug.GraalError: com.oracle.svm.util.ReflectionUtil$ReflectionUtilError: java.lang.NoSuchMethodException: org.newsclub.net.unix.vsock.AFVSOCKDatagramSocketImpl.peekData(java.net.DatagramPacket)
+	at org.graalvm.nativeimage.pointsto/com.oracle.graal.pointsto.util.AnalysisFuture.setException(AnalysisFuture.java:49)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:269)
+	at org.graalvm.nativeimage.pointsto/com.oracle.graal.pointsto.util.AnalysisFuture.ensureDone(AnalysisFuture.java:63)
+	at org.graalvm.nativeimage.pointsto/com.oracle.graal.pointsto.meta.AnalysisElement.lambda$execute$2(AnalysisElement.java:170)
+	at org.graalvm.nativeimage.pointsto/com.oracle.graal.pointsto.util.CompletionExecutor.executeCommand(CompletionExecutor.java:193)
+	at org.graalvm.nativeimage.pointsto/com.oracle.graal.pointsto.util.CompletionExecutor.lambda$executeService$0(CompletionExecutor.java:177)
+	at java.base/java.util.concurrent.ForkJoinTask$RunnableExecuteAction.exec(ForkJoinTask.java:1426)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:290)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1020)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1656)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1594)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:183)
+Caused by: com.oracle.svm.util.ReflectionUtil$ReflectionUtilError: java.lang.NoSuchMethodException: org.newsclub.net.unix.vsock.AFVSOCKDatagramSocketImpl.peekData(java.net.DatagramPacket)
+	at org.graalvm.nativeimage.base/com.oracle.svm.util.ReflectionUtil.lookupMethod(ReflectionUtil.java:82)
+	at org.graalvm.nativeimage.base/com.oracle.svm.util.ReflectionUtil.lookupMethod(ReflectionUtil.java:69)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk.JNIRegistrationUtil.method(JNIRegistrationUtil.java:91)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.hosted.jdk.JNIRegistrationJavaNet.lambda$registerDatagramSocketCheckOldImpl$0(JNIRegistrationJavaNet.java:230)
+	at org.graalvm.nativeimage.pointsto/com.oracle.graal.pointsto.meta.AnalysisElement$SubtypeReachableNotification.lambda$notifyCallback$0(AnalysisElement.java:129)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	... 10 more
+Caused by: java.lang.NoSuchMethodException: org.newsclub.net.unix.vsock.AFVSOCKDatagramSocketImpl.peekData(java.net.DatagramPacket)
+	at java.base/java.lang.Class.getDeclaredMethod(Class.java:2475)
+	at org.graalvm.nativeimage.base/com.oracle.svm.util.ReflectionUtil.lookupMethod(ReflectionUtil.java:74)
+	... 15 more
+```
+
 
 ## Building and Maintaining junixsocket's Reachability Metadata
 
