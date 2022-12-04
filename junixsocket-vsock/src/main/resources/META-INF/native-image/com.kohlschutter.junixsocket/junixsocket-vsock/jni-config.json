@@ -1,0 +1,17 @@
+[
+{
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKDatagramSocket"
+},
+{
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKDatagramSocketImpl"
+},
+{
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKSocket"
+},
+{
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKSocketImpl"
+},
+{
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKServerSocket"
+}
+]

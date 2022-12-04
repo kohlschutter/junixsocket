@@ -164,5 +164,26 @@
 },
 {
   "name":"org.newsclub.net.unix.vsock.AFVSOCKServerSocket"
+},
+{
+  "name":"java.net.SocketImpl"
+},
+{
+  "name":"java.net.DatagramSocketImpl"
+},
+{
+  "name":"org.newsclub.net.unix.AFSocketImpl"
+},
+{
+  "name":"org.newsclub.net.unix.SocketImplShim"
+},
+{
+  "name":"org.newsclub.net.unix.AFUNIXSocketImpl"
+},
+{
+  "name":"org.newsclub.net.unix.AFUNIXDatagramSocketImpl"
+},
+{
+  "name":"org.newsclub.net.unix.AFDatagramSocketImpl"
 }
 ]

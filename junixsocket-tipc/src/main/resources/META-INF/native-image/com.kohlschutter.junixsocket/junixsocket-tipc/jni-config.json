@@ -1,0 +1,17 @@
+[
+{
+  "name":"org.newsclub.net.unix.tipc.AFTIPCDatagramSocket"
+},
+{
+  "name":"org.newsclub.net.unix.tipc.AFTIPCDatagramSocketImpl"
+},
+{
+  "name":"org.newsclub.net.unix.tipc.AFTIPCSocket"
+},
+{
+  "name":"org.newsclub.net.unix.tipc.AFTIPCSocketImpl"
+},
+{
+  "name":"org.newsclub.net.unix.tipc.AFTIPCServerSocket"
+}
+]
