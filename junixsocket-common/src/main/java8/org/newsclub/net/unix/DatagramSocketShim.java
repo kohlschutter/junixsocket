@@ -29,5 +29,6 @@ abstract class DatagramSocketShim extends DatagramSocket {
    * @return this DatagramSocket.
    * @throws IOException on error.
    */
+  @SuppressWarnings("PMD.LinguisticNaming")
   public abstract <T> DatagramSocket setOption(AFSocketOption<T> name, T value) throws IOException;
 }
