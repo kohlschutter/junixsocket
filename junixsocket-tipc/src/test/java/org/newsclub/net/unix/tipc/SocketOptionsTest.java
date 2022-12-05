@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
-import java.net.DatagramSocket;
 import java.net.NoRouteToHostException;
 import java.net.Socket;
 import java.net.SocketException;
@@ -87,9 +86,9 @@ public final class SocketOptionsTest extends
 
   @Test
   public void testTIPCSourceDroppable() throws Exception {
-    DatagramSocket socket = newDatagramSocket();
+    // NOTE: casting to work around GraalVM issue
+    AFTIPCDatagramSocket socket = (AFTIPCDatagramSocket) newDatagramSocket();
 
-    @SuppressWarnings("null")
     boolean droppable = socket.getOption(AFTIPCSocketOptions.TIPC_SRC_DROPPABLE);
     assertTrue(droppable, "Datagram messages should be droppable by default");
 
@@ -99,9 +98,9 @@ public final class SocketOptionsTest extends
 
   @Test
   public void testTIPCDestDroppable() throws Exception {
-    DatagramSocket socket = newDatagramSocket();
+    // NOTE: casting to work around GraalVM issue
+    AFTIPCDatagramSocket socket = (AFTIPCDatagramSocket) newDatagramSocket();
 
-    @SuppressWarnings("null")
     boolean droppable = socket.getOption(AFTIPCSocketOptions.TIPC_DEST_DROPPABLE);
     assertTrue(droppable, "Datagram messages should be droppable by default");
 

@@ -40,7 +40,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
  * @author Christian Kohlschütter
  */
-public abstract class AFDatagramSocket<A extends AFSocketAddress> extends DatagramSocket implements
+public abstract class AFDatagramSocket<A extends AFSocketAddress> extends DatagramSocketShim implements
     AFSomeSocket, AFSocketExtensions {
   private static final InetSocketAddress WILDCARD_ADDRESS = new InetSocketAddress(0);
 
@@ -423,5 +423,33 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
    */
   protected AFSocketImplExtensions<A> getImplExtensions() {
     return getAFImpl(false).getImplExtensions();
+  }
+
+  /**
+   * Returns the value of a junixsocket socket option.
+   *
+   * @param <T> The type of the socket option value.
+   * @param name The socket option.
+   * @return The value of the socket option.
+   * @throws IOException on error.
+   */
+  @Override
+  public <T> T getOption(AFSocketOption<T> name) throws IOException {
+    return getAFImpl().getCore().getOption(name);
+  }
+
+  /**
+   * Sets the value of a socket option.
+   *
+   * @param <T> The type of the socket option value.
+   * @param name The socket option.
+   * @param value The value of the socket option.
+   * @return this DatagramSocket.
+   * @throws IOException on error.
+   */
+  @Override
+  public <T> DatagramSocket setOption(AFSocketOption<T> name, T value) throws IOException {
+    getAFImpl().getCore().setOption(name, value);
+    return this;
   }
 }
