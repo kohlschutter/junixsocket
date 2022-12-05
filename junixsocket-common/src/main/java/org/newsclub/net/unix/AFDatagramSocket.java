@@ -40,8 +40,8 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
  * @author Christian Kohlschütter
  */
-public abstract class AFDatagramSocket<A extends AFSocketAddress> extends DatagramSocketShim implements
-    AFSomeSocket, AFSocketExtensions {
+public abstract class AFDatagramSocket<A extends AFSocketAddress> extends DatagramSocketShim
+    implements AFSomeSocket, AFSocketExtensions {
   private static final InetSocketAddress WILDCARD_ADDRESS = new InetSocketAddress(0);
 
   private final AFDatagramSocketImpl<A> impl;
