@@ -133,7 +133,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
           } catch (Exception e) {
             // ignore
           }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
           // ignore
         }
 

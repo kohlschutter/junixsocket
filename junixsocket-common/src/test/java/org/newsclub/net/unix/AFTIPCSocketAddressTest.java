@@ -18,7 +18,7 @@
 package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -125,12 +125,19 @@ public class AFTIPCSocketAddressTest {
 
   @Test
   public void testSocatString() throws Exception {
-    String socatString = AFTIPCSocketAddress.ofService(123, 456).toSocatAddressString(
-        AFSocketType.SOCK_STREAM, AFSocketProtocol.DEFAULT);
-    if (socatString == null) {
-      assertFalse(AFSocket.supports(AFSocketCapability.CAPABILITY_TIPC));
-    } else {
-      assertTrue(socatString.contains(":"));
+    String socatString;
+    try {
+      socatString = AFTIPCSocketAddress.ofService(123, 456).toSocatAddressString(
+          AFSocketType.SOCK_STREAM, AFSocketProtocol.DEFAULT);
+      assertNotNull(socatString);
+    } catch (SocketException e) {
+      if (AFSocket.supports(AFSocketCapability.CAPABILITY_TIPC)) {
+        throw e;
+      } else {
+        // expected
+        return;
+      }
     }
+    assertTrue(socatString.contains(":"));
   }
 }

@@ -501,10 +501,16 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    *
    * @return The direct {@link ByteBuffer}.
    */
-  final ByteBuffer getNativeAddressDirectBuffer() {
-    ByteBuffer direct = getNativeAddressDirectBuffer(nativeAddress.limit());
-    nativeAddress.position(0);
-    direct.put(nativeAddress);
+  final ByteBuffer getNativeAddressDirectBuffer() throws SocketException {
+    ByteBuffer address = nativeAddress;
+    if (address == null) {
+      throw (SocketException) new SocketException("Cannot access native address").initCause(
+          NativeUnixSocket.unsupportedException());
+    }
+
+    ByteBuffer direct = getNativeAddressDirectBuffer(address.limit());
+    address.position(0);
+    direct.put(address);
 
     return direct;
   }
@@ -537,7 +543,8 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    */
   public final void writeNativeAddressTo(ByteBuffer buf) throws IOException {
     if (nativeAddress == null) {
-      throw new IOException("Cannot access native address");
+      throw (SocketException) new SocketException("Cannot access native address").initCause(
+          NativeUnixSocket.unsupportedException());
     }
     buf.put(nativeAddress);
   }
@@ -640,7 +647,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    *
    * @param socketType The socket type, or {@code null} to omit from string.
    * @param socketProtocol The socket protocol, or {@code null} to omit from string.
-   * @return The string (such as 1:0:x2f746d702f796f), or {@code null} if unable to retrieve.
+   * @return The string (such as 1:0:x2f746d702f796f).
    * @throws IOException on error.
    */
   public @Nullable @SuppressWarnings("PMD.NPathComplexity") String toSocatAddressString(
@@ -650,7 +657,8 @@ public abstract class AFSocketAddress extends InetSocketAddress {
       return null;
     }
     if (nativeAddress == null) {
-      return null;
+      throw (SocketException) new SocketException("Cannot access native address").initCause(
+          NativeUnixSocket.unsupportedException());
     }
     if (socketProtocol != null && socketProtocol.getId() != 0) {
       throw new IOException("Protocol not (yet) supported"); // FIXME

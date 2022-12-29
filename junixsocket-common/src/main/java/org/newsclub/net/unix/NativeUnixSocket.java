@@ -106,7 +106,7 @@ final class NativeUnixSocket {
   static UnsupportedOperationException unsupportedException() {
     if (!isLoaded()) {
       return (UnsupportedOperationException) new UnsupportedOperationException(
-          "junixsocket is not supported on this platform").initCause(initError);
+          "junixsocket may not be fully supported on this platform").initCause(initError);
     } else {
       return null;
     }
