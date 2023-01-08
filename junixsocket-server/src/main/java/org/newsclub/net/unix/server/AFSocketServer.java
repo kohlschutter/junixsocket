@@ -29,6 +29,7 @@ import org.newsclub.net.unix.AFSocketAddress;
  * A base implementation for a simple, multi-threaded socket server using {@link AFSocket}s.
  *
  * @author Christian Kohlschütter
+ * @param <A> The supported address type.
  */
 public abstract class AFSocketServer<A extends AFSocketAddress> extends
     SocketServer<A, AFSocket<? extends A>, AFServerSocket<? extends A>> {

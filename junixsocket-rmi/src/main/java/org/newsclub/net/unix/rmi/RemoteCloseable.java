@@ -26,6 +26,7 @@ import java.rmi.Remote;
  * A resource that can be exposed remotely, and closed locally as well as remotely.
  *
  * @author Christian Kohlschütter
+ * @param <T> The resource type.
  */
 public interface RemoteCloseable<T> extends Remote, Closeable {
   /**

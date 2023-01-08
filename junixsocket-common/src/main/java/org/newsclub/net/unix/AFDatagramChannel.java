@@ -39,6 +39,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * A {@link DatagramChannel} implementation that works with junixsocket.
  *
  * @author Christian Kohlschütter
+ * @param <A> The supported address type.
  */
 public abstract class AFDatagramChannel<A extends AFSocketAddress> extends DatagramChannel
     implements AFSomeSocket, AFSocketExtensions {

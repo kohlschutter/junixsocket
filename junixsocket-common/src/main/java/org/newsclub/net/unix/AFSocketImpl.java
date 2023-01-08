@@ -42,6 +42,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * junixsocket-based {@link SocketImpl}.
  *
  * @author Christian Kohlschütter
+ * @param <A> The supported address type.
  */
 @SuppressWarnings({"PMD.CyclomaticComplexity"})
 public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImplShim {

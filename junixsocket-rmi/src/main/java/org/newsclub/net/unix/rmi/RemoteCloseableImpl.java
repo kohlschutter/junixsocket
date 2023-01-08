@@ -27,6 +27,7 @@ import java.rmi.server.RMISocketFactory;
  *
  * @author Christian Kohlschütter
  * @see RemoteCloseable
+ * @param <T> The resource type.
  */
 public class RemoteCloseableImpl<T> implements RemoteCloseable<T> {
   private final T remote;

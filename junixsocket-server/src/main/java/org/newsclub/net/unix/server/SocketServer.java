@@ -46,6 +46,9 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  *
  * @author Christian Kohlschütter
  * @see AFSocketServer
+ * @param <A> The supported address type.
+ * @param <S> The supported {@link Socket} type.
+ * @param <V> The supported {@link ServerSocket} type.
  */
 public abstract class SocketServer<A extends SocketAddress, S extends Socket, V extends ServerSocket> {
   private static final ScheduledExecutorService TIMEOUTS = Executors.newScheduledThreadPool(1);

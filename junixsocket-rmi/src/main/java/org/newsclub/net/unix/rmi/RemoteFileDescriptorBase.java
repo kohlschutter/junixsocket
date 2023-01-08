@@ -22,8 +22,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.Externalizable;
 import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
@@ -48,8 +46,9 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * A wrapper that allows a {@link FileDescriptor} be sent via RMI over AF_UNIX sockets.
  *
  * @author Christian Kohlschütter
- * @see RemoteFileInput subclass for sending {@link FileInputStream}s.
- * @see RemoteFileOutput subclass for sending {@link FileOutputStream}s.
+ * @param <T> The resource type.
+ * @see RemoteFileInput
+ * @see RemoteFileOutput
  */
 public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Closeable,
     FileDescriptorAccess {

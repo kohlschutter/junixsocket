@@ -33,6 +33,7 @@ import javax.net.SocketFactory;
  * mapping is left to the implementor.
  *
  * @see AFUNIXSocketFactory
+ * @param <A> The supported address type.
  */
 public abstract class AFSocketFactory<A extends AFSocketAddress> extends SocketFactory implements
     AFSocketAddressFromHostname<A> {

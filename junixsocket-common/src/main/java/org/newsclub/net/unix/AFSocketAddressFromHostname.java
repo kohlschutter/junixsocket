@@ -24,6 +24,7 @@ import java.net.SocketException;
  * Helps converting an internet "hostname" to an {@link AFSocketAddress}.
  *
  * @author Christian Kohlschütter
+ * @param <A> The supported address type.
  */
 public interface AFSocketAddressFromHostname<A extends AFSocketAddress> {
   /**

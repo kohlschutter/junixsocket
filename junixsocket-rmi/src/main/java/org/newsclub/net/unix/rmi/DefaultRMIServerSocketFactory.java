@@ -22,12 +22,10 @@ import java.io.Serializable;
 import java.net.ServerSocket;
 import java.rmi.server.RMIServerSocketFactory;
 
-import org.newsclub.net.unix.AFSocket;
-
 /**
  * An implementation of {@link RMIServerSocketFactory}.
  *
- * @see AFRMISocketFactory where we deal with {@link AFSocket}.
+ * @see AFRMISocketFactory
  */
 public class DefaultRMIServerSocketFactory implements RMIServerSocketFactory, Serializable {
   private static final long serialVersionUID = 1L;
