@@ -5,9 +5,11 @@
       "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-common/pom.properties\\E"
     }, 
     {
+      "condition" : { "typeReachable" : "org.newsclub.lib.junixsocket.common.NarMetadata" },
       "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-native-common/pom.properties\\E"
     }, 
     {
+      "condition" : { "typeReachable" : "org.newsclub.lib.junixsocket.custom.NarMetadata" },
       "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-native-custom/pom.properties\\E"
     }
   ]},

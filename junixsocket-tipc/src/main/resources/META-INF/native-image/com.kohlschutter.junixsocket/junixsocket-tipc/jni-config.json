@@ -13,5 +13,15 @@
 },
 {
   "name":"org.newsclub.net.unix.tipc.AFTIPCServerSocket"
+},
+{
+  "name":"org.newsclub.net.unix.tipc.AFTIPCGroupRequest",
+  "methods":[
+    {"name":"fromNative","parameterTypes":["int","int","int","int"] },
+    {"name":"getFlagsValue","parameterTypes":[] },
+    {"name":"getInstance","parameterTypes":[] },
+    {"name":"getScopeId","parameterTypes":[] },
+    {"name":"getType","parameterTypes":[] }
+  ]
 }
 ]

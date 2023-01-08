@@ -3,13 +3,12 @@
   "name":"java.nio.channels.spi.AbstractSelectableChannel"
 },
 {
+  "condition" : { "typeReachable" : "org.newsclub.lib.junixsocket.common.NarMetadata" },
   "name":"org.newsclub.lib.junixsocket.common.NarMetadata"
 },
 {
+  "condition" : { "typeReachable" : "org.newsclub.lib.junixsocket.custom.NarMetadata" },
   "name":"org.newsclub.lib.junixsocket.custom.NarMetadata"
-},
-{
-  "name":"org.newsclub.net.unix.AFSocketCapabilityRequirement"
 },
 {
   "name":"org.newsclub.net.unix.AFTIPCSocketAddress",
@@ -24,9 +23,11 @@
   "methods":[{"name":"addressFamily","parameterTypes":[] }]
 },
 {
+  "condition" : { "typeReachable" : "org.newsclub.net.unix.tipc.AFTIPCSelectorProvider" },
   "name":"org.newsclub.net.unix.tipc.AFTIPCSelectorProvider"
 },
 {
+  "condition" : { "typeReachable" : "org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider" },
   "name":"org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider"
 }
 ]

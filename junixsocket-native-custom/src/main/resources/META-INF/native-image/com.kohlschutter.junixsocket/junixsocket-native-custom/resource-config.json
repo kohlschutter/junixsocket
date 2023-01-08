@@ -1,0 +1,9 @@
+{
+  "resources":{
+  "includes":[
+    {
+      "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-native-custom/pom.properties\\E"
+    } 
+  ]},
+  "bundles":[]
+}

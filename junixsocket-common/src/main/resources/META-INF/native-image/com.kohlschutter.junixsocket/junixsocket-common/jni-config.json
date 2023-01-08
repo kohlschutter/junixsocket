@@ -141,9 +141,11 @@
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {
+  "condition" : { "typeReachable" : "org.newsclub.net.unix.tipc.AFTIPCDatagramSocket" },
   "name":"org.newsclub.net.unix.tipc.AFTIPCDatagramSocket"
 },
 {
+  "condition" : { "typeReachable" : "org.newsclub.net.unix.tipc.AFTIPCGroupRequest" },
   "name":"org.newsclub.net.unix.tipc.AFTIPCGroupRequest",
   "methods":[
     {"name":"fromNative","parameterTypes":["int","int","int","int"] }, 
@@ -154,15 +156,19 @@
   ]
 },
 {
+  "condition" : { "typeReachable" : "org.newsclub.net.unix.tipc.AFTIPCSocket" },
   "name":"org.newsclub.net.unix.tipc.AFTIPCSocket"
 },
 {
+  "condition" : { "typeReachable" : "org.newsclub.net.unix.tipc.AFVSOCKDatagramSocket" },
   "name":"org.newsclub.net.unix.vsock.AFVSOCKDatagramSocket"
 },
 {
+  "condition" : { "typeReachable" : "org.newsclub.net.unix.tipc.AFVSOCKSocket" },
   "name":"org.newsclub.net.unix.vsock.AFVSOCKSocket"
 },
 {
+  "condition" : { "typeReachable" : "org.newsclub.net.unix.tipc.AFVSOCKServerSocket" },
   "name":"org.newsclub.net.unix.vsock.AFVSOCKServerSocket"
 },
 {

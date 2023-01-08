@@ -1,5 +1,8 @@
 [
 {
+  "name":"org.newsclub.net.unix.tipc.AFTIPCSelectorProvider"
+},
+{
   "name":"org.newsclub.net.unix.tipc.AFTIPCSocketOptions$MessageImportance",
   "methods":[{"name":"ofValue","parameterTypes":["int"] }]
 }
