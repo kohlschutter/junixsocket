@@ -23,11 +23,17 @@
   "methods":[{"name":"addressFamily","parameterTypes":[] }]
 },
 {
+  "name":"org.newsclub.net.unix.AFUNIXSelectorProvider",
+  "allPublicMethods":true
+},
+{
   "condition" : { "typeReachable" : "org.newsclub.net.unix.tipc.AFTIPCSelectorProvider" },
-  "name":"org.newsclub.net.unix.tipc.AFTIPCSelectorProvider"
+  "name":"org.newsclub.net.unix.tipc.AFTIPCSelectorProvider",
+  "allPublicMethods":true
 },
 {
   "condition" : { "typeReachable" : "org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider" },
-  "name":"org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider"
+  "name":"org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider",
+  "allPublicMethods":true
 }
 ]
