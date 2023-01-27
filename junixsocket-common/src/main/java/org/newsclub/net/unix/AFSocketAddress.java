@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -87,12 +89,13 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   /**
    * The system-native representation of this address, or {@code null}.
    */
-  private final ByteBuffer nativeAddress;
+  @SuppressWarnings("PMD.ImmutableField")
+  private transient ByteBuffer nativeAddress;
 
   /**
    * The address family.
    */
-  private final AFAddressFamily<?> addressFamily;
+  private transient AFAddressFamily<?> addressFamily;
 
   /**
    * Creates a new socket address.
@@ -643,12 +646,13 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * address type is not natively supported by this platform.
    *
    * This call is mostly suited for debugging purposes. The resulting string is specific to the
-   * platform the code is executed on, and thus may be different among platforms (or {@code null}).
+   * platform the code is executed on, and thus may be different among platforms.
    *
    * @param socketType The socket type, or {@code null} to omit from string.
    * @param socketProtocol The socket protocol, or {@code null} to omit from string.
    * @return The string (such as 1:0:x2f746d702f796f).
-   * @throws IOException on error.
+   * @throws IOException on error (a {@link SocketException} is thrown if the native address cannot
+   *           be accessed).
    */
   public @Nullable @SuppressWarnings("PMD.NPathComplexity") String toSocatAddressString(
       AFSocketType socketType, AFSocketProtocol socketProtocol) throws IOException {
@@ -702,5 +706,29 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    */
   public boolean covers(AFSocketAddress other) {
     return this.equals(other);
+  }
+
+  /**
+   * Custom serialization: Reference {@link AFAddressFamily} instance by identifier string.
+   * 
+   * @param in The {@link ObjectInputStream}.
+   * @throws ClassNotFoundException on error.
+   * @throws IOException on error.
+   */
+  private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
+    in.defaultReadObject();
+    this.addressFamily = Objects.requireNonNull(AFAddressFamily.getAddressFamily(in.readUTF()),
+        "address family");
+  }
+
+  /**
+   * Custom serialization: Reference {@link AFAddressFamily} instance by identifier string.
+   * 
+   * @param out The {@link ObjectOutputStream}.
+   * @throws IOException on error.
+   */
+  private void writeObject(ObjectOutputStream out) throws IOException {
+    out.defaultWriteObject();
+    out.writeUTF(addressFamily.getJuxString());
   }
 }

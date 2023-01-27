@@ -22,7 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.util.Arrays;
 
@@ -132,5 +136,23 @@ public class AFUNIXSocketAddressTest {
   public void testAbstractNamespace() throws Exception {
     assertNotNull(AFUNIXSocketAddress.inAbstractNamespace("test"));
     assertNotNull(AFUNIXSocketAddress.inAbstractNamespace("test", 1234));
+  }
+
+  @Test
+  public void testSerialize() throws Exception {
+    try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+
+      AFUNIXSocketAddress addr = AFUNIXSocketAddress.of(URI.create("file:/tmp/yo"));
+      oos.writeObject(addr);
+      oos.flush();
+
+      try (ObjectInputStream oin = new ObjectInputStream(new ByteArrayInputStream(bos
+          .toByteArray()))) {
+        AFUNIXSocketAddress addr2 = (AFUNIXSocketAddress) oin.readObject();
+        assertEquals(addr, addr2);
+        assertEquals(addr.getAddressFamily(), addr2.getAddressFamily());
+      }
+    }
   }
 }
