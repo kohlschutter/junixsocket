@@ -53,7 +53,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.jetty.io.ArrayByteBufferPool;
 import org.eclipse.jetty.io.ByteBufferPool;
 import org.eclipse.jetty.io.Connection;
 import org.eclipse.jetty.io.EndPoint;
@@ -136,7 +135,7 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @param scheduler A scheduler for this connector or null to either a {@link Scheduler} set as a
    *          server bean or if none set, then a new {@link ScheduledExecutorScheduler} instance.
    * @param pool A buffer pool for this connector or null to either a {@link ByteBufferPool} set as
-   *          a server bean or none set, the new {@link ArrayByteBufferPool} instance.
+   *          a server bean or none set, the new {code ArrayByteBufferPool} instance.
    * @param acceptors the number of acceptor threads to use, or -1 for a default value. If 0, then
    *          no acceptor threads will be launched and some other mechanism will need to be used to
    *          accept new connections.
