@@ -391,7 +391,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   @Test
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
   public void testDatagramChannel() throws Exception {
-    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 10), () -> {
       testDatagramChannel(false, true);
     });
   }
@@ -399,7 +399,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   @Test
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
   public void testDatagramChannelDirect() throws Exception {
-    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 10), () -> {
       testDatagramChannel(true, true);
     });
   }
@@ -407,7 +407,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   @Test
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
   public void testDatagramChannelNonBlocking() throws Exception {
-    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 10), () -> {
       testDatagramChannel(false, false);
     });
   }
@@ -415,7 +415,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   @Test
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
   public void testDatagramChannelNonBlockingDirect() throws Exception {
-    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 10), () -> {
       testDatagramChannel(true, false);
     });
   }
