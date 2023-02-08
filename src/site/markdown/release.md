@@ -144,7 +144,7 @@ Run `java -jar junixsocket-selftest/target/junixsocket-selftest-X.Y.Z-jar-with-d
 
 Also run the selftest with Java 8, e.g.:
 
-	/Library/Java/JavaVirtualMachines/1.8.0.jdk/Contents/Home/bin/java -jar junixsocket-selftest/target/junixsocket-selftest-2.6.1-jar-with-dependencies.jar
+	/Library/Java/JavaVirtualMachines/1.8.0.jdk/Contents/Home/bin/java -jar junixsocket-selftest/target/junixsocket-selftest-2.6.2-jar-with-dependencies.jar
 
 Run `junixsocket-native-graalvm/bin/with-graalvm mvn package -pl junixsocket-selftest-native-image -Pnative`
 (on all native-image supported platforms) to build the GraalVM native-image.  Test the native-image

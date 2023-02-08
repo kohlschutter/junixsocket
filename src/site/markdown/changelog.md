@@ -9,6 +9,16 @@ The existing API should always be backwards compatible between minor releases (e
 When upgrading from versions older than 2.4.0, please note that `junixsocket-core` is now a POM-only
 artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.html) for details.
 
+### _(2022-02-08)_ **junixsocket 2.6.2**
+
+- Add socket connectors for AF_VSOCK, Firecracker
+- Add mayStopServerForce to AFSocketServerConnector
+- Fix false-positive selftest failure on slow machines
+- Fix potential hang in send
+- Fix support for TIPC/VSOCK when building GraalVM native images
+- Fix serialization of AFSocketAddresses
+- Update dependencies, especially use the new mysql.connector.j
+
 ### _(2022-10-26)_ **junixsocket 2.6.1**
 
  - Add AFSocket.checkConnectionClosed to probe connection status

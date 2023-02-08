@@ -11,7 +11,7 @@ should be backwards compatible to releases of the same "major version" (e.g., 2.
 
 ## Supported Java versions
 
-junixsocket 2.6.1 is fully compatible with Java 8 and newer (tested up to Java 19).
+junixsocket 2.6.2 is fully compatible with Java 8 and newer (tested up to Java 19).
 
 ## Supported Java VMs
 
@@ -87,7 +87,7 @@ or [contact Christian Kohlschütter via email](mailto:christian@kohlschutter.com
 
 A reliable way to ensure that junixsocket works in your environment is to run the "[selftest](selftest.html)".
 
-    java -jar junixsocket-selftest-2.6.1-jar-with-dependencies.jar
+    java -jar junixsocket-selftest-2.6.2-jar-with-dependencies.jar
 
 The last line should say "Selftest PASSED", and you're good to go.
 

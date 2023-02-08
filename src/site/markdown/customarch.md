@@ -86,7 +86,7 @@ for development and testing purposes:
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-native-custom</artifactId>
-      <version>2.6.1</version>
+      <version>2.6.2</version>
       <classifier>amd64-Linux-gpp-jni</classifier>
     </dependency>
 
