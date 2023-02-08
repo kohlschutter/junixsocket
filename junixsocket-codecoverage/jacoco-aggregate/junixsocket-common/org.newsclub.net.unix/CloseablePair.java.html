@@ -25,7 +25,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * A pair of two closeable items.
- * 
+ *
  * @param &lt;T&gt; The type of the items.
  * @author Christian Kohlschütter
  */
@@ -36,7 +36,7 @@ public class CloseablePair&lt;T extends Closeable&gt; implements Closeable {
 
   /**
    * Creates a pair of two items.
-   * 
+   *
    * @param a The first item.
    * @param b The second item.
    */
@@ -46,7 +46,7 @@ public class CloseablePair&lt;T extends Closeable&gt; implements Closeable {
 
   /**
    * Creates a pair of two items.
-   * 
+   *
    * @param a The first item.
    * @param b The second item.
    * @param alsoClose Some closeable that is also closed upon {@link #close()}, or {@code null}.
@@ -70,7 +70,7 @@ public class CloseablePair&lt;T extends Closeable&gt; implements Closeable {
 
   /**
    * Returns the pair's first item.
-   * 
+   *
    * @return The first item.
    */
   public final @NonNull T getFirst() {
@@ -79,7 +79,7 @@ public class CloseablePair&lt;T extends Closeable&gt; implements Closeable {
 
   /**
    * Returns the pair's second item.
-   * 
+   *
    * @return The second item.
    */
   public final @NonNull T getSecond() {

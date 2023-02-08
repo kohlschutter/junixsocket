@@ -39,7 +39,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 /**
  * A wrapper for RMI registries, both remote and local, to allow for a clean removal of bound
  * resources upon shutdown.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public abstract class AFRegistry implements Registry {
@@ -78,7 +78,7 @@ public abstract class AFRegistry implements Registry {
   /**
    * Returns {@code true} if the wrapped Registry instance is a locally created
    * {@link RemoteServer}.
-   * 
+   *
    * @return {@code true} if wrapped instance is a locally created {@link RemoteServer}.
    * @see #isLocal()
    */
@@ -89,7 +89,7 @@ public abstract class AFRegistry implements Registry {
 
   /**
    * Returns {@code true} if the wrapped Registry instance is locally created.
-   * 
+   *
    * @return {@code true} if wrapped instance is locally created.
    */
   public final boolean isLocal() {
@@ -98,7 +98,7 @@ public abstract class AFRegistry implements Registry {
 
   /**
    * Returns the {@link AFNaming} instance responsible for this registry.
-   * 
+   *
    * @return The {@link AFNaming} instance.
    */
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFServerSocketChannel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFServerSocketChannel.java</span></div><h1>AFServerSocketChannel.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFServerSocketChannel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFServerSocketChannel.java</span></div><h1>AFServerSocketChannel.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -33,7 +33,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A selectable channel for stream-oriented listening sockets.
- * 
+ *
  * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
  * @author Christian Kohlschütter
  */
@@ -43,7 +43,7 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
 
   /**
    * Creates a new {@link AFServerSocketChannel} instance.
-   * 
+   *
    * @param socket The corresponding {@link ServerSocket}.
    * @param sp The corresponding {@link SelectorProvider}.
    */
@@ -116,10 +116,10 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
 
   /**
    * Checks if the local socket address returned by {@link #getLocalAddress()} is still valid.
-   * 
+   *
    * The address is no longer valid if the server socket has been closed, {@code null}, or another
    * server socket has been bound on that address.
-   * 
+   *
    * @return {@code true} iff still valid.
    */
   public final boolean isLocalSocketAddressValid() {
@@ -147,10 +147,10 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
 
   /**
    * Checks if this {@link AFServerSocketChannel}'s file should be removed upon {@link #close()}.
-   * 
+   *
    * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
    * namespace).
-   * 
+   *
    * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
    */
   public final boolean isDeleteOnClose() {
@@ -160,10 +160,10 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
   /**
    * Enables/disables deleting this {@link AFServerSocketChannel}'s file (or other resource type)
    * upon {@link #close()}.
-   * 
+   *
    * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
    * namespace).
-   * 
+   *
    * @param b Enabled if {@code true}.
    */
   public final void setDeleteOnClose(boolean b) {

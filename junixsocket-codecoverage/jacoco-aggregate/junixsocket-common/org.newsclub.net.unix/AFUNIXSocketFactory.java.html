@@ -28,10 +28,10 @@ import javax.net.SocketFactory;
 
 /**
  * The base for a SocketFactory that connects to UNIX sockets.
- * 
+ *
  * Typically, the &quot;hostname&quot; is used as a reference to a socketFile on the file system. The actual
  * mapping is left to the implementor.
- * 
+ *
  * @see AFUNIXSocketFactory.FactoryArg
  * @see AFUNIXSocketFactory.SystemProperty
  * @see AFUNIXSocketFactory.URIScheme
@@ -83,9 +83,9 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
    * A socket factory that handles a custom hostname (&quot;localhost&quot;, by default, and configured by the
    * system property &amp;quot;org.newsclub.net.unix.socket.hostname&amp;quot;), forwarding all other
    * requests to the fallback {@link SocketFactory}.
-   * 
+   *
    * The socket path is configured through an argument passed by to the constructor.
-   * 
+   *
    * This is particularly useful for JDBC drivers that take a &quot;socketFactory&quot; and a
    * &quot;socketFactoryArg&quot;. The latter will be passed as a constructor argument.
    */
@@ -94,7 +94,7 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
 
     /**
      * Constructs a new {@link FactoryArg} factory using the given socket path.
-     * 
+     *
      * @param socketPath The path to the socket.
      */
     public FactoryArg(String socketPath) {
@@ -106,7 +106,7 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
 
     /**
      * Constructs a new {@link FactoryArg} factory using the given socket path.
-     * 
+     *
      * @param file The path to the socket.
      */
     public FactoryArg(File file) {
@@ -126,10 +126,10 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
    * A socket factory that handles a custom hostname (&quot;junixsocket.localhost&quot;, by default, and
    * configured by the system property &amp;quot;org.newsclub.net.unix.socket.hostname&amp;quot;),
    * forwarding all other requests to the fallback {@link SocketFactory}.
-   * 
+   *
    * The socket path is configured through a system property,
    * &amp;quot;org.newsclub.net.unix.socket.default&amp;quot;.
-   * 
+   *
    * NOTE: While it is technically possible, it is highly discouraged to programmatically change the
    * value of the property as it can lead to concurrency issues and undefined behavior.
    */
@@ -157,12 +157,12 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
 
   /**
    * A socket factory that handles special host names formatted as file:// URIs.
-   * 
+   *
    * The file:// URI may also be specified in URL-encoded format, i.e., file:%3A%2F%2F etc.
-   * 
+   *
    * You may also surround the URL with square brackets (&quot;[&quot; and &quot;]&quot;), whereas the closing bracket
    * may be omitted.
-   * 
+   *
    * NOTE: In some circumstances it is recommended to use &quot;&lt;code&gt;[file:%3A%2F%2F&lt;/code&gt;(...)&quot;, i.e.
    * encoded and without the closing bracket. Since this is an invalid hostname, it will not trigger
    * a DNS lookup, but can still be used within a JDBC Connection URL.

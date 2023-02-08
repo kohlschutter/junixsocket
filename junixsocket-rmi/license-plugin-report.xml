@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1666773041435">
-    <module artifactId="junixsocket-rmi" groupId="com.kohlschutter.junixsocket" version="2.6.1"/>
+<licensePluginReport goal="CHECK" timestamp="1675888348172">
+    <module artifactId="junixsocket-rmi" groupId="com.kohlschutter.junixsocket" version="2.6.2"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/rmi/AFNaming.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/rmi/AFNamingProvider.java" result="PRESENT"/>
@@ -45,5 +45,6 @@
         <file path="src/test/java/org/newsclub/net/unix/rmi/TestRegistryServer.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/rmi/TestService.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/rmi/TestServiceImpl.java" result="PRESENT"/>
+        <file path="src/test/java8/org/newsclub/net/unix/rmi/RemoteRegistryTest.java" result="PRESENT"/>
     </files>
 </licensePluginReport>

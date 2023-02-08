@@ -36,17 +36,17 @@ import java.util.Objects;
 
 /**
  * A workaround to create an {@link InetAddress} for an {@link AFSocketAddress}.
- * 
+ *
  * {@link DatagramPacket} internally requires InetAddress compatibility. Even if it pretends to
  * accept {@link SocketAddress}es, it refuses anything other than {@link InetSocketAddress}
  * &lt;em&gt;and&lt;/em&gt; then even stores host and port separately.
- * 
+ *
  * This implementation deserializes a specially crafted {@link InetAddress} with a hostname that
  * encodes the raw bytes of an {@link AFSocketAddress}. We do this because the deserialization code
  * path does not attempt DNS resolution (which would fail one way or another).
- * 
+ *
  * The hostnames we use end with &quot;.junixsocket&quot;, to distinguish them from regular hostnames.
- * 
+ *
  * @author Christian Kohlschütter
  */
 <span class="nc" id="L52">class AFInetAddress {</span>
@@ -94,12 +94,12 @@ import java.util.Objects;
   /**
    * Encodes a junixsocket socketAddress into a string that is (somewhat) guaranteed to not be
    * resolved by java.net code.
-   * 
+   *
    * Implementation detail: The &quot;[&quot; prefix (with the corresponding &quot;]&quot; suffix missing from the
    * input) should cause an early {@link UnknownHostException} be thrown, which is caught within
    * {@link InetSocketAddress#InetSocketAddress(String, int)}, causing the hostname be marked as
    * &quot;unresolved&quot; (without an address set).
-   * 
+   *
    * @param socketAddress The socket address.
    * @return A string, to be used when calling
    *         {@link InetSocketAddress#InetSocketAddress(String, int)}, etc.
@@ -141,7 +141,7 @@ import java.util.Objects;
    * address), without actually having to resolve the address via DNS, thus still carrying the
    * &quot;hostname&quot; field containing a hostname as returned by
    * {@link #createUnresolvedHostname(byte[])}.
-   * 
+   *
    * @param socketAddress The socket address.
    * @return The {@link InetAddress}.
    */
@@ -182,7 +182,7 @@ import java.util.Objects;
     try {
 <span class="fc" id="L183">      return unwrapAddress(hostname, af);</span>
 <span class="nc" id="L184">    } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L185">      throw (SocketException)new SocketException(&quot;Unsupported address&quot;).initCause(e);</span>
+<span class="nc" id="L185">      throw (SocketException) new SocketException(&quot;Unsupported address&quot;).initCause(e);</span>
     }
   }
 

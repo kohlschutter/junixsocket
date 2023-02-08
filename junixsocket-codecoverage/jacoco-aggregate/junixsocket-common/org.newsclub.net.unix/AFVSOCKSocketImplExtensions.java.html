@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * VSOCK-specific code that resides in the native library. To be used by {@code AFVSOCKSocket} and
  * {@code AFVSOCKDatagramSocket} only.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFVSOCKSocketImplExtensions implements
@@ -36,12 +36,12 @@ public final class AFVSOCKSocketImplExtensions implements
 
   /**
    * Returns the local CID.
-   * 
+   *
    * If the system does not support vsock, or status about support cannot be retrieved, -1
    * ({@link AFVSOCKSocketAddress#VMADDR_CID_ANY}) is returned.
-   * 
+   *
    * The value may be cached upon initialization of the library.
-   * 
+   *
    * @return The CID, or -1.
    * @throws IOException on error.
    */

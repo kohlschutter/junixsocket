@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
 <head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <title>module-info xref</title>
 <link type="text/css" rel="stylesheet" href="../stylesheet.css" />
@@ -16,13 +16,14 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>     requires java.sql;
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>     requires java.base;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>    requires mysql.connector.java;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>    requires <strong class="jxr_keyword">static</strong> com.kohlschutter.annotations.compiletime;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>    requires <strong class="jxr_keyword">static</strong> org.eclipse.jdt.annotation;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  }
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>    <em class="jxr_comment">// requires mysql.connector.java; // until 8.0.30</em>
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>    requires mysql.connector.j; <em class="jxr_comment">// from 8.0.31</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>    requires <strong class="jxr_keyword">static</strong> com.kohlschutter.annotations.compiletime;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>    requires <strong class="jxr_keyword">static</strong> org.eclipse.jdt.annotation;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2022 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>

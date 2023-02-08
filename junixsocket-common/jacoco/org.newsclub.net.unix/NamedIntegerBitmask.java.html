@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NamedIntegerBitmask.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">NamedIntegerBitmask.java</span></div><h1>NamedIntegerBitmask.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NamedIntegerBitmask.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">NamedIntegerBitmask.java</span></div><h1>NamedIntegerBitmask.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -28,7 +28,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Describes a 32-bit bitmask that supports named flags.
- * 
+ *
  * @param &lt;T&gt; The subclass's type itself.
  * @author Christian Kohlschütter
  */
@@ -49,7 +49,7 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
 
   /**
    * Creates a new named flag.
-   * 
+   *
    * @param name The name of the flag / flag set.
    * @param flags The flag value.
    */
@@ -60,7 +60,7 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
 
   /**
    * Returns the name of the flag / flag set.
-   * 
+   *
    * @return The name.
    */
   public final String name() {
@@ -69,7 +69,7 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
 
   /**
    * Returns the value of the flag / flag set.
-   * 
+   *
    * @return The value.
    */
   public final int value() {
@@ -78,7 +78,7 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
 
   /**
    * Checks if the given flag is set.
-   * 
+   *
    * @param flag The flag to check.
    * @return {@code true} iff set.
    */
@@ -95,7 +95,7 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
   /**
    * Combines two flags / flag sets (use this to implement
    * {@link #combineWith(NamedIntegerBitmask)}).
-   * 
+   *
    * @param allFlags The array of all defined flags, expected &quot;none&quot;.
    * @param flagsNone The &quot;none&quot; flag set.
    * @param constr The constructor.
@@ -109,7 +109,7 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
 
   /**
    * Combines two flags / flag sets.
-   * 
+   *
    * @param other The other flag / flag set.
    * @return An instance combining both.
    */
@@ -118,14 +118,14 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
 
   /**
    * Creates a new instance.
-   * 
+   *
    * @param &lt;T&gt; This type.
    */
   @FunctionalInterface
   protected interface Constructor&lt;T extends NamedIntegerBitmask&lt;T&gt;&gt; {
     /**
      * Creates a new instance.
-     * 
+     *
      * @param name The name.
      * @param flags The flag value.
      * @return The instance.
@@ -135,7 +135,7 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
 
   /**
    * Returns a {@link NamedIntegerBitmask} instance given a flag value.
-   * 
+   *
    * @param &lt;T&gt; The subclass's type itself.
    * @param allFlags The array of all defined flags, expected &quot;none&quot;.
    * @param flagsNone The &quot;none&quot; flag set.
@@ -167,7 +167,7 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
 
   /**
    * Returns a {@link NamedIntegerBitmask} instance given a series of flags.
-   * 
+   *
    * @param &lt;T&gt; The subclass's type itself.
    * @param allFlags The array of all defined flags, expected &quot;none&quot;.
    * @param flagsNone The &quot;none&quot; flag set.

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCDestName.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCDestName.java</span></div><h1>AFTIPCDestName.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCDestName.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCDestName.java</span></div><h1>AFTIPCDestName.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -25,7 +25,7 @@ import org.newsclub.net.unix.AFTIPCSocketAddress.Scope;
 
 /**
  * The TIPC-specific DestName response that may be included as ancillary data.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFTIPCDestName implements Serializable {
@@ -47,7 +47,7 @@ public final class AFTIPCDestName implements Serializable {
 
   /**
    * Creates a new instance.
-   * 
+   *
    * @param type The &quot;type&quot; value.
    * @param lower The &quot;lower&quot; service range value (or the service &quot;instance&quot; if {@code lower} and
    *          {@code upper} are the same).
@@ -62,7 +62,7 @@ public final class AFTIPCDestName implements Serializable {
 
   /**
    * Returns the &quot;type&quot; value.
-   * 
+   *
    * @return The type.
    */
   public int getType() {
@@ -72,7 +72,7 @@ public final class AFTIPCDestName implements Serializable {
   /**
    * Returns the &quot;lower&quot; value of the service range (or the service &quot;instance&quot; if identical to the
    * upper value).
-   * 
+   *
    * @return The lower value.
    */
   public int getLower() {
@@ -82,7 +82,7 @@ public final class AFTIPCDestName implements Serializable {
   /**
    * Returns the &quot;upper&quot; value of the service range (or the service &quot;instance&quot; if identical to the
    * lower value).
-   * 
+   *
    * @return The upper value.
    */
   public int getUpper() {
@@ -91,7 +91,7 @@ public final class AFTIPCDestName implements Serializable {
 
   /**
    * Checks if this DestName describes a service range (as opposed to a service) address.
-   * 
+   *
    * @return {@code true} if the {@link #getLower()} value is different from the {@link #getUpper()}
    *         value.
    */
@@ -102,7 +102,7 @@ public final class AFTIPCDestName implements Serializable {
   /**
    * Converts this DestName to a proper {@link AFTIPCSocketAddress}, by using the given
    * {@link Scope} (which is otherwise not included).
-   * 
+   *
    * @param scope The scope to use.
    * @param alwaysRange If {@code true}, a service range address is even returned when a service
    *          address would suffice.

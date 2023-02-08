@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * A set of {@link Closeables} that can be closed at once.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class Closeables implements Closeable {
@@ -41,7 +41,7 @@ public final class Closeables implements Closeable {
   /**
    * Creates a new {@link Closeables} instance, populating it with the given {@link Closeable}
    * objects.
-   * 
+   *
    * @param closeable The {@link Closeable}s to add.
    */
 <span class="nc" id="L47">  public Closeables(Closeable... closeable) {</span>
@@ -57,7 +57,7 @@ public final class Closeables implements Closeable {
 
   /**
    * Closes all registered closeables.
-   * 
+   *
    * @param superException If set, any exceptions thrown in here will be chained to the given
    *          exception via addSuppressed, and then thrown.
    * @throws IOException if an exception occurs.
@@ -106,7 +106,7 @@ public final class Closeables implements Closeable {
 
   /**
    * Adds the given closeable, but only using a weak reference.
-   * 
+   *
    * @param closeable The closeable.
    * @return {@code true} iff the closeable was added, {@code false} if it was {@code null} or
    *         already added before.
@@ -133,7 +133,7 @@ public final class Closeables implements Closeable {
 
   /**
    * Adds the given closeable.
-   * 
+   *
    * @param closeable The closeable.
    * @return {@code true} iff the closeable was added, {@code false} if it was {@code null} or
    *         already added before.
@@ -144,7 +144,7 @@ public final class Closeables implements Closeable {
 
   /**
    * Removes the given closeable.
-   * 
+   *
    * @param closeable The closeable.
    * @return {@code true} iff the closeable was removed, {@code fale} if it was {@code null} or not
    *         previously added.

@@ -22,50 +22,48 @@ import java.io.Serializable;
 import java.net.ServerSocket;
 import java.rmi.server.RMIServerSocketFactory;
 
-import org.newsclub.net.unix.AFSocket;
-
 /**
  * An implementation of {@link RMIServerSocketFactory}.
- * 
- * @see AFRMISocketFactory where we deal with {@link AFSocket}.
+ *
+ * @see AFRMISocketFactory
  */
 public class DefaultRMIServerSocketFactory implements RMIServerSocketFactory, Serializable {
   private static final long serialVersionUID = 1L;
-<span class="nc" id="L34">  private static final DefaultRMIServerSocketFactory INSTANCE = new DefaultRMIServerSocketFactory();</span>
+<span class="nc" id="L32">  private static final DefaultRMIServerSocketFactory INSTANCE = new DefaultRMIServerSocketFactory();</span>
 
   /**
    * Creates a new {@link DefaultRMIClientSocketFactory}.
    */
   public DefaultRMIServerSocketFactory() {
-<span class="nc" id="L40">    super();</span>
-<span class="nc" id="L41">  }</span>
+<span class="nc" id="L38">    super();</span>
+<span class="nc" id="L39">  }</span>
 
   /**
    * Returns the singleton instance for DefaultRMIServerSocketFactory.
-   * 
+   *
    * @return The singleton.
    */
   public static DefaultRMIServerSocketFactory getInstance() {
-<span class="nc" id="L49">    return INSTANCE;</span>
+<span class="nc" id="L47">    return INSTANCE;</span>
   }
 
   @Override
   public ServerSocket createServerSocket(int port) throws IOException {
-<span class="nc" id="L54">    ServerSocket socket = new ServerSocket(port);</span>
+<span class="nc" id="L52">    ServerSocket socket = new ServerSocket(port);</span>
     // socket.setSoTimeout(60 * 60 * 1000);
-<span class="nc" id="L56">    return socket;</span>
+<span class="nc" id="L54">    return socket;</span>
   }
 
   // we must implement this (see RMIServerSocketFactory)
   @Override
   public boolean equals(Object obj) {
-<span class="nc" id="L62">    return obj instanceof DefaultRMIServerSocketFactory;</span>
+<span class="nc" id="L60">    return obj instanceof DefaultRMIServerSocketFactory;</span>
   }
 
   // we must implement this (see RMIServerSocketFactory)
   @Override
   public int hashCode() {
-<span class="nc" id="L68">    return 1;</span>
+<span class="nc" id="L66">    return 1;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

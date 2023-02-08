@@ -32,11 +32,11 @@ import org.newsclub.net.unix.AFSocketAddress;
 
 /**
  * A {@link Connector} implementation for junixsocket server socket channels (Unix domains etc.)
- * 
+ *
  * Based upon jetty's ClientConnector.
- * 
+ *
  * This implementation should work with jetty version 10.0.8 or newer.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFSocketClientConnector extends ClientConnector {
@@ -50,7 +50,7 @@ public final class AFSocketClientConnector extends ClientConnector {
   /**
    * Returns a new {@link ClientConnector} configured to use given {@link AFSocketAddress} for
    * communication with junixsocket sockets.
-   * 
+   *
    * @param addr The socket address.
    * @return The client connector.
    */

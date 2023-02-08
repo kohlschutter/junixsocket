@@ -18,15 +18,15 @@ junixsocket-rmi,org.newsclub.net.unix.rmi,AFNaming,84,445,18,36,28,136,17,38,2,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMISocketFactory.ServerSocketCloseable,0,42,0,0,0,10,0,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileOutput.new FileOutputStream() {...},0,13,0,0,0,4,0,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileDescriptor,0,26,1,3,0,9,1,4,0,3
-junixsocket-rmi,org.newsclub.net.unix.rmi,RemotePeerInfo,29,63,4,4,5,20,7,6,3,6
+junixsocket-rmi,org.newsclub.net.unix.rmi,RemotePeerInfo,32,63,4,4,5,20,7,6,3,6
 junixsocket-rmi,org.newsclub.net.unix.rmi,ShutdownHookSupport.ShutdownThread,1,21,0,2,1,9,0,3,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMIServiceImpl.new Runnable() {...},6,20,1,1,4,6,1,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,ShutdownException,0,8,0,0,0,4,0,2,0,2
-junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXRMISocketFactory,39,239,11,9,8,56,12,19,2,19
+junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXRMISocketFactory,39,240,11,9,8,56,12,19,2,19
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXNaming.AFUNIXNamingProvider,10,32,2,2,2,9,2,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMIServiceImpl,66,143,13,5,21,37,12,8,4,7
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFNaming.new ShutdownHookSupport.ShutdownHook() {...},8,18,3,1,1,5,2,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,DefaultRMIServerSocketFactory,22,0,0,0,8,0,6,0,6,0
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMISocketFactory.new ShutdownHookSupport.ShutdownHook() {...},1,11,0,0,1,4,0,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFRegistry,41,275,5,19,17,80,5,19,1,11
-junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXNaming,19,217,7,15,5,53,8,26,1,22
+junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXNaming,21,218,7,15,5,53,8,26,1,22

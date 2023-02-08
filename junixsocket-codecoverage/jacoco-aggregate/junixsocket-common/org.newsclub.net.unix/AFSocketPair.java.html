@@ -23,14 +23,14 @@ import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * A pair of sockets.
- * 
+ *
  * @param &lt;T&gt; The socket type.
  * @author Christian Kohlschütter
  */
 public abstract class AFSocketPair&lt;T extends AFSomeSocket&gt; extends CloseablePair&lt;T&gt; {
   /**
    * Creates a socket pair.
-   * 
+   *
    * @param a The first socket.
    * @param b The second socket.
    */
@@ -40,7 +40,7 @@ public abstract class AFSocketPair&lt;T extends AFSomeSocket&gt; extends Closeab
 
   /**
    * Creates a socket pair.
-   * 
+   *
    * @param a The first socket.
    * @param b The second socket.
    * @param alsoClose Some closeable that is also closed upon {@link #close()}, or {@code null}.
@@ -51,7 +51,7 @@ public abstract class AFSocketPair&lt;T extends AFSomeSocket&gt; extends Closeab
 
   /**
    * Returns the first socket of the pair.
-   * 
+   *
    * @return The first socket.
    */
   public final @NonNull T getSocket1() {
@@ -60,7 +60,7 @@ public abstract class AFSocketPair&lt;T extends AFSomeSocket&gt; extends Closeab
 
   /**
    * Returns the second socket of the pair.
-   * 
+   *
    * @return The second socket.
    */
   public final @NonNull T getSocket2() {

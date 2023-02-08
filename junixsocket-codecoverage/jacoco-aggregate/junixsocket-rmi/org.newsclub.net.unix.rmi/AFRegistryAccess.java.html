@@ -28,9 +28,9 @@ import java.util.concurrent.TimeUnit;
 <span class="fc" id="L28">abstract class AFRegistryAccess {</span>
   /**
    * Returns a reference to the existing RMI registry.
-   * 
+   *
    * If there's no registry running at this port, an exception is thrown.
-   * 
+   *
    * @return The registry.
    * @throws RemoteException If there was a problem.
    */
@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 
   /**
    * Convenience method for {@code getRegistry().lookup}.
-   * 
+   *
    * @param name the name for the remote reference to look up
    * @return The instance
    * @throws NotBoundException upon error
@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
 
   /**
    * Convenience method for {@code getRegistry().lookup}.
-   * 
+   *
    * @param name the name for the remote reference to look up
    * @param timeout The timeout value.
    * @param unit The timeout unit.
@@ -70,7 +70,7 @@ import java.util.concurrent.TimeUnit;
 
   /**
    * Convenience method for {@code getRegistry().unbind}.
-   * 
+   *
    * @param name the name for the remote reference to unbind
    * @throws RemoteException upon error
    * @throws NotBoundException upon error
@@ -83,7 +83,7 @@ import java.util.concurrent.TimeUnit;
 
   /**
    * Convenience method for {@code getRegistry().bind}.
-   * 
+   *
    * @param name the name for the remote reference to bind
    * @param obj the remote reference to bind
    * @throws RemoteException upon error
@@ -98,7 +98,7 @@ import java.util.concurrent.TimeUnit;
 
   /**
    * Convenience method for {@code getRegistry().rebind}.
-   * 
+   *
    * @param name the name for the remote reference to rebind
    * @param obj the remote reference to rebind
    * @throws RemoteException upon error
@@ -111,10 +111,10 @@ import java.util.concurrent.TimeUnit;
 
   /**
    * Convenience method for {@code getRegistry().list}.
-   * 
+   *
    * Unlike {@link AFRegistry#list()}, in case the registry has been shut down already, an empty
    * array is returned.
-   * 
+   *
    * @return an array of the names bound in this registry
    * @throws RemoteException upon error
    * @throws AccessException upon error

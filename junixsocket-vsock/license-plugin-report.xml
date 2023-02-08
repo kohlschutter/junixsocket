@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1666773020564">
-    <module artifactId="junixsocket-vsock" groupId="com.kohlschutter.junixsocket" version="2.6.1"/>
+<licensePluginReport goal="CHECK" timestamp="1675888325780">
+    <module artifactId="junixsocket-vsock" groupId="com.kohlschutter.junixsocket" version="2.6.2"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKDatagramChannel.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKDatagramSocket.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKDatagramSocketImpl.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKProtocolFamily.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKProxyServerSocketConnector.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKProxySocketConnector.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKSelectorProvider.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKServerSocket.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKServerSocketChannel.java" result="PRESENT"/>

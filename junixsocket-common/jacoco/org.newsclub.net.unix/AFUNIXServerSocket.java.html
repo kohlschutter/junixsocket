@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXServerSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXServerSocket.java</span></div><h1>AFUNIXServerSocket.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXServerSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXServerSocket.java</span></div><h1>AFUNIXServerSocket.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -26,13 +26,13 @@ import java.nio.file.Path;
 
 /**
  * The server part of an AF_UNIX domain socket.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class AFUNIXServerSocket extends AFServerSocket&lt;AFUNIXSocketAddress&gt; {
   /**
    * Constructs a new, unconnected instance.
-   * 
+   *
    * @throws IOException if the operation fails.
    */
   protected AFUNIXServerSocket() throws IOException {
@@ -41,7 +41,7 @@ public class AFUNIXServerSocket extends AFServerSocket&lt;AFUNIXSocketAddress&gt
 
   /**
    * Constructs a new instance, optionally associated with the given file descriptor.
-   * 
+   *
    * @param fdObj The file descriptor, or {@code null}.
    * @throws IOException if the operation fails.
    */
@@ -61,7 +61,7 @@ public class AFUNIXServerSocket extends AFServerSocket&lt;AFUNIXSocketAddress&gt
 
   /**
    * Returns a new, unbound AF_UNIX {@link ServerSocket}.
-   * 
+   *
    * @return The new, unbound {@link AFServerSocket}.
    * @throws IOException if the operation fails.
    */
@@ -78,7 +78,7 @@ public class AFUNIXServerSocket extends AFServerSocket&lt;AFUNIXSocketAddress&gt
   /**
    * Returns a new AF_UNIX {@link ServerSocket} that is bound to the given
    * {@link AFUNIXSocketAddress}.
-   * 
+   *
    * @param addr The socket file to bind to.
    * @return The new, bound {@link AFServerSocket}.
    * @throws IOException if the operation fails.
@@ -89,7 +89,7 @@ public class AFUNIXServerSocket extends AFServerSocket&lt;AFUNIXSocketAddress&gt
 
   /**
    * Returns a new AF_UNIX {@link ServerSocket} that is bound to the given {@link AFSocketAddress}.
-   * 
+   *
    * @param addr The socket file to bind to.
    * @param deleteOnClose If {@code true}, the socket file (if the address points to a file) will be
    *          deleted upon {@link #close}.
@@ -103,7 +103,7 @@ public class AFUNIXServerSocket extends AFServerSocket&lt;AFUNIXSocketAddress&gt
 
   /**
    * Returns a new AF_UNIX {@link ServerSocket} that is bound to the given path.
-   * 
+   *
    * @param path The path to bind to.
    * @param deleteOnClose If {@code true}, the socket file will be deleted upon {@link #close}.
    * @return The new, bound {@link AFServerSocket}.
@@ -116,7 +116,7 @@ public class AFUNIXServerSocket extends AFServerSocket&lt;AFUNIXSocketAddress&gt
 
   /**
    * Returns a new AF_UNIX {@link ServerSocket} that is bound to the given path.
-   * 
+   *
    * @param path The path to bind to.
    * @param deleteOnClose If {@code true}, the socket file will be deleted upon {@link #close}.
    * @return The new, bound {@link AFServerSocket}.
@@ -131,7 +131,7 @@ public class AFUNIXServerSocket extends AFServerSocket&lt;AFUNIXSocketAddress&gt
   /**
    * Returns a new, &lt;em&gt;unbound&lt;/em&gt; AF_UNIX {@link ServerSocket} that will always bind to the given
    * address, regardless of any socket address used in a call to &lt;code&gt;bind&lt;/code&gt;.
-   * 
+   *
    * @param forceAddr The address to use.
    * @return The new, yet unbound {@link AFServerSocket}.
    * @throws IOException if an exception occurs.
@@ -148,7 +148,7 @@ public class AFUNIXServerSocket extends AFServerSocket&lt;AFUNIXSocketAddress&gt
 
   /**
    * Returns a new {@link AFSocket} instance.
-   * 
+   *
    * @return The new instance.
    * @throws IOException on error.
    */

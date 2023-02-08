@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFNaming.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFNaming.java</span></div><h1>AFNaming.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFNaming.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFNaming.java</span></div><h1>AFNaming.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -48,7 +48,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 /**
  * The {@link AFSocket}-compatible equivalent of {@link Naming}. Use this class for accessing RMI
  * registries that are reachable by {@link AFSocket}s.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public abstract class AFNaming extends AFRegistryAccess {
@@ -67,7 +67,7 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   /**
    * Creates a new naming instance with the given ports.
-   * 
+   *
    * @param registryPort The registry port.
    * @param servicePort The port for AFRMIService.
    * @throws IOException on error.
@@ -80,7 +80,7 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   /**
    * Creates a new {@link AFRegistry} given a {@link Registry} implementation.
-   * 
+   *
    * @param impl The implementation.
    * @return The new {@link AFRegistry} instance.
    * @throws RemoteException on error.
@@ -89,7 +89,7 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   /**
    * Creates or returns the {@link AFRMISocketFactory} to be used with this instance.
-   * 
+   *
    * @return The socket factory.
    * @throws IOException on error.
    */
@@ -121,7 +121,7 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   /**
    * Returns the {@link AFRMISocketFactory} associated with this instance.
-   * 
+   *
    * @return The {@link AFRMISocketFactory}.
    */
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
@@ -131,7 +131,7 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   /**
    * Returns the registry port.
-   * 
+   *
    * @return The port.
    */
   public final int getRegistryPort() {
@@ -184,10 +184,10 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   /**
    * Returns a reference to the existing RMI registry.
-   * 
+   *
    * If there's no registry running at this port after waiting for up to the given time, an
    * exception is thrown.
-   * 
+   *
    * @param timeout The timeout value.
    * @param unit The timeout unit.
    * @return The registry.
@@ -208,7 +208,7 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   /**
    * Tries to access the registry, waiting some time if necessary.
-   * 
+   *
    * @param timeout The timeout.
    * @param unit The unit for the timeout.
    * @return The registry instance.
@@ -221,7 +221,7 @@ public abstract class AFNaming extends AFRegistryAccess {
    *
    * If there's no registry running at this port, and {@code create} is set to {@code true}, a new
    * one is created; when {@code create} is set to {@code false}, {@code null} is returned.
-   * 
+   *
    * @param create {@code true} if a new register may be created if necessary.
    * @return The registry, or {@code null}
    * @throws RemoteException If there was a problem.
@@ -262,7 +262,7 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   /**
    * Shuts this RMI Registry down.
-   * 
+   *
    * @throws RemoteException if the operation fails.
    */
   public void shutdownRegistry() throws RemoteException {
@@ -359,12 +359,12 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   /**
    * Creates a new RMI {@link Registry}.
-   * 
+   *
    * If there already was a registry created previously, it is shut down and replaced by the current
    * one.
-   * 
+   *
    * Use {@link #getRegistry()} to try to reuse an existing registry.
-   * 
+   *
    * @return The registry
    * @throws RemoteException if the operation fails.
    * @see #getRegistry()
@@ -407,14 +407,14 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   /**
    * Called by {@link #createRegistry()} right before creating/setting the registry.
-   * 
+   *
    * @throws ServerException on error.
    */
   protected abstract void initRegistryPrerequisites() throws ServerException;
 
   /**
    * Checks if this {@link AFNaming} instance can be shut down remotely.
-   * 
+   *
    * @return {@code true} if remote shutdown is allowed.
    */
   public boolean isRemoteShutdownAllowed() {
@@ -423,7 +423,7 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   /**
    * Controls whether this {@link AFNaming} instance can be shut down remotely.
-   * 
+   *
    * @param remoteShutdownAllowed {@code true} if remote shutdown is allowed.
    */
   public void setRemoteShutdownAllowed(boolean remoteShutdownAllowed) {
@@ -433,7 +433,7 @@ public abstract class AFNaming extends AFRegistryAccess {
   /**
    * Exports and binds the given Remote object to the given name, using the given {@link AFNaming}
    * setup.
-   * 
+   *
    * @param name The name to use to bind the object in the registry.
    * @param obj The object to export and bind.
    * @throws RemoteException if the operation fails.
@@ -448,7 +448,7 @@ public abstract class AFNaming extends AFRegistryAccess {
   /**
    * Exports and re-binds the given Remote object to the given name, using the given
    * {@link AFNaming} setup.
-   * 
+   *
    * @param name The name to use to bind the object in the registry.
    * @param obj The object to export and bind.
    * @throws RemoteException if the operation fails.
@@ -478,9 +478,9 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   /**
    * Exports the given Remote object, using the given socket factory and a randomly assigned port.
-   * 
+   *
    * NOTE: This helper function can also be used for regular RMI servers.
-   * 
+   *
    * @param obj The object to export.
    * @param socketFactory The socket factory to use.
    * @return The remote stub.
@@ -494,9 +494,9 @@ public abstract class AFNaming extends AFRegistryAccess {
   /**
    * Forcibly un-exports the given object, if it exists (otherwise returns without an error). This
    * should be called upon closing a {@link Closeable} {@link Remote} object.
-   * 
+   *
    * NOTE: This helper function can also be used for regular RMI servers.
-   * 
+   *
    * @param obj The object to un-export.
    */
   public static void unexportObject(Remote obj) {

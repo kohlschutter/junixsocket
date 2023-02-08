@@ -28,7 +28,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A {@link Pipe}, natively implemented.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFPipe extends Pipe implements Closeable {
@@ -172,7 +172,7 @@ public final class AFPipe extends Pipe implements Closeable {
 
   /**
    * Returns the options bitmask that is to be passed to native receive/send calls.
-   * 
+   *
    * @return The options.
    */
   int getOptions() {

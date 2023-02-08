@@ -27,7 +27,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Service-provider class for junixsocket selectors and selectable channels.
- * 
+ *
  * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
  */
 public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extends SelectorProvider {
@@ -41,7 +41,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Constructs a new pipe.
-   * 
+   *
    * @param selectable {@code true} if the pipe should be selectable.
    * @return The pipe.
    * @throws IOException on error.
@@ -52,7 +52,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Constructs a new socket pair from two sockets.
-   * 
+   *
    * @param &lt;Y&gt; The type of the pair.
    * @param s1 Some socket, the first one.
    * @param s2 Some socket, the second one.
@@ -62,7 +62,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Constructs a new socket.
-   * 
+   *
    * @return The socket instance.
    * @throws IOException on error.
    */
@@ -70,21 +70,21 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Returns the protocol family supported by this implementation.
-   * 
+   *
    * @return The protocol family.
    */
   protected abstract ProtocolFamily protocolFamily();
 
   /**
    * Returns the address family supported by this implementation.
-   * 
+   *
    * @return The address family.
    */
   protected abstract AFAddressFamily&lt;@NonNull A&gt; addressFamily();
 
   /**
    * Returns the domain ID for the supported protocol, as specified by {@link NativeUnixSocket}.
-   * 
+   *
    * @return The domain ID.
    */
   protected final int domainId() {
@@ -93,7 +93,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Opens a socket pair of interconnected channels.
-   * 
+   *
    * @return The new channel pair.
    * @throws IOException on error.
    */
@@ -113,7 +113,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Opens a socket pair of interconnected datagram channels.
-   * 
+   *
    * @return The new channel pair.
    * @throws IOException on error.
    */
@@ -152,7 +152,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Opens a pipe with support for selectors.
-   * 
+   *
    * @return The new pipe
    * @throws IOException on error.
    */
@@ -185,7 +185,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Opens a socket channel connected to the given {@link SocketAddress}.
-   * 
+   *
    * @param sa The socket address to connect to.
    * @return The new channel
    * @throws IOException on error.

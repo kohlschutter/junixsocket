@@ -23,9 +23,9 @@ import java.rmi.registry.Registry;
 /**
  * A wrapper for RMI registries, both remote and local, to allow for a clean removal of bound
  * resources upon shutdown.
- * 
+ *
  * This subclass mostly exists for backwards compatibility.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class AFUNIXRegistry extends AFRegistry {

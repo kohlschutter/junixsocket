@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFSelectorProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSelectorProvider.java</span></div><h1>AFSelectorProvider.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFSelectorProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSelectorProvider.java</span></div><h1>AFSelectorProvider.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -27,7 +27,7 @@ import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * Service-provider class for junixsocket selectors and selectable channels.
- * 
+ *
  * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
  */
 public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extends SelectorProvider {
@@ -41,7 +41,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Constructs a new pipe.
-   * 
+   *
    * @param selectable {@code true} if the pipe should be selectable.
    * @return The pipe.
    * @throws IOException on error.
@@ -52,7 +52,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Constructs a new socket pair from two sockets.
-   * 
+   *
    * @param &lt;Y&gt; The type of the pair.
    * @param s1 Some socket, the first one.
    * @param s2 Some socket, the second one.
@@ -62,7 +62,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Constructs a new socket.
-   * 
+   *
    * @return The socket instance.
    * @throws IOException on error.
    */
@@ -70,21 +70,21 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Returns the protocol family supported by this implementation.
-   * 
+   *
    * @return The protocol family.
    */
   protected abstract ProtocolFamily protocolFamily();
 
   /**
    * Returns the address family supported by this implementation.
-   * 
+   *
    * @return The address family.
    */
   protected abstract AFAddressFamily&lt;@NonNull A&gt; addressFamily();
 
   /**
    * Returns the domain ID for the supported protocol, as specified by {@link NativeUnixSocket}.
-   * 
+   *
    * @return The domain ID.
    */
   protected final int domainId() {
@@ -93,7 +93,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Opens a socket pair of interconnected channels.
-   * 
+   *
    * @return The new channel pair.
    * @throws IOException on error.
    */
@@ -113,7 +113,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Opens a socket pair of interconnected datagram channels.
-   * 
+   *
    * @return The new channel pair.
    * @throws IOException on error.
    */
@@ -152,7 +152,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Opens a pipe with support for selectors.
-   * 
+   *
    * @return The new pipe
    * @throws IOException on error.
    */
@@ -185,7 +185,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   /**
    * Opens a socket channel connected to the given {@link SocketAddress}.
-   * 
+   *
    * @param sa The socket address to connect to.
    * @return The new channel
    * @throws IOException on error.

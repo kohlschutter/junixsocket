@@ -36,7 +36,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * A {@link DatagramSocketImpl} implemented by junixsocket.
- * 
+ *
  * @param &lt;A&gt; The associated address type.
  * @author Christian Kohlschütter
  */
@@ -56,7 +56,7 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
   /**
    * Constructs a new {@link AFDatagramSocketImpl} using the given {@link FileDescriptor} (or null
    * to create a new one).
-   * 
+   *
    * @param addressFamily The address family.
    * @param fd The file descriptor, or {@code null}.
    * @param socketType The socket type.
@@ -375,7 +375,7 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
 
   /**
    * Returns the address family supported by this implementation.
-   * 
+   *
    * @return The family.
    */
   protected final AFAddressFamily&lt;@NonNull A&gt; getAddressFamily() {
@@ -384,7 +384,7 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
 
   /**
    * Returns the internal helper instance for address-specific extensions.
-   * 
+   *
    * @return The helper instance.
    * @throws UnsupportedOperationException if such extensions are not supported for this address
    *           type.

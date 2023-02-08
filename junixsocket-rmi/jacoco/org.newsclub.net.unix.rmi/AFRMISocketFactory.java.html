@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFRMISocketFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFRMISocketFactory.java</span></div><h1>AFRMISocketFactory.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFRMISocketFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFRMISocketFactory.java</span></div><h1>AFRMISocketFactory.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -42,7 +42,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * An {@link RMISocketFactory} that supports {@link AFSocket}s.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public abstract class AFRMISocketFactory extends RMISocketFactory implements Externalizable,
@@ -61,7 +61,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Constructor required per definition.
-   * 
+   *
    * @see RMISocketFactory
    */
   public AFRMISocketFactory() {
@@ -71,7 +71,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Creates a new socket factory.
-   * 
+   *
    * @param naming The {@link AFNaming} instance to use.
    * @param defaultClientFactory The default {@link RMIClientSocketFactory}.
    * @param defaultServerFactory The default {@link RMIServerSocketFactory}.
@@ -106,7 +106,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Creates a new socket address for the given RMI port.
-   * 
+   *
    * @param port The port.
    * @return The socket address.
    * @throws IOException on error.
@@ -115,7 +115,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Creates a new socket that is connected to the given socket address.
-   * 
+   *
    * @param addr The socket address.
    * @return The connected socket.
    * @throws IOException on error.
@@ -167,7 +167,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Returns a new free port.
-   * 
+   *
    * @return The new port.
    * @throws IOException on error.
    * @see #returnPort(int)
@@ -178,7 +178,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Returns a port that was previously returned by {@link #newPort()}.
-   * 
+   *
    * @param port The port to return.
    * @throws IOException on error.
    */
@@ -298,7 +298,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Deserializes information necessary to instantiate the {@link AFNaming} instance.
-   * 
+   *
    * @param in The stream.
    * @return The {@link AFNaming} instance.
    * @throws IOException on error.
@@ -307,7 +307,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Serializes information necessary to instantiate the given {@link AFNaming} instance.
-   * 
+   *
    * @param out The stream.
    * @param namingInstance The {@link AFNaming} instance.
    * @throws IOException on error.
@@ -317,7 +317,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Checks if the given port refers to a local server port.
-   * 
+   *
    * @param port The port to check.
    * @return {@code true} if the given port is a local server.
    */
@@ -332,7 +332,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * The naming instance.
-   * 
+   *
    * @return The instance.
    */
   protected AFNaming getNaming() {
@@ -341,7 +341,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Checks if this socket factory has some knowledge about the given port.
-   * 
+   *
    * @param port The port.
    * @return {@code true} if registered.
    */

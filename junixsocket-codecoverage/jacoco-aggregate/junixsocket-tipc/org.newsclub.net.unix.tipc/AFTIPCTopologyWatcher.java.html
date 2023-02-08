@@ -29,7 +29,7 @@ import org.newsclub.net.unix.AFTIPCSocketAddress;
 
 /**
  * Provides access to the TIPC topology service.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class AFTIPCTopologyWatcher implements Closeable {
@@ -42,7 +42,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
   /**
    * Creates an {@link AFTIPCTopologyWatcher} whose subscription requests do not time out by
    * default.
-   * 
+   *
    * @throws IOException on error.
    */
   public AFTIPCTopologyWatcher() throws IOException {
@@ -52,7 +52,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
   /**
    * Creates an {@link AFTIPCTopologyWatcher} whose subscription requests use the given default
    * timeout.
-   * 
+   *
    * @param defaultTimeoutSeconds The timeout in seconds (or
    *          {@link AFTIPCTopologySubscription#TIPC_WAIT_FOREVER};
    * @throws IOException on error.
@@ -67,7 +67,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
 
   /**
    * Watches for all port changes.
-   * 
+   *
    * @return The subscription object.
    * @throws IOException on error.
    * @see #cancelSubscription(AFTIPCTopologySubscription)
@@ -78,7 +78,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
 
   /**
    * Watches for port changes of the given port (&quot;port&quot; meaning TIPC port, not TCP).
-   * 
+   *
    * @param port The port.
    * @return The subscription object.
    * @throws IOException on error.
@@ -90,7 +90,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
 
   /**
    * Watches for port changes within the given range (&quot;port&quot; meaning TIPC port, not TCP).
-   * 
+   *
    * @param lower The lower value of the port range.
    * @param upper The upper value of the port range.
    * @return The subscription object.
@@ -106,7 +106,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
 
   /**
    * Watches for all link state changes.
-   * 
+   *
    * @return The subscription object.
    * @throws IOException on error.
    * @see #cancelSubscription(AFTIPCTopologySubscription)
@@ -119,7 +119,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
 
   /**
    * Watches for service changes of the given service type, matching any instance.
-   * 
+   *
    * @param type The service type.
    * @return The subscription object.
    * @throws IOException on error.
@@ -131,7 +131,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
 
   /**
    * Watches for service changes of the given service type, matching only the specified instance.
-   * 
+   *
    * @param type The service type.
    * @param instance The instance to match.
    * @return The subscription object.
@@ -145,7 +145,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
 
   /**
    * Watches for service changes of the given service type and instance range.
-   * 
+   *
    * @param type The service type.
    * @param lower The lower value of the instance range.
    * @param upper The upper value of the instance range.
@@ -162,7 +162,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
 
   /**
    * Cancels a previously added service subscription.
-   * 
+   *
    * @param sub The subscription to cancel.
    * @throws IOException on error.
    */
@@ -175,7 +175,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
    * need to do this directly; use the
    * {@code #addPortSubscription(int, int)}/{@link #cancelSubscription(AFTIPCTopologySubscription)}
    * methods instead.
-   * 
+   *
    * @param sub The subscription message.
    * @return The very message.
    * @throws IOException on error.
@@ -188,9 +188,9 @@ public class AFTIPCTopologyWatcher implements Closeable {
 
   /**
    * Runs a receive loop until {@link #stopLoop()} or {@link #close()} is called.
-   * 
+   *
    * This method returns after the run loop terminates.
-   * 
+   *
    * @throws IOException on error.
    */
   @SuppressWarnings(&quot;null&quot;)
@@ -225,7 +225,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
 
   /**
    * Called for every event encountered by the run loop.
-   * 
+   *
    * @param event The event.
    * @throws IOException on error. Any exception will terminate the run loop.
    * @see #runLoop()
@@ -235,7 +235,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
 
   /**
    * Called upon {@link #close()}.
-   * 
+   *
    * @throws IOException on error.
    */
   protected void onClose() throws IOException {
@@ -243,7 +243,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
 
   /**
    * Checks if the watcher run loop is running.
-   * 
+   *
    * @return {@code true} if running.
    * @see #runLoop()
    */

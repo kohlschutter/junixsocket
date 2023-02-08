@@ -56,7 +56,7 @@ final class NativeLibraryLoader implements Closeable {
 
   /**
    * Returns the temporary directory where the native library is extracted to; debugging only.
-   * 
+   *
    * @return The temporary directory.
    */
   static File tempDir() {

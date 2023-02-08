@@ -26,7 +26,7 @@ import java.nio.channels.SocketChannel;
 
 /**
  * The implementation-specifics for a given address family implementation.
- * 
+ *
  * @param &lt;A&gt; The supported address type.
  * @author Christian Kohlschütter
  * @see AFSocketAddressConfig
@@ -41,63 +41,63 @@ public abstract class AFAddressFamilyConfig&lt;A extends AFSocketAddress&gt; {
 
   /**
    * Returns the implementation's {@link Socket} class.
-   * 
+   *
    * @return The implementation's {@link Socket} class.
    */
   protected abstract Class&lt;? extends AFSocket&lt;A&gt;&gt; socketClass();
 
   /**
    * Returns the implementation's {@link Socket} constructor.
-   * 
+   *
    * @return The implementation's {@link Socket} constructor.
    */
   protected abstract AFSocket.Constructor&lt;A&gt; socketConstructor();
 
   /**
    * Returns the implementation's {@link ServerSocket} class.
-   * 
+   *
    * @return The implementation's {@link ServerSocket} class.
    */
   protected abstract Class&lt;? extends AFServerSocket&lt;A&gt;&gt; serverSocketClass();
 
   /**
    * Returns the implementation's {@link ServerSocket} constructor.
-   * 
+   *
    * @return The implementation's {@link ServerSocket} constructor.
    */
   protected abstract AFServerSocket.Constructor&lt;A&gt; serverSocketConstructor();
 
   /**
    * Returns the implementation's {@link SocketChannel} class.
-   * 
+   *
    * @return The implementation's {@link SocketChannel} class..
    */
   protected abstract Class&lt;? extends AFSocketChannel&lt;A&gt;&gt; socketChannelClass();
 
   /**
    * Returns the implementation's {@link ServerSocketChannel} class.
-   * 
+   *
    * @return The implementation's {@link ServerSocketChannel} class.
    */
   protected abstract Class&lt;? extends AFServerSocketChannel&lt;A&gt;&gt; serverSocketChannelClass();
 
   /**
    * Returns the implementation's {@link DatagramSocket} class.
-   * 
+   *
    * @return The implementation's {@link DatagramSocket} class.
    */
   protected abstract Class&lt;? extends AFDatagramSocket&lt;A&gt;&gt; datagramSocketClass();
 
   /**
    * Returns the implementation's {@link DatagramSocket} constructor.
-   * 
+   *
    * @return The implementation's {@link DatagramSocket} constructor.
    */
   protected abstract AFDatagramSocket.Constructor&lt;A&gt; datagramSocketConstructor();
 
   /**
    * Returns the implementation's {@link DatagramChannel} class.
-   * 
+   *
    * @return The implementation's {@link DatagramChannel} class.
    */
   protected abstract Class&lt;? extends AFDatagramChannel&lt;A&gt;&gt; datagramChannelClass();

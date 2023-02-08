@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFSocketFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSocketFactory.java</span></div><h1>AFSocketFactory.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFSocketFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSocketFactory.java</span></div><h1>AFSocketFactory.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -28,11 +28,12 @@ import javax.net.SocketFactory;
 
 /**
  * The base for a SocketFactory that connects to UNIX sockets.
- * 
+ *
  * Typically, the &quot;hostname&quot; is used as a reference to a socketFile on the file system. The actual
  * mapping is left to the implementor.
- * 
+ *
  * @see AFUNIXSocketFactory
+ * @param &lt;A&gt; The supported address type.
  */
 public abstract class AFSocketFactory&lt;A extends AFSocketAddress&gt; extends SocketFactory implements
     AFSocketAddressFromHostname&lt;A&gt; {
@@ -41,21 +42,21 @@ public abstract class AFSocketFactory&lt;A extends AFSocketAddress&gt; extends S
    * Creates a new socket factory instance.
    */
   protected AFSocketFactory() {
-<span class="fc" id="L44">    super();</span>
-<span class="fc" id="L45">  }</span>
+<span class="fc" id="L45">    super();</span>
+<span class="fc" id="L46">  }</span>
 
   /**
    * Checks whether the given {@link InetAddress} is supported by this socket factory. If not, calls
    * to createSocket will cause a {@link SocketException}.
-   * 
+   *
    * By default, this only checks the hostname part of the address via
    * {@link #isHostnameSupported(String)}.
-   * 
+   *
    * @param address The address to check.
    * @return {@code true} if supported.
    */
   protected final boolean isInetAddressSupported(InetAddress address) {
-<span class="pc bpc" id="L58" title="2 of 4 branches missed.">    return address != null &amp;&amp; isHostnameSupported(address.getHostName());</span>
+<span class="pc bpc" id="L59" title="2 of 4 branches missed.">    return address != null &amp;&amp; isHostnameSupported(address.getHostName());</span>
   }
 
   @Override
@@ -63,7 +64,7 @@ public abstract class AFSocketFactory&lt;A extends AFSocketAddress&gt; extends S
 
   /**
    * Creates a new {@link AFSocket}, connected to the given address.
-   * 
+   *
    * @param addr The address to connect to.
    * @return The socket instance.
    * @throws IOException on error.
@@ -72,64 +73,64 @@ public abstract class AFSocketFactory&lt;A extends AFSocketAddress&gt; extends S
 
   @SuppressWarnings(&quot;unchecked&quot;)
   private Socket connectTo(SocketAddress addr) throws IOException {
-<span class="pc bpc" id="L75" title="1 of 2 branches missed.">    if (addr instanceof AFSocketAddress) {</span>
-<span class="nc" id="L76">      return connectTo((A) addr);</span>
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">    if (addr instanceof AFSocketAddress) {</span>
+<span class="nc" id="L77">      return connectTo((A) addr);</span>
     } else {
-<span class="nc" id="L78">      Socket sock = new Socket();</span>
-<span class="nc" id="L79">      sock.connect(addr);</span>
-<span class="nc" id="L80">      return sock;</span>
+<span class="nc" id="L79">      Socket sock = new Socket();</span>
+<span class="nc" id="L80">      sock.connect(addr);</span>
+<span class="nc" id="L81">      return sock;</span>
     }
   }
 
   @Override
   public final Socket createSocket(String host, int port) throws IOException {
-<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (!isHostnameSupported(host)) {</span>
-<span class="fc" id="L87">      throw new SocketException(&quot;Unsupported hostname&quot;);</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">    if (!isHostnameSupported(host)) {</span>
+<span class="fc" id="L88">      throw new SocketException(&quot;Unsupported hostname&quot;);</span>
     }
-<span class="pc bpc" id="L89" title="1 of 2 branches missed.">    if (port &lt; 0) {</span>
-<span class="nc" id="L90">      throw new IllegalArgumentException(&quot;Illegal port&quot;);</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">    if (port &lt; 0) {</span>
+<span class="nc" id="L91">      throw new IllegalArgumentException(&quot;Illegal port&quot;);</span>
     }
 
-<span class="fc" id="L93">    SocketAddress socketAddress = addressFromHost(host, port);</span>
-<span class="nc" id="L94">    return connectTo(socketAddress);</span>
+<span class="fc" id="L94">    SocketAddress socketAddress = addressFromHost(host, port);</span>
+<span class="nc" id="L95">    return connectTo(socketAddress);</span>
   }
 
   @Override
   public final Socket createSocket(String host, int port, InetAddress localHost, int localPort)
       throws IOException {
-<span class="fc bfc" id="L100" title="All 2 branches covered.">    if (!isHostnameSupported(host)) {</span>
-<span class="fc" id="L101">      throw new SocketException(&quot;Unsupported hostname&quot;);</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (!isHostnameSupported(host)) {</span>
+<span class="fc" id="L102">      throw new SocketException(&quot;Unsupported hostname&quot;);</span>
     }
-<span class="pc bpc" id="L103" title="1 of 2 branches missed.">    if (localPort &lt; 0) {</span>
-<span class="fc" id="L104">      throw new IllegalArgumentException(&quot;Illegal local port&quot;);</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">    if (localPort &lt; 0) {</span>
+<span class="fc" id="L105">      throw new IllegalArgumentException(&quot;Illegal local port&quot;);</span>
     }
     // NOTE: we simply ignore localHost and localPort
-<span class="nc" id="L107">    return createSocket(host, port);</span>
+<span class="nc" id="L108">    return createSocket(host, port);</span>
   }
 
   @Override
   public final Socket createSocket(InetAddress address, int port) throws IOException {
-<span class="pc bpc" id="L112" title="1 of 2 branches missed.">    if (!isInetAddressSupported(address)) {</span>
-<span class="fc" id="L113">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">    if (!isInetAddressSupported(address)) {</span>
+<span class="fc" id="L114">      throw new SocketException(&quot;Unsupported address&quot;);</span>
     }
-<span class="nc" id="L115">    String hostname = address.getHostName();</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">    if (!isHostnameSupported(hostname)) {</span>
-<span class="nc" id="L117">      throw new SocketException(&quot;Unsupported hostname&quot;);</span>
+<span class="nc" id="L116">    String hostname = address.getHostName();</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">    if (!isHostnameSupported(hostname)) {</span>
+<span class="nc" id="L118">      throw new SocketException(&quot;Unsupported hostname&quot;);</span>
     }
-<span class="nc" id="L119">    return createSocket(hostname, port);</span>
+<span class="nc" id="L120">    return createSocket(hostname, port);</span>
   }
 
   @Override
   public final Socket createSocket(InetAddress address, int port, InetAddress localAddress,
       int localPort) throws IOException {
-<span class="pc bpc" id="L125" title="1 of 2 branches missed.">    if (!isInetAddressSupported(address)) {</span>
-<span class="fc" id="L126">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">    if (!isInetAddressSupported(address)) {</span>
+<span class="fc" id="L127">      throw new SocketException(&quot;Unsupported address&quot;);</span>
     }
-<span class="nc bnc" id="L128" title="All 2 branches missed.">    if (localPort &lt; 0) {</span>
-<span class="nc" id="L129">      throw new IllegalArgumentException(&quot;Illegal local port&quot;);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">    if (localPort &lt; 0) {</span>
+<span class="nc" id="L130">      throw new IllegalArgumentException(&quot;Illegal local port&quot;);</span>
     }
     // NOTE: we simply ignore localAddress and localPort
-<span class="nc" id="L132">    return createSocket(address, port);</span>
+<span class="nc" id="L133">    return createSocket(address, port);</span>
   }
 
   /**
@@ -140,56 +141,56 @@ public abstract class AFSocketFactory&lt;A extends AFSocketAddress&gt; extends S
 
     /**
      * Creates a {@link FixedAddressSocketFactory}.
-     * 
+     *
      * @param address The address to use for all connections.
      */
     public FixedAddressSocketFactory(SocketAddress address) {
-<span class="nc" id="L147">      super();</span>
-<span class="nc" id="L148">      this.forceAddr = Objects.requireNonNull(address);</span>
-<span class="nc" id="L149">    }</span>
+<span class="nc" id="L148">      super();</span>
+<span class="nc" id="L149">      this.forceAddr = Objects.requireNonNull(address);</span>
+<span class="nc" id="L150">    }</span>
 
     @Override
     public boolean isHostnameSupported(String host) {
-<span class="nc" id="L153">      return true;</span>
+<span class="nc" id="L154">      return true;</span>
     }
 
     @Override
     public SocketAddress addressFromHost(String host, int port) throws SocketException {
-<span class="nc" id="L158">      return forceAddr;</span>
+<span class="nc" id="L159">      return forceAddr;</span>
     }
 
     @Override
     public Socket createSocket() throws SocketException {
       try {
-<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (forceAddr instanceof AFSocketAddress) {</span>
-<span class="nc" id="L165">          AFSocket&lt;?&gt; socket = ((AFSocketAddress) forceAddr).getAddressFamily().newSocket();</span>
-<span class="nc" id="L166">          socket.forceConnectAddress(forceAddr);</span>
-<span class="nc" id="L167">          return socket;</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        if (forceAddr instanceof AFSocketAddress) {</span>
+<span class="nc" id="L166">          AFSocket&lt;?&gt; socket = ((AFSocketAddress) forceAddr).getAddressFamily().newSocket();</span>
+<span class="nc" id="L167">          socket.forceConnectAddress(forceAddr);</span>
+<span class="nc" id="L168">          return socket;</span>
         } else {
-<span class="nc" id="L169">          return new Socket() {</span>
+<span class="nc" id="L170">          return new Socket() {</span>
             @Override
             public void connect(SocketAddress endpoint) throws IOException {
-<span class="nc" id="L172">              super.connect(forceAddr);</span>
-<span class="nc" id="L173">            }</span>
+<span class="nc" id="L173">              super.connect(forceAddr);</span>
+<span class="nc" id="L174">            }</span>
 
             @Override
             public void connect(SocketAddress endpoint, int timeout) throws IOException {
-<span class="nc" id="L177">              super.connect(forceAddr, timeout);</span>
-<span class="nc" id="L178">            }</span>
+<span class="nc" id="L178">              super.connect(forceAddr, timeout);</span>
+<span class="nc" id="L179">            }</span>
           };
         }
-<span class="nc" id="L181">      } catch (SocketException e) {</span>
-<span class="nc" id="L182">        throw e;</span>
-<span class="nc" id="L183">      } catch (IOException e) {</span>
-<span class="nc" id="L184">        throw (SocketException) new SocketException().initCause(e);</span>
+<span class="nc" id="L182">      } catch (SocketException e) {</span>
+<span class="nc" id="L183">        throw e;</span>
+<span class="nc" id="L184">      } catch (IOException e) {</span>
+<span class="nc" id="L185">        throw (SocketException) new SocketException().initCause(e);</span>
       }
     }
 
     @Override
     protected Socket connectTo(AFSocketAddress addr) throws IOException {
-<span class="nc" id="L190">      Socket sock = createSocket();</span>
-<span class="nc" id="L191">      sock.connect(forceAddr);</span>
-<span class="nc" id="L192">      return sock;</span>
+<span class="nc" id="L191">      Socket sock = createSocket();</span>
+<span class="nc" id="L192">      sock.connect(forceAddr);</span>
+<span class="nc" id="L193">      return sock;</span>
     }
   }
 }

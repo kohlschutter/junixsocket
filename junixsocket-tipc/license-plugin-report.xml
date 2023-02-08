@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1666773004314">
-    <module artifactId="junixsocket-tipc" groupId="com.kohlschutter.junixsocket" version="2.6.1"/>
+<licensePluginReport goal="CHECK" timestamp="1675888309501">
+    <module artifactId="junixsocket-tipc" groupId="com.kohlschutter.junixsocket" version="2.6.2"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCDatagramChannel.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCDatagramSocket.java" result="PRESENT"/>
@@ -45,5 +45,6 @@
         <file path="src/test/java/org/newsclub/net/unix/tipc/StandardSocketOptionsTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/tipc/TcpNoDelayTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/tipc/ThroughputTest.java" result="PRESENT"/>
+        <file path="src/test/java8/org/newsclub/net/unix/tipc/SocketOptionsTest.java" result="PRESENT"/>
     </files>
 </licensePluginReport>

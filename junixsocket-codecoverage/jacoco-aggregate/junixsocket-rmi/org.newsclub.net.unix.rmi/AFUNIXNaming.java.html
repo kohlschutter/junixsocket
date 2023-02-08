@@ -35,7 +35,7 @@ import org.newsclub.net.unix.AFUNIXSocket;
 /**
  * The {@link AFUNIXSocket}-compatible equivalent of {@link Naming}. Use this class for accessing
  * RMI registries that are reachable by {@link AFUNIXSocket}s.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class AFUNIXNaming extends AFNaming {
@@ -66,10 +66,10 @@ public final class AFUNIXNaming extends AFNaming {
 
   /**
    * Returns the directory where RMI sockets are stored by default.
-   * 
+   *
    * You can configure this location by setting the System property
    * {@code org.newsclub.net.unix.rmi.socketdir} upon start.
-   * 
+   *
    * @return The directory.
    */
   public static File getDefaultSocketDirectory() {
@@ -79,7 +79,7 @@ public final class AFUNIXNaming extends AFNaming {
   /**
    * Returns a new private instance that resides in a custom location, to avoid any collisions with
    * existing instances.
-   * 
+   *
    * @return The private {@link AFNaming} instance.
    * @throws IOException if the operation fails.
    */
@@ -98,7 +98,7 @@ public final class AFUNIXNaming extends AFNaming {
   /**
    * Returns the default instance of {@link AFUNIXNaming}. Sockets are stored in
    * &lt;code&gt;java.io.tmpdir&lt;/code&gt;.
-   * 
+   *
    * @return The default instance.
    * @throws IOException if the operation fails.
    */
@@ -109,7 +109,7 @@ public final class AFUNIXNaming extends AFNaming {
   /**
    * Returns a {@link AFUNIXNaming} instance which support several socket files that can be stored
    * under the same, given directory.
-   * 
+   *
    * @param socketDir The directory to store sockets in.
    * @return The instance.
    * @throws RemoteException if the operation fails.
@@ -121,10 +121,10 @@ public final class AFUNIXNaming extends AFNaming {
   /**
    * Returns a {@link AFUNIXNaming} instance which support several socket files that can be stored
    * under the same, given directory.
-   * 
+   *
    * A custom &quot;registry port&quot; can be specified. Typically, AF-UNIX specific ports should be above
    * {@code 100000}.
-   * 
+   *
    * @param socketDir The directory to store sockets in.
    * @param registryPort The registry port. Should be above {@code 100000}.
    * @return The instance.
@@ -138,10 +138,10 @@ public final class AFUNIXNaming extends AFNaming {
   /**
    * Returns a {@link AFUNIXNaming} instance which support several socket files that can be stored
    * under the same, given directory.
-   * 
+   *
    * A custom &quot;registry port&quot; can be specified. Typically, AF-UNIX specific ports should be above
    * {@code 100000}.
-   * 
+   *
    * @param socketDir The directory to store sockets in.
    * @param registryPort The registry port. Should be above {@code 100000}.
    * @param socketPrefix A string to be inserted at the beginning of each socket filename, or
@@ -183,7 +183,7 @@ public final class AFUNIXNaming extends AFNaming {
   /**
    * Returns an {@link AFUNIXNaming} instance which only supports one file. (Probably only useful
    * when you want/can access the exported {@link UnicastRemoteObject} directly)
-   * 
+   *
    * @param socketFile The socket file.
    * @return The instance.
    * @throws IOException if the operation fails.
@@ -221,7 +221,7 @@ public final class AFUNIXNaming extends AFNaming {
    * Returns the socket file which is used to control the RMI registry.
    *
    * The file is usually in the directory returned by {@link #getRegistrySocketDir()}.
-   * 
+   *
    * @return The directory.
    */
   public File getRegistrySocketFile() {
@@ -285,7 +285,7 @@ public final class AFUNIXNaming extends AFNaming {
 
   /**
    * Returns the directory in which sockets used by this registry are located.
-   * 
+   *
    * @return The directory.
    */
   public File getRegistrySocketDir() {

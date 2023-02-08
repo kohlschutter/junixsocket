@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NamedInteger.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">NamedInteger.java</span></div><h1>NamedInteger.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NamedInteger.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">NamedInteger.java</span></div><h1>NamedInteger.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -27,9 +27,9 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * A &quot;named integer&quot;, usually used for constants.
- * 
+ *
  * See the concrete implementations for usage.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @NonNullByDefault
@@ -57,7 +57,7 @@ public class NamedInteger implements Serializable {
   /**
    * Creates a new {@link NamedInteger} instance, without actually naming it. A name of &quot;UNDEFINED&quot;
    * is used.
-   * 
+   *
    * @param id The value.
    */
   protected NamedInteger(int id) {
@@ -66,7 +66,7 @@ public class NamedInteger implements Serializable {
 
   /**
    * Creates a new {@link NamedInteger} instance.
-   * 
+   *
    * @param name The name.
    * @param id The value.
    */
@@ -77,7 +77,7 @@ public class NamedInteger implements Serializable {
 
   /**
    * Returns the name.
-   * 
+   *
    * @return The name.
    */
   public final String name() {
@@ -86,7 +86,7 @@ public class NamedInteger implements Serializable {
 
   /**
    * Returns the value.
-   * 
+   *
    * @return The value.
    */
   public final int value() {
@@ -118,7 +118,7 @@ public class NamedInteger implements Serializable {
 
   /**
    * Ensures that the {@code VALUES} array is configured correctly.
-   * 
+   *
    * @param &lt;T&gt; The instance type.
    * @param values The {@code VALUES} array.
    * @return The verified {@code VALUES} array.
@@ -135,14 +135,14 @@ public class NamedInteger implements Serializable {
 
   /**
    * Constructor for &quot;undefined&quot; values.
-   * 
+   *
    * @param &lt;T&gt; The instance type.
    */
   @FunctionalInterface
   protected interface UndefinedValueConstructor&lt;T extends NamedInteger&gt; {
     /**
      * Creates a new &quot;undefined&quot; value instance.
-     * 
+     *
      * @param id The value.
      * @return The instance.
      */
@@ -151,7 +151,7 @@ public class NamedInteger implements Serializable {
 
   /**
    * Returns an instance given an integer value.
-   * 
+   *
    * @param &lt;T&gt; The instance type.
    * @param values The {@code VALUES} array.
    * @param constr The constructor for undefined values.

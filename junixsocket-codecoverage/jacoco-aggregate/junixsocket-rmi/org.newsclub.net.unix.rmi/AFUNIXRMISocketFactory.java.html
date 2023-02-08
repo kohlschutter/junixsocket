@@ -39,7 +39,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * An {@link RMISocketFactory} that supports {@link AFUNIXSocket}s.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
@@ -56,7 +56,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
 
   /**
    * Constructor required per definition.
-   * 
+   *
    * @see RMISocketFactory
    */
   public AFUNIXRMISocketFactory() {
@@ -65,7 +65,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
 
   /**
    * Creates a new socket factory.
-   * 
+   *
    * @param naming The {@link AFNaming} instance to use.
    * @param socketDir The directory to store the sockets in.
    * @param defaultClientFactory The default {@link RMIClientSocketFactory}.
@@ -90,7 +90,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
 
   /**
    * Creates a new socket factory.
-   * 
+   *
    * @param naming The {@link AFNaming} instance to use.
    * @param socketDir The directory to store the sockets in.
    * @param defaultClientFactory The default {@link RMIClientSocketFactory}.
@@ -105,7 +105,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
 
   /**
    * Creates a new socket factory.
-   * 
+   *
    * @param naming The {@link AFNaming} instance to use.
    * @param socketDir The directory to store the sockets in.
    * @throws IOException on error.
@@ -164,7 +164,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
 
   /**
    * The directory in which socket files are stored.
-   * 
+   *
    * @return The directory.
    */
   public File getSocketDir() {

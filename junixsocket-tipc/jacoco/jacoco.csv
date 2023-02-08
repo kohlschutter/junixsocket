@@ -3,7 +3,7 @@ junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocketOptions.MessageImportanc
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCDatagramSocketImpl,6,0,0,0,2,0,1,0,1,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocketFactory.ServiceAddress,18,0,0,0,5,0,2,0,2,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCDestName,82,0,10,0,19,0,12,0,7,0
-junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCGroupRequest,73,24,10,0,13,7,15,2,10,2
+junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCGroupRequest,75,24,10,0,13,7,15,2,10,2
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocketOptions,106,0,0,0,15,0,2,0,2,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocketFactory,15,0,0,0,5,0,4,0,4,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSelectorProvider.new AFAddressFamilyConfig() {...},21,0,0,0,10,0,10,0,10,0
@@ -15,12 +15,12 @@ junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocketImpl,14,0,0,0,5,0,3,0,3,
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCProtocolFamily,9,0,0,0,2,0,1,0,1,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCTopologyWatcher,199,0,12,0,49,0,23,0,17,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCDatagramSocket,49,0,0,0,11,0,9,0,9,0
-junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCTopologyEvent,257,0,22,0,52,0,30,0,19,0
+junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCTopologyEvent,260,0,22,0,52,0,30,0,19,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSelectorProvider,61,0,0,0,17,0,15,0,15,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocket,116,0,8,0,25,0,21,0,17,0
-junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCErrInfo,96,0,14,0,21,0,14,0,7,0
+junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCErrInfo,97,0,14,0,21,0,14,0,7,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocketChannel,15,0,0,0,4,0,3,0,3,0
-junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCTopologySubscription,358,0,24,0,67,0,32,0,20,0
+junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCTopologySubscription,359,0,24,0,67,0,32,0,20,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCServerSocket,51,0,0,0,12,0,11,0,11,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCGroupRequest.GroupRequestFlags,22,35,0,0,3,4,3,2,3,2
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCServerSocketChannel,8,0,0,0,3,0,2,0,2,0

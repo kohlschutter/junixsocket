@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
 <head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <title>AFTIPCSocketAddressTest xref</title>
 <link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
@@ -26,7 +26,7 @@
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">package</strong> org.newsclub.net.unix;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.api.Assertions.assertEquals;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.api.Assertions.assertFalse;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.api.Assertions.assertNotNull;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.api.Assertions.assertThrows;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.api.Assertions.assertTrue;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  
@@ -133,17 +133,24 @@
 <a class="jxr_linenumber" name="L125" href="#L125">125</a> 
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>   @Test
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSocatString() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>     String socatString = AFTIPCSocketAddress.ofService(123, 456).toSocatAddressString(
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>         AFSocketType.SOCK_STREAM, AFSocketProtocol.DEFAULT);
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>     <strong class="jxr_keyword">if</strong> (socatString == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>       assertFalse(AFSocket.supports(AFSocketCapability.CAPABILITY_TIPC));
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>       assertTrue(socatString.contains(<span class="jxr_string">":"</span>));
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>     }
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>   }
-<a class="jxr_linenumber" name="L136" href="#L136">136</a> }
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     String socatString;
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>       socatString = AFTIPCSocketAddress.ofService(123, 456).toSocatAddressString(
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>           AFSocketType.SOCK_STREAM, AFSocketProtocol.DEFAULT);
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>       assertNotNull(socatString);
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>     } <strong class="jxr_keyword">catch</strong> (SocketException e) {
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>       <strong class="jxr_keyword">if</strong> (AFSocket.supports(AFSocketCapability.CAPABILITY_TIPC)) {
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>         <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>       } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>         <em class="jxr_comment">// expected</em>
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>       }
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>     }
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>     assertTrue(socatString.contains(<span class="jxr_string">":"</span>));
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>   }
+<a class="jxr_linenumber" name="L143" href="#L143">143</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2022 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>

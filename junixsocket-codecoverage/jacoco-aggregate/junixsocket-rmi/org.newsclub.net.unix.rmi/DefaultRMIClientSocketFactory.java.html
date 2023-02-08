@@ -22,47 +22,45 @@ import java.io.Serializable;
 import java.net.Socket;
 import java.rmi.server.RMIClientSocketFactory;
 
-import org.newsclub.net.unix.AFSocket;
-
 /**
  * An implementation of {@link RMIClientSocketFactory}.
- * 
- * @see AFRMISocketFactory where we deal with {@link AFSocket}s.
+ *
+ * @see AFRMISocketFactory
  */
 public final class DefaultRMIClientSocketFactory implements RMIClientSocketFactory, Serializable {
   private static final long serialVersionUID = 1L;
-<span class="nc" id="L34">  private static final DefaultRMIClientSocketFactory INSTANCE = new DefaultRMIClientSocketFactory();</span>
+<span class="nc" id="L32">  private static final DefaultRMIClientSocketFactory INSTANCE = new DefaultRMIClientSocketFactory();</span>
 
   private DefaultRMIClientSocketFactory() {
   }
 
   /**
    * Returns the singleton instance for DefaultRMIClientSocketFactory.
-   * 
+   *
    * @return The singleton.
    */
   public static DefaultRMIClientSocketFactory getInstance() {
-<span class="nc" id="L45">    return INSTANCE;</span>
+<span class="nc" id="L43">    return INSTANCE;</span>
   }
 
   @Override
   public Socket createSocket(String host, int port) throws IOException {
-<span class="nc" id="L50">    Socket socket = new Socket(host, port);</span>
+<span class="nc" id="L48">    Socket socket = new Socket(host, port);</span>
     // socket.setSoTimeout(60 * 60 * 1000);
     // socket.setSoLinger(false, 0);
-<span class="nc" id="L53">    return socket;</span>
+<span class="nc" id="L51">    return socket;</span>
   }
 
   // we must implement this (see RMIClientSocketFactory)
   @Override
   public boolean equals(Object obj) {
-<span class="nc" id="L59">    return obj instanceof DefaultRMIClientSocketFactory;</span>
+<span class="nc" id="L57">    return obj instanceof DefaultRMIClientSocketFactory;</span>
   }
 
   // we must implement this (see RMIClientSocketFactory)
   @Override
   public int hashCode() {
-<span class="nc" id="L65">    return 1;</span>
+<span class="nc" id="L63">    return 1;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -38,7 +38,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * A very simple implementation of a {@link AFRMIService}.
- * 
+ *
  * @author Christian Kohlschütter
  */
 final class AFRMIServiceImpl implements AFRMIService {

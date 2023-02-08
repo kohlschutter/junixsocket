@@ -25,7 +25,7 @@ import org.newsclub.net.unix.NamedIntegerBitmask;
 
 /**
  * A TIPC group request.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @NonNullByDefault
@@ -43,7 +43,7 @@ public final class AFTIPCGroupRequest {
 
   /**
    * Some flags used in the group request.
-   * 
+   *
    * @author Christian Kohlschütter
    */
   public static final class GroupRequestFlags extends NamedIntegerBitmask&lt;GroupRequestFlags&gt; {
@@ -75,7 +75,7 @@ public final class AFTIPCGroupRequest {
 
     /**
      * Returns a {@link GroupRequestFlags} instance given an integer value.
-     * 
+     *
      * @param v The value.
      * @return The instance.
      */
@@ -86,7 +86,7 @@ public final class AFTIPCGroupRequest {
     /**
      * Returns a {@link GroupRequestFlags} instance representing the combination of the given list
      * of {@link GroupRequestFlags} flags.
-     * 
+     *
      * @param flags The flags (zero or more values).
      * @return The instance.
      */
@@ -96,7 +96,7 @@ public final class AFTIPCGroupRequest {
 
     /**
      * Combines the given {@link GroupRequestFlags} instance with another one.
-     * 
+     *
      * @param other The other instance.
      * @return The combined instance.
      */
@@ -115,7 +115,7 @@ public final class AFTIPCGroupRequest {
 
   /**
    * Returns an {@link AFTIPCGroupRequest} instance using the given parameters.
-   * 
+   *
    * @param type The group type.
    * @param instance The group instance.
    * @param scope The group scope.
@@ -134,7 +134,7 @@ public final class AFTIPCGroupRequest {
   /**
    * Returns an {@link AFTIPCGroupRequest} instance using the given parameters, implying cluster
    * scope.
-   * 
+   *
    * @param type The group type.
    * @param instance The group instance.
    * @param flags The request flags.
@@ -150,7 +150,7 @@ public final class AFTIPCGroupRequest {
 
   /**
    * Returns the group type.
-   * 
+   *
    * @return The group type.
    */
   public int getType() {
@@ -159,7 +159,7 @@ public final class AFTIPCGroupRequest {
 
   /**
    * Returns the group instance.
-   * 
+   *
    * @return The group instance.
    */
   public int getInstance() {
@@ -168,7 +168,7 @@ public final class AFTIPCGroupRequest {
 
   /**
    * Returns the group scope.
-   * 
+   *
    * @return The group scope.
    */
   public Scope getScope() {
@@ -185,7 +185,7 @@ public final class AFTIPCGroupRequest {
 
   /**
    * Returns the group request flags.
-   * 
+   *
    * @return The group request flags.
    */
   public GroupRequestFlags getFlags() {

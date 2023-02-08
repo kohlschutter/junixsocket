@@ -21,7 +21,7 @@ import java.io.InputStream;
 
 /**
  * An {@link InputStream} for {@link AFSocket}, etc.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public abstract class AFInputStream extends InputStream implements FileDescriptorAccess {

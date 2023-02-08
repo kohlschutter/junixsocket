@@ -21,7 +21,7 @@ import java.net.SocketException;
 
 /**
  * A {@link SocketException} indicating that a socket was closed or is not open for other reasons.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class SocketClosedException extends SocketException {
@@ -36,7 +36,7 @@ public final class SocketClosedException extends SocketException {
 
   /**
    * Constructs a new {@link SocketClosedException}.
-   * 
+   *
    * @param msg The error message.
    */
   public SocketClosedException(String msg) {

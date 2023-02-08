@@ -36,7 +36,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * JNI connector to native JNI C code.
- * 
+ *
  * @author Christian Kohlschütter
  */
 final class NativeUnixSocket {
@@ -104,11 +104,11 @@ final class NativeUnixSocket {
 <span class="fc" id="L104">  }</span>
 
   static UnsupportedOperationException unsupportedException() {
-<span class="nc bnc" id="L107" title="All 2 branches missed.">    if (!isLoaded()) {</span>
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">    if (!isLoaded()) {</span>
 <span class="nc" id="L108">      return (UnsupportedOperationException) new UnsupportedOperationException(</span>
-<span class="nc" id="L109">          &quot;junixsocket is not supported on this platform&quot;).initCause(initError);</span>
+<span class="nc" id="L109">          &quot;junixsocket may not be fully supported on this platform&quot;).initCause(initError);</span>
     } else {
-<span class="nc" id="L111">      return null;</span>
+<span class="fc" id="L111">      return null;</span>
     }
   }
 
@@ -161,7 +161,7 @@ final class NativeUnixSocket {
 
   /**
    * Reads data from an {@link AFSocketImpl}.
-   * 
+   *
    * @param fd The corresponding file descriptor.
    * @param buf The buffer to read into, or {@code null} if a single byte should be read.
    * @param off The buffer offset.
@@ -177,7 +177,7 @@ final class NativeUnixSocket {
 
   /**
    * Writes data to an {@link AFSocketImpl}.
-   * 
+   *
    * @param fd The corresponding file descriptor.
    * @param buf The buffer to write from, or {@code null} if a single byte should be written.
    * @param off The buffer offset, or the byte to write if {@code buf} is {@code null}.

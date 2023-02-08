@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCSocketFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCSocketFactory.java</span></div><h1>AFTIPCSocketFactory.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCSocketFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCSocketFactory.java</span></div><h1>AFTIPCSocketFactory.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -27,7 +27,7 @@ import org.newsclub.net.unix.AFTIPCSocketAddress.Scope;
 
 /**
  * The base for a SocketFactory that connects to TIPC sockets.
- * 
+ *
  * Typically, the &quot;hostname&quot; is used as a reference to a socketFile on the file system. The actual
  * mapping is left to the implementor.
  */
@@ -51,7 +51,7 @@ public abstract class AFTIPCSocketFactory extends AFSocketFactory&lt;AFTIPCSocke
 
   /**
    * Performs some optional configuration on a newly created socket.
-   * 
+   *
    * @param sock The socket.
    * @return The very socket.
    * @throws SocketException on error.
@@ -62,7 +62,7 @@ public abstract class AFTIPCSocketFactory extends AFSocketFactory&lt;AFTIPCSocke
 
   /**
    * Always connects sockets to the given TIPC type and instance.
-   * 
+   *
    * @author Christian Kohlschütter
    */
   public static class ServiceAddress extends AFTIPCSocketFactory {
@@ -72,7 +72,7 @@ public abstract class AFTIPCSocketFactory extends AFSocketFactory&lt;AFTIPCSocke
     /**
      * Creates an {@link AFTIPCSocketFactory} that always uses the given TIPC service type and
      * instance, implying cluster scope.
-     * 
+     *
      * @param type The service type.
      * @param instance The service instance.
      */

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFServerSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFServerSocket.java</span></div><h1>AFServerSocket.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFServerSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFServerSocket.java</span></div><h1>AFServerSocket.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -34,7 +34,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * The server part of a junixsocket socket.
- * 
+ *
  * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
  * @author Christian Kohlschütter
  */
@@ -50,13 +50,13 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * The constructor of the concrete subclass.
-   * 
+   *
    * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
    */
   public interface Constructor&lt;A extends AFSocketAddress&gt; {
     /**
      * Creates a new {@link AFServerSocket} instance.
-     * 
+     *
      * @param fd The file descriptor.
      * @return The new instance.
      * @throws IOException on error.
@@ -67,7 +67,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Constructs a new, unconnected instance.
-   * 
+   *
    * @throws IOException if the operation fails.
    */
   protected AFServerSocket() throws IOException {
@@ -76,7 +76,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Constructs a new instance, optionally associated with the given file descriptor.
-   * 
+   *
    * @param fdObj The file descriptor, or {@code null}.
    * @throws IOException if the operation fails.
    */
@@ -90,14 +90,14 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Creates a new AFServerSocketChannel for this socket.
-   * 
+   *
    * @return The new instance.
    */
   protected abstract AFServerSocketChannel&lt;?&gt; newChannel();
 
   /**
    * Creates a new AFSocketImpl.
-   * 
+   *
    * @param fdObj The file descriptor.
    * @return The new instance.
    * @throws IOException on error.
@@ -106,7 +106,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Creates a new AFServerSocket instance, using the given subclass constructor.
-   * 
+   *
    * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
    * @param instanceSupplier The subclass constructor.
    * @return The new instance.
@@ -119,7 +119,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Creates a new AFServerSocket instance, using the given subclass constructor.
-   * 
+   *
    * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
    * @param instanceSupplier The subclass constructor.
    * @param fdObj The file descriptor.
@@ -163,7 +163,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Returns a new {@link ServerSocket} that is bound to the given {@link AFSocketAddress}.
-   * 
+   *
    * @param instanceSupplier The constructor of the concrete subclass.
    * @param addr The socket file to bind to.
    * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
@@ -179,7 +179,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Returns a new {@link ServerSocket} that is bound to the given {@link AFSocketAddress}.
-   * 
+   *
    * @param instanceSupplier The constructor of the concrete subclass.
    * @param addr The socket file to bind to.
    * @param deleteOnClose If {@code true}, the socket file (if the address points to a file) will be
@@ -199,7 +199,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
   /**
    * Returns a new, &lt;em&gt;unbound&lt;/em&gt; {@link ServerSocket} that will always bind to the given
    * address, regardless of any socket address used in a call to &lt;code&gt;bind&lt;/code&gt;.
-   * 
+   *
    * @param instanceSupplier The constructor of the concrete subclass.
    * @param forceAddr The address to use.
    * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.
@@ -216,7 +216,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    * Forces the address to be used for any subsequent call to {@link #bind(SocketAddress)} to be the
    * given one, regardless of what'll be passed to {@link #bind(SocketAddress, int)}, but doesn't
    * bind yet.
-   * 
+   *
    * @param endpoint The forced endpoint address.
    * @return This {@link AFServerSocket}.
    */
@@ -323,7 +323,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Returns a new {@link AFSocket} instance.
-   * 
+   *
    * @return The new instance.
    * @throws IOException on error.
    */
@@ -381,7 +381,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Registers a {@link Closeable} that should be closed when this socket is closed.
-   * 
+   *
    * @param closeable The closeable.
    */
   public final void addCloseable(Closeable closeable) {
@@ -390,7 +390,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Unregisters a previously registered {@link Closeable}.
-   * 
+   *
    * @param closeable The closeable.
    */
   public final void removeCloseable(Closeable closeable) {
@@ -399,7 +399,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Checks whether everything is setup to support junixsocket sockets.
-   * 
+   *
    * @return {@code true} if supported.
    */
   public static boolean isSupported() {
@@ -417,10 +417,10 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Checks if the local socket address returned by {@link #getLocalSocketAddress()} is still valid.
-   * 
+   *
    * The address is no longer valid if the server socket has been closed, {@code null}, or another
    * server socket has been bound on that address.
-   * 
+   *
    * @return {@code true} iff still valid.
    */
   public boolean isLocalSocketAddressValid() {
@@ -460,10 +460,10 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Checks if this {@link AFServerSocket}'s file should be removed upon {@link #close()}.
-   * 
+   *
    * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
    * namespace).
-   * 
+   *
    * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
    */
   public final boolean isDeleteOnClose() {
@@ -473,10 +473,10 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
   /**
    * Enables/disables deleting this {@link AFServerSocket}'s file (or other resource type) upon
    * {@link #close()}.
-   * 
+   *
    * Deletion is not guaranteed, especially when not supported (e.g., addresses in the abstract
    * namespace).
-   * 
+   *
    * @param b Enabled if {@code true}.
    */
   public final void setDeleteOnClose(boolean b) {
@@ -507,7 +507,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   /**
    * Returns the address family supported by this implementation.
-   * 
+   *
    * @return The family.
    */
   protected final AFAddressFamily&lt;A&gt; addressFamily() {
@@ -517,9 +517,9 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
   /**
    * Sets the hook for any subsequent call to {@link #bind(SocketAddress)} and
    * {@link #bind(SocketAddress, int)} to be the given function.
-   * 
+   *
    * The function can monitor calls or even alter the endpoint address.
-   * 
+   *
    * @param hook The function that gets called for each {@code bind} call.
    * @return This instance.
    */

@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
 <head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <title>NativeUnixSocket xref</title>
 <link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
@@ -44,7 +44,7 @@
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> * JNI connector to native JNI C code.</em>
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment"> * @author Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="NativeUnixSocket" href="../../../../org/newsclub/net/unix/NativeUnixSocket.html#NativeUnixSocket">NativeUnixSocket</a> {
@@ -114,7 +114,7 @@
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>   <strong class="jxr_keyword">static</strong> UnsupportedOperationException unsupportedException() {
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>     <strong class="jxr_keyword">if</strong> (!isLoaded()) {
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>       <strong class="jxr_keyword">return</strong> (UnsupportedOperationException) <strong class="jxr_keyword">new</strong> UnsupportedOperationException(
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>           <span class="jxr_string">"junixsocket is not supported on this platform"</span>).initCause(initError);
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>           <span class="jxr_string">"junixsocket may not be fully supported on this platform"</span>).initCause(initError);
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>     } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>     }
@@ -169,7 +169,7 @@
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> 
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> <em class="jxr_javadoccomment">   * Reads data from an {@link AFSocketImpl}.</em>
-<a class="jxr_linenumber" name="L164" href="#L164">164</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L164" href="#L164">164</a> <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> <em class="jxr_javadoccomment">   * @param fd The corresponding file descriptor.</em>
 <a class="jxr_linenumber" name="L166" href="#L166">166</a> <em class="jxr_javadoccomment">   * @param buf The buffer to read into, or {@code null} if a single byte should be read.</em>
 <a class="jxr_linenumber" name="L167" href="#L167">167</a> <em class="jxr_javadoccomment">   * @param off The buffer offset.</em>
@@ -185,7 +185,7 @@
 <a class="jxr_linenumber" name="L177" href="#L177">177</a> 
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L179" href="#L179">179</a> <em class="jxr_javadoccomment">   * Writes data to an {@link AFSocketImpl}.</em>
-<a class="jxr_linenumber" name="L180" href="#L180">180</a> <em class="jxr_javadoccomment">   * </em>
+<a class="jxr_linenumber" name="L180" href="#L180">180</a> <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L181" href="#L181">181</a> <em class="jxr_javadoccomment">   * @param fd The corresponding file descriptor.</em>
 <a class="jxr_linenumber" name="L182" href="#L182">182</a> <em class="jxr_javadoccomment">   * @param buf The buffer to write from, or {@code null} if a single byte should be written.</em>
 <a class="jxr_linenumber" name="L183" href="#L183">183</a> <em class="jxr_javadoccomment">   * @param off The buffer offset, or the byte to write if {@code buf} is {@code null}.</em>
@@ -296,6 +296,6 @@
 <a class="jxr_linenumber" name="L288" href="#L288">288</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2022 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>

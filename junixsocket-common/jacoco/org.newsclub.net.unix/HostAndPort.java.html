@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HostAndPort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">HostAndPort.java</span></div><h1>HostAndPort.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HostAndPort.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">HostAndPort.java</span></div><h1>HostAndPort.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Hostname and port.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public final class HostAndPort {
@@ -39,7 +39,7 @@ public final class HostAndPort {
 
   /**
    * Creates a new hostname and port combination.
-   * 
+   *
    * @param hostname The hostname.
    * @param port The port, or {@code -1} for &quot;no port&quot;.
    */
@@ -88,7 +88,7 @@ public final class HostAndPort {
 
   /**
    * Tries to extract hostname and port information from the given URI.
-   * 
+   *
    * @param u The URI to extract from.
    * @return The parsed {@link HostAndPort} instance.
    * @throws SocketException on error.
@@ -130,7 +130,7 @@ public final class HostAndPort {
 
   /**
    * Returns the hostname.
-   * 
+   *
    * @return The hostname.
    */
   public String getHostname() {
@@ -139,7 +139,7 @@ public final class HostAndPort {
 
   /**
    * Returns the port, or {@code -1} for &quot;no port specified&quot;.
-   * 
+   *
    * @return The port.
    */
   public int getPort() {
@@ -148,7 +148,7 @@ public final class HostAndPort {
 
   /**
    * Returns a URI with this hostname and port.
-   * 
+   *
    * @param scheme The scheme to use.
    * @return The URI.
    */
@@ -159,7 +159,7 @@ public final class HostAndPort {
   /**
    * Returns a URI with this hostname and port, potentially reusing other URI parameters from the
    * given template URI (authority, path, query, fragment).
-   * 
+   *
    * @param scheme The scheme to use.
    * @param template The template. or {@code null}.
    * @return The URI.
@@ -192,7 +192,7 @@ public final class HostAndPort {
   /**
    * Returns a URI with this hostname and port, potentially using other URI parameters from the
    * given set of parameters.
-   * 
+   *
    * @param scheme The scheme to use.
    * @param rawAuthority The raw authority field, or {@code null}.
    * @param rawPath The raw path field, or {@code null}.

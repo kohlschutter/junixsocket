@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1666772980303">
-    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.6.1"/>
+<licensePluginReport goal="CHECK" timestamp="1675888286203">
+    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.6.2"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamily.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamilyConfig.java" result="PRESENT"/>
@@ -17,12 +17,14 @@
         <file path="src/main/java/org/newsclub/net/unix/AFSelectorProvider.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFServerSocket.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFServerSocketChannel.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/AFServerSocketConnector.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSocket.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSocketAddress.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSocketAddressConfig.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSocketAddressFromHostname.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSocketCapability.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSocketChannel.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/AFSocketConnector.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSocketCore.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSocketExtensions.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSocketFactory.java" result="PRESENT"/>
@@ -60,6 +62,7 @@
         <file path="src/main/java/org/newsclub/net/unix/CloseablePair.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/Closeables.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/DatagramSocketImplShim.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/DatagramSocketShim.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/FileDescriptorAccess.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/FileDescriptorCast.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/HostAndPort.java" result="PRESENT"/>
@@ -76,6 +79,12 @@
         <file path="src/main/java/org/newsclub/net/unix/SocketClosedException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SocketImplShim.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SocketOptionsMapper.java" result="PRESENT"/>
+        <file path="src/main/java8/org/newsclub/net/unix/AFInputStream.java" result="PRESENT"/>
+        <file path="src/main/java8/org/newsclub/net/unix/AFOutputStream.java" result="PRESENT"/>
+        <file path="src/main/java8/org/newsclub/net/unix/CleanableState.java" result="PRESENT"/>
+        <file path="src/main/java8/org/newsclub/net/unix/DatagramSocketImplShim.java" result="PRESENT"/>
+        <file path="src/main/java8/org/newsclub/net/unix/DatagramSocketShim.java" result="PRESENT"/>
+        <file path="src/main/java8/org/newsclub/net/unix/SocketImplShim.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/AFDatagramUtil.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/AFSocketCapabilityCondition.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/AFSocketCapabilityRequirement.java" result="PRESENT"/>
@@ -144,5 +153,8 @@
         <file path="src/test/java/org/newsclub/net/unix/java/JavaInetStackRequirement.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/SelectorTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/ThroughputTest.java" result="PRESENT"/>
+        <file path="src/test/java8/org/newsclub/net/unix/FinalizeTest.java" result="PRESENT"/>
+        <file path="src/test/java8/org/newsclub/net/unix/StandardSocketOptionsTest.java" result="PRESENT"/>
+        <file path="src/test/java8/org/newsclub/net/unix/domain/FinalizeTest.java" result="PRESENT"/>
     </files>
 </licensePluginReport>

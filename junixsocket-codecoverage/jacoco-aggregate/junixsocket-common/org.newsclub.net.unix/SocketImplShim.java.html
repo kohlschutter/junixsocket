@@ -21,7 +21,7 @@ import java.net.SocketImpl;
 
 /**
  * A shim that is filled with Java version-specific overrides. This variant is for Java 9 and above.
- * 
+ *
  * @author Christian Kohlschütter
  */
 abstract class SocketImplShim extends SocketImpl {

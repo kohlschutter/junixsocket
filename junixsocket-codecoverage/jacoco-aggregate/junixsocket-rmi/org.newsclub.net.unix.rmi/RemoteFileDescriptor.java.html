@@ -24,7 +24,7 @@ import java.io.ObjectInput;
 
 /**
  * A generic (unspecific) {@link FileDescriptor} reference.
- * 
+ *
  * @author Christian Kohlschütter
  * @see RemoteFileInput
  * @see RemoteFileOutput
@@ -34,7 +34,7 @@ public final class RemoteFileDescriptor extends RemoteFileDescriptorBase&lt;Void
 
   /**
    * Creates an uninitialized instance; used for externalization.
-   * 
+   *
    * @see #readExternal(ObjectInput)
    */
   public RemoteFileDescriptor() {
@@ -44,7 +44,7 @@ public final class RemoteFileDescriptor extends RemoteFileDescriptorBase&lt;Void
   /**
    * Creates a new {@link RemoteFileOutput} instance, encapsulating a generic {@link FileDescriptor}
    * so that it can be shared with other processes via RMI.
-   * 
+   *
    * @param socketFactory The socket factory.
    * @param fd The {@link FileDescriptor}.
    */

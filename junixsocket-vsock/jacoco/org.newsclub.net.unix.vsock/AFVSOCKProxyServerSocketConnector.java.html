@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFVSOCKProxyServerSocketConnector.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-vsock</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.vsock</a> &gt; <span class="el_source">AFVSOCKProxyServerSocketConnector.java</span></div><h1>AFVSOCKProxyServerSocketConnector.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2022 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.vsock;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.newsclub.net.unix.AFServerSocket;
+import org.newsclub.net.unix.AFServerSocketConnector;
+import org.newsclub.net.unix.AFSocketAddress;
+import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.AFVSOCKSocketAddress;
+import org.newsclub.net.unix.AddressUnavailableSocketException;
+
+/**
+ * Provides access to AF_VSOCK connections that aren't directly accessible but exposed via a
+ * proxying/multiplexing Unix domain socket.
+ *
+ * @author Christian Kohlschütter
+ * @see #openFirecrackerStyleConnector(File, int)
+ * @see #openDirectConnector()
+ */
+public final class AFVSOCKProxyServerSocketConnector implements
+    AFServerSocketConnector&lt;AFVSOCKSocketAddress, AFSocketAddress&gt; {
+<span class="nc" id="L40">  private static final AFServerSocketConnector&lt;AFVSOCKSocketAddress, AFSocketAddress&gt; DIRECT_CONNECTOR =</span>
+<span class="nc" id="L41">      new AFServerSocketConnector&lt;AFVSOCKSocketAddress, AFSocketAddress&gt;() {</span>
+
+        @Override
+        public AFServerSocket&lt;? extends AFSocketAddress&gt; bind(AFVSOCKSocketAddress addr)
+            throws IOException {
+<span class="nc" id="L46">          return addr.newForceBoundServerSocket();</span>
+        }
+      };
+
+  private final String listenAddressPrefix;
+  private final int allowedCID;
+
+<span class="nc" id="L53">  private AFVSOCKProxyServerSocketConnector(String listenAddressPrefix, int allowedCID) {</span>
+<span class="nc" id="L54">    this.listenAddressPrefix = listenAddressPrefix;</span>
+<span class="nc" id="L55">    this.allowedCID = allowedCID;</span>
+<span class="nc" id="L56">  }</span>
+
+  /**
+   * Returns an instance that is configured to support
+   * [Firecracker-style](https://github.com/firecracker-microvm/firecracker/blob/main/docs/vsock.md)
+   * Unix domain sockets.
+   *
+   * @param listenAddressPrefix The prefix of any listening socket. The actual socket will have
+   *          &lt;code&gt;_&lt;em&gt;vsockPort&lt;/em&gt;&lt;/code&gt; appended to it (with {@code vsockPort} being replaced
+   *          by the corresponding port number).
+   * @param allowedCID The permitted CID, or {@link AFVSOCKSocketAddress#VMADDR_CID_ANY} for &quot;any&quot;.
+   * @return The instance.
+   */
+  public static AFServerSocketConnector&lt;AFVSOCKSocketAddress, AFSocketAddress&gt; openFirecrackerStyleConnector(
+      File listenAddressPrefix, int allowedCID) {
+<span class="nc" id="L71">    return new AFVSOCKProxyServerSocketConnector(listenAddressPrefix.getAbsolutePath(), allowedCID);</span>
+  }
+
+  /**
+   * Returns an instance that is configured to connect directly to the given address.
+   *
+   * @return The direct instance.
+   */
+  public static AFServerSocketConnector&lt;AFVSOCKSocketAddress, AFSocketAddress&gt; openDirectConnector() {
+<span class="nc" id="L80">    return DIRECT_CONNECTOR;</span>
+  }
+
+  @Override
+  public AFServerSocket&lt;?&gt; bind(AFVSOCKSocketAddress addr) throws IOException {
+<span class="nc" id="L85">    int cid = addr.getVSOCKCID();</span>
+<span class="nc bnc" id="L86" title="All 6 branches missed.">    if (cid != allowedCID &amp;&amp; cid != AFVSOCKSocketAddress.VMADDR_CID_ANY</span>
+        &amp;&amp; allowedCID != AFVSOCKSocketAddress.VMADDR_CID_ANY) {
+<span class="nc" id="L88">      throw new AddressUnavailableSocketException(&quot;Factory does not cover CID &quot; + cid);</span>
+    }
+
+<span class="nc" id="L91">    return AFUNIXSocketAddress.of(new File(listenAddressPrefix + &quot;_&quot; + addr.getVSOCKPort()))</span>
+<span class="nc" id="L92">        .newForceBoundServerSocket();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

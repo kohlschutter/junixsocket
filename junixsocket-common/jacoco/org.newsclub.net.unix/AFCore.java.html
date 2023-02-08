@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFCore.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFCore.java</span></div><h1>AFCore.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFCore.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFCore.java</span></div><h1>AFCore.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
  * Copyright 2009-2022 Christian Kohlschütter
@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The core functionality of file descriptor based I/O.
- * 
+ *
  * @author Christian Kohlschütter
  */
 class AFCore extends CleanableState {
@@ -176,74 +176,77 @@ class AFCore extends CleanableState {
     }
 
 <span class="fc" id="L178">    int pos = src.position();</span>
-
-<span class="fc" id="L180">    boolean isDirect = src.isDirect();</span>
+<span class="fc" id="L179">    boolean isDirect = src.isDirect();</span>
     ByteBuffer buf;
+    int bufPos;
 <span class="fc bfc" id="L182" title="All 2 branches covered.">    if (isDirect) {</span>
 <span class="fc" id="L183">      buf = src;</span>
+<span class="fc" id="L184">      bufPos = pos;</span>
     } else {
-<span class="fc" id="L185">      buf = getThreadLocalDirectByteBuffer(remaining);</span>
-<span class="fc" id="L186">      remaining = Math.min(remaining, buf.remaining());</span>
+<span class="fc" id="L186">      buf = getThreadLocalDirectByteBuffer(remaining);</span>
+<span class="fc" id="L187">      remaining = Math.min(remaining, buf.remaining());</span>
 
-      // Java 16: buf.put(buf.position(), src, src.position(), Math.min(buf.limit(), src.limit()));
-<span class="fc" id="L189">      int limit = src.limit();</span>
-<span class="pc bpc" id="L190" title="1 of 2 branches missed.">      if (limit &gt; buf.limit()) {</span>
-<span class="nc" id="L191">        src.limit(buf.limit());</span>
-<span class="nc" id="L192">        buf.put(src);</span>
-<span class="nc" id="L193">        src.limit(limit);</span>
+<span class="fc" id="L189">      bufPos = buf.position();</span>
+
+      // Java 16: buf.put(bufPos, src, src.position(), Math.min(buf.limit(), src.limit()));
+<span class="fc" id="L192">      int limit = src.limit();</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">      if (limit &gt; buf.limit()) {</span>
+<span class="nc" id="L194">        src.limit(buf.limit());</span>
+<span class="nc" id="L195">        buf.put(src);</span>
+<span class="nc" id="L196">        src.limit(limit);</span>
       } else {
-<span class="fc" id="L195">        buf.put(src);</span>
+<span class="fc" id="L198">        buf.put(src);</span>
       }
 
-<span class="fc" id="L198">      buf.position(0);</span>
+<span class="fc" id="L201">      buf.position(bufPos);</span>
     }
-<span class="fc bfc" id="L200" title="All 2 branches covered.">    if (datagramMode) {</span>
-<span class="fc" id="L201">      options |= NativeUnixSocket.OPT_DGRAM_MODE;</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">    if (datagramMode) {</span>
+<span class="fc" id="L204">      options |= NativeUnixSocket.OPT_DGRAM_MODE;</span>
     }
 
-<span class="fc" id="L204">    int written = NativeUnixSocket.send(fdesc, buf, pos, remaining, addressTo, addressToLen,</span>
+<span class="fc" id="L207">    int written = NativeUnixSocket.send(fdesc, buf, bufPos, remaining, addressTo, addressToLen,</span>
         options, ancillaryDataSupport);
-<span class="fc" id="L206">    src.position(pos + written);</span>
+<span class="fc" id="L209">    src.position(pos + written);</span>
 
-<span class="fc" id="L208">    return written;</span>
+<span class="fc" id="L211">    return written;</span>
   }
 
   /**
    * Returns a per-thread reusable byte buffer for a given capacity.
-   * 
+   *
    * If a thread-local buffer currently uses a smaller capacity, the buffer is replaced by a larger
    * one. If the capacity exceeds a configurable maximum, a new direct buffer is allocated but not
    * cached (i.e., the previously cached one is kept but not immediately returned to the caller).
-   * 
+   *
    * @param capacity The desired capacity.
    * @return A byte buffer satisfying the requested capacity.
    */
   ByteBuffer getThreadLocalDirectByteBuffer(int capacity) {
-<span class="pc bpc" id="L222" title="3 of 4 branches missed.">    if (capacity &gt; TL_BUFFER_MAX_CAPACITY &amp;&amp; TL_BUFFER_MAX_CAPACITY &gt; 0) {</span>
+<span class="pc bpc" id="L225" title="3 of 4 branches missed.">    if (capacity &gt; TL_BUFFER_MAX_CAPACITY &amp;&amp; TL_BUFFER_MAX_CAPACITY &gt; 0) {</span>
       // Capacity exceeds configurable maximum limit;
       // allocate but do not cache direct buffer.
       // This may incur a performance penalty at the cost of correctness when using such capacities.
-<span class="nc" id="L226">      return ByteBuffer.allocateDirect(capacity);</span>
+<span class="nc" id="L229">      return ByteBuffer.allocateDirect(capacity);</span>
     }
-<span class="fc bfc" id="L228" title="All 2 branches covered.">    if (capacity &lt; TL_BUFFER_MIN_CAPACITY) {</span>
-<span class="fc" id="L229">      capacity = TL_BUFFER_MIN_CAPACITY;</span>
+<span class="fc bfc" id="L231" title="All 2 branches covered.">    if (capacity &lt; TL_BUFFER_MIN_CAPACITY) {</span>
+<span class="fc" id="L232">      capacity = TL_BUFFER_MIN_CAPACITY;</span>
     }
-<span class="fc" id="L231">    ByteBuffer buffer = TL_BUFFER.get();</span>
-<span class="pc bpc" id="L232" title="1 of 4 branches missed.">    if (buffer == null || capacity &gt; buffer.capacity()) {</span>
-<span class="fc" id="L233">      buffer = ByteBuffer.allocateDirect(capacity);</span>
-<span class="fc" id="L234">      TL_BUFFER.set(buffer);</span>
+<span class="fc" id="L234">    ByteBuffer buffer = TL_BUFFER.get();</span>
+<span class="pc bpc" id="L235" title="1 of 4 branches missed.">    if (buffer == null || capacity &gt; buffer.capacity()) {</span>
+<span class="fc" id="L236">      buffer = ByteBuffer.allocateDirect(capacity);</span>
+<span class="fc" id="L237">      TL_BUFFER.set(buffer);</span>
     }
-<span class="fc" id="L236">    buffer.clear();</span>
-<span class="fc" id="L237">    return buffer;</span>
+<span class="fc" id="L239">    buffer.clear();</span>
+<span class="fc" id="L240">    return buffer;</span>
   }
 
   void implConfigureBlocking(boolean block) throws IOException {
-<span class="fc" id="L241">    NativeUnixSocket.configureBlocking(validFdOrException(), block);</span>
-<span class="fc" id="L242">    this.blocking = block;</span>
-<span class="fc" id="L243">  }</span>
+<span class="fc" id="L244">    NativeUnixSocket.configureBlocking(validFdOrException(), block);</span>
+<span class="fc" id="L245">    this.blocking = block;</span>
+<span class="fc" id="L246">  }</span>
 
   boolean isBlocking() {
-<span class="fc" id="L246">    return blocking;</span>
+<span class="fc" id="L249">    return blocking;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
