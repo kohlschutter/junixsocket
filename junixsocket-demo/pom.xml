@@ -14,9 +14,7 @@
         <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
         <kohlschutter.multirelease.java8.release>8</kohlschutter.multirelease.java8.release>
     </properties>
-
     <description>Some example code to demo junixsocket's features</description>
-
     <dependencies>
         <!-- <dependency> <groupId>com.kohlschutter.junixsocket</groupId> <artifactId>junixsocket-native-common</artifactId>
       <version>${project.version}</version> </dependency> -->
@@ -47,22 +45,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.30</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.protobuf</groupId>
-                    <artifactId>protobuf-java</artifactId>
-                    <!-- CVE-2022-3171: 3.19.4 -->
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <!-- CVE-2022-3171: replace 3.19.4 (dependency of mysql-connector-java) -->
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-            <version>3.19.6</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.0.32</version>
         </dependency>
         <dependency>
             <!-- NOTE: Due to this dependency, maven-project-info-reports-plugin
@@ -71,7 +56,7 @@
             <!-- https://issues.apache.org/jira/browse/MPIR-374 -->
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.5.1</version>
+            <version>42.5.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -93,7 +78,6 @@
             <version>4.10.0</version>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
