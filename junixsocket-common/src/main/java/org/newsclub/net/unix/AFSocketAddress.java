@@ -710,7 +710,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Custom serialization: Reference {@link AFAddressFamily} instance by identifier string.
-   * 
+   *
    * @param in The {@link ObjectInputStream}.
    * @throws ClassNotFoundException on error.
    * @throws IOException on error.
@@ -723,7 +723,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   /**
    * Custom serialization: Reference {@link AFAddressFamily} instance by identifier string.
-   * 
+   *
    * @param out The {@link ObjectOutputStream}.
    * @throws IOException on error.
    */
