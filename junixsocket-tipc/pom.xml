@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.kohlschutter.junixsocket</groupId>
         <artifactId>junixsocket</artifactId>
-        <version>2.6.2</version>
+        <version>2.6.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <name>junixsocket-tipc</name>
@@ -75,6 +75,8 @@
                             <compilerArgs>
                                 <arg>--patch-module</arg>
                                 <arg>${patchArgs.org.newsclub.net.unix}</arg>
+
+                                <arg>${xlint.compiler.arg}</arg>
                             </compilerArgs>
                         </configuration>
                     </execution>

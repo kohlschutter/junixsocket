@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.kohlschutter.junixsocket</groupId>
         <artifactId>junixsocket</artifactId>
-        <version>2.6.2</version>
+        <version>2.6.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <name>junixsocket-common</name>
@@ -25,6 +25,7 @@
                     <compilerArgs>
                         <arg>-h</arg>
                         <arg>${kohlschutter.project.base.directory}/junixsocket-native/src/main/c</arg>
+                        <arg>${xlint.compiler.arg}</arg>
                     </compilerArgs>
 
                     <!-- Prevent emitting a warning for packages with only a package-info.java present -->
