@@ -37,7 +37,7 @@ import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGenerated
  * Just a helper class to simplify controlling the demo from the command line.
  */
 public final class DemoHelper {
-  @ExcludeFromCodeCoverageGeneratedReport
+  @ExcludeFromCodeCoverageGeneratedReport(reason = "unreachable")
   private DemoHelper() {
     throw new IllegalStateException("No instances");
   }

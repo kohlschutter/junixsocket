@@ -27,7 +27,7 @@ import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGenerated
  * @author Christian Kohlschütter
  */
 public final class AFDatagramUtil {
-  @ExcludeFromCodeCoverageGeneratedReport
+  @ExcludeFromCodeCoverageGeneratedReport(reason = "unreachable")
   private AFDatagramUtil() {
     throw new IllegalStateException("No instances");
   }

@@ -25,7 +25,7 @@ import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGenerated
  * @author Christian Kohlschütter
  */
 public final class NarMetadata {
-  @ExcludeFromCodeCoverageGeneratedReport
+  @ExcludeFromCodeCoverageGeneratedReport(reason = "unreachable")
   private NarMetadata() {
     throw new IllegalStateException("No instances");
   }

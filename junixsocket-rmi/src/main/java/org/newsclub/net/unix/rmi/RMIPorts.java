@@ -60,7 +60,7 @@ final class RMIPorts {
    */
   static final int PLAIN_FILE_SOCKET = Integer.MAX_VALUE;
 
-  @ExcludeFromCodeCoverageGeneratedReport
+  @ExcludeFromCodeCoverageGeneratedReport(reason = "unreachable")
   private RMIPorts() {
     throw new UnsupportedOperationException("No instances");
   }

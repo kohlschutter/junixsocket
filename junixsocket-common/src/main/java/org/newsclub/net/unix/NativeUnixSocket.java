@@ -71,7 +71,7 @@ final class NativeUnixSocket {
 
   private static Throwable initError = null;
 
-  @ExcludeFromCodeCoverageGeneratedReport
+  @ExcludeFromCodeCoverageGeneratedReport(reason = "unreachable")
   private NativeUnixSocket() {
     throw new UnsupportedOperationException("No instances");
   }
