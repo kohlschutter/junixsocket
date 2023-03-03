@@ -236,11 +236,13 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
   }
 
   @Override
+  @Deprecated
   protected final byte getTTL() throws IOException {
     return (byte) (getTimeToLive() & 0xFF);
   }
 
   @Override
+  @Deprecated
   protected final void setTTL(byte ttl) throws IOException {
     // ignored
   }
