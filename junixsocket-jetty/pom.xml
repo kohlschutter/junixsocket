@@ -12,7 +12,7 @@
     <name>junixsocket-jetty</name>
     <properties>
         <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
-        <jetty.version>11.0.13</jetty.version>
+        <jetty.version>11.0.14</jetty.version>
     </properties>
 
     <description>junixsocket for Jetty</description>
