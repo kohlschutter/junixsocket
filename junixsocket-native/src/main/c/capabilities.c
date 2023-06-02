@@ -36,6 +36,7 @@ static int CAPABILITY_UNIX_DOMAIN = (1 << 8);
 static int CAPABILITY_VSOCK = (1 << 9);
 static int CAPABILITY_VSOCK_DGRAM = (1 << 10);
 static int CAPABILITY_ZERO_LENGTH_SEND = (1 << 11);
+static int CAPABILITY_UNSAFE = (1 << 12);
 CK_IGNORE_UNUSED_VARIABLE_END
 
 void init_capabilities(JNIEnv *env CK_UNUSED) {
@@ -53,6 +54,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
                                                                                 JNIEnv *env CK_UNUSED, jclass clazz CK_UNUSED)
 {
     int capabilities = 0;
+
+#if !defined(_WIN32)
+        capabilities |= CAPABILITY_UNSAFE;
+#endif
 
     if(supportsUNIX()) {
         capabilities |= CAPABILITY_UNIX_DOMAIN;

@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -102,6 +103,15 @@ public class FileDescriptorCastTest {
     assertEquals(2, FileDescriptorCast.using(FileDescriptor.err).as(Integer.class));
     assertThrows(IOException.class, () -> FileDescriptorCast.using(new FileDescriptor()).as(
         Integer.class));
+  }
+
+  @Test
+  @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNSAFE)
+  public void testUnsafeCast() throws Exception {
+    assertEquals(1, FileDescriptorCast.unsafeUsing(1).as(Integer.class));
+    assertEquals(-2, FileDescriptorCast.unsafeUsing(-2).as(Integer.class));
+    assertSame(FileDescriptor.out, FileDescriptorCast.unsafeUsing(1).as(FileDescriptor.class));
+    assertThrows(IOException.class, () -> FileDescriptorCast.unsafeUsing(-1).as(Integer.class));
   }
 
   @Test

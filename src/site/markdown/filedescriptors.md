@@ -28,6 +28,12 @@ You can also get the file descriptor from some classes in the Java API, for exam
 	FileDescriptor stdout = FileDescriptor.out;
 	FileDescriptor stderr = FileDescriptor.err;
 
+### Getting a FileDescriptor from a native fd integer value
+
+You may use a somewhat "unsafe" operation to convert a system-native file descriptor, described as an integer value, to a `FileDescriptor` (or other types, see below), via `FileDescriptorCast.unsafeUsing(fdVal).as(FileDescriptor.class)`.
+
+This functionality may not be available in all environments (e.g., on Windows, or when manually disabled by setting the system property `-Dorg.newsclub.net.unix.library.disable.CAPABILITY_UNSAFE=true`).
+
 ## Sending and receiving File Descriptors
 
 A very useful feature of Unix Domain Sockets is the ability to send and receive file descriptors

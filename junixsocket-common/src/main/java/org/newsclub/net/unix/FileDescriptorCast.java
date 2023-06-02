@@ -137,6 +137,13 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
           return FD_IS_PROVIDER.apply(fdc.getFileDescriptor());
         }
       });
+      addProvider(FileDescriptor.class, new CastingProvider<FileDescriptor>() {
+        @Override
+        public FileDescriptor provideAs(FileDescriptorCast fdc,
+            Class<? super FileDescriptor> desiredType) throws IOException {
+          return fdc.getFileDescriptor();
+        }
+      });
       addProvider(Integer.class, new CastingProvider<Integer>() {
         @Override
         public Integer provideAs(FileDescriptorCast fdc, Class<? super Integer> desiredType)
@@ -299,6 +306,54 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
 
     CastingProviderMap map = PRIMARY_TYPE_PROVIDERS_MAP.get(primaryType);
     return new FileDescriptorCast(fdObj, map == null ? GLOBAL_PROVIDERS : map);
+  }
+
+  /**
+   * Creates a {@link FileDescriptorCast} using the given native file descriptor value.
+   * <p>
+   * This method
+   * is inherently unsafe as it may
+   * <ol>
+   * <li>make assumptions on the internal system representation of a file descriptor (which differs
+   * between Windows and Unix, for example).</li>
+   * <li>provide access to resources that are otherwise not accessible</li>
+   * </ol>
+   * <p>
+   * Note that the values {@code 0}, {@code 1}, and {@code 2} are always mapped to
+   * {@link FileDescriptor#in}, {@link FileDescriptor#out}, and {@link FileDescriptor#err},
+   * respectively.
+   *
+   * @param fd The system-native file descriptor value.
+   * @return The {@link FileDescriptorCast} instance.
+   * @throws IOException on error, especially if the given file descriptor is invalid or
+   *           unsupported, or when "unsafe" operations are unavailable or manually disabled for the
+   *           current environment.
+   */
+  @Unsafe
+  public static FileDescriptorCast unsafeUsing(int fd) throws IOException {
+    AFSocket.ensureUnsafeSupported();
+
+    FileDescriptor fdObj;
+
+    switch (fd) {
+      case -1:
+        throw new IOException("Not a valid file descriptor");
+      case 0:
+        fdObj = FileDescriptor.in;
+        break;
+      case 1:
+        fdObj = FileDescriptor.out;
+        break;
+      case 2:
+        fdObj = FileDescriptor.err;
+        break;
+      default:
+        fdObj = new FileDescriptor();
+        NativeUnixSocket.initFD(fdObj, fd);
+        break;
+    }
+
+    return using(fdObj);
   }
 
   private static void triggerInit() {

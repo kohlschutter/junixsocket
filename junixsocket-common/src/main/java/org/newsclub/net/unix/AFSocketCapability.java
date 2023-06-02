@@ -25,6 +25,10 @@ import java.lang.ProcessBuilder.Redirect;
  *
  * You can check whether your environment supports a given capability by calling
  * {@link AFSocket#supports(AFSocketCapability)}.
+ *
+ * You can also manually disable a given capability by specifying a System property of the form
+ * <code>org.newsclub.net.unix.library.disable.<em>CAPABILITY_SOMETHING_SOMETHING</em>=true</code>
+ * when invoking the JVM (make sure this property is set before junixsocket is accessed).
  */
 public enum AFSocketCapability {
   // see org_newsclub_net_unix_NativeUnixSocket.c in junixsocket-native
@@ -115,6 +119,16 @@ public enum AFSocketCapability {
    * condition.
    */
   CAPABILITY_ZERO_LENGTH_SEND(11),
+
+  /**
+   * Support for "unsafe" operations.
+   *
+   * Trading-in safety for speed or simplicity may be justified sometimes.
+   * 
+   * @see Unsafe
+   * @see AFSocket#ensureUnsafeSupported()
+   */
+  CAPABILITY_UNSAFE(12),
 
   ; // end of list
 

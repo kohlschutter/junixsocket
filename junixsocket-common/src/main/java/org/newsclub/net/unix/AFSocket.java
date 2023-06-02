@@ -429,6 +429,21 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
     return (CAPABILITIES & capability.getBitmask()) != 0;
   }
 
+  /**
+   * Checks if the current environment (system platform, native library, etc.) supports "unsafe"
+   * operations (as controlled via the {@link AFSocketCapability#CAPABILITY_UNSAFE} capability).
+   *
+   * If supported, the method returns normally. If not supported, an {@link IOException} is thrown.
+   *
+   * @throws IOException if "unsafe" operations are not supported.
+   * @see Unsafe
+   */
+  public static final void ensureUnsafeSupported() throws IOException {
+    if (!AFSocket.supports(AFSocketCapability.CAPABILITY_UNSAFE)) {
+      throw new IOException("Unsafe operations are not supported in this environment");
+    }
+  }
+
   @Override
   public final synchronized void close() throws IOException {
     IOException superException = null;
