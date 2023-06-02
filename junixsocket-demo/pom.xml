@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <version>8.0.32</version>
+            <version>8.0.33</version>
         </dependency>
         <dependency>
             <!-- NOTE: Due to this dependency, maven-project-info-reports-plugin
@@ -56,7 +56,7 @@
             <!-- https://issues.apache.org/jira/browse/MPIR-374 -->
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.5.3</version>
+            <version>42.6.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.10.0</version>
+            <version>4.11.0</version>
         </dependency>
     </dependencies>
     <build>
