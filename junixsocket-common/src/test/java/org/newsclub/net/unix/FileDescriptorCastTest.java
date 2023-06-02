@@ -96,6 +96,15 @@ public class FileDescriptorCastTest {
   }
 
   @Test
+  public void testCastAsInteger() throws Exception {
+    assertEquals(0, FileDescriptorCast.using(FileDescriptor.in).as(Integer.class));
+    assertEquals(1, FileDescriptorCast.using(FileDescriptor.out).as(Integer.class));
+    assertEquals(2, FileDescriptorCast.using(FileDescriptor.err).as(Integer.class));
+    assertThrows(IOException.class, () -> FileDescriptorCast.using(new FileDescriptor()).as(
+        Integer.class));
+  }
+
+  @Test
   public void testRandomAccessFile() throws Exception {
     File tempFile = AFUNIXSocketAddress.newTempPath(false);
     try (RandomAccessFile raf = new RandomAccessFile(tempFile, "rw");

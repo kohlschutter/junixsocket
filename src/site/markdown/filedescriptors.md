@@ -111,6 +111,7 @@ When you receive a FileDescriptor from another process, you want to use it as if
 First, you instantiate a `FileDescriptorCast` instance using the FileDescriptor of your choice, then you specify as what class you want to access it:
 
 	FileDescriptor fd = ...;
+	// NOTE: check `fd.valid()` or an `IOException` may be thrown.
 	Class<T> desiredClass = ...;
 	T instance = FileDescriptorCast.using(fd).as(desiredClass);
 
@@ -126,6 +127,10 @@ If the file descriptor is a Socket, you can use:
 	// or:
 	AFUNIXSocket sock = FileDescriptorCast.using(fd).as(AFUNIXSocket.class);
 	// etc.
+
+If you want to access the native file descriptor value as an integer (only where supported), you can use:
+
+    int fdVal = FileDescriptorCast.using(fd).as(Integer.class); // won't work for all types on Windows
 
 Note that if the specified `FileDescriptor` is incompatible with the target class, a `ClassCastException` is thrown. Also be aware that this technically isn't a cast, since a different object reference is returned.
 

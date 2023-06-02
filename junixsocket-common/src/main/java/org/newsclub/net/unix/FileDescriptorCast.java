@@ -137,6 +137,17 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
           return FD_IS_PROVIDER.apply(fdc.getFileDescriptor());
         }
       });
+      addProvider(Integer.class, new CastingProvider<Integer>() {
+        @Override
+        public Integer provideAs(FileDescriptorCast fdc, Class<? super Integer> desiredType)
+            throws IOException {
+          int val = NativeUnixSocket.getFD(fdc.getFileDescriptor());
+          if (val == -1) {
+            throw new IOException("Not a valid file descriptor");
+          }
+          return val;
+        }
+      });
 
       if (AFSocket.supports(AFSocketCapability.CAPABILITY_FD_AS_REDIRECT)) {
         addProvider(Redirect.class, new CastingProvider<Redirect>() {
