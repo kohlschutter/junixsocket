@@ -100,7 +100,7 @@ public class SelftestProvider {
   public Map<String, Class<?>[]> tests() {
     Map<String, Class<?>[]> tests = new LinkedHashMap<>();
     testMap.forEach((key, set) -> {
-      tests.put(key, set.toArray(new Class[0]));
+      tests.put(key, set.toArray(new Class<?>[0]));
     });
 
     return tests;

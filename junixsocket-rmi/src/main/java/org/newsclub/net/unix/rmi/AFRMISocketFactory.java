@@ -49,15 +49,15 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
     Closeable {
   private static final long serialVersionUID = 1L;
 
-  private RMIClientSocketFactory defaultClientFactory;
-  private RMIServerSocketFactory defaultServerFactory;
+  private transient RMIClientSocketFactory defaultClientFactory;
+  private transient RMIServerSocketFactory defaultServerFactory;
 
-  private AFNaming naming;
+  private transient AFNaming naming;
 
-  private AFRMIService rmiService = null;
+  private transient AFRMIService rmiService = null;
 
-  private final Map<Integer, AFServerSocket<?>> openServerSockets = new HashMap<>();
-  private final Set<AFSocket<?>> openSockets = new HashSet<>();
+  private final transient Map<Integer, AFServerSocket<?>> openServerSockets = new HashMap<>();
+  private final transient Set<AFSocket<?>> openSockets = new HashSet<>();
 
   /**
    * Constructor required per definition.

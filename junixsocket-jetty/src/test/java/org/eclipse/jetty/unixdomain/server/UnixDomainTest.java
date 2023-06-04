@@ -193,7 +193,7 @@ public class UnixDomainTest {
         .of(unixDomainPath));
 
     HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
-    httpClient.getProxyConfiguration().getProxies().add(new HttpProxy("localhost", fakeProxyPort));
+    httpClient.getProxyConfiguration().addProxy(new HttpProxy("localhost", fakeProxyPort));
     httpClient.start();
     try {
       ContentResponse response = httpClient.newRequest("localhost", fakeServerPort).timeout(5,

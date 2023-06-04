@@ -279,7 +279,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
           bb.clear();
           bb.put(createTestData(PAYLOAD_SIZE));
           bb.flip();
-          int remaining = sc.write(bb);
+          long remaining = sc.write(bb);
           bb.clear();
 
           long read; // limited by net.local.stream.recvspace / sendspace etc.

@@ -253,7 +253,7 @@ public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBa
       int numReadable = 0;
       int numClosedChannelException = 0;
 
-      int timeout = 5000;
+      long timeout = 5000;
       selectLoop : while (timeout > 0) {
         long time = System.currentTimeMillis();
         while (selector.select(timeout) != 0) {

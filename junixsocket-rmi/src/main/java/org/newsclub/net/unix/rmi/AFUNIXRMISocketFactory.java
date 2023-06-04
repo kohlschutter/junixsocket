@@ -52,7 +52,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
   private String socketPrefix;
   private String socketSuffix;
 
-  private final Map<HostAndPort, AFUNIXSocketCredentials> credentials = new HashMap<>();
+  private final transient Map<HostAndPort, AFUNIXSocketCredentials> credentials = new HashMap<>();
 
   /**
    * Constructor required per definition.

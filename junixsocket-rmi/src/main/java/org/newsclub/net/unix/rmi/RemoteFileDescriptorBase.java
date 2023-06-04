@@ -81,7 +81,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
   protected final transient AtomicReference<T> resource = new AtomicReference<>();
 
   private int magicValue;
-  private FileDescriptor fd;
+  private transient FileDescriptor fd;
   private AFUNIXRMISocketFactory socketFactory;
 
   /**
@@ -89,7 +89,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
    *
    * @see #readExternal(ObjectInput)
    */
-  RemoteFileDescriptorBase() {
+  public RemoteFileDescriptorBase() {
   }
 
   RemoteFileDescriptorBase(AFUNIXRMISocketFactory socketFactory, T stream, FileDescriptor fd,
