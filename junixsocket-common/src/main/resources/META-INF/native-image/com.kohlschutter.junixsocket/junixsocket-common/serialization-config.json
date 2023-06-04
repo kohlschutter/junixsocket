@@ -1,9 +1,35 @@
 {
   "types":[
     {
+      "name":"byte[]"
+    },
+    {
+      "name":"java.lang.String"
+    },
+    {
       "name":"java.net.InetAddress"
+    },
+    {
+      "name":"java.net.InetSocketAddress"
+    },
+    {
+      "name":"java.net.SocketAddress"
+    },
+    {
+      "name":"org.newsclub.net.unix.AFSocketAddress"
+    },
+    {
+      "name":"org.newsclub.net.unix.AFUNIXSocketAddress"
+    },
+    {
+      "name":"org.newsclub.net.unix.AFTIPCSocketAddress"
+    },
+    {
+      "name":"org.newsclub.net.unix.AFVSOCKSocketAddress"
     }
   ],
   "lambdaCapturingTypes":[
+  ],
+  "proxies":[
   ]
 }
