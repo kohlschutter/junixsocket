@@ -80,6 +80,9 @@ hideUnknownWarningWarnings=0
 hasExportDynamic=0
 ignoreExportDynamic=0
 
+hasReproducible=0
+ignoreReproducible=0
+
 skipGccArg=0
 analyze=0
 
@@ -115,6 +118,7 @@ while [ $# -gt 0 ]; do
       -Xcrossclang-ld64-sdk-version ) ld64_sdk_version="$1"; shift ; skipArg=1 ;;
       -Xcrossclang-hide-unknown-warning-warnings ) hideUnknownWarningWarnings=1 ; skipArg=1 ;;
       -Xcrossclang-ignore-export-dynamic) ignoreExportDynamic=1 ; skipArg=1 ;;
+      -Xcrossclang-ignore-reproducible) ignoreReproducible=1 ; skipArg=1 ;;
       # -index-store-path ) shift ; skipArg=1 ;; # if you're hitting this, set "Enable Index-While-Building Functionality=No" in Xcode build settings instead
       -filelist ) fileList="$1" ; shift; skipArg=1 ;;
       -current_version ) shift ; skipArg=1 ;;
@@ -155,6 +159,8 @@ while [ $# -gt 0 ]; do
       -Xlinker )
             if [[ "$1" == "-export_dynamic" ]]; then
                 hasExportDynamic=1
+            elif [[ "$1" == "-reproducible" ]]; then
+                hasReproducible=1
             elif [[ -n "$1" ]]; then
                 clangArgs+=("-Xlinker" "$1")
                 gccArgs+=("-Xlinker" "$1")
@@ -184,6 +190,11 @@ done
 if [[ $hasExportDynamic -eq 1 && $ignoreExportDynamic -eq 0 ]]; then
     clangArgs+=("-Xlinker" "-export_dynamic")
     gccArgs+=("-Xlinker" "-export_dynamic")
+fi
+
+if [[ $hasReproducible -eq 1 && $ignoreReproducible -eq 0 ]]; then
+    clangArgs+=("-Xlinker" "-reproducible")
+    # gccArgs+=("-Xlinker" "-reproducible")
 fi
 
 if [[ $analyze -gt 0 && $gccMode -gt 0 ]]; then
