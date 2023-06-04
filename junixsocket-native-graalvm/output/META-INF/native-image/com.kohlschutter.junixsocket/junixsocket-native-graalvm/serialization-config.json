@@ -1,12 +1,32 @@
 {
   "types":[
     {
+      "name":"byte[]"
+    },
+    {
+      "name":"java.lang.String"
+    },
+    {
       "name":"java.net.InetAddress"
     },
     {
+      "name":"java.net.InetSocketAddress"
+    },
+    {
+      "name":"java.net.SocketAddress"
+    },
+    {
       "name":"org.junit.platform.launcher.TestIdentifier$SerializedForm"
+    },
+    {
+      "name":"org.newsclub.net.unix.AFSocketAddress"
+    },
+    {
+      "name":"org.newsclub.net.unix.AFUNIXSocketAddress"
     }
   ],
   "lambdaCapturingTypes":[
+  ],
+  "proxies":[
   ]
 }

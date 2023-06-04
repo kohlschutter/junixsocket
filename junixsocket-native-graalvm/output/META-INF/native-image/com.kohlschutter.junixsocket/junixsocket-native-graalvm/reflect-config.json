@@ -102,6 +102,7 @@
     {"name":"testHttpUnix","parameterTypes":[] }, 
     {"name":"testParseURIandBack","parameterTypes":[] }, 
     {"name":"testSchemesAvailable","parameterTypes":[] }, 
+    {"name":"testSerialize","parameterTypes":[] }, 
     {"name":"testSocatString","parameterTypes":[] }, 
     {"name":"testURITemplate","parameterTypes":[] }, 
     {"name":"testURITemplateWithPortNumber","parameterTypes":[] }, 
@@ -204,10 +205,12 @@
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
     {"name":"testAvailableTypes","parameterTypes":[] }, 
+    {"name":"testCastAsInteger","parameterTypes":[] }, 
     {"name":"testInvalidFileDescriptor","parameterTypes":[] }, 
     {"name":"testPipe","parameterTypes":[] }, 
     {"name":"testRandomAccessFile","parameterTypes":[] }, 
-    {"name":"testStdout","parameterTypes":[] }
+    {"name":"testStdout","parameterTypes":[] }, 
+    {"name":"testUnsafeCast","parameterTypes":[] }
   ]
 },
 {
