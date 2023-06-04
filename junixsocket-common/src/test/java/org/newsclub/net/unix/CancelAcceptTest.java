@@ -26,6 +26,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
@@ -80,9 +81,11 @@ public abstract class CancelAcceptTest<A extends SocketAddress> extends SocketTe
 
       try (Socket sock = connectTo(serverThread.getServerAddress())) {
         // open and close
+        Objects.requireNonNull(sock); // silence Xlint warning
       }
       try (Socket sock = connectTo(serverThread.getServerAddress())) {
         // open and close
+        Objects.requireNonNull(sock); // silence Xlint warning
       }
 
       @SuppressWarnings("resource")
@@ -119,6 +122,7 @@ public abstract class CancelAcceptTest<A extends SocketAddress> extends SocketTe
 
       try {
         try (Socket sock = connectTo(serverAddress)) {
+          Objects.requireNonNull(sock); // silence Xlint warning
           fail("ServerSocket should have been closed already");
         }
         String noticeNoSocketException = checkKnownConditionDidNotThrowSocketException();

@@ -70,11 +70,11 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
   protected abstract AFDatagramChannel<A> newChannel();
 
   /**
-   * Returns the {@link AncillaryDataSupport} instance.
+   * Returns the {@code AncillaryDataSupport} instance.
    *
    * @return The instance.
    */
-  protected final AncillaryDataSupport getAncillaryDataSupport() {
+  final AncillaryDataSupport getAncillaryDataSupport() {
     return ancillaryDataSupport;
   }
 

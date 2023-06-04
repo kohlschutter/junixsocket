@@ -18,6 +18,7 @@
 package org.newsclub.net.unix.domain;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -83,7 +84,7 @@ public final class SocketFactoryTest extends SocketTestBase<AFUNIXSocketAddress>
     assertThrows(IllegalArgumentException.class, () -> {
       // Illegal local port
       try (Socket sock = factory.createSocket("file:///", 0, null, -1)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
   }
@@ -95,61 +96,61 @@ public final class SocketFactoryTest extends SocketTestBase<AFUNIXSocketAddress>
     assertThrows(SocketException.class, () -> {
       // We don't support empty hosts
       try (Socket sock = factory.createSocket("", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // We don't support empty hosts
       try (Socket sock = factory.createSocket("", 0, null, 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // We don't support IP addresses
       try (Socket sock = factory.createSocket(InetAddress.getByName(""), 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // We don't support IP addresses
       try (Socket sock = factory.createSocket(InetAddress.getLoopbackAddress(), 0, null, 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // file:// has an empty path component
       try (Socket sock = factory.createSocket("file:", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // file:// has an empty path component
       try (Socket sock = factory.createSocket("file:/", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // file:// has an empty path component
       try (Socket sock = factory.createSocket("file://", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // file://not-absolute is not an absolute path (three slashes needed)
       try (Socket sock = factory.createSocket("file://not-absolute", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // incomplete
       try (Socket sock = factory.createSocket("[", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // encoded; incomplete trailing escape
       try (Socket sock = factory.createSocket("file%3A%2F%2F%", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
   }
@@ -161,37 +162,37 @@ public final class SocketFactoryTest extends SocketTestBase<AFUNIXSocketAddress>
     assertThrows(SocketException.class, () -> {
       // file exists (root directory), but is definitely not a unix socket
       try (Socket sock = factory.createSocket("file:///", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // file exists (root directory), but is definitely not a unix socket
       try (Socket sock = factory.createSocket("file://localhost/", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // file exists (root directory), but is definitely not a unix socket
       try (Socket sock = factory.createSocket("[file:///]", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // file exists (root directory), but is definitely not a unix socket
       try (Socket sock = factory.createSocket("[file:///", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // encoded; file exists (root directory), but is definitely not a unix socket
       try (Socket sock = factory.createSocket("file%3A%2F%2F%2F", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
     assertThrows(SocketException.class, () -> {
       // encoded; file exists (root directory), but is definitely not a unix socket
       try (Socket sock = factory.createSocket("file%3A%2F%2Flocalhost%2F", 0)) {
-        // not reached
+        fail("Should not be reached: " + sock);
       }
     });
   }
@@ -209,7 +210,7 @@ public final class SocketFactoryTest extends SocketTestBase<AFUNIXSocketAddress>
       assertThrows(IllegalStateException.class, () -> {
         // system property "org.newsclub.net.unix.socket.default" not configured
         try (Socket sock = factory.createSocket(hostnameToConnectTo, 0)) {
-          // not reached
+          fail("Should not be reached: " + sock);
         }
       });
 
@@ -217,7 +218,7 @@ public final class SocketFactoryTest extends SocketTestBase<AFUNIXSocketAddress>
       assertThrows(IllegalStateException.class, () -> {
         // system property "org.newsclub.net.unix.socket.default" not configured
         try (Socket sock = factory.createSocket(hostnameToConnectTo, 0)) {
-          // not reached
+          fail("Should not be reached: " + sock);
         }
       });
 
@@ -225,7 +226,7 @@ public final class SocketFactoryTest extends SocketTestBase<AFUNIXSocketAddress>
       assertThrows(SocketException.class, () -> {
         // file exists (root directory), but is definitely not a unix socket
         try (Socket sock = factory.createSocket(hostnameToConnectTo, 0)) {
-          // not reached
+          fail("Should not be reached: " + sock);
         }
       });
     } finally {

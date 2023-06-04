@@ -357,7 +357,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
     }
     try {
       selectorProvider = (SelectorProvider) Class.forName(selectorProviderClassname).getMethod(
-          "provider", new Class[0]).invoke(null);
+          "provider", new Class<?>[0]).invoke(null);
     } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException
         | ClassNotFoundException | RuntimeException e) {
       throw new IllegalStateException("Cannot instantiate selector provider for "

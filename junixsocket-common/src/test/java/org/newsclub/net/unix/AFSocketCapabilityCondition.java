@@ -28,6 +28,12 @@ import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 public final class AFSocketCapabilityCondition implements ExecutionCondition {
+  /**
+   * Constructs a new {@link AFSocketCapabilityCondition}.
+   */
+  public AFSocketCapabilityCondition() {
+  }
+
   @SuppressWarnings("exports")
   @Override
   public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {

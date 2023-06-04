@@ -142,7 +142,7 @@ public class AFUNIXServerSocket extends AFServerSocket<AFUNIXSocketAddress> {
   }
 
   @Override
-  protected AFUNIXSocketImpl newImpl(FileDescriptor fdObj) throws SocketException {
+  protected AFSocketImpl<AFUNIXSocketAddress> newImpl(FileDescriptor fdObj) throws SocketException {
     return new AFUNIXSocketImpl(fdObj);
   }
 

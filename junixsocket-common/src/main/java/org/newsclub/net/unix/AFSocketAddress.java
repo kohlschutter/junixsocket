@@ -106,6 +106,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @param af The address family.
    * @throws SocketException on error.
    */
+  @SuppressWarnings("cast")
   protected AFSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress,
       AFAddressFamily<?> af) throws SocketException {
     /*
@@ -116,7 +117,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
      * addresses can only be IPv4 or IPv6 (at least as of Java 16 and earlier).
      */
     super(AFInetAddress.createUnresolvedHostname(socketAddress, af), 0);
-    this.nativeAddress = nativeAddress == null ? null : (ByteBuffer) nativeAddress.duplicate()
+    this.nativeAddress = nativeAddress == null ? null : (ByteBuffer)(Object) nativeAddress.duplicate()
         .rewind();
     if (port < -1) {
       throw new IllegalArgumentException("port out of range");
@@ -144,7 +145,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @param port A sentinel port number.
    */
   @SuppressWarnings("PMD.UnusedFormalParameter")
-  protected AFSocketAddress(Class<SentinelSocketAddress> clazz, int port) {
+  AFSocketAddress(Class<SentinelSocketAddress> clazz, int port) {
     super(InetAddress.getLoopbackAddress(), port);
     this.nativeAddress = null;
     this.bytes = new byte[0];

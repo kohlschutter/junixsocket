@@ -92,6 +92,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @deprecated Use {@link #of(File)} instead.
    * @see #of(File)
    */
+  @Deprecated
   public AFUNIXSocketAddress(File socketFile) throws SocketException {
     this(socketFile, 0);
   }
@@ -106,6 +107,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @deprecated Use {@link #of(File, int)} instead.
    * @see #of(File, int)
    */
+  @Deprecated
   public AFUNIXSocketAddress(File socketFile, int port) throws SocketException {
     this(port, of(socketFile, port).getPathAsBytes(), of(socketFile, port)
         .getNativeAddressDirectBuffer());

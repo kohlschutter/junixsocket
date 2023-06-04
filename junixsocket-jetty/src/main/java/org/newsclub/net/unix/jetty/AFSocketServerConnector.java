@@ -179,6 +179,7 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @see #getListenSocketAddress()
    */
   @ManagedAttribute("The Unix-Domain path this connector listens to")
+  @Deprecated
   public Path getUnixDomainPath() {
     if (listenSocketAddress instanceof AFUNIXSocketAddress) {
       AFUNIXSocketAddress addr = (AFUNIXSocketAddress) listenSocketAddress;
@@ -202,6 +203,7 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @deprecated Use {@link #setListenSocketAddress(AFSocketAddress)} instead.
    * @see #setListenSocketAddress(AFSocketAddress)
    */
+  @Deprecated
   public void setUnixDomainPath(Path unixDomainPath) {
     try {
       this.listenSocketAddress = AFUNIXSocketAddress.of(unixDomainPath);
