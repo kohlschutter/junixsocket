@@ -8,6 +8,8 @@
 #
 cd "$(dirname $0)/../"
 
+[[ -n "$GRAALVM_HOME" ]] && export PATH="$GRAALVM_HOME"/bin:$PATH
+
 java -version 2>&1 | grep -q GraalVM
 if [[ $? -ne 0 ]]; then
 	echo Error: JVM is not a GraalVM. >&2
