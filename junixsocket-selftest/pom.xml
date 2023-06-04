@@ -102,24 +102,6 @@
                                     <includeEmptyDirs>true</includeEmptyDirs>
                                     <resources>
                                         <resource>
-                                            <directory>${project.parent.basedir}/junixsocket-common/src/main/java</directory>
-                                            <includes>
-                                                <include>**</include>
-                                            </includes>
-                                            <excludes>
-                                                <exclude>module-info.java</exclude>
-                                            </excludes>
-                                        </resource>
-                                        <resource>
-                                            <directory>${project.parent.basedir}/junixsocket-common/src/main/java8</directory>
-                                            <includes>
-                                                <include>**</include>
-                                            </includes>
-                                            <excludes>
-                                                <exclude>module-info.java</exclude>
-                                            </excludes>
-                                        </resource>
-                                        <resource>
                                             <directory>${project.parent.basedir}/junixsocket-common/src/test/java</directory>
                                             <includes>
                                                 <include>**</include>
