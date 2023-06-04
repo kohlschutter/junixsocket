@@ -11,7 +11,7 @@ should be backwards compatible to releases of the same "major version" (e.g., 2.
 
 ## Supported Java versions
 
-junixsocket 2.6.2 is fully compatible with Java 8 and newer (tested up to Java 19).
+junixsocket 2.6.2 is fully compatible with Java 8 and newer (tested up to Java 20).
 
 ## Supported Java VMs
 

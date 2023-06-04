@@ -28,7 +28,7 @@ other address/protocol families (such as [AF_TIPC](http://tipc.io/) and AF_VSOCK
 * Provides a selftest package with 100+ tests to ensure compatibility with any target platform.
 * Apache 2.0 licensed.
 
-`*` (Tested up to Java 19; support for Java 7 was dropped in version 2.5.0).
+`*` (Tested up to Java 20; support for Java 7 was dropped in version 2.5.0).
 
 ## Quick links
 
