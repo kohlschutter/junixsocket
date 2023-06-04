@@ -46,6 +46,12 @@ void init_exceptions(JNIEnv *env) {
 
     for (int i=0; i<kExceptionMaxExcl; i++) {
         jclass exc = findClassAndGlobalRef(env, kExceptionClassnames[i]);
+        if(!exc) {
+#if DEBUG
+            fprintf(stderr, "Could not find exception class: %s\n", kExceptionClassnames[i]);
+#endif
+            exc = findClassAndGlobalRef(env, "java/lang/IllegalStateException"); // fallback
+        }
         kExceptionClasses[i] = exc;
 
         jmethodID m = (*env)->GetMethodID(env, exc, "<init>", "(Ljava/lang/String;)V");
