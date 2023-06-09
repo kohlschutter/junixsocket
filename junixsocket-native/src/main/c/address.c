@@ -139,7 +139,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrLengt
 }
 
 static jbyteArray sockAddrUnToBytes(JNIEnv *env, struct sockaddr_un *addr, socklen_t len) {
-    if(len <= 0) {
+    if(len <= 0 || addr == NULL) {
         return NULL;
     }
 #if defined(junixsocket_have_sun_len)

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -2551,7 +2551,8 @@
 		43D436B0261A55D0002D0C12 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1410;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					432EF186261AD52100F4A583 = {
 						CreatedOnToolsVersion = 11.3.1;
@@ -4474,6 +4475,7 @@
 					"-Wno-unused-command-line-argument",
 					"-Werror-implicit-function-declaration",
 					"-Wno-declaration-after-statement",
+					"-Wno-unsafe-buffer-usage",
 				);
 			};
 			name = Debug;
@@ -4556,6 +4558,7 @@
 					"-Wno-unused-command-line-argument",
 					"-Werror-implicit-function-declaration",
 					"-Wno-declaration-after-statement",
+					"-Wno-unsafe-buffer-usage",
 				);
 			};
 			name = Release;

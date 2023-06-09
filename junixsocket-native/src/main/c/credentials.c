@@ -55,8 +55,10 @@ static int ucredFromPid(pid_t pid, struct xucred* cr)
 
     cr->cr_uid = process.kp_eproc.e_ucred.cr_uid;
     cr->cr_ngroups = process.kp_eproc.e_ucred.cr_ngroups;
+
+    gid_t *groups = process.kp_eproc.e_ucred.cr_groups;
     for(int i=cr->cr_ngroups-1;i>=0;i--) {
-        cr->cr_groups[i] =process.kp_eproc.e_ucred.cr_groups[i];
+        cr->cr_groups[i] = groups[i];
     }
 
     return ret;

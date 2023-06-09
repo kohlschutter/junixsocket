@@ -355,8 +355,15 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
     jintArray ropsObj = (*env)->GetObjectField(env, pollFdObj, fieldID_rops);
 
     struct pollfd* pollFd = calloc(nfds, sizeof(struct pollfd));
+    if(pollFd == NULL) {
+        return 0;
+    }
 
     jint *buf = calloc(nfds, sizeof(jint));
+    if(buf == NULL) {
+        free(pollFd);
+        return 0;
+    }
 
     (*env)->GetIntArrayRegion(env, opsObj, 0, nfds, buf);
     for(int i=0; i<nfds;i++) {
