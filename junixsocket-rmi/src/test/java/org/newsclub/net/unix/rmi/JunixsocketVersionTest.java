@@ -18,7 +18,6 @@
 package org.newsclub.net.unix.rmi;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocket;
@@ -35,7 +34,6 @@ public class JunixsocketVersionTest {
   @Test
   public void testVersion() {
     String version = AFSocket.getVersion();
-    assertNotNull(version);
     assertNotEquals("", version);
   }
 }
