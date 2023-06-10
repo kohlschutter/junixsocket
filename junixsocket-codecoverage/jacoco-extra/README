@@ -1,0 +1,25 @@
+Place additional jacoco *.exec files here to improve code coverage reporting.
+
+Make sure to delete all outdated *.exec files first.
+
+Collect code coverage results by running junixsocket-selftest on all supported
+target platforms and configurations. Make sure to test in environments with
+certain features enabled/disabled and configured differently (e.g., TIPC
+enabled but not configured).
+
+Run the following command to collect these *.exec files on a target system:
+
+./run-selftest-coverage.sh
+(this may download the JaCoCo agent jar if it's not already there)
+
+The test files will be stored under junixsocket-codecoverage/target.
+
+Depending on your setup (shared directory or not), you may now need to
+aggregate these *.exec files.
+
+Then, on the machine aggregating the results, run
+
+./rerun-aggregate-coverage.sh
+
+which will set up the aggregate report under
+junixsocket-codecoverage/target/site/jacoco-aggregate/index.html
