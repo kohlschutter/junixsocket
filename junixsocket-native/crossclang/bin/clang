@@ -114,6 +114,7 @@ while [ $# -gt 0 ]; do
       -Xcrossclang-llvm-name ) llvmName="$1"; shift ; skipArg=1 ;;
       -Xcrossclang-use-ldshim ) useLdShim=1 ; skipArg=1 ;;
       -Xcrossclang-use-gcc=* ) gccMode=1 ; compiler="${v#-Xcrossclang-use-gcc=}" ; skipArg=1 ;;
+      -Xcrossclang-use-clang=* ) compiler="${v#-Xcrossclang-use-clang=}" ; skipArg=1 ;;
       -Xcrossclang-output-strip-lib-prefix ) outputStripLibPrefix=1 ; skipArg=1 ;;
       -Xcrossclang-ld64-sdk-version ) ld64_sdk_version="$1"; shift ; skipArg=1 ;;
       -Xcrossclang-hide-unknown-warning-warnings ) hideUnknownWarningWarnings=1 ; skipArg=1 ;;
@@ -273,13 +274,14 @@ if [[ $gccMode -gt 0 ]]; then
     clangArgs=( ${gccArgs[@]} )
 fi
 
-whichComp=$(which $compiler)
+whichComp=$(which "$compiler")
 if [[ -z "$whichComp" ]]; then
     echo "crossclang could not find compiler $compiler in path $PATH, giving up" >&2
     exit 1
 fi
 
-clangDir=$(cd $(dirname "$whichComp"); pwd)
+clangDir=$(dirname "$whichComp")
+clangDir=$(cd "$clangDir"; pwd)
 if [ "$currentDir" == "$clangDir" ]; then
     echo "crossclang detected in PATH. Can't find real clang, giving up" >&2
     exit 1
@@ -638,7 +640,7 @@ if [[ $gccMode -gt 0 ]]; then
 fi
 
 
-compilerBinary="$(which $compiler)"
+compilerBinary=$(which "$compiler")
 if [ -z "$compilerBinary" ]; then
   echo "Cannot compile -- compiler not found: $compiler" >&2
   exit 1
