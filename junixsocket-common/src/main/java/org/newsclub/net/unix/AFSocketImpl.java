@@ -153,10 +153,8 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
    *
    * @param addressFamily The address family.
    * @param fdObj The socket's {@link FileDescriptor}.
-   * @throws SocketException on error.
    */
-  protected AFSocketImpl(AFAddressFamily<@NonNull A> addressFamily, FileDescriptor fdObj)
-      throws SocketException {
+  protected AFSocketImpl(AFAddressFamily<@NonNull A> addressFamily, FileDescriptor fdObj) {
     super();
     this.addressFamily = addressFamily;
     this.address = InetAddress.getLoopbackAddress();

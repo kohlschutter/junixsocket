@@ -23,7 +23,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 class AFUNIXSocketImpl extends AFSocketImpl<AFUNIXSocketAddress> {
-  protected AFUNIXSocketImpl(FileDescriptor fdObj) throws SocketException {
+  protected AFUNIXSocketImpl(FileDescriptor fdObj) {
     super(AFUNIXSocketAddress.AF_UNIX, fdObj);
   }
 
