@@ -117,8 +117,8 @@ public abstract class AFSocketAddress extends InetSocketAddress {
      * addresses can only be IPv4 or IPv6 (at least as of Java 16 and earlier).
      */
     super(AFInetAddress.createUnresolvedHostname(socketAddress, af), 0);
-    this.nativeAddress = nativeAddress == null ? null : (ByteBuffer)(Object) nativeAddress.duplicate()
-        .rewind();
+    this.nativeAddress = nativeAddress == null ? null : (ByteBuffer) (Object) nativeAddress
+        .duplicate().rewind();
     if (port < -1) {
       throw new IllegalArgumentException("port out of range");
     }

@@ -124,7 +124,7 @@ public enum AFSocketCapability {
    * Support for "unsafe" operations.
    *
    * Trading-in safety for speed or simplicity may be justified sometimes.
-   * 
+   *
    * @see Unsafe
    * @see AFSocket#ensureUnsafeSupported()
    */
