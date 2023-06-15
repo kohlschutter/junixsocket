@@ -232,7 +232,8 @@ final class NativeUnixSocket {
   static native void copyFileDescriptor(FileDescriptor source, FileDescriptor target)
       throws IOException;
 
-  static native void attachCloseable(FileDescriptor fdsec, Closeable closeable);
+  static native void attachCloseable(FileDescriptor fdsec, Closeable closeable)
+      throws SocketException;
 
   static native int maxAddressLength();
 

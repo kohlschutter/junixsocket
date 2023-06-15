@@ -20,6 +20,7 @@ package org.newsclub.net.unix;
 import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -131,7 +132,12 @@ final class AncillaryDataSupport implements Closeable {
           openReceivedFileDescriptors.remove(fdesc);
         }
       };
-      NativeUnixSocket.attachCloseable(fdesc, cleanup);
+
+      try {
+        NativeUnixSocket.attachCloseable(fdesc, cleanup);
+      } catch (SocketException e) {
+        // ignore (cannot attach)
+      }
     }
 
     this.receivedFileDescriptors.add(descriptors);
