@@ -21,10 +21,15 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.SocketOption;
+import java.net.SocketOptions;
 import java.nio.channels.IllegalBlockingModeException;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -38,6 +43,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSocket implements
     FileDescriptorAccess {
   private final AFSocketImpl<A> implementation;
@@ -82,10 +88,11 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
    */
   protected AFServerSocket(FileDescriptor fdObj) throws IOException {
     super();
+
     this.implementation = newImpl(fdObj);
     NativeUnixSocket.initServerImpl(this, implementation);
 
-    setReuseAddress(true);
+    getAFImpl().setOption(SocketOptions.SO_REUSEADDR, true);
   }
 
   /**
@@ -486,6 +493,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   final AFSocketImpl<A> getAFImpl() {
     if (created.compareAndSet(false, true)) {
       try {
+        getAFImpl().create(true);
         getSoTimeout(); // trigger create via java.net.Socket
       } catch (IOException e) {
         // ignore
@@ -527,4 +535,115 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     this.bindFilter = hook;
     return this;
   }
+
+  @Override
+  public void bind(SocketAddress endpoint) throws IOException {
+    bind(endpoint, 50);
+  }
+
+  @Override
+  public InetAddress getInetAddress() {
+    if (!isBound()) {
+      return null;
+    } else {
+      return getAFImpl().getInetAddress();
+    }
+  }
+
+  @SuppressWarnings("all")
+  public <T> T getOption(SocketOption<T> name) throws IOException {
+    Objects.requireNonNull(name);
+    if (isClosed()) {
+      throw new SocketException("Socket is closed");
+    }
+    return getAFImpl().getOption(name);
+  }
+
+  @Override
+  public synchronized void setReceiveBufferSize(int size) throws SocketException {
+    if (size <= 0) {
+      throw new IllegalArgumentException("receive buffer size must be a positive number");
+    }
+    if (isClosed()) {
+      throw new SocketException("Socket is closed");
+    }
+    getAFImpl().setOption(SocketOptions.SO_RCVBUF, size);
+  }
+
+  @Override
+  public synchronized int getReceiveBufferSize() throws SocketException {
+    if (isClosed()) {
+      throw new SocketException("Socket is closed");
+    }
+    int result = 0;
+    Object o = getAFImpl().getOption(SocketOptions.SO_RCVBUF);
+    if (o instanceof Integer) {
+      result = ((Integer) o).intValue();
+    }
+    return result;
+  }
+
+  @Override
+  public void setSoTimeout(int timeout) throws SocketException {
+    if (isClosed()) {
+      throw new SocketException("Socket is closed");
+    }
+    if (timeout < 0) {
+      throw new IllegalArgumentException("timeout < 0");
+    }
+    getAFImpl().setOption(SocketOptions.SO_TIMEOUT, timeout);
+  }
+
+  @Override
+  public int getSoTimeout() throws IOException {
+    if (isClosed()) {
+      throw new SocketException("Socket is closed");
+    }
+    Object o = getAFImpl().getOption(SocketOptions.SO_TIMEOUT);
+    /* extra type safety */
+    if (o instanceof Integer) {
+      return ((Integer) o).intValue();
+    } else {
+      return 0;
+    }
+  }
+
+  @Override
+  public void setReuseAddress(boolean on) throws SocketException {
+    if (isClosed()) {
+      throw new SocketException("Socket is closed");
+    }
+    getAFImpl().setOption(SocketOptions.SO_REUSEADDR, Boolean.valueOf(on));
+  }
+
+  @Override
+  public boolean getReuseAddress() throws SocketException {
+    if (isClosed()) {
+      throw new SocketException("Socket is closed");
+    }
+    return ((Boolean) (getAFImpl().getOption(SocketOptions.SO_REUSEADDR))).booleanValue();
+  }
+
+  @Override
+  public void setPerformancePreferences(int connectionTime, int latency, int bandwidth) {
+  }
+
+  @SuppressWarnings("all")
+  public <T> ServerSocket setOption(SocketOption<T> name, T value) throws IOException {
+    Objects.requireNonNull(name);
+    if (isClosed()) {
+      throw new SocketException("Socket is closed");
+    }
+    getAFImpl().setOption(name, value);
+    return this;
+  }
+
+  @SuppressWarnings("all")
+  public Set<SocketOption<?>> supportedOptions() {
+    return getAFImpl().supportedOptions();
+  }
+
+  // NOTE: We shall re-implement all methods defined in ServerSocket that internally call getImpl()
+  // and call getAFImpl() here. This is not strictly necessary for environments where we can
+  // override "impl"; however it's the right thing to do.
 }
