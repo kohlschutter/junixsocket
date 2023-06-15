@@ -31,8 +31,18 @@ void init_reflection(JNIEnv *env) {
     kClassAbstractSelectableChannel = findClassAndGlobalRef(env, "java/nio/channels/spi/AbstractSelectableChannel");
     if(kClassAbstractSelectableChannel) {
         kMethodRemoveKey = (*env)->GetMethodID(env, kClassAbstractSelectableChannel, "removeKey", "(Ljava/nio/channels/SelectionKey;)V");
+        if(kMethodRemoveKey == NULL) {
+            (*env)->ExceptionClear(env);
+
+            // https://android.googlesource.com/platform/libcore/+/cff1616/luni/src/main/java/java/nio/channels/spi/AbstractSelectableChannel.java
+            kMethodRemoveKey = (*env)->GetMethodID(env, kClassAbstractSelectableChannel, "deregister", "(Ljava/nio/channels/SelectionKey;)V");
+            if(kMethodRemoveKey == NULL) {
+                (*env)->ExceptionClear(env);
+            }
+        }
     }
 }
+
 void destroy_reflection(JNIEnv *env) {
     releaseClassGlobalRef(env, kClassAbstractSelectableChannel);
 }
@@ -45,10 +55,20 @@ void destroy_reflection(JNIEnv *env) {
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImpl(
                                                                                   JNIEnv * env, jclass clazz CK_UNUSED, jobject serverSocket, jobject impl)
 {
+    callObjectSetter(env, serverSocket, "<init>", "(Ljava/net/SocketImpl;)V", impl);
+    if(!(*env)->ExceptionCheck(env)) {
+        // all done
+        return;
+    }
+    (*env)->ExceptionClear(env);
+
     setObjectFieldValue(env, serverSocket, "impl", "Ljava/net/SocketImpl;",
                         impl);
-
-    if (doSetServerSocket) {
+    if((*env)->ExceptionCheck(env)) {
+        (*env)->ExceptionClear(env);
+        // cannot access impl (probably Android)
+        return;
+    } else if(doSetServerSocket) {
         // no longer present in Java 16
         doSetServerSocket = setObjectFieldValueIfPossible(env, impl, "serverSocket", "Ljava/net/ServerSocket;",
                                       serverSocket);

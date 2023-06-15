@@ -24,7 +24,10 @@
 #include "address.h"
 
 static jclass class_FileDescriptor = NULL;
+
 static jfieldID fieldID_fd = NULL;
+static jmethodID methodID_getFd = NULL;
+static jmethodID methodID_setFd = NULL;
 
 #if defined(_WIN32)
 static jfieldID fieldID_handle = NULL;
@@ -107,6 +110,20 @@ void init_filedescriptors(JNIEnv *env) {
 
     class_FileDescriptor = kFDTypeClasses[0];
     fieldID_fd = (*env)->GetFieldID(env, class_FileDescriptor, "fd", "I");
+    if (fieldID_fd == NULL) {
+        (*env)->ExceptionClear(env);
+
+        // https://github.com/AndroidSDKSources/android-sdk-sources-for-api-level-33/blob/master/java/io/FileDescriptor.java
+        methodID_getFd = (*env)->GetMethodID(env, class_FileDescriptor, "getInt$", "()I");
+        (*env)->ExceptionClear(env);
+        methodID_setFd = (*env)->GetMethodID(env, class_FileDescriptor, "setInt$", "(I)V");
+
+        if(methodID_getFd == NULL || methodID_setFd == NULL) {
+            (*env)->ExceptionClear(env);
+            fieldID_fd = (*env)->GetFieldID(env, class_FileDescriptor, "descriptor", "I");
+        }
+    }
+
 #if defined(_WIN32)
     fieldID_handle = (*env)->GetFieldID(env, class_FileDescriptor, "handle", "J");
 #endif
@@ -147,11 +164,22 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getFD
 
 jint _getFD(JNIEnv * env, jobject fd)
 {
+    if(fieldID_fd == NULL && methodID_getFd != NULL) {
+        // Android
+        return (*env)->CallIntMethod(env, fd, methodID_getFd);
+    }
+
     return (*env)->GetIntField(env, fd, fieldID_fd);
 }
 
 void _initFD(JNIEnv * env, jobject fd, jint handle)
 {
+    if(fieldID_fd == NULL && methodID_setFd != NULL) {
+        // Android
+        (*env)->CallVoidMethod(env, fd, methodID_setFd, handle);
+        return;
+    }
+
     (*env)->SetIntField(env, fd, fieldID_fd, handle);
 }
 
