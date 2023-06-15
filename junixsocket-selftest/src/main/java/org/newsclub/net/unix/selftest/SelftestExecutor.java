@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.engine.JupiterTestEngine;
 import org.junit.platform.console.options.Theme;
 import org.junit.platform.console.tasks.JuxPackageAccess;
 import org.junit.platform.engine.TestExecutionResult;
@@ -39,6 +40,7 @@ import org.junit.platform.launcher.LauncherDiscoveryRequest;
 import org.junit.platform.launcher.TestExecutionListener;
 import org.junit.platform.launcher.TestIdentifier;
 import org.junit.platform.launcher.TestPlan;
+import org.junit.platform.launcher.core.LauncherConfig;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
@@ -63,7 +65,12 @@ class SelftestExecutor {
   TestExecutionSummary execute(ConsolePrintStream out0) throws Exception {
     PrintWriter out = new PrintWriter(new OutputStreamWriter(out0, Charset.defaultCharset()));
     try {
-      Launcher launcher = LauncherFactory.create();
+      LauncherConfig launcherConfig = LauncherConfig.builder() //
+          .enableTestEngineAutoRegistration(false) //
+          .addTestEngines(new JupiterTestEngine()) //
+          .build();
+      Launcher launcher = LauncherFactory.create(launcherConfig);
+
       SummaryGeneratingListener summaryListener = new SummaryGeneratingListener();
       launcher.registerTestExecutionListeners(summaryListener, JuxPackageAccess
           .newTreePrintingListener(out, true, Theme.ASCII));
