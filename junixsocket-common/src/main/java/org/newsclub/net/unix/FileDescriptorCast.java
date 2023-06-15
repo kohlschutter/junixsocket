@@ -73,11 +73,6 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   private static final Map<Class<?>, CastingProviderMap> PRIMARY_TYPE_PROVIDERS_MAP = Collections
       .synchronizedMap(new HashMap<>());
 
-  private final FileDescriptor fdObj;
-
-  private int localPort = 0;
-  private int remotePort = 0;
-
   private static final Function<FileDescriptor, FileInputStream> FD_IS_PROVIDER = System
       .getProperty("osv.version") != null ? LenientFileInputStream::new : FileInputStream::new;
 
@@ -173,11 +168,29 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
     }
   };
 
+  private static final int FD_IN = getFdIfPossible(FileDescriptor.in);
+  private static final int FD_OUT = getFdIfPossible(FileDescriptor.out);
+  private static final int FD_ERR = getFdIfPossible(FileDescriptor.err);
+
+  private final FileDescriptor fdObj;
+
+  private int localPort = 0;
+  private int remotePort = 0;
+
   private final CastingProviderMap cpm;
 
   private FileDescriptorCast(FileDescriptor fdObj, CastingProviderMap cpm) {
     this.fdObj = Objects.requireNonNull(fdObj);
     this.cpm = Objects.requireNonNull(cpm);
+  }
+
+  private static int getFdIfPossible(FileDescriptor fd) {
+    try {
+      return NativeUnixSocket.getFD(fd);
+    } catch (IOException e) {
+      e.printStackTrace();
+      return -1;
+    }
   }
 
   private static void registerCastingProviders(Class<?> primaryType, CastingProviderMap cpm) {
@@ -311,17 +324,15 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   /**
    * Creates a {@link FileDescriptorCast} using the given native file descriptor value.
    * <p>
-   * This method
-   * is inherently unsafe as it may
+   * This method is inherently unsafe as it may
    * <ol>
    * <li>make assumptions on the internal system representation of a file descriptor (which differs
    * between Windows and Unix, for example).</li>
    * <li>provide access to resources that are otherwise not accessible</li>
    * </ol>
    * <p>
-   * Note that the values {@code 0}, {@code 1}, and {@code 2} are always mapped to
-   * {@link FileDescriptor#in}, {@link FileDescriptor#out}, and {@link FileDescriptor#err},
-   * respectively.
+   * Note that attempts are made to reuse {@link FileDescriptor#in}, {@link FileDescriptor#out}, and
+   * {@link FileDescriptor#err}, respectively.
    *
    * @param fd The system-native file descriptor value.
    * @return The {@link FileDescriptorCast} instance.
@@ -334,24 +345,27 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
     AFSocket.ensureUnsafeSupported();
 
     FileDescriptor fdObj;
-
-    switch (fd) {
-      case -1:
-        throw new IOException("Not a valid file descriptor");
-      case 0:
-        fdObj = FileDescriptor.in;
-        break;
-      case 1:
-        fdObj = FileDescriptor.out;
-        break;
-      case 2:
-        fdObj = FileDescriptor.err;
-        break;
-      default:
-        fdObj = new FileDescriptor();
-        NativeUnixSocket.initFD(fdObj, fd);
-        break;
+    if (fd == -1) {
+      throw new IOException("Not a valid file descriptor");
+    } else if (fd == FD_IN) {
+      fdObj = FileDescriptor.in;
+    } else if (fd == FD_OUT) {
+      fdObj = FileDescriptor.out;
+    } else if (fd == FD_ERR) {
+      fdObj = FileDescriptor.err;
+    } else {
+      fdObj = null;
     }
+
+    if (fdObj != null) {
+      int check = getFdIfPossible(fdObj);
+      if (fd == check) {
+        return using(fdObj);
+      }
+    }
+
+    fdObj = new FileDescriptor();
+    NativeUnixSocket.initFD(fdObj, fd);
 
     return using(fdObj);
   }

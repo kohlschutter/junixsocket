@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
@@ -98,9 +99,10 @@ public class FileDescriptorCastTest {
 
   @Test
   public void testCastAsInteger() throws Exception {
-    assertEquals(0, FileDescriptorCast.using(FileDescriptor.in).as(Integer.class));
-    assertEquals(1, FileDescriptorCast.using(FileDescriptor.out).as(Integer.class));
-    assertEquals(2, FileDescriptorCast.using(FileDescriptor.err).as(Integer.class));
+    assertNotEquals(-1, FileDescriptorCast.using(FileDescriptor.in).as(Integer.class));
+    assertNotEquals(-1, FileDescriptorCast.using(FileDescriptor.out).as(Integer.class));
+    assertNotEquals(-1, FileDescriptorCast.using(FileDescriptor.err).as(Integer.class));
+
     assertThrows(IOException.class, () -> FileDescriptorCast.using(new FileDescriptor()).as(
         Integer.class));
   }
@@ -110,7 +112,8 @@ public class FileDescriptorCastTest {
   public void testUnsafeCast() throws Exception {
     assertEquals(1, FileDescriptorCast.unsafeUsing(1).as(Integer.class));
     assertEquals(-2, FileDescriptorCast.unsafeUsing(-2).as(Integer.class));
-    assertSame(FileDescriptor.out, FileDescriptorCast.unsafeUsing(1).as(FileDescriptor.class));
+    assertSame(FileDescriptor.out, FileDescriptorCast.unsafeUsing(FileDescriptorCast.using(
+        FileDescriptor.out).as(Integer.class)).as(FileDescriptor.class));
     assertThrows(IOException.class, () -> FileDescriptorCast.unsafeUsing(-1).as(Integer.class));
   }
 
