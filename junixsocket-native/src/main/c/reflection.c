@@ -98,6 +98,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setPort(
         portField = (*env)->GetFieldID(env, fileDescriptorClass, "port", "I");
     }
     if(portField == NULL) {
+        (*env)->ExceptionClear(env);
         _throwException(env, kExceptionSocketException,
                         "Cannot find field \"port\" in java.net.InetSocketAddress. Unsupported JVM?");
         return;
