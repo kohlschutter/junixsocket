@@ -47,7 +47,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   @SuppressWarnings("PMD.MutableStaticState")
   static String loadedLibrary; // set by NativeLibraryLoader
 
-  private static final int CAPABILITIES = initCapabilities();
+  private static Integer capabilitiesValue = null;
 
   private final AFSocketImpl<A> impl;
 
@@ -371,6 +371,11 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
     impl.ensureAncillaryReceiveBufferSize(minSize);
   }
 
+  private static boolean isCapDisabled(AFSocketCapability cap) {
+    return Boolean.valueOf(System.getProperty(PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX + cap.name(),
+        "false"));
+  }
+
   private static int initCapabilities() {
     if (!isSupported()) {
       return 0;
@@ -392,9 +397,11 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
     }
   }
 
-  private static boolean isCapDisabled(AFSocketCapability cap) {
-    return Boolean.valueOf(System.getProperty(PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX + cap.name(),
-        "false"));
+  private static synchronized int capabilities() {
+    if (capabilitiesValue == null) {
+      capabilitiesValue = initCapabilities();
+    }
+    return capabilitiesValue;
   }
 
   /**
@@ -412,7 +419,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
    */
   @Deprecated
   public static final boolean supports(AFUNIXSocketCapability capability) {
-    return (CAPABILITIES & capability.getBitmask()) != 0;
+    return (capabilities() & capability.getBitmask()) != 0;
   }
 
   /**
@@ -426,7 +433,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
    * @return true if supported.
    */
   public static final boolean supports(AFSocketCapability capability) {
-    return (CAPABILITIES & capability.getBitmask()) != 0;
+    return (capabilities() & capability.getBitmask()) != 0;
   }
 
   /**

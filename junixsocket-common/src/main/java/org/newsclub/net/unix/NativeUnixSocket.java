@@ -28,6 +28,8 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.spi.AbstractSelectableChannel;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.newsclub.net.unix.AFSelector.PollFd;
 
@@ -40,7 +42,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 final class NativeUnixSocket {
-  private static boolean loaded;
+  private static final CompletableFuture<Boolean> LOADED = new CompletableFuture<>();
 
   static final int DOMAIN_UNIX = 1;
   static final int DOMAIN_TIPC = 30;
@@ -77,12 +79,15 @@ final class NativeUnixSocket {
   }
 
   static {
+    boolean loadSuccessful = false;
     try (NativeLibraryLoader nll = new NativeLibraryLoader()) {
       nll.loadLibrary();
-      loaded = true;
+      loadSuccessful = true;
     } catch (RuntimeException | Error e) {
       initError = e;
       e.printStackTrace(); // keep
+    } finally {
+      setLoaded(loadSuccessful);
     }
 
     AFAddressFamily.registerAddressFamily("un", NativeUnixSocket.DOMAIN_UNIX,
@@ -94,7 +99,13 @@ final class NativeUnixSocket {
   }
 
   static boolean isLoaded() {
-    return loaded;
+    boolean loadSuccessful;
+    try {
+      loadSuccessful = LOADED.get();
+    } catch (InterruptedException | ExecutionException e) {
+      loadSuccessful = false;
+    }
+    return loadSuccessful;
   }
 
   static void ensureSupported() throws UnsupportedOperationException {
@@ -286,4 +297,8 @@ final class NativeUnixSocket {
   static native int sockTypeToNative(int type) throws IOException;
 
   static native int vsockGetLocalCID() throws IOException;
+
+  static void setLoaded(boolean successful) {
+    LOADED.complete(successful);
+  }
 }

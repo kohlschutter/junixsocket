@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
@@ -44,7 +45,7 @@ final class NativeLibraryLoader implements Closeable {
   private static final List<String> ARCHITECTURE_AND_OS = architectureAndOS();
   private static final String LIBRARY_NAME = "junixsocket-native";
 
-  private static boolean loaded = false;
+  private static final AtomicBoolean LOADED = new AtomicBoolean(false);
 
   static {
     String dir = System.getProperty(PROP_LIBRARY_TMPDIR, null);
@@ -205,8 +206,8 @@ final class NativeLibraryLoader implements Closeable {
 
   @SuppressFBWarnings("THROWS_METHOD_THROWS_RUNTIMEEXCEPTION")
   private static synchronized void setLoaded0(String library) {
-    if (!loaded) {
-      loaded = true;
+    if (LOADED.compareAndSet(false, true)) {
+      NativeUnixSocket.setLoaded(true);
       AFSocket.loadedLibrary = library;
       try {
         NativeUnixSocket.initPre();
@@ -258,7 +259,7 @@ final class NativeLibraryLoader implements Closeable {
   @SuppressWarnings("null")
   public synchronized void loadLibrary() {
     synchronized (loadLibrarySyncMonitor()) { // NOPMD We want to lock this class' classloader.
-      if (loaded) {
+      if (LOADED.get()) {
         // Already loaded
         return;
       }
