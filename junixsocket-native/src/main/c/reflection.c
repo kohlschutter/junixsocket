@@ -31,6 +31,8 @@ static jboolean cap_largePorts = false;
 
 static jboolean checkCapLargePorts(JNIEnv *env);
 
+static jboolean dontInitServerImpl = false;
+
 void init_reflection(JNIEnv *env) {
     kClassAbstractSelectableChannel = findClassAndGlobalRef(env, "java/nio/channels/spi/AbstractSelectableChannel");
     if(kClassAbstractSelectableChannel) {
@@ -61,6 +63,10 @@ void destroy_reflection(JNIEnv *env) {
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImpl(
                                                                                   JNIEnv * env, jclass clazz CK_UNUSED, jobject serverSocket, jobject impl)
 {
+    if(dontInitServerImpl) {
+        return;
+    }
+
     callObjectSetter(env, serverSocket, "<init>", "(Ljava/net/SocketImpl;)V", impl);
     if(!(*env)->ExceptionCheck(env)) {
         // all done
@@ -73,6 +79,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImp
     if((*env)->ExceptionCheck(env)) {
         (*env)->ExceptionClear(env);
         // cannot access impl (probably Android)
+
+        dontInitServerImpl = true;
         return;
     } else if(doSetServerSocket) {
         // no longer present in Java 16
