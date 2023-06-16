@@ -32,6 +32,8 @@ import java.net.SocketException;
 import java.nio.charset.Charset;
 
 import org.junit.jupiter.api.Test;
+import org.newsclub.net.unix.AFSocket;
+import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.SocketTestBase;
 
@@ -50,18 +52,35 @@ public final class SocketAddressTest extends SocketTestBase<AFUNIXSocketAddress>
   public void testPort() throws IOException {
     assertEquals(0, AFUNIXSocketAddress.of(new File("/tmp/whatever")).getPort());
     assertEquals(123, AFUNIXSocketAddress.of(new File("/tmp/whatever"), 123).getPort());
-    assertEquals(44444, AFUNIXSocketAddress.of(new File("/tmp/whatever"), 44444).getPort());
 
     try {
       AFUNIXSocketAddress.of(new File("/tmp/whatever"), -2);
       fail("Expected IllegalArgumentException for illegal port");
-    } catch (final IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       // expected
     }
+
+    assertEquals(44444, AFUNIXSocketAddress.of(new File("/tmp/whatever"), 44444).getPort());
+
+    AFUNIXSocketAddress.of(new File("/tmp/whatever"), 65535);
+  }
+
+  @Test
+  public void testLargePort() throws Exception {
+    boolean supportsLargePorts = AFSocket.supports(AFSocketCapability.CAPABILITY_LARGE_PORTS);
+
+    try {
+      assertEquals(544444, AFUNIXSocketAddress.of(new File("/tmp/whatever"), 544444).getPort());
+      assertTrue(supportsLargePorts);
+    } catch (SocketException e) {
+      assertFalse(supportsLargePorts);
+    }
+
     try {
       AFUNIXSocketAddress.of(new File("/tmp/whatever"), 65536);
-    } catch (final IllegalArgumentException e) {
-      fail("AFUNIXSocketAddress supports ports larger than 65535");
+      assertTrue(supportsLargePorts);
+    } catch (SocketException e) {
+      assertFalse(supportsLargePorts);
     }
   }
 

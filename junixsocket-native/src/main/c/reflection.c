@@ -27,6 +27,10 @@ static jboolean doSetServerSocket = true;
 static jclass kClassAbstractSelectableChannel;
 static jmethodID kMethodRemoveKey;
 
+static jboolean cap_largePorts = false;
+
+static jboolean checkCapLargePorts(JNIEnv *env);
+
 void init_reflection(JNIEnv *env) {
     kClassAbstractSelectableChannel = findClassAndGlobalRef(env, "java/nio/channels/spi/AbstractSelectableChannel");
     if(kClassAbstractSelectableChannel) {
@@ -41,6 +45,8 @@ void init_reflection(JNIEnv *env) {
             }
         }
     }
+
+    cap_largePorts = checkCapLargePorts(env);
 }
 
 void destroy_reflection(JNIEnv *env) {
@@ -83,19 +89,19 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_initServerImp
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setPort(
                                                                            JNIEnv * env, jclass clazz CK_UNUSED, jobject addr, jint port)
 {
-    jclass fileDescriptorClass = (*env)->GetObjectClass(env, addr);
+    jclass clsInetSocketAddress = (*env)->GetObjectClass(env, addr);
 
     jobject fieldObject = addr;
 
     jfieldID portField;
-    jfieldID holderField = (*env)->GetFieldID(env, fileDescriptorClass,
+    jfieldID holderField = (*env)->GetFieldID(env, clsInetSocketAddress,
                                               "holder", "Ljava/net/InetSocketAddress$InetSocketAddressHolder;");
     if(holderField != NULL) {
         fieldObject = (*env)->GetObjectField(env, addr, holderField);
         jclass holderClass = (*env)->GetObjectClass(env, fieldObject);
         portField = (*env)->GetFieldID(env, holderClass, "port", "I");
     } else {
-        portField = (*env)->GetFieldID(env, fileDescriptorClass, "port", "I");
+        portField = (*env)->GetFieldID(env, clsInetSocketAddress, "port", "I");
     }
     if(portField == NULL) {
         (*env)->ExceptionClear(env);
@@ -182,5 +188,38 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_deregisterSel
         (*env)->CallVoidMethod(env, chann, kMethodRemoveKey, key);
     } else {
         // FIXME
+    }
+}
+
+jboolean supportsLargePorts(void) {
+    return cap_largePorts;
+}
+
+static jboolean checkCapLargePorts(JNIEnv *env) {
+    jclass cls = (*env)->FindClass(env, "java/net/InetSocketAddress");
+    if((*env)->ExceptionCheck(env)) {
+        (*env)->ExceptionClear(env);
+        return false;
+    }
+
+    jmethodID constructor = (*env)->GetMethodID(env, cls, "<init>", "(I)V");
+    if((*env)->ExceptionCheck(env)) {
+        (*env)->ExceptionClear(env);
+        return false;
+    }
+
+    jobject instance = (*env)->NewObject(env, cls, constructor, 0);
+    if(instance == NULL) {
+        (*env)->ExceptionClear(env);
+        return false;
+    }
+
+    Java_org_newsclub_net_unix_NativeUnixSocket_setPort(env, cls, instance, 65536);
+
+    if((*env)->ExceptionCheck(env)) {
+        (*env)->ExceptionClear(env);
+        return false;
+    } else {
+        return true;
     }
 }

@@ -168,6 +168,13 @@ public class Selftest {
           System.setProperty("selftest.skip.junixsocket-rmi", "force_auto");
           withIssues = true;
         }
+
+        if (!AFSocket.supports(AFSocketCapability.CAPABILITY_LARGE_PORTS)) {
+          important.add(
+              "Auto-skipping junixsocket-rmi tests due to missing CAPABILITY_LARGE_PORTS");
+          System.setProperty("selftest.skip.junixsocket-rmi", "force_auto");
+          withIssues = true;
+        }
       }
     }
   }

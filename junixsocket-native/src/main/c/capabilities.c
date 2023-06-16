@@ -21,22 +21,24 @@
 
 #include "filedescriptors.h"
 #include "init.h"
+#include "reflection.h"
 
 CK_IGNORE_UNUSED_VARIABLE_BEGIN
 // see AFSocketCapability.java in junixsocket-common
-static int CAPABILITY_PEER_CREDENTIALS = (1 << 0);
-static int CAPABILITY_ANCILLARY_MESSAGES = (1 << 1);
-static int CAPABILITY_FILE_DESCRIPTORS = (1 << 2);
-static int CAPABILITY_ABSTRACT_NAMESPACE = (1 << 3);
-static int CAPABILITY_UNIX_DATAGRAMS = (1 << 4);
-static int CAPABILITY_NATIVE_SOCKETPAIR = (1 << 5);
-static int CAPABILITY_FD_AS_REDIRECT = (1 << 6);
-static int CAPABILITY_TIPC = (1 << 7);
-static int CAPABILITY_UNIX_DOMAIN = (1 << 8);
-static int CAPABILITY_VSOCK = (1 << 9);
-static int CAPABILITY_VSOCK_DGRAM = (1 << 10);
-static int CAPABILITY_ZERO_LENGTH_SEND = (1 << 11);
-static int CAPABILITY_UNSAFE = (1 << 12);
+static jint CAPABILITY_PEER_CREDENTIALS = (1 << 0);
+static jint CAPABILITY_ANCILLARY_MESSAGES = (1 << 1);
+static jint CAPABILITY_FILE_DESCRIPTORS = (1 << 2);
+static jint CAPABILITY_ABSTRACT_NAMESPACE = (1 << 3);
+static jint CAPABILITY_UNIX_DATAGRAMS = (1 << 4);
+static jint CAPABILITY_NATIVE_SOCKETPAIR = (1 << 5);
+static jint CAPABILITY_FD_AS_REDIRECT = (1 << 6);
+static jint CAPABILITY_TIPC = (1 << 7);
+static jint CAPABILITY_UNIX_DOMAIN = (1 << 8);
+static jint CAPABILITY_VSOCK = (1 << 9);
+static jint CAPABILITY_VSOCK_DGRAM = (1  << 10);
+static jint CAPABILITY_ZERO_LENGTH_SEND = (1 << 11);
+static jint CAPABILITY_UNSAFE = (1 << 12);
+static jint CAPABILITY_LARGE_PORTS = (1 << 13);
 CK_IGNORE_UNUSED_VARIABLE_END
 
 void init_capabilities(JNIEnv *env CK_UNUSED) {
@@ -53,7 +55,7 @@ void destroy_capabilities(JNIEnv *env CK_UNUSED) {
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_capabilities(
                                                                                 JNIEnv *env CK_UNUSED, jclass clazz CK_UNUSED)
 {
-    int capabilities = 0;
+    jint capabilities = 0;
 
 #if !defined(_WIN32)
         capabilities |= CAPABILITY_UNSAFE;
@@ -111,6 +113,10 @@ defined(SO_PEERCRED) || defined(SO_PEERID) || defined(__NetBSD__) || defined(__s
 
     if(supportsZeroLengthSend()) {
         capabilities |= CAPABILITY_ZERO_LENGTH_SEND;
+    }
+
+    if(supportsLargePorts()) {
+        capabilities |= CAPABILITY_LARGE_PORTS;
     }
 
     return capabilities;

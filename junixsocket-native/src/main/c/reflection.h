@@ -24,4 +24,6 @@
 void init_reflection(JNIEnv *env);
 void destroy_reflection(JNIEnv *env);
 
+jboolean supportsLargePorts(void);
+
 #endif /* reflection_h */

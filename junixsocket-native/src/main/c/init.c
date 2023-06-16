@@ -140,8 +140,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init
     }
 #endif
 
-    init_exceptions(env);
-    init_capabilities(env);
+    init_exceptions(env); // should be first
+
     init_reflection(env);
     init_unix();
     init_filedescriptors(env);
@@ -157,6 +157,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init
 #endif
     init_poll(env);
     init_socketoptions(env);
+
+    init_capabilities(env); // should be last
 }
 
 /*

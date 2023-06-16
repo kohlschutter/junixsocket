@@ -130,6 +130,14 @@ public enum AFSocketCapability {
    */
   CAPABILITY_UNSAFE(12),
 
+  /**
+   * Support for port numbers larger than 65535 (0xffff).
+   *
+   * Not all systems allow setting port numbers beyond the default TCP range (we use JNI tricks for
+   * that). This capability is required for RMI support.
+   */
+  CAPABILITY_LARGE_PORTS(13),
+
   ; // end of list
 
   private final int bitmask;
