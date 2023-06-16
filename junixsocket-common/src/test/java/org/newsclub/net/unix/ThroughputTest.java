@@ -64,12 +64,15 @@ import com.kohlschutter.util.SystemPropertyUtil;
  * This test measures throughput for sending and receiving messages over AF_UNIX, comparing
  * implementations of junixsocket and JEP 380 (Java 16).
  *
- * The test is enabled by default, and also included with the self-test.
+ * The test is enabled by default (only runs for a very short time), and is also included within the
+ * self-test.
  *
  * The tests can be configured as follows (all system properties):
  * <ul>
  * <li><code>org.newsclub.net.unix.throughput-test.enabled</code> (0/1, default: 1)</li>
  * <li><code>org.newsclub.net.unix.throughput-test.payload-size</code> (bytes, e.g., 8192)</li>
+ * <li><code>org.newsclub.net.unix.throughput-test.payload-size.datagram</code> (bytes, e.g., 2048;
+ * defaults to value specified with "payload-size" above)</li>
  * <li><code>org.newsclub.net.unix.throughput-test.seconds</code> (default: 0)</li>
  * </ul>
  *
@@ -82,7 +85,9 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   protected static final int ENABLED = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.enabled", 1);
   protected static final int PAYLOAD_SIZE = SystemPropertyUtil.getIntSystemProperty(
-      "org.newsclub.net.unix.throughput-test.payload-size", 2048); // 8192 is much faster
+      "org.newsclub.net.unix.throughput-test.payload-size", 1400); // 8192 is much faster
+  protected static final int PAYLOAD_SIZE_DATAGRAM = SystemPropertyUtil.getIntSystemProperty(
+      "org.newsclub.net.unix.throughput-test.payload-size.datagram", PAYLOAD_SIZE);
   protected static final int NUM_SECONDS = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.seconds", 0);
   protected static final int NUM_MILLISECONDS = Math.max(50, NUM_SECONDS * 1000);
@@ -331,7 +336,8 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
           long sentTotal = 0;
 
           new Thread() {
-            final DatagramPacket dp = new DatagramPacket(new byte[PAYLOAD_SIZE], PAYLOAD_SIZE);
+            final DatagramPacket dp = new DatagramPacket(new byte[PAYLOAD_SIZE_DATAGRAM],
+                PAYLOAD_SIZE_DATAGRAM);
 
             @Override
             public void run() {
@@ -343,7 +349,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
                     continue;
                   }
                   int read = dp.getLength();
-                  if (read != PAYLOAD_SIZE && read != 0) {
+                  if (read != PAYLOAD_SIZE_DATAGRAM && read != 0) {
                     throw new IOException("Unexpected response length: " + read);
                   }
                   readTotal.addAndGet(dp.getLength());
@@ -360,7 +366,8 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
 
           long time = System.currentTimeMillis();
 
-          DatagramPacket dp = new DatagramPacket(new byte[PAYLOAD_SIZE], PAYLOAD_SIZE);
+          DatagramPacket dp = new DatagramPacket(new byte[PAYLOAD_SIZE_DATAGRAM],
+              PAYLOAD_SIZE_DATAGRAM);
           byte[] data = dp.getData();
           for (int i = 0; i < data.length; i++) {
             data[i] = (byte) i;
@@ -373,7 +380,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
               e.addSuppressed(new Exception(dp.getSocketAddress().toString()));
               throw e;
             }
-            sentTotal += PAYLOAD_SIZE;
+            sentTotal += PAYLOAD_SIZE_DATAGRAM;
           }
           time = System.currentTimeMillis() - time;
           keepRunning.set(false);
@@ -382,8 +389,8 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
           long readTotal0 = readTotal.get();
 
           reportResults(stbTestType() + " DatagramPacket", ((1000f * readTotal0 / time) / 1000f
-              / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE + "; " + String.format(
-                  Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0
+              / 1000f) + " MB/s for datagram payload size " + PAYLOAD_SIZE_DATAGRAM + "; " + String
+                  .format(Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0
                       / (float) sentTotal))));
         }
       });
@@ -502,8 +509,8 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       new Thread() {
         @Override
         public void run() {
-          final ByteBuffer receiveBuffer = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE)
-              : ByteBuffer.allocate(PAYLOAD_SIZE);
+          final ByteBuffer receiveBuffer = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE_DATAGRAM)
+              : ByteBuffer.allocate(PAYLOAD_SIZE_DATAGRAM);
           try {
             SelectionKey key;
             if (readSelector != null) {
@@ -528,7 +535,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
               }
               read = ds.read(receiveBuffer);
               receiveBuffer.rewind();
-              if (read != PAYLOAD_SIZE && read != 0 && read != -1) {
+              if (read != PAYLOAD_SIZE_DATAGRAM && read != 0 && read != -1) {
                 throw new IOException("Unexpected response length: " + read);
               }
               readTotal.addAndGet(read);
@@ -550,8 +557,8 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
 
       time = System.currentTimeMillis();
 
-      final ByteBuffer sendBuffer = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE) : ByteBuffer
-          .allocate(PAYLOAD_SIZE);
+      final ByteBuffer sendBuffer = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE_DATAGRAM)
+          : ByteBuffer.allocate(PAYLOAD_SIZE_DATAGRAM);
 
       try (AbstractSelector writeSelector = sp == null ? null : sp.openSelector()) { // NOPMD
         if (sp != null) {
@@ -576,11 +583,11 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
             }
           }
 
-          if (written != PAYLOAD_SIZE && written != 0) {
+          if (written != PAYLOAD_SIZE_DATAGRAM && written != 0) {
             throw new IOException("Unexpected written length: " + written);
           }
 
-          sentTotal += PAYLOAD_SIZE;
+          sentTotal += PAYLOAD_SIZE_DATAGRAM;
           sendBuffer.rewind();
         }
       } finally {
@@ -599,8 +606,9 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
     long readTotal0 = readTotal.get();
 
     reportResults(id + " direct=" + direct + ";blocking=" + blocking, ((1000f * readTotal0 / time)
-        / 1000f / 1000f) + " MB/s for payload size " + PAYLOAD_SIZE + "; " + String.format(
-            Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0 / (float) sentTotal))));
+        / 1000f / 1000f) + " MB/s for datagram payload size " + PAYLOAD_SIZE_DATAGRAM + "; "
+        + String.format(Locale.ENGLISH, "%.1f%% packet loss", 100 * (1 - (readTotal0
+            / (float) sentTotal))));
 
   }
 
