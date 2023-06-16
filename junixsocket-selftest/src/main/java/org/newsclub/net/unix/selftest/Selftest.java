@@ -85,11 +85,11 @@ public class Selftest {
   private boolean inconclusive = false;
 
   private enum Result {
-    SKIP, PASS, DONE, NONE, FAIL
+    AUTOSKIP, SKIP, PASS, DONE, NONE, FAIL
   }
 
   private enum SkipMode {
-    UNDECLARED(false), KEEP(false), SKIP(true), SKIP_FORCE(true);
+    UNDECLARED(false), KEEP(false), SKIP(true), SKIP_FORCE(true), SKIP_AUTO(true);
 
     boolean skip;
 
@@ -106,7 +106,7 @@ public class Selftest {
     }
 
     boolean isForce() {
-      return this == SKIP_FORCE;
+      return this == SKIP_FORCE || this == SKIP_AUTO;
     }
 
     public static final SkipMode parse(String skipMode) {
@@ -114,6 +114,8 @@ public class Selftest {
         return SkipMode.UNDECLARED;
       } else if ("force".equalsIgnoreCase(skipMode)) {
         return SkipMode.SKIP_FORCE;
+      } else if ("force_auto".equalsIgnoreCase(skipMode)) {
+        return SkipMode.SKIP_AUTO;
       } else {
         return Boolean.valueOf(skipMode) ? SkipMode.SKIP : SkipMode.KEEP;
       }
@@ -148,14 +150,24 @@ public class Selftest {
 
       if (!getSkipModeForModule("junixsocket-rmi").isDeclared()) {
         important.add("Auto-skipping junixsocket-rmi tests due to Substrate VM");
-        System.setProperty("selftest.skip.junixsocket-rmi", "force");
+        System.setProperty("selftest.skip.junixsocket-rmi", "force_auto");
         withIssues = true;
       }
 
       if (!getSkipModeForClass("org.newsclub.net.unix.FileDescriptorCastTest").isDeclared()) {
         important.add("Auto-skipping FileDescriptorCastTest tests due to Substrate VM");
-        System.setProperty("selftest.skip.FileDescriptorCastTest", "force");
+        System.setProperty("selftest.skip.FileDescriptorCastTest", "force_auto");
         withIssues = true;
+      }
+    } else {
+      if (!getSkipModeForModule("junixsocket-rmi").isDeclared()) {
+        try {
+          Class.forName("java.rmi.Remote");
+        } catch (ClassNotFoundException e) {
+          important.add("Auto-skipping junixsocket-rmi tests due to java.rmi.Remote class missing");
+          System.setProperty("selftest.skip.junixsocket-rmi", "force_auto");
+          withIssues = true;
+        }
       }
     }
   }
@@ -166,11 +178,35 @@ public class Selftest {
    * A zero error code indicates success.
    *
    * @param args Ignored.
-   * @throws IOException on error.
+   * @throws Exception on error.
    */
   @SuppressFBWarnings({
       "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
   public static void main(String[] args) throws Exception {
+    int rc = runSelftest();
+
+    if (SystemPropertyUtil.getBooleanSystemProperty("selftest.wait.at-end", false)) {
+      System.gc(); // NOPMD
+      System.out.print("Press any key to end test. ");
+      System.out.flush();
+      System.in.read();
+      System.out.println("RC=" + rc);
+    }
+    System.out.flush();
+
+    System.exit(rc); // NOPMD
+  }
+
+  /**
+   * Run this from some other Java code to ensure junixsocket works correctly on the target system.
+   *
+   * A zero return value indicates success.
+   *
+   * @throws Exception on error.
+   */
+  @SuppressFBWarnings({
+      "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+  public static int runSelftest() throws Exception {
     Selftest st = new Selftest();
 
     st.checkVM();
@@ -215,16 +251,8 @@ public class Selftest {
 
     int rc = st.isFail() ? 1 : 0;
 
-    if (SystemPropertyUtil.getBooleanSystemProperty("selftest.wait.at-end", false)) {
-      System.gc(); // NOPMD
-      System.out.print("Press any key to end test. ");
-      System.out.flush();
-      System.in.read();
-      System.out.println("RC=" + rc);
-    }
-
     System.out.flush();
-    System.exit(rc); // NOPMD
+    return rc;
   }
 
   public void printExplanation() throws IOException {
@@ -397,9 +425,14 @@ public class Selftest {
 
       String result = res == null ? null : res.result.name();
       String extra;
-      if (res == null || (res.result == Result.SKIP && res.throwable == null)) {
+      if (res == null || ((res.result == Result.SKIP || res.result == Result.AUTOSKIP)
+          && res.throwable == null)) {
         result = "SKIP";
-        extra = "(skipped by user request)";
+        if (res != null && res.result == Result.AUTOSKIP) {
+          extra = "(skipped automatically)";
+        } else {
+          extra = "(skipped by user request)";
+        }
       } else if (res.summary == null) {
         extra = res.throwable == null ? "(unknown error)" : res.throwable.toString();
         fail = true;
@@ -485,13 +518,15 @@ public class Selftest {
     SkipMode skipMode;
 
     if ((skipMode = getSkipModeForModule(module)).isSkip()) {
-      out.println("Skipping module " + module + "; skipped by request" + (skipMode.isForce()
-          ? " (force)" : ""));
+      boolean autoSkip = skipMode == SkipMode.SKIP_AUTO;
+
+      out.println("Skipping module " + module + "; skipped " + (autoSkip ? "automatically"
+          : "by user request" + (skipMode.isForce() ? " (force)" : "")));
       if (!skipMode.isForce()) {
         withIssues = true;
         modified = true;
       }
-      moduleResult = new ModuleResult(Result.SKIP, null, null);
+      moduleResult = new ModuleResult(autoSkip ? Result.AUTOSKIP : Result.SKIP, null, null);
     } else {
       List<Class<?>> list = new ArrayList<>(testClasses.length);
       for (Class<?> testClass : testClasses) {
