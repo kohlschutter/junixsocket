@@ -116,13 +116,13 @@ public abstract class AFSocketAddress extends InetSocketAddress {
      * Using a resolved address (with the address bit initialized) would be ideal, but resolved
      * addresses can only be IPv4 or IPv6 (at least as of Java 16 and earlier).
      */
-    super(AFInetAddress.createUnresolvedHostname(socketAddress, af), 0);
+    super(AFInetAddress.createUnresolvedHostname(socketAddress, af), port >= 0 && port <= 0xffff
+        ? port : 0);
     this.nativeAddress = nativeAddress == null ? null : (ByteBuffer) (Object) nativeAddress
         .duplicate().rewind();
     if (port < -1) {
       throw new IllegalArgumentException("port out of range");
-    }
-    if (port > 0) {
+    } else if (port > 0xffff) {
       if (!NativeUnixSocket.isLoaded()) {
         throw (SocketException) new SocketException(
             "Cannot set SocketAddress port - junixsocket JNI library is not available").initCause(
