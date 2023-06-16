@@ -147,6 +147,13 @@ final class NativeUnixSocket {
   @SuppressFBWarnings("THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION")
   static native void destroy() throws Exception;
 
+  /**
+   * Can be used to check (without side-effects) if the library has been loaded.
+   * 
+   * Terminates normally if so; throws {@link UnsatisfiedLinkError} if not.
+   */
+  static native void noop();
+
   static native int capabilities();
 
   static native byte[] sockname(int domain, FileDescriptor fd, boolean peer);

@@ -183,3 +183,13 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy
     destroy_poll(env);
     destroy_socketoptions(env);
 }
+
+/*
+ + * Class:     org_newsclub_net_unix_NativeUnixSocket
+ + * Method:    noop
+ + * Signature: ()V
+ + */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_noop
+(JNIEnv *env CK_UNUSED, jclass clazz CK_UNUSED) {
+    // no-op
+}

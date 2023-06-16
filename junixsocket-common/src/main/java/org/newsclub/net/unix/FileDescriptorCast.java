@@ -185,6 +185,9 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   }
 
   private static int getFdIfPossible(FileDescriptor fd) {
+    if (!NativeUnixSocket.isLoaded()) {
+      return -1;
+    }
     try {
       return NativeUnixSocket.getFD(fd);
     } catch (IOException e) {

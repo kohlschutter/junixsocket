@@ -59,6 +59,14 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    noop
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_noop
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    capabilities
  * Signature: ()I
  */

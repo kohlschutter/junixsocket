@@ -210,7 +210,6 @@ final class NativeLibraryLoader implements Closeable {
       NativeUnixSocket.setLoaded(true);
       AFSocket.loadedLibrary = library;
       try {
-        NativeUnixSocket.initPre();
         NativeUnixSocket.init();
       } catch (RuntimeException e) {
         throw e;
@@ -264,9 +263,23 @@ final class NativeLibraryLoader implements Closeable {
         return;
       }
 
+      NativeUnixSocket.initPre();
+
       // set -Dorg.newsclub.net.unix.library.override.force=provided to assume that
       // we already have loaded the library via System.load, etc.
       if ("provided".equals(System.getProperty(PROP_LIBRARY_OVERRIDE_FORCE, ""))) {
+        setLoaded("provided");
+        return;
+      }
+
+      boolean provided = false;
+      try {
+        NativeUnixSocket.noop();
+        provided = true;
+      } catch (UnsatisfiedLinkError | Exception e) {
+        // expected unless we manually loaded the library
+      }
+      if (provided) {
         setLoaded("provided");
         return;
       }
