@@ -366,6 +366,39 @@
                             </properties>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>crosscompile-aarch64-Android-clang</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <skipInvocation>${junixsocket.cross.disabled}</skipInvocation>
+                            <noLog>true</noLog>
+                            <streamLogs>true</streamLogs>
+                            <goals>
+                                <goal>clean</goal>
+                                <goal>install</goal>
+                            </goals>
+                            <projectsDirectory>${project.basedir}/../</projectsDirectory>
+                            <pomIncludes>
+                                <pomInclude>junixsocket-native</pomInclude>
+                            </pomIncludes>
+                            <profiles>
+                                <profile>llvm</profile>
+                            </profiles>
+                            <properties>
+                                <junixsocket.native.aol.llvm>aarch64-Android-clang</junixsocket.native.aol.llvm>
+                                <junixsocket.install.skip>true</junixsocket.install.skip>
+                                <junixsocket.build.directory>${project.build.directory}/junixsocket-native-aarch64-Android-clang-llvm</junixsocket.build.directory>
+                                <junixsocket.native.llvm.target>aarch64-linux-android30</junixsocket.native.llvm.target>
+                                <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
+                                <junixsocket.common.classifier.linux.arm>aarch64-Android-clang-llvm-jni</junixsocket.common.classifier.linux.arm>
+                                <ignorant>${ignorant}</ignorant>
+                                <gpgkeyname>${gpgkeyname}</gpgkeyname>
+                                <gpg.executable>${gpg.executable}</gpg.executable>
+                            </properties>
+                        </configuration>
+                    </execution>
                     <!--
             <execution>
             <id>crosscompile-sparc-SunOS-clang</id>
@@ -847,7 +880,22 @@
                             <generatePom>false</generatePom>
                         </configuration>
                     </execution>
-                    <!--
+                    <execution>
+                        <id>install-aarch64-Android-clang</id>
+                        <phase>${junixsocket.cross.install-phase}</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.build.directory}/junixsocket-native-aarch64-Android-clang-llvm/junixsocket-native-${project.version}-aarch64-Android-clang-jni.nar</file>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>junixsocket-native</artifactId>
+                            <version>${project.version}</version>
+                            <packaging>nar</packaging>
+                            <classifier>aarch64-Android-clang-llvm-jni</classifier>
+                            <generatePom>false</generatePom>
+                        </configuration>
+                    </execution>                    <!--
             <execution>
             <id>install-sparcv9-SunOS-clang</id>
             <phase>${junixsocket.cross.install-phase}</phase>
