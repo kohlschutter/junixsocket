@@ -254,7 +254,6 @@ final class NativeLibraryLoader implements Closeable {
     }
   }
 
-  // NOPMD
   @SuppressWarnings("null")
   public synchronized void loadLibrary() {
     synchronized (loadLibrarySyncMonitor()) { // NOPMD We want to lock this class' classloader.
@@ -365,11 +364,25 @@ final class NativeLibraryLoader implements Closeable {
     return candidates;
   }
 
+  private static String lookupArchProperty(String key, String defaultVal) {
+    return System.getProperty(key, defaultVal).replaceAll("[ /\\\\'\";:\\$]", "");
+  }
+
   private static List<String> architectureAndOS() {
-    String arch = System.getProperty("os.arch", "UnknownArch").replaceAll("[ /\\\\'\";:\\$]", "");
-    String osName = System.getProperty("os.name", "UnknownOS").replaceAll("[ /\\\\'\";:\\$]", "");
+    String arch = lookupArchProperty("os.arch", "UnknownArch");
+    String osName = lookupArchProperty("os.name", "UnknownOS");
+
+    String vmName = lookupArchProperty("java.vm.name", "UnknownVM");
+    String vmSpecVendor = lookupArchProperty("java.vm.specification.vendor",
+        "UnknownSpecificationVendor");
 
     List<String> list = new ArrayList<>();
+
+    if ("Dalvik".equals(vmName) || vmSpecVendor.contains("Android")) {
+      // Android identifies itself as os.name="Linux"
+      // let's probe for an Android-specific library first
+      list.add(arch + "-Android");
+    }
     list.add(arch + "-" + osName);
     if (osName.startsWith("Windows") && !"Windows10".equals(osName)) {
       list.add(arch + "-" + "Windows10");
