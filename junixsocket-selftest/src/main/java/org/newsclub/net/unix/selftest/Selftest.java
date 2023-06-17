@@ -23,8 +23,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -73,7 +77,7 @@ import com.kohlschutter.util.SystemPropertyUtil;
  */
 @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.CognitiveComplexity"})
 public class Selftest {
-  private final ConsolePrintStream out = ConsolePrintStream.wrapSystemOut();
+  private final ConsolePrintStream out;
   private final Map<String, ModuleResult> results = new LinkedHashMap<>();
   private final List<AFSocketCapability> supportedCapabilites = new ArrayList<>();
   private final List<AFSocketCapability> unsupportedCapabilites = new ArrayList<>();
@@ -140,7 +144,8 @@ public class Selftest {
     org.newsclub.lib.junixsocket.custom.NarMetadata nmCustom;
   }
 
-  public Selftest(SelftestProvider sp) {
+  public Selftest(PrintStream out, SelftestProvider sp) {
+    this.out = ConsolePrintStream.wrapPrintStream(out);
     this.sp = sp;
   }
 
@@ -216,8 +221,70 @@ public class Selftest {
   @SuppressFBWarnings({
       "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
   public static int runSelftest() throws Exception {
+    return runSelftest(System.out);
+  }
+
+  public static int runSelftest(Writer out) throws Exception {
+    PipedInputStream pis = new PipedInputStream();
+    @SuppressWarnings("resource")
+    PipedOutputStream pos = new PipedOutputStream(pis);
+    @SuppressWarnings("resource")
+    PrintStream ps = new PrintStream(pos, false, Charset.defaultCharset().name());
+
+    InputStreamReader isr = new InputStreamReader(pis, Charset.defaultCharset());
+
+    Thread t = new Thread(new Runnable() {
+      @Override
+      public void run() {
+        char[] buf = new char[4096];
+        int read;
+        try {
+          while ((read = isr.read(buf)) >= 0) {
+            out.write(buf, 0, read);
+            out.flush();
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+    t.start();
+
+    return runSelftest0(ps, () -> {
+      ps.close();
+      try {
+        t.join();
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    });
+  }
+
+  @SuppressFBWarnings({
+      "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+  public static int runSelftest(PrintStream out) throws Exception {
+    return runSelftest0(out, null);
+  }
+
+  private static int runSelftest0(PrintStream out, Runnable whenDone) throws Exception {
+    int rc;
+    PrintStream origSystemOut = System.out;
+    System.setOut(out);
+    try {
+      rc = runSelftest0(out);
+    } finally {
+      out.flush();
+      System.setOut(origSystemOut);
+      if (whenDone != null) {
+        whenDone.run();
+      }
+    }
+    return rc;
+  }
+
+  private static int runSelftest0(PrintStream out) throws Exception {
     SelftestProvider sp = new SelftestProvider();
-    Selftest st = new Selftest(sp);
+    Selftest st = new Selftest(out, sp);
 
     st.checkVM();
     st.printExplanation();
@@ -252,7 +319,7 @@ public class Selftest {
 
     if (!messagesAtEnd.isEmpty()) {
       for (String m : messagesAtEnd) {
-        System.out.println(m);
+        out.println(m);
       }
     }
 
@@ -261,7 +328,7 @@ public class Selftest {
 
     int rc = st.isFail() ? 1 : 0;
 
-    System.out.flush();
+    out.flush();
     return rc;
   }
 
@@ -708,7 +775,7 @@ public class Selftest {
       return;
     }
     String p = file.getAbsolutePath();
-    System.out.println("BEGIN contents of file: " + p);
+    out.println("BEGIN contents of file: " + p);
 
     final int maxToRead = 4096;
     char[] buf = new char[4096];
@@ -716,7 +783,7 @@ public class Selftest {
     try (InputStreamReader isr = new InputStreamReader(new FileInputStream(file),
         StandardCharsets.UTF_8);) {
 
-      OutputStreamWriter outWriter = new OutputStreamWriter(System.out, Charset.defaultCharset());
+      OutputStreamWriter outWriter = new OutputStreamWriter(out, Charset.defaultCharset());
       int read = -1;
       boolean lastWasNewline = false;
       while (numRead < maxToRead && (read = isr.read(buf)) != -1) {
@@ -726,16 +793,16 @@ public class Selftest {
         lastWasNewline = (read > 0 && buf[read - 1] == '\n');
       }
       if (!lastWasNewline) {
-        System.out.println();
+        out.println();
       }
       if (read != -1) {
-        System.out.println("[...]");
+        out.println("[...]");
       }
     } catch (Exception e) {
-      System.out.println("ERROR while reading contents of file: " + p + ": " + e);
+      out.println("ERROR while reading contents of file: " + p + ": " + e);
     }
-    System.out.println("=END= contents of file: " + p);
-    System.out.println();
+    out.println("=END= contents of file: " + p);
+    out.println();
   }
 
   public void dumpOSReleaseFiles() throws IOException {
