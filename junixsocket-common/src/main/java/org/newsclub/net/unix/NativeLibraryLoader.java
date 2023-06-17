@@ -121,7 +121,7 @@ final class NativeLibraryLoader implements Closeable {
 
   private static final class StandardLibraryCandidate extends LibraryCandidate {
     StandardLibraryCandidate(String version) {
-      super(version == null ? null : LIBRARY_NAME + "-" + version);
+      super(version == null ? LIBRARY_NAME : LIBRARY_NAME + "-" + version);
     }
 
     @Override
@@ -142,7 +142,6 @@ final class NativeLibraryLoader implements Closeable {
     public String toString() {
       return super.toString() + "(standard library path)";
     }
-
   }
 
   private static final class ClasspathLibraryCandidate extends LibraryCandidate {
@@ -343,11 +342,14 @@ final class NativeLibraryLoader implements Closeable {
   private List<LibraryCandidate> initLibraryCandidates(List<Throwable> suppressedThrowables) {
     List<LibraryCandidate> candidates = new ArrayList<>();
     try {
-      candidates.add(new StandardLibraryCandidate(getArtifactVersion(getClass(),
-          "junixsocket-common", "junixsocket-core")));
+      String version = getArtifactVersion(getClass(), "junixsocket-common", "junixsocket-core");
+      if (version != null) {
+        candidates.add(new StandardLibraryCandidate(version));
+      }
     } catch (Exception e) {
       suppressedThrowables.add(e);
     }
+
     try {
       candidates.addAll(tryProviderClass("org.newsclub.lib.junixsocket.custom.NarMetadata",
           "junixsocket-native-custom"));
@@ -360,6 +362,8 @@ final class NativeLibraryLoader implements Closeable {
     } catch (Exception e) {
       suppressedThrowables.add(e);
     }
+
+    candidates.add(new StandardLibraryCandidate(null));
 
     return candidates;
   }
