@@ -17,7 +17,10 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -130,5 +133,14 @@ public class SelftestProvider {
     });
 
     return tests;
+  }
+
+  public void printAdditionalProperties(PrintWriter out) {
+    out.println("Native architecture: " + NativeLibraryLoader.getArchitectureAndOS());
+  }
+
+  public static void main(String[] args) {
+    new SelftestProvider().printAdditionalProperties(new PrintWriter(new OutputStreamWriter(
+        System.out, Charset.defaultCharset()), true));
   }
 }

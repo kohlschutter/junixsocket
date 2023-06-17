@@ -378,6 +378,10 @@ final class NativeLibraryLoader implements Closeable {
     return list;
   }
 
+  static List<String> getArchitectureAndOS() {
+    return ARCHITECTURE_AND_OS;
+  }
+
   private List<LibraryCandidate> findLibraryCandidates(String artifactName,
       String libraryNameAndVersion, Class<?> providerClass) {
     String mappedName = System.mapLibraryName(libraryNameAndVersion);

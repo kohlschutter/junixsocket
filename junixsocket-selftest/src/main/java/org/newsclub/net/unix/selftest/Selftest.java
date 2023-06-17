@@ -83,6 +83,7 @@ public class Selftest {
   private boolean isSupportedAFUNIX = false;
   private final Set<String> important = new LinkedHashSet<>();
   private boolean inconclusive = false;
+  private final SelftestProvider sp;
 
   private enum Result {
     AUTOSKIP, SKIP, PASS, DONE, NONE, FAIL
@@ -139,7 +140,8 @@ public class Selftest {
     org.newsclub.lib.junixsocket.custom.NarMetadata nmCustom;
   }
 
-  public Selftest() {
+  public Selftest(SelftestProvider sp) {
+    this.sp = sp;
   }
 
   public void checkVM() {
@@ -214,16 +216,17 @@ public class Selftest {
   @SuppressFBWarnings({
       "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
   public static int runSelftest() throws Exception {
-    Selftest st = new Selftest();
+    SelftestProvider sp = new SelftestProvider();
+    Selftest st = new Selftest(sp);
 
     st.checkVM();
     st.printExplanation();
+    st.dumpAdditionalProperties();
     st.dumpSystemProperties();
     st.dumpOSReleaseFiles();
     st.checkSupported();
     st.checkCapabilities();
 
-    SelftestProvider sp = new SelftestProvider();
     Set<String> disabledModules = sp.modulesDisabledByDefault();
 
     List<String> messagesAtEnd = new ArrayList<>();
@@ -262,6 +265,13 @@ public class Selftest {
     return rc;
   }
 
+  private void dumpAdditionalProperties() {
+    PrintWriter pw = new PrintWriter(new OutputStreamWriter(out, Charset.defaultCharset()));
+    sp.printAdditionalProperties(pw);
+    pw.flush();
+    out.println();
+  }
+
   public void printExplanation() throws IOException {
     out.println(
         "This program determines whether junixsocket is supported on the current platform.");
@@ -289,9 +299,79 @@ public class Selftest {
   }
 
   public void dumpSystemProperties() {
+    Map<Object, Object> map = new TreeMap<>(System.getProperties());
+    // NOTE: Some environments, such as Android, do not enumerate all available properties upon
+    // calling System.getProperties(). Let's make sure we catch the most important properties
+    // by looking them up manually, which seems to work.
+
+    // https://github.com/AndroidSDKSources/android-sdk-sources-for-api-level-33/blob/master/
+    // java/lang/System.java
+    // java/lang/AndroidHardcodedSystemProperties.java
+    for (String expectedKey : new String[] {
+        "android.icu.library.version", //
+        "android.icu.unicode.version", //
+        "android.icu.cldr.version", //
+        "ICUDebug", //
+        "android.icu.text.DecimalFormat.SkipExtendedSeparatorParsing", //
+        "android.icu.text.MessagePattern.ApostropheMode", //
+        "sun.io.useCanonCaches", //
+        "sun.io.useCanonPrefixCache", //
+        "sun.stdout.encoding", //
+        "sun.stderr.encoding", //
+        "http.keepAlive", //
+        "http.keepAliveDuration", //
+        "http.maxConnections", //
+        "javax.net.debug", //
+        "com.sun.security.preserveOldDCEncoding", //
+        "java.util.logging.manager", //
+        //
+        "file.encoding", //
+        "file.separator", //
+        "line.separator", //
+        "path.separator", //
+        "java.boot.class.path", //
+        "java.class.path", //
+        "java.class.version", //
+        "java.compiler", //
+        "java.ext.dirs", //
+        "java.home", //
+        "java.io.tmpdir", //
+        "java.library.path", //
+        "java.vendor", //
+        "java.vendor.url", //
+        "java.version", //
+        "java.net.preferIPv6Addresses", //
+        "java.specification.version", //
+        "java.specification.vendor", //
+        "java.specification.name", //
+        "java.vm.version", //
+        "java.vm.vendor", //
+        "java.vm.vendor.url", //
+        "java.vm.name", //
+        "java.vm.specification.version", //
+        "java.vm.specification.vendor", //
+        "java.vm.specification.name", //
+        "os.arch", //
+        "os.name", //
+        "os.version", //
+        "user.dir", //
+        "user.home", //
+        "user.language", //
+        "user.region", //
+        "user.variant", //
+        "user.name" //
+    }) {
+      if (!map.containsKey(expectedKey)) {
+        String value = System.getProperty(expectedKey);
+        if (value != null) {
+          map.put(expectedKey, value);
+        }
+      }
+    }
+
     out.println("System properties:");
     out.println();
-    for (Map.Entry<Object, Object> en : new TreeMap<>(System.getProperties()).entrySet()) {
+    for (Map.Entry<Object, Object> en : map.entrySet()) {
       String key = String.valueOf(en.getKey());
       String value = String.valueOf(en.getValue());
       StringBuilder sb = new StringBuilder();

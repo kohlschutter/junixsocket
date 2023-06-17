@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix.selftest;
 
+import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -54,5 +55,12 @@ public class SelftestProvider {
     set.addAll(vsockSelftests.modulesDisabledByDefault());
     set.addAll(rmiSelftests.modulesDisabledByDefault());
     return set;
+  }
+
+  public void printAdditionalProperties(PrintWriter out) {
+    commonSelftests.printAdditionalProperties(out);
+    tipcSelftests.printAdditionalProperties(out);
+    vsockSelftests.printAdditionalProperties(out);
+    rmiSelftests.printAdditionalProperties(out);
   }
 }

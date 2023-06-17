@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix.vsock;
 
+import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -104,5 +105,8 @@ public class SelftestProvider {
     });
 
     return tests;
+  }
+
+  public void printAdditionalProperties(PrintWriter out) {
   }
 }
