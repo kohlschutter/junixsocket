@@ -34,6 +34,12 @@ android {
     packagingOptions {
         // junit jars contain duplicate META-INF/LICENSE.md files
         resources.excludes += "META-INF/LICENSE*"
+
+        // exclude GraalVM config (not necessary on Android)
+        resources.excludes += "META-INF/native-image/**/*"
+
+        // exclude other native image files erroneously included
+        resources.excludes += "lib/*/jni/*"
     }
 }
 
@@ -52,7 +58,11 @@ dependencies {
     implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.7.0-SNAPSHOT'
 
     // selftest-specifics
-    implementation 'com.kohlschutter.junixsocket:junixsocket-selftest:2.7.0-SNAPSHOT'
+    implementation('com.kohlschutter.junixsocket:junixsocket-selftest:2.7.0-SNAPSHOT') {
+        exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-core"
+        exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-native-common"
+        exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-native-custom"
+    }
     implementation 'com.kohlschutter:kohlschutter-util:1.5.4-SNAPSHOT'
     implementation 'com.kohlschutter:kohlschutter-test-util:1.5.4-SNAPSHOT'
     implementation 'org.junit.platform:junit-platform-console:1.9.3'
