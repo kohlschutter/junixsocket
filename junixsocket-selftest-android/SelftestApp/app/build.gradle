@@ -1,0 +1,65 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.kohlschutter.junixsocket.selftest.android'
+    compileSdk 33
+    ndkVersion '25.2.9519653'
+
+    defaultConfig {
+        applicationId "com.kohlschutter.junixsocket.selftest.android"
+        minSdk 26
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding true
+    }
+
+    packagingOptions {
+        // junit jars contain duplicate META-INF/LICENSE.md files
+        resources.excludes += "META-INF/LICENSE*"
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    implementation 'com.kohlschutter.junixsocket:junixsocket-native-android:2.7.0-SNAPSHOT@aar'
+
+    implementation 'com.kohlschutter.junixsocket:junixsocket-common:2.7.0-SNAPSHOT'
+
+    implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.7.0-SNAPSHOT'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.7.0-SNAPSHOT'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.7.0-SNAPSHOT'
+
+    // selftest-specifics
+    implementation 'com.kohlschutter.junixsocket:junixsocket-selftest:2.7.0-SNAPSHOT'
+    implementation 'com.kohlschutter:kohlschutter-util:1.5.4-SNAPSHOT'
+    implementation 'com.kohlschutter:kohlschutter-test-util:1.5.4-SNAPSHOT'
+    implementation 'org.junit.platform:junit-platform-console:1.9.3'
+    implementation 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+    implementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+
+    // testImplementation 'junit:junit:4.13.2'
+    //androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    //androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+}
