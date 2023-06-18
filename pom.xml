@@ -136,7 +136,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
                 <module>junixsocket-native-cross</module>
                 <module>junixsocket-native-custom</module>
                 <module>junixsocket-native-common</module>
-                <module>junixsocket-native-android</module>
             </modules>
             <properties>
                 <junixsocket.custom.arch></junixsocket.custom.arch>
