@@ -36,6 +36,33 @@
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-native</artifactId>
+            <version>${project.version}</version>
+            <classifier>x86_64-Android-clang-llvm-jni</classifier>
+            <type>nar</type>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-native</artifactId>
+            <version>${project.version}</version>
+            <classifier>i686-Android-clang-llvm-jni</classifier>
+            <type>nar</type>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-native</artifactId>
+            <version>${project.version}</version>
+            <classifier>arm-Android-clang-llvm-jni</classifier>
+            <type>nar</type>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <profiles>
