@@ -1,3 +1,5 @@
+![junixsocket logo](https://user-images.githubusercontent.com/822690/246675372-d1775152-5f5e-4576-8f3d-8445779ea584.png)
+
 # junixsocket
 
 junixsocket is a Java/JNI library that allows the use of
