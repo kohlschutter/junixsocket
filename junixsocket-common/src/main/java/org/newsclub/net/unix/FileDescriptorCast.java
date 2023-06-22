@@ -143,7 +143,8 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
         @Override
         public Integer provideAs(FileDescriptorCast fdc, Class<? super Integer> desiredType)
             throws IOException {
-          int val = NativeUnixSocket.getFD(fdc.getFileDescriptor());
+          FileDescriptor fd = fdc.getFileDescriptor();
+          int val = fd.valid() ? NativeUnixSocket.getFD(fd) : -1;
           if (val == -1) {
             throw new IOException("Not a valid file descriptor");
           }
@@ -189,9 +190,11 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
       return -1;
     }
     try {
+      if (!fd.valid()) {
+        return -1;
+      }
       return NativeUnixSocket.getFD(fd);
     } catch (IOException e) {
-      e.printStackTrace();
       return -1;
     }
   }

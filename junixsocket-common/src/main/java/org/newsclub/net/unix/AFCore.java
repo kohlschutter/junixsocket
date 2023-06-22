@@ -79,8 +79,9 @@ class AFCore extends CleanableState {
   }
 
   void doClose() throws IOException {
-    NativeUnixSocket.close(fd);
-    closed.set(true);
+    if (closed.compareAndSet(false, true)) {
+       NativeUnixSocket.close(fd);
+    }
   }
 
   FileDescriptor validFdOrException() throws SocketException {
