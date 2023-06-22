@@ -46,7 +46,7 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
   public AFUNIXDatabaseSocketFactoryCJ() {
   }
 
-  @SuppressWarnings({"unchecked", "exports"})
+  @SuppressWarnings({"unchecked"})
   @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
   public <T extends Closeable> T connect(String hostname, int portNumber, PropertySet props,
@@ -68,7 +68,7 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
     return (T) rawSocket;
   }
 
-  @SuppressWarnings({"unchecked", "exports"})
+  @SuppressWarnings({"unchecked"})
   @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
   public <T extends Closeable> T performTlsHandshake(SocketConnection socketConnection,
