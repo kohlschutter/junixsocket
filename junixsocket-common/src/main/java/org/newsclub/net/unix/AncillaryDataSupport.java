@@ -189,9 +189,6 @@ final class AncillaryDataSupport implements Closeable {
       fds = new int[numFdescs];
       for (int i = 0; i < numFdescs; i++) {
         FileDescriptor fdesc = fdescs[i];
-        if (!fdesc.valid()) {
-          throw new IOException("Invalid file descriptor: " + fdesc);
-        }
         fds[i] = NativeUnixSocket.getFD(fdesc);
       }
     }
