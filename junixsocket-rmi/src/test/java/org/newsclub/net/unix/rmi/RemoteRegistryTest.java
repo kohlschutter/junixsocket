@@ -43,11 +43,11 @@ import com.kohlschutter.testutil.ForkedVMRequirement;
 import com.kohlschutter.testutil.OutputBridge;
 import com.kohlschutter.testutil.OutputBridge.ProcessStream;
 
-@ForkedVMRequirement(forkSupported = true)
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public class RemoteRegistryTest {
   @Test
+  @ForkedVMRequirement(forkSupported = true)
   public void testRemoteRegistry() throws Exception {
     File socketDir = tempSocketDir();
 
@@ -71,6 +71,7 @@ public class RemoteRegistryTest {
   }
 
   @Test
+  @ForkedVMRequirement(forkSupported = true)
   public void testRemoteRegistryStandardPath() throws Exception {
     File socketDir = AFUNIXNaming.getDefaultSocketDirectory();
     assumeTrue(countRMIFiles(socketDir) == 0,
@@ -96,6 +97,7 @@ public class RemoteRegistryTest {
   }
 
   @Test
+  @ForkedVMRequirement(forkSupported = true)
   public void testRemoteShutdownNotAllowed() throws Exception {
     File socketDir = tempSocketDir();
 

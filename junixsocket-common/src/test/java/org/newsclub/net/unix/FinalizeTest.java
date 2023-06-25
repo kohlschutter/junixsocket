@@ -51,7 +51,6 @@ import com.kohlschutter.util.ExceptionUtil;
  * @author Christian Kohlschütter
  */
 @CommandAvailabilityRequirement(commands = {"lsof"})
-@ForkedVMRequirement(forkSupported = true)
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBase<A> {
@@ -61,6 +60,7 @@ public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBa
     super(asp);
   }
 
+  @ForkedVMRequirement(forkSupported = true)
   @Test
   public void testLeak() throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
