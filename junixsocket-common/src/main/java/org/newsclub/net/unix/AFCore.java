@@ -80,7 +80,7 @@ class AFCore extends CleanableState {
 
   void doClose() throws IOException {
     if (closed.compareAndSet(false, true)) {
-       NativeUnixSocket.close(fd);
+      NativeUnixSocket.close(fd);
     }
   }
 

@@ -149,7 +149,7 @@ final class NativeUnixSocket {
 
   /**
    * Can be used to check (without side-effects) if the library has been loaded.
-   * 
+   *
    * Terminates normally if so; throws {@link UnsatisfiedLinkError} if not.
    */
   static native void noop();
