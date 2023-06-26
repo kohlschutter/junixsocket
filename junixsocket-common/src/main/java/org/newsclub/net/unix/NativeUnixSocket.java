@@ -21,6 +21,7 @@ import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -131,6 +132,8 @@ final class NativeUnixSocket {
     // in some environments, JNI FindClass won't find these classes unless we resolve them first
     tryResolveClass(AbstractSelectableChannel.class.getName());
     tryResolveClass("java.lang.ProcessBuilder$RedirectPipeImpl");
+    tryResolveClass(InetSocketAddress.class.getName());
+    tryResolveClass(OperationNotSupportedSocketException.class.getName());
   }
 
   private static void tryResolveClass(String className) {
