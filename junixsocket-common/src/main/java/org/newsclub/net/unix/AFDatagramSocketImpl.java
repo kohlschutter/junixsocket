@@ -207,6 +207,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
         sendToBuf = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();
         sendToBufLen = NativeUnixSocket.bytesToSockAddr(getAddressFamily().getDomain(), sendToBuf,
             addrBytes);
+        sendToBuf.position(0);
         if (sendToBufLen == -1) {
           throw new SocketException("Unsupported domain");
         }
@@ -219,6 +220,8 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
     ByteBuffer datagramPacketBuffer = core.getThreadLocalDirectByteBuffer(len);
     datagramPacketBuffer.clear();
     datagramPacketBuffer.put(p.getData(), p.getOffset(), p.getLength());
+    datagramPacketBuffer.flip();
+
     NativeUnixSocket.send(fdesc, datagramPacketBuffer, 0, len, sendToBuf, sendToBufLen,
         /* NativeUnixSocket.OPT_NON_BLOCKING | */
         NativeUnixSocket.OPT_DGRAM_MODE, ancillaryDataSupport);
