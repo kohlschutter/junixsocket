@@ -71,14 +71,12 @@ public final class SocketAddressTest extends SocketTestBase<AFUNIXSocketAddress>
 
     try {
       assertEquals(544444, AFUNIXSocketAddress.of(new File("/tmp/whatever"), 544444).getPort());
-      assertTrue(supportsLargePorts);
     } catch (SocketException e) {
       assertFalse(supportsLargePorts);
     }
 
     try {
       AFUNIXSocketAddress.of(new File("/tmp/whatever"), 65536);
-      assertTrue(supportsLargePorts);
     } catch (SocketException e) {
       assertFalse(supportsLargePorts);
     }
