@@ -50,7 +50,7 @@
             <version>8.0.33</version>
         </dependency>
         <dependency>
-            <!-- NOTE: Due to this dependency, maven-project-info-reports-plugin
+            <!-- Due to this dependency, maven-project-info-reports-plugin
         reports weird warnings about "Unknown packaging: bundle".
         For the time being, this can be ignored. -->
             <!-- https://issues.apache.org/jira/browse/MPIR-374 -->

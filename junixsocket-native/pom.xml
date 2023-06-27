@@ -28,7 +28,7 @@
         <junixsocket.native.default.cpp.options>${junixsocket.native.default.options}<![CDATA[ -std=gnu++17]]></junixsocket.native.default.cpp.options>
         <junixsocket.native.default.c.includes><![CDATA[**/*.c **/*.m]]></junixsocket.native.default.c.includes>
         <junixsocket.native.default.cpp.includes><![CDATA[**/*.cc **/*.cpp **/*.cxx **/*.mm]]></junixsocket.native.default.cpp.includes>
-        <!-- NOTE: if some of these options above turn out to be non-portable, move them to the clang-specific property below -->
+        <!-- if some of these options above turn out to be non-portable, move them to the clang-specific property below -->
         <junixsocket.native.clang.c.options>${junixsocket.native.default.c.options}</junixsocket.native.clang.c.options>
         <junixsocket.native.clang.cpp.options>${junixsocket.native.default.cpp.options}</junixsocket.native.clang.cpp.options>
         <junixsocket.native.aol.llvm>${junixsocket.native.aol}</junixsocket.native.aol.llvm>
