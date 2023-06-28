@@ -45,7 +45,7 @@ public final class RemoteCloseableImpl<T> implements RemoteCloseable<T> {
   }
 
   @Override
-  public final void close() throws IOException {
+  public void close() throws IOException {
     AFNaming.unexportObject(this);
     doClose(remote);
   }
@@ -56,7 +56,7 @@ public final class RemoteCloseableImpl<T> implements RemoteCloseable<T> {
    * @param obj The object to close.
    * @throws IOException on error.
    */
-  protected void doClose(T obj) throws IOException {
+  private void doClose(T obj) throws IOException {
     if (obj instanceof Closeable) {
       ((Closeable) obj).close();
     }
