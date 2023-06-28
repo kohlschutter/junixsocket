@@ -254,7 +254,7 @@ This builds the Maven site
     cd junixsocket
     mvn clean && \
       mvn install site -Pstrict,release && \
-      mvn javadoc:aggregate -P '!with-native,!with-non-modularized,strict,release' && \
+      mvn javadoc:aggregate -P '!with-native,!with-non-modularized,strict,release' -pl '!junixsocket-native' && \
       mvn jxr:aggregate jxr:test-aggregate -P strict,release && \
       mvn site:stage -Pstrict,release
 
