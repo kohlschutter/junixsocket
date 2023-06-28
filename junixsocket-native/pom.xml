@@ -83,6 +83,11 @@
         </profile>
         <profile>
             <id>llvm</id>
+            <activation>
+                <property>
+                    <name>!crossclang.disable</name>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
