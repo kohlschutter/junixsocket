@@ -51,6 +51,8 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   private final Closeables closeables = new Closeables();
   private final AtomicBoolean created = new AtomicBoolean(false);
   private final AtomicBoolean deleteOnClose = new AtomicBoolean(true);
+
+  @SuppressWarnings("this-escape")
   private final AFServerSocketChannel<?> channel = newChannel();
   private @Nullable SocketAddressFilter bindFilter;
 
@@ -86,6 +88,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
    * @param fdObj The file descriptor, or {@code null}.
    * @throws IOException if the operation fails.
    */
+  @SuppressWarnings("this-escape")
   protected AFServerSocket(FileDescriptor fdObj) throws IOException {
     super();
 

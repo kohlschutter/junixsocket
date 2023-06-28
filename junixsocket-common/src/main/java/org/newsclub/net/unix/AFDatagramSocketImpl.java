@@ -62,6 +62,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
    * @param socketType The socket type.
    * @throws IOException on error.
    */
+  @SuppressWarnings("this-escape")
   protected AFDatagramSocketImpl(AFAddressFamily<@NonNull A> addressFamily, FileDescriptor fd,
       AFSocketType socketType) throws IOException {
     super();

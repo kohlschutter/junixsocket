@@ -106,7 +106,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @param af The address family.
    * @throws SocketException on error.
    */
-  @SuppressWarnings("cast")
+  @SuppressWarnings({"cast", "this-escape"})
   protected AFSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress,
       AFAddressFamily<?> af) throws SocketException {
     /*
@@ -118,6 +118,10 @@ public abstract class AFSocketAddress extends InetSocketAddress {
      */
     super(AFInetAddress.createUnresolvedHostname(socketAddress, af), port >= 0 && port <= 0xffff
         ? port : 0);
+    if (socketAddress.length == 0) {
+      throw new SocketException("Illegal address length: " + socketAddress.length);
+    }
+
     this.nativeAddress = nativeAddress == null ? null : (ByteBuffer) (Object) nativeAddress
         .duplicate().rewind();
     if (port < -1) {
@@ -129,9 +133,6 @@ public abstract class AFSocketAddress extends InetSocketAddress {
                 NativeUnixSocket.unsupportedException());
       }
       NativeUnixSocket.setPort1(this, port);
-    }
-    if (socketAddress.length == 0) {
-      throw new SocketException("Illegal address length: " + socketAddress.length);
     }
 
     this.bytes = socketAddress.clone();

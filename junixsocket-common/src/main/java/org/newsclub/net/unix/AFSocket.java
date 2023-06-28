@@ -54,6 +54,8 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   private final AFSocketAddressFromHostname<A> afh;
   private final Closeables closeables = new Closeables();
   private final AtomicBoolean created = new AtomicBoolean(false);
+
+  @SuppressWarnings("this-escape")
   private final AFSocketChannel<A> channel = newChannel();
 
   private @Nullable SocketAddressFilter connectFilter;

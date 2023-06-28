@@ -48,6 +48,8 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
   private final AncillaryDataSupport ancillaryDataSupport;
   private final AtomicBoolean created = new AtomicBoolean(false);
   private final AtomicBoolean deleteOnClose = new AtomicBoolean(true);
+
+  @SuppressWarnings("this-escape")
   private final AFDatagramChannel<A> channel = newChannel();
 
   /**

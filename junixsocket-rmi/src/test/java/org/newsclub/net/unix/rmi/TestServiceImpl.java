@@ -40,7 +40,7 @@ import com.kohlschutter.util.IOUtil;
  *
  * @author Christian Kohlschütter
  */
-public class TestServiceImpl implements TestService, Closeable {
+public final class TestServiceImpl implements TestService, Closeable {
   private final File tmpFile;
   private final AFUNIXRMISocketFactory socketFactory;
   private final RemoteCloseableThingImpl.NotCloseableImpl testNotCloseableImpl =
