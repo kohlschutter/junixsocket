@@ -33,6 +33,7 @@ import org.newsclub.net.unix.AFSocketAddress;
  * @author Christian Kohlschütter
  * @deprecated Use {@link SocketServer} or {@link AFSocketServer}
  */
+@Deprecated
 public abstract class AFUNIXSocketServer extends SocketServer<SocketAddress, Socket, ServerSocket> {
   /**
    * Creates a server using the given, bound {@link ServerSocket}.
@@ -61,6 +62,7 @@ public abstract class AFUNIXSocketServer extends SocketServer<SocketAddress, Soc
    * @throws InterruptedException If the wait was interrupted.
    * @deprecated @see #startAndWaitToBecomeReady(long, TimeUnit)
    */
+  @Deprecated
   public boolean startAndWait(long duration, TimeUnit unit) throws InterruptedException {
     return startAndWaitToBecomeReady(duration, unit);
   }
