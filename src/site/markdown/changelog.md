@@ -9,6 +9,17 @@ The existing API should always be backwards compatible between minor releases (e
 When upgrading from versions older than 2.4.0, please note that `junixsocket-core` is now a POM-only
 artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.html) for details.
 
+### _(2023-XX-XX)_ **junixsocket 2.7.0**
+
+- New supported platform: Android (aarch64, arm-linux-androideabi, x86_64, i686)
+- Add selftest GUI app for Android ("junixsocket-selftest-android")
+- Add ability to get native file descriptor number via FileDescriptorCast
+- Add AFSocketCapability for "large port numbers" (larger than 65535)
+- Improve JNI library lookup
+- Improve reliability on exotic environments
+- Update dependencies, improve tests, selftest, build scripts
+- Last but not least: junixsocket finally has a logo!
+
 ### _(2022-02-08)_ **junixsocket 2.6.2**
 
 - Add socket connectors for AF_VSOCK, Firecracker
