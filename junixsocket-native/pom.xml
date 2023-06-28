@@ -164,6 +164,71 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>fix-jnilib</id>
+            <activation>
+                <property>
+                    <name>!m2e.version</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>fix-jnilib</id>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <!-- nar-maven-plugin may hardcode jnilib extension, but we need dylib -->
+                                    <!-- also add GraalVM native-image metadata for the native library -->
+                                    <!-- and make build more reproducible by removing property timestamp -->
+                                    <!-- as well as setting file timestamps -->
+                                    <target>
+                                        <delete>
+                                            <fileset dir="${project.build.directory}/nar" includes="**/history.xml" />
+                                        </delete>
+                                        <replaceregexp match="^\#[^N][^A][^R].*" replace="#" byline="true" encoding="UTF-8">
+                                            <fileset dir="${project.build.directory}" includes="**/nar.properties" />
+                                        </replaceregexp>
+                                        <move todir="${project.build.directory}/nar">
+                                            <fileset dir="${project.build.directory}/nar" />
+                                            <globmapper from="*.so" to="*.${junixsocket.native.jnilib.extension}" />
+                                        </move>
+                                        <move todir="${project.build.directory}/nar">
+                                            <fileset dir="${project.build.directory}/nar" />
+                                            <globmapper from="*.jnilib" to="*.${junixsocket.native.jnilib.extension}" />
+                                        </move>
+                                        <move todir="${project.build.directory}/nar">
+                                            <fileset dir="${project.build.directory}/nar" />
+                                            <globmapper from="**/${junixsocket.native.jnilib.strip.prefix}*" to="*" />
+                                        </move>
+                                        <mkdir dir="${project.build.directory}/nar/junixsocket-native-${project.version}-${junixsocket.native.aol.llvm}-jni/META-INF/native-image/com.kohlschutter.junixsocket/junixsocket-native-${junixsocket.native.aol.llvm}-jni" />
+                                        <echo file="${project.build.directory}/nar/junixsocket-native-${project.version}-${junixsocket.native.aol.llvm}-jni/META-INF/native-image/com.kohlschutter.junixsocket/junixsocket-native-${junixsocket.native.aol.llvm}-jni/resource-config.json" append="false">{
+"resources":{
+"includes":[
+{
+"pattern":"^lib/${junixsocket.native.aol.llvm}/jni/.*"
+}
+]},
+"bundles":[]
+}
+</echo>
+                                        <touch datetime="${project.build.outputTimestamp}" pattern="yyyy-MM-dd'T'HH:mm:ssXXX">
+                                            <fileset dir="${project.build.directory}/nar" includes="**/*" />
+                                        </touch>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
     <build>
         <plugins>
@@ -212,61 +277,6 @@
                         <!-- disabled to allow building with Java 10+ -->
                         <id>default-nar-javah</id>
                         <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>fix-jnilib</id>
-                        <phase>prepare-package</phase>
-                        <configuration>
-                            <!-- nar-maven-plugin may hardcode jnilib extension, but we
-                need dylib -->
-                            <!-- also add GraalVM native-image metadata for the native library -->
-                            <!-- and make build more reproducible by removing property timestamp -->
-                            <!-- as well as setting file timestamps -->
-                            <target>
-                                <delete>
-                                    <fileset dir="${project.build.directory}/nar" includes="**/history.xml" />
-                                </delete>
-                                <replaceregexp match="^\#[^N][^A][^R].*" replace="#" byline="true" encoding="UTF-8">
-                                    <fileset dir="${project.build.directory}" includes="**/nar.properties" />
-                                </replaceregexp>
-                                <move todir="${project.build.directory}/nar">
-                                    <fileset dir="${project.build.directory}/nar" />
-                                    <globmapper from="*.so" to="*.${junixsocket.native.jnilib.extension}" />
-                                </move>
-                                <move todir="${project.build.directory}/nar">
-                                    <fileset dir="${project.build.directory}/nar" />
-                                    <globmapper from="*.jnilib" to="*.${junixsocket.native.jnilib.extension}" />
-                                </move>
-                                <move todir="${project.build.directory}/nar">
-                                    <fileset dir="${project.build.directory}/nar" />
-                                    <globmapper from="**/${junixsocket.native.jnilib.strip.prefix}*" to="*" />
-                                </move>
-
-                                <mkdir dir="${project.build.directory}/nar/junixsocket-native-${project.version}-${junixsocket.native.aol.llvm}-jni/META-INF/native-image/com.kohlschutter.junixsocket/junixsocket-native-${junixsocket.native.aol.llvm}-jni" />
-                                <echo file="${project.build.directory}/nar/junixsocket-native-${project.version}-${junixsocket.native.aol.llvm}-jni/META-INF/native-image/com.kohlschutter.junixsocket/junixsocket-native-${junixsocket.native.aol.llvm}-jni/resource-config.json" append="false">{
-  "resources":{
-  "includes":[
-    {
-      "pattern":"^lib/${junixsocket.native.aol.llvm}/jni/.*"
-    }
-  ]},
-  "bundles":[]
-}
-</echo>
-                                <touch datetime="${project.build.outputTimestamp}" pattern="yyyy-MM-dd'T'HH:mm:ssXXX">
-                                    <fileset dir="${project.build.directory}/nar" includes="**/*" />
-                                </touch>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
