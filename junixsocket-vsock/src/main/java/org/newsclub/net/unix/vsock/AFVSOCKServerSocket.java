@@ -106,7 +106,8 @@ public class AFVSOCKServerSocket extends AFServerSocket<AFVSOCKSocketAddress> {
   }
 
   @Override
-  protected AFSocketImpl<AFVSOCKSocketAddress> newImpl(FileDescriptor fdObj) throws SocketException {
+  protected AFSocketImpl<AFVSOCKSocketAddress> newImpl(FileDescriptor fdObj)
+      throws SocketException {
     return new AFVSOCKSocketImpl(fdObj);
   }
 
