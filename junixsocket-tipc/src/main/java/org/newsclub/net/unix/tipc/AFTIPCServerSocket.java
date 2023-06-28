@@ -26,6 +26,7 @@ import org.newsclub.net.unix.AFServerSocket;
 import org.newsclub.net.unix.AFServerSocketChannel;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFSocketAddress;
+import org.newsclub.net.unix.AFSocketImpl;
 import org.newsclub.net.unix.AFTIPCSocketAddress;
 
 /**
@@ -104,7 +105,7 @@ public class AFTIPCServerSocket extends AFServerSocket<AFTIPCSocketAddress> {
   }
 
   @Override
-  protected AFTIPCSocketImpl newImpl(FileDescriptor fdObj) throws SocketException {
+  protected AFSocketImpl<AFTIPCSocketAddress> newImpl(FileDescriptor fdObj) throws SocketException {
     return new AFTIPCSocketImpl(fdObj);
   }
 
