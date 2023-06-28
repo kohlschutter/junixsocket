@@ -60,7 +60,8 @@ public class EchoServer {
         long numBytes = -1;
         long time = System.currentTimeMillis();
         try {
-          numBytes = sock.getInputStream().transferTo(sock.getOutputStream()); // NOPMD
+          // numBytes = sock.getInputStream().transferTo(sock.getOutputStream()); // NOPMD
+          numBytes = IOUtil.transfer(sock.getInputStream(), sock.getOutputStream());
         } finally {
           time = System.currentTimeMillis() - time;
           System.out.println("Disconnected: " + sock + "; echoed bytes: " + (numBytes == -1

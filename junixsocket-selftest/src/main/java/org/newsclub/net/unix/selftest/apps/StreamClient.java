@@ -68,7 +68,9 @@ public class StreamClient {
           return sock.getOutputStream().transferFrom(in);
         }
       });
-      /* long received = */ sock.getInputStream().transferTo(System.out);
+      // /* long received = */ sock.getInputStream().transferTo(System.out); // Java 9+
+      /* long received = */ IOUtil.transfer(sock.getInputStream(), System.out);
+
       /* long sent = */ sentFuture.get();
       exc.shutdown();
     }
