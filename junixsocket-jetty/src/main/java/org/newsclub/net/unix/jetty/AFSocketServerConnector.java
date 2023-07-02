@@ -85,6 +85,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * This implementation should work with jetty version 9.4.12 or newer.
  */
 @ManagedObject
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 public class AFSocketServerConnector extends AbstractConnector {
   private static final Logger LOG = LoggerFactory.getLogger(AbstractConnector.class);
 
@@ -143,6 +144,7 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @param factories The Connection Factories to use.
    */
   @SuppressFBWarnings("EI_EXPOSE_REP2")
+  @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
   public AFSocketServerConnector(Server server, Executor executor, Scheduler scheduler,
       ByteBufferPool pool, int acceptors, int selectors, ConnectionFactory... factories) {
     super(server, executor, scheduler, pool, acceptors, factories.length > 0 ? factories

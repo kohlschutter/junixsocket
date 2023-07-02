@@ -37,6 +37,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 public abstract class AFSocket<A extends AFSocketAddress> extends Socket implements AFSomeSocket,
     AFSocketExtensions {
   static final String PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX =
@@ -374,8 +375,8 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   }
 
   private static boolean isCapDisabled(AFSocketCapability cap) {
-    return Boolean.valueOf(System.getProperty(PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX + cap.name(),
-        "false"));
+    return Boolean.parseBoolean(System.getProperty(PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX + cap
+        .name(), "false"));
   }
 
   private static int initCapabilities() {

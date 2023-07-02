@@ -222,7 +222,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       SupplierWithException<SocketChannel, IOException> sscSupp, boolean direct) throws Exception {
     final AtomicBoolean keepRunning = new AtomicBoolean(true);
 
-    try (ServerThread serverThread = new ServerThread() {
+    try (ServerThread unused = new ServerThread() {
 
       @Override
       protected ServerSocket startServer() throws IOException {
@@ -358,7 +358,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
                 if (keepRunning.get()) {
                   e.printStackTrace();
                 }
-              } catch (IOException e) {
+              } catch (IOException e) { // NOPMD.ExceptionAsFlowControl
                 e.printStackTrace();
               }
             }
@@ -548,7 +548,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
             } else {
               bytesRead.complete(readTotal.get());
             }
-          } catch (Exception e) {
+          } catch (Exception e) { // NOPMD.ExceptionAsFlowControl
             keepRunning.set(false);
             bytesRead.completeExceptionally(e);
           }

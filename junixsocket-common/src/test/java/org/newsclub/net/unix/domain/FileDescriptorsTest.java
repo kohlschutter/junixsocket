@@ -414,7 +414,7 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
           assertEquals(1, fds.length);
 
           try (FileOutputStream fos2 = new FileOutputStream(fds[0])) {
-            fos.write("Hello".getBytes(StandardCharsets.UTF_8));
+            fos2.write("Hello".getBytes(StandardCharsets.UTF_8));
             // closing the received file descriptor will not close the original one ...
           }
 

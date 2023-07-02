@@ -324,7 +324,7 @@ public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBa
         } catch (ExecutionException e) {
           Throwable t = e.getCause();
           if (t instanceof RuntimeException) {
-            throw (RuntimeException) t;
+            throw (RuntimeException) t; // NOPMD.PreserveStackTrace
           }
         }
       }

@@ -43,7 +43,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
  * @author Christian Kohlschütter
  */
-@SuppressWarnings("PMD.CyclomaticComplexity")
+@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.CouplingBetweenObjects"})
 public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSocket implements
     FileDescriptorAccess {
   private final AFSocketImpl<A> implementation;
@@ -88,7 +88,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
    * @param fdObj The file descriptor, or {@code null}.
    * @throws IOException if the operation fails.
    */
-  @SuppressWarnings("this-escape")
+  @SuppressWarnings({"this-escape", "PMD.ConstructorCallsOverridableMethod"})
   protected AFServerSocket(FileDescriptor fdObj) throws IOException {
     super();
 
@@ -580,8 +580,8 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     }
     int result = 0;
     Object o = getAFImpl().getOption(SocketOptions.SO_RCVBUF);
-    if (o instanceof Integer) {
-      result = ((Integer) o).intValue();
+    if (o instanceof Number) {
+      result = ((Number) o).intValue();
     }
     return result;
   }
@@ -604,8 +604,8 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     }
     Object o = getAFImpl().getOption(SocketOptions.SO_TIMEOUT);
     /* extra type safety */
-    if (o instanceof Integer) {
-      return ((Integer) o).intValue();
+    if (o instanceof Number) {
+      return ((Number) o).intValue();
     } else {
       return 0;
     }
@@ -616,7 +616,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     if (isClosed()) {
       throw new SocketException("Socket is closed");
     }
-    getAFImpl().setOption(SocketOptions.SO_REUSEADDR, Boolean.valueOf(on));
+    getAFImpl().setOption(SocketOptions.SO_REUSEADDR, on);
   }
 
   @Override
@@ -624,7 +624,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     if (isClosed()) {
       throw new SocketException("Socket is closed");
     }
-    return ((Boolean) (getAFImpl().getOption(SocketOptions.SO_REUSEADDR))).booleanValue();
+    return ((Boolean) (getAFImpl().getOption(SocketOptions.SO_REUSEADDR)));
   }
 
   @Override

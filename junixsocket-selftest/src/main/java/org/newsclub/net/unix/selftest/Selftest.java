@@ -75,7 +75,8 @@ import com.kohlschutter.util.SystemPropertyUtil;
  *
  * @author Christian Kohlschütter
  */
-@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.CognitiveComplexity"})
+@SuppressWarnings({
+    "PMD.CyclomaticComplexity", "PMD.CognitiveComplexity", "PMD.CouplingBetweenObjects"})
 public class Selftest {
   private final ConsolePrintStream out;
   private final Map<String, ModuleResult> results = new LinkedHashMap<>();
@@ -96,7 +97,7 @@ public class Selftest {
   private enum SkipMode {
     UNDECLARED(false), KEEP(false), SKIP(true), SKIP_FORCE(true), SKIP_AUTO(true);
 
-    boolean skip;
+    final boolean skip;
 
     SkipMode(boolean skip) {
       this.skip = skip;
@@ -114,7 +115,7 @@ public class Selftest {
       return this == SKIP_FORCE || this == SKIP_AUTO;
     }
 
-    public static final SkipMode parse(String skipMode) {
+    public static SkipMode parse(String skipMode) {
       if (skipMode == null || skipMode.isEmpty()) {
         return SkipMode.UNDECLARED;
       } else if ("force".equalsIgnoreCase(skipMode)) {
@@ -122,7 +123,7 @@ public class Selftest {
       } else if ("force_auto".equalsIgnoreCase(skipMode)) {
         return SkipMode.SKIP_AUTO;
       } else {
-        return Boolean.valueOf(skipMode) ? SkipMode.SKIP : SkipMode.KEEP;
+        return Boolean.parseBoolean(skipMode) ? SkipMode.SKIP : SkipMode.KEEP;
       }
     }
 

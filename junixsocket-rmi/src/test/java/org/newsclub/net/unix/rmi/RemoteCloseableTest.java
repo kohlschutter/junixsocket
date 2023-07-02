@@ -54,7 +54,7 @@ public class RemoteCloseableTest extends TestBase {
 
     try (RemoteCloseable<? extends IsCloseable> remoteCloseable = svc.remoteCloseable(
         IsCloseable.class)) {
-      try (IsCloseable testCloseable = remoteCloseable.get()) {
+      try (IsCloseable unused = remoteCloseable.get()) {
         assertEquals(0, svc.remoteCloseableThingNumberOfCloseCalls(IsCloseable.class));
         // forcibly calling close here unexports the RemoteCloseable
         remoteCloseable.close();
@@ -73,7 +73,7 @@ public class RemoteCloseableTest extends TestBase {
 
     try (RemoteCloseable<? extends IsCloseable> remoteCloseable = svc.remoteCloseable(
         IsCloseable.class)) {
-      try (IsCloseable testCloseable = remoteCloseable.get()) {
+      try (IsCloseable unused = remoteCloseable.get()) {
         // no exception thrown
       }
     }
@@ -109,7 +109,7 @@ public class RemoteCloseableTest extends TestBase {
     }
     assertEquals(0, svc.remoteCloseableThingNumberOfCloseCalls(NotCloseable.class));
 
-    try (RemoteCloseable<? extends NotCloseable> remoteCloseable = svc.remoteCloseable(
+    try (RemoteCloseable<? extends NotCloseable> unused = svc.remoteCloseable(
         NotCloseable.class)) {
       // no exception thrown
     }

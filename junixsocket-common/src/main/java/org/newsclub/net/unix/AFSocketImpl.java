@@ -44,7 +44,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * @author Christian Kohlschütter
  * @param <A> The supported address type.
  */
-@SuppressWarnings({"PMD.CyclomaticComplexity"})
+@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.CouplingBetweenObjects"})
 public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImplShim {
   private static final int SHUT_RD = 0;
   private static final int SHUT_WR = 1;
@@ -260,7 +260,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
             .get())) {
           return false;
         }
-      } catch (SocketException e) {
+      } catch (SocketException e) { // NOPMD.ExceptionAsFlowControl
         caught = e;
       } finally { // NOPMD.DoNotThrowExceptionInFinally
         if (!isBound() || isClosed()) {
@@ -396,7 +396,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         if (ignoreSpuriousTimeout) {
           Object o = getOption(SocketOptions.SO_TIMEOUT);
           if (o instanceof Integer) {
-            if (((Integer) o).intValue() == 0) {
+            if (((Integer) o) == 0) {
               ignoreSpuriousTimeout = false;
               continue;
             }
@@ -423,7 +423,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     }
     if (fd.valid()) {
       if (createType != null) {
-        if (createType.booleanValue() != stream) {
+        if (createType.booleanValue() != stream) { // NOPMD.UnnecessaryBoxing
           throw new IllegalStateException("Already created with different mode");
         }
       } else {
@@ -662,7 +662,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
           new NullPointerException());
     }
     try {
-      return ((Boolean) value).booleanValue() ? 1 : 0;
+      return ((Boolean) value) ? 1 : 0;
     } catch (final ClassCastException e) {
       throw (SocketException) new SocketException("Unsupported value: " + value).initCause(e);
     }

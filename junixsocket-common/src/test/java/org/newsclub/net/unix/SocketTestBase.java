@@ -61,7 +61,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  *
  * @author Christian Kohlschuetter
  */
-@SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
+@SuppressWarnings({"PMD.AbstractClassWithoutAbstractMethod", "PMD.CouplingBetweenObjects"})
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs to be public for
@@ -176,6 +176,11 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
       readySema.acquire();
     }
 
+    @Override
+    public final void start() {
+      super.start();
+    }
+
     protected ServerSocket startServer() throws IOException {
       return SocketTestBase.this.startServer();
     }
@@ -281,7 +286,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
         if (acceptSuccess) {
           handleConnection(sock);
         }
-      } catch (IOException e) {
+      } catch (IOException e) { // NOPMD.ExceptionAsFlowControl
         if (!acceptSuccess) {
           // ignore: connection closed before accept could complete
           if (serverSocket.isClosed()) {

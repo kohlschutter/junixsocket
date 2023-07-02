@@ -443,7 +443,6 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
       ScheduledFuture<?> existingFuture = this.timeoutFuture;
       if (existingFuture != null) {
         existingFuture.cancel(false);
-        this.timeoutFuture = null;
       }
 
       return (this.timeoutFuture = TIMEOUTS.schedule(new Callable<IOException>() {

@@ -41,8 +41,8 @@ import org.newsclub.net.unix.NamedIntegerBitmask;
 public final class AFTIPCTopologySubscription {
   static final byte[] USR_EMPTY = new byte[8];
 
-  private static final WeakHashMap<ByteBuffer, @Nullable AFTIPCTopologySubscription> SUBSCRIPTIONS =
-      new WeakHashMap<>();
+  private static final WeakHashMap<ByteBuffer, // NOPMD.LooseCoupling
+      @Nullable AFTIPCTopologySubscription> SUBSCRIPTIONS = new WeakHashMap<>();
 
   /**
    * Special timeout value meaning "never timeout".

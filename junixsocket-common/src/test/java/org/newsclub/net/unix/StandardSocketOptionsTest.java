@@ -52,6 +52,7 @@ import com.kohlschutter.testutil.SoftAssertions;
  */
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 public abstract class StandardSocketOptionsTest<A extends SocketAddress> extends SocketTestBase<A> {
   private static final Set<SocketOption<?>> IGNORABLE_OPTIONS = Set.of( //
       StandardSocketOptions.IP_TOS, //

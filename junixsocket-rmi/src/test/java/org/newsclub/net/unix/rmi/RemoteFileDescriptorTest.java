@@ -63,7 +63,7 @@ public class RemoteFileDescriptorTest extends TestBase {
   public void testRemoteStdoutNoop() throws IOException, NotBoundException {
     TestService svc = lookupTestService();
 
-    try (RemoteFileDescriptor stdout = svc.stdout()) {
+    try (RemoteFileDescriptor unused = svc.stdout()) {
       // not doing anything here should trigger descriptor cleanup in RemoteFileDescriptor#close
     }
   }

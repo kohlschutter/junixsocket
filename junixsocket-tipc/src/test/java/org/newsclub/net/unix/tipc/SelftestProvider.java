@@ -35,7 +35,7 @@ import org.newsclub.net.unix.SocketTestBase;
  */
 @SuppressWarnings("PMD.CouplingBetweenObjects")
 public class SelftestProvider {
-  final Map<String, LinkedHashSet<Class<?>>> testMap = new LinkedHashMap<>();
+  final Map<String, LinkedHashSet<Class<?>>> testMap = new LinkedHashMap<>(); // NOPMD.LooseCoupling
 
   // CPD-OFF
 

@@ -44,6 +44,7 @@ import org.eclipse.jdt.annotation.Nullable;
  *
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 public abstract class AFSocketAddress extends InetSocketAddress {
   private static final long serialVersionUID = 1L;
 

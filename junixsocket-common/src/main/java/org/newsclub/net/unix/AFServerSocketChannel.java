@@ -65,7 +65,7 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
     if (optionId == null) {
       throw new UnsupportedOperationException("unsupported option");
     } else {
-      return (T) afSocket.getAFImpl().getOption(optionId.intValue());
+      return (T) afSocket.getAFImpl().getOption(optionId);
     }
   }
 
@@ -79,7 +79,7 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
     if (optionId == null) {
       throw new UnsupportedOperationException("unsupported option");
     } else {
-      afSocket.getAFImpl().setOption(optionId.intValue(), value);
+      afSocket.getAFImpl().setOption(optionId, value);
     }
     return this;
   }

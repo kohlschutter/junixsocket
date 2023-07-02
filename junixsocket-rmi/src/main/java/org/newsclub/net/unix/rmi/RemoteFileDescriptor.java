@@ -56,7 +56,7 @@ public final class RemoteFileDescriptor extends RemoteFileDescriptorBase<Void> {
   public synchronized void close() throws IOException {
     FileDescriptor fd = getFileDescriptor();
     if (fd != null && fd.valid()) {
-      try (FileInputStream fin = new FileInputStream(fd)) {
+      try (FileInputStream unused = new FileInputStream(fd)) {
         // should succeed
       }
     }

@@ -66,7 +66,8 @@ public class ZeroServer {
         try {
 
           File devZeroFile = new File("/dev/zero");
-          if (devZeroFile.exists() && Boolean.valueOf(System.getProperty("useDevZero", "true"))) {
+          if (devZeroFile.exists() && Boolean.parseBoolean(System.getProperty("useDevZero",
+              "true"))) {
             System.out.println("Streaming /dev/zero");
             try (FileInputStream fin = new FileInputStream(devZeroFile);
                 AFOutputStream out = sock.getOutputStream()) {

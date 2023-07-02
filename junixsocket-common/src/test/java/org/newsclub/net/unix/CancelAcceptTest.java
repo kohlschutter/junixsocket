@@ -102,7 +102,7 @@ public abstract class CancelAcceptTest<A extends SocketAddress> extends SocketTe
 
       serverSocket.close();
       try {
-        try (Socket sock = connectTo(serverAddress)) {
+        try (Socket unused = connectTo(serverAddress)) {
           // open and close
         }
 

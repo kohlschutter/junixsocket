@@ -75,7 +75,7 @@ public final class AFPipe extends Pipe implements Closeable {
 
   @Override
   public void close() throws IOException {
-    try {
+    try { // NOPMD.UseTryWithResources
       source().close();
     } finally {
       sink().close();

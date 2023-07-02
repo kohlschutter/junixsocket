@@ -210,7 +210,7 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
     if (optionId == null) {
       throw new UnsupportedOperationException("unsupported option");
     } else {
-      afSocket.getAFImpl().setOption(optionId.intValue(), value);
+      afSocket.getAFImpl().setOption(optionId, value);
     }
     return this;
   }
@@ -225,7 +225,7 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
     if (optionId == null) {
       throw new UnsupportedOperationException("unsupported option");
     } else {
-      return (T) afSocket.getAFImpl().getOption(optionId.intValue());
+      return (T) afSocket.getAFImpl().getOption(optionId);
     }
   }
 

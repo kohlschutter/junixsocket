@@ -80,7 +80,7 @@ public final class PeerCredentialsTest extends SocketTestBase<AFUNIXSocketAddres
           }
         }
       }; AFUNIXSocket socket = (AFUNIXSocket) connectTo(serverThread.getServerAddress())) {
-        try (InputStream in = socket.getInputStream()) {
+        try (InputStream unused = socket.getInputStream()) {
           AFUNIXSocketCredentials serverCreds = socket.getPeerCredentials();
           AFUNIXSocketCredentials clientCreds = clientCredsFuture.get();
 

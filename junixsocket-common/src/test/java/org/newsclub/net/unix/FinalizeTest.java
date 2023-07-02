@@ -79,7 +79,7 @@ public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBa
             assumeTrue(process.pid() > 0);
             Object preRunCheck = null;
             try (OutputStream out = socket.getOutputStream();
-                InputStream in = socket.getInputStream()) {
+                InputStream unused = socket.getInputStream()) {
               preRunCheck = preRunCheck(process);
               out.write('@');
             } finally {

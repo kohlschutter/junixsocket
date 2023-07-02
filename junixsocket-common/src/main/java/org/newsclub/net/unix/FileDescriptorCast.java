@@ -260,6 +260,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
     private final Map<Class<?>, CastingProvider<?>> providers = new HashMap<>();
     private final Set<Class<?>> classes = Collections.unmodifiableSet(providers.keySet());
 
+    @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
     protected CastingProviderMap() {
       addProviders();
 

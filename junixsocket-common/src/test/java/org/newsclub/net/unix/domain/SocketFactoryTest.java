@@ -245,7 +245,7 @@ public final class SocketFactoryTest extends SocketTestBase<AFUNIXSocketAddress>
     assertThrows(SocketException.class, () -> {
       AFUNIXSocketFactory.FactoryArg factory = new AFUNIXSocketFactory.FactoryArg("/");
       // file exists (root directory), but is definitely not a unix socket
-      try (Socket sock = factory.createSocket(hostnameToConnectTo, 0)) {
+      try (Socket unused = factory.createSocket(hostnameToConnectTo, 0)) {
         // not reached
       }
     });
@@ -253,7 +253,7 @@ public final class SocketFactoryTest extends SocketTestBase<AFUNIXSocketAddress>
     assertThrows(SocketException.class, () -> {
       AFUNIXSocketFactory.FactoryArg factory = new AFUNIXSocketFactory.FactoryArg(new File("/"));
       // file exists (root directory), but is definitely not a unix socket
-      try (Socket sock = factory.createSocket(hostnameToConnectTo, 0)) {
+      try (Socket unused = factory.createSocket(hostnameToConnectTo, 0)) {
         // not reached
       }
     });

@@ -96,7 +96,7 @@ class AFSocketCore extends AFCore {
     Class<T> type = name.type();
     if (Boolean.class.isAssignableFrom(type)) {
       return (T) (Object) (NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(),
-          Integer.class).intValue() != 0);
+          Integer.class) != 0);
     } else if (NamedInteger.HasOfValue.class.isAssignableFrom(type)) {
       int v = NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), Integer.class);
       try {
@@ -113,7 +113,7 @@ class AFSocketCore extends AFCore {
   <T> void setOption(AFSocketOption<T> name, T value) throws IOException {
     final Object val;
     if (value instanceof Boolean) {
-      val = (((Boolean) value).booleanValue() ? 1 : 0);
+      val = (((Boolean) value) ? 1 : 0);
     } else if (value instanceof NamedInteger) {
       val = ((NamedInteger) value).value();
     } else {

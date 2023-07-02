@@ -233,7 +233,7 @@ final class NativeLibraryLoader implements Closeable {
         setLoaded(libraryOverride);
         return null;
       } catch (Exception | LinkageError e) {
-        if (Boolean.valueOf(libraryOverrideForce)) {
+        if (Boolean.parseBoolean(libraryOverrideForce)) {
           throw e;
         }
         return e;
@@ -282,7 +282,7 @@ final class NativeLibraryLoader implements Closeable {
         return;
       }
 
-      if (Boolean.valueOf(System.getProperty(PROP_LIBRARY_DISABLE, "false"))) {
+      if (Boolean.parseBoolean(System.getProperty(PROP_LIBRARY_DISABLE, "false"))) {
         throw initCantLoadLibraryError(Collections.singletonList(new UnsupportedOperationException(
             "junixsocket disabled by System.property " + PROP_LIBRARY_DISABLE)));
       }

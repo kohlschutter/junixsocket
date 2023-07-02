@@ -20,7 +20,6 @@ package org.newsclub.net.mysql;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
 
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
@@ -38,7 +37,6 @@ import com.mysql.cj.protocol.SocketFactory;
  */
 public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
   private AFUNIXSocket rawSocket;
-  private Socket sslSocket;
 
   /**
    * Creates a new instance.
@@ -64,7 +62,6 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
     final File socketFile = new File(sock);
 
     this.rawSocket = AFUNIXSocket.connectTo(AFUNIXSocketAddress.of(socketFile));
-    this.sslSocket = rawSocket;
     return (T) rawSocket;
   }
 
@@ -73,8 +70,7 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
   @Override
   public <T extends Closeable> T performTlsHandshake(SocketConnection socketConnection,
       ServerSession serverSession) throws IOException {
-    this.sslSocket = ExportControlled.performTlsHandshake(this.rawSocket, socketConnection,
+    return (T) ExportControlled.performTlsHandshake(this.rawSocket, socketConnection,
         serverSession == null ? null : serverSession.getServerVersion(), null);
-    return (T) this.sslSocket;
   }
 }
