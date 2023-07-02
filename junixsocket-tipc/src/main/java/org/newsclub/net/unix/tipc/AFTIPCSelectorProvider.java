@@ -125,7 +125,7 @@ public final class AFTIPCSelectorProvider extends AFSelectorProvider<AFTIPCSocke
    */
   @Override
   protected <P extends AFSomeSocket> AFSocketPair<P> newSocketPair(P s1, P s2) {
-    return new AFTIPCSocketPair<P>(s1, s2);
+    return new AFTIPCSocketPair<>(s1, s2);
   }
 
   @SuppressWarnings("unchecked")

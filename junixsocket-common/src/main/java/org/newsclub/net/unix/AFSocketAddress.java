@@ -323,8 +323,6 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   @SuppressWarnings({"unchecked", "null"})
   protected static final <A extends AFSocketAddress> A resolveAddress(final byte[] socketAddress,
       int port, AFAddressFamily<A> af) throws SocketException {
-    A instance;
-
     if (socketAddress.length == 0) {
       throw new SocketException("Address cannot be empty");
     }
@@ -345,6 +343,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     direct.rewind();
     direct.limit(limit);
 
+    A instance;
     synchronized (AFSocketAddress.class) {
       Map<ByteBuffer, AFSocketAddress> map;
       Map<Integer, Map<ByteBuffer, AFSocketAddress>> mapPorts = ADDRESS_CACHE.get(af);

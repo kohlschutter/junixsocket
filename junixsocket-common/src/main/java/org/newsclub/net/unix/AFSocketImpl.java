@@ -962,7 +962,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   @Override
   protected <T> void setOption(SocketOption<T> name, T value) throws IOException {
     if (name instanceof AFSocketOption<?>) {
-      ((AFSocketImpl<?>) this).getCore().setOption((AFSocketOption<T>) name, value);
+      getCore().setOption((AFSocketOption<T>) name, value);
       return;
     }
     Integer optionId = SocketOptionsMapper.resolve(name);
@@ -977,7 +977,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   @Override
   protected <T> T getOption(SocketOption<T> name) throws IOException {
     if (name instanceof AFSocketOption<?>) {
-      return ((AFSocketImpl<?>) this).getCore().getOption((AFSocketOption<T>) name);
+      return getCore().getOption((AFSocketOption<T>) name);
     }
     Integer optionId = SocketOptionsMapper.resolve(name);
     if (optionId == null) {

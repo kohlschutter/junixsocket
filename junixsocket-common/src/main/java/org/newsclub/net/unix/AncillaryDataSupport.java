@@ -39,10 +39,10 @@ final class AncillaryDataSupport implements Closeable {
       .ancillaryBufMinLen() : 0;
 
   private final Map<FileDescriptor, Integer> openReceivedFileDescriptors = Collections
-      .synchronizedMap(new HashMap<FileDescriptor, Integer>());
+      .synchronizedMap(new HashMap<>());
 
   private final List<FileDescriptor[]> receivedFileDescriptors = Collections.synchronizedList(
-      new LinkedList<FileDescriptor[]>());
+      new LinkedList<>());
 
   // referenced from native code
   private ByteBuffer ancillaryReceiveBuffer = EMPTY_BUFFER;

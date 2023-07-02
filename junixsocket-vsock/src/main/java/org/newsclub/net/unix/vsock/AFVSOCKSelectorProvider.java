@@ -125,7 +125,7 @@ public final class AFVSOCKSelectorProvider extends AFSelectorProvider<AFVSOCKSoc
    */
   @Override
   protected <P extends AFSomeSocket> AFSocketPair<P> newSocketPair(P s1, P s2) {
-    return new AFVSOCKSocketPair<P>(s1, s2);
+    return new AFVSOCKSocketPair<>(s1, s2);
   }
 
   @SuppressWarnings("unchecked")

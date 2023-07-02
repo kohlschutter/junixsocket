@@ -46,7 +46,7 @@ public final class Closeables implements Closeable {
    */
   public Closeables(Closeable... closeable) {
     for (Closeable cl : closeable) {
-      this.list.add(new HardReference<Closeable>(cl));
+      this.list.add(new HardReference<>(cl));
     }
   }
 

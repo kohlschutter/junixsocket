@@ -68,8 +68,9 @@ public abstract class ServerSocketCloseTest<A extends SocketAddress> extends Soc
 
         final CountDownLatch cdl = new CountDownLatch(numThreads);
 
+        @SuppressWarnings("resource") // only since Java 19 ThreadPoolExecutor is AutoCloseable
         ThreadPoolExecutor threadPool = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L,
-            TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+            TimeUnit.SECONDS, new SynchronousQueue<>());
         for (int i = 0; i < numThreads; i++) {
           threadPool.submit(new Runnable() {
 

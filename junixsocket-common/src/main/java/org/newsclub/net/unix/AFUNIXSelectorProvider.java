@@ -107,7 +107,7 @@ public final class AFUNIXSelectorProvider extends AFSelectorProvider<AFUNIXSocke
 
   @Override
   protected <P extends AFSomeSocket> AFSocketPair<P> newSocketPair(P s1, P s2) {
-    return new AFUNIXSocketPair<P>(s1, s2);
+    return new AFUNIXSocketPair<>(s1, s2);
   }
 
   @SuppressWarnings("unchecked")

@@ -107,7 +107,7 @@ public final class JavaAddressSpecifics implements AddressSpecifics<InetSocketAd
     DatagramSocket ds2 = new DatagramSocket(0);
     ds1.connect(ds2.getLocalSocketAddress());
     ds2.connect(ds1.getLocalSocketAddress());
-    return new CloseablePair<DatagramChannel>(ds1.getChannel(), ds2.getChannel(), () -> {
+    return new CloseablePair<>(ds1.getChannel(), ds2.getChannel(), () -> {
       ds1.close();
       ds2.close();
     });

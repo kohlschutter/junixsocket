@@ -120,7 +120,7 @@ final class AFRMIServiceImpl implements AFRMIService {
   public void registerForShutdown(Closeable closeable) throws RemoteException {
     synchronized (closeAtShutdown) {
       unregisterForShutdown(closeable);
-      closeAtShutdown.add(new WeakReference<Closeable>(closeable));
+      closeAtShutdown.add(new WeakReference<>(closeable));
     }
   }
 
