@@ -105,6 +105,13 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
                         <forkCount>1</forkCount>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <configuration>
+                        <targetJdk>1.8</targetJdk>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
