@@ -109,8 +109,7 @@ public class RemoteCloseableTest extends TestBase {
     }
     assertEquals(0, svc.remoteCloseableThingNumberOfCloseCalls(NotCloseable.class));
 
-    try (RemoteCloseable<? extends NotCloseable> unused = svc.remoteCloseable(
-        NotCloseable.class)) {
+    try (RemoteCloseable<? extends NotCloseable> unused = svc.remoteCloseable(NotCloseable.class)) {
       // no exception thrown
     }
 
