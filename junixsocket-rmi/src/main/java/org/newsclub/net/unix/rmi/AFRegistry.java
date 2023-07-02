@@ -31,6 +31,7 @@ import java.rmi.server.RemoteServer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.newsclub.net.unix.rmi.ShutdownHookSupport.ShutdownHook;
 
@@ -48,7 +49,7 @@ public abstract class AFRegistry implements Registry {
   private final Registry impl;
   private final Map<String, Remote> bound = new HashMap<>();
   private final AFNaming naming;
-  private boolean boundCloserExported = false;
+  private final AtomicBoolean boundCloserExported = new AtomicBoolean(false);
 
   AFRegistry(AFNaming naming, Registry impl) throws RemoteException {
     this.naming = naming;
@@ -246,9 +247,7 @@ public abstract class AFRegistry implements Registry {
       empty = bound.isEmpty();
     }
     if (empty) {
-      if (boundCloserExported) {
-        boundCloserExported = false;
-
+      if (boundCloserExported.compareAndSet(true, false)) {
         AFRMIService service;
         try {
           service = naming.getRMIService(this);
@@ -259,9 +258,8 @@ public abstract class AFRegistry implements Registry {
           AFNaming.unexportObject(boundCloser);
         }
       }
-    } else if (!boundCloserExported) {
+    } else if (boundCloserExported.compareAndSet(false, true)) {
       AFNaming.exportObject(boundCloser, naming.getSocketFactory());
-      boundCloserExported = true;
 
       AFRMIService service;
       try {
