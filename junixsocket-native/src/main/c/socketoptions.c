@@ -257,8 +257,8 @@ struct tipc_group_req {
 #  endif
 
 static jobject groupReqToJava(JNIEnv *env, void* valPtr, socklen_t valLen) {
-    if(valLen < sizeof(struct tipc_group_req)) {
-        if(valLen == sizeof(jint)) {
+    if(valLen < (socklen_t)sizeof(struct tipc_group_req)) {
+        if(valLen == (socklen_t)sizeof(jint)) {
             // response is just the group type
             return (*env)->CallStaticObjectMethod(env, kAFTIPCGroupRequestClass, kAFTIPCGroupRequestFromNative, *((jint*)valPtr),0,0,0);
         }
