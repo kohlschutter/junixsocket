@@ -4497,11 +4497,13 @@
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
+					"-Wno-unknown-warning-option",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang.macosx1.0;
@@ -4522,11 +4524,13 @@
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
+					"-Wno-unknown-warning-option",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang.macosx1.0;
@@ -4547,11 +4551,13 @@
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
+					"-Wno-unknown-warning-option",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang.macosx1.0;
@@ -4572,11 +4578,13 @@
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
+					"-Wno-unknown-warning-option",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang.macosx1.0;
@@ -4597,11 +4605,13 @@
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
+					"-Wno-unknown-warning-option",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang.macosx1.0;
@@ -4622,11 +4632,13 @@
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
+					"-Wno-unknown-warning-option",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang.macosx1.0;
@@ -5127,11 +5139,13 @@
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
+					"-Wno-unknown-warning-option",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang.macosx1.0;
@@ -5152,11 +5166,13 @@
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-fPIC",
+					"-Wno-unknown-warning-option",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = crossclang.macosx1.0;
