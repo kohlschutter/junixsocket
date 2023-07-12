@@ -326,10 +326,7 @@ public class UnixDomainTest {
     String uri = "http://localhost:1234/path";
 
     byte[] payload = new byte[512 * 1024]; // 512k
-    Random random = new Random();
-    for (int i = 0, n = payload.length; i < n; i++) {
-      payload[i] = (byte) (random.nextInt() & 0xFF);
-    }
+    new Random().nextBytes(payload);
 
     start(new AbstractHandler() {
       @Override
