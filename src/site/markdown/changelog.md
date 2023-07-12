@@ -1,13 +1,24 @@
-# Noteworthy changes
 
-### General remarks
+# Changelog
 
-Please tend to always use the latest version.
+## General remarks
 
-The existing API should always be backwards compatible between minor releases (e.g., 2.4.0 -> 2.5.1) unless explicitly mentioned in the changelog below (e.g., dropping Java 7 support in 2.5.0)
+Please always use the latest version.
+
+The existing API should always be backwards compatible between minor releases (e.g., 2.4.0 -> 2.5.1) unless explicitly mentioned in the changelog below (e.g., dropping Java 7 support in 2.5.0).
+
+Bugs that are found in an older version (e.g., 2.6.1) may be fixed in a minor release (e.g., 2.7.0) or a patch release (e.g., 2.6.2). There is no guarantee of a new patch release if there is a minor release coming up (as a particular example, there won't be a 2.6.3 for bugs found in 2.6.2 and earlier).
+
+## Upgrading
+
+Please try to always use the latest version.
 
 When upgrading from versions older than 2.4.0, please note that `junixsocket-core` is now a POM-only
 artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.html) for details.
+
+If you have certain business reasons to not upgrade but still need something fixed, please [ask for an enterprise support plan](mailto:christian@kohlschutter.com).
+
+## Noteworthy changes
 
 ### _(2023-XX-XX)_ **junixsocket 2.7.0**
 
