@@ -194,7 +194,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     if (!fdesc.valid()) {
       return null;
     }
-    byte[] addr = NativeUnixSocket.sockname(af.getDomain(), fdesc, peerName); // FIXME
+    byte[] addr = NativeUnixSocket.sockname(af.getDomain(), fdesc, peerName);
     if (addr == null) {
       return null;
     }
@@ -216,7 +216,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     if (!fdesc.valid()) {
       return null;
     }
-    byte[] addr = NativeUnixSocket.sockname(af.getDomain(), fdesc, peerName); // FIXME
+    byte[] addr = NativeUnixSocket.sockname(af.getDomain(), fdesc, peerName);
     if (addr == null) {
       return null;
     }
@@ -667,7 +667,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
           NativeUnixSocket.unsupportedException());
     }
     if (socketProtocol != null && socketProtocol.getId() != 0) {
-      throw new IOException("Protocol not (yet) supported"); // FIXME
+      throw new IOException("Protocol not (yet) supported"); // FIXME support additional protocols
     }
 
     int family = (nativeAddress.get(SOCKADDR_NATIVE_FAMILY_OFFSET) & 0xFF);
