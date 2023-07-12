@@ -31,6 +31,7 @@
 package org.eclipse.jetty.unixdomain.server;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -45,6 +46,7 @@ import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.client.HttpClient;
@@ -75,6 +77,7 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.jetty.AFSocketClientConnector;
 import org.newsclub.net.unix.jetty.AFSocketServerConnector;
 
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -316,5 +319,44 @@ public class UnixDomainTest {
       }
     }
     return ret.toString();
+  }
+
+  @Test
+  public void testLargeBody() throws Exception {
+    String uri = "http://localhost:1234/path";
+
+    byte[] payload = new byte[512 * 1024]; // 512k
+    Random random = new Random();
+    for (int i = 0, n = payload.length; i < n; i++) {
+      payload[i] = (byte) (random.nextInt() & 0xFF);
+    }
+
+    start(new AbstractHandler() {
+      @Override
+      public void handle(String target, Request jettyRequest, HttpServletRequest request,
+          HttpServletResponse response) throws IOException {
+        jettyRequest.setHandled(true);
+
+        response.setContentType(" application/octet-stream");
+        try (ServletOutputStream out = response.getOutputStream()) {
+          out.write(payload);
+        }
+      }
+    });
+
+    // ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
+    ClientConnector clientConnector = AFSocketClientConnector.withSocketAddress(AFUNIXSocketAddress
+        .of(unixDomainPath));
+    HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
+    httpClient.start();
+    try {
+      ContentResponse response = httpClient.newRequest(uri).timeout(5, TimeUnit.SECONDS).send();
+
+      assertEquals(HttpStatus.OK_200, response.getStatus());
+      byte[] data = response.getContent();
+      assertArrayEquals(payload, data);
+    } finally {
+      httpClient.stop();
+    }
   }
 }

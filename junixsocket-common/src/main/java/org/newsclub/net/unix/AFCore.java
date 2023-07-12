@@ -138,7 +138,9 @@ class AFCore extends CleanableState {
     }
     if (buf != dst) { // NOPMD
       buf.limit(count);
-      dst.put(buf);
+      while (buf.hasRemaining()) {
+        dst.put(buf);
+      }
     } else {
       if (count < 0) {
         throw new IllegalStateException();
@@ -189,13 +191,7 @@ class AFCore extends CleanableState {
 
       bufPos = buf.position();
 
-      // Java 16: buf.put(bufPos, src, src.position(), Math.min(buf.limit(), src.limit()));
-      int limit = src.limit();
-      if (limit > buf.limit()) {
-        src.limit(buf.limit());
-        buf.put(src);
-        src.limit(limit);
-      } else {
+      while (src.hasRemaining() && buf.hasRemaining()) {
         buf.put(src);
       }
 
