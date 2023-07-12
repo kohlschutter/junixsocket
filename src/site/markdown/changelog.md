@@ -11,10 +11,13 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ### _(2023-XX-XX)_ **junixsocket 2.7.0**
 
+**Users of junixsocket are strongly advised to upgrade to this version**
+
 - New supported platform: Android (aarch64, arm-linux-androideabi, x86_64, i686)
 - Add selftest GUI app for Android ("junixsocket-selftest-android")
 - Add ability to get native file descriptor number via FileDescriptorCast
 - Add AFSocketCapability for "large port numbers" (larger than 65535)
+- Fix potential data corruption when sending ByteBuffers larger than 8192 bytes
 - Improve JNI library lookup
 - Improve reliability on exotic environments
 - Update dependencies, improve tests, selftest, build scripts
