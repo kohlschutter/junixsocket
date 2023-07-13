@@ -11,7 +11,7 @@ other address/protocol families (such as [AF_TIPC](http://tipc.io/) and AF_VSOCK
 * *junixsocket* is the most complete implementation of AF_UNIX sockets for the Java ecosystem.
 * Supports other socket types, such as TIPC (on Linux) and VSOCK (on Linux, and certain macOS VMs), as well!
 * Comes with pre-built native libraries for most operating systems and platforms, including
-  macOS, Linux, Windows, Solaris, FreeBSD, NetBSD, OpenBSD, DragonFlyBSD, AIX, IBM i.
+  macOS, Linux, Android, Windows, Solaris, FreeBSD, NetBSD, OpenBSD, DragonFlyBSD, AIX, IBM i.
 * Additionally, you can build and run junixsocket natively on IBM z/OS (experimental).
 * Supports all Java versions since Java 8*
 * Supports both the Java Socket API and NIO (`java.net.Socket`, `java.net.SocketChannel`, etc.)
