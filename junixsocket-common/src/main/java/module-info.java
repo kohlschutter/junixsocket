@@ -1,6 +1,7 @@
 /**
  * The common junixsocket classes.
  */
+// NOPMD -- https://github.com/pmd/pmd/issues/4620
 module org.newsclub.net.unix {
   exports org.newsclub.net.unix;
 
