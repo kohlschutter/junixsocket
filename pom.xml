@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.kohlschutter</groupId>
         <artifactId>kohlschutter-parent-multirelease</artifactId>
-        <version>1.5.4</version>
+        <version>1.5.5-SNAPSHOT</version>
         <relativePath>../kohlschutter-parent/kohlschutter-parent-multirelease/pom.xml</relativePath>
     </parent>
     <name>junixsocket</name>
@@ -71,7 +71,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <junixsocket.skip.native>${m2e.version}</junixsocket.skip.native>
 
         <kohlschutter.multirelease.java8.release>8</kohlschutter.multirelease.java8.release>
-        <kohlschutter.multirelease.java.release>9</kohlschutter.multirelease.java.release>
+        <kohlschutter.multirelease.java.release>16</kohlschutter.multirelease.java.release>
 
         <kohlschutter.custom.package.folder>org/newsclub</kohlschutter.custom.package.folder>
     </properties>

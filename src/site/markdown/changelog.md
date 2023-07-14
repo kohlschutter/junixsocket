@@ -28,11 +28,13 @@ If you have certain business reasons to not upgrade but still need something fix
 - Add selftest GUI app for Android ("junixsocket-selftest-android")
 - Add ability to get native file descriptor number via FileDescriptorCast
 - Add AFSocketCapability for "large port numbers" (larger than 65535)
-- Fix potential data corruption when sending ByteBuffers larger than 8192 bytes
+- Add support to convert UnixDomainSocketAddress to AFUNIXSocketAddress (Java 16+)
+- Fix potential data corruption when sending non-direct ByteBuffers larger than 8192 bytes
 - Fix potential hangs when sending datagrams on macOS, BSD
 - Improve JNI library lookup
 - Improve reliability on exotic environments
 - Update dependencies, improve tests, selftest, build scripts
+- Require Java 16 to build (still supports running on Java 8 and newer)
 - Last but not least: junixsocket finally has a logo!
 
 ### _(2022-02-08)_ **junixsocket 2.6.2**

@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -180,7 +181,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws SocketException if the operation fails.
    */
-  public static AFUNIXSocketAddress of(final Path socketPath) throws SocketException {
+  public static AFUNIXSocketAddress of(Path socketPath) throws SocketException {
     return of(socketPath, 0);
   }
 
@@ -193,7 +194,11 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @return A corresponding {@link AFUNIXSocketAddress} instance.
    * @throws SocketException if the operation fails.
    */
-  public static AFUNIXSocketAddress of(final Path socketPath, int port) throws SocketException {
+  public static AFUNIXSocketAddress of(Path socketPath, int port) throws SocketException {
+    if (!PathUtil.isPathInDefaultFileSystem(socketPath)) {
+      throw new SocketException("Path is not in the default file system");
+    }
+
     return of(socketPath.toString().getBytes(ADDRESS_CHARSET), port);
   }
 
@@ -262,6 +267,24 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
     return of(newTempPath(true), port);
   }
 
+  /**
+   * Returns an {@link AFUNIXSocketAddress} based on the given {@link SocketAddress}.
+   *
+   * This either simply casts an existing {@link AFUNIXSocketAddress}, or converts a
+   * {@code UnixDomainSocketAddress} to it.
+   *
+   * @param address The address to convert.
+   * @return A corresponding {@link AFUNIXSocketAddress} instance.
+   * @throws SocketException if the operation fails.
+   */
+  public static AFUNIXSocketAddress of(SocketAddress address) throws IOException {
+    AFUNIXSocketAddress addr = unwrap(Objects.requireNonNull(address));
+    if (addr == null) {
+      throw new SocketException("Could not convert SocketAddress to AFUNIXSocketAddress");
+    }
+    return addr;
+  }
+
   static File newTempPath(boolean deleteOnExit) throws IOException {
     File f = File.createTempFile("jux", ".sock");
     if (deleteOnExit) {
@@ -298,10 +321,11 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   public static AFUNIXSocketAddress unwrap(SocketAddress address) throws SocketException {
     // FIXME: add support for UnixDomainSocketAddress
     Objects.requireNonNull(address);
-    if (!isSupportedAddress(address)) {
+    Supplier<AFUNIXSocketAddress> supplier = supportedAddressSupplier(address);
+    if (supplier == null) {
       throw new SocketException("Unsupported address");
     }
-    return (AFUNIXSocketAddress) address;
+    return supplier.get();
   }
 
   /**
@@ -482,7 +506,24 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @see #unwrap(InetAddress, int)
    */
   public static boolean isSupportedAddress(SocketAddress addr) {
-    return (addr instanceof AFUNIXSocketAddress);
+    return supportedAddressSupplier(addr) != null;
+  }
+
+  /**
+   * Checks if the given address can be unwrapped to an {@link AFUNIXSocketAddress}, and if so,
+   * returns a supplier function; if not, {@code null} is returned.
+   *
+   * @param addr The address.
+   * @return The supplier, or {@code null}.
+   */
+  static Supplier<AFUNIXSocketAddress> supportedAddressSupplier(SocketAddress addr) {
+    if (addr == null) {
+      return null;
+    } else if (addr instanceof AFUNIXSocketAddress) {
+      return () -> ((AFUNIXSocketAddress) addr);
+    } else {
+      return SocketAddressUtil.supplyAFUNIXSocketAddress(addr);
+    }
   }
 
   /**

@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -44,7 +45,7 @@ import org.eclipse.jdt.annotation.Nullable;
  *
  * @author Christian Kohlschütter
  */
-@SuppressWarnings("PMD.CouplingBetweenObjects")
+@SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.CyclomaticComplexity"})
 public abstract class AFSocketAddress extends InetSocketAddress {
   private static final long serialVersionUID = 1L;
 
@@ -484,16 +485,26 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   static final int unwrapAddressDirectBufferInternal(ByteBuffer socketAddressBuffer,
       SocketAddress address) throws SocketException {
+    if (!NativeUnixSocket.isLoaded()) {
+      throw new SocketException("Unsupported operation; junixsocket native library is not loaded");
+    }
     Objects.requireNonNull(address);
-    // FIXME: add support for UnixDomainSocketAddress
+
     if (!(address instanceof AFSocketAddress)) {
-      throw new SocketException("Unsupported address");
+      Supplier<? extends AFSocketAddress> supp = AFUNIXSocketAddress.supportedAddressSupplier(
+          address);
+      address = supp == null ? null : supp.get();
+      if (address == null) {
+        throw new SocketException("Unsupported address");
+      }
     }
 
-    byte[] addr = ((AFSocketAddress) address).getBytes();
-    int domain = ((AFSocketAddress) address).getAddressFamily().getDomain();
-    int len = NativeUnixSocket.isLoaded() ? NativeUnixSocket.bytesToSockAddr(domain,
-        socketAddressBuffer, addr) : -1;
+    AFSocketAddress socketAddress = (AFSocketAddress) address;
+
+    byte[] addr = socketAddress.getBytes();
+    int domain = socketAddress.getAddressFamily().getDomain();
+
+    int len = NativeUnixSocket.bytesToSockAddr(domain, socketAddressBuffer, addr);
     if (len == -1) {
       throw new SocketException("Unsupported domain");
     }
