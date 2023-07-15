@@ -20,12 +20,9 @@ package org.newsclub.net.unix.java;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.ProtocolFamily;
 import java.net.SocketAddress;
-import java.net.StandardProtocolFamily;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
@@ -34,7 +31,6 @@ import java.nio.channels.spi.SelectorProvider;
 import org.junit.jupiter.api.Test;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-import com.kohlschutter.testutil.AvailabilityRequirement;
 import com.kohlschutter.testutil.SystemPropertyRequirement;
 
 @SuppressFBWarnings({
@@ -45,52 +41,6 @@ public final class ThroughputTest extends org.newsclub.net.unix.ThroughputTest<I
 
   public ThroughputTest() {
     super(JavaAddressSpecifics.INSTANCE);
-  }
-
-  @Test
-  @AvailabilityRequirement(classes = {"java.net.UnixDomainSocketAddress"}, //
-      message = "This test requires Java 16 or later")
-  public void testJEP380() throws Exception {
-    assumeTrue(ENABLED > 0, "Throughput tests are disabled");
-    assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
-    runTestJEP380(false);
-  }
-
-  @Test
-  @AvailabilityRequirement(classes = {"java.net.UnixDomainSocketAddress"}, //
-      message = "This test requires Java 16 or later")
-  public void testJEP380directBuffer() throws Exception {
-    assumeTrue(ENABLED > 0, "Throughput tests are disabled");
-    assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
-    runTestJEP380(true);
-  }
-
-  private static SocketAddress jep380SocketAddress(String path) throws IllegalAccessException,
-      IllegalArgumentException, InvocationTargetException, SecurityException {
-    try {
-      // We use reflection so we can compile on older Java versions
-      Class<?> klazz = Class.forName("java.net.UnixDomainSocketAddress");
-      return (SocketAddress) klazz.getMethod("of", String.class).invoke(null, path);
-    } catch (NoSuchMethodException | ClassNotFoundException e) {
-      assumeTrue(false, "java.net.UnixDomainSocketAddress (JEP 380) not supported by JVM");
-      return null;
-    }
-  }
-
-  private void runTestJEP380(boolean direct) throws Exception {
-    SocketAddress sa = jep380SocketAddress(socketFile().getPath());
-
-    ServerSocketChannel ssc;
-    // We use reflection so we can compile on older Java versions
-    try {
-      ssc = (ServerSocketChannel) ServerSocketChannel.class.getMethod("open", ProtocolFamily.class)
-          .invoke(null, StandardProtocolFamily.valueOf("UNIX"));
-    } catch (Exception e) {
-      throw new IllegalStateException(e);
-    }
-
-    runTestSocketChannel("JEP380 SocketChannel", sa, ssc, () -> SocketChannel.open(ssc
-        .getLocalAddress()), direct);
   }
 
   @Test

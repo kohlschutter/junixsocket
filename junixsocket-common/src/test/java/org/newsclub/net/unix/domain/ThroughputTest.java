@@ -19,14 +19,12 @@ package org.newsclub.net.unix.domain;
 
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
-import org.newsclub.net.unix.AFUNIXSocketAddress;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
-public final class ThroughputTest extends
-    org.newsclub.net.unix.ThroughputTest<AFUNIXSocketAddress> {
+public final class ThroughputTest extends ThroughputTestShim {
 
   public ThroughputTest() {
     super(AFUNIXAddressSpecifics.INSTANCE);
