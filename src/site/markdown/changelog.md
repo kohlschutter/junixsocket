@@ -30,7 +30,8 @@ If you have certain business reasons to not upgrade but still need something fix
 - Add AFSocketCapability for "large port numbers" (larger than 65535)
 - Add support to convert UnixDomainSocketAddress to AFUNIXSocketAddress (Java 16+)
 - Fix potential data corruption when sending non-direct ByteBuffers larger than 8192 bytes
-- Fix potential hangs when sending datagrams on macOS, BSD
+- Fix potential data corruption when receiving non-direct ByteBuffers with non-zero position
+- Fix intermittent hangs when sending datagrams on macOS, BSD
 - Improve JNI library lookup
 - Improve reliability on exotic environments
 - Update dependencies, improve tests, selftest, build scripts
