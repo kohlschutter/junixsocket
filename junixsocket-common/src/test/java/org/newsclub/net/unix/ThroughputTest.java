@@ -85,7 +85,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   protected static final int ENABLED = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.enabled", 1);
   protected static final int PAYLOAD_SIZE = SystemPropertyUtil.getIntSystemProperty(
-      "org.newsclub.net.unix.throughput-test.payload-size", 1400); // 8192 is much faster
+      "org.newsclub.net.unix.throughput-test.payload-size", 2048); // 8192 is much faster
   protected static final int PAYLOAD_SIZE_DATAGRAM = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.payload-size.datagram", PAYLOAD_SIZE);
   protected static final int NUM_SECONDS = SystemPropertyUtil.getIntSystemProperty(
