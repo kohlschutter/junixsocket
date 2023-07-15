@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Objects;
@@ -224,6 +226,72 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
     if (triggerWithIssues != null) {
       throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
           triggerWithIssues);
+    }
+  }
+
+  @Test
+  public void testByteBufferWithPositionOffset() throws Exception {
+    SocketAddress sa = newTempAddress();
+
+    final int bb1Offset = 32;
+    final int bb2Offset = 1;
+
+    byte[] data = new byte[96];
+    getRandom().nextBytes(data);
+
+    try (ServerSocketChannel ssc = selectorProvider().openServerSocketChannel()) {
+      ssc.bind(sa);
+
+      ByteBuffer bb1 = ByteBuffer.allocate(data.length + bb1Offset);
+      bb1.position(bb1Offset);
+
+      bb1.put(data);
+      bb1.flip();
+
+      bb1.position(bb1Offset);
+      assertEquals(bb1Offset, bb1.position());
+
+      CompletableFuture.runAsync(() -> {
+        try (SocketChannel sc = ssc.accept()) {
+          int written = 0;
+          while (bb1.hasRemaining()) {
+            written += sc.write(bb1);
+          }
+          assertEquals(data.length, written);
+        } catch (IOException e) {
+          fail(e);
+        }
+      });
+
+      SocketChannel sc = selectorProvider().openSocketChannel();
+
+      ByteBuffer bb2 = ByteBuffer.allocate(data.length + bb2Offset);
+
+      assertTrue(sc.connect(ssc.getLocalAddress()));
+
+      bb2.position(bb2Offset);
+
+      int read = 0;
+      int r;
+      do {
+        r = sc.read(bb2);
+        if (r == -1) {
+          break;
+        }
+        read += r;
+      } while (bb2.hasRemaining());
+      assertEquals(data.length, read);
+
+      assertEquals(bb1.capacity(), bb1.position());
+      assertEquals(bb1.capacity(), bb1.limit());
+      assertEquals(data.length + bb2Offset, bb2.position());
+      assertEquals(bb2.capacity(), bb2.limit());
+
+      bb1.position(bb1Offset);
+
+      for (int i = 0, n = data.length; i < n; i++) {
+        assertEquals(bb1.get(bb1Offset + i), bb2.get(bb2Offset + i), "at pos " + i);
+      }
     }
   }
 

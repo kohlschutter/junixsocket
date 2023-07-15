@@ -117,19 +117,22 @@ class AFCore extends CleanableState {
     }
     FileDescriptor fdesc = validFdOrException();
 
+    int dstPos = dst.position();
+
     ByteBuffer buf;
+    int pos;
     if (dst.isDirect()) {
       buf = dst;
+      pos = dstPos;
     } else {
       buf = getThreadLocalDirectByteBuffer(remaining);
       remaining = Math.min(remaining, buf.remaining());
+      pos = buf.position();
     }
 
     if (!blocking) {
       options |= NativeUnixSocket.OPT_NON_BLOCKING;
     }
-
-    int pos = dst.position();
 
     int count = NativeUnixSocket.receive(fdesc, buf, pos, remaining, socketAddressBuffer, options,
         ancillaryDataSupport, 0);
@@ -137,9 +140,18 @@ class AFCore extends CleanableState {
       return count;
     }
     if (buf != dst) { // NOPMD
-      buf.limit(count);
-      while (buf.hasRemaining()) {
-        dst.put(buf);
+      int oldLimit = buf.limit();
+      if (count < oldLimit) {
+        buf.limit(count);
+      }
+      try {
+        while (buf.hasRemaining()) {
+          dst.put(buf);
+        }
+      } finally {
+        if (count < oldLimit) {
+          buf.limit(oldLimit);
+        }
       }
     } else {
       if (count < 0) {
