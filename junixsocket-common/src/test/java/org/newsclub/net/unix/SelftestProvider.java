@@ -106,7 +106,7 @@ public class SelftestProvider {
     registerTestJavaInet(org.newsclub.net.unix.java.ThroughputTest.class);
 
     registerTest(org.newsclub.net.unix.domain.UnixDomainSocketAddressTest.class);
-}
+  }
 
   public Set<String> modulesDisabledByDefault() {
     return Collections.singleton("junixsocket-common.JavaInet");
