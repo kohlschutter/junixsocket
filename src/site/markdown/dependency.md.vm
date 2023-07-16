@@ -118,36 +118,36 @@ Add the following statements to `build.gradle`; if you have existing dependencie
  
 For the common Java code and common native libraries, add:
 
-	dependencies {
-		implementation 'com.kohlschutter.junixsocket:junixsocket-core:${project.version}'
-	}
+    dependencies {
+        implementation 'com.kohlschutter.junixsocket:junixsocket-core:${project.version}'
+    }
 
 Some older Gradle versions require `compile` instead of `implementation`, and some older versions have trouble resolving the `junixsocket-core` POM artifact. If you're running into problems (and only then), try the following:
 
-	dependencies {
-		implementation 'com.kohlschutter.junixsocket:junixsocket-common:${project.version}'
-		implementation 'com.kohlschutter.junixsocket:junixsocket-native-scommon:${project.version}'
-	}
+    dependencies {
+        implementation 'com.kohlschutter.junixsocket:junixsocket-common:${project.version}'
+        implementation 'com.kohlschutter.junixsocket:junixsocket-native-scommon:${project.version}'
+    }
  
 For RMI support, add:
  
-		implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:${project.version}'
+        implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:${project.version}'
  
 For MySQL support, add:
  
-		implementation 'com.kohlschutter.junixsocket:junixsocket-mysql:${project.version}'
+        implementation 'com.kohlschutter.junixsocket:junixsocket-mysql:${project.version}'
  
 For TIPC support, add:
  
-		implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:${project.version}'
+        implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:${project.version}'
  
 For VSOCK support, add:
  
-		implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:${project.version}'
+        implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:${project.version}'
  
 For Jetty support, add:
  
-		implementation 'com.kohlschutter.junixsocket:junixsocket-jetty:${project.version}'
+        implementation 'com.kohlschutter.junixsocket:junixsocket-jetty:${project.version}'
 
 #[[###]]# Snapshot versions
 
@@ -159,7 +159,7 @@ dependencyResolutionManagement {
         mavenLocal()
         mavenCentral()
         repositories {
-			  maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+            maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         }
     }
 }
