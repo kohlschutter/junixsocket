@@ -30,12 +30,17 @@ void handleFieldNotFound(JNIEnv *env, jobject instance, char *fieldName)
                                                   "()Ljava/lang/Class;");
     jobject classObject = (*env)->CallObjectMethod(env, instance,
                                                    classMethodId);
+    (*env)->ExceptionClear(env);
 
     jmethodID methodId = (*env)->GetMethodID(env,
                                              (*env)->GetObjectClass(env, classObject), "getName",
                                              "()Ljava/lang/String;");
     jstring className = (jstring)(*env)->CallObjectMethod(env, classObject,
                                                           methodId);
+    if ((*env)->ExceptionCheck(env)) {
+        return;
+    }
+
     const char* classNameStr = (*env)->GetStringUTFChars(env, className, NULL);
     if(classNameStr == NULL) {
         return; // OOME
@@ -71,6 +76,9 @@ void callObjectSetter(JNIEnv *env, jobject instance, char *methodName,
 
     __attribute__((aligned(8))) jobject array[] = {value};
     (*env)->CallVoidMethodA(env, instance, methodId, (jvalue*)array);
+    if ((*env)->ExceptionCheck(env)) {
+        return;
+    }
 }
 
 void setObjectFieldValue(JNIEnv *env, jobject instance, char *fieldName,
