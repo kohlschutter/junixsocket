@@ -181,6 +181,9 @@ static ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length
             jmethodID kSetTipcErrorInfo = getMethodID_setTipcErrorInfo();
             if(kSetTipcErrorInfo != NULL) {
                 (*env)->CallVoidMethod(env, ancSupp, kSetTipcErrorInfo, errInfo->errorCode, errInfo->dataLength);
+                if((*env)->ExceptionCheck(env)) {
+                    return -1;
+                }
             }
         } else if(cmsg->cmsg_level == SOL_TIPC && cmsg->cmsg_type == TIPC_DESTNAME && len == 12) {
             CK_IGNORE_CAST_ALIGN_BEGIN
@@ -189,6 +192,9 @@ static ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length
             jmethodID kSetTipcDestName = getMethodID_setTipcDestName();
             if(kSetTipcDestName != NULL) {
                 (*env)->CallVoidMethod(env, ancSupp, kSetTipcDestName, addr->type, addr->lower, addr->upper);
+                if((*env)->ExceptionCheck(env)) {
+                    return -1;
+                }
             }
 #endif
         } else {

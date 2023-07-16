@@ -177,6 +177,9 @@ void _initFD(JNIEnv * env, jobject fd, jint handle)
     if(fieldID_fd == NULL && methodID_setFd != NULL) {
         // Android
         (*env)->CallVoidMethod(env, fd, methodID_setFd, handle);
+        if((*env)->ExceptionCheck(env)) {
+            return;
+        }
         return;
     }
 

@@ -164,7 +164,7 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_currentRMI
     }
     jobject connHandler = (*env)->CallObjectMethod(env, tl,
                                                    tlGet);
-    if(connHandler == NULL) {
+    if((*env)->ExceptionCheck(env) || connHandler == NULL) {
         return NULL;
     }
     jclass connHandlerClass = (*env)->GetObjectClass(env, connHandler);
@@ -194,6 +194,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_deregisterSel
     }
     if(kMethodRemoveKey != NULL) {
         (*env)->CallVoidMethod(env, chann, kMethodRemoveKey, key);
+        if((*env)->ExceptionCheck(env)) {
+            return;
+        }
     } else {
         // FIXME
     }
