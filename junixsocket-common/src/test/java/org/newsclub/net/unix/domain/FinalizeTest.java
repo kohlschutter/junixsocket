@@ -25,6 +25,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
@@ -47,23 +51,24 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
   }
 
   @SuppressFBWarnings({"RV_DONT_JUST_NULL_CHECK_READLINE"})
-  private static int lsofUnixSockets(long pid) throws IOException, TestAbortedException,
+  private static List<String> lsofUnixSockets(long pid) throws IOException, TestAbortedException,
       InterruptedException {
     assertTrue(pid > 0);
+
+    List<String> lines = new ArrayList<>();
 
     Process p;
     try {
       p = Runtime.getRuntime().exec(new String[] {"lsof", "-U", "-a", "-p", String.valueOf(pid)});
     } catch (Exception e) {
       assumeTrue(false, e.getMessage());
-      return -1;
+      return Collections.emptyList();
     }
-    int lines = 0;
     try (BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream(), Charset
         .defaultCharset()))) {
       String l;
       while ((l = in.readLine()) != null) {
-        lines++;
+        lines.add(l);
         if (l.contains("busybox")) {
           assumeTrue(false, "incompatible lsof binary");
         }
@@ -76,9 +81,9 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
   @Override
   protected Object preRunCheck(Process process) throws TestAbortedException, IOException,
       InterruptedException {
-    int linesBefore = lsofUnixSockets(process.pid());
+    List<String> linesBefore = lsofUnixSockets(process.pid());
     // If that's not true, we need to skip the test
-    assumeTrue(linesBefore > 0);
+    assumeTrue(!linesBefore.isEmpty());
     return linesBefore;
   }
 
@@ -86,13 +91,14 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
   protected void postRunCheck(Process process, Object linesBeforeObj) throws TestAbortedException,
       IOException, InterruptedException {
     assertNotNull(linesBeforeObj);
-    int linesBefore = (int) linesBeforeObj;
+    @SuppressWarnings("unchecked")
+    List<String> linesBefore = (List<String>) linesBeforeObj;
     try {
-      int linesAfter = 0;
+      List<String> linesAfter = null;
       for (int i = 0; i < 10; i++) {
         Thread.sleep(100);
         linesAfter = lsofUnixSockets(process.pid());
-        if (linesAfter != linesBefore) {
+        if (linesAfter.size() < linesBefore.size()) {
           break;
         }
         if (!process.isAlive()) {
@@ -100,14 +106,18 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
         }
       }
 
-      assumeTrue(linesAfter > 0, "lsof may fail to return anything");
+      assumeTrue(Objects.requireNonNull(linesAfter).size() > 0, "lsof may fail to return anything");
 
-      assertTrue(linesAfter < linesBefore,
+      if (linesAfter.size() >= linesBefore.size()) {
+        System.err.println("lsof: Unexpected output");
+        System.err.println("lsof: Output before: " + linesBefore);
+        System.err.println("lsof: Output after: " + linesAfter);
+      }
+      assertTrue(linesAfter.size() < linesBefore.size(),
           "Our unix socket file handle should have been cleared out");
     } finally {
       process.destroy();
       process.waitFor();
     }
   }
-
 }
