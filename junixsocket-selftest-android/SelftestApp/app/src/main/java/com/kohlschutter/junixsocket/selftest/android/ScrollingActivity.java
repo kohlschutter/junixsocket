@@ -65,7 +65,7 @@ public class ScrollingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        System.out.println("XXX: "+AFSocket.isSupported());
+        System.out.println("junixsocket supported: "+AFSocket.isSupported());
         binding = ActivityScrollingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
