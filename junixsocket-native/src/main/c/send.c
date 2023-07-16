@@ -147,7 +147,7 @@ ssize_t sendmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length, jux_s
         if(ancFdsLen > 0) {
             ancBuf = (*env)->GetIntArrayElements(env, ancFds, NULL);
             memcpy(data, ancBuf, ancFdsLen * sizeof(jint));
-            (*env)->ReleaseIntArrayElements(env, ancFds, ancBuf, 0);
+            (*env)->ReleaseIntArrayElements(env, ancFds, ancBuf, JNI_ABORT); // ancFds is unmodified
         }
 
         cmsg = junixsocket_CMSG_NXTHDR(&msg, cmsg);
