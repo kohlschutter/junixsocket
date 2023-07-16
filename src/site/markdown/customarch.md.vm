@@ -5,7 +5,7 @@ binaries in *junixsocket-native-common*.
 
 Here's how you build your custom artifacts.
 
-## Prerequisites
+#[[##]]# Prerequisites
  
  1. Make sure you have a machine running your target platform. 
  2. Install the Java JDK 9 or newer (preferably Java 11), Maven 3.6 or newer, and junixsocket.
@@ -16,7 +16,7 @@ Here's how you build your custom artifacts.
 > **NOTE** You may also be able to cross-compile code for your target platform, on your development
 machine. See [Cross-compiling junixsocket](crosscomp.html) for details. 
  
-## Step 1: Build the native library for the current architecture
+#[[##]]# Step 1: Build the native library for the current architecture
 
 Make sure we can build junixsocket's JNI library.
 
@@ -36,7 +36,7 @@ via a Maven option:
 
 This for example helps to get junixsocket compile on sparcv9 Solaris.
 
-## Step 2: Find the classifier of the native library artifact
+#[[##]]# Step 2: Find the classifier of the native library artifact
 
 The classifier is the "AOL" identifier plus "-jni". The following script can find the available classifiers.
 
@@ -48,7 +48,7 @@ On x86_64 Linux, this script should show the following line:
 
     amd64-Linux-gpp-jni
 
-## Step 3: Build the junixsocket-native-custom artifact
+#[[##]]# Step 3: Build the junixsocket-native-custom artifact
 
 Let's roll this native library into our junixsocket-native-custom jar, as well as build and test
 the entire project:
@@ -56,7 +56,7 @@ the entire project:
     cd junixsocket
     mvn clean install -Djunixsocket.custom.arch=amd64-Linux-gpp-jni
 
-## Step 4: Keep the junixsocket-native-custom jar.
+#[[##]]# Step 4: Keep the junixsocket-native-custom jar.
 
 If all goes well, the junixsocket-native-custom jar that contains our target platform's native binary
 is stored in the local Maven repository cache.
@@ -75,7 +75,7 @@ back to the local repository cache on another machine:
     cd junixsocket 
     junixsocket-native-prebuilt/bin/install-to-m2repo.sh <path-to-junixsocket-native-custom-*.jar>
 
-## Step 5: Use the junixsocket-native-custom jar.
+#[[##]]# Step 5: Use the junixsocket-native-custom jar.
 
 Simply add the jar to the classpath. Make sure you don't add any other junixsocket-native-custom jar
 to it.
@@ -86,7 +86,7 @@ for development and testing purposes:
     <dependency>
       <groupId>com.kohlschutter.junixsocket</groupId>
       <artifactId>junixsocket-native-custom</artifactId>
-      <version>2.6.2</version>
+      <version>${project.version}</version>
       <classifier>amd64-Linux-gpp-jni</classifier>
     </dependency>
 
@@ -103,7 +103,7 @@ invoke the Java VM (e.g., your web server, etc.), for example:
 
 > **NOTE:** (Replace X.Y.Z with the actual version)
 
-## If that doesn't work...
+#[[##]]# If that doesn't work...
 
 There may be reasons why all this doesn't work, and you simply want to specify the location of
 the native library yourself.
@@ -125,7 +125,7 @@ You can also specify the absolute path with the system property
  
  > **NOTE:** (Replace X.Y.Z with the current version)
 
-## If that doesn't work either...
+#[[##]]# If that doesn't work either...
 
 You may have a very special system setup. You can always try to manually load the native library
 directly (using `System.load`, `System.loadLibrary`, etc.). Be sure to do this before any junixsocket

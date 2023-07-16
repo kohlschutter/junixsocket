@@ -1,6 +1,6 @@
 # Compatibility Considerations
 
-## Versioning
+#[[##]]# Versioning
 
 junixsocket versions consist of three parts: major, minor and patch (for example, 2.5.1).
 
@@ -9,18 +9,18 @@ should be backwards compatible to releases of the same "major version" (e.g., 2.
 
 `-SNAPSHOT` builds are not considered releases, but merely previews of a future release.
 
-## Supported Java versions
+#[[##]]# Supported Java versions
 
-junixsocket 2.6.2 is fully compatible with Java 8 and newer (tested up to Java 20).
+junixsocket ${project.version} is fully compatible with Java 8 and newer (tested up to Java 20).
 
-## Supported Java VMs
+#[[##]]# Supported Java VMs
 
 junixsocket has been tested to work with Oracle's Java 8 JDK, and OpenJDK (and its flavors) for newer versions,
 as well as other platform-specific VMs listed below. 
 
 junixsocket also works with GraalVM (tested with *graalvm-ce-java17-22.2.0*) both in OpenJDK mode and (since version 2.6.0, partially) in Native Image mode with Substrate VM. More [details here](graalvm.html).
 
-## Supported Platforms
+#[[##]]# Supported Platforms
 
 The minimum set of supported (out of the box) platforms and processor architectures currently is:
 
@@ -61,7 +61,7 @@ to compile from source with XLC).
 Support for [custom architectures](customarch.html) can be added by compiling a custom native binary
 on the target machine, or by [cross-compiling](crosscomp.html) using clang/LLVM on a suitable host.
 
-## Marginally supported platforms
+#[[##]]# Marginally supported platforms
 
 The following platforms can successfully load the JNI library, but since they do not provide
 support for AF_UNIX, the functionality is currently too limited to call these platforms "supported":
@@ -73,7 +73,7 @@ support for AF_UNIX, the functionality is currently too limited to call these pl
 This classification may change with the addition of new features beyond Unix domain sockets.
 Please reach out if you have some feature in mind that may be supported on these platforms.
 
-## Additional Platforms and Architectures
+#[[##]]# Additional Platforms and Architectures
 
 Upon request, support for additional systems, platforms and architectures may be added,
 such as IBM z/TPF, OpenVMS, FUJITSU BS2000/OSD, Unisys ClearPath OS 2200, QNX, VxWorks, HP-UX, Haiku, etc.
@@ -83,11 +83,11 @@ If you are interested in using junixsocket on another platform, or willing to sp
 [file a ticket](https://github.com/kohlschutter/junixsocket/issues/new/choose)
 or [contact Christian Kohlschütter via email](mailto:christian@kohlschutter.com).
 
-## Selftest
+#[[##]]# Selftest
 
 A reliable way to ensure that junixsocket works in your environment is to run the "[selftest](selftest.html)".
 
-    java -jar junixsocket-selftest-2.6.2-jar-with-dependencies.jar
+    java -jar junixsocket-selftest-${project.version}-jar-with-dependencies.jar
 
 The last line should say "Selftest PASSED", and you're good to go.
 
@@ -97,7 +97,7 @@ output of the selftest.
 > **NOTE:** If your target platform supports both 32-bit and 64-bit Java VMs, make sure to use the
 64-bit version first.
 
-## Workarounds/testing for broken setups
+#[[##]]# Workarounds/testing for broken setups
 
 There is a chance that something is subtly wrong with the combination of junixsocket and your system.
 
