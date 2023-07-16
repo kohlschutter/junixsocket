@@ -18,6 +18,7 @@
 package org.newsclub.net.unix;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * Some bridging code that allows junixsocket-selftest to do some in-depth diagnostics.
@@ -44,5 +45,16 @@ public final class SelftestDiagnosticsHelper {
    */
   public static File tempDir() {
     return NativeLibraryLoader.tempDir();
+  }
+
+  /**
+   * Returns git properties determined upon Maven build time.
+   *
+   * For performance reasons, these will not be correctly resolves when developing in Eclipse.
+   *
+   * @return The properties.
+   */
+  public static Map<String, String> gitProperties() {
+    return GitProperties.getGitProperties();
   }
 }

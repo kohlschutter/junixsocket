@@ -34,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -350,18 +351,23 @@ public class Selftest {
     out.println("and file a new bug report with the output below.");
     out.println();
     out.println("junixsocket selftest version " + AFUNIXSocket.getVersion());
+
+    Map<String, String> gitProperties = new LinkedHashMap<>(retrieveGitProperties());
     try (InputStream in = getClass().getResourceAsStream(
         "/META-INF/maven/com.kohlschutter.junixsocket/junixsocket-selftest/git.properties")) {
-      Properties props = new Properties();
       if (in != null) {
+        Properties props = new Properties();
         props.load(in);
-        out.println();
-        out.println("Git properties:");
-        out.println();
         for (String key : new TreeSet<>(props.stringPropertyNames())) {
-          out.println(key + ": " + props.getProperty(key));
+          gitProperties.put(key, props.getProperty(key));
         }
       }
+    }
+    out.println();
+    out.println("Git properties:");
+    out.println();
+    for (Map.Entry<String, String> en : gitProperties.entrySet()) {
+      out.println(en.getKey() + ": " + en.getValue());
     }
     out.println();
   }
@@ -853,6 +859,16 @@ public class Selftest {
       return (File) clazz.getMethod("tempDir").invoke(null);
     } catch (Exception e) {
       return null;
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static Map<String, String> retrieveGitProperties() {
+    try {
+      Class<?> clazz = Class.forName("org.newsclub.net.unix.SelftestDiagnosticsHelper");
+      return (Map<String, String>) clazz.getMethod("gitProperties").invoke(null);
+    } catch (Exception e) {
+      return Collections.emptyMap();
     }
   }
 
