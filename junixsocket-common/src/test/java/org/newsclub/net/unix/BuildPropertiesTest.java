@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.kohlschutter.testutil.ExecutionEnvironmentExecutionCondition;
+import com.kohlschutter.util.ExecutionEnvironmentUtil;
 
 public class BuildPropertiesTest {
   @Test
@@ -46,7 +46,7 @@ public class BuildPropertiesTest {
     Map<String, String> properties = BuildProperties.getBuildProperties();
 
     String projectVersion = properties.get("project.version");
-    if (ExecutionEnvironmentExecutionCondition.isInEclipse()) {
+    if (ExecutionEnvironmentUtil.isInEclipse()) {
       assertEquals("${project.version}", projectVersion);
     } else {
       assertNotEquals("", projectVersion);
