@@ -335,7 +335,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
    * @see #supports(AFSocketCapability)
    */
   public static final String getVersion() {
-    String v = GitProperties.getGitProperties().get("git.build.version");
+    String v = BuildProperties.getBuildProperties().get("git.build.version");
     if (v != null && !v.startsWith("$")) {
       return v;
     }

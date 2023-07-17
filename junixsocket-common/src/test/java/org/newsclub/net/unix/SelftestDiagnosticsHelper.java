@@ -48,13 +48,13 @@ public final class SelftestDiagnosticsHelper {
   }
 
   /**
-   * Returns git properties determined upon Maven build time.
+   * Returns properties determined upon Maven build time.
    *
    * For performance reasons, these will not be correctly resolves when developing in Eclipse.
    *
    * @return The properties.
    */
-  public static Map<String, String> gitProperties() {
-    return GitProperties.getGitProperties();
+  public static Map<String, String> buildProperties() {
+    return BuildProperties.getBuildProperties();
   }
 }

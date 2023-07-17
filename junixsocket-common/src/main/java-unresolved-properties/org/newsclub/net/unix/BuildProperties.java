@@ -22,29 +22,34 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Git properties that are populated upon build time.
+ * Properties that are populated upon build time.
  *
- * Also see {@code src/main/unresolved-java/.../GitProperties.java}
+ * Also see {@code src/main/unresolved-java/.../BuildProperties.java}
  * 
  * @author Christian Kohlschütter
  */
-final class GitProperties {
-  private static final Map<String, String> MAP = new LinkedHashMap<>();
+final class BuildProperties {
+  private static final Map<String, String> MAP;
 
   static {
-    MAP.put("git.build.version", "${git.build.version}"); // junixsocket version
-    MAP.put("git.commit.id.abbrev", "${git.commit.id.abbrev}");
-    MAP.put("git.commit.id.describe", "${git.commit.id.abbrev}");
-    MAP.put("git.commit.id.full", "${git.commit.id.full}");
-    MAP.put("git.commit.time", "${git.commit.time}");
-    MAP.put("git.dirty", "${git.dirty}");
+    Map<String, String> map = new LinkedHashMap<>();
+
+    map.put("project.version", "${project.version}");
+    map.put("git.build.version", "${git.build.version}"); // junixsocket version
+    map.put("git.commit.id.abbrev", "${git.commit.id.abbrev}");
+    map.put("git.commit.id.describe", "${git.commit.id.abbrev}");
+    map.put("git.commit.id.full", "${git.commit.id.full}");
+    map.put("git.commit.time", "${git.commit.time}");
+    map.put("git.dirty", "${git.dirty}");
+
+    MAP = Collections.unmodifiableMap(map);
   }
 
-  private GitProperties() {
+  private BuildProperties() {
     throw new IllegalStateException("No instances");
   }
 
-  static Map<String, String> getGitProperties() {
-    return Collections.unmodifiableMap(MAP);
+  static Map<String, String> getBuildProperties() {
+    return MAP;
   }
 }

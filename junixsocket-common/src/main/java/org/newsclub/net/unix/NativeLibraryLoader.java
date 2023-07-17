@@ -77,7 +77,7 @@ final class NativeLibraryLoader implements Closeable {
   public static String getJunixsocketVersion() throws IOException {
     // NOTE: This can't easily be tested from within the junixsocket-common Maven build
 
-    String v = GitProperties.getGitProperties().get("git.build.version");
+    String v = BuildProperties.getBuildProperties().get("git.build.version");
     if (v != null && !v.startsWith("$")) {
       return v;
     }

@@ -48,6 +48,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.engine.JupiterTestEngine;
 import org.junit.jupiter.engine.discovery.DiscoverySelectorResolver;
@@ -79,6 +80,8 @@ import com.kohlschutter.util.SystemPropertyUtil;
 @SuppressWarnings({
     "PMD.CyclomaticComplexity", "PMD.CognitiveComplexity", "PMD.CouplingBetweenObjects"})
 public class Selftest {
+  private final Class<?> diagnosticsHelperClass = resolveOptionalClass(
+      "org.newsclub.net.unix.SelftestDiagnosticsHelper");
   private final ConsolePrintStream out;
   private final Map<String, ModuleResult> results = new LinkedHashMap<>();
   private final List<AFSocketCapability> supportedCapabilites = new ArrayList<>();
@@ -352,21 +355,20 @@ public class Selftest {
     out.println();
     out.println("junixsocket selftest version " + AFUNIXSocket.getVersion());
 
-    Map<String, String> gitProperties = new LinkedHashMap<>(retrieveGitProperties());
+    Map<String, String> buildProperties = new LinkedHashMap<>(retrieveBuildProperties());
     try (InputStream in = getClass().getResourceAsStream(
         "/META-INF/maven/com.kohlschutter.junixsocket/junixsocket-selftest/git.properties")) {
       if (in != null) {
         Properties props = new Properties();
         props.load(in);
         for (String key : new TreeSet<>(props.stringPropertyNames())) {
-          gitProperties.put(key, props.getProperty(key));
+          buildProperties.put(key, props.getProperty(key));
         }
       }
     }
     out.println();
-    out.println("Git properties:");
-    out.println();
-    for (Map.Entry<String, String> en : gitProperties.entrySet()) {
+    out.println("Build properties:");
+    for (Map.Entry<String, String> en : buildProperties.entrySet()) {
       out.println(en.getKey() + ": " + en.getValue());
     }
     out.println();
@@ -844,31 +846,34 @@ public class Selftest {
     }
   }
 
-  private static Throwable retrieveInitError() {
+  private Throwable retrieveInitError() {
+    return callStaticMethod(diagnosticsHelperClass, "initError", null);
+  }
+
+  private File retrieveTempDir() {
+    return callStaticMethod(diagnosticsHelperClass, "tempDir", null);
+  }
+
+  private Map<String, String> retrieveBuildProperties() {
+    return callStaticMethod(diagnosticsHelperClass, "buildProperties", () -> Collections
+        .emptyMap());
+  }
+
+  private static Class<?> resolveOptionalClass(String name) {
     try {
-      Class<?> clazz = Class.forName("org.newsclub.net.unix.SelftestDiagnosticsHelper");
-      return (Throwable) clazz.getMethod("initError").invoke(null);
+      return Class.forName(name);
     } catch (Exception e) {
       return null;
     }
   }
 
-  private static File retrieveTempDir() {
+  @SuppressWarnings({"unchecked", "null"})
+  private static <T> T callStaticMethod(Class<?> clazz, String methodName,
+      Supplier<T> defaultSupplier) {
     try {
-      Class<?> clazz = Class.forName("org.newsclub.net.unix.SelftestDiagnosticsHelper");
-      return (File) clazz.getMethod("tempDir").invoke(null);
+      return (T) clazz.getMethod(methodName).invoke(null);
     } catch (Exception e) {
-      return null;
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  private static Map<String, String> retrieveGitProperties() {
-    try {
-      Class<?> clazz = Class.forName("org.newsclub.net.unix.SelftestDiagnosticsHelper");
-      return (Map<String, String>) clazz.getMethod("gitProperties").invoke(null);
-    } catch (Exception e) {
-      return Collections.emptyMap();
+      return defaultSupplier == null ? (T) null : defaultSupplier.get();
     }
   }
 

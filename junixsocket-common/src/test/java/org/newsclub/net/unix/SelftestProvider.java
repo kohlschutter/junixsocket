@@ -35,15 +35,18 @@ import java.util.Set;
  */
 @SuppressWarnings("PMD.CouplingBetweenObjects")
 public class SelftestProvider {
+  private static final String COMMON = "junixsocket-common";
+  private static final String COMMON_JAVA_INET = "junixsocket-common.JavaInet";
+
   final Map<String, LinkedHashSet<Class<?>>> testMap = new LinkedHashMap<>(); // NOPMD.LooseCoupling
 
   // CPD-OFF
 
   @SuppressWarnings({"PMD.ExcessiveMethodLength", "PMD.UnnecessaryFullyQualifiedName"})
   public SelftestProvider() {
-    registerTest("junixsocket-common", org.newsclub.net.unix.AFTIPCSocketAddressTest.class);
+    registerTest(COMMON, org.newsclub.net.unix.AFTIPCSocketAddressTest.class);
 
-    registerTest("junixsocket-common", org.newsclub.net.unix.AFUNIXSocketAddressTest.class);
+    registerTest(COMMON, org.newsclub.net.unix.AFUNIXSocketAddressTest.class);
 
     registerTest(org.newsclub.net.unix.domain.AbstractNamespaceTest.class);
 
@@ -53,6 +56,8 @@ public class SelftestProvider {
 
     registerTest(org.newsclub.net.unix.domain.AvailableTest.class);
 
+    registerTest(COMMON, BuildPropertiesTest.class);
+
     registerTest(org.newsclub.net.unix.domain.BufferOverflowTest.class);
 
     registerTest(org.newsclub.net.unix.domain.CancelAcceptTest.class);
@@ -61,8 +66,8 @@ public class SelftestProvider {
 
     registerTest(org.newsclub.net.unix.domain.EndOfFileTest.class);
 
-    registerTest("junixsocket-common", org.newsclub.net.unix.FileDescriptorCastTest.class);
-    registerTest("junixsocket-common", org.newsclub.net.unix.domain.FileDescriptorCastTest.class);
+    registerTest(COMMON, org.newsclub.net.unix.FileDescriptorCastTest.class);
+    registerTest(COMMON, org.newsclub.net.unix.domain.FileDescriptorCastTest.class);
 
     // file-descriptor passing is AF_UNIX-specific
     registerTest(org.newsclub.net.unix.domain.FileDescriptorsTest.class);
@@ -74,7 +79,7 @@ public class SelftestProvider {
     // peer credential passing is AF_UNIX specific
     registerTest(org.newsclub.net.unix.domain.PeerCredentialsTest.class);
 
-    registerTest("junixsocket-common", PipeTest.class);
+    registerTest(COMMON, PipeTest.class);
 
     registerTest(org.newsclub.net.unix.domain.ReadWriteTest.class);
 
@@ -109,17 +114,17 @@ public class SelftestProvider {
   }
 
   public Set<String> modulesDisabledByDefault() {
-    return Collections.singleton("junixsocket-common.JavaInet");
+    return Collections.singleton(COMMON_JAVA_INET);
   }
 
   private void registerTest( //
       Class<? extends SocketTestBase<AFUNIXSocketAddress>> testUnixDomain) {
-    registerTest("junixsocket-common", testUnixDomain);
+    registerTest(COMMON, testUnixDomain);
   }
 
   private void registerTestJavaInet( //
       Class<? extends SocketTestBase<InetSocketAddress>> testJava) {
-    registerTest("junixsocket-common.JavaInet", testJava);
+    registerTest(COMMON_JAVA_INET, testJava);
   }
 
   private void registerTest(String group, Class<?> test) {
