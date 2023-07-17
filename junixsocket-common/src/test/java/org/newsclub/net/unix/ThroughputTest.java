@@ -598,8 +598,12 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
     }
 
     try {
-      bytesRead.get(2, TimeUnit.SECONDS);
-    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+      bytesRead.get(NUM_MILLISECONDS, TimeUnit.MILLISECONDS);
+    } catch (TimeoutException e) {
+      if (NUM_SECONDS != 0) {
+        e.printStackTrace();
+      }
+    } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
 
