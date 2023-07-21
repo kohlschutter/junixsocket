@@ -33,6 +33,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -202,6 +203,12 @@ public class Selftest {
   @SuppressFBWarnings({
       "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
   public static void main(String[] args) throws Exception {
+    int delay = SystemPropertyUtil.getIntSystemProperty("selftest.delay.at-start", 0);
+    if (delay > 0) {
+      System.out.println("Delaying execution of selftest by " + delay + " seconds");
+      Thread.sleep(Duration.ofSeconds(delay).toMillis());
+    }
+
     int rc = runSelftest();
 
     if (SystemPropertyUtil.getBooleanSystemProperty("selftest.wait.at-end", false)) {
