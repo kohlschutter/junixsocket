@@ -24,9 +24,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -152,15 +154,15 @@ final class NativeLibraryLoader implements Closeable {
 
   private static final class ClasspathLibraryCandidate extends LibraryCandidate {
     private final String artifactName;
-    private final InputStream libraryIn;
+    private final URL library;
     private final String path;
 
     ClasspathLibraryCandidate(String artifactName, String libraryNameAndVersion, String path,
-        InputStream libraryIn) {
+        URL library) {
       super(libraryNameAndVersion);
       this.artifactName = artifactName;
       this.path = path;
-      this.libraryIn = libraryIn;
+      this.library = library;
     }
 
     @Override
@@ -168,35 +170,63 @@ final class NativeLibraryLoader implements Closeable {
       if (libraryNameAndVersion == null) {
         return null;
       }
-      File libFile;
-      try {
-        libFile = createTempFile("libtmp", System.mapLibraryName(libraryNameAndVersion));
-        try (OutputStream out = new FileOutputStream(libFile)) { // NOPMD UseTryWithResources
-          byte[] buf = new byte[4096];
-          int read;
-          while ((read = libraryIn.read(buf)) >= 0) {
-            out.write(buf, 0, read);
+
+      File libDir = TEMP_DIR;
+
+      for (int attempt = 0; attempt < 3; attempt++) {
+        File libFile;
+        try {
+          libFile = File.createTempFile("libtmp", System.mapLibraryName(libraryNameAndVersion),
+              libDir);
+          try (InputStream libraryIn = library.openStream();
+              OutputStream out = new FileOutputStream(libFile)) { // NOPMD UseTryWithResources
+            byte[] buf = new byte[4096];
+            int read;
+            while ((read = libraryIn.read(buf)) >= 0) {
+              out.write(buf, 0, read);
+            }
           }
-        } finally {
-          libraryIn.close();
+        } catch (IOException e) {
+          throw e;
         }
-      } catch (IOException e) {
-        throw e;
-      }
-      System.load(libFile.getAbsolutePath());
-      if (!libFile.delete()) {
-        libFile.deleteOnExit();
+
+        try {
+          System.load(libFile.getAbsolutePath());
+        } catch (UnsatisfiedLinkError e) {
+          String message = e.getMessage().toLowerCase(Locale.getDefault());
+          if (!message.contains("perm")) {
+            throw e;
+          }
+
+          // Operation not permitted; permission denied; EPERM...
+          // -> tmp directory may be mounted with "noexec", try loading from user.home, user.dir
+
+          switch (attempt) {
+            case 0:
+              libDir = new File(System.getProperty("user.home", "."));
+              break;
+            case 1:
+              libDir = new File(System.getProperty("user.dir", "."));
+              break;
+            default:
+              throw e;
+          }
+
+          continue;
+        } finally {
+          if (!libFile.delete()) {
+            libFile.deleteOnExit();
+          }
+        }
+
+        // If we reach this, then we were able to load the library
+        break; // NOPMD.AvoidBranchingStatementAsLastInLoop
       }
       return artifactName + "/" + libraryNameAndVersion;
     }
 
     @Override
     public void close() {
-      try {
-        libraryIn.close();
-      } catch (IOException e) {
-        // ignore
-      }
     }
 
     @Override
@@ -405,6 +435,17 @@ final class NativeLibraryLoader implements Closeable {
     return ARCHITECTURE_AND_OS;
   }
 
+  private static URL validateResourceURL(URL url) {
+    if (url == null) {
+      return null;
+    }
+    try (InputStream in = url.openStream()) {
+      return url;
+    } catch (IOException e) {
+      return null;
+    }
+  }
+
   private List<LibraryCandidate> findLibraryCandidates(String artifactName,
       String libraryNameAndVersion, Class<?> providerClass) {
     String mappedName = System.mapLibraryName(libraryNameAndVersion);
@@ -421,11 +462,11 @@ final class NativeLibraryLoader implements Closeable {
         for (String prefix : prefixes) {
           String path = "/lib/" + archOs + "-" + compiler + "/jni/" + prefix + mappedName;
 
-          InputStream in;
+          URL url;
 
-          in = providerClass.getResourceAsStream(path);
-          if (in != null) {
-            list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion, path, in));
+          url = validateResourceURL(providerClass.getResource(path));
+          if (url != null) {
+            list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion, path, url));
           }
 
           // NOTE: we have to try .nodeps version _after_ trying the properly linked one.
@@ -433,10 +474,10 @@ final class NativeLibraryLoader implements Closeable {
           // with a "symbol lookup error"
           String nodepsPath = nodepsPath(path);
           if (nodepsPath != null) {
-            in = providerClass.getResourceAsStream(nodepsPath);
-            if (in != null) {
+            url = validateResourceURL(providerClass.getResource(nodepsPath));
+            if (url != null) {
               list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion,
-                  nodepsPath, in));
+                  nodepsPath, url));
             }
           }
         }
@@ -452,10 +493,6 @@ final class NativeLibraryLoader implements Closeable {
     } else {
       return path.substring(0, lastDot) + ".nodeps" + path.substring(lastDot);
     }
-  }
-
-  private static File createTempFile(String prefix, String suffix) throws IOException {
-    return File.createTempFile(prefix, suffix, TEMP_DIR);
   }
 
   @Override
