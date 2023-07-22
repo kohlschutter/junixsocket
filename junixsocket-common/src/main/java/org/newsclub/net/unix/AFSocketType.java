@@ -34,9 +34,9 @@ public enum AFSocketType {
   SOCK_DGRAM(NativeUnixSocket.SOCK_DGRAM), //
 
   /**
-   * Sequential packet socket.
+   * Raw mode.
    */
-  SOCK_SEQPACKET(NativeUnixSocket.SOCK_SEQPACKET), //
+  SOCK_RAW(NativeUnixSocket.SOCK_RAW), //
 
   /**
    * Reliably-delivered datagram messages.
@@ -47,10 +47,9 @@ public enum AFSocketType {
   SOCK_RDM(NativeUnixSocket.SOCK_RDM), //
 
   /**
-   * Raw mode.
+   * Sequential packet socket.
    */
-  SOCK_RAW(NativeUnixSocket.SOCK_RAW), //
-
+  SOCK_SEQPACKET(NativeUnixSocket.SOCK_SEQPACKET), //
   ;
 
   private final int id;
