@@ -22,7 +22,11 @@ import java.io.IOException;
 
 final class AFUNIXDatagramSocketImpl extends AFDatagramSocketImpl<AFUNIXSocketAddress> {
   AFUNIXDatagramSocketImpl(FileDescriptor fd) throws IOException {
-    super(AFUNIXSocketAddress.AF_UNIX, fd, AFSocketType.SOCK_DGRAM);
+    this(fd, AFSocketType.SOCK_DGRAM);
+  }
+
+  AFUNIXDatagramSocketImpl(FileDescriptor fd, AFSocketType socketType) throws IOException {
+    super(AFUNIXSocketAddress.AF_UNIX, fd, socketType);
   }
 
   AFUNIXSocketCredentials getPeerCredentials() throws IOException {

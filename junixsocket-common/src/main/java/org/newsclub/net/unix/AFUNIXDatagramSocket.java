@@ -34,6 +34,11 @@ public final class AFUNIXDatagramSocket extends AFDatagramSocket<AFUNIXSocketAdd
     super(new AFUNIXDatagramSocketImpl(fd));
   }
 
+  private AFUNIXDatagramSocket(final FileDescriptor fd, AFSocketType socketType)
+      throws IOException {
+    super(new AFUNIXDatagramSocketImpl(fd, socketType));
+  }
+
   @Override
   protected AFUNIXDatagramChannel newChannel() {
     return new AFUNIXDatagramChannel(this);
@@ -47,6 +52,19 @@ public final class AFUNIXDatagramSocket extends AFDatagramSocket<AFUNIXSocketAdd
    */
   public static AFUNIXDatagramSocket newInstance() throws IOException {
     return (AFUNIXDatagramSocket) newInstance(AFUNIXDatagramSocket::new);
+  }
+
+  /**
+   * Returns a new {@link AFUNIXDatagramSocket} instance for the given socket type.
+   *
+   * @param socketType The socket type.
+   * @return The new instance.
+   * @throws IOException on error.
+   */
+  public static AFUNIXDatagramSocket newInstance(AFSocketType socketType) throws IOException {
+    return (AFUNIXDatagramSocket) newInstance((fd) -> {
+      return new AFUNIXDatagramSocket(fd, socketType);
+    });
   }
 
   static AFUNIXDatagramSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
