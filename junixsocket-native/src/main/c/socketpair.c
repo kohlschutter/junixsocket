@@ -175,11 +175,13 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketPair
                         .svm_cid = VMADDR_CID_RESERVED
 #  endif
                 };
+CK_IGNORE_CAST_ALIGN_BEGIN
                 if(simulateSocketPair(env, domain, type, fd1, fd2, (jux_sockaddr_t*)&addr,
                                       sizeof(struct sockaddr_vm)) != 0) {
                     _throwErrnumException(env, myerr, NULL);
                     return;
                 }
+CK_IGNORE_CAST_ALIGN_END
                 return;
             }
 #endif
