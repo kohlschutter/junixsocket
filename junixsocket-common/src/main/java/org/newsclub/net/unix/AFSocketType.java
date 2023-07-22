@@ -46,6 +46,11 @@ public enum AFSocketType {
    */
   SOCK_RDM(NativeUnixSocket.SOCK_RDM), //
 
+  /**
+   * Raw mode.
+   */
+  SOCK_RAW(NativeUnixSocket.SOCK_RAW), //
+
   ;
 
   private final int id;

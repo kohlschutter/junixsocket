@@ -51,6 +51,7 @@ final class NativeUnixSocket {
 
   static final int SOCK_STREAM = 1;
   static final int SOCK_DGRAM = 2;
+  static final int SOCK_RAW = 3;
   static final int SOCK_RDM = 4;
   static final int SOCK_SEQPACKET = 5;
 
