@@ -73,16 +73,20 @@ public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBa
           sema.release();
         }
 
+        @SuppressWarnings("PMD.DoNotCallGarbageCollectionExplicitly")
         @Override
         protected void handleConnection(final Socket socket) throws IOException {
           try {
             assumeTrue(process.pid() > 0);
             Object preRunCheck = null;
-            try (OutputStream out = socket.getOutputStream();
-                InputStream unused = socket.getInputStream()) {
-              preRunCheck = preRunCheck(process);
-              out.write('@');
+            try {
+              try (OutputStream out = socket.getOutputStream();
+                  InputStream unused = socket.getInputStream()) {
+                preRunCheck = preRunCheck(process);
+                out.write('@');
+              }
             } finally {
+              System.gc();
               future.complete(preRunCheck);
             }
           } catch (Exception e) {
