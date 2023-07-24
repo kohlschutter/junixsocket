@@ -43,7 +43,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
 
   private static AFAddressFamily<AFSYSTEMSocketAddress> afSystem;
   private static final String SELECTOR_PROVIDER_CLASS =
-      "org.newsclub.net.unix.system.AFSystemSelectorProvider";
+      "org.newsclub.net.unix.darwin.system.AFSYSTEMSelectorProvider";
 
   /**
    * The AF_SYSTEM system address.
