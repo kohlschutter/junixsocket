@@ -52,6 +52,7 @@
       <item name="AF_TIPC" href="junixsocket-tipc/index.html" />
       <item name="AF_UNIX" href="quickstart.html" />
       <item name="AF_VSOCK" href="junixsocket-vsock/index.html" />
+      <item name="AF_SYSTEM" href="junixsocket-darwin/index.html" />
     </menu>
 
     <menu name="Demo Code">

@@ -48,6 +48,7 @@ final class NativeUnixSocket {
   static final int DOMAIN_UNIX = 1;
   static final int DOMAIN_TIPC = 30;
   static final int DOMAIN_VSOCK = 40;
+  static final int DOMAIN_SYSTEM = 32;
 
   static final int SOCK_STREAM = 1;
   static final int SOCK_DGRAM = 2;
@@ -98,6 +99,8 @@ final class NativeUnixSocket {
         "org.newsclub.net.unix.AFTIPCSocketAddress");
     AFAddressFamily.registerAddressFamily("vsock", NativeUnixSocket.DOMAIN_VSOCK,
         "org.newsclub.net.unix.AFVSOCKSocketAddress");
+    AFAddressFamily.registerAddressFamily("system", NativeUnixSocket.DOMAIN_SYSTEM,
+        "org.newsclub.net.unix.AFSYSTEMSocketAddress");
   }
 
   static boolean isLoaded() {
@@ -308,6 +311,8 @@ final class NativeUnixSocket {
   static native int sockTypeToNative(int type) throws IOException;
 
   static native int vsockGetLocalCID() throws IOException;
+
+  static native int systemResolveCtlId(FileDescriptor fd, String ctlName) throws IOException;
 
   static void setLoaded(boolean successful) {
     LOADED.complete(successful);

@@ -30,6 +30,9 @@ typedef union {
 #if junixsocket_have_vsock
     struct sockaddr_vm vsock;
 #endif
+#if junixsocket_have_system
+    struct sockaddr_ctl system;
+#endif
     char bytes[128];
 } jux_sockaddr_t;
 

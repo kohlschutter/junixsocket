@@ -13,6 +13,8 @@ extern "C" {
 #define org_newsclub_net_unix_NativeUnixSocket_DOMAIN_TIPC 30L
 #undef org_newsclub_net_unix_NativeUnixSocket_DOMAIN_VSOCK
 #define org_newsclub_net_unix_NativeUnixSocket_DOMAIN_VSOCK 40L
+#undef org_newsclub_net_unix_NativeUnixSocket_DOMAIN_SYSTEM
+#define org_newsclub_net_unix_NativeUnixSocket_DOMAIN_SYSTEM 32L
 #undef org_newsclub_net_unix_NativeUnixSocket_SOCK_STREAM
 #define org_newsclub_net_unix_NativeUnixSocket_SOCK_STREAM 1L
 #undef org_newsclub_net_unix_NativeUnixSocket_SOCK_DGRAM
@@ -442,6 +444,14 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockTypeToNat
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_vsockGetLocalCID
   (JNIEnv *, jclass);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    systemResolveCtlId
+ * Signature: (Ljava/io/FileDescriptor;Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_systemResolveCtlId
+  (JNIEnv *, jclass, jobject, jstring);
 
 #ifdef __cplusplus
 }

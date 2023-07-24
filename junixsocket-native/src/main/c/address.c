@@ -42,6 +42,17 @@ struct __attribute__((__packed__)) jux_vsock_addr {
     jint cid;
 };
 
+struct __attribute__((__packed__)) jux_system_addr {
+    jint sysaddr;
+    jint id;
+    jint unit;
+    jint reserved0;
+    jint reserved1;
+    jint reserved2;
+    jint reserved3;
+    jint reserved4;
+};
+
 int domainToNative(int domain) {
     switch(domain) {
         case org_newsclub_net_unix_NativeUnixSocket_DOMAIN_UNIX:
@@ -53,6 +64,10 @@ int domainToNative(int domain) {
 #if junixsocket_have_vsock
         case org_newsclub_net_unix_NativeUnixSocket_DOMAIN_VSOCK:
             return AF_VSOCK;
+#endif
+#if junixsocket_have_system
+        case org_newsclub_net_unix_NativeUnixSocket_DOMAIN_SYSTEM:
+            return AF_SYSTEM;
 #endif
         default:
             // do not throw: _throwException(env, kExceptionSocketException, "Unsupported domain");
@@ -131,6 +146,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrLengt
 #if junixsocket_have_vsock
         case AF_VSOCK:
             return sizeof(struct sockaddr_vm);
+#endif
+#if junixsocket_have_system
+        case AF_SYSTEM:
+            return sizeof(struct sockaddr_ctl);
 #endif
         default:
             _throwException(env, kExceptionSocketException, "Unsupported domain");
@@ -214,6 +233,29 @@ static jbyteArray sockAddrVsockToBytes(JNIEnv *env, struct sockaddr_vm *addr) {
         .reserved1 = htonl(addr->svm_reserved1),
         .port = htonl(addr->svm_port),
         .cid = htonl(addr->svm_cid),
+    };
+    CK_IGNORE_RESERVED_IDENTIFIER_END
+
+    jbyteArray array = (*env)->NewByteArray(env, sizeof(typeof(buf)));
+    (*env)->SetByteArrayRegion(env, array, 0, sizeof(typeof(buf)), (jbyte*)&buf);
+    return array;
+}
+
+#endif
+
+#if junixsocket_have_system
+
+static jbyteArray sockAddrSystemToBytes(JNIEnv *env, struct sockaddr_ctl *addr) {
+    CK_IGNORE_RESERVED_IDENTIFIER_BEGIN // htonl
+    struct jux_system_addr buf = {
+        .sysaddr = htonl(addr->ss_sysaddr),
+        .id = htonl(addr->sc_id),
+        .unit = htonl(addr->sc_unit),
+        .reserved0 = htonl(addr->sc_reserved[0]),
+        .reserved1 = htonl(addr->sc_reserved[1]),
+        .reserved2 = htonl(addr->sc_reserved[2]),
+        .reserved3 = htonl(addr->sc_reserved[3]),
+        .reserved4 = htonl(addr->sc_reserved[4])
     };
     CK_IGNORE_RESERVED_IDENTIFIER_END
 
@@ -328,6 +370,15 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
             }
             return sockAddrVsockToBytes(env, &addr.vsock);
 #endif
+#if junixsocket_have_system
+        case AF_SYSTEM:
+            if(len > (socklen_t)sizeof(struct sockaddr_ctl)) {
+                _throwException(env, kExceptionSocketException,
+                                peerName ? "peer sockname too long" : "sockname too long");
+                return NULL;
+            }
+            return sockAddrSystemToBytes(env, &addr.system);
+#endif
         default:
             _throwException(env, kExceptionSocketException,
                             "Unsupported socket family");
@@ -356,6 +407,11 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAdd
 #if junixsocket_have_vsock
         case AF_VSOCK:
             sockAddrLen = sizeof(struct sockaddr_vm);
+            break;
+#endif
+#if junixsocket_have_system
+        case AF_SYSTEM:
+            sockAddrLen = sizeof(struct sockaddr_ctl);
             break;
 #endif
         default:
@@ -397,6 +453,10 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAdd
         case AF_VSOCK:
             return sockAddrVsockToBytes(env, (struct sockaddr_vm *)addr);
 #endif
+#if junixsocket_have_system
+        case AF_SYSTEM:
+            return sockAddrSystemToBytes(env, (struct sockaddr_ctl *)addr);
+#endif
         default:
             _throwException(env, kExceptionSocketException, "Unsupported domain");
             return NULL;
@@ -425,6 +485,11 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAd
 #if junixsocket_have_vsock
         case AF_VSOCK:
             sockAddrLen = sizeof(struct sockaddr_vm);
+            break;
+#endif
+#if junixsocket_have_system
+        case AF_SYSTEM:
+            sockAddrLen = sizeof(struct sockaddr_ctl);
             break;
 #endif
         default:
@@ -499,6 +564,26 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAd
             addr->vsock.svm_reserved1 = ntohl(jaddr.reserved1);
             addr->vsock.svm_port = ntohl(jaddr.port);
             addr->vsock.svm_cid = ntohl(jaddr.cid);
+            CK_IGNORE_RESERVED_IDENTIFIER_END
+        }
+            break;
+#endif
+#if junixsocket_have_system
+        case AF_SYSTEM:
+        {
+            struct jux_system_addr jaddr = {0};
+            (*env)->GetByteArrayRegion(env, addressBytes, 0, sizeof(struct jux_system_addr), (void*)&jaddr);
+
+            CK_IGNORE_RESERVED_IDENTIFIER_BEGIN // ntohl
+            addr->system.sc_len = sizeof(struct sockaddr_ctl);
+            addr->system.ss_sysaddr = (jshort)ntohl(jaddr.sysaddr);
+            addr->system.sc_id = ntohl(jaddr.id);
+            addr->system.sc_unit = ntohl(jaddr.unit);
+            addr->system.sc_reserved[0] = ntohl(jaddr.reserved0);
+            addr->system.sc_reserved[1] = ntohl(jaddr.reserved1);
+            addr->system.sc_reserved[2] = ntohl(jaddr.reserved2);
+            addr->system.sc_reserved[3] = ntohl(jaddr.reserved3);
+            addr->system.sc_reserved[4] = ntohl(jaddr.reserved4);
             CK_IGNORE_RESERVED_IDENTIFIER_END
         }
             break;

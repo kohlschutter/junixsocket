@@ -138,6 +138,11 @@ public enum AFSocketCapability {
    */
   CAPABILITY_LARGE_PORTS(13),
 
+  /**
+   * Support for certain Darwin (macOS Kernel)-specific features, such as the AF_SYSTEM domain.
+   */
+  CAPABILITY_DARWIN(14),
+
   ; // end of list
 
   private final int bitmask;

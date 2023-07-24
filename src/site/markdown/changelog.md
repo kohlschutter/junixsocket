@@ -29,6 +29,7 @@ If you have certain business reasons to not upgrade but still need something fix
 - Add ability to get native file descriptor number via FileDescriptorCast
 - Add AFSocketCapability for "large port numbers" (larger than 65535)
 - Add support to convert UnixDomainSocketAddress to AFUNIXSocketAddress (Java 16+)
+- Add support for AF_SYSTEM (macOS), which allows creating your own VPN via utun, for example.
 - Fix potential data corruption when sending non-direct ByteBuffers larger than 8192 bytes
 - Fix potential data corruption when receiving non-direct ByteBuffers with non-zero position
 - Fix intermittent hangs when sending datagrams on macOS, BSD

@@ -39,6 +39,7 @@ static jint CAPABILITY_VSOCK_DGRAM = (1  << 10);
 static jint CAPABILITY_ZERO_LENGTH_SEND = (1 << 11);
 static jint CAPABILITY_UNSAFE = (1 << 12);
 static jint CAPABILITY_LARGE_PORTS = (1 << 13);
+static jint CAPABILITY_DARWIN = (1 << 14);
 CK_IGNORE_UNUSED_VARIABLE_END
 
 void init_capabilities(JNIEnv *env CK_UNUSED) {
@@ -119,5 +120,8 @@ defined(SO_PEERCRED) || defined(SO_PEERID) || defined(__NetBSD__) || defined(__s
         capabilities |= CAPABILITY_LARGE_PORTS;
     }
 
+#if junixsocket_have_system
+    capabilities |= CAPABILITY_DARWIN;
+#endif
     return capabilities;
 }

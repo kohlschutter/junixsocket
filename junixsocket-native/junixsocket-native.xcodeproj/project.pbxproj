@@ -962,6 +962,54 @@
 		436E168027FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
 		436E168127FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
 		436E168227FBB70B00A553EC /* tipc.c in Sources */ = {isa = PBXBuildFile; fileRef = 436E166027FBB70B00A553EC /* tipc.c */; };
+		438F4D972A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4D982A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4D992A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4D9A2A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4D9B2A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4D9C2A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4D9D2A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4D9E2A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4D9F2A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DA02A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DA12A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DA22A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DA32A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DA42A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DA52A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DA62A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DA72A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DA82A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DA92A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DAA2A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DAB2A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DAC2A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DAD2A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DAE2A6AF05000546E2C /* afsystem.c in Sources */ = {isa = PBXBuildFile; fileRef = 438F4D952A6AF05000546E2C /* afsystem.c */; };
+		438F4DAF2A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DB02A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DB12A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DB22A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DB32A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DB42A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DB52A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DB62A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DB72A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DB82A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DB92A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DBA2A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DBB2A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DBC2A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DBD2A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DBE2A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DBF2A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DC02A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DC12A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DC22A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DC32A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DC42A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DC52A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		438F4DC62A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
 		43B3DF83265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
 		43B3DF84265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
 		43B3DF85265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
@@ -1481,6 +1529,8 @@
 		436B5AF12826F49A00574CD4 /* libjunixsocket-powerpc-ibm-os400.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-powerpc-ibm-os400.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		436E165F27FBB70B00A553EC /* tipc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = tipc.h; path = src/main/c/tipc.h; sourceTree = "<group>"; };
 		436E166027FBB70B00A553EC /* tipc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = tipc.c; path = src/main/c/tipc.c; sourceTree = "<group>"; };
+		438F4D952A6AF05000546E2C /* afsystem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = afsystem.c; path = src/main/c/afsystem.c; sourceTree = "<group>"; };
+		438F4D962A6AF05000546E2C /* afsystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = afsystem.h; path = src/main/c/afsystem.h; sourceTree = "<group>"; };
 		43B3DF81265EEC930024822F /* pipe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pipe.h; path = src/main/c/pipe.h; sourceTree = "<group>"; };
 		43B3DF82265EEC930024822F /* pipe.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = pipe.c; path = src/main/c/pipe.c; sourceTree = "<group>"; };
 		43B3DFB5266082000024822F /* socketpair.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = socketpair.c; path = src/main/c/socketpair.c; sourceTree = "<group>"; };
@@ -1694,6 +1744,8 @@
 				430233BB2650AB4C00823167 /* accept.h */,
 				4302339C2650AB4900823167 /* address.c */,
 				430233B92650AB4C00823167 /* address.h */,
+				438F4D952A6AF05000546E2C /* afsystem.c */,
+				438F4D962A6AF05000546E2C /* afsystem.h */,
 				430233A52650AB4900823167 /* ancillary.c */,
 				430233C52650AB4E00823167 /* ancillary.h */,
 				430233C32650AB4D00823167 /* bind.c */,
@@ -1814,6 +1866,7 @@
 				4304A602266DFCEF003BCEDF /* socket.h in Headers */,
 				4304A603266DFCEF003BCEDF /* ckmacros.h in Headers */,
 				4304A604266DFCEF003BCEDF /* address.h in Headers */,
+				438F4DC22A6AF05100546E2C /* afsystem.h in Headers */,
 				4304A605266DFCEF003BCEDF /* polling.h in Headers */,
 				4304A606266DFCEF003BCEDF /* accept.h in Headers */,
 				4304A607266DFCEF003BCEDF /* reflection.h in Headers */,
@@ -1848,6 +1901,7 @@
 				430234E82650AB4F00823167 /* socket.h in Headers */,
 				430235602650AB4F00823167 /* ckmacros.h in Headers */,
 				430235182650AB4F00823167 /* address.h in Headers */,
+				438F4DB02A6AF05100546E2C /* afsystem.h in Headers */,
 				430234642650AB4E00823167 /* polling.h in Headers */,
 				430235302650AB4F00823167 /* accept.h in Headers */,
 				430234942650AB4E00823167 /* reflection.h in Headers */,
@@ -1882,6 +1936,7 @@
 				430234F22650AB4F00823167 /* socket.h in Headers */,
 				4302356A2650AB4F00823167 /* ckmacros.h in Headers */,
 				430235222650AB4F00823167 /* address.h in Headers */,
+				438F4DBE2A6AF05100546E2C /* afsystem.h in Headers */,
 				4302346E2650AB4E00823167 /* polling.h in Headers */,
 				4302353A2650AB4F00823167 /* accept.h in Headers */,
 				4302349E2650AB4E00823167 /* reflection.h in Headers */,
@@ -1916,6 +1971,7 @@
 				430234EB2650AB4F00823167 /* socket.h in Headers */,
 				430235632650AB4F00823167 /* ckmacros.h in Headers */,
 				4302351B2650AB4F00823167 /* address.h in Headers */,
+				438F4DB42A6AF05100546E2C /* afsystem.h in Headers */,
 				430234672650AB4E00823167 /* polling.h in Headers */,
 				430235332650AB4F00823167 /* accept.h in Headers */,
 				430234972650AB4E00823167 /* reflection.h in Headers */,
@@ -1950,6 +2006,7 @@
 				430234EE2650AB4F00823167 /* socket.h in Headers */,
 				430235662650AB4F00823167 /* ckmacros.h in Headers */,
 				4302351E2650AB4F00823167 /* address.h in Headers */,
+				438F4DB92A6AF05100546E2C /* afsystem.h in Headers */,
 				4302346A2650AB4E00823167 /* polling.h in Headers */,
 				430235362650AB4F00823167 /* accept.h in Headers */,
 				4302349A2650AB4E00823167 /* reflection.h in Headers */,
@@ -1984,6 +2041,7 @@
 				430234F12650AB4F00823167 /* socket.h in Headers */,
 				430235692650AB4F00823167 /* ckmacros.h in Headers */,
 				430235212650AB4F00823167 /* address.h in Headers */,
+				438F4DBC2A6AF05100546E2C /* afsystem.h in Headers */,
 				4302346D2650AB4E00823167 /* polling.h in Headers */,
 				430235392650AB4F00823167 /* accept.h in Headers */,
 				4302349D2650AB4E00823167 /* reflection.h in Headers */,
@@ -2018,6 +2076,7 @@
 				430234EC2650AB4F00823167 /* socket.h in Headers */,
 				430235642650AB4F00823167 /* ckmacros.h in Headers */,
 				4302351C2650AB4F00823167 /* address.h in Headers */,
+				438F4DB52A6AF05100546E2C /* afsystem.h in Headers */,
 				430234682650AB4E00823167 /* polling.h in Headers */,
 				430235342650AB4F00823167 /* accept.h in Headers */,
 				430234982650AB4E00823167 /* reflection.h in Headers */,
@@ -2052,6 +2111,7 @@
 				430234ED2650AB4F00823167 /* socket.h in Headers */,
 				430235652650AB4F00823167 /* ckmacros.h in Headers */,
 				4302351D2650AB4F00823167 /* address.h in Headers */,
+				438F4DB82A6AF05100546E2C /* afsystem.h in Headers */,
 				430234692650AB4E00823167 /* polling.h in Headers */,
 				430235352650AB4F00823167 /* accept.h in Headers */,
 				430234992650AB4E00823167 /* reflection.h in Headers */,
@@ -2086,6 +2146,7 @@
 				430234EA2650AB4F00823167 /* socket.h in Headers */,
 				430235622650AB4F00823167 /* ckmacros.h in Headers */,
 				4302351A2650AB4F00823167 /* address.h in Headers */,
+				438F4DB32A6AF05100546E2C /* afsystem.h in Headers */,
 				430234662650AB4E00823167 /* polling.h in Headers */,
 				430235322650AB4F00823167 /* accept.h in Headers */,
 				430234962650AB4E00823167 /* reflection.h in Headers */,
@@ -2120,6 +2181,7 @@
 				430234F02650AB4F00823167 /* socket.h in Headers */,
 				430235682650AB4F00823167 /* ckmacros.h in Headers */,
 				430235202650AB4F00823167 /* address.h in Headers */,
+				438F4DBB2A6AF05100546E2C /* afsystem.h in Headers */,
 				4302346C2650AB4E00823167 /* polling.h in Headers */,
 				430235382650AB4F00823167 /* accept.h in Headers */,
 				4302349C2650AB4E00823167 /* reflection.h in Headers */,
@@ -2154,6 +2216,7 @@
 				435B547B2A3F65D2001011B8 /* socket.h in Headers */,
 				435B547C2A3F65D2001011B8 /* ckmacros.h in Headers */,
 				435B547D2A3F65D2001011B8 /* address.h in Headers */,
+				438F4DC42A6AF05100546E2C /* afsystem.h in Headers */,
 				435B547E2A3F65D2001011B8 /* polling.h in Headers */,
 				435B547F2A3F65D2001011B8 /* accept.h in Headers */,
 				435B54802A3F65D2001011B8 /* reflection.h in Headers */,
@@ -2188,6 +2251,7 @@
 				435B54B72A3F65F4001011B8 /* socket.h in Headers */,
 				435B54B82A3F65F4001011B8 /* ckmacros.h in Headers */,
 				435B54B92A3F65F4001011B8 /* address.h in Headers */,
+				438F4DC52A6AF05100546E2C /* afsystem.h in Headers */,
 				435B54BA2A3F65F4001011B8 /* polling.h in Headers */,
 				435B54BB2A3F65F4001011B8 /* accept.h in Headers */,
 				435B54BC2A3F65F4001011B8 /* reflection.h in Headers */,
@@ -2222,6 +2286,7 @@
 				435B54F32A3F661F001011B8 /* socket.h in Headers */,
 				435B54F42A3F661F001011B8 /* ckmacros.h in Headers */,
 				435B54F52A3F661F001011B8 /* address.h in Headers */,
+				438F4DC62A6AF05100546E2C /* afsystem.h in Headers */,
 				435B54F62A3F661F001011B8 /* polling.h in Headers */,
 				435B54F72A3F661F001011B8 /* accept.h in Headers */,
 				435B54F82A3F661F001011B8 /* reflection.h in Headers */,
@@ -2256,6 +2321,7 @@
 				430234E72650AB4F00823167 /* socket.h in Headers */,
 				4302355F2650AB4F00823167 /* ckmacros.h in Headers */,
 				430235172650AB4F00823167 /* address.h in Headers */,
+				438F4DAF2A6AF05100546E2C /* afsystem.h in Headers */,
 				430234632650AB4E00823167 /* polling.h in Headers */,
 				4302352F2650AB4F00823167 /* accept.h in Headers */,
 				430234932650AB4E00823167 /* reflection.h in Headers */,
@@ -2290,6 +2356,7 @@
 				43684D92282EE24B005F2989 /* socket.h in Headers */,
 				43684D93282EE24B005F2989 /* ckmacros.h in Headers */,
 				43684D94282EE24B005F2989 /* address.h in Headers */,
+				438F4DBD2A6AF05100546E2C /* afsystem.h in Headers */,
 				43684D95282EE24B005F2989 /* polling.h in Headers */,
 				43684D96282EE24B005F2989 /* accept.h in Headers */,
 				43684D97282EE24B005F2989 /* reflection.h in Headers */,
@@ -2324,6 +2391,7 @@
 				436B5A9228244CB500574CD4 /* socket.h in Headers */,
 				436B5A9328244CB500574CD4 /* ckmacros.h in Headers */,
 				436B5A9428244CB500574CD4 /* address.h in Headers */,
+				438F4DB62A6AF05100546E2C /* afsystem.h in Headers */,
 				436B5A9528244CB500574CD4 /* polling.h in Headers */,
 				436B5A9628244CB500574CD4 /* accept.h in Headers */,
 				436B5A9728244CB500574CD4 /* reflection.h in Headers */,
@@ -2358,6 +2426,7 @@
 				436B5ACC2826F49A00574CD4 /* socket.h in Headers */,
 				436B5ACD2826F49A00574CD4 /* ckmacros.h in Headers */,
 				436B5ACE2826F49A00574CD4 /* address.h in Headers */,
+				438F4DB72A6AF05100546E2C /* afsystem.h in Headers */,
 				436B5ACF2826F49A00574CD4 /* polling.h in Headers */,
 				436B5AD02826F49A00574CD4 /* accept.h in Headers */,
 				436B5AD12826F49A00574CD4 /* reflection.h in Headers */,
@@ -2392,6 +2461,7 @@
 				43B3DFE026660A2D0024822F /* socket.h in Headers */,
 				43B3DFE126660A2D0024822F /* ckmacros.h in Headers */,
 				43B3DFE226660A2D0024822F /* address.h in Headers */,
+				438F4DBF2A6AF05100546E2C /* afsystem.h in Headers */,
 				43B3DFE326660A2D0024822F /* polling.h in Headers */,
 				43B3DFE426660A2D0024822F /* accept.h in Headers */,
 				43B3DFE526660A2D0024822F /* reflection.h in Headers */,
@@ -2426,6 +2496,7 @@
 				43B3E01826672FD30024822F /* socket.h in Headers */,
 				43B3E01926672FD30024822F /* ckmacros.h in Headers */,
 				43B3E01A26672FD30024822F /* address.h in Headers */,
+				438F4DC02A6AF05100546E2C /* afsystem.h in Headers */,
 				43B3E01B26672FD30024822F /* polling.h in Headers */,
 				43B3E01C26672FD30024822F /* accept.h in Headers */,
 				43B3E01D26672FD30024822F /* reflection.h in Headers */,
@@ -2460,6 +2531,7 @@
 				43B3E050266756540024822F /* socket.h in Headers */,
 				43B3E051266756540024822F /* ckmacros.h in Headers */,
 				43B3E052266756540024822F /* address.h in Headers */,
+				438F4DB12A6AF05100546E2C /* afsystem.h in Headers */,
 				43B3E053266756540024822F /* polling.h in Headers */,
 				43B3E054266756540024822F /* accept.h in Headers */,
 				43B3E055266756540024822F /* reflection.h in Headers */,
@@ -2494,6 +2566,7 @@
 				43B3E088266971630024822F /* socket.h in Headers */,
 				43B3E089266971630024822F /* ckmacros.h in Headers */,
 				43B3E08A266971630024822F /* address.h in Headers */,
+				438F4DC12A6AF05100546E2C /* afsystem.h in Headers */,
 				43B3E08B266971630024822F /* polling.h in Headers */,
 				43B3E08C266971630024822F /* accept.h in Headers */,
 				43B3E08D266971630024822F /* reflection.h in Headers */,
@@ -2528,6 +2601,7 @@
 				43C57CD82A38F370001DEA62 /* socket.h in Headers */,
 				43C57CD92A38F370001DEA62 /* ckmacros.h in Headers */,
 				43C57CDA2A38F370001DEA62 /* address.h in Headers */,
+				438F4DC32A6AF05100546E2C /* afsystem.h in Headers */,
 				43C57CDB2A38F370001DEA62 /* polling.h in Headers */,
 				43C57CDC2A38F370001DEA62 /* accept.h in Headers */,
 				43C57CDD2A38F370001DEA62 /* reflection.h in Headers */,
@@ -2562,6 +2636,7 @@
 				430234E92650AB4F00823167 /* socket.h in Headers */,
 				430235612650AB4F00823167 /* ckmacros.h in Headers */,
 				430235192650AB4F00823167 /* address.h in Headers */,
+				438F4DB22A6AF05100546E2C /* afsystem.h in Headers */,
 				430234652650AB4E00823167 /* polling.h in Headers */,
 				430235312650AB4F00823167 /* accept.h in Headers */,
 				430234952650AB4E00823167 /* reflection.h in Headers */,
@@ -2596,6 +2671,7 @@
 				430234EF2650AB4F00823167 /* socket.h in Headers */,
 				430235672650AB4F00823167 /* ckmacros.h in Headers */,
 				4302351F2650AB4F00823167 /* address.h in Headers */,
+				438F4DBA2A6AF05100546E2C /* afsystem.h in Headers */,
 				4302346B2650AB4E00823167 /* polling.h in Headers */,
 				430235372650AB4F00823167 /* accept.h in Headers */,
 				4302349B2650AB4E00823167 /* reflection.h in Headers */,
@@ -3104,6 +3180,7 @@
 				4304A61F266DFCEF003BCEDF /* listen.c in Sources */,
 				4304A620266DFCEF003BCEDF /* ancillary.c in Sources */,
 				4304A621266DFCEF003BCEDF /* accept.c in Sources */,
+				438F4DAA2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3134,6 +3211,7 @@
 				430234AC2650AB4E00823167 /* listen.c in Sources */,
 				430234342650AB4E00823167 /* ancillary.c in Sources */,
 				430233E02650AB4E00823167 /* accept.c in Sources */,
+				438F4D982A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3164,6 +3242,7 @@
 				430234B62650AB4E00823167 /* listen.c in Sources */,
 				4302343E2650AB4E00823167 /* ancillary.c in Sources */,
 				430233EA2650AB4E00823167 /* accept.c in Sources */,
+				438F4DA62A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3194,6 +3273,7 @@
 				430234AF2650AB4E00823167 /* listen.c in Sources */,
 				430234372650AB4E00823167 /* ancillary.c in Sources */,
 				430233E32650AB4E00823167 /* accept.c in Sources */,
+				438F4D9C2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3224,6 +3304,7 @@
 				430234B22650AB4E00823167 /* listen.c in Sources */,
 				4302343A2650AB4E00823167 /* ancillary.c in Sources */,
 				430233E62650AB4E00823167 /* accept.c in Sources */,
+				438F4DA12A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3254,6 +3335,7 @@
 				430234B52650AB4E00823167 /* listen.c in Sources */,
 				4302343D2650AB4E00823167 /* ancillary.c in Sources */,
 				430233E92650AB4E00823167 /* accept.c in Sources */,
+				438F4DA42A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3284,6 +3366,7 @@
 				430234B02650AB4E00823167 /* listen.c in Sources */,
 				430234382650AB4E00823167 /* ancillary.c in Sources */,
 				430233E42650AB4E00823167 /* accept.c in Sources */,
+				438F4D9D2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3314,6 +3397,7 @@
 				430234B12650AB4E00823167 /* listen.c in Sources */,
 				430234392650AB4E00823167 /* ancillary.c in Sources */,
 				430233E52650AB4E00823167 /* accept.c in Sources */,
+				438F4DA02A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3344,6 +3428,7 @@
 				430234AE2650AB4E00823167 /* listen.c in Sources */,
 				430234362650AB4E00823167 /* ancillary.c in Sources */,
 				430233E22650AB4E00823167 /* accept.c in Sources */,
+				438F4D9B2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3374,6 +3459,7 @@
 				430234B42650AB4E00823167 /* listen.c in Sources */,
 				4302343C2650AB4E00823167 /* ancillary.c in Sources */,
 				430233E82650AB4E00823167 /* accept.c in Sources */,
+				438F4DA32A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3404,6 +3490,7 @@
 				435B549A2A3F65D2001011B8 /* listen.c in Sources */,
 				435B549B2A3F65D2001011B8 /* ancillary.c in Sources */,
 				435B549C2A3F65D2001011B8 /* accept.c in Sources */,
+				438F4DAC2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3434,6 +3521,7 @@
 				435B54D62A3F65F4001011B8 /* listen.c in Sources */,
 				435B54D72A3F65F4001011B8 /* ancillary.c in Sources */,
 				435B54D82A3F65F4001011B8 /* accept.c in Sources */,
+				438F4DAD2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3464,6 +3552,7 @@
 				435B55122A3F661F001011B8 /* listen.c in Sources */,
 				435B55132A3F661F001011B8 /* ancillary.c in Sources */,
 				435B55142A3F661F001011B8 /* accept.c in Sources */,
+				438F4DAE2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3494,6 +3583,7 @@
 				430234AB2650AB4E00823167 /* listen.c in Sources */,
 				430234332650AB4E00823167 /* ancillary.c in Sources */,
 				430233DF2650AB4E00823167 /* accept.c in Sources */,
+				438F4D972A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3524,6 +3614,7 @@
 				43684DB0282EE24B005F2989 /* listen.c in Sources */,
 				43684DB1282EE24B005F2989 /* ancillary.c in Sources */,
 				43684DB2282EE24B005F2989 /* accept.c in Sources */,
+				438F4DA52A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3554,6 +3645,7 @@
 				436B5AB028244CB500574CD4 /* listen.c in Sources */,
 				436B5AB128244CB500574CD4 /* ancillary.c in Sources */,
 				436B5AB228244CB500574CD4 /* accept.c in Sources */,
+				438F4D9E2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3584,6 +3676,7 @@
 				436B5AEA2826F49A00574CD4 /* listen.c in Sources */,
 				436B5AEB2826F49A00574CD4 /* ancillary.c in Sources */,
 				436B5AEC2826F49A00574CD4 /* accept.c in Sources */,
+				438F4D9F2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3614,6 +3707,7 @@
 				43B3DFFD26660A2D0024822F /* listen.c in Sources */,
 				43B3DFFE26660A2D0024822F /* ancillary.c in Sources */,
 				43B3DFFF26660A2D0024822F /* accept.c in Sources */,
+				438F4DA72A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3644,6 +3738,7 @@
 				43B3E03526672FD30024822F /* listen.c in Sources */,
 				43B3E03626672FD30024822F /* ancillary.c in Sources */,
 				43B3E03726672FD30024822F /* accept.c in Sources */,
+				438F4DA82A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3674,6 +3769,7 @@
 				43B3E06D266756540024822F /* listen.c in Sources */,
 				43B3E06E266756540024822F /* ancillary.c in Sources */,
 				43B3E06F266756540024822F /* accept.c in Sources */,
+				438F4D992A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3704,6 +3800,7 @@
 				43B3E0A5266971630024822F /* listen.c in Sources */,
 				43B3E0A6266971630024822F /* ancillary.c in Sources */,
 				43B3E0A7266971630024822F /* accept.c in Sources */,
+				438F4DA92A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3734,6 +3831,7 @@
 				43C57CF72A38F370001DEA62 /* listen.c in Sources */,
 				43C57CF82A38F370001DEA62 /* ancillary.c in Sources */,
 				43C57CF92A38F370001DEA62 /* accept.c in Sources */,
+				438F4DAB2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3764,6 +3862,7 @@
 				430234AD2650AB4E00823167 /* listen.c in Sources */,
 				430234352650AB4E00823167 /* ancillary.c in Sources */,
 				430233E12650AB4E00823167 /* accept.c in Sources */,
+				438F4D9A2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3794,6 +3893,7 @@
 				430234B32650AB4E00823167 /* listen.c in Sources */,
 				4302343B2650AB4E00823167 /* ancillary.c in Sources */,
 				430233E72650AB4E00823167 /* accept.c in Sources */,
+				438F4DA22A6AF05000546E2C /* afsystem.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

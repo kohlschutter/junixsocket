@@ -222,6 +222,11 @@ extern "C" {
 #endif
 #endif
 
+#if defined(__MACH__) && __has_include(<sys/kern_control.h>)
+#  include <sys/kern_control.h>
+#  define junixsocket_have_system 1
+#endif
+
 // Solaris
 #if defined(__sun) || defined(__sun__)
 #undef junixsocket_have_sun_len

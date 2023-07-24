@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>junixsocket-darwin</artifactId>
+    <packaging>jar</packaging>
+    <parent>
+        <groupId>com.kohlschutter.junixsocket</groupId>
+        <artifactId>junixsocket</artifactId>
+        <version>2.7.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <name>junixsocket-darwin</name>
+    <properties>
+        <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+
+        <kohlschutter.multirelease.java8.release>8</kohlschutter.multirelease.java8.release>
+
+        <patchArgs.org.newsclub.net.unix>org.newsclub.net.unix=${project.basedir}/../junixsocket-common/${kohlschutter.target.name}/test-classes:${settings.localRepository}/com/kohlschutter/junixsocket/junixsocket-common/${project.version}/junixsocket-common-${project.version}-tests.jar</patchArgs.org.newsclub.net.unix>
+
+        <!-- This lets us reuse the unit tests from junixsocket-common -->
+        <!-- m2e/Eclipse users: Either run tests using "Run as Maven test"
+        or add "(dash dash)patch-module org.newsclub.net.unix=junixsocket-common/target-eclipse/test-classes"
+        to VM arguments for "Run as JUnit test" -->
+        <kohlschutter.surefire.patch.args>--patch-module ${patchArgs.org.newsclub.net.unix}</kohlschutter.surefire.patch.args>
+    </properties>
+
+    <description>The junixsocket implementation for AF_SYSTEM sockets</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-common</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <!-- Important: The test-jar dependency must be declared before this main dependency,
+            Eclipse/m2e may silently fail otherwise ("Module org.newsclub.net.unix not found") -->
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-core</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-native-common</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-native-custom</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <classifier>default</classifier>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>test-compile</phase>
+                        <configuration>
+                            <compilerArgs>
+                                <arg>--patch-module</arg>
+                                <arg>${patchArgs.org.newsclub.net.unix}</arg>
+
+                                <arg>${xlint.compiler.arg}</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -74,6 +74,18 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>add-sources-from-junixsocket-darwin</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>${project.parent.basedir}/junixsocket-darwin/src/test/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>add-sources-from-junixsocket-rmi</id>
                                 <phase>generate-sources</phase>
                                 <goals>
@@ -281,6 +293,24 @@
                                                 <exclude>module-info.java</exclude>
                                             </excludes>
                                         </resource>
+                                        <resource>
+                                            <directory>${project.parent.basedir}/junixsocket-darwin/src/test/java</directory>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
+                                        </resource>
+                                        <resource>
+                                            <directory>${project.parent.basedir}/junixsocket-darwin/src/test/java8</directory>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
+                                        </resource>
                                     </resources>
                                     <overwrite>true</overwrite>
                                 </configuration>
@@ -387,6 +417,12 @@
                                         </resource>
                                         <resource>
                                             <directory>${project.parent.basedir}/junixsocket-rmi/src/test/java</directory>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                        </resource>
+                                        <resource>
+                                            <directory>${project.parent.basedir}/junixsocket-darwin/src/test/java</directory>
                                             <includes>
                                                 <include>**</include>
                                             </includes>
@@ -512,6 +548,11 @@
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-rmi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-darwin</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

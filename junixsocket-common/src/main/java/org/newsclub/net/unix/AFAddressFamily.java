@@ -267,6 +267,8 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
         return (AFSocketImplExtensions<A>) new AFTIPCSocketImplExtensions(ancillaryDataSupport);
       case NativeUnixSocket.DOMAIN_VSOCK:
         return (AFSocketImplExtensions<A>) new AFVSOCKSocketImplExtensions(ancillaryDataSupport);
+      case NativeUnixSocket.DOMAIN_SYSTEM:
+        return (AFSocketImplExtensions<A>) new AFSYSTEMSocketImplExtensions(ancillaryDataSupport);
       default:
         throw new UnsupportedOperationException();
     }

@@ -48,6 +48,10 @@ typedef enum {
     kFDTypeAFVSOCKStreamSocket,
     kFDTypeAFVSOCKDatagramSocket,
 #endif
+#if junixsocket_have_system
+    kFDTypeAFSYSTEMStreamSocket,
+    kFDTypeAFSYSTEMDatagramSocket,
+#endif
     kFDTypeMaxExcl
 } FileDescriptorType;
 
@@ -58,6 +62,10 @@ static char* const kClassnameAFTIPCDatagramSocket = "org/newsclub/net/unix/tipc/
 #if junixsocket_have_vsock
 static char* const kClassnameAFVSOCKSocket = "org/newsclub/net/unix/vsock/AFVSOCKSocket";
 static char* const kClassnameAFVSOCKDatagramSocket = "org/newsclub/net/unix/vsock/AFVSOCKDatagramSocket";
+#endif
+#if junixsocket_have_system
+static char* const kClassnameAFSYSTEMSocket = "org/newsclub/net/unix/darwin/system/AFSYSTEMSocket";
+static char* const kClassnameAFSYSTEMDatagramSocket = "org/newsclub/net/unix/darwin/system/AFSYSTEMDatagramSocket";
 #endif
 
 // NOTE: The exceptions must all be either inherit from IOException or RuntimeException/Error
@@ -75,6 +83,10 @@ static char *kFDTypeClassNames[kFDTypeMaxExcl] = {
 #if junixsocket_have_vsock
     kClassnameAFVSOCKSocket,
     kClassnameAFVSOCKDatagramSocket,
+#endif
+#if junixsocket_have_system
+    kClassnameAFSYSTEMSocket,
+    kClassnameAFSYSTEMDatagramSocket,
 #endif
 };
 
@@ -104,6 +116,11 @@ void init_filedescriptors(JNIEnv *env) {
          // Even if VSOCK is technically available, the junixsocket-vsock jar may not be in the classpath,
          // therefore it's OK if these classes are missing
          || (classname == kClassnameAFVSOCKSocket || classname == kClassnameAFVSOCKDatagramSocket)
+#endif
+#if junixsocket_have_system
+         // Even if AF_SYSTEM is technically available, the junixsocket-system jar may not be in the classpath,
+         // therefore it's OK if these classes are missing
+         || (classname == kClassnameAFSYSTEMSocket || classname == kClassnameAFSYSTEMDatagramSocket)
 #endif
 );
     }
@@ -430,11 +447,30 @@ JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
      ret = getsockname(handle, addr, &len);
      if(ret != 0) {
          int errnum = socket_errno;
-         if(errnum == ENOTSOCK) {
-             return kFDTypeClasses[kFDTypeOther];
+         switch(errnum) {
+             case ENOTSOCK:
+                 return kFDTypeClasses[kFDTypeOther];
+             case ENOTCONN:
+                 break;
+             case EOPNOTSUPP:
+                 ret = getpeername(handle, addr, &len);
+                 if(ret != 0) {
+                     switch(errnum) {
+                         case ENOTSOCK:
+                             return kFDTypeClasses[kFDTypeOther];
+                         case EOPNOTSUPP:
+                         case ENOTCONN:
+                             break;
+                         default:
+                             _throwErrnumException(env, errnum, fd);
+                             return NULL;
+                     }
+                 }
+                 break;
+             default:
+                 _throwErrnumException(env, errnum, fd);
+                 return NULL;
          }
-         _throwErrnumException(env, errnum, fd);
-         return NULL;
      }
 #endif
 
@@ -443,6 +479,7 @@ JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
                     (char*)
 #endif
                       &type, &typeLen);
+
      if(ret != 0) {
          _throwErrnumException(env, socket_errno, fd);
          return NULL;
@@ -480,6 +517,17 @@ JNIEXPORT jclass JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_primaryType
                      return kFDTypeClasses[kFDTypeAFVSOCKDatagramSocket];
                  default:
                      return kFDTypeClasses[kFDTypeOtherSocket];
+             }
+#endif
+#if junixsocket_have_system
+         case AF_SYSTEM:
+             switch(type) {
+                 case SOCK_STREAM:
+                     return kFDTypeClasses[kFDTypeAFSYSTEMStreamSocket];
+                 case SOCK_DGRAM:
+                     return kFDTypeClasses[kFDTypeAFSYSTEMDatagramSocket];
+                 default:
+                     return kFDTypeClasses[kFDTypeAFSYSTEMDatagramSocket];
              }
 #endif
          default:
