@@ -33,6 +33,7 @@ If you have certain business reasons to not upgrade but still need something fix
 - Fix potential data corruption when sending non-direct ByteBuffers larger than 8192 bytes
 - Fix potential data corruption when receiving non-direct ByteBuffers with non-zero position
 - Fix intermittent hangs when sending datagrams on macOS, BSD
+- Fix "org.eclipse.jdt.annotation" JPMS module: no longer required at runtime
 - Improve JNI library lookup; load from user.home/user.dir if tmpfs is mounted with noexec
 - Improve reliability on exotic environments
 - Update dependencies, improve tests, selftest, build scripts
