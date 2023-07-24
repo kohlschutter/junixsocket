@@ -252,11 +252,7 @@ NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in
 This builds the Maven site 
 
     cd junixsocket
-    mvn clean && \
-      mvn install site -Pstrict,release && \
-      mvn javadoc:aggregate -P '!with-native,!with-non-modularized,strict' && \
-      mvn jxr:aggregate jxr:test-aggregate -P strict,release && \
-      mvn site:stage -Pstrict,release
+    ./scripts/build-site
 
 The website should now be inspected at `junixsocket/target/staging/index.html`
 
