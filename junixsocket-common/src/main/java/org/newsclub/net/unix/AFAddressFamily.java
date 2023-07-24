@@ -196,7 +196,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
     }
     if (af.addressClassname != null && !addressClass.getName().equals(af.addressClassname)) {
       throw new IllegalStateException("Unexpected classname for address family " + juxString + ": "
-          + addressClass.getName());
+          + addressClass.getName() + "; expected: " + af.addressClassname);
     }
     if (af.addressConstructor != null || af.addressClass != null) {
       throw new IllegalStateException("Already registered: " + juxString);
