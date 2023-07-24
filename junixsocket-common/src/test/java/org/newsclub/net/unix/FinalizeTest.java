@@ -74,6 +74,7 @@ public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBa
         }
 
         @SuppressWarnings("PMD.DoNotCallGarbageCollectionExplicitly")
+        @SuppressFBWarnings("DM_GC")
         @Override
         protected void handleConnection(final Socket socket) throws IOException {
           try {
