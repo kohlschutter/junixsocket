@@ -35,5 +35,39 @@
   "condition" : { "typeReachable" : "org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider" },
   "name":"org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider",
   "allPublicMethods":true
+},
+{
+  "condition" : { "typeReachable" : "org.newsclub.net.unix.darwin.system.AFSYSTEMSelectorProvider" },
+  "name":"org.newsclub.net.unix.darwin.system.AFSYSTEMSelectorProvider",
+  "allPublicMethods":true
+},
+{
+  "name":"com.kohlschutter.testutil.AvailabilityExecutionCondition",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.kohlschutter.testutil.AvailabilityRequirement",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.kohlschutter.testutil.ExecutionEnvironmentExecutionCondition",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.kohlschutter.testutil.ExecutionEnvironmentRequirement",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.net.InetSocketAddress"
+},
+{
+  "name":"java.net.UnixDomainSocketAddress"
+},
+{
+  "name":"org.newsclub.net.unix.AFSYSTEMSocketAddress",
+  "methods":[{"name":"addressFamily","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.OperationNotSupportedSocketException"
 }
 ]

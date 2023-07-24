@@ -9,6 +9,10 @@
   "methods":[{"name":"getBoolean","parameterTypes":["java.lang.String"] }]
 },
 {
+  "name":"java.lang.Class",
+  "methods":[{"name":"getName","parameterTypes":[] }]
+},
+{
   "name":"java.lang.IllegalStateException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
@@ -18,14 +22,15 @@
 },
 {
   "name":"java.lang.Integer",
-  "methods":[
-    {"name":"<init>","parameterTypes":["int"] }, 
-    {"name":"intValue","parameterTypes":[] }
-  ]
+  "methods":[{"name":"<init>","parameterTypes":["int"] }, {"name":"intValue","parameterTypes":[] }]
 },
 {
   "name":"java.lang.NullPointerException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Object",
+  "methods":[{"name":"getClass","parameterTypes":[] }]
 },
 {
   "name":"java.lang.ProcessBuilder$RedirectPipeImpl",
@@ -34,24 +39,19 @@
 },
 {
   "name":"java.lang.String",
-  "methods":[
-    {"name":"lastIndexOf","parameterTypes":["int"] }, 
-    {"name":"substring","parameterTypes":["int"] }
-  ]
+  "methods":[{"name":"lastIndexOf","parameterTypes":["int"] }, {"name":"substring","parameterTypes":["int"] }]
 },
 {
   "name":"java.lang.System",
-  "methods":[
-    {"name":"getProperty","parameterTypes":["java.lang.String"] }, 
-    {"name":"setProperty","parameterTypes":["java.lang.String","java.lang.String"] }
-  ]
+  "methods":[{"name":"getProperty","parameterTypes":["java.lang.String"] }, {"name":"setProperty","parameterTypes":["java.lang.String","java.lang.String"] }]
 },
 {
   "name":"java.net.DatagramSocket"
 },
 {
   "name":"java.net.InetSocketAddress",
-  "fields":[{"name":"holder"}]
+  "fields":[{"name":"holder"}],
+  "methods":[{"name":"<init>","parameterTypes":["int"] }]
 },
 {
   "name":"java.net.InetSocketAddress$InetSocketAddressHolder",
@@ -86,14 +86,7 @@
 },
 {
   "name":"org.newsclub.net.unix.AFSelector$PollFd",
-  "fields":[
-    {"name":"fds"}, 
-    {"name":"ops"}, 
-    {"name":"rops"}
-  ]
-},
-{
-  "name":"org.newsclub.net.unix.AFTIPCSocketAddress"
+  "fields":[{"name":"fds"}, {"name":"ops"}, {"name":"rops"}]
 },
 {
   "name":"org.newsclub.net.unix.AFUNIXDatagramSocket"
@@ -109,11 +102,7 @@
 },
 {
   "name":"org.newsclub.net.unix.AFUNIXSocketCredentials",
-  "fields":[
-    {"name":"gids"}, 
-    {"name":"pid"}, 
-    {"name":"uid"}
-  ],
+  "fields":[{"name":"gids"}, {"name":"pid"}, {"name":"uid"}],
   "methods":[{"name":"setUUID","parameterTypes":["java.lang.String"] }]
 },
 {
@@ -122,15 +111,8 @@
 },
 {
   "name":"org.newsclub.net.unix.AncillaryDataSupport",
-  "fields":[
-    {"name":"ancillaryReceiveBuffer"}, 
-    {"name":"pendingFileDescriptors"}
-  ],
-  "methods":[
-    {"name":"receiveFileDescriptors","parameterTypes":["int[]"] }, 
-    {"name":"setTipcDestName","parameterTypes":["int","int","int"] }, 
-    {"name":"setTipcErrorInfo","parameterTypes":["int","int"] }
-  ]
+  "fields":[{"name":"ancillaryReceiveBuffer"}, {"name":"pendingFileDescriptors"}],
+  "methods":[{"name":"receiveFileDescriptors","parameterTypes":["int[]"] }, {"name":"setTipcDestName","parameterTypes":["int","int","int"] }, {"name":"setTipcErrorInfo","parameterTypes":["int","int"] }]
 },
 {
   "name":"org.newsclub.net.unix.InvalidArgumentSocketException",
@@ -145,18 +127,18 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
+  "name":"org.newsclub.net.unix.darwin.system.AFSYSTEMDatagramSocket"
+},
+{
+  "name":"org.newsclub.net.unix.darwin.system.AFSYSTEMSocket"
+},
+{
   "name":"org.newsclub.net.unix.selftest.Selftest",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
   "name":"org.newsclub.net.unix.tipc.AFTIPCGroupRequest",
-  "methods":[
-    {"name":"fromNative","parameterTypes":["int","int","int","int"] }, 
-    {"name":"getFlagsValue","parameterTypes":[] }, 
-    {"name":"getInstance","parameterTypes":[] }, 
-    {"name":"getScopeId","parameterTypes":[] }, 
-    {"name":"getType","parameterTypes":[] }
-  ]
+  "methods":[{"name":"fromNative","parameterTypes":["int","int","int","int"] }, {"name":"getFlagsValue","parameterTypes":[] }, {"name":"getInstance","parameterTypes":[] }, {"name":"getScopeId","parameterTypes":[] }, {"name":"getType","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.vsock.AFVSOCKDatagramSocket"

@@ -9,6 +9,10 @@
   "methods":[{"name":"getBoolean","parameterTypes":["java.lang.String"] }]
 },
 {
+  "name":"java.lang.Class",
+  "methods":[{"name":"getName","parameterTypes":[] }]
+},
+{
   "name":"java.lang.IllegalStateException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
@@ -26,6 +30,10 @@
 {
   "name":"java.lang.NullPointerException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.Object",
+  "methods":[{"name":"getClass","parameterTypes":[] }]
 },
 {
   "name":"java.lang.ProcessBuilder$RedirectPipeImpl",
@@ -51,7 +59,8 @@
 },
 {
   "name":"java.net.InetSocketAddress",
-  "fields":[{"name":"holder"}]
+  "fields":[{"name":"holder"}],
+  "methods":[{"name":"<init>","parameterTypes":["int"] }]
 },
 {
   "name":"java.net.InetSocketAddress$InetSocketAddressHolder",
@@ -191,5 +200,11 @@
 },
 {
   "name":"org.newsclub.net.unix.AFDatagramSocketImpl"
+},
+{
+  "name":"org.newsclub.net.unix.darwin.system.AFSYSTEMDatagramSocket"
+},
+{
+  "name":"org.newsclub.net.unix.darwin.system.AFSYSTEMSocket"
 }
 ]

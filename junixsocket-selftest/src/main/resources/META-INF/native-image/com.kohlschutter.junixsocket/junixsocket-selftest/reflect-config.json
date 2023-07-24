@@ -266,6 +266,7 @@
 },
 {
   "name":"org.newsclub.net.unix.ThroughputTest",
+  "allDeclaredMethods":true,
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
@@ -450,6 +451,7 @@
 },
 {
   "name":"org.newsclub.net.unix.domain.ThroughputTest",
+  "allDeclaredMethods":true,
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
@@ -610,6 +612,7 @@
 },
 {
   "name":"org.newsclub.net.unix.tipc.ThroughputTest",
+  "allDeclaredMethods":true,
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
@@ -769,6 +772,7 @@
 },
 {
   "name":"org.newsclub.net.unix.vsock.ThroughputTest",
+  "allDeclaredMethods":true,
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
@@ -776,7 +780,69 @@
   "allDeclaredConstructors":true
 },
 {
+  "name":"org.newsclub.net.unix.SelftestDiagnosticsHelper",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.newsclub.net.unix.BuildPropertiesTest",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.darwin.system.KernelControlNamesTest",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.darwin.system.UtunTest",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.domain.ThroughputTestShim",
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.domain.UnixDomainSocketAddressTest",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
   "name":"sun.security.provider.NativePRNG",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.NativePRNG$NonBlocking",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {

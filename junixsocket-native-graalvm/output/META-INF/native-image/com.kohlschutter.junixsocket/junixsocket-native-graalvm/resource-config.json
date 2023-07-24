@@ -1,27 +1,17 @@
 {
   "resources":{
-  "includes":[
-    {
-      "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-common/pom.properties\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-native-common/pom.properties\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-native-custom/pom.properties\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-selftest/git.properties\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/org.junit.platform.engine.TestEngine\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.TestExecutionListener\\E"
-    }, 
-    {
-      "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.7.0-SNAPSHOT.dylib\\E"
-    }
-  ]},
+  "includes":[{
+    "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-common/pom.properties\\E"
+  }, {
+    "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-native-common/pom.properties\\E"
+  }, {
+    "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-native-custom/pom.properties\\E"
+  }, {
+    "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-selftest/git.properties\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.TestExecutionListener\\E"
+  }, {
+    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.7.0-SNAPSHOT.dylib\\E"
+  }]},
   "bundles":[]
 }
