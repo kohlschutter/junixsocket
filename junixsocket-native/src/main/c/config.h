@@ -216,6 +216,10 @@ extern "C" {
 #include <arpa/inet.h>
 #define junixsocket_have_tipc 1
 
+#if __TOS_MVS__
+// z/OS XLC doesn't have __has_include
+#else
+
 #if defined(AF_VSOCK) && __has_include(<linux/vm_sockets.h>)
 #include <linux/vm_sockets.h>
 #define junixsocket_have_vsock 1
@@ -225,6 +229,8 @@ extern "C" {
 #if defined(__MACH__) && __has_include(<sys/kern_control.h>)
 #  include <sys/kern_control.h>
 #  define junixsocket_have_system 1
+#endif
+
 #endif
 
 // Solaris
