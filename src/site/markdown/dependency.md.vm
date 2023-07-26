@@ -87,6 +87,14 @@ If you're going to use the Jetty connectors, add the following dependency:
       <version>${project.version}</version>
     </dependency>
 
+If you're going to use Darwin-specific sockets, add the following dependency:
+
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-darwin</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
 
 #[[###]]# Custom architectures (usually not required)
 
@@ -148,6 +156,10 @@ For VSOCK support, add:
 For Jetty support, add:
  
         implementation 'com.kohlschutter.junixsocket:junixsocket-jetty:${project.version}'
+
+For Darwin socket support, add:
+
+        implementation 'com.kohlschutter.junixsocket:junixsocket-darwin:${project.version}'
 
 #[[###]]# Snapshot versions
 

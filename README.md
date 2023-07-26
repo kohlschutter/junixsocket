@@ -71,7 +71,8 @@ java -jar junixsocket-selftest-VERSION-jar-with-dependencies.jar
 
 To include the core junixsocket functionality in your project, add the following Maven dependency
 
-> **NOTE** Since version 2.4.0, `junixsocket-core` is POM-only (that's why you need to specify `<type>pom</type>`)
+> **NOTE** Since version 2.4.0, `junixsocket-core` is POM-only (that's why you need to specify
+`<type>pom</type>`)
 
 ```
 <dependency>
@@ -82,12 +83,16 @@ To include the core junixsocket functionality in your project, add the following
 </dependency>
 ```
 
-While you should definitely pin your dependency to a specific version, you are very much encouraged to always update to the most recent version. Check back frequently.
+While you should definitely pin your dependency to a specific version, you are very much encouraged
+to keep updating to the most recent version. Check back frequently.
 
-For more, optional packages (RMI, MySQL, Jetty, TIPC, VSOCK, server, GraalVM, etc.) and Gradle instructions see
-[here](https://kohlschutter.github.io/junixsocket/dependency.html)
+For more, optional packages (RMI, MySQL, Jetty, TIPC, VSOCK, server, Darwin, GraalVM, etc.) and
+Gradle instructions see [here](https://kohlschutter.github.io/junixsocket/dependency.html)
 
-If you're testing a `-SNAPSHOT` version, make sure that the Sonatype snapshot repository is enabled in your POM:
+## Snapshot builds for testing
+
+When you're testing a `-SNAPSHOT` version, make sure that the Sonatype snapshot repository is
+enabled in your POM:
 
 ```
 <repositories>
@@ -103,4 +108,15 @@ If you're testing a `-SNAPSHOT` version, make sure that the Sonatype snapshot re
 </repositories>
 ```
 
-> **NOTE** Never rely on -SNAPSHOT builds. They can break any time.
+To update to the latest SNAPSHOT (which is currently not being built for every commit),
+run the following command from within your own project:
+
+```
+mvn -U dependency:resolve
+```
+
+or (for Gradle)
+
+```
+./gradlew refreshVersions
+```
