@@ -7,14 +7,18 @@
 #
 cd "$(dirname $0)"/..
 junixsocketDir=$(pwd)
+
 (
-set -e
 set -x
-mvn clean
-mvn install site -P strict,release -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross'
-mvn install site -pl junixsocket-jetty,junixsocket-selftest-native-image
-mvn javadoc:aggregate -P '!with-non-modularized,strict' -pl '!junixsocket-native'
-mvn jxr:aggregate jxr:test-aggregate -P strict,release
+mvn clean && \
+mvn install site -P strict,release -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross' && \
+mvn install site -pl junixsocket-jetty,junixsocket-selftest-native-image && \
+mvn javadoc:aggregate -P '!with-non-modularized,strict' -pl '!junixsocket-native' && \
+mvn jxr:aggregate jxr:test-aggregate -P strict,release && \
 mvn site:stage -Pstrict,release -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross'
-) && \
+) || exit $?
+
 echo "The website should now be inspected at ${junixsocketDir}/target/staging/index.html"
+if [[ $(uname) == "Darwin" ]]; then
+  open "${junixsocketDir}/target/staging/index.html"
+fi
