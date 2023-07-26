@@ -24,9 +24,7 @@ the macOS pendant to Linux's `tun` functionality.
 
 ## AF_NDRV
 
-This is currently not supported, but it's pretty much a "Fake Ethernet" driver.
-
-It's the macOS pendant to Linux's `tap` functionality.
+This is pretty much a "Fake Ethernet" driver; it's the macOS pendant to Linux's `tap` functionality.
 
 A future version of junixsocket may add support for this domain.
 
