@@ -96,13 +96,13 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
     List<String> linesBefore = (List<String>) linesBeforeObj;
     try {
       List<String> linesAfter = null;
-      for (int i = 0; i < 10; i++) {
+      for (int i = 0; i < 50; i++) {
         Thread.sleep(100);
-        linesAfter = lsofUnixSockets(process.pid());
-        if (linesAfter.size() < linesBefore.size()) {
+        if (!process.isAlive()) {
           break;
         }
-        if (!process.isAlive()) {
+        linesAfter = lsofUnixSockets(process.pid());
+        if (linesAfter.size() < linesBefore.size()) {
           break;
         }
       }
