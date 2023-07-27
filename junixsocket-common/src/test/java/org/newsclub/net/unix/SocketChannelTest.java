@@ -235,9 +235,9 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
    * By default, this just calls `ssc.bind(sa)`, but you may handle some exceptions by overriding
    * this method in a subclass.
    * 
-   * @param ssc
-   * @param sa
-   * @throws IOException
+   * @param ssc The server socket channel.
+   * @param sa The socket address to bind to.
+   * @throws IOException on error.
    */
   protected void handleBind(ServerSocketChannel ssc, SocketAddress sa) throws IOException {
     ssc.bind(sa);
