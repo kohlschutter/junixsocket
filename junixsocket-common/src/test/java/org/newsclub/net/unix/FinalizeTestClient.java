@@ -19,6 +19,8 @@ package org.newsclub.net.unix;
 
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
@@ -56,9 +58,13 @@ public class FinalizeTestClient {
     }
     socket = AFSocket.connectTo(Objects.requireNonNull(addr));
     socket.getInputStream().read();
+
+    System.gc();
+
+    // create some pressure on GC
+    List<String> list = new ArrayList<>();
     while (true) {
-      // create some pressure on GC
-      new String("junixsocket".getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+      list.add(new String("junixsocket".getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8));
     }
   }
 }
