@@ -50,24 +50,30 @@ public class RemoteRegistryTest {
   @ForkedVMRequirement(forkSupported = true)
   public void testRemoteRegistry() throws Exception {
     File socketDir = tempSocketDir();
+    try {
+      try (SpawnedRegistryAccess sra = new SpawnedRegistryAccess(TestRegistryServer.class
+          .getSimpleName(), socketDir) {
 
-    try (SpawnedRegistryAccess sra = new SpawnedRegistryAccess(TestRegistryServer.class
-        .getSimpleName(), socketDir) {
+        @Override
+        protected int exportHelloDelayMillis() {
+          return 500;
+        }
 
-      @Override
-      protected int exportHelloDelayMillis() {
-        return 500;
+      }) {
+        tryToSayHello(sra);
+        sra.shutdown();
+      } catch (Exception e) {
+        throw e;
       }
 
-    }) {
-      tryToSayHello(sra);
-      sra.shutdown();
-    } catch (Exception e) {
-      throw e;
+      assertEquals(0, countRMIFiles(socketDir), "There shouldn't be any RMI socket files in "
+          + socketDir);
+    } finally {
+      for (File d : socketDir.listFiles()) {
+        d.delete();
+      }
+      assertTrue(socketDir.delete(), "Should be able to delete temporary directory: " + socketDir);
     }
-
-    assertEquals(0, countRMIFiles(socketDir));
-    assertTrue(socketDir.delete());
   }
 
   @Test
@@ -101,41 +107,47 @@ public class RemoteRegistryTest {
   @SuppressWarnings("PMD.UnusedAssignment")
   public void testRemoteShutdownNotAllowed() throws Exception {
     File socketDir = tempSocketDir();
+    try {
+      try (SpawnedRegistryAccess sra = new SpawnedRegistryAccess(TestRegistryServer.class
+          .getSimpleName(), socketDir) {
 
-    try (SpawnedRegistryAccess sra = new SpawnedRegistryAccess(TestRegistryServer.class
-        .getSimpleName(), socketDir) {
+        @Override
+        protected boolean remoteShutdownAllowed() {
+          return false;
+        }
 
-      @Override
-      protected boolean remoteShutdownAllowed() {
-        return false;
+        @Override
+        protected int shutdownAfterSecs() {
+          return 5;
+        }
+      }) {
+        AFRegistry registry = sra.getRegistry();
+        assertNotNull(registry, "Could not access the AFUNIXRegistry created by the forked VM");
+
+        assertThrows(ServerException.class, () -> sra.getRegistry().getNaming().shutdownRegistry());
+
+        sra.shutdownAndWait(true);
+      } catch (Exception e) {
+        throw e;
       }
 
-      @Override
-      protected int shutdownAfterSecs() {
-        return 30;
+      int count;
+      int loops = 10;
+      do {
+        count = countRMIFiles(socketDir);
+        if (count == 0) {
+          break;
+        }
+        Thread.sleep(100);
+      } while (loops-- > 0);
+
+      assertEquals(0, count, "There shouldn't be any RMI socket files in " + socketDir);
+    } finally {
+      for (File d : socketDir.listFiles()) {
+        d.delete();
       }
-    }) {
-      AFRegistry registry = sra.getRegistry();
-      assertNotNull(registry, "Could not access the AFUNIXRegistry created by the forked VM");
-
-      assertThrows(ServerException.class, () -> sra.getRegistry().getNaming().shutdownRegistry());
-
-      sra.shutdownAndWait(true);
-    } catch (Exception e) {
-      throw e;
+      assertTrue(socketDir.delete(), "Should be able to delete temporary directory: " + socketDir);
     }
-
-    int count;
-    int loops = 10;
-    do {
-      count = countRMIFiles(socketDir);
-      if (count == 0) {
-        break;
-      }
-      Thread.sleep(100);
-    } while (loops-- > 0);
-
-    assertEquals(0, count);
   }
 
   private void tryToSayHello(SpawnedRegistryAccess sra) throws Exception {
