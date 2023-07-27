@@ -126,28 +126,35 @@ public class RemoteRegistryTest {
 
         assertThrows(ServerException.class, () -> sra.getRegistry().getNaming().shutdownRegistry());
 
-        sra.shutdownAndWait(true);
+        sra.shutdownAndWait(false);
+        if (!awaitNoRMIFiles(socketDir, 5)) {
+          sra.shutdownAndWait(true);
+        }
       } catch (Exception e) {
         throw e;
       }
 
-      int count;
-      int loops = 10;
-      do {
-        count = countRMIFiles(socketDir);
-        if (count == 0) {
-          break;
-        }
-        Thread.sleep(100);
-      } while (loops-- > 0);
-
-      assertEquals(0, count, "There shouldn't be any RMI socket files in " + socketDir);
+      assertTrue(awaitNoRMIFiles(socketDir, 5), "There shouldn't be any RMI socket files in "
+          + socketDir);
     } finally {
       for (File d : socketDir.listFiles()) {
         d.delete();
       }
       assertTrue(socketDir.delete(), "Should be able to delete temporary directory: " + socketDir);
     }
+  }
+
+  private boolean awaitNoRMIFiles(File socketDir, int loops) throws InterruptedException {
+    int count;
+    do {
+      count = countRMIFiles(socketDir);
+      if (count == 0) {
+        return true;
+      }
+      Thread.sleep(100);
+    } while (loops-- > 0);
+
+    return count == 0;
   }
 
   private void tryToSayHello(SpawnedRegistryAccess sra) throws Exception {
