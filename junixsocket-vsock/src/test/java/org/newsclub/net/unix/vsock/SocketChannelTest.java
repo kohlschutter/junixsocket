@@ -59,7 +59,6 @@ public final class SocketChannelTest extends
     try {
       super.handleBind(ssc, sa);
     } catch (AddressUnavailableSocketException e) {
-      e.printStackTrace();
       assumeTrue(false, "Could not bind AF_VSOCK server socket; check kernel capabilities");
     }
   }
