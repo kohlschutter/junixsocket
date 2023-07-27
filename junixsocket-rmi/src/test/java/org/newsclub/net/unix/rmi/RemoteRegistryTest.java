@@ -98,6 +98,7 @@ public class RemoteRegistryTest {
 
   @Test
   @ForkedVMRequirement(forkSupported = true)
+  @SuppressWarnings("PMD.UnusedAssignment")
   public void testRemoteShutdownNotAllowed() throws Exception {
     File socketDir = tempSocketDir();
 
