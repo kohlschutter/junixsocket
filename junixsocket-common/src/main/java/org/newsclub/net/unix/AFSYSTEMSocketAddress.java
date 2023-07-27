@@ -73,7 +73,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
 
     /**
      * Returns a {@link SysAddr} for the given custom value.
-     * 
+     *
      * @param v The value.
      * @return The {@link SysAddr} object.
      */
