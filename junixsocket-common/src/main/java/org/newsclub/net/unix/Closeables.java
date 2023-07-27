@@ -58,7 +58,7 @@ public final class Closeables implements Closeable {
 
   /**
    * Checks if this instance has been closed already.
-   * 
+   *
    * @return {@code true} if closed.
    */
   public synchronized boolean isClosed() {

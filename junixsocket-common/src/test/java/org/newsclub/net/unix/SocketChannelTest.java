@@ -231,10 +231,10 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
 
   /**
    * Bind the given address to the given {@link ServerSocketChannel}.
-   * 
+   *
    * By default, this just calls `ssc.bind(sa)`, but you may handle some exceptions by overriding
    * this method in a subclass.
-   * 
+   *
    * @param ssc The server socket channel.
    * @param sa The socket address to bind to.
    * @throws IOException on error.
@@ -245,10 +245,10 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
 
   /**
    * Connect the given {@link SocketChannel} with the given address.
-   * 
+   *
    * By default, this just calls `sc.connect(sa)`, but you may handle some exceptions by overriding
    * this method in a subclass.
-   * 
+   *
    * @param sc The socket channel.
    * @param sa The socket address to connect to.
    * @throws IOException on error.
