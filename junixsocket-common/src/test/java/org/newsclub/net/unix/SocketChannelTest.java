@@ -57,7 +57,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
     {
       SocketChannel sc = selectorProvider().openSocketChannel();
       sc.configureBlocking(false);
-      if (!sc.connect(sa)) {
+      if (!handleConnect(sc, sa)) {
         // connect pending
         assertTrue(sc.isConnected() || sc.isConnectionPending());
         long now = System.currentTimeMillis();
@@ -243,6 +243,20 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
     ssc.bind(sa);
   }
 
+  /**
+   * Connect the given {@link SocketChannel} with the given address.
+   * 
+   * By default, this just calls `sc.connect(sa)`, but you may handle some exceptions by overriding
+   * this method in a subclass.
+   * 
+   * @param sc The socket channel.
+   * @param sa The socket address to connect to.
+   * @throws IOException on error.
+   */
+  protected boolean handleConnect(SocketChannel sc, SocketAddress sa) throws IOException {
+    return sc.connect(sa);
+  }
+
   @Test
   public void testByteBufferWithPositionOffset() throws Exception {
     SocketAddress sa = newTempAddress();
@@ -281,7 +295,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
 
       ByteBuffer bb2 = ByteBuffer.allocate(data.length + bb2Offset);
 
-      assertTrue(sc.connect(ssc.getLocalAddress()));
+      assertTrue(handleConnect(sc, ssc.getLocalAddress()));
 
       bb2.position(bb2Offset);
 
