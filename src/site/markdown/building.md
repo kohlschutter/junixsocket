@@ -67,8 +67,21 @@ You can also try to build the full release version of junixsocket (which will in
 
     mvn clean install -Pstrict -Prelease
 
-## Issues
+## Issues and Workarounds
+
+### clang/gcc
 
 If you don't have clang, try compiling with gcc. You may need to specify the compiler/linker at the command line:
 
     mvn clean install -Djunixsocket.native.default.linkerName=gcc
+
+### Failure to find com.kohlschutter.junixsocket:junixsocket-native-custom:jar:default:...-SNAPSHOT
+
+You're building a SNAPSHOT version, skipping over native artifacts, and access to some native
+artifacts is missing. Try building with the "use-snapshot" profile first:
+
+    mvn clean install -Puse-snapshot -rf :junixsocket-native-custom
+
+If that doesn't work, try ignoring junixsocket-native-custom as an optional dependency for testing:
+
+    mvn clean install -Dnative-custom.skip -rf :junixsocket-common
