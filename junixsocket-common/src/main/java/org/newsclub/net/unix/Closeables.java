@@ -30,6 +30,7 @@ import java.util.List;
  * @author Christian Kohlschütter
  */
 public final class Closeables implements Closeable {
+  private boolean closed = false;
   private List<WeakReference<Closeable>> list;
 
   /**
@@ -56,6 +57,15 @@ public final class Closeables implements Closeable {
   }
 
   /**
+   * Checks if this instance has been closed already.
+   * 
+   * @return {@code true} if closed.
+   */
+  public synchronized boolean isClosed() {
+    return closed;
+  }
+
+  /**
    * Closes all registered closeables.
    *
    * @param superException If set, any exceptions thrown in here will be chained to the given
@@ -65,8 +75,16 @@ public final class Closeables implements Closeable {
   public void close(IOException superException) throws IOException {
     IOException exc = superException;
 
-    if (list != null) {
-      for (WeakReference<Closeable> ref : list) {
+    List<WeakReference<Closeable>> l;
+    synchronized (this) {
+      closed = true;
+
+      l = this.list;
+      this.list.clear();
+    }
+
+    if (l != null) {
+      for (WeakReference<Closeable> ref : l) {
         @SuppressWarnings("resource")
         Closeable cl = ref.get();
         if (cl == null) {
@@ -86,6 +104,12 @@ public final class Closeables implements Closeable {
 
     if (exc != null) {
       throw exc;
+    }
+
+    synchronized (this) {
+      if (!this.list.isEmpty()) {
+        throw new IllegalStateException("List should be empty after closing");
+      }
     }
   }
 
@@ -108,10 +132,13 @@ public final class Closeables implements Closeable {
    * Adds the given closeable, but only using a weak reference.
    *
    * @param closeable The closeable.
-   * @return {@code true} iff the closeable was added, {@code false} if it was {@code null} or
-   *         already added before.
+   * @return {@code true} iff the closeable was added, {@code false} if it was {@code null}, already
+   *         added before, or if the {@link Closeables} instance has been closed already.
    */
   public synchronized boolean add(WeakReference<Closeable> closeable) {
+    if (closed) {
+      return false;
+    }
     Closeable cl = closeable.get();
     if (cl == null) {
       // ignore
