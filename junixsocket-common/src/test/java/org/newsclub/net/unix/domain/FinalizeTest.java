@@ -17,7 +17,6 @@
  */
 package org.newsclub.net.unix.domain;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -90,7 +89,9 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
   @Override
   protected void postRunCheck(Process process, Object linesBeforeObj) throws TestAbortedException,
       IOException, InterruptedException {
-    assertNotNull(linesBeforeObj);
+    assumeTrue(linesBeforeObj != null, "Environment does not support lsof check");
+    Objects.requireNonNull(linesBeforeObj);
+
     @SuppressWarnings("unchecked")
     List<String> linesBefore = (List<String>) linesBeforeObj;
     try {
