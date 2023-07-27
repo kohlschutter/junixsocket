@@ -274,7 +274,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
       }
     }
     setBoundEndpoint(getAFImpl().getLocalSocketAddress());
-    if (boundEndpoint == null) {
+    if (boundEndpoint() == null) {
       setBoundEndpoint(endpointCast);
     }
 
@@ -287,7 +287,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
 
   @Override
   public final boolean isBound() {
-    return boundEndpoint != null && implementation.getFD().valid();
+    return boundEndpoint() != null && implementation.getFD().valid();
   }
 
   @Override
@@ -341,7 +341,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
 
   @Override
   public String toString() {
-    return getClass().getSimpleName() + "[" + (isBound() ? boundEndpoint : "unbound") + "]";
+    return getClass().getSimpleName() + "[" + (isBound() ? boundEndpoint() : "unbound") + "]";
   }
 
   @Override
@@ -419,9 +419,16 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   @Override
   @SuppressFBWarnings("EI_EXPOSE_REP")
   public final @Nullable A getLocalSocketAddress() {
-    if (boundEndpoint == null) {
-      setBoundEndpoint(getAFImpl().getLocalSocketAddress());
+    @Nullable
+    A ep = boundEndpoint();
+    if (ep == null) {
+      ep = getAFImpl().getLocalSocketAddress();
+      setBoundEndpoint(ep);
     }
+    return ep;
+  }
+
+  private synchronized @Nullable A boundEndpoint() {
     return boundEndpoint;
   }
 
@@ -445,7 +452,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     return addr.equals(getAFImpl().getLocalSocketAddress());
   }
 
-  final void setBoundEndpoint(@Nullable A addr) {
+  final synchronized void setBoundEndpoint(@Nullable A addr) {
     this.boundEndpoint = addr;
     int port;
     if (addr == null) {
@@ -458,10 +465,10 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
 
   @Override
   public final int getLocalPort() {
-    if (boundEndpoint == null) {
+    if (boundEndpoint() == null) {
       setBoundEndpoint(getAFImpl().getLocalSocketAddress());
     }
-    if (boundEndpoint == null) {
+    if (boundEndpoint() == null) {
       return -1;
     } else {
       return getAFImpl().getLocalPort1();
