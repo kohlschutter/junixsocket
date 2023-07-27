@@ -123,7 +123,18 @@ public class RemoteRegistryTest {
     } catch (Exception e) {
       throw e;
     }
-    assertEquals(0, countRMIFiles(socketDir));
+
+    int count;
+    int loops = 10;
+    do {
+      count = countRMIFiles(socketDir);
+      if (count == 0) {
+        break;
+      }
+      Thread.sleep(100);
+    } while (loops-- > 0);
+
+    assertEquals(0, count);
   }
 
   private void tryToSayHello(SpawnedRegistryAccess sra) throws Exception {
