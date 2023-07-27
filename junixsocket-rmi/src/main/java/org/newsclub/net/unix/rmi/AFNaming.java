@@ -61,7 +61,7 @@ public abstract class AFNaming extends AFRegistryAccess {
   private final int registryPort;
   private final int servicePort;
   AFRMISocketFactory socketFactory;
-  private boolean remoteShutdownAllowed = true;
+  private final AtomicBoolean remoteShutdownAllowed = new AtomicBoolean(true);
   private final AtomicBoolean shutdownInProgress = new AtomicBoolean(false);
   private final AtomicBoolean addedShutdownHook = new AtomicBoolean(false);
 
@@ -142,7 +142,8 @@ public abstract class AFNaming extends AFRegistryAccess {
     return getRMIService(getRegistry());
   }
 
-  AFRMIService getRMIService(AFRegistry reg) throws RemoteException, NotBoundException {
+  synchronized AFRMIService getRMIService(AFRegistry reg) throws RemoteException,
+      NotBoundException {
     if (rmiService == null) {
       this.rmiService = getRMIServiceFromRegistry(reg);
     }
@@ -152,7 +153,7 @@ public abstract class AFNaming extends AFRegistryAccess {
   AFRMIService getRMIServiceFromRegistry(AFRegistry reg) throws RemoteException, NotBoundException {
     AFRMIService service;
     service = (AFRMIService) reg.lookup(RMI_SERVICE_NAME, 5, TimeUnit.SECONDS);
-    this.remoteShutdownAllowed = service.isShutdownAllowed();
+    this.remoteShutdownAllowed.set(service.isShutdownAllowed());
     return service;
   }
 
@@ -172,7 +173,7 @@ public abstract class AFNaming extends AFRegistryAccess {
     }
   }
 
-  private void rebindRMIService(final AFRMIService assigner) throws RemoteException {
+  private synchronized void rebindRMIService(final AFRMIService assigner) throws RemoteException {
     rmiService = assigner;
     getRegistry().rebind(RMI_SERVICE_NAME, assigner);
   }
@@ -265,7 +266,7 @@ public abstract class AFNaming extends AFRegistryAccess {
    *
    * @throws RemoteException if the operation fails.
    */
-  public void shutdownRegistry() throws RemoteException {
+  public synchronized void shutdownRegistry() throws RemoteException {
     synchronized (AFNaming.class) {
       if (registry == null) {
         return;
@@ -309,8 +310,8 @@ public abstract class AFNaming extends AFRegistryAccess {
    */
   protected abstract void shutdownRegistryFinishingTouches();
 
-  private void unexportRMIService(AFRegistry reg, AFRMIServiceImpl serv) throws AccessException,
-      RemoteException {
+  private synchronized void unexportRMIService(AFRegistry reg, AFRMIServiceImpl serv)
+      throws AccessException, RemoteException {
     if (serv != null) {
       serv.shutdownRegisteredCloseables();
     }
@@ -418,7 +419,7 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @return {@code true} if remote shutdown is allowed.
    */
   public boolean isRemoteShutdownAllowed() {
-    return remoteShutdownAllowed;
+    return remoteShutdownAllowed.get();
   }
 
   /**
@@ -427,7 +428,7 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @param remoteShutdownAllowed {@code true} if remote shutdown is allowed.
    */
   public void setRemoteShutdownAllowed(boolean remoteShutdownAllowed) {
-    this.remoteShutdownAllowed = remoteShutdownAllowed;
+    this.remoteShutdownAllowed.set(remoteShutdownAllowed);
   }
 
   /**
@@ -507,7 +508,7 @@ public abstract class AFNaming extends AFRegistryAccess {
     }
   }
 
-  private void setRegistry(AFRegistry registry) {
+  private synchronized void setRegistry(AFRegistry registry) {
     synchronized (AFNaming.class) {
       this.registry = registry;
       if (registry == null) {
