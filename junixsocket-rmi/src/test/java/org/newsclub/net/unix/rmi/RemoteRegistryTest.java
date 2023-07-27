@@ -69,11 +69,24 @@ public class RemoteRegistryTest {
       assertEquals(0, countRMIFiles(socketDir), "There shouldn't be any RMI socket files in "
           + socketDir);
     } finally {
-      for (File d : socketDir.listFiles()) {
-        d.delete();
-      }
-      assertTrue(socketDir.delete(), "Should be able to delete temporary directory: " + socketDir);
+      assertTrue(deleteDirectory(socketDir), "Should be able to delete temporary directory: "
+          + socketDir);
     }
+  }
+
+  private boolean deleteDirectory(File f) {
+    if (!f.exists()) {
+      return true;
+    }
+    File[] files = f.listFiles();
+    if (files != null) {
+      for (File d : files) {
+        if (!d.delete() || d.isDirectory()) {
+          deleteDirectory(f);
+        }
+      }
+    }
+    return f.delete();
   }
 
   @Test
@@ -137,23 +150,20 @@ public class RemoteRegistryTest {
       assertTrue(awaitNoRMIFiles(socketDir, 5), "There shouldn't be any RMI socket files in "
           + socketDir);
     } finally {
-      for (File d : socketDir.listFiles()) {
-        d.delete();
-      }
-      assertTrue(socketDir.delete(), "Should be able to delete temporary directory: " + socketDir);
+      assertTrue(deleteDirectory(socketDir), "Should be able to delete temporary directory: "
+          + socketDir);
     }
   }
 
   private boolean awaitNoRMIFiles(File socketDir, int loops) throws InterruptedException {
-    int count;
-    do {
+    int count = 0;
+    for (int i = 0; i < loops; i++) {
       count = countRMIFiles(socketDir);
       if (count == 0) {
         return true;
       }
       Thread.sleep(100);
-    } while (loops-- > 0);
-
+    }
     return count == 0;
   }
 
