@@ -229,6 +229,20 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
     }
   }
 
+  /**
+   * Bind the given address to the given {@link ServerSocketChannel}.
+   * 
+   * By default, this just calls `ssc.bind(sa)`, but you may handle some exceptions by overriding
+   * this method in a subclass.
+   * 
+   * @param ssc
+   * @param sa
+   * @throws IOException
+   */
+  protected void handleBind(ServerSocketChannel ssc, SocketAddress sa) throws IOException {
+    ssc.bind(sa);
+  }
+
   @Test
   public void testByteBufferWithPositionOffset() throws Exception {
     SocketAddress sa = newTempAddress();
@@ -240,7 +254,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
     getRandom().nextBytes(data);
 
     try (ServerSocketChannel ssc = selectorProvider().openServerSocketChannel()) {
-      ssc.bind(sa);
+      handleBind(ssc, sa);
 
       ByteBuffer bb1 = ByteBuffer.allocate(data.length + bb1Offset);
       bb1.position(bb1Offset);

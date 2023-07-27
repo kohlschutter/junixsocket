@@ -17,9 +17,16 @@
  */
 package org.newsclub.net.unix.vsock;
 
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
+import java.io.IOException;
+import java.net.SocketAddress;
+import java.nio.channels.ServerSocketChannel;
+
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
+import org.newsclub.net.unix.AddressUnavailableSocketException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
@@ -44,6 +51,16 @@ public final class SocketChannelTest extends
       return AFVSOCKAddressSpecifics.KERNEL_TOO_OLD + ": First accept call did not terminate";
     } else {
       return null;
+    }
+  }
+
+  @Override
+  protected void handleBind(ServerSocketChannel ssc, SocketAddress sa) throws IOException {
+    try {
+      super.handleBind(ssc, sa);
+    } catch (AddressUnavailableSocketException e) {
+      e.printStackTrace();
+      assumeTrue(false, "Could not bind AF_VSOCK server socket; check kernel capabilities");
     }
   }
 }
