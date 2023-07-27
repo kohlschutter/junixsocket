@@ -37,6 +37,12 @@ Build and test junixsocket.
 
 That's it!
 
+### SNAPSHOT builds
+
+Development versions may need SNAPSHOT versions of dependencies. Use the following command to build:
+
+    mvn clean install -Puse-snapshots
+
 ## Build options
 
 While the default build options are a good start, you may want to change the level of scrutiny performed at build time.
