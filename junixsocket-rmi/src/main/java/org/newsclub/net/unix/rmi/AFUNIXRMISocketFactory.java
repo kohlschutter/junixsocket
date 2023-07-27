@@ -222,7 +222,9 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
 
   @Override
   public void close() throws IOException {
-    credentials.clear();
+    synchronized (credentials) {
+      credentials.clear();
+    }
     super.close();
   }
 

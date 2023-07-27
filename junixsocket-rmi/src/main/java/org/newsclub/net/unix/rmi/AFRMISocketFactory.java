@@ -49,15 +49,24 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
     Closeable {
   private static final long serialVersionUID = 1L;
 
-  private transient RMIClientSocketFactory defaultClientFactory;
-  private transient RMIServerSocketFactory defaultServerFactory;
-
-  private transient AFNaming naming;
-
   private transient AFRMIService rmiService = null;
 
+  private Externables externables;
   private final transient Map<Integer, AFServerSocket<?>> openServerSockets = new HashMap<>();
   private final transient Set<AFSocket<?>> openSockets = new HashSet<>();
+
+  private final class Externables {
+    private final AFNaming naming;
+    private final RMIClientSocketFactory defaultClientFactory;
+    private final RMIServerSocketFactory defaultServerFactory;
+
+    private Externables(AFNaming naming, RMIClientSocketFactory defaultClientFactory,
+        RMIServerSocketFactory defaultServerFactory) {
+      this.naming = naming;
+      this.defaultClientFactory = defaultClientFactory;
+      this.defaultServerFactory = defaultServerFactory;
+    }
+  }
 
   /**
    * Constructor required per definition.
@@ -65,8 +74,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
    * @see RMISocketFactory
    */
   public AFRMISocketFactory() {
-    super();
-    closeUponRuntimeShutdown();
+    this(null, null, null);
   }
 
   /**
@@ -75,16 +83,13 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
    * @param naming The {@link AFNaming} instance to use.
    * @param defaultClientFactory The default {@link RMIClientSocketFactory}.
    * @param defaultServerFactory The default {@link RMIServerSocketFactory}.
-   * @throws IOException on error.
    */
   @SuppressFBWarnings("EI_EXPOSE_REP2")
   public AFRMISocketFactory(final AFNaming naming,
       final RMIClientSocketFactory defaultClientFactory,
-      final RMIServerSocketFactory defaultServerFactory) throws IOException {
+      final RMIServerSocketFactory defaultServerFactory) {
     super();
-    this.naming = naming;
-    this.defaultClientFactory = defaultClientFactory;
-    this.defaultServerFactory = defaultServerFactory;
+    this.externables = new Externables(naming, defaultClientFactory, defaultServerFactory);
 
     closeUponRuntimeShutdown();
   }
@@ -122,9 +127,17 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
    */
   protected abstract AFSocket<?> newConnectedSocket(AFSocketAddress addr) throws IOException;
 
+  private synchronized Externables getExternables() {
+    return externables;
+  }
+
+  private synchronized void setExternable(Externables externable) {
+    this.externables = externable;
+  }
+
   @Override
   public Socket createSocket(String host, int port) throws IOException {
-    final RMIClientSocketFactory cf = defaultClientFactory;
+    final RMIClientSocketFactory cf = getExternables().defaultClientFactory;
     if (cf != null && port < RMIPorts.AF_PORT_BASE) {
       return cf.createSocket(host, port);
     }
@@ -145,7 +158,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   @Override
   public void close() throws IOException {
-    synchronized (naming) {
+    synchronized (getExternables().naming) {
       rmiService = null;
       closeServerSockets();
       closeSockets();
@@ -153,6 +166,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
   }
 
   private AFRMIService getRmiService() throws IOException {
+    AFNaming naming = getExternables().naming;
     synchronized (naming) {
       if (rmiService == null) {
         try {
@@ -206,7 +220,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
       return ass;
     }
 
-    final RMIServerSocketFactory sf = defaultServerFactory;
+    final RMIServerSocketFactory sf = getExternables().defaultServerFactory;
     if (sf != null && port < RMIPorts.AF_PORT_BASE) {
       return sf.createServerSocket(port);
     }
@@ -284,16 +298,18 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   @Override
   public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-    naming = readNamingInstance(in);
-    defaultClientFactory = (RMIClientSocketFactory) in.readObject();
-    defaultServerFactory = (RMIServerSocketFactory) in.readObject();
+    setExternable(new Externables(readNamingInstance(in), //
+        (RMIClientSocketFactory) in.readObject(), //
+        (RMIServerSocketFactory) in.readObject()));
   }
 
   @Override
   public void writeExternal(ObjectOutput out) throws IOException {
-    writeNamingInstance(out, naming);
-    out.writeObject(defaultClientFactory);
-    out.writeObject(defaultServerFactory);
+    Externables ext = getExternables();
+
+    writeNamingInstance(out, ext.naming);
+    out.writeObject(ext.defaultClientFactory);
+    out.writeObject(ext.defaultServerFactory);
   }
 
   /**
@@ -336,7 +352,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
    * @return The instance.
    */
   protected AFNaming getNaming() {
-    return naming;
+    return getExternables().naming;
   }
 
   /**
