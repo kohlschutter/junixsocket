@@ -119,9 +119,15 @@ public class UtunTest {
         String utun = "utun" + (rsa.getUnit() - 1);
         // System.out.println(utun);
 
-        int rcIfconfig = Runtime.getRuntime().exec(new String[] {
-            "/sbin/ifconfig", utun, UTUN_SRC_IP.getHostAddress(), UTUN_DST_IP.getHostAddress()})
-            .waitFor();
+        Process p = Runtime.getRuntime().exec(new String[] {
+            "/sbin/ifconfig", utun, UTUN_SRC_IP.getHostAddress(), UTUN_DST_IP.getHostAddress()});
+        int rcIfconfig;
+        try {
+          rcIfconfig = p.waitFor();
+        } finally {
+          p.destroyForcibly();
+        }
+
         assertEquals(0, rcIfconfig, "Could not set IP address for " + utun);
 
         AFSYSTEMDatagramChannel channel = socket.getChannel();

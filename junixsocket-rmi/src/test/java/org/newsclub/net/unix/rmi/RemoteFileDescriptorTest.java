@@ -29,6 +29,7 @@ import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.rmi.NotBoundException;
 import java.rmi.server.RMISocketFactory;
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketCapability;
@@ -83,7 +84,8 @@ public class RemoteFileDescriptorTest extends TestBase {
     }
 
     try (NaiveFileInputStreamRemote rfis = svc.naiveInputStreamRemote();
-        FileInputStream fin = rfis.getRemoteFileDescriptor().asFileInputStream()) {
+        FileInputStream fin = Objects.requireNonNull(rfis.getRemoteFileDescriptor()
+            .asFileInputStream())) {
       assertEquals('H', rfis.read());
       assertEquals('e', fin.read());
       assertEquals('l', fin.read());

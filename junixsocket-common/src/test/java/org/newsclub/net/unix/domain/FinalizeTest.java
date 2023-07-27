@@ -72,8 +72,11 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
           assumeTrue(false, "incompatible lsof binary");
         }
       }
+      p.waitFor();
+    } finally {
+      p.destroy();
+      assumeTrue(p.exitValue() == 0, "lsof should terminate with RC=0");
     }
-    assumeTrue(p.waitFor() == 0, "lsof should terminate with RC=0");
     return lines;
   }
 
@@ -90,7 +93,6 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
   protected void postRunCheck(Process process, Object linesBeforeObj) throws TestAbortedException,
       IOException, InterruptedException {
     assumeTrue(linesBeforeObj != null, "Environment does not support lsof check");
-    Objects.requireNonNull(linesBeforeObj);
 
     @SuppressWarnings("unchecked")
     List<String> linesBefore = (List<String>) linesBeforeObj;
@@ -102,20 +104,22 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
           break;
         }
         linesAfter = lsofUnixSockets(process.pid());
-        if (linesAfter.size() < linesBefore.size()) {
+        if (linesBefore == null || linesAfter.size() < linesBefore.size()) {
           break;
         }
       }
 
       assumeTrue(Objects.requireNonNull(linesAfter).size() > 0, "lsof may fail to return anything");
 
-      if (linesAfter.size() >= linesBefore.size()) {
-        System.err.println("lsof: Unexpected output");
-        System.err.println("lsof: Output before: " + linesBefore);
-        System.err.println("lsof: Output after: " + linesAfter);
+      if (linesAfter != null && linesBefore != null) {
+        if (linesAfter.size() >= linesBefore.size()) {
+          System.err.println("lsof: Unexpected output");
+          System.err.println("lsof: Output before: " + linesBefore);
+          System.err.println("lsof: Output after: " + linesAfter);
+        }
+        assertTrue(linesAfter.size() < linesBefore.size(),
+            "Our unix socket file handle should have been cleared out");
       }
-      assertTrue(linesAfter.size() < linesBefore.size(),
-          "Our unix socket file handle should have been cleared out");
     } finally {
       process.destroy();
       process.waitFor();
