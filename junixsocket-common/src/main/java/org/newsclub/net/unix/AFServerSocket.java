@@ -274,7 +274,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
       }
     }
     setBoundEndpoint(getAFImpl().getLocalSocketAddress());
-    if (boundEndpoint() == null) {
+    if (boundEndpoint0() == null) {
       setBoundEndpoint(endpointCast);
     }
 
@@ -287,7 +287,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
 
   @Override
   public final boolean isBound() {
-    return boundEndpoint() != null && implementation.getFD().valid();
+    return boundEndpoint0() != null && implementation.getFD().valid();
   }
 
   @Override
@@ -341,7 +341,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
 
   @Override
   public String toString() {
-    return getClass().getSimpleName() + "[" + (isBound() ? boundEndpoint() : "unbound") + "]";
+    return getClass().getSimpleName() + "[" + (isBound() ? boundEndpoint0() : "unbound") + "]";
   }
 
   @Override
@@ -420,7 +420,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   @SuppressFBWarnings("EI_EXPOSE_REP")
   public final @Nullable A getLocalSocketAddress() {
     @Nullable
-    A ep = boundEndpoint();
+    A ep = boundEndpoint0();
     if (ep == null) {
       ep = getAFImpl().getLocalSocketAddress();
       setBoundEndpoint(ep);
@@ -428,7 +428,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     return ep;
   }
 
-  private synchronized @Nullable A boundEndpoint() {
+  private synchronized @Nullable A boundEndpoint0() {
     return boundEndpoint;
   }
 
@@ -465,10 +465,10 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
 
   @Override
   public final int getLocalPort() {
-    if (boundEndpoint() == null) {
+    if (boundEndpoint0() == null) {
       setBoundEndpoint(getAFImpl().getLocalSocketAddress());
     }
-    if (boundEndpoint() == null) {
+    if (boundEndpoint0() == null) {
       return -1;
     } else {
       return getAFImpl().getLocalPort1();
