@@ -40,6 +40,7 @@ import org.newsclub.net.unix.AFServerSocket;
 import org.newsclub.net.unix.AFSocketAddress;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.annotations.compiletime.SuppressLint;
 
 /**
  * A base implementation for a simple, multi-threaded socket server.
@@ -104,7 +105,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    *
    * @return The maximum number of concurrent connections.
    */
-  public int getMaxConcurrentConnections() {
+  public synchronized int getMaxConcurrentConnections() {
     return maxConcurrentConnections;
   }
 
@@ -113,7 +114,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    *
    * @param maxConcurrentConnections The new maximum.
    */
-  public void setMaxConcurrentConnections(int maxConcurrentConnections) {
+  public synchronized void setMaxConcurrentConnections(int maxConcurrentConnections) {
     if (connectionPool != null) {
       throw new IllegalStateException("Already configured");
     }
@@ -125,7 +126,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    *
    * @return The server timeout in milliseconds (0 = no timeout).
    */
-  public int getServerTimeout() {
+  public synchronized int getServerTimeout() {
     return serverTimeout;
   }
 
@@ -298,6 +299,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   @SuppressWarnings("PMD.CognitiveComplexity")
   @SuppressFBWarnings("NN_NAKED_NOTIFY")
+  @SuppressLint("RESOURCE_LEAK")
   private void acceptLoop(V server) throws IOException {
     long busyStartTime = 0;
     acceptLoop : while (!stopRequested.get() && !Thread.interrupted()) {
