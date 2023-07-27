@@ -105,7 +105,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    *
    * @return The maximum number of concurrent connections.
    */
-  public synchronized int getMaxConcurrentConnections() {
+  public int getMaxConcurrentConnections() {
     return maxConcurrentConnections;
   }
 
@@ -114,8 +114,8 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    *
    * @param maxConcurrentConnections The new maximum.
    */
-  public synchronized void setMaxConcurrentConnections(int maxConcurrentConnections) {
-    if (connectionPool != null) {
+  public void setMaxConcurrentConnections(int maxConcurrentConnections) {
+    if (isRunning()) {
       throw new IllegalStateException("Already configured");
     }
     this.maxConcurrentConnections = maxConcurrentConnections;
@@ -126,7 +126,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    *
    * @return The server timeout in milliseconds (0 = no timeout).
    */
-  public synchronized int getServerTimeout() {
+  public int getServerTimeout() {
     return serverTimeout;
   }
 
@@ -136,12 +136,10 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    * @param timeout The new timeout in milliseconds (0 = no timeout).
    */
   public void setServerTimeout(int timeout) {
-    synchronized (this) {
-      if (serverSocket != null) {
-        throw new IllegalStateException("Already configured");
-      }
-      this.serverTimeout = timeout;
+    if (isRunning()) {
+      throw new IllegalStateException("Already configured");
     }
+    this.serverTimeout = timeout;
   }
 
   /**
