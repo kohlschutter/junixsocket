@@ -36,12 +36,26 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.kohlschutter.junixsocket</groupId>
-            <artifactId>junixsocket-native-custom</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-            <classifier>default</classifier>
-        </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>with-native-custom</id>
+            <activation>
+                <property>
+                    <name>!junixsocket.native-custom.skip</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.kohlschutter.junixsocket</groupId>
+                    <artifactId>junixsocket-native-custom</artifactId>
+                    <version>${project.version}</version>
+                    <scope>test</scope>
+                    <classifier>default</classifier>
+                    <optional>true</optional>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
