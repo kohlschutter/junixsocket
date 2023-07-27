@@ -55,7 +55,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
   private final transient Map<Integer, AFServerSocket<?>> openServerSockets = new HashMap<>();
   private final transient Set<AFSocket<?>> openSockets = new HashSet<>();
 
-  private final class Externables {
+  private final static class Externables {
     private final AFNaming naming;
     private final RMIClientSocketFactory defaultClientFactory;
     private final RMIServerSocketFactory defaultServerFactory;
