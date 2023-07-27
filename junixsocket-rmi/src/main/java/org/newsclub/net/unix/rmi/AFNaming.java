@@ -266,41 +266,43 @@ public abstract class AFNaming extends AFRegistryAccess {
    *
    * @throws RemoteException if the operation fails.
    */
-  public synchronized void shutdownRegistry() throws RemoteException {
+  public void shutdownRegistry() throws RemoteException {
     synchronized (AFNaming.class) {
-      if (registry == null) {
-        return;
-      }
-
-      AFRegistry registryToBeClosed = registry;
-      AFRMIService rmiServiceToBeClosed = rmiService;
-
-      if (!registryToBeClosed.isLocal()) {
-        if (!isRemoteShutdownAllowed()) {
-          throw new ServerException("The server refuses to be shutdown remotely");
+      synchronized (this) {
+        if (registry == null) {
+          return;
         }
+
+        AFRegistry registryToBeClosed = registry;
+        AFRMIService rmiServiceToBeClosed = rmiService;
+
+        if (!registryToBeClosed.isLocal()) {
+          if (!isRemoteShutdownAllowed()) {
+            throw new ServerException("The server refuses to be shutdown remotely");
+          }
+          setRegistry(null);
+
+          try {
+            shutdownViaRMIService(registryToBeClosed, rmiServiceToBeClosed);
+          } catch (Exception e) {
+            // ignore
+          }
+          return;
+        }
+
         setRegistry(null);
 
-        try {
-          shutdownViaRMIService(registryToBeClosed, rmiServiceToBeClosed);
-        } catch (Exception e) {
-          // ignore
+        if (!shutdownInProgress.compareAndSet(false, true)) {
+          return;
         }
-        return;
-      }
-
-      setRegistry(null);
-
-      if (!shutdownInProgress.compareAndSet(false, true)) {
-        return;
-      }
-      try {
-        unexportRMIService(registryToBeClosed, (AFRMIServiceImpl) rmiServiceToBeClosed);
-        forceUnexportBound(registryToBeClosed);
-        closeSocketFactory();
-        shutdownRegistryFinishingTouches();
-      } finally {
-        shutdownInProgress.set(false);
+        try {
+          unexportRMIService(registryToBeClosed, (AFRMIServiceImpl) rmiServiceToBeClosed);
+          forceUnexportBound(registryToBeClosed);
+          closeSocketFactory();
+          shutdownRegistryFinishingTouches();
+        } finally {
+          shutdownInProgress.set(false);
+        }
       }
     }
   }
@@ -508,13 +510,15 @@ public abstract class AFNaming extends AFRegistryAccess {
     }
   }
 
-  private synchronized void setRegistry(AFRegistry registry) {
+  private void setRegistry(AFRegistry registry) {
     synchronized (AFNaming.class) {
-      this.registry = registry;
-      if (registry == null) {
-        rmiService = null;
-      } else if (registry.isLocal()) {
-        closeUponRuntimeShutdown();
+      synchronized (this) {
+        this.registry = registry;
+        if (registry == null) {
+          rmiService = null;
+        } else if (registry.isLocal()) {
+          closeUponRuntimeShutdown();
+        }
       }
     }
   }
