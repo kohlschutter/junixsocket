@@ -61,7 +61,7 @@ jobs:
 
     - run: |
        echo "Build junixsocket with Maven (no tests)"
-       mvn clean install -Pcodeql -Pstrict -Puse-snapshots -U
+       mvn clean install -Pcodeql -Pstrict -Puse-snapshots
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
