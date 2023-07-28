@@ -44,7 +44,9 @@ import org.eclipse.jdt.annotation.Nullable;
  * @author Christian Kohlschütter
  * @param <A> The supported address type.
  */
-@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.CouplingBetweenObjects"})
+@SuppressWarnings({
+    "PMD.CyclomaticComplexity", "PMD.CouplingBetweenObjects",
+    "UnsafeFinalization" /* errorprone */})
 public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImplShim {
   private static final int SHUT_RD = 0;
   private static final int SHUT_WR = 1;

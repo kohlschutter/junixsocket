@@ -33,6 +33,7 @@ import org.newsclub.net.unix.rmi.RemotePeerInfo;
  *
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("CatchAndPrintStackTrace" /* errorprone */)
 public final class SimpleRMIClientActingAsServer {
   public static void main(String[] args) throws IOException, NotBoundException {
     AFUNIXNaming naming = AFUNIXNaming.getInstance();
@@ -57,14 +58,14 @@ public final class SimpleRMIClientActingAsServer {
     System.out.println("Calling HelloWorld...");
     System.out.println(obj.hello() + " " + obj.world() + "!");
 
-    /**
+    /*
      * Uncommenting the line below keeps this instance running.
      *
      * Try it and run SimpleRMIClient to see the difference.
      */
     naming.unexportAndUnbind("world", world);
 
-    /**
+    /*
      * Also try to remotely shut down the registry.
      *
      * This will not succeed if the server set {@code naming.setRemoteShutdownAllowed(false)}. See

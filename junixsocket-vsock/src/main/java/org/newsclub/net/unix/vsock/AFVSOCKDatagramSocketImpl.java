@@ -25,8 +25,7 @@ import org.newsclub.net.unix.AFSocketType;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
 final class AFVSOCKDatagramSocketImpl extends AFDatagramSocketImpl<AFVSOCKSocketAddress> {
-  protected AFVSOCKDatagramSocketImpl(FileDescriptor fd, AFSocketType socketType)
-      throws IOException {
+  AFVSOCKDatagramSocketImpl(FileDescriptor fd, AFSocketType socketType) throws IOException {
     super(AFVSOCKSelectorProvider.AF_VSOCK, fd, socketType);
   }
 }

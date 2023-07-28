@@ -51,6 +51,7 @@ import java.util.EventListener;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.jetty.io.ByteBufferPool;
@@ -347,7 +348,7 @@ public class AFSocketServerConnector extends AbstractConnector {
 
         if (takenOver && isMayStopServer()) {
           LOG.warn("Another server has taken over our address");
-          CompletableFuture.runAsync(this::checkServerStop);
+          ForkJoinPool.commonPool().execute(this::checkServerStop);
         }
         throw (ClosedByInterruptException) new ClosedByInterruptException().initCause(e);
       }

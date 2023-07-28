@@ -51,6 +51,7 @@ class AFSocketCore extends AFCore {
   }
 
   @Override
+  @SuppressWarnings("UnsafeFinalization" /* errorprone */)
   protected void doClose() throws IOException {
     NativeUnixSocket.shutdown(fd, SHUT_RD_WR);
     unblockAccepts();

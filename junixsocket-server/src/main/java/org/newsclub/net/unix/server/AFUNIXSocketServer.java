@@ -60,7 +60,8 @@ public abstract class AFUNIXSocketServer extends SocketServer<SocketAddress, Soc
    * @param unit The duration's time unit.
    * @return {@code true} if the server is ready to serve requests.
    * @throws InterruptedException If the wait was interrupted.
-   * @deprecated @see #startAndWaitToBecomeReady(long, TimeUnit)
+   * @deprecated Use {@link #startAndWaitToBecomeReady(long, TimeUnit)}
+   * @see #startAndWaitToBecomeReady(long, TimeUnit)
    */
   @Deprecated
   public boolean startAndWait(long duration, TimeUnit unit) throws InterruptedException {

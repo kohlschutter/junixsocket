@@ -41,6 +41,7 @@ import org.newsclub.net.unix.SocketClosedException;
  * @author Christian Kohlschütter
  * @see SimpleTestClient
  */
+@SuppressWarnings("CatchAndPrintStackTrace" /* errorprone */)
 public final class SimpleTestServer {
   private static final int MAX_NUMBER = 5;
 

@@ -46,6 +46,7 @@ import okhttp3.ResponseBody;
  * @author Christian Kohlschütter
  * @see NanoHttpdServerDemo
  */
+@SuppressWarnings("CatchAndPrintStackTrace" /* errorprone */)
 public class OkHttpClientTIPCDemo {
   public static void main(String[] args) throws IOException, InterruptedException {
 

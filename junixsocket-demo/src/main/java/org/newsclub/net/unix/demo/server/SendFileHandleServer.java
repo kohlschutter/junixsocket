@@ -33,6 +33,7 @@ import org.newsclub.net.unix.AFUNIXSocket;
  *
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("CatchAndPrintStackTrace" /* errorprone */)
 public final class SendFileHandleServer extends DemoServerBase {
   private final File file;
 
@@ -49,7 +50,7 @@ public final class SendFileHandleServer extends DemoServerBase {
     doServeSocket((AFUNIXSocket) socket);
   }
 
-  protected void doServeSocket(AFUNIXSocket socket) throws IOException {
+  private void doServeSocket(AFUNIXSocket socket) throws IOException {
     try (InputStream is = socket.getInputStream();
         OutputStream os = socket.getOutputStream();
         FileInputStream fin = new FileInputStream(file)) {

@@ -34,6 +34,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
+import org.newsclub.net.unix.StackTraceUtil;
+
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
@@ -146,21 +148,18 @@ final class AFRMIServiceImpl implements AFRMIService {
 
     ExecutorService executor = Executors.newCachedThreadPool();
     for (WeakReference<Closeable> ref : list) {
-      executor.submit(new Runnable() {
-        @Override
-        public void run() {
-          @SuppressWarnings("resource")
-          Closeable cl = ref.get();
-          if (cl == null) {
-            return;
-          }
-          try {
-            cl.close();
-          } catch (NoSuchObjectException e) {
-            // ignore
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
+      executor.execute(() -> {
+        @SuppressWarnings("resource")
+        Closeable cl = ref.get();
+        if (cl == null) {
+          return;
+        }
+        try {
+          cl.close();
+        } catch (NoSuchObjectException e) {
+          // ignore
+        } catch (IOException e) {
+          StackTraceUtil.printStackTrace(e);
         }
       });
     }

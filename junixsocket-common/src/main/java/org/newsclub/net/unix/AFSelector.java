@@ -281,7 +281,7 @@ final class AFSelector extends AbstractSelector {
         }
       } catch (IOException e) { // NOPMD.ExceptionAsFlowControl
         // FIXME throw as runtimeexception?
-        e.printStackTrace();
+        StackTraceUtil.printStackTrace(e);
       }
     }
     return this;

@@ -17,9 +17,9 @@
  */
 package org.newsclub.net.mysql;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.net.Socket;
 
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
@@ -47,8 +47,8 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
   @SuppressWarnings({"unchecked"})
   @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
-  public <T extends Closeable> T connect(String hostname, int portNumber, PropertySet props,
-      int loginTimeout) throws IOException {
+  public Socket connect(String hostname, int portNumber, PropertySet props, int loginTimeout)
+      throws IOException {
     // Adjust the path to your MySQL socket by setting the
     // "junixsocket.file" property
     // If no socket path is given, use the default: /tmp/mysql.sock
@@ -62,15 +62,15 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
     final File socketFile = new File(sock);
 
     this.rawSocket = AFUNIXSocket.connectTo(AFUNIXSocketAddress.of(socketFile));
-    return (T) rawSocket;
+    return rawSocket;
   }
 
   @SuppressWarnings({"unchecked"})
   @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
-  public <T extends Closeable> T performTlsHandshake(SocketConnection socketConnection,
-      ServerSession serverSession) throws IOException {
-    return (T) ExportControlled.performTlsHandshake(this.rawSocket, socketConnection,
+  public Socket performTlsHandshake(SocketConnection socketConnection, ServerSession serverSession)
+      throws IOException {
+    return ExportControlled.performTlsHandshake(this.rawSocket, socketConnection,
         serverSession == null ? null : serverSession.getServerVersion(), null);
   }
 }

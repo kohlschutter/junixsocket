@@ -89,7 +89,7 @@ final class NativeUnixSocket {
       loadSuccessful = true;
     } catch (RuntimeException | Error e) {
       initError = e;
-      e.printStackTrace(); // keep
+      StackTraceUtil.printStackTraceSevere(e);
     } finally {
       setLoaded(loadSuccessful);
     }

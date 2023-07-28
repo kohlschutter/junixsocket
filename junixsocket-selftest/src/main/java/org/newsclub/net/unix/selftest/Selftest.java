@@ -236,6 +236,10 @@ public class Selftest {
     return runSelftest(System.out);
   }
 
+  private static void printStackTrace(Throwable t) {
+    t.printStackTrace();
+  }
+
   public static int runSelftest(Writer out) throws Exception {
     PipedInputStream pis = new PipedInputStream();
     @SuppressWarnings("resource")
@@ -256,7 +260,7 @@ public class Selftest {
             out.flush();
           }
         } catch (IOException e) {
-          e.printStackTrace();
+          printStackTrace(e);
         }
       }
     });
@@ -267,7 +271,7 @@ public class Selftest {
       try {
         t.join();
       } catch (InterruptedException e) {
-        e.printStackTrace();
+        printStackTrace(e);
       }
     });
   }

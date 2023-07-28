@@ -115,7 +115,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
       connected.set(false);
       this.remotePort = 0;
     } catch (IOException e) {
-      e.printStackTrace();
+      StackTraceUtil.printStackTrace(e);
     }
   }
 

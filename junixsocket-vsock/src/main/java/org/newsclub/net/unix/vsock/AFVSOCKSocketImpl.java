@@ -24,7 +24,7 @@ import org.newsclub.net.unix.AFSocketImpl;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
 final class AFVSOCKSocketImpl extends AFSocketImpl<AFVSOCKSocketAddress> {
-  protected AFVSOCKSocketImpl(FileDescriptor fdObj) {
+  AFVSOCKSocketImpl(FileDescriptor fdObj) {
     super(AFVSOCKSelectorProvider.AF_VSOCK, fdObj);
   }
 

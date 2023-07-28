@@ -27,6 +27,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * A simple bidirectional Unix socket client that reads from/writes to stdin/stdout.
  */
+@SuppressWarnings("CatchAndPrintStackTrace" /* errorprone */)
 public final class ReadWriteClient extends DemoClientBase {
   @Override
   protected void handleSocket(Socket socket) throws IOException {

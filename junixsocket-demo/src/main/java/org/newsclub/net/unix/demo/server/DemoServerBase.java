@@ -33,6 +33,7 @@ import org.newsclub.net.unix.server.SocketServer;
  *
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("CatchAndPrintStackTrace" /* errorprone */)
 abstract class DemoServerBase extends SocketServer<SocketAddress, Socket, ServerSocket> {
   public DemoServerBase(SocketAddress listenAddress) {
     super(listenAddress);

@@ -53,6 +53,7 @@ final class ShutdownHookSupport {
 
   // only for unit testing
   @SuppressFBWarnings({"RU_INVOKE_RUN"})
+  @SuppressWarnings("DoNotCall" /* errorprone */)
   static void runHooks() {
     if (HOOKS != null) {
       List<Thread> list;

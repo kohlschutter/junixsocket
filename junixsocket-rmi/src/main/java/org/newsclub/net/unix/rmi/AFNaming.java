@@ -162,6 +162,7 @@ public abstract class AFNaming extends AFRegistryAccess {
       ShutdownHookSupport.addWeakShutdownHook(new ShutdownHook() {
 
         @Override
+        @SuppressWarnings("LockOnNonEnclosingClassLiteral" /* errorprone */)
         public void onRuntimeShutdown(Thread thread) throws IOException {
           synchronized (AFNaming.class) {
             if (registry != null && registry.isLocal()) {

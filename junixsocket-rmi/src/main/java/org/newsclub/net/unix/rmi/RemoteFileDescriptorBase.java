@@ -29,6 +29,7 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.net.SocketException;
 import java.util.Objects;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -152,7 +153,9 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
         }
 
       };
-      server.startThenStopAfter(SERVER_TIMEOUT, TimeUnit.MILLISECONDS);
+      @SuppressWarnings("unused")
+      ScheduledFuture<IOException> unused = server.startThenStopAfter(SERVER_TIMEOUT,
+          TimeUnit.MILLISECONDS);
     } catch (IOException e) {
       objOut.writeObject(e);
       throw e;

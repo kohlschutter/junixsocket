@@ -33,8 +33,9 @@ abstract class SocketImplShim extends SocketImpl {
     super();
   }
 
-  @SuppressWarnings("all")
+  @SuppressWarnings({"all", "Finalize" /* errorprone */})
   @Override
+  @Deprecated
   protected final void finalize() {
     try {
       close();

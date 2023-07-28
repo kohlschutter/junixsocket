@@ -96,6 +96,7 @@ public final class AFVSOCKProxySocketConnector implements
    * @throws AddressUnavailableSocketException if the CID is not covered by this connector.
    */
   @Override
+  @SuppressWarnings("Finally" /* errorprone */)
   public AFSocket<?> connect(AFVSOCKSocketAddress vsockAddress) throws IOException {
     int cid = vsockAddress.getVSOCKCID();
     if (cid != allowedCID && cid != AFVSOCKSocketAddress.VMADDR_CID_ANY

@@ -35,7 +35,7 @@ public final class AFVSOCKSocketPair<T extends AFSomeSocket> extends AFSocketPai
    * @param socket1 The first socket.
    * @param socket2 The second socket.
    */
-  protected AFVSOCKSocketPair(T socket1, T socket2) {
+  AFVSOCKSocketPair(T socket1, T socket2) {
     super(socket1, socket2);
   }
 
