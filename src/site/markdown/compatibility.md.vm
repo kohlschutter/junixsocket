@@ -1,13 +1,24 @@
 # Compatibility Considerations
 
-#[[##]]# Versioning
+#[[##]]# Versioning and Update Policy
 
 junixsocket versions consist of three parts: major, minor and patch (for example, 2.5.1).
 
 "Minor version" updates (e.g., 2.4.0 -> 2.5.0) can still bring "major" new features but they
 should be backwards compatible to releases of the same "major version" (e.g., 2.x).
 
+The existing API should always be backwards compatible between minor releases (e.g., 2.4.0 -> 2.5.1)
+unless explicitly mentioned in the changelog below (e.g., dropping Java 7 support in 2.5.0).
+
+Bugs that are found in an older version (e.g., 2.6.1) may be fixed in a minor release (e.g., 2.7.0)
+or a patch release (e.g., 2.6.2). There is no guarantee of a new patch release if there is a minor
+release coming up (as a particular example, there won't be a 2.6.3 for bugs found in 2.6.2 and
+earlier).
+
 `-SNAPSHOT` builds are not considered releases, but merely previews of a future release.
+
+If you have certain business reasons to not upgrade but still need something fixed, please
+[ask for an enterprise support plan](mailto:christian@kohlschutter.com).
 
 #[[##]]# Supported Java versions
 
@@ -15,10 +26,14 @@ junixsocket ${project.version} is fully compatible with Java 8 and newer (tested
 
 #[[##]]# Supported Java VMs
 
-junixsocket has been tested to work with Oracle's Java 8 JDK, and OpenJDK (and its flavors) for newer versions,
-as well as other platform-specific VMs listed below. 
+junixsocket has been tested to work with Oracle's Java 8 JDK, and OpenJDK (and its flavors, as well
+as IBM Semeru) for newer versions, and other platform-specific VMs listed below. 
 
-junixsocket also works with GraalVM (tested with *graalvm-ce-java17-22.2.0*) both in OpenJDK mode and (since version 2.6.0, partially) in Native Image mode with Substrate VM. More [details here](graalvm.html).
+junixsocket also works with GraalVM (tested with *graalvm-ce-java17-22.2.0*) both in OpenJDK mode
+and (since version 2.6.0, partially) in Native Image mode with Substrate VM.
+More [details here](graalvm.html).
+
+Since version 2.7.0, junixsocket runs on Android, too.
 
 #[[##]]# Supported Platforms
 
@@ -41,6 +56,7 @@ The minimum set of supported (out of the box) platforms and processor architectu
 * DragonFlyBSD (amd64)
 * IBM AIX 7 (POWER 64-bit)
 * IBM i 7 (POWER 64-bit)
+* Android (SDK version 26 or newer), aarch64/x86_64/i686/arm
 
 Linux builds should be compatible with all major distributions, including the
 ones using musl (e.g., Alpine Linux).
@@ -55,8 +71,11 @@ IBM i support verified with 7.1 (IBM i 7R1 / 71-11-2984-4), 7.2 (IBM i 7R2 / 72-
 7.3 (IBM i 7R3 / 73-07-001), 7.4 (IBM i 7R4 / 74-05-2984-1) on s922 and e980, using IBM J9 64-bit
 VMs (Java 8, and Java 11 where available).
 
-IBM z/OS is supported with caveats (not all [selftests](selftest.html) currently pass, and you have
-to compile from source with XLC).
+IBM z/OS is supported, but you have to compile junixsocket-native from source with XLC.
+Alternatively, a binary build may be [requested here])(mailto:christian@kohlschutter.com?subject=junixsocket+z%2FOS+binary).
+
+Intel x86 32-bit and ARM 32-bit are supported, but binaries are not included by default. Please file
+an issue if you think that's a bad idea.
 
 Support for [custom architectures](customarch.html) can be added by compiling a custom native binary
 on the target machine, or by [cross-compiling](crosscomp.html) using clang/LLVM on a suitable host.
@@ -89,13 +108,16 @@ A reliable way to ensure that junixsocket works in your environment is to run th
 
     java -jar junixsocket-selftest-${project.version}-jar-with-dependencies.jar
 
-The last line should say "Selftest PASSED", and you're good to go.
+The last line should say "Selftest PASSED" (or "Selftest PASSED WITH ISSUES"), then you're good to go.
 
 If not, please [file a bug report](https://github.com/kohlschutter/junixsocket/issues) with the
 output of the selftest.
 
 > **NOTE:** If your target platform supports both 32-bit and 64-bit Java VMs, make sure to use the
 64-bit version first.
+
+For Android, there is a custom selftest app, `junixsocket-selftest-android`, which can be built
+with Android Studio, for example.
 
 #[[##]]# Workarounds/testing for broken setups
 
@@ -115,4 +137,4 @@ specify:
 
     -Dorg.newsclub.net.unix.library.disable.CAPABILITY_FILE_DESCRIPTORS=true
 
-The set of available capabilities is enumerated in the `AFSocketCapability` enum.
+The set of available capabilities is enumerated in the [AFSocketCapability](https://kohlschutter.github.io/junixsocket/apidocs/org.newsclub.net.unix/org/newsclub/net/unix/AFSocketCapability.html) enum.
