@@ -51,6 +51,8 @@ public abstract class AFRegistry implements Registry {
   private final AFNaming naming;
   private final AtomicBoolean boundCloserExported = new AtomicBoolean(false);
 
+  private AFRMIService rmiService = null;
+
   AFRegistry(AFNaming naming, Registry impl) throws RemoteException {
     this.naming = naming;
     this.impl = impl;
@@ -250,7 +252,7 @@ public abstract class AFRegistry implements Registry {
       if (boundCloserExported.compareAndSet(true, false)) {
         AFRMIService service;
         try {
-          service = naming.getRMIService(this);
+          service = getRMIService();
           service.unregisterForShutdown(boundCloser);
         } catch (NoSuchObjectException | NotBoundException e) {
           return;
@@ -263,11 +265,18 @@ public abstract class AFRegistry implements Registry {
 
       AFRMIService service;
       try {
-        service = naming.getRMIService(this);
+        service = getRMIService();
       } catch (NotBoundException e) {
         return;
       }
       service.registerForShutdown(boundCloser);
     }
+  }
+
+  private AFRMIService getRMIService() throws RemoteException, NotBoundException {
+    if (rmiService == null) {
+      rmiService = naming.getRMIService(this);
+    }
+    return rmiService;
   }
 }

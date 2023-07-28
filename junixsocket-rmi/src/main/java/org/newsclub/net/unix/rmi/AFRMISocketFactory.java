@@ -187,17 +187,35 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
    * @return The new port.
    * @throws IOException on error.
    * @see #returnPort(int)
+   * @deprecated use {@link #newPortLease()}.
    */
+  @Deprecated
   protected int newPort() throws IOException {
     return getRmiService().newPort();
   }
 
   /**
+   * Returns a new free port.
+   *
+   * @return The new port, wrapped as a {@link PortLease}. Closing the lease will return the port.
+   * @throws IOException on error.
+   */
+  protected PortLease newPortLease() throws IOException {
+    AFRMIService service = getRmiService();
+    int port = service.newPort();
+    return new PortLease(port, service);
+  }
+
+  /**
    * Returns a port that was previously returned by {@link #newPort()}.
+   * 
+   * Note that this may call may stall unnecessarily upon shutdown due to locking issues.
    *
    * @param port The port to return.
    * @throws IOException on error.
+   * @deprecated use {@link #newPortLease()}
    */
+  @Deprecated
   protected void returnPort(int port) throws IOException {
     // return port asynchronously to avoid deadlocks
     CompletableFuture.runAsync(() -> {
@@ -211,16 +229,55 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
     });
   }
 
+  /**
+   * A lease on a registered port; closing the lease will return the port.
+   * 
+   * @author Christian Kohlschütter
+   */
+  protected static final class PortLease implements Closeable {
+    private final int port;
+    private final AFRMIService rmiService;
+
+    private PortLease(int port, AFRMIService rmiService) {
+      this.port = port;
+      this.rmiService = rmiService;
+    }
+
+    /**
+     * Closes the lease, returning the port to the {@link AFRMIService} it was leased from.
+     */
+    @Override
+    public void close() throws IOException {
+      rmiService.returnPort(getPort());
+    }
+
+    /**
+     * Returns the port number.
+     * 
+     * @return the port number.
+     */
+    public int getPort() {
+      return port;
+    }
+
+    /**
+     * Returns the service the port was leased from.
+     * 
+     * @return The service.
+     */
+    public AFRMIService getRmiService() {
+      return rmiService;
+    }
+  }
+
   @Override
   public ServerSocket createServerSocket(int port) throws IOException {
     if (port == 0) {
-      port = newPort();
-      final int returnPort = port;
+      PortLease portLease = newPortLease();
+      port = portLease.getPort();
       final AFSocketAddress addr = newSocketAddress(port);
       AFServerSocket<?> ass = addr.getAddressFamily().newServerSocket();
-      ass.addCloseable(() -> {
-        returnPort(returnPort);
-      });
+      ass.addCloseable(portLease);
       ass.setReuseAddress(true);
       ass.setDeleteOnClose(true);
       ass.bind(addr);
