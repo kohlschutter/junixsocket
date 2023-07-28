@@ -32,10 +32,11 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
-import org.opentest4j.TestAbortedException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.AssertUtil;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 /**
  * Tests {@link Socket#setSoTimeout(int)} behavior.
@@ -135,7 +136,20 @@ public abstract class SoTimeoutTest<A extends SocketAddress> extends SocketTestB
       Socket socket = pair.getSecond();
       socket.setSoTimeout(500);
       if (socket.getSoTimeout() == 0) {
-        throw new TestAbortedException("Could not set socket timeout");
+        boolean isZOS = "z/OS".equals(System.getProperty("os.name", ""));
+
+        String afs = addressFamilyString();
+
+        if (isZOS && "AF_UNIX".equals(afs)) {
+          // https://www.ibm.com/docs/en/zos/2.5.0?topic=csd-getsockopt-setsockopt-bpx1opt-bpx4opt-get-set-options-associated-socket
+          throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
+              "Could not set socket timeout via Socket.setSoTimeout (" + addressFamilyString()
+                  + "); this is a known limitation of z/OS");
+        } else {
+          throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
+              "Could not set socket timeout via Socket.setSoTimeout (" + addressFamilyString()
+                  + ")");
+        }
       }
       byte[] buf = new byte[socket.getSendBufferSize()];
       OutputStream out = socket.getOutputStream();

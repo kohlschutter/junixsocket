@@ -463,6 +463,10 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     return asp.newInterconnectedSockets();
   }
 
+  protected String addressFamilyString() {
+    return asp.addressFamilyString();
+  }
+
   protected Random getRandom() {
     return RANDOM;
   }
