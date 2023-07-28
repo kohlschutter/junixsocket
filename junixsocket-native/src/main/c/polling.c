@@ -380,6 +380,13 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
         }
 }
 
+#if __TOS_MVS__
+    if(timeout == -1) {
+        // polling on datagram sockets hangs if we don't set a short timeout on z/OS
+        timeout = 1000;
+    }
+#endif
+
 #if defined(_OS400)
     if(timeout == -1) {
         // unclear why, but a timeout of -1 returns EINVAL

@@ -17,9 +17,6 @@
  */
 package org.newsclub.net.unix.domain;
 
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
-
-import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 
@@ -36,21 +33,5 @@ public final class ThroughputTest extends ThroughputTestShim {
   @Override
   protected String stbTestType() {
     return "AF_UNIX";
-  }
-
-  @Override
-  @Test
-  public void testDatagramChannelNonBlocking() throws Exception {
-    assumeFalse("z/OS".equals(System.getProperty("os.name", "")),
-        "KNOWN ISSUE: Test may fail on z/OS");
-    super.testDatagramChannelNonBlocking();
-  }
-
-  @Override
-  @Test
-  public void testDatagramChannelNonBlockingDirect() throws Exception {
-    assumeFalse("z/OS".equals(System.getProperty("os.name", "")),
-        "KNOWN ISSUE: Test may fail on z/OS");
-    super.testDatagramChannelNonBlockingDirect();
   }
 }
