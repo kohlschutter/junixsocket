@@ -375,7 +375,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     if (addr == AFSocketAddress.INTERNAL_DUMMY_CONNECT) { // NOPMD
       this.connected.set(true);
       return true;
-    } else if (addr == AFSocketAddress.INTERNAL_DUMMY_CONNECT) { // NOPMD)
+    } else if (addr == AFSocketAddress.INTERNAL_DUMMY_DONT_CONNECT) { // NOPMD)
       return false;
     }
 
