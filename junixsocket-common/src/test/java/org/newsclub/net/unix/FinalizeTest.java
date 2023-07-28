@@ -73,8 +73,6 @@ public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBa
           sema.release();
         }
 
-        @SuppressWarnings("PMD.DoNotCallGarbageCollectionExplicitly")
-        @SuppressFBWarnings("DM_GC")
         @Override
         protected void handleConnection(final Socket socket) throws IOException {
           try {
@@ -87,7 +85,6 @@ public abstract class FinalizeTest<A extends SocketAddress> extends SocketTestBa
                 out.write('@');
               }
             } finally {
-              System.gc();
               future.complete(preRunCheck);
             }
           } catch (Exception e) {
