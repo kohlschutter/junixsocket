@@ -1,5 +1,7 @@
 ![junixsocket logo](https://user-images.githubusercontent.com/822690/246675372-d1775152-5f5e-4576-8f3d-8445779ea584.png)
 
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/kohlschutter/junixsocket/codeql-analysis.yml?cacheSeconds=60) ![Last commit on main](https://img.shields.io/github/last-commit/kohlschutter/junixsocket/main) ![Maven Central version](https://img.shields.io/maven-central/v/com.kohlschutter.junixsocket/junixsocket) ![Apache 2.0 License](https://img.shields.io/github/license/kohlschutter/junixsocket)
+
 # junixsocket
 
 junixsocket is a Java/JNI library that allows the use of
