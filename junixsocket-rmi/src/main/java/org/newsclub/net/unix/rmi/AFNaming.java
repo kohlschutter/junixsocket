@@ -107,7 +107,9 @@ public abstract class AFNaming extends AFRegistryAccess {
         try {
           instance = provider.newInstance(registryPort);
           Objects.requireNonNull(instance);
-          instance.socketFactory = instance.initSocketFactory();
+          synchronized (instance) {
+            instance.socketFactory = instance.initSocketFactory();
+          }
         } catch (RemoteException e) {
           throw e;
         } catch (IOException e) {
@@ -163,11 +165,9 @@ public abstract class AFNaming extends AFRegistryAccess {
 
         @Override
         @SuppressWarnings("LockOnNonEnclosingClassLiteral" /* errorprone */)
-        public void onRuntimeShutdown(Thread thread) throws IOException {
-          synchronized (AFNaming.class) {
-            if (registry != null && registry.isLocal()) {
-              shutdownRegistry();
-            }
+        public synchronized void onRuntimeShutdown(Thread thread) throws IOException {
+          if (registry != null && registry.isLocal()) {
+            shutdownRegistry();
           }
         }
       });
@@ -199,7 +199,7 @@ public abstract class AFNaming extends AFRegistryAccess {
     if (shutdownInProgress.get()) {
       throw new ShutdownException();
     }
-    synchronized (AFNaming.class) {
+    synchronized (this) {
       AFRegistry reg = getRegistry(false);
       if (reg == null) {
         reg = openRegistry(timeout, unit);
@@ -232,7 +232,7 @@ public abstract class AFNaming extends AFRegistryAccess {
     if (shutdownInProgress.get()) {
       throw new ShutdownException();
     }
-    synchronized (AFNaming.class) {
+    synchronized (this) {
       if (registry != null) {
         return registry;
       } else if (!socketFactory.hasRegisteredPort(registryPort)) {
@@ -268,42 +268,40 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @throws RemoteException if the operation fails.
    */
   public void shutdownRegistry() throws RemoteException {
-    synchronized (AFNaming.class) {
-      synchronized (this) {
-        if (registry == null) {
-          return;
+    synchronized (this) {
+      if (registry == null) {
+        return;
+      }
+
+      AFRegistry registryToBeClosed = registry;
+      AFRMIService rmiServiceToBeClosed = rmiService;
+
+      if (!registryToBeClosed.isLocal()) {
+        if (!isRemoteShutdownAllowed()) {
+          throw new ServerException("The server refuses to be shutdown remotely");
         }
-
-        AFRegistry registryToBeClosed = registry;
-        AFRMIService rmiServiceToBeClosed = rmiService;
-
-        if (!registryToBeClosed.isLocal()) {
-          if (!isRemoteShutdownAllowed()) {
-            throw new ServerException("The server refuses to be shutdown remotely");
-          }
-          setRegistry(null);
-
-          try {
-            shutdownViaRMIService(registryToBeClosed, rmiServiceToBeClosed);
-          } catch (Exception e) {
-            // ignore
-          }
-          return;
-        }
-
         setRegistry(null);
 
-        if (!shutdownInProgress.compareAndSet(false, true)) {
-          return;
-        }
         try {
-          unexportRMIService(registryToBeClosed, (AFRMIServiceImpl) rmiServiceToBeClosed);
-          forceUnexportBound(registryToBeClosed);
-          closeSocketFactory();
-          shutdownRegistryFinishingTouches();
-        } finally {
-          shutdownInProgress.set(false);
+          shutdownViaRMIService(registryToBeClosed, rmiServiceToBeClosed);
+        } catch (Exception e) {
+          // ignore
         }
+        return;
+      }
+
+      setRegistry(null);
+
+      if (!shutdownInProgress.compareAndSet(false, true)) {
+        return;
+      }
+      try {
+        unexportRMIService(registryToBeClosed, (AFRMIServiceImpl) rmiServiceToBeClosed);
+        forceUnexportBound(registryToBeClosed);
+        closeSocketFactory();
+        shutdownRegistryFinishingTouches();
+      } finally {
+        shutdownInProgress.set(false);
       }
     }
   }
@@ -373,40 +371,38 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @throws RemoteException if the operation fails.
    * @see #getRegistry()
    */
-  public AFRegistry createRegistry() throws RemoteException {
-    synchronized (AFNaming.class) {
-      AFRegistry existingRegistry = registry;
-      if (existingRegistry == null) {
-        try {
-          existingRegistry = getRegistry(false);
-        } catch (ServerException e) {
-          Throwable cause = e.getCause();
-          if (cause instanceof NotBoundException || cause instanceof ConnectIOException) {
-            existingRegistry = null;
-          } else {
-            throw e;
-          }
+  public synchronized AFRegistry createRegistry() throws RemoteException {
+    AFRegistry existingRegistry = registry;
+    if (existingRegistry == null) {
+      try {
+        existingRegistry = getRegistry(false);
+      } catch (ServerException e) {
+        Throwable cause = e.getCause();
+        if (cause instanceof NotBoundException || cause instanceof ConnectIOException) {
+          existingRegistry = null;
+        } else {
+          throw e;
         }
       }
-      if (existingRegistry != null) {
-        if (!isRemoteShutdownAllowed()) {
-          throw new ServerException("The server refuses to be shutdown remotely");
-        }
-        shutdownRegistry();
-      }
-
-      initRegistryPrerequisites();
-
-      setRegistry(newAFRegistry(LocateRegistry.createRegistry(registryPort, socketFactory,
-          socketFactory)));
-
-      final AFRMIService service = new AFRMIServiceImpl(this);
-      UnicastRemoteObject.exportObject(service, servicePort, socketFactory, socketFactory);
-
-      rebindRMIService(service);
-
-      return registry;
     }
+    if (existingRegistry != null) {
+      if (!isRemoteShutdownAllowed()) {
+        throw new ServerException("The server refuses to be shutdown remotely");
+      }
+      shutdownRegistry();
+    }
+
+    initRegistryPrerequisites();
+    AFRegistry newAFRegistry = newAFRegistry(LocateRegistry.createRegistry(registryPort,
+        socketFactory, socketFactory));
+    setRegistry(newAFRegistry);
+
+    final AFRMIService service = new AFRMIServiceImpl(this);
+    UnicastRemoteObject.exportObject(service, servicePort, socketFactory, socketFactory);
+
+    rebindRMIService(service);
+
+    return registry;
   }
 
   /**
@@ -511,16 +507,12 @@ public abstract class AFNaming extends AFRegistryAccess {
     }
   }
 
-  private void setRegistry(AFRegistry registry) {
-    synchronized (AFNaming.class) {
-      synchronized (this) {
-        this.registry = registry;
-        if (registry == null) {
-          rmiService = null;
-        } else if (registry.isLocal()) {
-          closeUponRuntimeShutdown();
-        }
-      }
+  private synchronized void setRegistry(AFRegistry registry) {
+    this.registry = registry;
+    if (registry == null) {
+      rmiService = null;
+    } else if (registry.isLocal()) {
+      closeUponRuntimeShutdown();
     }
   }
 }
