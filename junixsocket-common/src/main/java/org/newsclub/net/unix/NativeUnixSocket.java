@@ -74,6 +74,7 @@ final class NativeUnixSocket {
   static final int SOCKETSTATUS_BOUND = 1;
   static final int SOCKETSTATUS_CONNECTED = 2;
 
+  @SuppressWarnings("StaticAssignmentOfThrowable" /* errorprone */)
   private static Throwable initError = null;
 
   @ExcludeFromCodeCoverageGeneratedReport(reason = "unreachable")

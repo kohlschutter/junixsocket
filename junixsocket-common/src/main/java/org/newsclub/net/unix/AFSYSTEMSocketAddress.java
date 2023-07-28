@@ -331,7 +331,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
     }
 
     String host;
-    if ((host = uri.getHost()) == null) {
+    if ((host = uri.getHost()) == null || host.isEmpty()) {
       String ssp = uri.getSchemeSpecificPart();
       if (ssp == null || !ssp.startsWith("//")) {
         throw new SocketException("Unsupported URI: " + uri);

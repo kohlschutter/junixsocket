@@ -97,7 +97,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
       pendingAccepts.decrementAndGet();
     }
 
-    protected void createSocket(FileDescriptor fdTarget, AFSocketType type) throws IOException {
+    void createSocket(FileDescriptor fdTarget, AFSocketType type) throws IOException {
       NativeUnixSocket.createSocket(fdTarget, addressFamily().getDomain(), type.getId());
     }
 
@@ -229,6 +229,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     accept0(socket);
   }
 
+  @SuppressWarnings("Finally" /* errorprone */)
   final boolean accept0(SocketImpl socket) throws IOException {
     FileDescriptor fdesc = core.validFdOrException();
     if (isClosed()) {

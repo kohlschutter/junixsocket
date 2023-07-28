@@ -378,7 +378,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   }
 
   private static void triggerInit() {
-    for (AFAddressFamily<?> family : new AFAddressFamily[] {
+    for (AFAddressFamily<?> family : new AFAddressFamily<?>[] {
         AFUNIXSocketAddress.addressFamily(), //
         AFTIPCSocketAddress.addressFamily(), //
         AFVSOCKSocketAddress.addressFamily(), //

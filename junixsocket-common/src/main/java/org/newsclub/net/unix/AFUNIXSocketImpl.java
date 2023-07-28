@@ -34,7 +34,7 @@ class AFUNIXSocketImpl extends AFSocketImpl<AFUNIXSocketAddress> {
    * {@link Socket#setTcpNoDelay(boolean)}.
    */
   static final class Lenient extends AFUNIXSocketImpl {
-    protected Lenient(FileDescriptor fdObj) throws SocketException {
+    Lenient(FileDescriptor fdObj) throws SocketException {
       super(fdObj);
     }
 

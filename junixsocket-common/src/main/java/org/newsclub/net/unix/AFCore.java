@@ -121,7 +121,9 @@ class AFCore extends CleanableState {
 
     ByteBuffer buf;
     int pos;
-    if (dst.isDirect()) {
+
+    boolean direct = dst.isDirect();
+    if (direct) {
       buf = dst;
       pos = dstPos;
     } else {
@@ -139,7 +141,13 @@ class AFCore extends CleanableState {
     if (count == -1) {
       return count;
     }
-    if (buf != dst) { // NOPMD
+
+    if (direct) {
+      if (count < 0) {
+        throw new IllegalStateException();
+      }
+      dst.position(pos + count);
+    } else {
       int oldLimit = buf.limit();
       if (count < oldLimit) {
         buf.limit(count);
@@ -153,11 +161,6 @@ class AFCore extends CleanableState {
           buf.limit(oldLimit);
         }
       }
-    } else {
-      if (count < 0) {
-        throw new IllegalStateException();
-      }
-      dst.position(pos + count);
     }
     return count;
   }

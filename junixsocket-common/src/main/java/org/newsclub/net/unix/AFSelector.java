@@ -47,7 +47,7 @@ final class AFSelector extends AbstractSelector {
   private PollFd pollFd = null;
   private final Set<SelectionKey> keysSelected = new HashSet<>();
 
-  protected AFSelector(AFSelectorProvider<?> provider) throws IOException {
+  AFSelector(AFSelectorProvider<?> provider) throws IOException {
     super(provider);
 
     this.selectorPipe = AFUNIXSelectorProvider.getInstance().openSelectablePipe();

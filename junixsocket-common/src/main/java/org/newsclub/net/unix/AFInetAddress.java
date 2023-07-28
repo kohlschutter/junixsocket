@@ -140,7 +140,7 @@ class AFInetAddress {
    * Creates an InetAddress that is considered "resolved" internally (using a static loopback
    * address), without actually having to resolve the address via DNS, thus still carrying the
    * "hostname" field containing a hostname as returned by
-   * {@link #createUnresolvedHostname(byte[])}.
+   * {@link #createUnresolvedHostname(byte[],AFAddressFamily)}.
    *
    * @param socketAddress The socket address.
    * @return The {@link InetAddress}.

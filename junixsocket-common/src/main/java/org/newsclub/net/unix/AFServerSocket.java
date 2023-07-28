@@ -560,15 +560,6 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     }
   }
 
-  @SuppressWarnings("all")
-  public <T> T getOption(SocketOption<T> name) throws IOException {
-    Objects.requireNonNull(name);
-    if (isClosed()) {
-      throw new SocketException("Socket is closed");
-    }
-    return getAFImpl().getOption(name);
-  }
-
   @Override
   public synchronized void setReceiveBufferSize(int size) throws SocketException {
     if (size <= 0) {
@@ -594,6 +585,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   }
 
   @Override
+  @SuppressWarnings("UnsynchronizedOverridesSynchronized" /* errorprone */)
   public void setSoTimeout(int timeout) throws SocketException {
     if (isClosed()) {
       throw new SocketException("Socket is closed");
@@ -605,6 +597,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   }
 
   @Override
+  @SuppressWarnings("UnsynchronizedOverridesSynchronized" /* errorprone */)
   public int getSoTimeout() throws IOException {
     if (isClosed()) {
       throw new SocketException("Socket is closed");
@@ -638,7 +631,16 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   public void setPerformancePreferences(int connectionTime, int latency, int bandwidth) {
   }
 
-  @SuppressWarnings("all")
+  @SuppressWarnings({"all", "MissingOverride" /* errorprone */})
+  public <T> T getOption(SocketOption<T> name) throws IOException {
+    Objects.requireNonNull(name);
+    if (isClosed()) {
+      throw new SocketException("Socket is closed");
+    }
+    return getAFImpl().getOption(name);
+  }
+
+  @SuppressWarnings({"all", "MissingOverride" /* errorprone */})
   public <T> ServerSocket setOption(SocketOption<T> name, T value) throws IOException {
     Objects.requireNonNull(name);
     if (isClosed()) {

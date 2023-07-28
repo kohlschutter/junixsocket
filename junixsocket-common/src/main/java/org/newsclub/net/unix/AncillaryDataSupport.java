@@ -25,7 +25,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +41,7 @@ final class AncillaryDataSupport implements Closeable {
       .synchronizedMap(new HashMap<>());
 
   private final List<FileDescriptor[]> receivedFileDescriptors = Collections.synchronizedList(
-      new LinkedList<>());
+      new ArrayList<>());
 
   // referenced from native code
   private ByteBuffer ancillaryReceiveBuffer = EMPTY_BUFFER;
