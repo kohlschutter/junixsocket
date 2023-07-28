@@ -46,6 +46,7 @@ public final class Closeables implements Closeable {
    * @param closeable The {@link Closeable}s to add.
    */
   public Closeables(Closeable... closeable) {
+    this.list = new ArrayList<>();
     for (Closeable cl : closeable) {
       this.list.add(new HardReference<>(cl));
     }
@@ -80,7 +81,10 @@ public final class Closeables implements Closeable {
       closed = true;
 
       l = this.list;
-      this.list.clear();
+      if (l != null) {
+        l = new ArrayList<>(l);
+        this.list = null;
+      }
     }
 
     if (l != null) {
@@ -107,7 +111,8 @@ public final class Closeables implements Closeable {
     }
 
     synchronized (this) {
-      if (!this.list.isEmpty()) {
+      l = this.list;
+      if (l != null && !l.isEmpty()) {
         throw new IllegalStateException("List should be empty after closing");
       }
     }
@@ -177,7 +182,7 @@ public final class Closeables implements Closeable {
    *         previously added.
    */
   public synchronized boolean remove(Closeable closeable) {
-    if (list == null || closeable == null) {
+    if (list == null || closeable == null || closed) {
       return false;
     }
     for (Iterator<WeakReference<Closeable>> it = list.iterator(); it.hasNext();) {
