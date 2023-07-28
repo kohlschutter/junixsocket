@@ -81,40 +81,33 @@ public final class Closeables implements Closeable {
       closed = true;
 
       l = this.list;
-      if (l != null) {
-        l = new ArrayList<>(l);
-        this.list = null;
+      if (l == null) {
+        return;
       }
+
+      l = new ArrayList<>(l);
+      this.list = null;
     }
 
-    if (l != null) {
-      for (WeakReference<Closeable> ref : l) {
-        @SuppressWarnings("resource")
-        Closeable cl = ref.get();
-        if (cl == null) {
-          continue;
-        }
-        try {
-          cl.close();
-        } catch (IOException e) {
-          if (exc == null) {
-            exc = e;
-          } else {
-            exc.addSuppressed(e);
-          }
+    for (WeakReference<Closeable> ref : l) {
+      @SuppressWarnings("resource")
+      Closeable cl = ref.get();
+      if (cl == null) {
+        continue;
+      }
+      try {
+        cl.close();
+      } catch (IOException e) {
+        if (exc == null) {
+          exc = e;
+        } else {
+          exc.addSuppressed(e);
         }
       }
     }
 
     if (exc != null) {
       throw exc;
-    }
-
-    synchronized (this) {
-      l = this.list;
-      if (l != null && !l.isEmpty()) {
-        throw new IllegalStateException("List should be empty after closing");
-      }
     }
   }
 
