@@ -40,6 +40,7 @@ import org.junit.jupiter.api.Test;
 
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
+import com.kohlschutter.testutil.TestAsyncUtil;
 
 public abstract class SocketChannelTest<A extends SocketAddress> extends SocketTestBase<A> {
   protected SocketChannelTest(AddressSpecifics<A> asp) {
@@ -111,7 +112,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
 
       AtomicBoolean connectMustSucceed = new AtomicBoolean(false);
 
-      acceptCall = CompletableFuture.supplyAsync(() -> {
+      acceptCall = TestAsyncUtil.supplyAsync(() -> {
         try {
           SocketChannel sc = ssc1.accept();
           socketDomainWillAcceptCallOnFirstBind.set(false);
@@ -163,7 +164,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
         }
 
         if (reuseAddress) {
-          acceptCall2 = CompletableFuture.supplyAsync(() -> {
+          acceptCall2 = TestAsyncUtil.supplyAsync(() -> {
             try {
               SocketChannel sc = ssc2.accept();
               socketDomainWillAcceptCallOnFirstBind.set(false);
@@ -188,7 +189,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
 
         // unblock accept of any successful bind
         if (!acceptCall.isDone() && socketDomainWillAcceptCallOnFirstBind.get()) {
-          connectCall = CompletableFuture.runAsync(() -> {
+          connectCall = TestAsyncUtil.supplyAsync(() -> {
             try {
               newSocket().connect(sa);
             } catch (SocketException e) {
@@ -317,7 +318,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
       bb1.position(bb1Offset);
       assertEquals(bb1Offset, bb1.position());
 
-      CompletableFuture.runAsync(() -> {
+      TestAsyncUtil.runAsync(() -> {
         try (SocketChannel sc = ssc.accept()) {
           int written = 0;
           while (bb1.hasRemaining()) {

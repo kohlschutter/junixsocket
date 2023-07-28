@@ -46,7 +46,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -58,6 +57,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.commons.JUnitException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAsyncUtil;
+import com.kohlschutter.testutil.TestStackTraceUtil;
 import com.kohlschutter.util.SystemPropertyUtil;
 
 /**
@@ -134,9 +135,10 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       }) {
 
         AtomicBoolean keepRunning = new AtomicBoolean(true);
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+
+        TestAsyncUtil.runAsyncDelayed(NUM_MILLISECONDS, TimeUnit.MILLISECONDS, () -> {
           keepRunning.set(false);
-        }, NUM_MILLISECONDS, TimeUnit.MILLISECONDS);
+        });
 
         try (Socket sock = connectTo(serverThread.getServerAddress())) {
           byte[] buf = createTestData(PAYLOAD_SIZE);
@@ -270,9 +272,9 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       }
     }) {
 
-      Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+      TestAsyncUtil.runAsyncDelayed(NUM_MILLISECONDS, TimeUnit.MILLISECONDS, () -> {
         keepRunning.set(false);
-      }, NUM_MILLISECONDS, TimeUnit.MILLISECONDS);
+      });
 
       try (SocketChannel sc = sscSupp.get()) {
         ByteBuffer bb = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE) : ByteBuffer.allocate(
@@ -328,9 +330,9 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
           dc.connect(dsAddr);
 
           AtomicBoolean keepRunning = new AtomicBoolean(true);
-          Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+          TestAsyncUtil.runAsyncDelayed(NUM_MILLISECONDS, TimeUnit.MILLISECONDS, () -> {
             keepRunning.set(false);
-          }, NUM_MILLISECONDS, TimeUnit.MILLISECONDS);
+          });
 
           AtomicLong readTotal = new AtomicLong();
           long sentTotal = 0;
@@ -356,10 +358,10 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
                 }
               } catch (SocketException e) {
                 if (keepRunning.get()) {
-                  e.printStackTrace();
+                  TestStackTraceUtil.printStackTrace(e);
                 }
               } catch (IOException e) { // NOPMD.ExceptionAsFlowControl
-                e.printStackTrace();
+                TestStackTraceUtil.printStackTrace(e);
               }
             }
           }.start();
@@ -396,7 +398,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       });
     } catch (JUnitException e) {
       // Ignore timeout failure (this is a throughput test only)
-      e.printStackTrace();
+      TestStackTraceUtil.printStackTrace(e);
     }
   }
 
@@ -409,7 +411,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       });
     } catch (JUnitException e) {
       // Ignore timeout failure (this is a throughput test only)
-      e.printStackTrace();
+      TestStackTraceUtil.printStackTrace(e);
     }
   }
 
@@ -422,7 +424,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       });
     } catch (JUnitException e) {
       // Ignore timeout failure (this is a throughput test only)
-      e.printStackTrace();
+      TestStackTraceUtil.printStackTrace(e);
     }
   }
 
@@ -435,7 +437,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       });
     } catch (JUnitException e) {
       // Ignore timeout failure (this is a throughput test only)
-      e.printStackTrace();
+      TestStackTraceUtil.printStackTrace(e);
     }
   }
 
@@ -448,7 +450,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       });
     } catch (JUnitException e) {
       // Ignore timeout failure (this is a throughput test only)
-      e.printStackTrace();
+      TestStackTraceUtil.printStackTrace(e);
     }
   }
 
@@ -490,14 +492,14 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
     // ds.setOption(StandardSocketOptions.SO_RCVBUF, (PAYLOAD_SIZE + 82));
 
     AtomicBoolean keepRunning = new AtomicBoolean(true);
-    Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+    TestAsyncUtil.runAsyncDelayed(NUM_MILLISECONDS, TimeUnit.MILLISECONDS, () -> {
       keepRunning.set(false);
       try {
         ds.close();
       } catch (IOException e) {
         // ignore
       }
-    }, NUM_MILLISECONDS, TimeUnit.MILLISECONDS);
+    });
 
     AtomicLong readTotal = new AtomicLong();
     long sentTotal = 0;
@@ -601,10 +603,10 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       bytesRead.get(NUM_MILLISECONDS, TimeUnit.MILLISECONDS);
     } catch (TimeoutException e) {
       if (NUM_SECONDS != 0) {
-        e.printStackTrace();
+        TestStackTraceUtil.printStackTrace(e);
       }
     } catch (InterruptedException | ExecutionException e) {
-      e.printStackTrace();
+      TestStackTraceUtil.printStackTrace(e);
     }
 
     long readTotal0 = readTotal.get();

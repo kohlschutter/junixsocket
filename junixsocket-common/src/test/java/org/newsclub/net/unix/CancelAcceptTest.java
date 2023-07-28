@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
+import com.kohlschutter.testutil.TestStackTraceUtil;
 
 /**
  * Tests breaking out of accept.
@@ -136,7 +137,7 @@ public abstract class CancelAcceptTest<A extends SocketAddress> extends SocketTe
         // as expected
       }
     } catch (SocketException e) {
-      e.printStackTrace();
+      TestStackTraceUtil.printStackTrace(e);
     }
   }
 

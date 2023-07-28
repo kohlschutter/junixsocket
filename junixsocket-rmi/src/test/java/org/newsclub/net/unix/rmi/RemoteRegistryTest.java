@@ -42,6 +42,7 @@ import com.kohlschutter.testutil.ForkedVM;
 import com.kohlschutter.testutil.ForkedVMRequirement;
 import com.kohlschutter.testutil.OutputBridge;
 import com.kohlschutter.testutil.OutputBridge.ProcessStream;
+import com.kohlschutter.testutil.TestAsyncUtil;
 
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
@@ -278,7 +279,7 @@ public class RemoteRegistryTest {
     }
 
     private void watchProcessAsync() {
-      executors.submit(() -> {
+      TestAsyncUtil.runAsync(executors, () -> {
         try {
           registryProcess.waitFor();
         } catch (InterruptedException e) {
@@ -292,12 +293,12 @@ public class RemoteRegistryTest {
               "The spawned VM has terminated with RC=" + registryProcess.exitValue()));
         }
       });
-      executors.submit(bridgeOut);
-      executors.submit(bridgeErr);
+      TestAsyncUtil.runAsync(executors, bridgeOut);
+      TestAsyncUtil.runAsync(executors, bridgeErr);
     }
 
     private void asyncGetRegistry() {
-      executors.submit(() -> {
+      TestAsyncUtil.runAsync(executors, () -> {
         try {
           AFNaming naming = getNamingInstance();
           AFRegistry registry = naming.getRegistry(30, TimeUnit.SECONDS);

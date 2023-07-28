@@ -33,6 +33,7 @@ import org.newsclub.net.unix.AFTIPCSocketAddress.Scope;
 import org.newsclub.net.unix.tipc.AFTIPCErrInfo.ErrorCode;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestStackTraceUtil;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_TIPC)
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
@@ -60,7 +61,7 @@ public final class AncillaryMessageTest extends
       try {
         clientSocket.close();
       } catch (IOException e) {
-        e.printStackTrace();
+        TestStackTraceUtil.printStackTrace(e);
       }
     }).start();
 

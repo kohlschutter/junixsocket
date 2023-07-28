@@ -23,6 +23,7 @@ import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestStackTraceUtil;
 import com.kohlschutter.util.SystemPropertyUtil;
 
 /**
@@ -89,7 +90,7 @@ public class TestRegistryServer {
           try {
             naming.shutdownRegistry();
           } catch (RemoteException e) {
-            e.printStackTrace();
+            TestStackTraceUtil.printStackTrace(e);
           }
 
           System.exit(0); // NOPMD
