@@ -36,7 +36,9 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public class FinalizeTestClient {
-  @SuppressWarnings("PMD.DoNotCallGarbageCollectionExplicitly")
+  @SuppressWarnings({
+      "PMD.DoNotCallGarbageCollectionExplicitly", //
+      "ModifiedButNotUsed" /* errorprone */})
   @SuppressFBWarnings({"RV_RETURN_VALUE_IGNORED", "DM_GC", "UC_USELESS_OBJECT"})
   public static void main(String[] args) throws Exception {
     String socketType = System.getProperty("test.junixsocket.socket.type", "");
