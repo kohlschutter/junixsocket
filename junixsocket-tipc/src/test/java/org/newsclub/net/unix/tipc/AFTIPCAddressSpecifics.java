@@ -125,4 +125,9 @@ public final class AFTIPCAddressSpecifics implements AddressSpecifics<AFTIPCSock
     CloseablePair<? extends SocketChannel> sp = newSocketPair();
     return new CloseablePair<>(sp.getFirst().socket(), sp.getSecond().socket());
   }
+
+  @Override
+  public String addressFamilyString() {
+    return "AF_TIPC";
+  }
 }

@@ -247,4 +247,9 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
     CloseablePair<? extends SocketChannel> sp = newSocketPair();
     return new CloseablePair<>(sp.getFirst().socket(), sp.getSecond().socket());
   }
+
+  @Override
+  public String addressFamilyString() {
+    return "AF_VSOCK";
+  }
 }

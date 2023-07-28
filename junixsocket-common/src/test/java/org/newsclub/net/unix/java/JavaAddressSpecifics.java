@@ -137,4 +137,9 @@ public final class JavaAddressSpecifics implements AddressSpecifics<InetSocketAd
     }
     return new ServerSocket(inetAddr.getPort());
   }
+
+  @Override
+  public String addressFamilyString() {
+    return "Java standard socket";
+  }
 }

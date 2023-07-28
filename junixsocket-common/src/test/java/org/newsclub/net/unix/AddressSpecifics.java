@@ -44,6 +44,8 @@ import java.nio.channels.spi.SelectorProvider;
  */
 public interface AddressSpecifics<A extends SocketAddress> {
 
+  String addressFamilyString();
+
   Socket newStrictSocket() throws IOException;
 
   Socket newSocket() throws IOException;

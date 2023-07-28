@@ -116,4 +116,9 @@ public final class AFUNIXAddressSpecifics implements AddressSpecifics<AFUNIXSock
   public Socket connectTo(SocketAddress socket) throws IOException {
     return AFUNIXSocket.connectTo((AFUNIXSocketAddress) socket);
   }
+
+  @Override
+  public String addressFamilyString() {
+    return "AF_UNIX";
+  }
 }
