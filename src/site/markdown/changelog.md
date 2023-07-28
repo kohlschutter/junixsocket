@@ -35,6 +35,7 @@ If you have certain business reasons to not upgrade but still need something fix
 - Fix intermittent hangs when sending datagrams on macOS, BSD
 - Fix "org.eclipse.jdt.annotation" JPMS module: no longer required at runtime
 - Improve JNI library lookup; load from user.home/user.dir if tmpfs is mounted with noexec
+- Improve concurrency performance for RMI over Unix domain sockets
 - Improve reliability on exotic environments
 - Update dependencies, improve tests, selftest, build scripts
 - Require Java 16 to build (still supports running on Java 8 and newer)
