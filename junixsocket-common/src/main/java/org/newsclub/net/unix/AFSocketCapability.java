@@ -29,6 +29,9 @@ import java.lang.ProcessBuilder.Redirect;
  * You can also manually disable a given capability by specifying a System property of the form
  * <code>org.newsclub.net.unix.library.disable.<em>CAPABILITY_SOMETHING_SOMETHING</em>=true</code>
  * when invoking the JVM (make sure this property is set before junixsocket is accessed).
+ * 
+ * A simple way to check which capabilities are supported in an environment is to run the
+ * `junixsocket-selftest` jar.
  */
 public enum AFSocketCapability {
   // see org_newsclub_net_unix_NativeUnixSocket.c in junixsocket-native
@@ -45,7 +48,7 @@ public enum AFSocketCapability {
   /** Socket addressing supports the abstract namespace (Linux). */
   CAPABILITY_ABSTRACT_NAMESPACE(3),
 
-  /** Support for AF_UNIX datagrams (not on Windows yet). */
+  /** Support for AF_UNIX datagrams. */
   CAPABILITY_UNIX_DATAGRAMS(4),
 
   /**
