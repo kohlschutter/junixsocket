@@ -121,4 +121,9 @@ public final class AFUNIXAddressSpecifics implements AddressSpecifics<AFUNIXSock
   public String addressFamilyString() {
     return "AF_UNIX";
   }
+
+  @Override
+  public String summaryImportantMessage(String message) {
+    return message;
+  }
 }

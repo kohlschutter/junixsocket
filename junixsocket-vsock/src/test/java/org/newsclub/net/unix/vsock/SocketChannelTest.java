@@ -71,7 +71,7 @@ public final class SocketChannelTest extends
   @Override
   protected String checkKnownBugFirstAcceptCallNotTerminated() {
     // seen in virtualized Linux environments with CID=3
-    return AFVSOCKAddressSpecifics.KERNEL_NOT_CONFIGURED + ": First accept call did not terminate";
+    return AFVSOCKAddressSpecifics.KERNEL_NOT_CONFIGURED;
   }
 
   @Override
@@ -79,10 +79,11 @@ public final class SocketChannelTest extends
     try {
       super.handleBind(ssc, sa);
     } catch (InvalidSocketException e) {
+      String msg = "Could not bind AF_VSOCK server socket to CID=" + ((AFVSOCKSocketAddress) sa)
+          .getVSOCKCID() + "; check kernel capabilities.";
       throw (TestAbortedWithImportantMessageException) new TestAbortedWithImportantMessageException(
-          MessageType.TEST_ABORTED_WITH_ISSUES, "Could not bind AF_VSOCK server socket to CID="
-              + ((AFVSOCKSocketAddress) sa).getVSOCKCID() + "; check kernel capabilities.")
-          .initCause(e);
+          MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, msg, summaryImportantMessage(msg)).initCause(
+              e);
     }
   }
 
@@ -91,10 +92,11 @@ public final class SocketChannelTest extends
     try {
       return super.handleConnect(sc, sa);
     } catch (InvalidSocketException e) {
+      String msg = "Could not connect AF_VSOCK socket to CID=" + ((AFVSOCKSocketAddress) sa)
+          .getVSOCKCID() + "; check kernel capabilities.";
       throw (TestAbortedWithImportantMessageException) new TestAbortedWithImportantMessageException(
-          MessageType.TEST_ABORTED_WITH_ISSUES, "Could not connect AF_VSOCK socket to CID="
-              + ((AFVSOCKSocketAddress) sa).getVSOCKCID() + "; check kernel capabilities.")
-          .initCause(e);
+          MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, msg, summaryImportantMessage(msg)).initCause(
+              e);
     }
   }
 }

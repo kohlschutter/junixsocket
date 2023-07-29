@@ -124,8 +124,8 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
         } catch (SocketException e) {
           String msg = checkKnownBugAcceptFailure(e);
           if (msg != null) {
-            throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
-                msg, e);
+            throw new TestAbortedWithImportantMessageException(
+                MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, msg, summaryImportantMessage(msg), e);
           }
           if (reuseAddress) {
             // expected (Software caused connection abort)
@@ -135,8 +135,8 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
         } catch (SocketTimeoutException e) {
           String msg = checkKnownBugAcceptFailure(e);
           if (msg != null) {
-            throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
-                msg, e);
+            throw new TestAbortedWithImportantMessageException(
+                MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, msg, summaryImportantMessage(msg), e);
           }
           fail(e);
         } catch (IOException e) {
@@ -233,8 +233,8 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
       }
     }
     if (triggerWithIssues != null) {
-      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
-          triggerWithIssues);
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          triggerWithIssues, summaryImportantMessage(triggerWithIssues));
     }
 
     if (connectCall != null) {

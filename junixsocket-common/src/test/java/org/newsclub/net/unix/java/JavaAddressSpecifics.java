@@ -142,4 +142,9 @@ public final class JavaAddressSpecifics implements AddressSpecifics<InetSocketAd
   public String addressFamilyString() {
     return "Java standard socket";
   }
+
+  @Override
+  public String summaryImportantMessage(String message) {
+    return message;
+  }
 }

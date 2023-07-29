@@ -52,7 +52,8 @@ public final class AcceptTimeoutTest extends
       } catch (TestAbortedException e2) {
         TestAbortedWithImportantMessageException e3 = new TestAbortedWithImportantMessageException(
             MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
-            AFVSOCKAddressSpecifics.KERNEL_NOT_CONFIGURED, e);
+            AFVSOCKAddressSpecifics.KERNEL_NOT_CONFIGURED, summaryImportantMessage(
+                AFVSOCKAddressSpecifics.KERNEL_NOT_CONFIGURED), e);
         e3.addSuppressed(e2);
         throw e3; // NOPMD.PreserveStackTrace
       }
@@ -103,5 +104,4 @@ public final class AcceptTimeoutTest extends
     }
     return null;
   }
-
 }

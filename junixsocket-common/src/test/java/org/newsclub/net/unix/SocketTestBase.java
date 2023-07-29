@@ -490,4 +490,15 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
       return null; // NOPMD.PMD.ReturnEmptyCollectionRatherThanNull
     }
   }
+
+  /**
+   * Provide a potentially different string for the "important message" section in selftest, given
+   * an existing error message.
+   *
+   * @param message The original message.
+   * @return A potentially different string.
+   */
+  protected String summaryImportantMessage(String message) {
+    return asp.summaryImportantMessage(message);
+  }
 }

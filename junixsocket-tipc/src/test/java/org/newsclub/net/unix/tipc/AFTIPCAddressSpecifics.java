@@ -130,4 +130,9 @@ public final class AFTIPCAddressSpecifics implements AddressSpecifics<AFTIPCSock
   public String addressFamilyString() {
     return "AF_TIPC";
   }
+
+  @Override
+  public String summaryImportantMessage(String message) {
+    return message;
+  }
 }

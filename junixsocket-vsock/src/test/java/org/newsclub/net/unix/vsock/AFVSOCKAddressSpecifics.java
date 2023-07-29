@@ -142,8 +142,9 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
       return e;
     }
 
+    String message = msg == null || msg.isEmpty() ? shortMsg : shortMsg + ": " + msg;
     throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
-        msg == null || msg.isEmpty() ? shortMsg : shortMsg + ": " + msg, e);
+        message, summaryImportantMessage0(), e);
   }
 
   private static SocketException handleSocketException(SocketException e, SocketAddress addr)
@@ -255,5 +256,14 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
   @Override
   public String addressFamilyString() {
     return "AF_VSOCK";
+  }
+
+  @Override
+  public String summaryImportantMessage(String message) {
+    return summaryImportantMessage0();
+  }
+
+  private static String summaryImportantMessage0() {
+    return "Environment may not be configured for VSOCK. More information at https://kohlschutter.github.io/junixsocket/junixsocket-vsock/";
   }
 }

@@ -169,7 +169,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
               throw e;
             } else {
               throw new TestAbortedWithImportantMessageException(
-                  MessageType.TEST_ABORTED_WITH_ISSUES, msg, e);
+                  MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, msg, summaryImportantMessage(msg), e);
             }
           }
           time = System.currentTimeMillis() - time;
@@ -190,8 +190,8 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
       if (msg == null) {
         throw e;
       } else {
-        throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
-            msg, e);
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, msg, summaryImportantMessage(msg), e);
       }
     } finally {
       keepRunning.set(false);

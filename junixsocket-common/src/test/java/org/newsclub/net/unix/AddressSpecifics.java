@@ -110,4 +110,6 @@ public interface AddressSpecifics<A extends SocketAddress> {
   }
 
   DatagramChannel newDatagramChannel() throws IOException;
+
+  String summaryImportantMessage(String message);
 }

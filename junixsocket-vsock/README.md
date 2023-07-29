@@ -44,6 +44,9 @@ On Linux, depending on kernel version and configuration, no support may be avail
 may be different (VHOST vs VIRTIO).  Permissions may prevent a user from accessing VSOCK (e.g., when
 `/dev/vsock` is inaccessible).
 
+In some Linux environments, you may need to `modprobe vsock_loopback` for junixsocket-selftest
+to pass.
+
 On macOS, `AF_VSOCK` is currently only available from within a virtual machine, and, when using
 `Virtualization.framework`, a `VZVirtioSocketDeviceConfiguration` must be present.  In that case,
 the communication with the outside world is implementation-specific (via a `VZVirtioSocketDevice`
@@ -51,10 +54,10 @@ configured for a `VZVirtualMachine`.).  Communication with the guest from the ho
 facilitated via custom means, for example via a shared host-side `AF_UNIX` socket that acts as a
 proxy to the guest-side `AF_VSOCK` sockets.
 
-When using qemu (from Linux), add `-device vhost-vsock-pci,guest-cid=3` to enable VSOCK in the guest
+When using qemu from Linux, add `-device vhost-vsock-pci,guest-cid=3` to enable VSOCK in the guest
 VM (optionally, change 3 to the desired guest CID).  Make sure that, on the host, `/dev/vhost-vsock`
 is accessible by your process, and maybe use `modprobe vhost_vsock` to ensure that the host-side
-vsock implementation is loaded,
+vsock implementation is loaded.
 
 ## How can I use `AF_VSOCK` sockets in Java with junixsocket?
 
