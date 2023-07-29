@@ -24,6 +24,8 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 - Fix potential data corruption when receiving non-direct ByteBuffers with non-zero position
 - Fix intermittent hangs when sending datagrams on macOS, BSD
 - Fix "org.eclipse.jdt.annotation" JPMS module: no longer required at runtime
+- Fix Exception messages from native code being empty in some Linux environments
+- Fix selftest failing for vsock in some Linux environments
 - Improve JNI library lookup; load from user.home/user.dir if tmpfs is mounted with noexec
 - Improve concurrency performance for RMI over Unix domain sockets
 - Improve reliability on exotic environments
