@@ -93,7 +93,9 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
     testDoubleBind(true);
   }
 
-  @SuppressWarnings({"PMD.ExcessiveMethodLength", "PMD.CognitiveComplexity", "PMD.NPathComplexity"})
+  @SuppressWarnings({
+      "PMD.ExcessiveMethodLength", "PMD.CognitiveComplexity", "PMD.NPathComplexity",
+      "PMD.CyclomaticComplexity"})
   private void testDoubleBind(boolean reuseAddress) throws Exception {
     SocketAddress sa0 = newTempAddress();
 
