@@ -503,6 +503,7 @@
                 <configuration>
                     <!-- do not require test methods to be documented even if strict mode is enabled -->
                     <failOnWarnings>false</failOnWarnings>
+                    <doclint>-missing</doclint>
                 </configuration>
             </plugin>
         </plugins>
