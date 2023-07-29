@@ -141,7 +141,7 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
 
 #ifdef __linux__
     __auto_type otherBuf = strerror_r(errnum, message, buflen);
-    if(CK_IGNORE_CAST_BEGIN (int)otherBuf CK_IGNORE_CAST_END > 255) {
+    if(CK_IGNORE_CAST_BEGIN (unsigned int)otherBuf CK_IGNORE_CAST_END > 255) {
         // strerror_r is ill-defined.
         strncpy(message,
                 CK_IGNORE_CAST_BEGIN (char *)otherBuf CK_IGNORE_CAST_END,
