@@ -29,7 +29,7 @@ import java.lang.ProcessBuilder.Redirect;
  * You can also manually disable a given capability by specifying a System property of the form
  * <code>org.newsclub.net.unix.library.disable.<em>CAPABILITY_SOMETHING_SOMETHING</em>=true</code>
  * when invoking the JVM (make sure this property is set before junixsocket is accessed).
- * 
+ *
  * A simple way to check which capabilities are supported in an environment is to run the
  * `junixsocket-selftest` jar.
  */

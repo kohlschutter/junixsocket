@@ -207,7 +207,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * Returns a port that was previously returned by {@link #newPort()}.
-   * 
+   *
    * Note that this may call may stall unnecessarily upon shutdown due to locking issues.
    *
    * @param port The port to return.
@@ -227,7 +227,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
   /**
    * A lease on a registered port; closing the lease will return the port.
-   * 
+   *
    * @author Christian Kohlschütter
    */
   protected static final class PortLease implements Closeable {
@@ -249,7 +249,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
     /**
      * Returns the port number.
-     * 
+     *
      * @return the port number.
      */
     public int getPort() {
@@ -258,7 +258,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
 
     /**
      * Returns the service the port was leased from.
-     * 
+     *
      * @return The service.
      */
     public AFRMIService getRmiService() {
