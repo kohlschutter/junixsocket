@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
@@ -118,11 +119,23 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
           }
           return sc;
         } catch (SocketException e) {
+          String msg = checkKnownBugAcceptFailure(e);
+          if (msg != null) {
+            throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
+                msg, e);
+          }
           if (reuseAddress) {
             // expected (Software caused connection abort)
           } else {
             fail(e);
           }
+        } catch (SocketTimeoutException e) {
+          String msg = checkKnownBugAcceptFailure(e);
+          if (msg != null) {
+            throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
+                msg, e);
+          }
+          fail(e);
         } catch (IOException e) {
           fail(e);
         }
@@ -207,6 +220,9 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
       acceptCall.get(5, TimeUnit.SECONDS);
     } catch (ExecutionException e) {
       // ignore socket closed etc.
+      if (e.getCause() instanceof TestAbortedWithImportantMessageException) {
+        throw (TestAbortedWithImportantMessageException) e.getCause();
+      }
     } catch (TimeoutException e) {
       triggerWithIssues = checkKnownBugFirstAcceptCallNotTerminated();
       if (triggerWithIssues == null) {
@@ -227,6 +243,26 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
       throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
           triggerWithIssues);
     }
+  }
+
+  /**
+   * Subclasses may override this to tell that there is a known issue with "accept".
+   *
+   * @param e The exception
+   * @return An explanation iff this should not cause a test failure but trigger "With issues".
+   */
+  protected String checkKnownBugAcceptFailure(SocketException e) {
+    return null;
+  }
+
+  /**
+   * Subclasses may override this to tell that there is a known issue with "accept".
+   *
+   * @param e The exception
+   * @return An explanation iff this should not cause a test failure but trigger "With issues".
+   */
+  protected String checkKnownBugAcceptFailure(SocketTimeoutException e) {
+    return null;
   }
 
   /**

@@ -163,6 +163,14 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
           try (Socket socket = serverSock.accept();) {
             assertNotNull(socket);
             accepted.set(true);
+          } catch (SocketTimeoutException e) {
+            String msg = checkKnownBugAcceptTimeout(e);
+            if (msg == null) {
+              throw e;
+            } else {
+              throw new TestAbortedWithImportantMessageException(
+                  MessageType.TEST_ABORTED_WITH_ISSUES, msg, e);
+            }
           }
           time = System.currentTimeMillis() - time;
 
@@ -188,6 +196,17 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
     } finally {
       keepRunning.set(false);
     }
+  }
+
+  /**
+   * Subclasses may override this to tell that there is a known issue with "Accept timeout after
+   * delay" when a SocketTimeoutException was thrown.
+   *
+   * @param e The exception
+   * @return An explanation iff this should not cause a test failure but trigger "With issues".
+   */
+  protected String checkKnownBugAcceptTimeout(SocketTimeoutException e) {
+    return null;
   }
 
   /**

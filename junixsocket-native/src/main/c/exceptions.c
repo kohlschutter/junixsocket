@@ -34,6 +34,7 @@ static char *kExceptionClassnames[kExceptionMaxExcl] = {
     "org/newsclub/net/unix/InvalidArgumentSocketException", // kExceptionInvalidArgumentSocketException
     "org/newsclub/net/unix/AddressUnavailableSocketException", // kExceptionAddressUnavailableSocketException
     "org/newsclub/net/unix/OperationNotSupportedSocketException", // kExceptionOperationNotSupportedSocketException
+    "org/newsclub/net/unix/NoSuchDeviceSocketException", // kExceptionNoSuchDeviceSocketException
 };
 
 static jclass *kExceptionClasses;
@@ -122,6 +123,9 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
             break;
         case EOPNOTSUPP:
             exceptionType = kExceptionAddressUnavailableSocketException;
+            break;
+        case ENODEV:
+            exceptionType = kExceptionNoSuchDeviceSocketException;
             break;
         case EPIPE:
         case EBADF:

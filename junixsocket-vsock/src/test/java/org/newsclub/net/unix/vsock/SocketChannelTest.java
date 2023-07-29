@@ -19,14 +19,15 @@ package org.newsclub.net.unix.vsock;
 
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
-import org.newsclub.net.unix.AddressUnavailableSocketException;
-import org.newsclub.net.unix.InvalidArgumentSocketException;
+import org.newsclub.net.unix.InvalidSocketException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
@@ -41,29 +42,47 @@ public final class SocketChannelTest extends
     super(AFVSOCKAddressSpecifics.INSTANCE);
   }
 
+  /**
+   * Subclasses may override this to tell that there is a known issue with "accept".
+   *
+   * @param e The exception
+   * @return An explanation iff this should not cause a test failure but trigger "With issues".
+   */
   @Override
-  protected String checkKnownBugFirstAcceptCallNotTerminated() {
-    int[] mm = getLinuxMajorMinorVersion();
-    if (mm == null) {
-      return null;
-    } else if (mm[0] >= 6) {
-      return null;
-    } else if (mm[0] < 5 || mm[1] < 10 /* 5.10 */) {
-      // seen in Linux 5.4.17-2136.305.5.3.el8uek.x86_64 on Oracle Cloud
-      return AFVSOCKAddressSpecifics.KERNEL_TOO_OLD + ": First accept call did not terminate";
+  protected String checkKnownBugAcceptFailure(SocketException e) {
+    if (e instanceof InvalidSocketException) {
+      return "Server accept failed. VSOCK may not be available";
     } else {
       return null;
     }
+  }
+
+  /**
+   * Subclasses may override this to tell that there is a known issue with "accept".
+   *
+   * @param e The exception
+   * @return An explanation iff this should not cause a test failure but trigger "With issues".
+   */
+  @Override
+  protected String checkKnownBugAcceptFailure(SocketTimeoutException e) {
+    return "Server accept failed. VSOCK may not be available";
+  }
+
+  @Override
+  protected String checkKnownBugFirstAcceptCallNotTerminated() {
+    // seen in virtualized Linux environments with CID=3
+    return AFVSOCKAddressSpecifics.KERNEL_NOT_CONFIGURED + ": First accept call did not terminate";
   }
 
   @Override
   protected void handleBind(ServerSocketChannel ssc, SocketAddress sa) throws IOException {
     try {
       super.handleBind(ssc, sa);
-    } catch (AddressUnavailableSocketException e) {
+    } catch (InvalidSocketException e) {
       throw (TestAbortedWithImportantMessageException) new TestAbortedWithImportantMessageException(
-          MessageType.TEST_ABORTED_WITH_ISSUES, "Could not bind AF_VSOCK server socket to " + sa
-              + "; check kernel capabilities.").initCause(e);
+          MessageType.TEST_ABORTED_WITH_ISSUES, "Could not bind AF_VSOCK server socket to CID="
+              + ((AFVSOCKSocketAddress) sa).getVSOCKCID() + "; check kernel capabilities.")
+          .initCause(e);
     }
   }
 
@@ -71,10 +90,11 @@ public final class SocketChannelTest extends
   protected boolean handleConnect(SocketChannel sc, SocketAddress sa) throws IOException {
     try {
       return super.handleConnect(sc, sa);
-    } catch (InvalidArgumentSocketException e) {
+    } catch (InvalidSocketException e) {
       throw (TestAbortedWithImportantMessageException) new TestAbortedWithImportantMessageException(
-          MessageType.TEST_ABORTED_WITH_ISSUES, "Could not connect AF_VSOCK socket to " + sa
-              + "; check kernel capabilities.").initCause(e);
+          MessageType.TEST_ABORTED_WITH_ISSUES, "Could not connect AF_VSOCK socket to CID="
+              + ((AFVSOCKSocketAddress) sa).getVSOCKCID() + "; check kernel capabilities.")
+          .initCause(e);
     }
   }
 }

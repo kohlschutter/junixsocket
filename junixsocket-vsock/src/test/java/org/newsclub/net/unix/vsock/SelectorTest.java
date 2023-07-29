@@ -44,7 +44,8 @@ public final class SelectorTest extends org.newsclub.net.unix.SelectorTest<AFVSO
       newInterconnectedSockets();
     } catch (TestAbortedException e) {
       TestAbortedWithImportantMessageException e2 = new TestAbortedWithImportantMessageException(
-          MessageType.TEST_ABORTED_SHORT_INFORMATIONAL, AFVSOCKAddressSpecifics.KERNEL_TOO_OLD);
+          MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+          AFVSOCKAddressSpecifics.KERNEL_NOT_CONFIGURED);
       e2.addSuppressed(e);
       throw e2; // NOPMD.PreserveStackTrace
     }
