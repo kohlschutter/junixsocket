@@ -33,6 +33,12 @@ import org.newsclub.net.unix.AFSocketCapability;
 // This is a deliberate copy of the same class from junixsocket-common's tests.
 // CPD-OFF
 public class AFSocketCapabilityCondition implements ExecutionCondition {
+  /**
+   * Constructs a new {@link AFSocketCapabilityCondition}.
+   */
+  public AFSocketCapabilityCondition() {
+  }
+
   @SuppressWarnings("exports")
   @Override
   public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {

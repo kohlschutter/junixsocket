@@ -311,7 +311,8 @@ public class UnixDomainTest {
 
   public static String separators(String path) {
     StringBuilder ret = new StringBuilder();
-    for (char c : path.toCharArray()) {
+    for (int i = 0, n = path.length(); i < n; i++) {
+      char c = path.charAt(i);
       if ((c == '/') || (c == '\\')) {
         ret.append(File.separatorChar);
       } else {
