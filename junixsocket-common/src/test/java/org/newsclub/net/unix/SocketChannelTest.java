@@ -231,6 +231,11 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
         fail("First accept call did not terminate");
       }
     }
+    if (triggerWithIssues != null) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
+          triggerWithIssues);
+    }
+
     if (connectCall != null) {
       try {
         connectCall.get(5, TimeUnit.SECONDS);
@@ -239,11 +244,6 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
       } catch (TimeoutException e) {
         fail("Connect call did not terminate");
       }
-    }
-
-    if (triggerWithIssues != null) {
-      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
-          triggerWithIssues);
     }
   }
 
