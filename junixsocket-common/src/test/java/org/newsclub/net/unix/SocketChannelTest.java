@@ -30,8 +30,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -100,9 +100,9 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
   private void testDoubleBind(boolean reuseAddress) throws Exception {
     SocketAddress sa0 = newTempAddress();
 
-    final CompletableFuture<SocketChannel> acceptCall;
-    final CompletableFuture<SocketChannel> acceptCall2;
-    CompletableFuture<Void> connectCall = null;
+    final Future<SocketChannel> acceptCall;
+    final Future<SocketChannel> acceptCall2;
+    Future<Void> connectCall = null;
 
     AtomicBoolean socketDomainWillAcceptCallOnFirstBind = new AtomicBoolean(true);
 
