@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 import org.newsclub.net.unix.AFServerSocket;
 import org.newsclub.net.unix.AFSocket;
@@ -217,16 +216,13 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
    */
   @Deprecated
   protected void returnPort(int port) throws IOException {
-    // return port asynchronously to avoid deadlocks
-    CompletableFuture.runAsync(() -> {
-      try {
-        getRmiService().returnPort(port);
-      } catch (ShutdownException e) {
-        // ignore
-      } catch (IOException e) {
-        StackTraceUtil.printStackTrace(e);
-      }
-    });
+    try {
+      getRmiService().returnPort(port);
+    } catch (ShutdownException e) {
+      // ignore
+    } catch (IOException e) {
+      StackTraceUtil.printStackTrace(e);
+    }
   }
 
   /**
