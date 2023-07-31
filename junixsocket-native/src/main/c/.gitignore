@@ -1,1 +1,8 @@
+# Ignore assembled libraries
+*.so
+*.dylib
+*.dll
+
+# Ignore assembly code
+*.a
 *.lst
