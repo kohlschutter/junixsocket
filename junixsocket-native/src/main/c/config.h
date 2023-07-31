@@ -46,6 +46,12 @@ CK_IGNORE_RESERVED_IDENTIFIER_END
 #  define _POSIX_SOURCE
 #endif
 
+#if _TPF_SOURCE
+// s390x-ibm-tpf-gcc may errneously generate these
+#  undef __GLIBC__
+#  undef __linux__
+#endif
+
 #include <stddef.h>
 #include <errno.h>
 #if __TOS_MVS__
@@ -73,6 +79,16 @@ CK_IGNORE_UNUSED_MACROS_END
 #endif
 
 #if __TOS_MVS__
+// z/OS
+#  undef junixsocket_have_ancillary
+#  undef junixsocket_have_pipe2
+#  define junixsocket_use_poll_for_read
+#  define junixsocket_use_poll_for_accept
+#endif
+
+#if _TPF_SOURCE
+// z/TPF
+#  undef junixsocket_have_sun_len
 #  undef junixsocket_have_ancillary
 #  undef junixsocket_have_pipe2
 #  define junixsocket_use_poll_for_read
