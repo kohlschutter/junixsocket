@@ -39,11 +39,12 @@ Since version 2.7.0, junixsocket runs on Android, too.
 
 The minimum set of supported (out of the box) platforms and processor architectures currently is:
 
-* macOS Intel 64-bit and ARM 64-bit / Apple Silicon
+* macOS Intel 64-bit
+* macOS ARM 64-bit / Apple Silicon
 * Linux x86_64
 * Linux ARM 32-bit (armhf)
 * Linux ARM 64-bit (aarch64)
-* Linux s390x
+* Linux s390x ("Linux on IBM Z", "Linux on zSystems")
 * Linux RISC-V 64-bit (rv64ifd / lp64d)
 * Linux ppc64le (POWER 64-bit Little Endian)
 * Solaris x86 64-bit / OpenIndiana
@@ -57,6 +58,21 @@ The minimum set of supported (out of the box) platforms and processor architectu
 * IBM AIX 7 (POWER 64-bit)
 * IBM i 7 (POWER 64-bit)
 * Android (SDK version 26 or newer), aarch64/x86_64/i686/arm
+
+Additional platforms known to work (after the JNI library has been compiled manually):
+
+* Solaris SPARC64
+* IBM z/OS OS/390 64-bit
+
+Additional platforms that should work (after the JNI library has been compiled manually):
+
+* Any other processor architecture with Linux, FreeBSD, OpenBSD, NetBSD, DragonFlyBSD
+
+Additional platforms known to compile (but untested):
+
+* IBM z/TPF OS/390 with s390x-ibm-tpf-gcc version tpf-17r1-6
+
+#[[###]]# Remarks
 
 Linux builds should be compatible with all major distributions, including the
 ones using musl (e.g., Alpine Linux).
@@ -72,7 +88,11 @@ IBM i support verified with 7.1 (IBM i 7R1 / 71-11-2984-4), 7.2 (IBM i 7R2 / 72-
 VMs (Java 8, and Java 11 where available).
 
 IBM z/OS is supported, but you have to compile junixsocket-native from source with XLC.
-Alternatively, a binary build may be [requested here])(mailto:christian@kohlschutter.com?subject=junixsocket+z%2FOS+binary).
+Alternatively, a binary build may be [requested here])(mailto:christian@kohlschutter.com?subject=junixsocket+z%2FOS+binary). Verified with
+z/OS V2.4 and Java 8 SR8.
+
+IBM z/TPF is potentially supported (it compiles with s390x-ibm-tpf-gcc version tpf-17r1-6), but it
+hasn't been tested yet. If you would like to help test it, you may [request it here])(mailto:christian@kohlschutter.com?subject=junixsocket+z%2FTPF+binary).
 
 Intel x86 32-bit and ARM 32-bit are supported, but binaries are not included by default. Please file
 an issue if you think that's a bad idea.
@@ -95,7 +115,7 @@ Please reach out if you have some feature in mind that may be supported on these
 #[[##]]# Additional Platforms and Architectures
 
 Upon request, support for additional systems, platforms and architectures may be added,
-such as IBM z/TPF, OpenVMS, FUJITSU BS2000/OSD, Unisys ClearPath OS 2200, QNX, VxWorks, HP-UX, Haiku, etc.
+such as OpenVMS, FUJITSU BS2000/OSD, Unisys ClearPath OS 2200, QNX, VxWorks, HP-UX, Haiku, etc.
 
 If you are interested in using junixsocket on another platform, or willing to sponsor development
 (by providing access to such platforms, covering licensing costs, etc.), feel free to
