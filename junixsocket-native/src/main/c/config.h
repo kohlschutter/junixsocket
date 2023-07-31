@@ -103,6 +103,11 @@ CK_IGNORE_UNUSED_MACROS_END
 #  define JUNIXSOCKET_HARDEN_CMSG_NXTHDR 1
 #endif
 
+#if defined(__HAIKU__)
+#  define junixsocket_use_poll_for_accept
+#  undef junixsocket_have_pipe2
+#endif
+
 #if !defined(uint64_t) && !defined(_INT64_TYPE) && !defined(_UINT64_T) && !defined(_UINT64_T_DEFINED_)
 #  ifdef _LP64
 typedef unsigned long uint64_t;
