@@ -325,9 +325,13 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shutdown
     int ret = shutdown(handle, mode);
     if(ret == -1) {
         int errnum = socket_errno;
-        if(errnum == ENOTCONN || errnum == EINVAL || errnum == EBADF) {
-            // ignore
-            return;
+        switch(errnum) {
+            case ENOTCONN:
+            case EINVAL:
+            case EBADF:
+            case EPIPE:
+                // ignore
+                return;
         }
         _throwErrnumException(env, errnum, fd);
         return;
