@@ -85,12 +85,16 @@ int sockTypeToNative(JNIEnv *env, int type) {
             return SOCK_DGRAM;
         case org_newsclub_net_unix_NativeUnixSocket_SOCK_RAW:
             return SOCK_RAW;
+#if defined(SOCK_RDM)
         case org_newsclub_net_unix_NativeUnixSocket_SOCK_RDM:
             return SOCK_RDM;
+#endif
+#if defined(SOCK_SEQPACKET)
         case org_newsclub_net_unix_NativeUnixSocket_SOCK_SEQPACKET:
             return SOCK_SEQPACKET;
+#endif
         default:
-            _throwException(env, kExceptionSocketException, "Illegal type");
+            _throwException(env, kExceptionSocketException, "Illegal or unsupported type");
             return -1;
     }
 }
