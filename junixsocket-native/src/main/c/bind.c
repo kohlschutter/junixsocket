@@ -215,7 +215,8 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
 #endif
         int bindRes;
 
-        if(attempt == 0 && !reuse && addr->addr.sa_family == AF_UNIX) {
+        if(attempt == 0 && !reuse && addr->addr.sa_family == AF_UNIX &&
+           (options & org_newsclub_net_unix_NativeUnixSocket_OPT_DGRAM_MODE) == 0) {
             // if we're not going to reuse the socket, let's try to connect first.
             // This avoids changing file metadata (e.g. ctime!)
             bindRes = -1;
