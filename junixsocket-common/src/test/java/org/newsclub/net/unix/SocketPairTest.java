@@ -131,8 +131,9 @@ public abstract class SocketPairTest<A extends SocketAddress> extends SocketTest
     assertEquals(0x04030201, bb2.getInt());
 
     if (getServerBindAddress() instanceof AFUNIXSocketAddress) {
-      assertNull(pair.getFirst().getLocalAddress());
-      assertNull(pair.getSecond().getLocalAddress());
+      // Haiku OS uses "0x00 AA BB CC DD EE" as socket addresses for internal socket IDs
+      // assertNull(pair.getFirst().getLocalAddress()); // not true on Haiku OS
+      // assertNull(pair.getSecond().getLocalAddress()); // not true on Haiku OS
       assertNull(pair.getFirst().getRemoteAddress());
       assertNull(pair.getSecond().getRemoteAddress());
     } else {
