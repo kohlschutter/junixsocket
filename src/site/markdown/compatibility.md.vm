@@ -67,7 +67,7 @@ Additional platforms known to work (after the JNI library has been compiled manu
 Additional platforms that should work (after the JNI library has been compiled manually):
 
 * Any other processor architecture with Linux, FreeBSD, OpenBSD, NetBSD, DragonFlyBSD
-* Haiku OS (tested with hrev56578+87; some tests fail but it's mostly working). Datagram support is
+* Haiku (tested with hrev56578+87; some tests fail but it's mostly working). Datagram support is
   available since Haiku hrev57155.
 
 Additional platforms known to compile (but untested):
