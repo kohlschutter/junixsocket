@@ -19,7 +19,6 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -90,18 +89,19 @@ public abstract class SocketPairTest<A extends SocketAddress> extends SocketTest
 
     // Haiku OS uses "0x00 AA BB CC DD EE" as socket addresses for internal socket IDs
 
-    try {
-      if (getServerBindAddress() instanceof AFUNIXSocketAddress) {
-        assertNull(pair.getFirst().getLocalAddress());
-        assertNull(pair.getSecond().getLocalAddress());
-        assertNull(pair.getFirst().getRemoteAddress());
-        assertNull(pair.getSecond().getRemoteAddress());
-      } else {
-        assertCovered(pair.getFirst().getLocalAddress(), pair.getSecond().getRemoteAddress());
-        assertCovered(pair.getSecond().getLocalAddress(), pair.getFirst().getRemoteAddress());
+    if (getServerBindAddress() instanceof AFUNIXSocketAddress) {
+      if (pair.getFirst().getLocalAddress() == null && pair.getSecond().getLocalAddress() == null
+          && pair.getFirst().getRemoteAddress() == null && pair.getSecond()
+              .getRemoteAddress() == null) {
+        // on many systems, socketpair with AF_UNIX returns all-null addresses
+        return;
       }
+    }
+    try {
+      assertCovered(pair.getFirst().getLocalAddress(), pair.getSecond().getRemoteAddress());
+      assertCovered(pair.getSecond().getLocalAddress(), pair.getFirst().getRemoteAddress());
     } catch (AssertionFailedError e) {
-      if (TestUtil.isHaikuOS() && pair.getSecond().getRemoteAddress() == null) {
+      if (TestUtil.isHaikuOS()) {
         throw TestUtil.haikuBug18534(e);
       } else {
         throw e;
@@ -143,18 +143,19 @@ public abstract class SocketPairTest<A extends SocketAddress> extends SocketTest
 
     // NOTE: Haiku OS uses "0x00 AA BB CC DD EE" as socket addresses for internal socket IDs
 
-    try {
-      if (getServerBindAddress() instanceof AFUNIXSocketAddress) {
-        assertNull(pair.getFirst().getLocalAddress());
-        assertNull(pair.getSecond().getLocalAddress());
-        assertNull(pair.getFirst().getRemoteAddress());
-        assertNull(pair.getSecond().getRemoteAddress());
-      } else {
-        assertCovered(pair.getFirst().getLocalAddress(), pair.getSecond().getRemoteAddress());
-        assertCovered(pair.getSecond().getLocalAddress(), pair.getFirst().getRemoteAddress());
+    if (getServerBindAddress() instanceof AFUNIXSocketAddress) {
+      if (pair.getFirst().getLocalAddress() == null && pair.getSecond().getLocalAddress() == null
+          && pair.getFirst().getRemoteAddress() == null && pair.getSecond()
+              .getRemoteAddress() == null) {
+        // on many systems, socketpair with AF_UNIX returns all-null addresses
+        return;
       }
+    }
+    try {
+      assertCovered(pair.getFirst().getLocalAddress(), pair.getSecond().getRemoteAddress());
+      assertCovered(pair.getSecond().getLocalAddress(), pair.getFirst().getRemoteAddress());
     } catch (AssertionFailedError e) {
-      if (TestUtil.isHaikuOS() && pair.getSecond().getRemoteAddress() == null) {
+      if (TestUtil.isHaikuOS()) {
         throw TestUtil.haikuBug18534(e);
       } else {
         throw e;

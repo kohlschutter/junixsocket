@@ -44,6 +44,28 @@ public final class TestUtil {
     return IS_HAIKU_OS;
   }
 
+  private static void handleBug(String id, Throwable e) throws Exception {
+    String key = "selftest." + id;
+    switch (System.getProperty(key, "")) {
+      case "dump":
+        e.printStackTrace();
+        break;
+      case "fail":
+        if (e instanceof Exception) {
+          throw (Exception) e;
+        } else if (e instanceof Error) {
+          throw (Error) e;
+        } else {
+          throw new IllegalStateException(e);
+        }
+      case "":
+        // nothing
+        return;
+      default:
+        System.err.println("Invalid value for System property " + key);
+    }
+  }
+
   /**
    * In certain Haiku environments, socketpair/connect/accept for AF_UNIX is buggy; it may not set
    * the "connected state" (fixed in hrev57189).
@@ -53,7 +75,8 @@ public final class TestUtil {
    * @param e The caught throwable.
    * @return A TestAbortedWithImportantMessageException wrapping the caught throwable.
    */
-  public static Exception haikuBug18534(Throwable e) {
+  public static Exception haikuBug18534(Throwable e) throws Exception {
+    handleBug("haikuBug18534", e);
     return new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
         "AF_UNIX support is buggy in this Haiku release; see https://dev.haiku-os.org/ticket/18534",
         e);
@@ -68,7 +91,8 @@ public final class TestUtil {
    * @param e The caught throwable.
    * @return A TestAbortedWithImportantMessageException wrapping the caught throwable.
    */
-  public static Exception haikuBug18535(Throwable e) {
+  public static Exception haikuBug18535(Throwable e) throws Exception, Error {
+    handleBug("haikuBug18535", e);
     return new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
         "AF_UNIX datagram support is buggy in this Haiku release or environment; see https://dev.haiku-os.org/ticket/18535",
         e);
