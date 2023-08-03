@@ -636,14 +636,12 @@ public class Selftest {
     out.println("Unsupported capabilities: " + unsupportedCapabilites);
     out.println();
 
-    if (fail || withIssues) {
-      if (inconclusive || modified) {
-        out.println("Selftest INCONCLUSIVE");
-      } else if (fail) {
-        out.println("Selftest FAILED");
-      } else if (withIssues) {
-        out.println("Selftest PASSED WITH ISSUES");
-      }
+    if (fail) {
+      out.println("Selftest FAILED");
+    } else if (inconclusive || modified) {
+      out.println("Selftest INCONCLUSIVE");
+    } else if (withIssues) {
+      out.println("Selftest PASSED WITH ISSUES");
     } else {
       out.println("Selftest PASSED");
     }
