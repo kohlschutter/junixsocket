@@ -149,6 +149,7 @@
                             </execution>
                             <execution>
                                 <id>codeql-nar-compile</id>
+                                <phase>compile</phase>
                                 <goals>
                                     <goal>nar-compile</goal>
                                 </goals>
