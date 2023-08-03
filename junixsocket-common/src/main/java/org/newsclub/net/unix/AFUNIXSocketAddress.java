@@ -458,7 +458,8 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   }
 
   /**
-   * Checks if the address is in the abstract namespace.
+   * Checks if the address is in the abstract namespace (or, for Haiku OS, in the internal
+   * namespace).
    *
    * @return {@code true} if the address is in the abstract namespace.
    */
