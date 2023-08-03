@@ -92,6 +92,8 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       "org.newsclub.net.unix.throughput-test.payload-size.datagram", PAYLOAD_SIZE);
   protected static final int NUM_SECONDS = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.seconds", 0);
+  protected static final int GRACE_TIME_NUM_SECONDS = SystemPropertyUtil.getIntSystemProperty(
+      "org.newsclub.net.unix.throughput-test.gracetime.seconds", 5);
   protected static final int NUM_MILLISECONDS = Math.max(50, NUM_SECONDS * 1000);
 
   protected ThroughputTest(AddressSpecifics<A> asp) {
@@ -119,7 +121,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
     assumeTrue(ENABLED > 0, "Throughput tests are disabled");
     assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
 
-    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + GRACE_TIME_NUM_SECONDS), () -> {
       try (ServerThread serverThread = new ServerThread() {
         @Override
         protected void handleConnection(final Socket sock) throws IOException {
@@ -186,7 +188,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   public void testSocketChannel() throws Exception {
     assumeTrue(ENABLED > 0, "Throughput tests are disabled");
     assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
-    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + GRACE_TIME_NUM_SECONDS), () -> {
       runtestSocketChannel(false);
     });
   }
@@ -195,7 +197,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   public void testSocketChannelDirectBuffer() throws Exception {
     assumeTrue(ENABLED > 0, "Throughput tests are disabled");
     assumeTrue(PAYLOAD_SIZE > 0, "Payload must be positive");
-    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
+    assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + GRACE_TIME_NUM_SECONDS), () -> {
       runtestSocketChannel(true);
     });
   }
@@ -311,7 +313,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   @SuppressWarnings("PMD.CognitiveComplexity")
   public void testDatagramPacket() throws Exception {
     try {
-      assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
+      assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + GRACE_TIME_NUM_SECONDS), () -> {
         SocketAddress dsAddr = newTempAddressForDatagram();
         SocketAddress dcAddr = newTempAddressForDatagram();
 
@@ -407,7 +409,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
   public void testDatagramChannel() throws Exception {
     try {
-      assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
+      assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + GRACE_TIME_NUM_SECONDS), () -> {
         testDatagramChannel(false, true);
       });
     } catch (AssertionFailedError e) {
@@ -426,7 +428,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
   public void testDatagramChannelDirect() throws Exception {
     try {
-      assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
+      assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + GRACE_TIME_NUM_SECONDS), () -> {
         testDatagramChannel(true, true);
       });
     } catch (AssertionFailedError e) {
@@ -445,7 +447,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
   public void testDatagramChannelNonBlocking() throws Exception {
     try {
-      assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
+      assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + GRACE_TIME_NUM_SECONDS), () -> {
         testDatagramChannel(false, false);
       });
     } catch (JUnitException e) {
@@ -458,7 +460,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
   public void testDatagramChannelNonBlockingDirect() throws Exception {
     try {
-      assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
+      assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + GRACE_TIME_NUM_SECONDS), () -> {
         testDatagramChannel(true, false);
       });
     } catch (JUnitException e) {
