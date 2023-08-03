@@ -273,11 +273,13 @@ public class FileDescriptorCastTest {
   }
 
   @Test
+  @SuppressFBWarnings("DCN_NULLPOINTER_EXCEPTION")
   public void testSocketPorts() throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempPath(123);
     try (AFUNIXServerSocket ass = AFUNIXServerSocket.bindOn(addr)) {
       assertEquals(123, ass.getLocalPort());
 
+      @SuppressWarnings("checkstyle:VariableDeclarationUsageDistance")
       AFUNIXServerSocket ass1 = FileDescriptorCast.using(ass.getFileDescriptor()).withLocalPort(123)
           .as(AFUNIXServerSocket.class);
       assertEquals(123, ass.getLocalPort());
