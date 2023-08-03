@@ -45,8 +45,8 @@ public final class TestUtil {
   }
 
   /**
-   * In certain Haiku OS environments, socketpair/connect/accept for AF_UNIX is buggy; it may not
-   * set the "connected state" (fixed in hrev57189).
+   * In certain Haiku environments, socketpair/connect/accept for AF_UNIX is buggy; it may not set
+   * the "connected state" (fixed in hrev57189).
    *
    * See <a href="https://dev.haiku-os.org/ticket/18534">Haiku Bug 18534</a> for details.
    *
@@ -55,12 +55,12 @@ public final class TestUtil {
    */
   public static Exception haikuBug18534(Throwable e) {
     return new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
-        "AF_UNIX support is buggy in this HaikuOS release; see https://dev.haiku-os.org/ticket/18534",
+        "AF_UNIX support is buggy in this Haiku release; see https://dev.haiku-os.org/ticket/18534",
         e);
   }
 
   /**
-   * In certain Haiku OS environments, working with datagram sockets may result in a kernel hang
+   * In certain Haiku environments, working with datagram sockets may result in a kernel hang
    * (spinlock upon send).
    *
    * See <a href="https://dev.haiku-os.org/ticket/18535">Haiku Bug 18535</a> for details.
@@ -70,7 +70,7 @@ public final class TestUtil {
    */
   public static Exception haikuBug18535(Throwable e) {
     return new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
-        "AF_UNIX datagram support is buggy in this HaikuOS release; see https://dev.haiku-os.org/ticket/18535",
+        "AF_UNIX datagram support is buggy in this Haiku release or environment; see https://dev.haiku-os.org/ticket/18535",
         e);
   }
 }
