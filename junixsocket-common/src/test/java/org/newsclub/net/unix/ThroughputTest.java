@@ -55,6 +55,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.commons.JUnitException;
+import org.opentest4j.AssertionFailedError;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAsyncUtil;
@@ -409,6 +410,12 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
         testDatagramChannel(false, true);
       });
+    } catch (AssertionFailedError e) {
+      if (TestUtil.isHaikuOS()) {
+        throw TestUtil.haikuBug18535(e);
+      } else {
+        throw e;
+      }
     } catch (JUnitException e) {
       // Ignore timeout failure (this is a throughput test only)
       TestStackTraceUtil.printStackTrace(e);
@@ -422,6 +429,12 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + 5), () -> {
         testDatagramChannel(true, true);
       });
+    } catch (AssertionFailedError e) {
+      if (TestUtil.isHaikuOS()) {
+        throw TestUtil.haikuBug18535(e);
+      } else {
+        throw e;
+      }
     } catch (JUnitException e) {
       // Ignore timeout failure (this is a throughput test only)
       TestStackTraceUtil.printStackTrace(e);
