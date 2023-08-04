@@ -49,22 +49,22 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    implementation 'com.kohlschutter.junixsocket:junixsocket-native-android:2.7.0-SNAPSHOT@aar'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-native-android:2.7.0@aar'
 
-    implementation 'com.kohlschutter.junixsocket:junixsocket-common:2.7.0-SNAPSHOT'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-common:2.7.0'
 
-    implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.7.0-SNAPSHOT'
-    implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.7.0-SNAPSHOT'
-    implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.7.0-SNAPSHOT'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.7.0'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.7.0'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.7.0'
 
     // selftest-specifics
-    implementation('com.kohlschutter.junixsocket:junixsocket-selftest:2.7.0-SNAPSHOT') {
+    implementation('com.kohlschutter.junixsocket:junixsocket-selftest:2.7.0') {
         exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-core"
         exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-native-common"
         exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-native-custom"
     }
-    implementation 'com.kohlschutter:kohlschutter-util:1.5.4-SNAPSHOT'
-    implementation 'com.kohlschutter:kohlschutter-test-util:1.5.4-SNAPSHOT'
+    implementation 'com.kohlschutter:kohlschutter-util:1.5.6'
+    implementation 'com.kohlschutter:kohlschutter-test-util:1.5.6'
     implementation 'org.junit.platform:junit-platform-console:1.9.3'
     implementation 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
     implementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
