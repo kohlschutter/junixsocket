@@ -10,16 +10,18 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ## Noteworthy changes
 
-### _(2023-XX-XX)_ **junixsocket 2.7.0**
+### _(2023-08-04)_ **junixsocket 2.7.0**
 
 **Users of junixsocket are strongly advised to upgrade to this version**
 
-- New supported platform: Android (aarch64, arm-linux-androideabi, x86_64, i686)
+- New supported platform (out of the box): Android (aarch64, arm-linux-androideabi, x86_64, i686)
+- New platforms that can be used when building the native library from source: Haiku, IBM z/TPF
 - Add selftest GUI app for Android ("junixsocket-selftest-android")
 - Add ability to get native file descriptor number via FileDescriptorCast
 - Add AFSocketCapability for "large port numbers" (larger than 65535)
 - Add support to convert UnixDomainSocketAddress to AFUNIXSocketAddress (Java 16+)
 - Add support for AF_SYSTEM (macOS), which allows creating your own VPN via utun, for example.
+- Add initial support for SOCK_SEQPACKET/SOCK_RDM/SOCK_RAW
 - Fix potential data corruption when sending non-direct ByteBuffers larger than 8192 bytes
 - Fix potential data corruption when receiving non-direct ByteBuffers with non-zero position
 - Fix intermittent hangs when sending datagrams on macOS, BSD
