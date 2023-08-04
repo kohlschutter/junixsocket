@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFVSOCKServerSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-vsock</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.vsock</a> &gt; <span class="el_source">AFVSOCKServerSocket.java</span></div><h1>AFVSOCKServerSocket.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2022 Christian Kohlschütter
+ * Copyright 2009-2023 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.newsclub.net.unix.AFServerSocket;
 import org.newsclub.net.unix.AFServerSocketChannel;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFSocketAddress;
+import org.newsclub.net.unix.AFSocketImpl;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
 /**
@@ -35,17 +36,17 @@ import org.newsclub.net.unix.AFVSOCKSocketAddress;
  */
 public class AFVSOCKServerSocket extends AFServerSocket&lt;AFVSOCKSocketAddress&gt; {
   AFVSOCKServerSocket(FileDescriptor fdObj) throws IOException {
-<span class="nc" id="L38">    super(fdObj);</span>
-<span class="nc" id="L39">  }</span>
+<span class="nc" id="L39">    super(fdObj);</span>
+<span class="nc" id="L40">  }</span>
 
   @Override
   protected AFServerSocketChannel&lt;AFVSOCKSocketAddress&gt; newChannel() {
-<span class="nc" id="L43">    return new AFVSOCKServerSocketChannel(this);</span>
+<span class="nc" id="L44">    return new AFVSOCKServerSocketChannel(this);</span>
   }
 
   @Override
   public AFVSOCKServerSocketChannel getChannel() {
-<span class="nc" id="L48">    return (AFVSOCKServerSocketChannel) super.getChannel();</span>
+<span class="nc" id="L49">    return (AFVSOCKServerSocketChannel) super.getChannel();</span>
   }
 
   /**
@@ -55,12 +56,12 @@ public class AFVSOCKServerSocket extends AFServerSocket&lt;AFVSOCKSocketAddress&
    * @throws IOException if the operation fails.
    */
   public static AFVSOCKServerSocket newInstance() throws IOException {
-<span class="nc" id="L58">    return (AFVSOCKServerSocket) AFServerSocket.newInstance(AFVSOCKServerSocket::new);</span>
+<span class="nc" id="L59">    return (AFVSOCKServerSocket) AFServerSocket.newInstance(AFVSOCKServerSocket::new);</span>
   }
 
   static AFVSOCKServerSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
       throws IOException {
-<span class="nc" id="L63">    return (AFVSOCKServerSocket) AFServerSocket.newInstance(AFVSOCKServerSocket::new, fdObj,</span>
+<span class="nc" id="L64">    return (AFVSOCKServerSocket) AFServerSocket.newInstance(AFVSOCKServerSocket::new, fdObj,</span>
         localPort, remotePort);
   }
 
@@ -73,7 +74,7 @@ public class AFVSOCKServerSocket extends AFServerSocket&lt;AFVSOCKSocketAddress&
    * @throws IOException if the operation fails.
    */
   public static AFVSOCKServerSocket bindOn(final AFVSOCKSocketAddress addr) throws IOException {
-<span class="nc" id="L76">    return (AFVSOCKServerSocket) AFServerSocket.bindOn(AFVSOCKServerSocket::new, addr);</span>
+<span class="nc" id="L77">    return (AFVSOCKServerSocket) AFServerSocket.bindOn(AFVSOCKServerSocket::new, addr);</span>
   }
 
   /**
@@ -87,7 +88,7 @@ public class AFVSOCKServerSocket extends AFServerSocket&lt;AFVSOCKSocketAddress&
    */
   public static AFVSOCKServerSocket bindOn(final AFVSOCKSocketAddress addr, boolean deleteOnClose)
       throws IOException {
-<span class="nc" id="L90">    return (AFVSOCKServerSocket) AFServerSocket.bindOn(AFVSOCKServerSocket::new, addr,</span>
+<span class="nc" id="L91">    return (AFVSOCKServerSocket) AFServerSocket.bindOn(AFVSOCKServerSocket::new, addr,</span>
         deleteOnClose);
   }
 
@@ -101,22 +102,23 @@ public class AFVSOCKServerSocket extends AFServerSocket&lt;AFVSOCKSocketAddress&
    */
   public static AFVSOCKServerSocket forceBindOn(final AFVSOCKSocketAddress forceAddr)
       throws IOException {
-<span class="nc" id="L104">    return (AFVSOCKServerSocket) AFServerSocket.forceBindOn(AFVSOCKServerSocket::new, forceAddr);</span>
+<span class="nc" id="L105">    return (AFVSOCKServerSocket) AFServerSocket.forceBindOn(AFVSOCKServerSocket::new, forceAddr);</span>
   }
 
   @Override
-  protected AFVSOCKSocketImpl newImpl(FileDescriptor fdObj) throws SocketException {
-<span class="nc" id="L109">    return new AFVSOCKSocketImpl(fdObj);</span>
+  protected AFSocketImpl&lt;AFVSOCKSocketAddress&gt; newImpl(FileDescriptor fdObj)
+      throws SocketException {
+<span class="nc" id="L111">    return new AFVSOCKSocketImpl(fdObj);</span>
   }
 
   @Override
   protected AFSocket&lt;AFVSOCKSocketAddress&gt; newSocketInstance() throws IOException {
-<span class="nc" id="L114">    return AFVSOCKSocket.newInstance();</span>
+<span class="nc" id="L116">    return AFVSOCKSocket.newInstance();</span>
   }
 
   @Override
   public AFVSOCKSocket accept() throws IOException {
-<span class="nc" id="L119">    return (AFVSOCKSocket) super.accept();</span>
+<span class="nc" id="L121">    return (AFVSOCKSocket) super.accept();</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

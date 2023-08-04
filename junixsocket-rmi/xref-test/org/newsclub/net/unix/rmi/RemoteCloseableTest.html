@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2022 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2023 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> * you may not use this file except in compliance with the License.</em>
@@ -62,7 +62,7 @@
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">try</strong> (RemoteCloseable&lt;? <strong class="jxr_keyword">extends</strong> IsCloseable&gt; remoteCloseable = svc.remoteCloseable(
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>          IsCloseable.<strong class="jxr_keyword">class</strong>)) {
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>        <strong class="jxr_keyword">try</strong> (IsCloseable testCloseable = remoteCloseable.get()) {
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>        <strong class="jxr_keyword">try</strong> (IsCloseable unused = remoteCloseable.get()) {
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>          assertEquals(0, svc.remoteCloseableThingNumberOfCloseCalls(IsCloseable.<strong class="jxr_keyword">class</strong>));
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>          <em class="jxr_comment">// forcibly calling close here unexports the RemoteCloseable</em>
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>          remoteCloseable.close();
@@ -81,7 +81,7 @@
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      <strong class="jxr_keyword">try</strong> (RemoteCloseable&lt;? <strong class="jxr_keyword">extends</strong> IsCloseable&gt; remoteCloseable = svc.remoteCloseable(
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          IsCloseable.<strong class="jxr_keyword">class</strong>)) {
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>        <strong class="jxr_keyword">try</strong> (IsCloseable testCloseable = remoteCloseable.get()) {
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>        <strong class="jxr_keyword">try</strong> (IsCloseable unused = remoteCloseable.get()) {
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>          <em class="jxr_comment">// no exception thrown</em>
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>        }
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      }
@@ -117,15 +117,14 @@
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>     }
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>     assertEquals(0, svc.remoteCloseableThingNumberOfCloseCalls(NotCloseable.<strong class="jxr_keyword">class</strong>));
 <a class="jxr_linenumber" name="L111" href="#L111">111</a> 
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>     <strong class="jxr_keyword">try</strong> (RemoteCloseable&lt;? <strong class="jxr_keyword">extends</strong> NotCloseable&gt; remoteCloseable = svc.remoteCloseable(
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>         NotCloseable.<strong class="jxr_keyword">class</strong>)) {
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>       <em class="jxr_comment">// no exception thrown</em>
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>     }
-<a class="jxr_linenumber" name="L116" href="#L116">116</a> 
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>     <em class="jxr_comment">// The underlying object still remains on the server-side, so the call count keeps going up</em>
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>     assertEquals(0, svc.remoteCloseableThingNumberOfCloseCalls(NotCloseable.<strong class="jxr_keyword">class</strong>));
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>   }
-<a class="jxr_linenumber" name="L120" href="#L120">120</a> }
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>     <strong class="jxr_keyword">try</strong> (RemoteCloseable&lt;? <strong class="jxr_keyword">extends</strong> NotCloseable&gt; unused = svc.remoteCloseable(NotCloseable.<strong class="jxr_keyword">class</strong>)) {
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>       <em class="jxr_comment">// no exception thrown</em>
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>     }
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> 
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>     <em class="jxr_comment">// The underlying object still remains on the server-side, so the call count keeps going up</em>
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>     assertEquals(0, svc.remoteCloseableThingNumberOfCloseCalls(NotCloseable.<strong class="jxr_keyword">class</strong>));
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>   }
+<a class="jxr_linenumber" name="L119" href="#L119">119</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="CHECK" timestamp="1691150377902">
+    <module artifactId="junixsocket-darwin" groupId="com.kohlschutter.junixsocket" version="2.7.0"/>
+    <files>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMDatagramChannel.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMDatagramSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMDatagramSocketImpl.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMProtocolFamily.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMSelectorProvider.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMServerSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMServerSocketChannel.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMSocketChannel.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMSocketExtensions.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMSocketFactory.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMSocketImpl.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMSocketOptions.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMSocketPair.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/IPUtil.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/darwin/system/WellKnownKernelControlNames.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/darwin/SelftestProvider.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/darwin/system/IPUtilTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/darwin/system/KernelControlNamesTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/darwin/system/UtunTest.java" result="PRESENT"/>
+    </files>
+</licensePluginReport>

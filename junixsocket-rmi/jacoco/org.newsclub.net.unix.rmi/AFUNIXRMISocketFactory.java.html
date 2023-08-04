@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXRMISocketFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">AFUNIXRMISocketFactory.java</span></div><h1>AFUNIXRMISocketFactory.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2022 Christian Kohlschütter
+ * Copyright 2009-2023 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
   private String socketPrefix;
   private String socketSuffix;
 
-<span class="fc" id="L55">  private final Map&lt;HostAndPort, AFUNIXSocketCredentials&gt; credentials = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L55">  private final transient Map&lt;HostAndPort, AFUNIXSocketCredentials&gt; credentials = new HashMap&lt;&gt;();</span>
 
   /**
    * Constructor required per definition.
@@ -222,19 +222,21 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
 
   @Override
   public void close() throws IOException {
-<span class="fc" id="L225">    credentials.clear();</span>
-<span class="fc" id="L226">    super.close();</span>
-<span class="fc" id="L227">  }</span>
+<span class="fc" id="L225">    synchronized (credentials) {</span>
+<span class="fc" id="L226">      credentials.clear();</span>
+<span class="fc" id="L227">    }</span>
+<span class="fc" id="L228">    super.close();</span>
+<span class="fc" id="L229">  }</span>
 
   AFUNIXSocketCredentials peerCredentialsFor(RemotePeerInfo data) {
-<span class="fc" id="L230">    synchronized (credentials) {</span>
-<span class="fc" id="L231">      return credentials.get(new HostAndPort(data.host, data.port));</span>
+<span class="fc" id="L232">    synchronized (credentials) {</span>
+<span class="fc" id="L233">      return credentials.get(new HostAndPort(data.host, data.port));</span>
     }
   }
 
   @Override
   boolean hasRegisteredPort(int port) {
-<span class="fc" id="L237">    return hasSocketFile(port);</span>
+<span class="fc" id="L239">    return hasSocketFile(port);</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

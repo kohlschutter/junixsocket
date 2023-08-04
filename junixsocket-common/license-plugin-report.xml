@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1675888286203">
-    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.6.2"/>
+<licensePluginReport goal="CHECK" timestamp="1691150327522">
+    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.7.0"/>
     <files>
+        <file path="src/main/java-unresolved-properties/org/newsclub/net/unix/BuildProperties.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamily.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamilyConfig.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFCore.java" result="PRESENT"/>
@@ -12,6 +13,8 @@
         <file path="src/main/java/org/newsclub/net/unix/AFInputStream.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFOutputStream.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFPipe.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/AFSYSTEMSocketAddress.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/AFSYSTEMSocketImplExtensions.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSelectionKey.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSelector.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSelectorProvider.java" result="PRESENT"/>
@@ -72,20 +75,28 @@
         <file path="src/main/java/org/newsclub/net/unix/NamedIntegerBitmask.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NativeLibraryLoader.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NativeUnixSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/NoSuchDeviceSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/OperationNotSupportedSocketException.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/PathUtil.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/RAFChannelProvider.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SentinelSocketAddress.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SocketAddressFilter.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/SocketAddressUtil.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SocketClosedException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SocketImplShim.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SocketOptionsMapper.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/StackTraceUtil.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/Unsafe.java" result="PRESENT"/>
+        <file path="src/main/java15/org/newsclub/net/unix/SocketAddressUtil.java" result="PRESENT"/>
         <file path="src/main/java8/org/newsclub/net/unix/AFInputStream.java" result="PRESENT"/>
         <file path="src/main/java8/org/newsclub/net/unix/AFOutputStream.java" result="PRESENT"/>
         <file path="src/main/java8/org/newsclub/net/unix/CleanableState.java" result="PRESENT"/>
         <file path="src/main/java8/org/newsclub/net/unix/DatagramSocketImplShim.java" result="PRESENT"/>
         <file path="src/main/java8/org/newsclub/net/unix/DatagramSocketShim.java" result="PRESENT"/>
+        <file path="src/main/java8/org/newsclub/net/unix/PathUtil.java" result="PRESENT"/>
         <file path="src/main/java8/org/newsclub/net/unix/SocketImplShim.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/AFDatagramUtil.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/AFSYSTEMSocketAddressTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/AFSocketCapabilityCondition.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/AFSocketCapabilityRequirement.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/AFTIPCSocketAddressTest.java" result="PRESENT"/>
@@ -96,6 +107,7 @@
         <file path="src/test/java/org/newsclub/net/unix/AncillaryMessageTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/AvailableTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/BufferOverflowTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/BuildPropertiesTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/CancelAcceptTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/DatagramSocketTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/EndOfFileTest.java" result="PRESENT"/>
@@ -120,6 +132,7 @@
         <file path="src/test/java/org/newsclub/net/unix/StandardSocketOptionsTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/StdinSocketApp.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/TcpNoDelayTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/TestUtil.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/ThroughputTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/domain/AFUNIXAddressSpecifics.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/domain/AbstractNamespaceTest.java" result="PRESENT"/>
@@ -146,6 +159,8 @@
         <file path="src/test/java/org/newsclub/net/unix/domain/StandardSocketOptionsTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/domain/TcpNoDelayTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/domain/ThroughputTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/domain/ThroughputTestShim.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/domain/UnixDomainSocketAddressTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/AcceptTimeoutTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/EndOfFileJavaTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/JavaAddressSpecifics.java" result="PRESENT"/>
@@ -153,6 +168,8 @@
         <file path="src/test/java/org/newsclub/net/unix/java/JavaInetStackRequirement.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/SelectorTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/ThroughputTest.java" result="PRESENT"/>
+        <file path="src/test/java15/org/newsclub/net/unix/domain/ThroughputTestShim.java" result="PRESENT"/>
+        <file path="src/test/java15/org/newsclub/net/unix/domain/UnixDomainSocketAddressTest.java" result="PRESENT"/>
         <file path="src/test/java8/org/newsclub/net/unix/FinalizeTest.java" result="PRESENT"/>
         <file path="src/test/java8/org/newsclub/net/unix/StandardSocketOptionsTest.java" result="PRESENT"/>
         <file path="src/test/java8/org/newsclub/net/unix/domain/FinalizeTest.java" result="PRESENT"/>

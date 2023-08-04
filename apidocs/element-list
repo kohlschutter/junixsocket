@@ -6,6 +6,8 @@ module:org.newsclub.net.mysql
 org.newsclub.net.mysql
 module:org.newsclub.net.unix
 org.newsclub.net.unix
+module:org.newsclub.net.unix.darwin
+org.newsclub.net.unix.darwin.system
 module:org.newsclub.net.unix.demo
 org.newsclub.net.unix.demo.rmi.fd
 org.newsclub.net.unix.demo.rmi.services

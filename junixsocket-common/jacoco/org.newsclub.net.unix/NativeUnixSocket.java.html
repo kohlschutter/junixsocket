@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NativeUnixSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">NativeUnixSocket.java</span></div><h1>NativeUnixSocket.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2022 Christian Kohlschütter
+ * Copyright 2009-2023 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -28,6 +29,8 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.spi.AbstractSelectableChannel;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.newsclub.net.unix.AFSelector.PollFd;
 
@@ -40,14 +43,16 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 final class NativeUnixSocket {
-  private static boolean loaded;
+<span class="fc" id="L46">  private static final CompletableFuture&lt;Boolean&gt; LOADED = new CompletableFuture&lt;&gt;();</span>
 
   static final int DOMAIN_UNIX = 1;
   static final int DOMAIN_TIPC = 30;
   static final int DOMAIN_VSOCK = 40;
+  static final int DOMAIN_SYSTEM = 32;
 
   static final int SOCK_STREAM = 1;
   static final int SOCK_DGRAM = 2;
+  static final int SOCK_RAW = 3;
   static final int SOCK_RDM = 4;
   static final int SOCK_SEQPACKET = 5;
 
@@ -69,72 +74,96 @@ final class NativeUnixSocket {
   static final int SOCKETSTATUS_BOUND = 1;
   static final int SOCKETSTATUS_CONNECTED = 2;
 
-<span class="fc" id="L72">  private static Throwable initError = null;</span>
+  @SuppressWarnings(&quot;StaticAssignmentOfThrowable&quot; /* errorprone */)
+<span class="fc" id="L78">  private static Throwable initError = null;</span>
 
-  @ExcludeFromCodeCoverageGeneratedReport
+  @ExcludeFromCodeCoverageGeneratedReport(reason = &quot;unreachable&quot;)
   private NativeUnixSocket() {
     throw new UnsupportedOperationException(&quot;No instances&quot;);
   }
 
   static {
-<span class="fc" id="L80">    try (NativeLibraryLoader nll = new NativeLibraryLoader()) {</span>
-<span class="fc" id="L81">      nll.loadLibrary();</span>
-<span class="fc" id="L82">      loaded = true;</span>
-<span class="nc" id="L83">    } catch (RuntimeException | Error e) {</span>
-<span class="nc" id="L84">      initError = e;</span>
-<span class="nc" id="L85">      e.printStackTrace(); // keep</span>
-<span class="fc" id="L86">    }</span>
+<span class="fc" id="L86">    boolean loadSuccessful = false;</span>
+<span class="fc" id="L87">    try (NativeLibraryLoader nll = new NativeLibraryLoader()) {</span>
+<span class="fc" id="L88">      nll.loadLibrary();</span>
+<span class="fc" id="L89">      loadSuccessful = true;</span>
+<span class="nc" id="L90">    } catch (RuntimeException | Error e) {</span>
+<span class="nc" id="L91">      initError = e;</span>
+<span class="nc" id="L92">      StackTraceUtil.printStackTraceSevere(e);</span>
+    } finally {
+<span class="fc" id="L94">      setLoaded(loadSuccessful);</span>
+    }
 
-<span class="fc" id="L88">    AFAddressFamily.registerAddressFamily(&quot;un&quot;, NativeUnixSocket.DOMAIN_UNIX,</span>
+<span class="fc" id="L97">    AFAddressFamily.registerAddressFamily(&quot;un&quot;, NativeUnixSocket.DOMAIN_UNIX,</span>
         &quot;org.newsclub.net.unix.AFUNIXSocketAddress&quot;);
-<span class="fc" id="L90">    AFAddressFamily.registerAddressFamily(&quot;tipc&quot;, NativeUnixSocket.DOMAIN_TIPC,</span>
+<span class="fc" id="L99">    AFAddressFamily.registerAddressFamily(&quot;tipc&quot;, NativeUnixSocket.DOMAIN_TIPC,</span>
         &quot;org.newsclub.net.unix.AFTIPCSocketAddress&quot;);
-<span class="fc" id="L92">    AFAddressFamily.registerAddressFamily(&quot;vsock&quot;, NativeUnixSocket.DOMAIN_VSOCK,</span>
+<span class="fc" id="L101">    AFAddressFamily.registerAddressFamily(&quot;vsock&quot;, NativeUnixSocket.DOMAIN_VSOCK,</span>
         &quot;org.newsclub.net.unix.AFVSOCKSocketAddress&quot;);
-<span class="fc" id="L94">  }</span>
+<span class="fc" id="L103">    AFAddressFamily.registerAddressFamily(&quot;system&quot;, NativeUnixSocket.DOMAIN_SYSTEM,</span>
+        &quot;org.newsclub.net.unix.AFSYSTEMSocketAddress&quot;);
+<span class="fc" id="L105">  }</span>
 
   static boolean isLoaded() {
-<span class="fc" id="L97">    return loaded;</span>
+    boolean loadSuccessful;
+    try {
+<span class="fc" id="L110">      loadSuccessful = LOADED.get();</span>
+<span class="nc" id="L111">    } catch (InterruptedException | ExecutionException e) {</span>
+<span class="nc" id="L112">      loadSuccessful = false;</span>
+<span class="fc" id="L113">    }</span>
+<span class="fc" id="L114">    return loadSuccessful;</span>
   }
 
   static void ensureSupported() throws UnsupportedOperationException {
-<span class="pc bpc" id="L101" title="1 of 2 branches missed.">    if (!isLoaded()) {</span>
-<span class="nc" id="L102">      throw unsupportedException();</span>
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">    if (!isLoaded()) {</span>
+<span class="nc" id="L119">      throw unsupportedException();</span>
     }
-<span class="fc" id="L104">  }</span>
+<span class="fc" id="L121">  }</span>
 
   static UnsupportedOperationException unsupportedException() {
-<span class="pc bpc" id="L107" title="1 of 2 branches missed.">    if (!isLoaded()) {</span>
-<span class="nc" id="L108">      return (UnsupportedOperationException) new UnsupportedOperationException(</span>
-<span class="nc" id="L109">          &quot;junixsocket may not be fully supported on this platform&quot;).initCause(initError);</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">    if (!isLoaded()) {</span>
+<span class="nc" id="L125">      return (UnsupportedOperationException) new UnsupportedOperationException(</span>
+<span class="nc" id="L126">          &quot;junixsocket may not be fully supported on this platform&quot;).initCause(initError);</span>
     } else {
-<span class="fc" id="L111">      return null;</span>
+<span class="fc" id="L128">      return null;</span>
     }
   }
 
   static Throwable retrieveInitError() {
-<span class="nc" id="L116">    return initError;</span>
+<span class="nc" id="L133">    return initError;</span>
   }
 
   static void initPre() {
     // in some environments, JNI FindClass won't find these classes unless we resolve them first
-<span class="fc" id="L121">    tryResolveClass(AbstractSelectableChannel.class.getName());</span>
-<span class="fc" id="L122">    tryResolveClass(&quot;java.lang.ProcessBuilder$RedirectPipeImpl&quot;);</span>
-<span class="fc" id="L123">  }</span>
+<span class="fc" id="L138">    tryResolveClass(AbstractSelectableChannel.class.getName());</span>
+<span class="fc" id="L139">    tryResolveClass(&quot;java.lang.ProcessBuilder$RedirectPipeImpl&quot;);</span>
+<span class="fc" id="L140">    tryResolveClass(InetSocketAddress.class.getName());</span>
+<span class="fc" id="L141">    tryResolveClass(OperationNotSupportedSocketException.class.getName());</span>
+<span class="fc" id="L142">    tryResolveClass(InvalidArgumentSocketException.class.getName());</span>
+<span class="fc" id="L143">    tryResolveClass(AddressUnavailableSocketException.class.getName());</span>
+<span class="fc" id="L144">    tryResolveClass(NoSuchDeviceSocketException.class.getName());</span>
+<span class="fc" id="L145">  }</span>
 
   private static void tryResolveClass(String className) {
     try {
-<span class="fc" id="L127">      Class.forName(className);</span>
-<span class="nc" id="L128">    } catch (Exception e) {</span>
+<span class="fc" id="L149">      Class.forName(className);</span>
+<span class="nc" id="L150">    } catch (Exception e) {</span>
       // ignore
-<span class="fc" id="L130">    }</span>
-<span class="fc" id="L131">  }</span>
+<span class="fc" id="L152">    }</span>
+<span class="fc" id="L153">  }</span>
 
   @SuppressFBWarnings(&quot;THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION&quot;)
   static native void init() throws Exception;
 
   @SuppressFBWarnings(&quot;THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION&quot;)
   static native void destroy() throws Exception;
+
+  /**
+   * Can be used to check (without side-effects) if the library has been loaded.
+   *
+   * Terminates normally if so; throws {@link UnsatisfiedLinkError} if not.
+   */
+  static native void noop();
 
   static native int capabilities();
 
@@ -232,7 +261,8 @@ final class NativeUnixSocket {
   static native void copyFileDescriptor(FileDescriptor source, FileDescriptor target)
       throws IOException;
 
-  static native void attachCloseable(FileDescriptor fdsec, Closeable closeable);
+  static native void attachCloseable(FileDescriptor fdsec, Closeable closeable)
+      throws SocketException;
 
   static native int maxAddressLength();
 
@@ -246,18 +276,18 @@ final class NativeUnixSocket {
 
   @SuppressFBWarnings(&quot;THROWS_METHOD_THROWS_RUNTIMEEXCEPTION&quot;)
   static void setPort1(SocketAddress addr, int port) throws SocketException {
-<span class="pc bpc" id="L249" title="1 of 2 branches missed.">    if (port &lt; 0) {</span>
-<span class="nc" id="L250">      throw new IllegalArgumentException(&quot;port out of range:&quot; + port);</span>
+<span class="pc bpc" id="L279" title="1 of 2 branches missed.">    if (port &lt; 0) {</span>
+<span class="nc" id="L280">      throw new IllegalArgumentException(&quot;port out of range:&quot; + port);</span>
     }
 
     try {
-<span class="fc" id="L254">      setPort(addr, port);</span>
-<span class="nc" id="L255">    } catch (RuntimeException e) {</span>
-<span class="nc" id="L256">      throw e;</span>
-<span class="nc" id="L257">    } catch (Exception e) {</span>
-<span class="nc" id="L258">      throw (SocketException) new SocketException(&quot;Could not set port&quot;).initCause(e);</span>
-<span class="fc" id="L259">    }</span>
-<span class="fc" id="L260">  }</span>
+<span class="fc" id="L284">      setPort(addr, port);</span>
+<span class="nc" id="L285">    } catch (RuntimeException e) {</span>
+<span class="nc" id="L286">      throw e;</span>
+<span class="nc" id="L287">    } catch (Exception e) {</span>
+<span class="nc" id="L288">      throw (SocketException) new SocketException(&quot;Could not set port&quot;).initCause(e);</span>
+<span class="fc" id="L289">    }</span>
+<span class="fc" id="L290">  }</span>
 
   static native Socket currentRMISocket();
 
@@ -285,5 +315,11 @@ final class NativeUnixSocket {
   static native int sockTypeToNative(int type) throws IOException;
 
   static native int vsockGetLocalCID() throws IOException;
+
+  static native int systemResolveCtlId(FileDescriptor fd, String ctlName) throws IOException;
+
+  static void setLoaded(boolean successful) {
+<span class="fc" id="L322">    LOADED.complete(successful);</span>
+<span class="fc" id="L323">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

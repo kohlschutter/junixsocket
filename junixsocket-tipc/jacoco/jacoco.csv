@@ -13,7 +13,7 @@ junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCErrInfo.ErrorCode,81,0,0,0,6,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCTopologySubscription.Flags,67,0,0,0,7,0,5,0,5,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocketImpl,14,0,0,0,5,0,3,0,3,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCProtocolFamily,9,0,0,0,2,0,1,0,1,0
-junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCTopologyWatcher,199,0,12,0,49,0,23,0,17,0
+junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCTopologyWatcher,209,0,12,0,50,0,23,0,17,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCDatagramSocket,49,0,0,0,11,0,9,0,9,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCTopologyEvent,260,0,22,0,52,0,30,0,19,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSelectorProvider,61,0,0,0,17,0,15,0,15,0

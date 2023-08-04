@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2022 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2023 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> * you may not use this file except in compliance with the License.</em>
@@ -60,7 +60,7 @@
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>    <strong class="jxr_keyword">private</strong> String socketPrefix;
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>    <strong class="jxr_keyword">private</strong> String socketSuffix;
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Map&lt;HostAndPort, AFUNIXSocketCredentials&gt; credentials = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">transient</strong> Map&lt;HostAndPort, AFUNIXSocketCredentials&gt; credentials = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>    <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">   * Constructor required per definition.</em>
@@ -230,21 +230,23 @@
 <a class="jxr_linenumber" name="L222" href="#L222">222</a> 
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>   @Override
 <a class="jxr_linenumber" name="L224" href="#L224">224</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> close() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>     credentials.clear();
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>     <strong class="jxr_keyword">super</strong>.close();
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>   }
-<a class="jxr_linenumber" name="L228" href="#L228">228</a> 
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>   AFUNIXSocketCredentials peerCredentialsFor(<a name="RemotePeerInfo" href="../../../../../org/newsclub/net/unix/rmi/RemotePeerInfo.html#RemotePeerInfo">RemotePeerInfo</a> data) {
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>     <strong class="jxr_keyword">synchronized</strong> (credentials) {
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>       <strong class="jxr_keyword">return</strong> credentials.get(<strong class="jxr_keyword">new</strong> HostAndPort(data.host, data.port));
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>     }
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>   }
-<a class="jxr_linenumber" name="L234" href="#L234">234</a> 
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>   @Override
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>   <strong class="jxr_keyword">boolean</strong> hasRegisteredPort(<strong class="jxr_keyword">int</strong> port) {
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>     <strong class="jxr_keyword">return</strong> hasSocketFile(port);
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>   }
-<a class="jxr_linenumber" name="L239" href="#L239">239</a> }
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>     <strong class="jxr_keyword">synchronized</strong> (credentials) {
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>       credentials.clear();
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>     }
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>     <strong class="jxr_keyword">super</strong>.close();
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>   }
+<a class="jxr_linenumber" name="L230" href="#L230">230</a> 
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>   AFUNIXSocketCredentials peerCredentialsFor(<a name="RemotePeerInfo" href="../../../../../org/newsclub/net/unix/rmi/RemotePeerInfo.html#RemotePeerInfo">RemotePeerInfo</a> data) {
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>     <strong class="jxr_keyword">synchronized</strong> (credentials) {
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>       <strong class="jxr_keyword">return</strong> credentials.get(<strong class="jxr_keyword">new</strong> HostAndPort(data.host, data.port));
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>     }
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>   }
+<a class="jxr_linenumber" name="L236" href="#L236">236</a> 
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>   @Override
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>   <strong class="jxr_keyword">boolean</strong> hasRegisteredPort(<strong class="jxr_keyword">int</strong> port) {
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>     <strong class="jxr_keyword">return</strong> hasSocketFile(port);
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>   }
+<a class="jxr_linenumber" name="L241" href="#L241">241</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

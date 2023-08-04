@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ShutdownHookSupport.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">ShutdownHookSupport.java</span></div><h1>ShutdownHookSupport.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2022 Christian Kohlschütter
+ * Copyright 2009-2023 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -53,18 +53,19 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
   // only for unit testing
   @SuppressFBWarnings({&quot;RU_INVOKE_RUN&quot;})
+  @SuppressWarnings(&quot;DoNotCall&quot; /* errorprone */)
   static void runHooks() {
-<span class="pc bpc" id="L57" title="1 of 2 branches missed.">    if (HOOKS != null) {</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">    if (HOOKS != null) {</span>
       List&lt;Thread&gt; list;
-<span class="fc" id="L59">      synchronized (HOOKS) {</span>
-<span class="fc" id="L60">        list = new ArrayList&lt;&gt;(HOOKS);</span>
-<span class="fc" id="L61">        HOOKS.clear();</span>
-<span class="fc" id="L62">      }</span>
-<span class="fc bfc" id="L63" title="All 2 branches covered.">      for (Thread t : list) {</span>
-<span class="fc" id="L64">        t.run(); // NOPMD -- code coverage fails if we call .start()</span>
-<span class="fc" id="L65">      }</span>
+<span class="fc" id="L60">      synchronized (HOOKS) {</span>
+<span class="fc" id="L61">        list = new ArrayList&lt;&gt;(HOOKS);</span>
+<span class="fc" id="L62">        HOOKS.clear();</span>
+<span class="fc" id="L63">      }</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">      for (Thread t : list) {</span>
+<span class="fc" id="L65">        t.run(); // NOPMD -- code coverage fails if we call .start()</span>
+<span class="fc" id="L66">      }</span>
     }
-<span class="fc" id="L67">  }</span>
+<span class="fc" id="L68">  }</span>
 
   /**
    * Something that wants to be called upon Runtime shutdown.
@@ -97,22 +98,22 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
     private final WeakReference&lt;ShutdownHook&gt; ref;
 
     ShutdownThread(WeakReference&lt;ShutdownHook&gt; ref) {
-<span class="fc" id="L100">      super();</span>
-<span class="fc" id="L101">      this.ref = ref;</span>
-<span class="fc" id="L102">    }</span>
+<span class="fc" id="L101">      super();</span>
+<span class="fc" id="L102">      this.ref = ref;</span>
+<span class="fc" id="L103">    }</span>
 
     @Override
     public void run() {
-<span class="fc" id="L106">      ShutdownHook hook = ref.get();</span>
-<span class="fc" id="L107">      ref.clear();</span>
+<span class="fc" id="L107">      ShutdownHook hook = ref.get();</span>
+<span class="fc" id="L108">      ref.clear();</span>
       try {
-<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (hook != null) {</span>
-<span class="fc" id="L110">          hook.onRuntimeShutdown(this);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        if (hook != null) {</span>
+<span class="fc" id="L111">          hook.onRuntimeShutdown(this);</span>
         }
-<span class="nc" id="L112">      } catch (Exception e) {</span>
+<span class="nc" id="L113">      } catch (Exception e) {</span>
         // ignore
-<span class="fc" id="L114">      }</span>
-<span class="fc" id="L115">    }</span>
+<span class="fc" id="L115">      }</span>
+<span class="fc" id="L116">    }</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

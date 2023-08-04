@@ -1,32 +1,33 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteCloseableImpl,0,27,0,2,0,11,0,5,0,4
+junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMISocketFactory.PortLease,3,18,0,0,1,7,1,3,1,3
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFNamingRef,28,24,8,0,6,5,5,2,1,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFRegistryAccess,0,40,0,0,0,12,0,7,0,7
 junixsocket-rmi,org.newsclub.net.unix.rmi,ShutdownHookSupport,3,69,1,7,1,18,2,6,1,3
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileInput.new FileInputStream() {...},0,21,0,0,0,6,0,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileOutput,12,38,3,3,3,10,3,4,0,4
-junixsocket-rmi,org.newsclub.net.unix.rmi,RemotePeerInfo.ExtractingObjectOutput,167,174,32,24,49,50,34,17,10,11
+junixsocket-rmi,org.newsclub.net.unix.rmi,RemotePeerInfo.ExtractingObjectOutput,167,173,32,24,49,50,34,17,10,11
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileDescriptorBase.new AFSocketServer() {...},8,61,1,3,3,16,1,4,0,3
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXRegistry,0,5,0,0,0,2,0,1,0,1
-junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMISocketFactory,44,354,11,13,12,100,8,21,0,17
+junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMISocketFactory,56,357,11,13,19,100,10,21,2,17
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileInput,7,33,2,2,2,8,2,4,0,4
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFRegistry.new RemoteCloseable() {...},2,10,0,0,1,3,1,2,1,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFRegistry.new ShutdownHookSupport.ShutdownHook() {...},0,10,0,0,0,3,0,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,DefaultRMIClientSocketFactory,20,0,0,0,6,0,5,0,5,0
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileDescriptorBase,72,258,16,18,19,72,14,12,0,9
-junixsocket-rmi,org.newsclub.net.unix.rmi,AFNaming,84,445,18,36,28,136,17,38,2,26
+junixsocket-rmi,org.newsclub.net.unix.rmi,AFNaming,89,442,19,35,29,135,18,37,2,26
+junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMISocketFactory.Externables,0,12,0,0,0,5,0,1,0,1
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMISocketFactory.ServerSocketCloseable,0,42,0,0,0,10,0,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileOutput.new FileOutputStream() {...},0,13,0,0,0,4,0,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemoteFileDescriptor,0,26,1,3,0,9,1,4,0,3
 junixsocket-rmi,org.newsclub.net.unix.rmi,RemotePeerInfo,32,63,4,4,5,20,7,6,3,6
 junixsocket-rmi,org.newsclub.net.unix.rmi,ShutdownHookSupport.ShutdownThread,1,21,0,2,1,9,0,3,0,2
-junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMIServiceImpl.new Runnable() {...},6,20,1,1,4,6,1,2,0,2
-junixsocket-rmi,org.newsclub.net.unix.rmi,ShutdownException,0,8,0,0,0,4,0,2,0,2
-junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXRMISocketFactory,39,240,11,9,8,56,12,19,2,19
-junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXNaming.AFUNIXNamingProvider,10,32,2,2,2,9,2,2,0,2
-junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMIServiceImpl,66,143,13,5,21,37,12,8,4,7
-junixsocket-rmi,org.newsclub.net.unix.rmi,AFNaming.new ShutdownHookSupport.ShutdownHook() {...},8,18,3,1,1,5,2,2,0,2
+junixsocket-rmi,org.newsclub.net.unix.rmi,ShutdownException,4,4,0,0,2,2,1,1,1,1
+junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXRMISocketFactory,39,248,11,9,8,58,12,19,2,19
+junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXNaming.AFUNIXNamingProvider,10,31,2,2,2,9,2,2,0,2
+junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMIServiceImpl,72,149,14,6,25,42,13,9,4,8
+junixsocket-rmi,org.newsclub.net.unix.rmi,AFNaming.new ShutdownHookSupport.ShutdownHook() {...},8,11,3,1,1,3,2,2,0,2
 junixsocket-rmi,org.newsclub.net.unix.rmi,DefaultRMIServerSocketFactory,22,0,0,0,8,0,6,0,6,0
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMISocketFactory.new ShutdownHookSupport.ShutdownHook() {...},1,11,0,0,1,4,0,2,0,2
-junixsocket-rmi,org.newsclub.net.unix.rmi,AFRegistry,41,275,5,19,17,80,5,19,1,11
+junixsocket-rmi,org.newsclub.net.unix.rmi,AFRegistry,34,296,5,21,17,82,5,21,1,12
 junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXNaming,21,218,7,15,5,53,8,26,1,22

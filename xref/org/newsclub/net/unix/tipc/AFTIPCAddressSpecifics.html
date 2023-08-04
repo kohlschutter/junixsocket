@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2022 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2023 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> * you may not use this file except in compliance with the License.</em>
@@ -56,7 +56,7 @@
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>    }
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>    @Override
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">public</strong> <a name="AFSocketAddress" href="../../../../../org/newsclub/net/unix/AFSocketAddress.html#AFSocketAddress">AFSocketAddress</a> newTempAddress() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">public</strong> AFSocketAddress newTempAddress() <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">return</strong> AFTIPCSocketAddress.ofService(Scope.SCOPE_NODE, TIPC_TYPE, INSTANCE_COUNTER
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>          .incrementAndGet());
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>    }
@@ -87,13 +87,13 @@
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>    }
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>    @Override
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>    <strong class="jxr_keyword">public</strong> <a name="AFSocketAddress" href="../../../../../org/newsclub/net/unix/AFSocketAddress.html#AFSocketAddress">AFSocketAddress</a> newTempAddressForDatagram() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>    <strong class="jxr_keyword">public</strong> AFSocketAddress newTempAddressForDatagram() <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">return</strong> AFTIPCSocketAddress.ofService(Scope.SCOPE_NODE, TIPC_TYPE, INSTANCE_COUNTER
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          .incrementAndGet());
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>    }
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>    @Override
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>    <strong class="jxr_keyword">public</strong> <a name="AFSocketAddress" href="../../../../../org/newsclub/net/unix/AFSocketAddress.html#AFSocketAddress">AFSocketAddress</a> unwrap(InetAddress addr, <strong class="jxr_keyword">int</strong> port) <strong class="jxr_keyword">throws</strong> SocketException {
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>    <strong class="jxr_keyword">public</strong> AFSocketAddress unwrap(InetAddress addr, <strong class="jxr_keyword">int</strong> port) <strong class="jxr_keyword">throws</strong> SocketException {
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>      <strong class="jxr_keyword">return</strong> AFTIPCSocketAddress.unwrap(addr, port);
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>    }
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  
@@ -133,7 +133,17 @@
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>     CloseablePair&lt;? <strong class="jxr_keyword">extends</strong> SocketChannel&gt; sp = newSocketPair();
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> CloseablePair&lt;&gt;(sp.getFirst().socket(), sp.getSecond().socket());
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>   }
-<a class="jxr_linenumber" name="L128" href="#L128">128</a> }
+<a class="jxr_linenumber" name="L128" href="#L128">128</a> 
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>   @Override
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>   <strong class="jxr_keyword">public</strong> String addressFamilyString() {
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>     <strong class="jxr_keyword">return</strong> <span class="jxr_string">"AF_TIPC"</span>;
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>   }
+<a class="jxr_linenumber" name="L133" href="#L133">133</a> 
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>   @Override
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>   <strong class="jxr_keyword">public</strong> String summaryImportantMessage(String message) {
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>     <strong class="jxr_keyword">return</strong> message;
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>   }
+<a class="jxr_linenumber" name="L138" href="#L138">138</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

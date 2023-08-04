@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFCore.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFCore.java</span></div><h1>AFCore.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2022 Christian Kohlschütter
+ * Copyright 2009-2023 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -79,136 +79,148 @@ class AFCore extends CleanableState {
   }
 
   void doClose() throws IOException {
-<span class="fc" id="L82">    NativeUnixSocket.close(fd);</span>
-<span class="fc" id="L83">    closed.set(true);</span>
-<span class="fc" id="L84">  }</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">    if (closed.compareAndSet(false, true)) {</span>
+<span class="fc" id="L83">      NativeUnixSocket.close(fd);</span>
+    }
+<span class="fc" id="L85">  }</span>
 
   FileDescriptor validFdOrException() throws SocketException {
-<span class="fc" id="L87">    FileDescriptor fdesc = validFd();</span>
-<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (fdesc == null) {</span>
-<span class="fc" id="L89">      closed.set(true);</span>
-<span class="fc" id="L90">      throw new SocketClosedException(&quot;Not open&quot;);</span>
+<span class="fc" id="L88">    FileDescriptor fdesc = validFd();</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">    if (fdesc == null) {</span>
+<span class="fc" id="L90">      closed.set(true);</span>
+<span class="fc" id="L91">      throw new SocketClosedException(&quot;Not open&quot;);</span>
     }
-<span class="fc" id="L92">    return fdesc;</span>
+<span class="fc" id="L93">    return fdesc;</span>
   }
 
   synchronized FileDescriptor validFd() {
-<span class="fc bfc" id="L96" title="All 2 branches covered.">    if (isClosed()) {</span>
-<span class="fc" id="L97">      return null;</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (isClosed()) {</span>
+<span class="fc" id="L98">      return null;</span>
     }
-<span class="fc" id="L99">    FileDescriptor descriptor = this.fd;</span>
-<span class="pc bpc" id="L100" title="1 of 2 branches missed.">    if (descriptor != null) {</span>
-<span class="fc bfc" id="L101" title="All 2 branches covered.">      if (descriptor.valid()) {</span>
-<span class="fc" id="L102">        return descriptor;</span>
+<span class="fc" id="L100">    FileDescriptor descriptor = this.fd;</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">    if (descriptor != null) {</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">      if (descriptor.valid()) {</span>
+<span class="fc" id="L103">        return descriptor;</span>
       }
     }
-<span class="fc" id="L105">    return null;</span>
+<span class="fc" id="L106">    return null;</span>
   }
 
   int read(ByteBuffer dst) throws IOException {
-<span class="nc" id="L109">    return read(dst, null, 0);</span>
+<span class="nc" id="L110">    return read(dst, null, 0);</span>
   }
 
   int read(ByteBuffer dst, ByteBuffer socketAddressBuffer, int options) throws IOException {
-<span class="fc" id="L113">    int remaining = dst.remaining();</span>
-<span class="pc bpc" id="L114" title="1 of 2 branches missed.">    if (remaining == 0) {</span>
-<span class="nc" id="L115">      return 0;</span>
+<span class="fc" id="L114">    int remaining = dst.remaining();</span>
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">    if (remaining == 0) {</span>
+<span class="nc" id="L116">      return 0;</span>
     }
-<span class="fc" id="L117">    FileDescriptor fdesc = validFdOrException();</span>
+<span class="fc" id="L118">    FileDescriptor fdesc = validFdOrException();</span>
+
+<span class="fc" id="L120">    int dstPos = dst.position();</span>
 
     ByteBuffer buf;
-<span class="fc bfc" id="L120" title="All 2 branches covered.">    if (dst.isDirect()) {</span>
-<span class="fc" id="L121">      buf = dst;</span>
+    int pos;
+
+<span class="fc" id="L125">    boolean direct = dst.isDirect();</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">    if (direct) {</span>
+<span class="fc" id="L127">      buf = dst;</span>
+<span class="fc" id="L128">      pos = dstPos;</span>
     } else {
-<span class="fc" id="L123">      buf = getThreadLocalDirectByteBuffer(remaining);</span>
-<span class="fc" id="L124">      remaining = Math.min(remaining, buf.remaining());</span>
+<span class="fc" id="L130">      buf = getThreadLocalDirectByteBuffer(remaining);</span>
+<span class="fc" id="L131">      remaining = Math.min(remaining, buf.remaining());</span>
+<span class="fc" id="L132">      pos = buf.position();</span>
     }
 
-<span class="fc bfc" id="L127" title="All 2 branches covered.">    if (!blocking) {</span>
-<span class="fc" id="L128">      options |= NativeUnixSocket.OPT_NON_BLOCKING;</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (!blocking) {</span>
+<span class="fc" id="L136">      options |= NativeUnixSocket.OPT_NON_BLOCKING;</span>
     }
 
-<span class="fc" id="L131">    int pos = dst.position();</span>
-
-<span class="fc" id="L133">    int count = NativeUnixSocket.receive(fdesc, buf, pos, remaining, socketAddressBuffer, options,</span>
+<span class="fc" id="L139">    int count = NativeUnixSocket.receive(fdesc, buf, pos, remaining, socketAddressBuffer, options,</span>
         ancillaryDataSupport, 0);
-<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (count == -1) {</span>
-<span class="fc" id="L136">      return count;</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">    if (count == -1) {</span>
+<span class="fc" id="L142">      return count;</span>
     }
-<span class="fc bfc" id="L138" title="All 2 branches covered.">    if (buf != dst) { // NOPMD</span>
-<span class="fc" id="L139">      buf.limit(count);</span>
-<span class="fc" id="L140">      dst.put(buf);</span>
-    } else {
-<span class="pc bpc" id="L142" title="1 of 2 branches missed.">      if (count &lt; 0) {</span>
-<span class="nc" id="L143">        throw new IllegalStateException();</span>
+
+<span class="fc bfc" id="L145" title="All 2 branches covered.">    if (direct) {</span>
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">      if (count &lt; 0) {</span>
+<span class="nc" id="L147">        throw new IllegalStateException();</span>
       }
-<span class="fc" id="L145">      dst.position(pos + count);</span>
+<span class="fc" id="L149">      dst.position(pos + count);</span>
+    } else {
+<span class="fc" id="L151">      int oldLimit = buf.limit();</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">      if (count &lt; oldLimit) {</span>
+<span class="fc" id="L153">        buf.limit(count);</span>
+      }
+      try {
+<span class="fc bfc" id="L156" title="All 2 branches covered.">        while (buf.hasRemaining()) {</span>
+<span class="fc" id="L157">          dst.put(buf);</span>
+        }
+      } finally {
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        if (count &lt; oldLimit) {</span>
+<span class="fc" id="L161">          buf.limit(oldLimit);</span>
+        }
+      }
     }
-<span class="fc" id="L147">    return count;</span>
+<span class="fc" id="L165">    return count;</span>
   }
 
   int write(ByteBuffer src) throws IOException {
-<span class="fc" id="L151">    return write(src, null, 0);</span>
+<span class="fc" id="L169">    return write(src, null, 0);</span>
   }
 
   int write(ByteBuffer src, SocketAddress target, int options) throws IOException {
-<span class="fc" id="L155">    int remaining = src.remaining();</span>
+<span class="fc" id="L173">    int remaining = src.remaining();</span>
 
-<span class="pc bpc" id="L157" title="1 of 2 branches missed.">    if (remaining == 0) {</span>
-<span class="nc" id="L158">      return 0;</span>
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">    if (remaining == 0) {</span>
+<span class="nc" id="L176">      return 0;</span>
     }
 
-<span class="fc" id="L161">    FileDescriptor fdesc = validFdOrException();</span>
+<span class="fc" id="L179">    FileDescriptor fdesc = validFdOrException();</span>
     final ByteBuffer addressTo;
     final int addressToLen;
-<span class="pc bpc" id="L164" title="1 of 2 branches missed.">    if (target == null) {</span>
-<span class="fc" id="L165">      addressTo = null;</span>
-<span class="fc" id="L166">      addressToLen = 0;</span>
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">    if (target == null) {</span>
+<span class="fc" id="L183">      addressTo = null;</span>
+<span class="fc" id="L184">      addressToLen = 0;</span>
     } else {
-<span class="nc" id="L168">      addressTo = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();</span>
-<span class="nc" id="L169">      addressToLen = AFSocketAddress.unwrapAddressDirectBufferInternal(addressTo, target);</span>
+<span class="nc" id="L186">      addressTo = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();</span>
+<span class="nc" id="L187">      addressToLen = AFSocketAddress.unwrapAddressDirectBufferInternal(addressTo, target);</span>
     }
 
     // accept &quot;send buffer overflow&quot; as packet loss
     // and don't retry (which may slow things down quite a bit)
-<span class="fc bfc" id="L174" title="All 2 branches covered.">    if (!blocking) {</span>
-<span class="fc" id="L175">      options |= NativeUnixSocket.OPT_NON_BLOCKING;</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">    if (!blocking) {</span>
+<span class="fc" id="L193">      options |= NativeUnixSocket.OPT_NON_BLOCKING;</span>
     }
 
-<span class="fc" id="L178">    int pos = src.position();</span>
-<span class="fc" id="L179">    boolean isDirect = src.isDirect();</span>
+<span class="fc" id="L196">    int pos = src.position();</span>
+<span class="fc" id="L197">    boolean isDirect = src.isDirect();</span>
     ByteBuffer buf;
     int bufPos;
-<span class="fc bfc" id="L182" title="All 2 branches covered.">    if (isDirect) {</span>
-<span class="fc" id="L183">      buf = src;</span>
-<span class="fc" id="L184">      bufPos = pos;</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">    if (isDirect) {</span>
+<span class="fc" id="L201">      buf = src;</span>
+<span class="fc" id="L202">      bufPos = pos;</span>
     } else {
-<span class="fc" id="L186">      buf = getThreadLocalDirectByteBuffer(remaining);</span>
-<span class="fc" id="L187">      remaining = Math.min(remaining, buf.remaining());</span>
+<span class="fc" id="L204">      buf = getThreadLocalDirectByteBuffer(remaining);</span>
+<span class="fc" id="L205">      remaining = Math.min(remaining, buf.remaining());</span>
 
-<span class="fc" id="L189">      bufPos = buf.position();</span>
+<span class="fc" id="L207">      bufPos = buf.position();</span>
 
-      // Java 16: buf.put(bufPos, src, src.position(), Math.min(buf.limit(), src.limit()));
-<span class="fc" id="L192">      int limit = src.limit();</span>
-<span class="pc bpc" id="L193" title="1 of 2 branches missed.">      if (limit &gt; buf.limit()) {</span>
-<span class="nc" id="L194">        src.limit(buf.limit());</span>
-<span class="nc" id="L195">        buf.put(src);</span>
-<span class="nc" id="L196">        src.limit(limit);</span>
-      } else {
-<span class="fc" id="L198">        buf.put(src);</span>
+<span class="pc bpc" id="L209" title="1 of 4 branches missed.">      while (src.hasRemaining() &amp;&amp; buf.hasRemaining()) {</span>
+<span class="fc" id="L210">        buf.put(src);</span>
       }
 
-<span class="fc" id="L201">      buf.position(bufPos);</span>
+<span class="fc" id="L213">      buf.position(bufPos);</span>
     }
-<span class="fc bfc" id="L203" title="All 2 branches covered.">    if (datagramMode) {</span>
-<span class="fc" id="L204">      options |= NativeUnixSocket.OPT_DGRAM_MODE;</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">    if (datagramMode) {</span>
+<span class="fc" id="L216">      options |= NativeUnixSocket.OPT_DGRAM_MODE;</span>
     }
 
-<span class="fc" id="L207">    int written = NativeUnixSocket.send(fdesc, buf, bufPos, remaining, addressTo, addressToLen,</span>
+<span class="fc" id="L219">    int written = NativeUnixSocket.send(fdesc, buf, bufPos, remaining, addressTo, addressToLen,</span>
         options, ancillaryDataSupport);
-<span class="fc" id="L209">    src.position(pos + written);</span>
+<span class="fc" id="L221">    src.position(pos + written);</span>
 
-<span class="fc" id="L211">    return written;</span>
+<span class="fc" id="L223">    return written;</span>
   }
 
   /**
@@ -222,31 +234,31 @@ class AFCore extends CleanableState {
    * @return A byte buffer satisfying the requested capacity.
    */
   ByteBuffer getThreadLocalDirectByteBuffer(int capacity) {
-<span class="pc bpc" id="L225" title="3 of 4 branches missed.">    if (capacity &gt; TL_BUFFER_MAX_CAPACITY &amp;&amp; TL_BUFFER_MAX_CAPACITY &gt; 0) {</span>
+<span class="pc bpc" id="L237" title="3 of 4 branches missed.">    if (capacity &gt; TL_BUFFER_MAX_CAPACITY &amp;&amp; TL_BUFFER_MAX_CAPACITY &gt; 0) {</span>
       // Capacity exceeds configurable maximum limit;
       // allocate but do not cache direct buffer.
       // This may incur a performance penalty at the cost of correctness when using such capacities.
-<span class="nc" id="L229">      return ByteBuffer.allocateDirect(capacity);</span>
+<span class="nc" id="L241">      return ByteBuffer.allocateDirect(capacity);</span>
     }
-<span class="fc bfc" id="L231" title="All 2 branches covered.">    if (capacity &lt; TL_BUFFER_MIN_CAPACITY) {</span>
-<span class="fc" id="L232">      capacity = TL_BUFFER_MIN_CAPACITY;</span>
+<span class="fc bfc" id="L243" title="All 2 branches covered.">    if (capacity &lt; TL_BUFFER_MIN_CAPACITY) {</span>
+<span class="fc" id="L244">      capacity = TL_BUFFER_MIN_CAPACITY;</span>
     }
-<span class="fc" id="L234">    ByteBuffer buffer = TL_BUFFER.get();</span>
-<span class="pc bpc" id="L235" title="1 of 4 branches missed.">    if (buffer == null || capacity &gt; buffer.capacity()) {</span>
-<span class="fc" id="L236">      buffer = ByteBuffer.allocateDirect(capacity);</span>
-<span class="fc" id="L237">      TL_BUFFER.set(buffer);</span>
+<span class="fc" id="L246">    ByteBuffer buffer = TL_BUFFER.get();</span>
+<span class="pc bpc" id="L247" title="1 of 4 branches missed.">    if (buffer == null || capacity &gt; buffer.capacity()) {</span>
+<span class="fc" id="L248">      buffer = ByteBuffer.allocateDirect(capacity);</span>
+<span class="fc" id="L249">      TL_BUFFER.set(buffer);</span>
     }
-<span class="fc" id="L239">    buffer.clear();</span>
-<span class="fc" id="L240">    return buffer;</span>
+<span class="fc" id="L251">    buffer.clear();</span>
+<span class="fc" id="L252">    return buffer;</span>
   }
 
   void implConfigureBlocking(boolean block) throws IOException {
-<span class="fc" id="L244">    NativeUnixSocket.configureBlocking(validFdOrException(), block);</span>
-<span class="fc" id="L245">    this.blocking = block;</span>
-<span class="fc" id="L246">  }</span>
+<span class="fc" id="L256">    NativeUnixSocket.configureBlocking(validFdOrException(), block);</span>
+<span class="fc" id="L257">    this.blocking = block;</span>
+<span class="fc" id="L258">  }</span>
 
   boolean isBlocking() {
-<span class="fc" id="L249">    return blocking;</span>
+<span class="fc" id="L261">    return blocking;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

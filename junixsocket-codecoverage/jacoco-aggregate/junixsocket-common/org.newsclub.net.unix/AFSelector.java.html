@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFSelector.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSelector.java</span></div><h1>AFSelector.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2022 Christian Kohlschütter
+ * Copyright 2009-2023 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ final class AFSelector extends AbstractSelector {
 <span class="fc" id="L47">  private PollFd pollFd = null;</span>
 <span class="fc" id="L48">  private final Set&lt;SelectionKey&gt; keysSelected = new HashSet&lt;&gt;();</span>
 
-  protected AFSelector(AFSelectorProvider&lt;?&gt; provider) throws IOException {
+  AFSelector(AFSelectorProvider&lt;?&gt; provider) throws IOException {
 <span class="fc" id="L51">    super(provider);</span>
 
 <span class="fc" id="L53">    this.selectorPipe = AFUNIXSelectorProvider.getInstance().openSelectablePipe();</span>
@@ -271,17 +271,17 @@ final class AFSelector extends AbstractSelector {
 <span class="fc" id="L271">          pipeMsgWakeUp.clear();</span>
           try {
 <span class="fc" id="L273">            selectorPipe.sink().write(pipeMsgWakeUp);</span>
-<span class="fc" id="L274">          } catch (SocketException e) {</span>
-<span class="pc bpc" id="L275" title="1 of 2 branches missed.">            if (selectorPipe.sinkFD().valid()) {</span>
+<span class="nc" id="L274">          } catch (SocketException e) {</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">            if (selectorPipe.sinkFD().valid()) {</span>
 <span class="nc" id="L276">              throw e;</span>
             } else {
               // ignore (Broken pipe, etc)
             }
 <span class="fc" id="L280">          }</span>
 <span class="fc" id="L281">        }</span>
-<span class="nc" id="L282">      } catch (IOException e) {</span>
+<span class="nc" id="L282">      } catch (IOException e) { // NOPMD.ExceptionAsFlowControl</span>
         // FIXME throw as runtimeexception?
-<span class="nc" id="L284">        e.printStackTrace();</span>
+<span class="nc" id="L284">        StackTraceUtil.printStackTrace(e);</span>
 <span class="fc" id="L285">      }</span>
     }
 <span class="fc" id="L287">    return this;</span>
@@ -432,4 +432,4 @@ final class AFSelector extends AbstractSelector {
 <span class="fc" id="L432">    }</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

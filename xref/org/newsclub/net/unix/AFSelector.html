@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2022 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2023 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> * you may not use this file except in compliance with the License.</em>
@@ -55,7 +55,7 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>    <strong class="jxr_keyword">private</strong> PollFd pollFd = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Set&lt;SelectionKey&gt; keysSelected = <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;();
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">protected</strong> <a name="AFSelector" href="../../../../org/newsclub/net/unix/AFSelector.html#AFSelector">AFSelector</a>(AFSelectorProvider&lt;?&gt; provider) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <a name="AFSelector" href="../../../../org/newsclub/net/unix/AFSelector.html#AFSelector">AFSelector</a>(AFSelectorProvider&lt;?&gt; provider) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">super</strong>(provider);
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">this</strong>.selectorPipe = AFUNIXSelectorProvider.getInstance().openSelectablePipe();
@@ -287,9 +287,9 @@
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>             }
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>           }
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>         }
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>       } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>       } <strong class="jxr_keyword">catch</strong> (IOException e) { <em class="jxr_comment">// NOPMD.ExceptionAsFlowControl</em>
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>         <em class="jxr_comment">// FIXME throw as runtimeexception?</em>
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>         e.printStackTrace();
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>         StackTraceUtil.printStackTrace(e);
 <a class="jxr_linenumber" name="L285" href="#L285">285</a>       }
 <a class="jxr_linenumber" name="L286" href="#L286">286</a>     }
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;

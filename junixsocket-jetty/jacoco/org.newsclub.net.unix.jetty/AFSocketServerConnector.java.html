@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFSocketServerConnector.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-jetty</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.jetty</a> &gt; <span class="el_source">AFSocketServerConnector.java</span></div><h1>AFSocketServerConnector.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2022 Christian Kohlschütter
+ * Copyright 2009-2023 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -49,8 +49,8 @@ import java.nio.channels.spi.SelectorProvider;
 import java.nio.file.Path;
 import java.util.EventListener;
 import java.util.Locale;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.jetty.io.ByteBufferPool;
@@ -85,10 +85,11 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * This implementation should work with jetty version 9.4.12 or newer.
  */
 @ManagedObject
+@SuppressWarnings(&quot;PMD.CouplingBetweenObjects&quot;)
 public class AFSocketServerConnector extends AbstractConnector {
-<span class="fc" id="L89">  private static final Logger LOG = LoggerFactory.getLogger(AbstractConnector.class);</span>
+<span class="fc" id="L90">  private static final Logger LOG = LoggerFactory.getLogger(AbstractConnector.class);</span>
 
-<span class="fc" id="L91">  private final AtomicReference&lt;Closeable&gt; acceptor = new AtomicReference&lt;&gt;();</span>
+<span class="fc" id="L92">  private final AtomicReference&lt;Closeable&gt; acceptor = new AtomicReference&lt;&gt;();</span>
   private final SelectorManager selectorManager;
   private ServerSocketChannel serverChannel;
   private AFSocketAddress listenSocketAddress;
@@ -97,8 +98,8 @@ public class AFSocketServerConnector extends AbstractConnector {
   private int acceptedReceiveBufferSize;
   private int acceptedSendBufferSize;
 
-<span class="fc" id="L100">  private boolean mayStopServer = false;</span>
-<span class="fc" id="L101">  private boolean mayStopServerForce = false;</span>
+<span class="fc" id="L101">  private boolean mayStopServer = false;</span>
+<span class="fc" id="L102">  private boolean mayStopServerForce = false;</span>
   private final Class&lt;? extends EventListener&gt; selectorManagerListenerClass;
   private final Server server;
 
@@ -109,8 +110,8 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @param factories The Connection Factories to use.
    */
   public AFSocketServerConnector(Server server, ConnectionFactory... factories) {
-<span class="fc" id="L112">    this(server, null, null, null, -1, -1, factories);</span>
-<span class="fc" id="L113">  }</span>
+<span class="fc" id="L113">    this(server, null, null, null, -1, -1, factories);</span>
+<span class="fc" id="L114">  }</span>
 
   /**
    * Creates a new {@link AFSocketServerConnector}.
@@ -124,8 +125,8 @@ public class AFSocketServerConnector extends AbstractConnector {
    */
   public AFSocketServerConnector(Server server, int acceptors, int selectors,
       ConnectionFactory... factories) {
-<span class="fc" id="L127">    this(server, null, null, null, acceptors, selectors, factories);</span>
-<span class="fc" id="L128">  }</span>
+<span class="fc" id="L128">    this(server, null, null, null, acceptors, selectors, factories);</span>
+<span class="fc" id="L129">  }</span>
 
   /**
    * Creates a new {@link AFSocketServerConnector}.
@@ -143,30 +144,31 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @param factories The Connection Factories to use.
    */
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP2&quot;)
+  @SuppressWarnings(&quot;PMD.ConstructorCallsOverridableMethod&quot;)
   public AFSocketServerConnector(Server server, Executor executor, Scheduler scheduler,
       ByteBufferPool pool, int acceptors, int selectors, ConnectionFactory... factories) {
-<span class="pc bpc" id="L148" title="1 of 2 branches missed.">    super(server, executor, scheduler, pool, acceptors, factories.length &gt; 0 ? factories</span>
-<span class="nc" id="L149">        : new ConnectionFactory[] {new HttpConnectionFactory()});</span>
-<span class="fc" id="L150">    this.server = server;</span>
-<span class="fc" id="L151">    this.selectorManager = newSelectorManager(getExecutor(), getScheduler(), selectors);</span>
-<span class="fc" id="L152">    addBean(selectorManager, true);</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">    super(server, executor, scheduler, pool, acceptors, factories.length &gt; 0 ? factories</span>
+<span class="nc" id="L151">        : new ConnectionFactory[] {new HttpConnectionFactory()});</span>
+<span class="fc" id="L152">    this.server = server;</span>
+<span class="fc" id="L153">    this.selectorManager = newSelectorManager(getExecutor(), getScheduler(), selectors);</span>
+<span class="fc" id="L154">    addBean(selectorManager, true);</span>
 
-<span class="fc" id="L154">    this.selectorManagerListenerClass = findSelectorManagerListenerClass();</span>
-<span class="fc" id="L155">  }</span>
+<span class="fc" id="L156">    this.selectorManagerListenerClass = findSelectorManagerListenerClass();</span>
+<span class="fc" id="L157">  }</span>
 
   @SuppressWarnings(&quot;unchecked&quot;)
   private static Class&lt;? extends EventListener&gt; findSelectorManagerListenerClass() {
     try {
-<span class="fc" id="L160">      return (Class&lt;? extends EventListener&gt;) Class.forName(</span>
+<span class="fc" id="L162">      return (Class&lt;? extends EventListener&gt;) Class.forName(</span>
           &quot;org.eclipse.jetty.io.SelectorManager$SelectorManagerListener&quot;);
-<span class="nc" id="L162">    } catch (ClassNotFoundException e) {</span>
-<span class="nc" id="L163">      return null;</span>
+<span class="nc" id="L164">    } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L165">      return null;</span>
     }
   }
 
   private SelectorManager newSelectorManager(Executor executor, Scheduler scheduler,
       int selectors) {
-<span class="fc" id="L169">    return new AFSocketSelectorManager(executor, scheduler, selectors);</span>
+<span class="fc" id="L171">    return new AFSocketSelectorManager(executor, scheduler, selectors);</span>
   }
 
   /**
@@ -179,18 +181,19 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @see #getListenSocketAddress()
    */
   @ManagedAttribute(&quot;The Unix-Domain path this connector listens to&quot;)
+  @Deprecated
   public Path getUnixDomainPath() {
-<span class="nc bnc" id="L183" title="All 2 branches missed.">    if (listenSocketAddress instanceof AFUNIXSocketAddress) {</span>
-<span class="nc" id="L184">      AFUNIXSocketAddress addr = (AFUNIXSocketAddress) listenSocketAddress;</span>
-<span class="nc bnc" id="L185" title="All 2 branches missed.">      if (addr.hasFilename()) {</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">    if (listenSocketAddress instanceof AFUNIXSocketAddress) {</span>
+<span class="nc" id="L187">      AFUNIXSocketAddress addr = (AFUNIXSocketAddress) listenSocketAddress;</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">      if (addr.hasFilename()) {</span>
         try {
-<span class="nc" id="L187">          return addr.getFile().toPath();</span>
-<span class="nc" id="L188">        } catch (FileNotFoundException e) {</span>
-<span class="nc" id="L189">          return null;</span>
+<span class="nc" id="L190">          return addr.getFile().toPath();</span>
+<span class="nc" id="L191">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L192">          return null;</span>
         }
       }
     }
-<span class="nc" id="L193">    return null;</span>
+<span class="nc" id="L196">    return null;</span>
   }
 
   /**
@@ -202,13 +205,14 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @deprecated Use {@link #setListenSocketAddress(AFSocketAddress)} instead.
    * @see #setListenSocketAddress(AFSocketAddress)
    */
+  @Deprecated
   public void setUnixDomainPath(Path unixDomainPath) {
     try {
-<span class="nc" id="L207">      this.listenSocketAddress = AFUNIXSocketAddress.of(unixDomainPath);</span>
-<span class="nc" id="L208">    } catch (SocketException e) {</span>
-<span class="nc" id="L209">      throw new IllegalStateException(e);</span>
-<span class="nc" id="L210">    }</span>
-<span class="nc" id="L211">  }</span>
+<span class="nc" id="L211">      this.listenSocketAddress = AFUNIXSocketAddress.of(unixDomainPath);</span>
+<span class="nc" id="L212">    } catch (SocketException e) {</span>
+<span class="nc" id="L213">      throw new IllegalStateException(e);</span>
+<span class="nc" id="L214">    }</span>
+<span class="nc" id="L215">  }</span>
 
   /**
    * Returns the socket address this connector listens to.
@@ -218,7 +222,7 @@ public class AFSocketServerConnector extends AbstractConnector {
   @ManagedAttribute(&quot;The socket address this connector listens to&quot;)
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   public AFSocketAddress getListenSocketAddress() {
-<span class="nc" id="L221">    return listenSocketAddress;</span>
+<span class="nc" id="L225">    return listenSocketAddress;</span>
   }
 
   /**
@@ -228,8 +232,8 @@ public class AFSocketServerConnector extends AbstractConnector {
    */
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP2&quot;)
   public void setListenSocketAddress(AFSocketAddress addr) {
-<span class="fc" id="L231">    this.listenSocketAddress = addr;</span>
-<span class="fc" id="L232">  }</span>
+<span class="fc" id="L235">    this.listenSocketAddress = addr;</span>
+<span class="fc" id="L236">  }</span>
 
   /**
    * Checks whether this connector uses a server channel inherited from the JVM.
@@ -238,7 +242,7 @@ public class AFSocketServerConnector extends AbstractConnector {
    */
   @ManagedAttribute(&quot;Whether this connector uses a server channel inherited from the JVM&quot;)
   public boolean isInheritChannel() {
-<span class="fc" id="L241">    return inheritChannel;</span>
+<span class="fc" id="L245">    return inheritChannel;</span>
   }
 
   /**
@@ -247,8 +251,8 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @param inheritChannel {@code true} if so.
    */
   public void setInheritChannel(boolean inheritChannel) {
-<span class="nc" id="L250">    this.inheritChannel = inheritChannel;</span>
-<span class="nc" id="L251">  }</span>
+<span class="nc" id="L254">    this.inheritChannel = inheritChannel;</span>
+<span class="nc" id="L255">  }</span>
 
   /**
    * Returns the accept queue size (backlog) for the server socket.
@@ -257,7 +261,7 @@ public class AFSocketServerConnector extends AbstractConnector {
    */
   @ManagedAttribute(&quot;The accept queue size (backlog) for the server socket&quot;)
   public int getAcceptQueueSize() {
-<span class="fc" id="L260">    return acceptQueueSize;</span>
+<span class="fc" id="L264">    return acceptQueueSize;</span>
   }
 
   /**
@@ -266,8 +270,8 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @param acceptQueueSize The backlog.
    */
   public void setAcceptQueueSize(int acceptQueueSize) {
-<span class="fc" id="L269">    this.acceptQueueSize = acceptQueueSize;</span>
-<span class="fc" id="L270">  }</span>
+<span class="fc" id="L273">    this.acceptQueueSize = acceptQueueSize;</span>
+<span class="fc" id="L274">  }</span>
 
   /**
    * Returns the SO_RCVBUF size for accepted sockets.
@@ -276,7 +280,7 @@ public class AFSocketServerConnector extends AbstractConnector {
    */
   @ManagedAttribute(&quot;The SO_RCVBUF option for accepted sockets&quot;)
   public int getAcceptedReceiveBufferSize() {
-<span class="fc" id="L279">    return acceptedReceiveBufferSize;</span>
+<span class="fc" id="L283">    return acceptedReceiveBufferSize;</span>
   }
 
   /**
@@ -285,8 +289,8 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @param acceptedReceiveBufferSize The buffer size.
    */
   public void setAcceptedReceiveBufferSize(int acceptedReceiveBufferSize) {
-<span class="nc" id="L288">    this.acceptedReceiveBufferSize = acceptedReceiveBufferSize;</span>
-<span class="nc" id="L289">  }</span>
+<span class="nc" id="L292">    this.acceptedReceiveBufferSize = acceptedReceiveBufferSize;</span>
+<span class="nc" id="L293">  }</span>
 
   /**
    * Returns the SO_SNDBUF size for accepted sockets.
@@ -295,7 +299,7 @@ public class AFSocketServerConnector extends AbstractConnector {
    */
   @ManagedAttribute(&quot;The SO_SNDBUF option for accepted sockets&quot;)
   public int getAcceptedSendBufferSize() {
-<span class="fc" id="L298">    return acceptedSendBufferSize;</span>
+<span class="fc" id="L302">    return acceptedSendBufferSize;</span>
   }
 
   /**
@@ -304,77 +308,77 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @param acceptedSendBufferSize The buffer size.
    */
   public void setAcceptedSendBufferSize(int acceptedSendBufferSize) {
-<span class="nc" id="L307">    this.acceptedSendBufferSize = acceptedSendBufferSize;</span>
-<span class="nc" id="L308">  }</span>
+<span class="nc" id="L311">    this.acceptedSendBufferSize = acceptedSendBufferSize;</span>
+<span class="nc" id="L312">  }</span>
 
   @Override
   protected void doStart() throws Exception {
-<span class="pc bpc" id="L312" title="1 of 2 branches missed.">    if (selectorManagerListenerClass != null) {</span>
-<span class="fc" id="L313">      getBeans(selectorManagerListenerClass).forEach(selectorManager::addEventListener);</span>
+<span class="pc bpc" id="L316" title="1 of 2 branches missed.">    if (selectorManagerListenerClass != null) {</span>
+<span class="fc" id="L317">      getBeans(selectorManagerListenerClass).forEach(selectorManager::addEventListener);</span>
     }
-<span class="fc" id="L315">    serverChannel = open();</span>
-<span class="fc" id="L316">    addBean(serverChannel);</span>
-<span class="fc" id="L317">    super.doStart();</span>
-<span class="fc" id="L318">  }</span>
+<span class="fc" id="L319">    serverChannel = open();</span>
+<span class="fc" id="L320">    addBean(serverChannel);</span>
+<span class="fc" id="L321">    super.doStart();</span>
+<span class="fc" id="L322">  }</span>
 
   @Override
   protected void doStop() throws Exception {
-<span class="fc" id="L322">    super.doStop();</span>
-<span class="fc" id="L323">    removeBean(serverChannel);</span>
-<span class="fc" id="L324">    close();</span>
-<span class="pc bpc" id="L325" title="1 of 2 branches missed.">    if (selectorManagerListenerClass != null) {</span>
-<span class="fc" id="L326">      getBeans(selectorManagerListenerClass).forEach(selectorManager::removeEventListener);</span>
+<span class="fc" id="L326">    super.doStop();</span>
+<span class="fc" id="L327">    removeBean(serverChannel);</span>
+<span class="fc" id="L328">    close();</span>
+<span class="pc bpc" id="L329" title="1 of 2 branches missed.">    if (selectorManagerListenerClass != null) {</span>
+<span class="fc" id="L330">      getBeans(selectorManagerListenerClass).forEach(selectorManager::removeEventListener);</span>
     }
-<span class="fc" id="L328">  }</span>
+<span class="fc" id="L332">  }</span>
 
   @Override
   @SuppressWarnings(&quot;PMD.CognitiveComplexity&quot;)
   protected void accept(int acceptorID) throws IOException {
-<span class="fc" id="L333">    ServerSocketChannel sc = this.serverChannel;</span>
-<span class="pc bpc" id="L334" title="1 of 2 branches missed.">    if (sc != null) {</span>
+<span class="fc" id="L337">    ServerSocketChannel sc = this.serverChannel;</span>
+<span class="pc bpc" id="L338" title="1 of 2 branches missed.">    if (sc != null) {</span>
       try {
-<span class="fc" id="L336">        SocketChannel channel = sc.accept();</span>
-<span class="fc" id="L337">        accepted(channel);</span>
-<span class="fc" id="L338">      } catch (SocketException e) {</span>
-<span class="pc bpc" id="L339" title="1 of 4 branches missed.">        boolean takenOver = !sc.isOpen() || sc.getLocalAddress() == null;</span>
-<span class="pc bpc" id="L340" title="1 of 4 branches missed.">        if (!takenOver &amp;&amp; sc instanceof AFServerSocketChannel&lt;?&gt;) {</span>
-<span class="pc bpc" id="L341" title="1 of 2 branches missed.">          takenOver = !((AFServerSocketChannel&lt;?&gt;) sc).isLocalSocketAddressValid();</span>
+<span class="fc" id="L340">        SocketChannel channel = sc.accept();</span>
+<span class="fc" id="L341">        accepted(channel);</span>
+<span class="fc" id="L342">      } catch (SocketException e) {</span>
+<span class="pc bpc" id="L343" title="1 of 4 branches missed.">        boolean takenOver = !sc.isOpen() || sc.getLocalAddress() == null;</span>
+<span class="pc bpc" id="L344" title="1 of 4 branches missed.">        if (!takenOver &amp;&amp; sc instanceof AFServerSocketChannel&lt;?&gt;) {</span>
+<span class="pc bpc" id="L345" title="1 of 2 branches missed.">          takenOver = !((AFServerSocketChannel&lt;?&gt;) sc).isLocalSocketAddressValid();</span>
         }
 
-<span class="pc bpc" id="L344" title="1 of 4 branches missed.">        if (takenOver &amp;&amp; isMayStopServer()) {</span>
-<span class="fc" id="L345">          LOG.warn(&quot;Another server has taken over our address&quot;);</span>
-<span class="fc" id="L346">          CompletableFuture.runAsync(this::checkServerStop);</span>
+<span class="pc bpc" id="L348" title="1 of 4 branches missed.">        if (takenOver &amp;&amp; isMayStopServer()) {</span>
+<span class="fc" id="L349">          LOG.warn(&quot;Another server has taken over our address&quot;);</span>
+<span class="fc" id="L350">          ForkJoinPool.commonPool().execute(this::checkServerStop);</span>
         }
-<span class="fc" id="L348">        throw (ClosedByInterruptException) new ClosedByInterruptException().initCause(e);</span>
-<span class="fc" id="L349">      }</span>
+<span class="fc" id="L352">        throw (ClosedByInterruptException) new ClosedByInterruptException().initCause(e);</span>
+<span class="fc" id="L353">      }</span>
     }
-<span class="fc" id="L351">  }</span>
+<span class="fc" id="L355">  }</span>
 
   private void checkServerStop() {
-<span class="fc" id="L354">    Connector[] connectors = server.getConnectors();</span>
+<span class="fc" id="L358">    Connector[] connectors = server.getConnectors();</span>
 
-<span class="pc bpc" id="L356" title="2 of 4 branches missed.">    if (connectors != null &amp;&amp; !isMayStopServerForce()) {</span>
-<span class="fc bfc" id="L357" title="All 2 branches covered.">      for (Connector conn : connectors) {</span>
-<span class="pc bpc" id="L358" title="3 of 4 branches missed.">        if (conn != AFSocketServerConnector.this &amp;&amp; conn.isRunning()) { // NOPMD.CompareObjectsWithEquals</span>
-<span class="nc" id="L359">          return; // don't stop</span>
+<span class="pc bpc" id="L360" title="2 of 4 branches missed.">    if (connectors != null &amp;&amp; !isMayStopServerForce()) {</span>
+<span class="fc bfc" id="L361" title="All 2 branches covered.">      for (Connector conn : connectors) {</span>
+<span class="pc bpc" id="L362" title="3 of 4 branches missed.">        if (conn != AFSocketServerConnector.this &amp;&amp; conn.isRunning()) { // NOPMD.CompareObjectsWithEquals</span>
+<span class="nc" id="L363">          return; // don't stop</span>
         }
       }
     }
 
-<span class="fc" id="L364">    LOG.warn(&quot;Server has no other connectors; shutting down: &quot; + server); // NOPMD</span>
+<span class="fc" id="L368">    LOG.warn(&quot;Server has no other connectors; shutting down: &quot; + server); // NOPMD</span>
 
     try {
-<span class="fc" id="L367">      server.stop();</span>
-<span class="nc" id="L368">    } catch (Exception e1) {</span>
-<span class="nc" id="L369">      LOG.warn(&quot;Exception upon stopping &quot; + server, e1); // NOPMD</span>
-<span class="fc" id="L370">    }</span>
-<span class="fc" id="L371">  }</span>
+<span class="fc" id="L371">      server.stop();</span>
+<span class="nc" id="L372">    } catch (Exception e1) {</span>
+<span class="nc" id="L373">      LOG.warn(&quot;Exception upon stopping &quot; + server, e1); // NOPMD</span>
+<span class="fc" id="L374">    }</span>
+<span class="fc" id="L375">  }</span>
 
   private void accepted(SocketChannel channel) throws IOException {
-<span class="fc" id="L374">    channel.configureBlocking(false);</span>
-<span class="fc" id="L375">    configure(channel);</span>
-<span class="fc" id="L376">    selectorManager.accept(channel);</span>
-<span class="fc" id="L377">  }</span>
+<span class="fc" id="L378">    channel.configureBlocking(false);</span>
+<span class="fc" id="L379">    configure(channel);</span>
+<span class="fc" id="L380">    selectorManager.accept(channel);</span>
+<span class="fc" id="L381">  }</span>
 
   /**
    * Configures an incoming {@link SocketChannel}, setting socket options such as receive and send
@@ -384,139 +388,139 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @throws IOException on error.
    */
   protected void configure(SocketChannel channel) throws IOException {
-<span class="fc" id="L387">    channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);</span>
-<span class="fc" id="L388">    int rcvBufSize = getAcceptedReceiveBufferSize();</span>
-<span class="pc bpc" id="L389" title="1 of 2 branches missed.">    if (rcvBufSize &gt; 0) {</span>
-<span class="nc" id="L390">      channel.setOption(StandardSocketOptions.SO_RCVBUF, rcvBufSize);</span>
+<span class="fc" id="L391">    channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);</span>
+<span class="fc" id="L392">    int rcvBufSize = getAcceptedReceiveBufferSize();</span>
+<span class="pc bpc" id="L393" title="1 of 2 branches missed.">    if (rcvBufSize &gt; 0) {</span>
+<span class="nc" id="L394">      channel.setOption(StandardSocketOptions.SO_RCVBUF, rcvBufSize);</span>
     }
-<span class="fc" id="L392">    int sndBufSize = getAcceptedSendBufferSize();</span>
-<span class="pc bpc" id="L393" title="1 of 2 branches missed.">    if (sndBufSize &gt; 0) {</span>
-<span class="nc" id="L394">      channel.setOption(StandardSocketOptions.SO_SNDBUF, sndBufSize);</span>
+<span class="fc" id="L396">    int sndBufSize = getAcceptedSendBufferSize();</span>
+<span class="pc bpc" id="L397" title="1 of 2 branches missed.">    if (sndBufSize &gt; 0) {</span>
+<span class="nc" id="L398">      channel.setOption(StandardSocketOptions.SO_SNDBUF, sndBufSize);</span>
     }
-<span class="fc" id="L396">  }</span>
+<span class="fc" id="L400">  }</span>
 
   @Override
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   public Object getTransport() {
-<span class="nc" id="L401">    return serverChannel;</span>
+<span class="nc" id="L405">    return serverChannel;</span>
   }
 
   private ServerSocketChannel open() throws IOException {
-<span class="fc" id="L405">    ServerSocketChannel sc = openServerSocketChannel();</span>
-<span class="pc bpc" id="L406" title="1 of 2 branches missed.">    if (getAcceptors() == 0) {</span>
-<span class="nc" id="L407">      sc.configureBlocking(false);</span>
-<span class="nc" id="L408">      acceptor.set(selectorManager.acceptor(sc));</span>
+<span class="fc" id="L409">    ServerSocketChannel sc = openServerSocketChannel();</span>
+<span class="pc bpc" id="L410" title="1 of 2 branches missed.">    if (getAcceptors() == 0) {</span>
+<span class="nc" id="L411">      sc.configureBlocking(false);</span>
+<span class="nc" id="L412">      acceptor.set(selectorManager.acceptor(sc));</span>
     }
-<span class="fc" id="L410">    return sc;</span>
+<span class="fc" id="L414">    return sc;</span>
   }
 
   private void close() throws IOException {
-<span class="fc" id="L414">    ServerSocketChannel sc = this.serverChannel;</span>
-<span class="fc" id="L415">    this.serverChannel = null;</span>
-<span class="fc" id="L416">    IO.close(sc);</span>
-<span class="fc" id="L417">  }</span>
+<span class="fc" id="L418">    ServerSocketChannel sc = this.serverChannel;</span>
+<span class="fc" id="L419">    this.serverChannel = null;</span>
+<span class="fc" id="L420">    IO.close(sc);</span>
+<span class="fc" id="L421">  }</span>
 
   private ServerSocketChannel openServerSocketChannel() throws IOException {
-<span class="fc" id="L420">    ServerSocketChannel sc = null;</span>
-<span class="pc bpc" id="L421" title="1 of 2 branches missed.">    if (isInheritChannel()) {</span>
-<span class="nc" id="L422">      Channel channel = System.inheritedChannel();</span>
-<span class="nc bnc" id="L423" title="All 2 branches missed.">      if (channel instanceof ServerSocketChannel) {</span>
-<span class="nc" id="L424">        sc = (ServerSocketChannel) channel;</span>
+<span class="fc" id="L424">    ServerSocketChannel sc = null;</span>
+<span class="pc bpc" id="L425" title="1 of 2 branches missed.">    if (isInheritChannel()) {</span>
+<span class="nc" id="L426">      Channel channel = System.inheritedChannel();</span>
+<span class="nc bnc" id="L427" title="All 2 branches missed.">      if (channel instanceof ServerSocketChannel) {</span>
+<span class="nc" id="L428">        sc = (ServerSocketChannel) channel;</span>
       } else {
-<span class="nc" id="L426">        LOG.warn( // NOPMD.GuardLogStatement</span>
+<span class="nc" id="L430">        LOG.warn( // NOPMD.GuardLogStatement</span>
             &quot;Unable to use System.inheritedChannel() {}. Trying a new ServerSocketChannel at {}&quot;,
-<span class="nc" id="L428">            channel, getListenSocketAddress());</span>
+<span class="nc" id="L432">            channel, getListenSocketAddress());</span>
       }
     }
-<span class="pc bpc" id="L431" title="1 of 2 branches missed.">    if (sc == null) {</span>
-<span class="fc" id="L432">      sc = bindServerSocketChannel();</span>
+<span class="pc bpc" id="L435" title="1 of 2 branches missed.">    if (sc == null) {</span>
+<span class="fc" id="L436">      sc = bindServerSocketChannel();</span>
     }
-<span class="fc" id="L434">    return sc;</span>
+<span class="fc" id="L438">    return sc;</span>
   }
 
   private ServerSocketChannel bindServerSocketChannel() throws IOException {
-<span class="fc" id="L438">    AFSocketAddress socketAddress = listenSocketAddress;</span>
-<span class="fc" id="L439">    AFServerSocketChannel&lt;?&gt; sc = socketAddress.getAddressFamily().newServerSocketChannel();</span>
+<span class="fc" id="L442">    AFSocketAddress socketAddress = listenSocketAddress;</span>
+<span class="fc" id="L443">    AFServerSocketChannel&lt;?&gt; sc = socketAddress.getAddressFamily().newServerSocketChannel();</span>
 
     try {
-<span class="fc" id="L442">      sc.bind(socketAddress, getAcceptQueueSize());</span>
-<span class="fc" id="L443">      return sc;</span>
-<span class="fc" id="L444">    } catch (IOException x) {</span>
-<span class="fc" id="L445">      String message = String.format(Locale.ENGLISH, &quot;Could not bind %s to %s&quot;,</span>
-<span class="fc" id="L446">          AFSocketServerConnector.class.getSimpleName(), listenSocketAddress);</span>
-<span class="fc" id="L447">      throw new IOException(message, x);</span>
+<span class="fc" id="L446">      sc.bind(socketAddress, getAcceptQueueSize());</span>
+<span class="fc" id="L447">      return sc;</span>
+<span class="fc" id="L448">    } catch (IOException x) {</span>
+<span class="fc" id="L449">      String message = String.format(Locale.ENGLISH, &quot;Could not bind %s to %s&quot;,</span>
+<span class="fc" id="L450">          AFSocketServerConnector.class.getSimpleName(), listenSocketAddress);</span>
+<span class="fc" id="L451">      throw new IOException(message, x);</span>
     }
   }
 
   @Override
   public void setAccepting(boolean accepting) {
-<span class="nc" id="L453">    super.setAccepting(accepting);</span>
-<span class="nc bnc" id="L454" title="All 2 branches missed.">    if (getAcceptors() == 0) {</span>
-<span class="nc" id="L455">      return;</span>
+<span class="nc" id="L457">    super.setAccepting(accepting);</span>
+<span class="nc bnc" id="L458" title="All 2 branches missed.">    if (getAcceptors() == 0) {</span>
+<span class="nc" id="L459">      return;</span>
     }
-<span class="nc bnc" id="L457" title="All 2 branches missed.">    if (accepting) {</span>
-<span class="nc bnc" id="L458" title="All 2 branches missed.">      if (acceptor.get() == null) {</span>
-<span class="nc" id="L459">        Closeable cl = selectorManager.acceptor(serverChannel);</span>
-<span class="nc bnc" id="L460" title="All 2 branches missed.">        if (!this.acceptor.compareAndSet(null, cl)) {</span>
-<span class="nc" id="L461">          IO.close(cl);</span>
+<span class="nc bnc" id="L461" title="All 2 branches missed.">    if (accepting) {</span>
+<span class="nc bnc" id="L462" title="All 2 branches missed.">      if (acceptor.get() == null) {</span>
+<span class="nc" id="L463">        Closeable cl = selectorManager.acceptor(serverChannel);</span>
+<span class="nc bnc" id="L464" title="All 2 branches missed.">        if (!this.acceptor.compareAndSet(null, cl)) {</span>
+<span class="nc" id="L465">          IO.close(cl);</span>
         }
-<span class="nc" id="L463">      }</span>
+<span class="nc" id="L467">      }</span>
     } else {
-<span class="nc" id="L465">      Closeable cl = this.acceptor.get();</span>
-<span class="nc bnc" id="L466" title="All 4 branches missed.">      if (cl != null &amp;&amp; this.acceptor.compareAndSet(cl, null)) {</span>
-<span class="nc" id="L467">        IO.close(cl);</span>
+<span class="nc" id="L469">      Closeable cl = this.acceptor.get();</span>
+<span class="nc bnc" id="L470" title="All 4 branches missed.">      if (cl != null &amp;&amp; this.acceptor.compareAndSet(cl, null)) {</span>
+<span class="nc" id="L471">        IO.close(cl);</span>
       }
     }
-<span class="nc" id="L470">  }</span>
+<span class="nc" id="L474">  }</span>
 
   @Override
   public String toString() {
-<span class="fc" id="L474">    return String.format(Locale.ENGLISH, &quot;%s@%h[%s]&quot;, getClass().getSimpleName(), hashCode(),</span>
+<span class="fc" id="L478">    return String.format(Locale.ENGLISH, &quot;%s@%h[%s]&quot;, getClass().getSimpleName(), hashCode(),</span>
         listenSocketAddress);
   }
 
   private final class AFSocketSelectorManager extends SelectorManager {
-<span class="fc" id="L479">    public AFSocketSelectorManager(Executor executor, Scheduler scheduler, int selectors) {</span>
-<span class="fc" id="L480">      super(executor, scheduler, selectors);</span>
-<span class="fc" id="L481">    }</span>
+<span class="fc" id="L483">    public AFSocketSelectorManager(Executor executor, Scheduler scheduler, int selectors) {</span>
+<span class="fc" id="L484">      super(executor, scheduler, selectors);</span>
+<span class="fc" id="L485">    }</span>
 
     @Override
     protected Selector newSelector() throws IOException {
-<span class="fc" id="L485">      SelectorProvider provider = listenSocketAddress.getAddressFamily().getSelectorProvider();</span>
-<span class="fc" id="L486">      return provider.openSelector();</span>
+<span class="fc" id="L489">      SelectorProvider provider = listenSocketAddress.getAddressFamily().getSelectorProvider();</span>
+<span class="fc" id="L490">      return provider.openSelector();</span>
     }
 
     @Override
     protected void accepted(SelectableChannel channel) throws IOException {
-<span class="nc" id="L491">      AFSocketServerConnector.this.accepted((SocketChannel) channel);</span>
-<span class="nc" id="L492">    }</span>
+<span class="nc" id="L495">      AFSocketServerConnector.this.accepted((SocketChannel) channel);</span>
+<span class="nc" id="L496">    }</span>
 
     @Override
     protected EndPoint newEndPoint(SelectableChannel channel, ManagedSelector selector,
         SelectionKey selectionKey) {
-<span class="fc" id="L497">      SocketChannelEndPoint endPoint = new SocketChannelEndPoint((SocketChannel) channel, selector,</span>
-<span class="fc" id="L498">          selectionKey, getScheduler());</span>
-<span class="fc" id="L499">      endPoint.setIdleTimeout(getIdleTimeout());</span>
-<span class="fc" id="L500">      return endPoint;</span>
+<span class="fc" id="L501">      SocketChannelEndPoint endPoint = new SocketChannelEndPoint((SocketChannel) channel, selector,</span>
+<span class="fc" id="L502">          selectionKey, getScheduler());</span>
+<span class="fc" id="L503">      endPoint.setIdleTimeout(getIdleTimeout());</span>
+<span class="fc" id="L504">      return endPoint;</span>
     }
 
     @Override
     public Connection newConnection(SelectableChannel channel, EndPoint endpoint,
         Object attachment) {
-<span class="fc" id="L506">      return getDefaultConnectionFactory().newConnection(AFSocketServerConnector.this, endpoint);</span>
+<span class="fc" id="L510">      return getDefaultConnectionFactory().newConnection(AFSocketServerConnector.this, endpoint);</span>
     }
 
     @Override
     protected void endPointOpened(EndPoint endpoint) {
-<span class="fc" id="L511">      super.endPointOpened(endpoint);</span>
-<span class="fc" id="L512">      onEndPointOpened(endpoint);</span>
-<span class="fc" id="L513">    }</span>
+<span class="fc" id="L515">      super.endPointOpened(endpoint);</span>
+<span class="fc" id="L516">      onEndPointOpened(endpoint);</span>
+<span class="fc" id="L517">    }</span>
 
     @Override
     protected void endPointClosed(EndPoint endpoint) {
-<span class="fc" id="L517">      onEndPointClosed(endpoint);</span>
-<span class="fc" id="L518">      super.endPointClosed(endpoint);</span>
-<span class="fc" id="L519">    }</span>
+<span class="fc" id="L521">      onEndPointClosed(endpoint);</span>
+<span class="fc" id="L522">      super.endPointClosed(endpoint);</span>
+<span class="fc" id="L523">    }</span>
   }
 
   /**
@@ -528,7 +532,7 @@ public class AFSocketServerConnector extends AbstractConnector {
   @ManagedAttribute(&quot;Whether this connector may stop the server when it's no longer able to&quot;
       + &quot; serve and no other connectors are available&quot;)
   public boolean isMayStopServer() {
-<span class="fc" id="L531">    return mayStopServer;</span>
+<span class="fc" id="L535">    return mayStopServer;</span>
   }
 
   /**
@@ -538,8 +542,8 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @param mayStopServer {@code true} if so.
    */
   public void setMayStopServer(boolean mayStopServer) {
-<span class="fc" id="L541">    this.mayStopServer = mayStopServer;</span>
-<span class="fc" id="L542">  }</span>
+<span class="fc" id="L545">    this.mayStopServer = mayStopServer;</span>
+<span class="fc" id="L546">  }</span>
 
   /**
    * Checks if this connector may stop the server when it's no longer able to serve, even if other
@@ -550,7 +554,7 @@ public class AFSocketServerConnector extends AbstractConnector {
   @ManagedAttribute(&quot;Whether this connector may stop the server when it's no longer able to&quot;
       + &quot; serve, even if other connectors are available&quot;)
   public boolean isMayStopServerForce() {
-<span class="fc" id="L553">    return mayStopServerForce;</span>
+<span class="fc" id="L557">    return mayStopServerForce;</span>
   }
 
   /**
@@ -560,10 +564,10 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @param b {@code true} if so (which then also implies {@code setMayStopServer(true)}
    */
   public void setMayStopServerForce(boolean b) {
-<span class="nc bnc" id="L563" title="All 2 branches missed.">    if (b) {</span>
-<span class="nc" id="L564">      setMayStopServer(true);</span>
+<span class="nc bnc" id="L567" title="All 2 branches missed.">    if (b) {</span>
+<span class="nc" id="L568">      setMayStopServer(true);</span>
     }
-<span class="nc" id="L566">    this.mayStopServerForce = b;</span>
-<span class="nc" id="L567">  }</span>
+<span class="nc" id="L570">    this.mayStopServerForce = b;</span>
+<span class="nc" id="L571">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

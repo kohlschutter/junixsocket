@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFAddressFamily.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFAddressFamily.java</span></div><h1>AFAddressFamily.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2022 Christian Kohlschütter
+ * Copyright 2009-2023 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -196,7 +196,7 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
     }
 <span class="pc bpc" id="L197" title="2 of 4 branches missed.">    if (af.addressClassname != null &amp;&amp; !addressClass.getName().equals(af.addressClassname)) {</span>
 <span class="nc" id="L198">      throw new IllegalStateException(&quot;Unexpected classname for address family &quot; + juxString + &quot;: &quot;</span>
-<span class="nc" id="L199">          + addressClass.getName());</span>
+<span class="nc" id="L199">          + addressClass.getName() + &quot;; expected: &quot; + af.addressClassname);</span>
     }
 <span class="pc bpc" id="L201" title="2 of 4 branches missed.">    if (af.addressConstructor != null || af.addressClass != null) {</span>
 <span class="nc" id="L202">      throw new IllegalStateException(&quot;Already registered: &quot; + juxString);</span>
@@ -262,13 +262,15 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
 
   @SuppressWarnings(&quot;unchecked&quot;)
   AFSocketImplExtensions&lt;A&gt; initImplExtensions(AncillaryDataSupport ancillaryDataSupport) {
-<span class="nc bnc" id="L265" title="All 3 branches missed.">    switch (getDomain()) {</span>
+<span class="nc bnc" id="L265" title="All 4 branches missed.">    switch (getDomain()) {</span>
       case NativeUnixSocket.DOMAIN_TIPC:
 <span class="nc" id="L267">        return (AFSocketImplExtensions&lt;A&gt;) new AFTIPCSocketImplExtensions(ancillaryDataSupport);</span>
       case NativeUnixSocket.DOMAIN_VSOCK:
 <span class="nc" id="L269">        return (AFSocketImplExtensions&lt;A&gt;) new AFVSOCKSocketImplExtensions(ancillaryDataSupport);</span>
+      case NativeUnixSocket.DOMAIN_SYSTEM:
+<span class="nc" id="L271">        return (AFSocketImplExtensions&lt;A&gt;) new AFSYSTEMSocketImplExtensions(ancillaryDataSupport);</span>
       default:
-<span class="nc" id="L271">        throw new UnsupportedOperationException();</span>
+<span class="nc" id="L273">        throw new UnsupportedOperationException();</span>
     }
   }
 
@@ -280,9 +282,9 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
    */
   public AFSocket&lt;?&gt; newSocket() throws IOException {
     try {
-<span class="nc" id="L283">      return getSocketConstructor().newInstance(null, null);</span>
-<span class="nc" id="L284">    } catch (UnsupportedOperationException e) {</span>
-<span class="nc" id="L285">      throw (SocketException) new SocketException().initCause(e);</span>
+<span class="nc" id="L285">      return getSocketConstructor().newInstance(null, null);</span>
+<span class="nc" id="L286">    } catch (UnsupportedOperationException e) {</span>
+<span class="nc" id="L287">      throw (SocketException) new SocketException().initCause(e);</span>
     }
   }
 
@@ -294,9 +296,9 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
    */
   public AFServerSocket&lt;?&gt; newServerSocket() throws IOException {
     try {
-<span class="nc" id="L297">      return getServerSocketConstructor().newInstance(null);</span>
-<span class="nc" id="L298">    } catch (UnsupportedOperationException e) {</span>
-<span class="nc" id="L299">      throw (SocketException) new SocketException().initCause(e);</span>
+<span class="nc" id="L299">      return getServerSocketConstructor().newInstance(null);</span>
+<span class="nc" id="L300">    } catch (UnsupportedOperationException e) {</span>
+<span class="nc" id="L301">      throw (SocketException) new SocketException().initCause(e);</span>
     }
   }
 
@@ -307,7 +309,7 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
    * @throws IOException on error.
    */
   public AFSocketChannel&lt;?&gt; newSocketChannel() throws IOException {
-<span class="nc" id="L310">    return newSocket().getChannel();</span>
+<span class="nc" id="L312">    return newSocket().getChannel();</span>
   }
 
   /**
@@ -318,14 +320,14 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
    * @throws IOException on error.
    */
   public AFServerSocketChannel&lt;?&gt; newServerSocketChannel() throws IOException {
-<span class="nc" id="L321">    return newServerSocket().getChannel();</span>
+<span class="nc" id="L323">    return newServerSocket().getChannel();</span>
   }
 
   AFSocketAddress parseURI(URI u, int overridePort) throws SocketException {
-<span class="pc bpc" id="L325" title="1 of 2 branches missed.">    if (addressConfig == null) {</span>
-<span class="nc" id="L326">      throw new SocketException(&quot;Cannot instantiate addresses of type &quot; + addressClass);</span>
+<span class="pc bpc" id="L327" title="1 of 2 branches missed.">    if (addressConfig == null) {</span>
+<span class="nc" id="L328">      throw new SocketException(&quot;Cannot instantiate addresses of type &quot; + addressClass);</span>
     }
-<span class="fc" id="L328">    return addressConfig.parseURI(u, overridePort);</span>
+<span class="fc" id="L330">    return addressConfig.parseURI(u, overridePort);</span>
   }
 
   /**
@@ -337,8 +339,8 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
    * @return The set of supported URI schemes.
    */
   public static synchronized Set&lt;String&gt; uriSchemes() {
-<span class="fc" id="L340">    checkDeferredInit();</span>
-<span class="fc" id="L341">    return Collections.unmodifiableSet(URI_SCHEMES.keySet());</span>
+<span class="fc" id="L342">    checkDeferredInit();</span>
+<span class="fc" id="L343">    return Collections.unmodifiableSet(URI_SCHEMES.keySet());</span>
   }
 
   /**
@@ -349,21 +351,21 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
    * @throws IllegalStateException on error.
    */
   public synchronized SelectorProvider getSelectorProvider() {
-<span class="nc bnc" id="L352" title="All 2 branches missed.">    if (selectorProvider != null) {</span>
-<span class="nc" id="L353">      return selectorProvider;</span>
+<span class="nc bnc" id="L354" title="All 2 branches missed.">    if (selectorProvider != null) {</span>
+<span class="nc" id="L355">      return selectorProvider;</span>
     }
-<span class="nc bnc" id="L355" title="All 2 branches missed.">    if (selectorProviderClassname == null) {</span>
-<span class="nc" id="L356">      return null;</span>
+<span class="nc bnc" id="L357" title="All 2 branches missed.">    if (selectorProviderClassname == null) {</span>
+<span class="nc" id="L358">      return null;</span>
     }
     try {
-<span class="nc" id="L359">      selectorProvider = (SelectorProvider) Class.forName(selectorProviderClassname).getMethod(</span>
-<span class="nc" id="L360">          &quot;provider&quot;, new Class[0]).invoke(null);</span>
-<span class="nc" id="L361">    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException</span>
+<span class="nc" id="L361">      selectorProvider = (SelectorProvider) Class.forName(selectorProviderClassname).getMethod(</span>
+<span class="nc" id="L362">          &quot;provider&quot;, new Class&lt;?&gt;[0]).invoke(null);</span>
+<span class="nc" id="L363">    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException</span>
         | ClassNotFoundException | RuntimeException e) {
-<span class="nc" id="L363">      throw new IllegalStateException(&quot;Cannot instantiate selector provider for &quot;</span>
+<span class="nc" id="L365">      throw new IllegalStateException(&quot;Cannot instantiate selector provider for &quot;</span>
           + addressClassname, e);
-<span class="nc" id="L365">    }</span>
-<span class="nc" id="L366">    return selectorProvider;</span>
+<span class="nc" id="L367">    }</span>
+<span class="nc" id="L368">    return selectorProvider;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

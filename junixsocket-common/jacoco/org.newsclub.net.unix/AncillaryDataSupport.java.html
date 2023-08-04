@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AncillaryDataSupport.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AncillaryDataSupport.java</span></div><h1>AncillaryDataSupport.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2022 Christian Kohlschütter
+ * Copyright 2009-2023 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@ package org.newsclub.net.unix;
 import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,10 +38,10 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 <span class="pc" id="L38">      .ancillaryBufMinLen() : 0;</span>
 
 <span class="fc" id="L40">  private final Map&lt;FileDescriptor, Integer&gt; openReceivedFileDescriptors = Collections</span>
-<span class="fc" id="L41">      .synchronizedMap(new HashMap&lt;FileDescriptor, Integer&gt;());</span>
+<span class="fc" id="L41">      .synchronizedMap(new HashMap&lt;&gt;());</span>
 
 <span class="fc" id="L43">  private final List&lt;FileDescriptor[]&gt; receivedFileDescriptors = Collections.synchronizedList(</span>
-      new LinkedList&lt;FileDescriptor[]&gt;());
+      new ArrayList&lt;&gt;());
 
   // referenced from native code
 <span class="fc" id="L47">  private ByteBuffer ancillaryReceiveBuffer = EMPTY_BUFFER;</span>
@@ -131,75 +131,82 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 <span class="fc" id="L131">          openReceivedFileDescriptors.remove(fdesc);</span>
 <span class="fc" id="L132">        }</span>
       };
-<span class="fc" id="L134">      NativeUnixSocket.attachCloseable(fdesc, cleanup);</span>
+
+      try {
+<span class="fc" id="L136">        NativeUnixSocket.attachCloseable(fdesc, cleanup);</span>
+<span class="nc" id="L137">      } catch (SocketException e) {</span>
+        // ignore (cannot attach)
+<span class="fc" id="L139">      }</span>
     }
 
-<span class="fc" id="L137">    this.receivedFileDescriptors.add(descriptors);</span>
-<span class="fc" id="L138">  }</span>
+<span class="fc" id="L142">    this.receivedFileDescriptors.add(descriptors);</span>
+<span class="fc" id="L143">  }</span>
 
   void clearReceivedFileDescriptors() {
-<span class="fc" id="L141">    receivedFileDescriptors.clear();</span>
-<span class="fc" id="L142">  }</span>
+<span class="fc" id="L146">    receivedFileDescriptors.clear();</span>
+<span class="fc" id="L147">  }</span>
 
   FileDescriptor[] getReceivedFileDescriptors() {
-<span class="fc bfc" id="L145" title="All 2 branches covered.">    if (receivedFileDescriptors.isEmpty()) {</span>
-<span class="fc" id="L146">      return NO_FILE_DESCRIPTORS;</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">    if (receivedFileDescriptors.isEmpty()) {</span>
+<span class="fc" id="L151">      return NO_FILE_DESCRIPTORS;</span>
     }
-<span class="fc" id="L148">    List&lt;FileDescriptor[]&gt; copy = new ArrayList&lt;&gt;(receivedFileDescriptors);</span>
-<span class="pc bpc" id="L149" title="1 of 2 branches missed.">    if (copy.isEmpty()) {</span>
-<span class="nc" id="L150">      return NO_FILE_DESCRIPTORS;</span>
+<span class="fc" id="L153">    List&lt;FileDescriptor[]&gt; copy = new ArrayList&lt;&gt;(receivedFileDescriptors);</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">    if (copy.isEmpty()) {</span>
+<span class="nc" id="L155">      return NO_FILE_DESCRIPTORS;</span>
     }
-<span class="fc" id="L152">    receivedFileDescriptors.removeAll(copy);</span>
-<span class="fc" id="L153">    int count = 0;</span>
-<span class="fc bfc" id="L154" title="All 2 branches covered.">    for (FileDescriptor[] fds : copy) {</span>
-<span class="fc" id="L155">      count += fds.length;</span>
-<span class="fc" id="L156">    }</span>
-<span class="pc bpc" id="L157" title="1 of 2 branches missed.">    if (count == 0) {</span>
-<span class="nc" id="L158">      return NO_FILE_DESCRIPTORS;</span>
+<span class="fc" id="L157">    receivedFileDescriptors.removeAll(copy);</span>
+<span class="fc" id="L158">    int count = 0;</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">    for (FileDescriptor[] fds : copy) {</span>
+<span class="fc" id="L160">      count += fds.length;</span>
+<span class="fc" id="L161">    }</span>
+<span class="pc bpc" id="L162" title="1 of 2 branches missed.">    if (count == 0) {</span>
+<span class="nc" id="L163">      return NO_FILE_DESCRIPTORS;</span>
     }
-<span class="fc" id="L160">    FileDescriptor[] oneArray = new FileDescriptor[count];</span>
-<span class="fc" id="L161">    int offset = 0;</span>
-<span class="fc bfc" id="L162" title="All 2 branches covered.">    for (FileDescriptor[] fds : copy) {</span>
-<span class="fc" id="L163">      System.arraycopy(fds, 0, oneArray, offset, fds.length);</span>
-<span class="fc" id="L164">      offset += fds.length;</span>
-<span class="fc" id="L165">    }</span>
-<span class="fc" id="L166">    return oneArray;</span>
+<span class="fc" id="L165">    FileDescriptor[] oneArray = new FileDescriptor[count];</span>
+<span class="fc" id="L166">    int offset = 0;</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">    for (FileDescriptor[] fds : copy) {</span>
+<span class="fc" id="L168">      System.arraycopy(fds, 0, oneArray, offset, fds.length);</span>
+<span class="fc" id="L169">      offset += fds.length;</span>
+<span class="fc" id="L170">    }</span>
+<span class="fc" id="L171">    return oneArray;</span>
   }
 
   void setOutboundFileDescriptors(int[] fds) {
-<span class="pc bpc" id="L170" title="1 of 4 branches missed.">    this.pendingFileDescriptors = (fds == null || fds.length == 0) ? null : fds;</span>
-<span class="fc" id="L171">  }</span>
+<span class="pc bpc" id="L175" title="1 of 4 branches missed.">    this.pendingFileDescriptors = (fds == null || fds.length == 0) ? null : fds;</span>
+<span class="fc" id="L176">  }</span>
 
   boolean hasOutboundFileDescriptors() {
-<span class="fc bfc" id="L174" title="All 2 branches covered.">    return this.pendingFileDescriptors != null;</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">    return this.pendingFileDescriptors != null;</span>
   }
 
   void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
     final int[] fds;
-<span class="fc bfc" id="L179" title="All 4 branches covered.">    if (fdescs == null || fdescs.length == 0) {</span>
-<span class="fc" id="L180">      fds = null;</span>
+<span class="fc bfc" id="L184" title="All 4 branches covered.">    if (fdescs == null || fdescs.length == 0) {</span>
+<span class="fc" id="L185">      fds = null;</span>
     } else {
-<span class="fc" id="L182">      final int numFdescs = fdescs.length;</span>
-<span class="fc" id="L183">      fds = new int[numFdescs];</span>
-<span class="fc bfc" id="L184" title="All 2 branches covered.">      for (int i = 0; i &lt; numFdescs; i++) {</span>
-<span class="fc" id="L185">        FileDescriptor fdesc = fdescs[i];</span>
-<span class="fc" id="L186">        fds[i] = NativeUnixSocket.getFD(fdesc);</span>
+<span class="fc" id="L187">      final int numFdescs = fdescs.length;</span>
+<span class="fc" id="L188">      fds = new int[numFdescs];</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">      for (int i = 0; i &lt; numFdescs; i++) {</span>
+<span class="fc" id="L190">        FileDescriptor fdesc = fdescs[i];</span>
+<span class="fc" id="L191">        fds[i] = NativeUnixSocket.getFD(fdesc);</span>
       }
     }
-<span class="fc" id="L189">    this.setOutboundFileDescriptors(fds);</span>
-<span class="fc" id="L190">  }</span>
+<span class="fc" id="L194">    this.setOutboundFileDescriptors(fds);</span>
+<span class="fc" id="L195">  }</span>
 
   @Override
   public void close() {
-<span class="fc" id="L194">    synchronized (openReceivedFileDescriptors) {</span>
-<span class="fc bfc" id="L195" title="All 2 branches covered.">      for (FileDescriptor desc : openReceivedFileDescriptors.keySet()) {</span>
-        try {
-<span class="fc" id="L197">          NativeUnixSocket.close(desc);</span>
-<span class="nc" id="L198">        } catch (Exception e) {</span>
-          // ignore
-<span class="fc" id="L200">        }</span>
-<span class="fc" id="L201">      }</span>
-<span class="fc" id="L202">    }</span>
-<span class="fc" id="L203">  }</span>
+<span class="fc" id="L199">    synchronized (openReceivedFileDescriptors) {</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">      for (FileDescriptor desc : openReceivedFileDescriptors.keySet()) {</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">        if (desc.valid()) {</span>
+          try {
+<span class="fc" id="L203">            NativeUnixSocket.close(desc);</span>
+<span class="nc" id="L204">          } catch (Exception e) {</span>
+            // ignore
+<span class="fc" id="L206">          }</span>
+        }
+<span class="fc" id="L208">      }</span>
+<span class="fc" id="L209">    }</span>
+<span class="fc" id="L210">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

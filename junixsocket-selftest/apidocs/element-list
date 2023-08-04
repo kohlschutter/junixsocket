@@ -1,5 +1,7 @@
 org.junit.platform.console.tasks
 org.newsclub.net.unix
+org.newsclub.net.unix.darwin
+org.newsclub.net.unix.darwin.system
 org.newsclub.net.unix.domain
 org.newsclub.net.unix.java
 org.newsclub.net.unix.rmi

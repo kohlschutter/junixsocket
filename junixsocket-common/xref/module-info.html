@@ -9,14 +9,15 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_javadoccomment"> * The common junixsocket classes.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   module org.newsclub.net.unix {
-<a class="jxr_linenumber" name="L5" href="#L5">5</a>     exports org.newsclub.net.unix;
-<a class="jxr_linenumber" name="L6" href="#L6">6</a>   
-<a class="jxr_linenumber" name="L7" href="#L7">7</a>     requires java.base;
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>     requires <strong class="jxr_keyword">static</strong> java.rmi;
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>     requires <strong class="jxr_keyword">static</strong> com.kohlschutter.annotations.compiletime;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>    requires <strong class="jxr_keyword">static</strong> org.eclipse.jdt.annotation;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  }
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment">// NOPMD -- https://github.com/pmd/pmd/issues/4620</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   module org.newsclub.net.unix {
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>     exports org.newsclub.net.unix;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>     requires java.base;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>     requires <strong class="jxr_keyword">static</strong> java.rmi;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>    requires <strong class="jxr_keyword">static</strong> transitive com.kohlschutter.annotations.compiletime;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>    requires <strong class="jxr_keyword">static</strong> org.eclipse.jdt.annotation;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

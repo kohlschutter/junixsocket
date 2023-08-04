@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2022 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2023 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> * you may not use this file except in compliance with the License.</em>
@@ -68,19 +68,20 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>          <strong class="jxr_keyword">long</strong> numBytes = -1;
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          <strong class="jxr_keyword">long</strong> time = System.currentTimeMillis();
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>            numBytes = sock.getInputStream().transferTo(sock.getOutputStream()); <em class="jxr_comment">// NOPMD</em>
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>            time = System.currentTimeMillis() - time;
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>            System.out.println(<span class="jxr_string">"Disconnected: "</span> + sock + <span class="jxr_string">"; echoed bytes: "</span> + (numBytes == -1
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>                ? <span class="jxr_string">"unknown"</span> : numBytes) + <span class="jxr_string">"; speed: "</span> + ((numBytes == -1 || time == 0) ? <span class="jxr_string">"unknown"</span>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>                    : (numBytes * 1000L / time) + <span class="jxr_string">"/s"</span>));
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          }
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>        }
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>      }.startAndWaitToBecomeReady(10, TimeUnit.SECONDS)) {
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>        System.out.println(<span class="jxr_string">"Server ready, listening on "</span> + address);
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      }
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>    }
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  }
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>            <em class="jxr_comment">// numBytes = sock.getInputStream().transferTo(sock.getOutputStream()); // NOPMD</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>            numBytes = IOUtil.transfer(sock.getInputStream(), sock.getOutputStream());
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>            time = System.currentTimeMillis() - time;
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>            System.out.println(<span class="jxr_string">"Disconnected: "</span> + sock + <span class="jxr_string">"; echoed bytes: "</span> + (numBytes == -1
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>                ? <span class="jxr_string">"unknown"</span> : numBytes) + <span class="jxr_string">"; speed: "</span> + ((numBytes == -1 || time == 0) ? <span class="jxr_string">"unknown"</span>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>                    : (numBytes * 1000L / time) + <span class="jxr_string">"/s"</span>));
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          }
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>        }
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      }.startAndWaitToBecomeReady(10, TimeUnit.SECONDS)) {
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>        System.out.println(<span class="jxr_string">"Server ready, listening on "</span> + address);
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      }
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>    }
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

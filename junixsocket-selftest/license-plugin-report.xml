@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1675888385327">
-    <module artifactId="junixsocket-selftest" groupId="com.kohlschutter.junixsocket" version="2.6.2"/>
+<licensePluginReport goal="CHECK" timestamp="1691150443245">
+    <module artifactId="junixsocket-selftest" groupId="com.kohlschutter.junixsocket" version="2.7.0"/>
     <files>
         <file path="src/main/java-overlay/org/newsclub/net/unix/selftest/SelftestProvider.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/selftest/Selftest.java" result="PRESENT"/>
@@ -8,6 +8,7 @@
         <file path="src/main/java/org/newsclub/net/unix/selftest/SelftestProvider.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/selftest/SelftestTest.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/selftest/apps/EchoServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/selftest/apps/IOUtil.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/selftest/apps/SocketAddressUtil.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/selftest/apps/StreamClient.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/selftest/apps/ZeroServer.java" result="PRESENT"/>
