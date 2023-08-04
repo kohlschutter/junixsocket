@@ -36,8 +36,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
     </licenses>
     <scm>
         <url>https://github.com/kohlschutter/junixsocket</url>
-        <connection>scm:git:https://github.com/kohlschutter/junixsocket.git</connection>
-        <developerConnection>scm:git:https://github.com/kohlschutter/junixsocket.git</developerConnection>
+        <connection>scm:git:git@github.com:kohlschutter/junixsocket.git</connection>
+        <developerConnection>scm:git:git@github.com:kohlschutter/junixsocket.git</developerConnection>
     </scm>
     <distributionManagement>
         <snapshotRepository>
