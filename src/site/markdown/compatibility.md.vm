@@ -70,7 +70,7 @@ Additional platforms that should work (after the JNI library has been compiled m
 * Haiku, recommended R1/beta5 or newer. AF_UNIX datagram support is available since Haiku hrev57155.
   Thanks to junixsocket selftests, a bug related to socket addresses/connection state was found and
   [fixed in hrev57189](https://dev.haiku-os.org/ticket/18534); a use-after-free bug in the kernel
-  related to datagrams was found and [fixed in hrev57193](https://dev.haiku-os.org/ticket/18535).
+  related to datagrams was found and [reported here](https://dev.haiku-os.org/ticket/18535).
 
 Additional platforms known to compile (but untested):
 
