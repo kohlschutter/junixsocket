@@ -104,6 +104,13 @@ void _throwException(JNIEnv* env, ExceptionType exceptionType, char* message)
 void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
 {
     ExceptionType exceptionType;
+
+#if ENOTSUP
+    if(errnum == ENOTSUP) {
+        errnum = EOPNOTSUPP;
+    }
+#endif
+
     switch(errnum) {
         case EAGAIN:
         case ETIMEDOUT:
@@ -122,7 +129,19 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
             exceptionType = kExceptionAddressUnavailableSocketException;
             break;
         case EOPNOTSUPP:
-            exceptionType = kExceptionAddressUnavailableSocketException;
+#if EPROTONOSUPPORT
+        case EPROTONOSUPPORT:
+#endif
+#if ESOCKTNOSUPPORT
+        case ESOCKTNOSUPPORT:
+#endif
+#if EPFNOSUPPORT
+        case EPFNOSUPPORT:
+#endif
+#if EAFNOSUPPORT
+        case EAFNOSUPPORT:IncompleteExecutionException
+#endif
+            exceptionType = kExceptionOperationNotSupportedSocketException;
             break;
         case ENODEV:
             exceptionType = kExceptionNoSuchDeviceSocketException;

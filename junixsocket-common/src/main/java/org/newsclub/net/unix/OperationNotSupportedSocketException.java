@@ -21,7 +21,8 @@ import java.net.SocketException;
 
 /**
  * A {@link SocketException} that may be thrown upon some "unsupported operation" condition from
- * native code (e.g., EOPNOTSUPP is returned).
+ * native code (e.g., ENOTSUP, EOPNOTSUPP, EPROTONOSUPPORT, ESOCKTNOSUPPORT, EPFNOSUPPORT,
+ * EAFNOSUPPORT is returned).
  *
  * @author Christian Kohlschütter
  */
