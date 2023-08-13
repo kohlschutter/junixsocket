@@ -20,6 +20,7 @@ package org.newsclub.net.unix;
 import java.io.IOException;
 import java.net.ProtocolFamily;
 import java.net.SocketAddress;
+import java.nio.channels.DatagramChannel;
 import java.nio.channels.spi.AbstractSelector;
 import java.nio.channels.spi.SelectorProvider;
 
@@ -117,14 +118,26 @@ public abstract class AFSelectorProvider<A extends AFSocketAddress> extends Sele
    * @return The new channel pair.
    * @throws IOException on error.
    */
-  @SuppressWarnings("resource")
   public AFSocketPair<? extends AFDatagramChannel<A>> openDatagramChannelPair() throws IOException {
+    return openDatagramChannelPair(AFSocketType.SOCK_DGRAM);
+  }
+
+  /**
+   * Opens a socket pair of interconnected {@link DatagramChannel}s, using the given
+   * {@link AFSocketType}.
+   *
+   * @param type The socket type.
+   * @return The new channel pair.
+   * @throws IOException on error.
+   */
+  @SuppressWarnings("resource")
+  public AFSocketPair<? extends AFDatagramChannel<A>> openDatagramChannelPair(AFSocketType type)
+      throws IOException {
     ProtocolFamily pf = protocolFamily();
     AFDatagramChannel<A> s1 = openDatagramChannel(pf);
     AFDatagramChannel<A> s2 = openDatagramChannel(pf);
 
-    NativeUnixSocket.socketPair(domainId(), NativeUnixSocket.SOCK_STREAM, s1.getAFCore().fd, s2
-        .getAFCore().fd);
+    NativeUnixSocket.socketPair(domainId(), type.getId(), s1.getAFCore().fd, s2.getAFCore().fd);
 
     s1.socket().internalDummyBind();
     s2.socket().internalDummyBind();
@@ -136,6 +149,15 @@ public abstract class AFSelectorProvider<A extends AFSocketAddress> extends Sele
 
   @Override
   public abstract AFDatagramChannel<A> openDatagramChannel() throws IOException;
+
+  /**
+   * Opens a {@link DatagramChannel} using the given socket type.
+   *
+   * @param type The socket type.
+   * @return the new channel
+   * @throws IOException on error.
+   */
+  public abstract AFDatagramChannel<A> openDatagramChannel(AFSocketType type) throws IOException;
 
   @Override
   public AFDatagramChannel<A> openDatagramChannel(ProtocolFamily family) throws IOException {

@@ -17,11 +17,22 @@
  */
 package org.newsclub.net.unix.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+
+import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
+import org.newsclub.net.unix.AFSocketType;
+import org.newsclub.net.unix.AFUNIXDatagramChannel;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.AFUNIXSocketPair;
+import org.newsclub.net.unix.OperationNotSupportedSocketException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
 
 @AFSocketCapabilityRequirement({
     AFSocketCapability.CAPABILITY_UNIX_DOMAIN, AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS})
@@ -31,5 +42,27 @@ public final class DatagramSocketTest extends
 
   public DatagramSocketTest() {
     super(AFUNIXAddressSpecifics.INSTANCE);
+  }
+
+  @Test
+  public void testSeqPacket() throws Exception {
+    AFUNIXSocketPair<AFUNIXDatagramChannel> pair;
+    try {
+      pair = AFUNIXSocketPair.openDatagram(AFSocketType.SOCK_SEQPACKET);
+    } catch (OperationNotSupportedSocketException e) {
+      throw new TestAbortedNotAnIssueException("SEQPACKET not supported", e);
+    }
+
+    String msg = "Hello World";
+
+    ByteBuffer buf = ByteBuffer.wrap(msg.getBytes(StandardCharsets.UTF_8));
+    ByteBuffer dst = ByteBuffer.allocate(64);
+    pair.getSocket1().send(buf, null);
+    int r = pair.getSocket2().read(dst);
+    assertEquals(buf.limit(), r);
+    dst.flip();
+    assertEquals(buf.limit(), dst.limit());
+
+    assertEquals(msg, StandardCharsets.UTF_8.decode(dst).toString());
   }
 }

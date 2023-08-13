@@ -32,6 +32,7 @@ import org.newsclub.net.unix.AFServerSocketChannel;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFSocketChannel;
 import org.newsclub.net.unix.AFSocketPair;
+import org.newsclub.net.unix.AFSocketType;
 import org.newsclub.net.unix.AFSomeSocket;
 import org.newsclub.net.unix.AFTIPCSocketAddress;
 
@@ -140,6 +141,13 @@ public final class AFTIPCSelectorProvider extends AFSelectorProvider<AFTIPCSocke
     return (AFTIPCSocketPair<AFTIPCDatagramChannel>) super.openDatagramChannelPair();
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public AFTIPCSocketPair<AFTIPCDatagramChannel> openDatagramChannelPair(AFSocketType type)
+      throws IOException {
+    return (AFTIPCSocketPair<AFTIPCDatagramChannel>) super.openDatagramChannelPair(type);
+  }
+
   @Override
   protected AFTIPCSocket newSocket() throws IOException {
     return AFTIPCSocket.newInstance();
@@ -148,6 +156,11 @@ public final class AFTIPCSelectorProvider extends AFSelectorProvider<AFTIPCSocke
   @Override
   public AFTIPCDatagramChannel openDatagramChannel() throws IOException {
     return AFTIPCDatagramSocket.newInstance().getChannel();
+  }
+
+  @Override
+  public AFTIPCDatagramChannel openDatagramChannel(AFSocketType type) throws IOException {
+    return AFTIPCDatagramSocket.newInstance(type).getChannel();
   }
 
   @Override

@@ -18,6 +18,7 @@
 package org.newsclub.net.unix;
 
 import java.io.IOException;
+import java.nio.channels.DatagramChannel;
 
 /**
  * A pair of sockets.
@@ -48,5 +49,17 @@ public final class AFUNIXSocketPair<T extends AFSomeSocket> extends AFSocketPair
    */
   public static AFUNIXSocketPair<AFUNIXDatagramChannel> openDatagram() throws IOException {
     return AFUNIXSelectorProvider.provider().openDatagramChannelPair();
+  }
+
+  /**
+   * Opens a socket pair of interconnected {@link DatagramChannel}s, using the given socket type.
+   *
+   * @param type The socket type.
+   * @return The new channel pair.
+   * @throws IOException on error.
+   */
+  public static AFUNIXSocketPair<AFUNIXDatagramChannel> openDatagram(AFSocketType type)
+      throws IOException {
+    return AFUNIXSelectorProvider.provider().openDatagramChannelPair(type);
   }
 }

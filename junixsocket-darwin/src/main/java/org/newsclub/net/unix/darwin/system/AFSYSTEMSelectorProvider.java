@@ -33,6 +33,7 @@ import org.newsclub.net.unix.AFServerSocketChannel;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFSocketChannel;
 import org.newsclub.net.unix.AFSocketPair;
+import org.newsclub.net.unix.AFSocketType;
 import org.newsclub.net.unix.AFSomeSocket;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
@@ -141,6 +142,13 @@ public final class AFSYSTEMSelectorProvider extends AFSelectorProvider<AFSYSTEMS
     return (AFSYSTEMSocketPair<AFSYSTEMDatagramChannel>) super.openDatagramChannelPair();
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public AFSYSTEMSocketPair<AFSYSTEMDatagramChannel> openDatagramChannelPair(AFSocketType type)
+      throws IOException {
+    return (AFSYSTEMSocketPair<AFSYSTEMDatagramChannel>) super.openDatagramChannelPair(type);
+  }
+
   @Override
   protected AFSYSTEMSocket newSocket() throws IOException {
     return AFSYSTEMSocket.newInstance();
@@ -149,6 +157,11 @@ public final class AFSYSTEMSelectorProvider extends AFSelectorProvider<AFSYSTEMS
   @Override
   public AFSYSTEMDatagramChannel openDatagramChannel() throws IOException {
     return AFSYSTEMDatagramSocket.newInstance().getChannel();
+  }
+
+  @Override
+  public AFSYSTEMDatagramChannel openDatagramChannel(AFSocketType type) throws IOException {
+    return AFSYSTEMDatagramSocket.newInstance(type).getChannel();
   }
 
   @Override

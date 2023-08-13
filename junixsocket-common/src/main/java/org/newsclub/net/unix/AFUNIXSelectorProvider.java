@@ -122,6 +122,13 @@ public final class AFUNIXSelectorProvider extends AFSelectorProvider<AFUNIXSocke
     return (AFUNIXSocketPair<AFUNIXDatagramChannel>) super.openDatagramChannelPair();
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public AFUNIXSocketPair<AFUNIXDatagramChannel> openDatagramChannelPair(AFSocketType type)
+      throws IOException {
+    return (AFUNIXSocketPair<AFUNIXDatagramChannel>) super.openDatagramChannelPair(type);
+  }
+
   @Override
   protected AFUNIXSocket newSocket() throws IOException {
     return AFUNIXSocket.newInstance();
@@ -130,6 +137,11 @@ public final class AFUNIXSelectorProvider extends AFSelectorProvider<AFUNIXSocke
   @Override
   public AFUNIXDatagramChannel openDatagramChannel() throws IOException {
     return AFUNIXDatagramSocket.newInstance().getChannel();
+  }
+
+  @Override
+  public AFUNIXDatagramChannel openDatagramChannel(AFSocketType type) throws IOException {
+    return AFUNIXDatagramSocket.newInstance(type).getChannel();
   }
 
   @Override
