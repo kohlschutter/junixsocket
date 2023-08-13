@@ -63,6 +63,7 @@ import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFUNIXSocket;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 import com.kohlschutter.util.ConsolePrintStream;
@@ -737,7 +738,11 @@ public class Selftest {
           TestIdentifier tid = en.getKey();
           TestExecutionResult res = en.getValue();
           Optional<Throwable> t = res.getThrowable();
-          if (t.isPresent() && t.get() instanceof TestAbortedWithImportantMessageException) {
+          if (!t.isPresent()) {
+            continue;
+          }
+          Throwable throwable = t.get();
+          if (throwable instanceof TestAbortedWithImportantMessageException) {
             String key = module + ": " + ex.getTestIdentifier(tid.getParentId().get())
                 .getDisplayName() + "." + tid.getDisplayName();
             TestAbortedWithImportantMessageException ime =
@@ -747,11 +752,16 @@ public class Selftest {
             if (messageType.isIncludeTestInfo()) {
               important.add(ime.getSummaryMessage() + "; " + key);
             } else {
-              important.add(ime.getSummaryMessage());
+              String msg = ime.getSummaryMessage();
+              if (!msg.isEmpty()) {
+                important.add(msg);
+              }
             }
             if (!messageType.isWithIssues()) {
               numAbortedNonIssues++;
             }
+          } else if (throwable instanceof TestAbortedNotAnIssueException) {
+            numAbortedNonIssues++;
           }
         }
       } catch (Exception e) {
