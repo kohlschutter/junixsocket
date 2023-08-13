@@ -27,8 +27,7 @@
                     <artifactId>versions-maven-plugin</artifactId>
                     <configuration>
                         <!-- see junixsocket-jetty-12 for newer versions -->
-                        <dependencyExcludes>
-                            org.eclipse.jetty:jetty-server:*,org.eclipse.jetty:jetty-client:*</dependencyExcludes>
+                        <allowMajorUpdates>false</allowMajorUpdates>
                     </configuration>
                 </plugin>
             </plugins>
