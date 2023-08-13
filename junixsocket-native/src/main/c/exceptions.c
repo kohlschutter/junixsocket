@@ -139,7 +139,7 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
         case EPFNOSUPPORT:
 #endif
 #if EAFNOSUPPORT
-        case EAFNOSUPPORT:IncompleteExecutionException
+        case EAFNOSUPPORT:
 #endif
             exceptionType = kExceptionOperationNotSupportedSocketException;
             break;
