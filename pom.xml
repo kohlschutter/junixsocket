@@ -159,6 +159,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
             </activation>
             <modules>
                 <module>junixsocket-jetty</module>
+                <module>junixsocket-jetty-12</module>
                 <module>junixsocket-selftest</module>
                 <module>junixsocket-selftest-native-image</module>
             </modules>
