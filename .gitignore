@@ -22,3 +22,4 @@ hs_err_pid*.log
 /*.so
 /jux.bat
 infer-out
+javacore.*.txt
