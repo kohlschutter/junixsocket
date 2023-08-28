@@ -31,9 +31,11 @@ import java.nio.channels.spi.AbstractSelector;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 final class AFSelector extends AbstractSelector {
   private final AFPipe selectorPipe;
@@ -42,10 +44,13 @@ final class AFSelector extends AbstractSelector {
   private final ByteBuffer pipeMsgWakeUp = ByteBuffer.allocate(1);
   private final ByteBuffer pipeMsgReceiveBuffer = ByteBuffer.allocateDirect(256);
 
-  private final Set<AFSelectionKey> keysRegistered = new HashSet<>();
+  private final Set<AFSelectionKey> keysRegistered = ConcurrentHashMap.newKeySet();
+  private final Set<SelectionKey> keysRegisteredPublic = Collections.unmodifiableSet(
+      keysRegistered);
+  private AtomicInteger numKeysSelected = new AtomicInteger();
+  private final SelectionKeySet keysSelectedPublic = new SelectionKeySet();
 
   private PollFd pollFd = null;
-  private final Set<SelectionKey> keysSelected = new HashSet<>();
 
   AFSelector(AFSelectorProvider<?> provider) throws IOException {
     super(provider);
@@ -66,16 +71,12 @@ final class AFSelector extends AbstractSelector {
 
   @Override
   public Set<SelectionKey> keys() {
-    synchronized (this) {
-      return Collections.unmodifiableSet(new HashSet<>(keysRegistered));
-    }
+    return keysRegisteredPublic;
   }
 
   @Override
   public Set<SelectionKey> selectedKeys() {
-    synchronized (keysSelected) {
-      return new SelectionKeySet(keysSelected);
-    }
+    return keysSelectedPublic;
   }
 
   @Override
@@ -111,9 +112,7 @@ final class AFSelector extends AbstractSelector {
         throw new ClosedSelectorException();
       }
       pfd = pollFd = initPollFd(pollFd);
-      synchronized (keysSelected) {
-        keysSelected.clear();
-      }
+      numKeysSelected.set(0);
     }
     int num;
     try {
@@ -123,6 +122,7 @@ final class AFSelector extends AbstractSelector {
       end();
     }
     synchronized (this) {
+      numKeysSelected.set(0);
       pfd = pollFd;
       if (pfd != null) {
         AFSelectionKey[] keys = pfd.keys;
@@ -139,11 +139,9 @@ final class AFSelector extends AbstractSelector {
       }
       if (num > 0) {
         consumeAllBytesAfterPoll();
-        setOpsReady();
+        setOpsReady(pfd); // updates keysSelected and numKeysSelected
       }
-      synchronized (keysSelected) {
-        return keysSelected.size();
-      }
+      return numKeysSelected.get();
     }
   }
 
@@ -181,21 +179,19 @@ final class AFSelector extends AbstractSelector {
     }
   }
 
-  private synchronized void setOpsReady() {
-    if (pollFd == null) {
-      return;
-    }
-    for (int i = 1; i < pollFd.rops.length; i++) {
-      int rops = pollFd.rops[i];
-      if (rops == 0) {
-        continue;
-      }
-      AFSelectionKey key = pollFd.keys[i];
-      key.setOpsReady(rops);
-      synchronized (keysSelected) {
-        keysSelected.add(key);
+  private synchronized void setOpsReady(PollFd pfd) {
+    int numSelected = 0;
+    if (pfd != null) {
+      for (int i = 1; i < pfd.rops.length; i++) {
+        int rops = pfd.rops[i];
+        AFSelectionKey key = pfd.keys[i];
+        key.setOpsReady(rops);
+        if (rops != 0 && !key.isRemovedFromSelected() && key.isValid()) {
+          numSelected++;
+        }
       }
     }
+    numKeysSelected.set(numSelected);
   }
 
   @SuppressWarnings("resource")
@@ -203,10 +199,14 @@ final class AFSelector extends AbstractSelector {
     synchronized (this) {
       for (Iterator<AFSelectionKey> it = keysRegistered.iterator(); it.hasNext();) {
         AFSelectionKey key = it.next();
+        key.setOpsReady(0);
         if (!key.getAFCore().fd.valid()) {
+          key.removeFromSelected(true);
           key.cancelNoRemove();
           it.remove();
           existingPollFd = null;
+        } else {
+          key.removeFromSelected(false);
         }
       }
 
@@ -288,11 +288,8 @@ final class AFSelector extends AbstractSelector {
   }
 
   synchronized void remove(AFSelectionKey key) {
+    key.removeFromSelected(true);
     deregister(key);
-    keysRegistered.remove(key);
-    synchronized (keysSelected) {
-      keysSelected.remove(key);
-    }
     pollFd = null;
   }
 
@@ -341,12 +338,9 @@ final class AFSelector extends AbstractSelector {
     }
   }
 
-  private static final class SelectionKeySet extends AbstractSet<SelectionKey> {
-    private final Set<SelectionKey> keys;
-
-    SelectionKeySet(Set<SelectionKey> keys) {
+  private final class SelectionKeySet extends AbstractSet<SelectionKey> {
+    SelectionKeySet() {
       super();
-      this.keys = keys;
     }
 
     @Override
@@ -361,29 +355,50 @@ final class AFSelector extends AbstractSelector {
 
     @Override
     public boolean remove(Object o) {
-      synchronized (keys) {
-        return keys.remove(o);
+      if (!(o instanceof AFSelectionKey)) {
+        return false;
       }
+      AFSelectionKey key = (AFSelectionKey) o;
+      if (!keysRegistered.contains(key) || key.isRemovedFromSelected()) {
+        return false;
+      }
+      key.setOpsReady(0);
+      key.removeFromSelected(true);
+      return true;
     }
 
     @Override
     public Iterator<SelectionKey> iterator() {
-      final Set<SelectionKey> copy;
-      synchronized (keys) {
-        copy = new HashSet<>(keys);
+      if (isEmpty()) {
+        return Collections.emptyIterator();
       }
-      Iterator<SelectionKey> it = copy.iterator();
+      Iterator<AFSelectionKey> it = keysRegistered.iterator();
       return new Iterator<SelectionKey>() {
-        SelectionKey current = null;
+        AFSelectionKey current = null;
+        AFSelectionKey next = next0();
 
         @Override
         public boolean hasNext() {
-          return it.hasNext();
+          return next != null;
+        }
+
+        private AFSelectionKey next0() {
+          while (it.hasNext()) {
+            AFSelectionKey key = it.next();
+            if (key.isSelected() && !key.isRemovedFromSelected()) {
+              return key;
+            }
+          }
+          return null;
         }
 
         @Override
         public SelectionKey next() {
-          current = it.next();
+          if (next == null) {
+            throw new NoSuchElementException();
+          }
+          current = next;
+          next = next0();
           return current;
         }
 
@@ -391,6 +406,7 @@ final class AFSelector extends AbstractSelector {
         public void remove() {
           if (current != null) {
             SelectionKeySet.this.remove(current);
+            current = null;
           }
         }
       };
@@ -398,36 +414,40 @@ final class AFSelector extends AbstractSelector {
 
     @Override
     public int size() {
-      synchronized (keys) {
-        return keys.size();
-      }
+      return numKeysSelected.get();
     }
 
     @Override
     public boolean isEmpty() {
-      synchronized (keys) {
-        return keys.isEmpty();
-      }
+      return size() == 0;
     }
 
     @Override
     public boolean contains(Object o) {
-      synchronized (keys) {
-        return keys.contains(o);
+      if (!(o instanceof AFSelectionKey)) {
+        return false;
       }
+      AFSelectionKey key = (AFSelectionKey) o;
+      return keysRegistered.contains(key) && !key.isCancelled();
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-      synchronized (keys) {
-        return super.containsAll(c);
+      for (Object o : c) {
+        if (!contains(o)) {
+          return false;
+        }
       }
+      return true;
     }
 
     @Override
     public void clear() {
-      synchronized (keys) {
-        keys.clear();
+      for (AFSelectionKey key : keysRegistered) {
+        if (key.isSelected()) {
+          key.setOpsReady(0);
+          key.removeFromSelected(true);
+        }
       }
     }
   }

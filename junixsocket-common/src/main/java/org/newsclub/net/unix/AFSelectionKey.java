@@ -30,6 +30,7 @@ final class AFSelectionKey extends SelectionKey {
   private int ops;
   private final SelectableChannel chann;
   private final AtomicBoolean cancelled = new AtomicBoolean();
+  private final AtomicBoolean removed = new AtomicBoolean();
   private int opsReady;
 
   AFSelectionKey(AFSelector selector, AbstractSelectableChannel ch, int ops, Object att) {
@@ -66,12 +67,29 @@ final class AFSelectionKey extends SelectionKey {
     return !hasOpInvalid() && !cancelled.get() && chann.isOpen() && sel.isOpen();
   }
 
+  boolean isCancelled() {
+    return cancelled.get();
+  }
+
   boolean hasOpInvalid() {
     return (opsReady & OP_INVALID) != 0;
   }
 
+  boolean isSelected() {
+    return readyOps() != 0;
+  }
+
+  boolean isRemovedFromSelected() {
+    return removed.get();
+  }
+
+  void removeFromSelected(boolean r) {
+    removed.set(r);
+  }
+
   @Override
   public void cancel() {
+    removeFromSelected(true);
     sel.remove(this);
     cancelNoRemove();
   }
