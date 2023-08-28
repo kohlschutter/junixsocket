@@ -256,7 +256,9 @@ public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBa
       long timeout = 5000;
       selectLoop : while (timeout > 0) {
         long time = System.currentTimeMillis();
-        while (selector.select(timeout) != 0) {
+        int n;
+        while ((n = selector.select(timeout)) != 0) {
+          assertTrue(n > 0);
           for (SelectionKey key : selector.selectedKeys()) {
             if (numAcceptable > 3 || numReadable > 2) {
               break selectLoop;
