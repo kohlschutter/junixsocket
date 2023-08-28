@@ -47,7 +47,7 @@ final class AFSelector extends AbstractSelector {
   private final Set<AFSelectionKey> keysRegistered = ConcurrentHashMap.newKeySet();
   private final Set<SelectionKey> keysRegisteredPublic = Collections.unmodifiableSet(
       keysRegistered);
-  private AtomicInteger numKeysSelected = new AtomicInteger();
+  private final AtomicInteger numKeysSelected = new AtomicInteger();
   private final SelectionKeySet keysSelectedPublic = new SelectionKeySet();
 
   private PollFd pollFd = null;
@@ -374,12 +374,12 @@ final class AFSelector extends AbstractSelector {
       }
       Iterator<AFSelectionKey> it = keysRegistered.iterator();
       return new Iterator<SelectionKey>() {
-        AFSelectionKey current = null;
-        AFSelectionKey next = next0();
+        AFSelectionKey currentKey = null;
+        AFSelectionKey nextKey = next0();
 
         @Override
         public boolean hasNext() {
-          return next != null;
+          return nextKey != null;
         }
 
         private AFSelectionKey next0() {
@@ -394,19 +394,19 @@ final class AFSelector extends AbstractSelector {
 
         @Override
         public SelectionKey next() {
-          if (next == null) {
+          if (nextKey == null) {
             throw new NoSuchElementException();
           }
-          current = next;
-          next = next0();
-          return current;
+          currentKey = nextKey;
+          nextKey = next0();
+          return currentKey;
         }
 
         @Override
         public void remove() {
-          if (current != null) {
-            SelectionKeySet.this.remove(current);
-            current = null;
+          if (currentKey != null) {
+            SelectionKeySet.this.remove(currentKey);
+            currentKey = null;
           }
         }
       };
