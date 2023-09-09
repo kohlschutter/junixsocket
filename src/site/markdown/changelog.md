@@ -10,9 +10,18 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ## Noteworthy changes
 
-### _(2023-08-04)_ **junixsocket 2.7.0**
+**Users of junixsocket are strongly advised to upgrade to version 2.7.0 or newer**
 
-**Users of junixsocket are strongly advised to upgrade to this version**
+### _(2023-09-09)_ **junixsocket 2.7.1**
+
+- Fix openDatagramChannelPair (was using STREAM instead of DGRAM), add AFSocketType support
+- Improve SelectionKey logic, reduce locking/GC overhead
+- Improve "unsupported operation" handling in native code
+- Improve handling of "test aborted, but not really an issue"
+- Add unit tests for Jetty 12
+- Code cleanup, update dependencies
+
+### _(2023-08-04)_ **junixsocket 2.7.0**
 
 - New supported platform (out of the box): Android (aarch64, arm-linux-androideabi, x86_64, i686)
 - New platforms that can be used when building the native library from source: Haiku, IBM z/TPF
