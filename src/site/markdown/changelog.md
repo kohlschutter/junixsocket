@@ -15,6 +15,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 ### _(2023-09-09)_ **junixsocket 2.7.1**
 
 - Fix openDatagramChannelPair (was using STREAM instead of DGRAM), add AFSocketType support
+- Fix availability of AF_SYSTEM capability on Darwin
 - Improve SelectionKey logic, reduce locking/GC overhead
 - Improve "unsupported operation" handling in native code
 - Improve handling of "test aborted, but not really an issue"
