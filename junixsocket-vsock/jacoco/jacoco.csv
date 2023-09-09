@@ -9,7 +9,7 @@ junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSocketOptions,10,0,0,0,3,0,
 junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSocketImpl,9,5,0,0,3,2,2,1,2,1
 junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKServerSocketChannel,8,0,0,0,3,0,2,0,2,0
 junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKDatagramSocketImpl,6,0,0,0,2,0,1,0,1,0
-junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSelectorProvider,47,14,0,0,13,4,13,2,13,2
+junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSelectorProvider,56,14,0,0,15,4,15,2,15,2
 junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKProxySocketConnector.new AFSocketConnector() {...},6,0,0,0,2,0,2,0,2,0
 junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKSocketFactory.FixedAddress,15,0,0,0,6,0,3,0,3,0
 junixsocket-vsock,org.newsclub.net.unix.vsock,AFVSOCKProxyServerSocketConnector,54,0,6,0,12,0,8,0,5,0

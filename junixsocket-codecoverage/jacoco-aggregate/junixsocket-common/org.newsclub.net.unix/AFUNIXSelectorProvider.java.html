@@ -122,49 +122,61 @@ public final class AFUNIXSelectorProvider extends AFSelectorProvider&lt;AFUNIXSo
 <span class="fc" id="L122">    return (AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt;) super.openDatagramChannelPair();</span>
   }
 
+  @SuppressWarnings(&quot;unchecked&quot;)
+  @Override
+  public AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt; openDatagramChannelPair(AFSocketType type)
+      throws IOException {
+<span class="fc" id="L129">    return (AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt;) super.openDatagramChannelPair(type);</span>
+  }
+
   @Override
   protected AFUNIXSocket newSocket() throws IOException {
-<span class="fc" id="L127">    return AFUNIXSocket.newInstance();</span>
+<span class="fc" id="L134">    return AFUNIXSocket.newInstance();</span>
   }
 
   @Override
   public AFUNIXDatagramChannel openDatagramChannel() throws IOException {
-<span class="fc" id="L132">    return AFUNIXDatagramSocket.newInstance().getChannel();</span>
+<span class="fc" id="L139">    return AFUNIXDatagramSocket.newInstance().getChannel();</span>
+  }
+
+  @Override
+  public AFUNIXDatagramChannel openDatagramChannel(AFSocketType type) throws IOException {
+<span class="nc" id="L144">    return AFUNIXDatagramSocket.newInstance(type).getChannel();</span>
   }
 
   @Override
   public AFUNIXDatagramChannel openDatagramChannel(ProtocolFamily family) throws IOException {
-<span class="fc" id="L137">    return (AFUNIXDatagramChannel) super.openDatagramChannel(family);</span>
+<span class="fc" id="L149">    return (AFUNIXDatagramChannel) super.openDatagramChannel(family);</span>
   }
 
   @Override
   public AFUNIXServerSocketChannel openServerSocketChannel() throws IOException {
-<span class="fc" id="L142">    return AFUNIXServerSocket.newInstance().getChannel();</span>
+<span class="fc" id="L154">    return AFUNIXServerSocket.newInstance().getChannel();</span>
   }
 
   @Override
   public AFUNIXServerSocketChannel openServerSocketChannel(SocketAddress sa) throws IOException {
-<span class="nc" id="L147">    return AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.unwrap(sa)).getChannel();</span>
+<span class="nc" id="L159">    return AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.unwrap(sa)).getChannel();</span>
   }
 
   @Override
   public AFUNIXSocketChannel openSocketChannel() throws IOException {
-<span class="fc" id="L152">    return (AFUNIXSocketChannel) super.openSocketChannel();</span>
+<span class="fc" id="L164">    return (AFUNIXSocketChannel) super.openSocketChannel();</span>
   }
 
   @Override
   public AFUNIXSocketChannel openSocketChannel(SocketAddress sa) throws IOException {
-<span class="nc" id="L157">    return AFUNIXSocket.connectTo(AFUNIXSocketAddress.unwrap(sa)).getChannel();</span>
+<span class="nc" id="L169">    return AFUNIXSocket.connectTo(AFUNIXSocketAddress.unwrap(sa)).getChannel();</span>
   }
 
   @Override
   protected ProtocolFamily protocolFamily() {
-<span class="fc" id="L162">    return AFUNIXProtocolFamily.UNIX;</span>
+<span class="fc" id="L174">    return AFUNIXProtocolFamily.UNIX;</span>
   }
 
   @Override
   protected AFAddressFamily&lt;@NonNull AFUNIXSocketAddress&gt; addressFamily() {
-<span class="fc" id="L167">    return AFUNIXSocketAddress.AF_UNIX;</span>
+<span class="fc" id="L179">    return AFUNIXSocketAddress.AF_UNIX;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

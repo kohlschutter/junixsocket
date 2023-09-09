@@ -32,6 +32,7 @@ import org.newsclub.net.unix.AFServerSocketChannel;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFSocketChannel;
 import org.newsclub.net.unix.AFSocketPair;
+import org.newsclub.net.unix.AFSocketType;
 import org.newsclub.net.unix.AFSomeSocket;
 import org.newsclub.net.unix.AFTIPCSocketAddress;
 
@@ -41,55 +42,55 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * Service-provider class for junixsocket selectors and selectable channels.
  */
 public final class AFTIPCSelectorProvider extends AFSelectorProvider&lt;AFTIPCSocketAddress&gt; {
-<span class="nc" id="L44">  private static final AFTIPCSelectorProvider INSTANCE = new AFTIPCSelectorProvider();</span>
+<span class="nc" id="L45">  private static final AFTIPCSelectorProvider INSTANCE = new AFTIPCSelectorProvider();</span>
   @SuppressWarnings(&quot;null&quot;)
-<span class="nc" id="L46">  static final AFAddressFamily&lt;@NonNull AFTIPCSocketAddress&gt; AF_TIPC = AFAddressFamily</span>
-<span class="nc" id="L47">      .registerAddressFamilyImpl(&quot;tipc&quot;, AFTIPCSocketAddress.addressFamily(),</span>
-<span class="nc" id="L48">          new AFAddressFamilyConfig&lt;AFTIPCSocketAddress&gt;() {</span>
+<span class="nc" id="L47">  static final AFAddressFamily&lt;@NonNull AFTIPCSocketAddress&gt; AF_TIPC = AFAddressFamily</span>
+<span class="nc" id="L48">      .registerAddressFamilyImpl(&quot;tipc&quot;, AFTIPCSocketAddress.addressFamily(),</span>
+<span class="nc" id="L49">          new AFAddressFamilyConfig&lt;AFTIPCSocketAddress&gt;() {</span>
 
             @Override
             protected Class&lt;? extends AFSocket&lt;AFTIPCSocketAddress&gt;&gt; socketClass() {
-<span class="nc" id="L52">              return AFTIPCSocket.class;</span>
+<span class="nc" id="L53">              return AFTIPCSocket.class;</span>
             }
 
             @Override
             protected AFSocket.Constructor&lt;AFTIPCSocketAddress&gt; socketConstructor() {
-<span class="nc" id="L57">              return AFTIPCSocket::new;</span>
+<span class="nc" id="L58">              return AFTIPCSocket::new;</span>
             }
 
             @Override
             protected Class&lt;? extends AFServerSocket&lt;AFTIPCSocketAddress&gt;&gt; serverSocketClass() {
-<span class="nc" id="L62">              return AFTIPCServerSocket.class;</span>
+<span class="nc" id="L63">              return AFTIPCServerSocket.class;</span>
             }
 
             @Override
             protected AFServerSocket.Constructor&lt;AFTIPCSocketAddress&gt; serverSocketConstructor() {
-<span class="nc" id="L67">              return AFTIPCServerSocket::new;</span>
+<span class="nc" id="L68">              return AFTIPCServerSocket::new;</span>
             }
 
             @Override
             protected Class&lt;? extends AFSocketChannel&lt;AFTIPCSocketAddress&gt;&gt; socketChannelClass() {
-<span class="nc" id="L72">              return AFTIPCSocketChannel.class;</span>
+<span class="nc" id="L73">              return AFTIPCSocketChannel.class;</span>
             }
 
             @Override
             protected Class&lt;? extends AFServerSocketChannel&lt;AFTIPCSocketAddress&gt;&gt; serverSocketChannelClass() {
-<span class="nc" id="L77">              return AFTIPCServerSocketChannel.class;</span>
+<span class="nc" id="L78">              return AFTIPCServerSocketChannel.class;</span>
             }
 
             @Override
             protected Class&lt;? extends AFDatagramSocket&lt;AFTIPCSocketAddress&gt;&gt; datagramSocketClass() {
-<span class="nc" id="L82">              return AFTIPCDatagramSocket.class;</span>
+<span class="nc" id="L83">              return AFTIPCDatagramSocket.class;</span>
             }
 
             @Override
             protected AFDatagramSocket.Constructor&lt;AFTIPCSocketAddress&gt; datagramSocketConstructor() {
-<span class="nc" id="L87">              return AFTIPCDatagramSocket::new;</span>
+<span class="nc" id="L88">              return AFTIPCDatagramSocket::new;</span>
             }
 
             @Override
             protected Class&lt;? extends AFDatagramChannel&lt;AFTIPCSocketAddress&gt;&gt; datagramChannelClass() {
-<span class="nc" id="L92">              return AFTIPCDatagramChannel.class;</span>
+<span class="nc" id="L93">              return AFTIPCDatagramChannel.class;</span>
             }
           });
 
@@ -104,7 +105,7 @@ public final class AFTIPCSelectorProvider extends AFSelectorProvider&lt;AFTIPCSo
    */
   @SuppressFBWarnings(&quot;MS_EXPOSE_REP&quot;)
   public static AFTIPCSelectorProvider getInstance() {
-<span class="nc" id="L107">    return INSTANCE;</span>
+<span class="nc" id="L108">    return INSTANCE;</span>
   }
 
   /**
@@ -113,7 +114,7 @@ public final class AFTIPCSelectorProvider extends AFSelectorProvider&lt;AFTIPCSo
    * @return The instance.
    */
   public static AFTIPCSelectorProvider provider() {
-<span class="nc" id="L116">    return getInstance();</span>
+<span class="nc" id="L117">    return getInstance();</span>
   }
 
   /**
@@ -125,64 +126,76 @@ public final class AFTIPCSelectorProvider extends AFSelectorProvider&lt;AFTIPCSo
    */
   @Override
   protected &lt;P extends AFSomeSocket&gt; AFSocketPair&lt;P&gt; newSocketPair(P s1, P s2) {
-<span class="nc" id="L128">    return new AFTIPCSocketPair&lt;&gt;(s1, s2);</span>
+<span class="nc" id="L129">    return new AFTIPCSocketPair&lt;&gt;(s1, s2);</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
   @Override
   public AFTIPCSocketPair&lt;AFTIPCSocketChannel&gt; openSocketChannelPair() throws IOException {
-<span class="nc" id="L134">    return (AFTIPCSocketPair&lt;AFTIPCSocketChannel&gt;) super.openSocketChannelPair();</span>
+<span class="nc" id="L135">    return (AFTIPCSocketPair&lt;AFTIPCSocketChannel&gt;) super.openSocketChannelPair();</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
   @Override
   public AFTIPCSocketPair&lt;AFTIPCDatagramChannel&gt; openDatagramChannelPair() throws IOException {
-<span class="nc" id="L140">    return (AFTIPCSocketPair&lt;AFTIPCDatagramChannel&gt;) super.openDatagramChannelPair();</span>
+<span class="nc" id="L141">    return (AFTIPCSocketPair&lt;AFTIPCDatagramChannel&gt;) super.openDatagramChannelPair();</span>
+  }
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  @Override
+  public AFTIPCSocketPair&lt;AFTIPCDatagramChannel&gt; openDatagramChannelPair(AFSocketType type)
+      throws IOException {
+<span class="nc" id="L148">    return (AFTIPCSocketPair&lt;AFTIPCDatagramChannel&gt;) super.openDatagramChannelPair(type);</span>
   }
 
   @Override
   protected AFTIPCSocket newSocket() throws IOException {
-<span class="nc" id="L145">    return AFTIPCSocket.newInstance();</span>
+<span class="nc" id="L153">    return AFTIPCSocket.newInstance();</span>
   }
 
   @Override
   public AFTIPCDatagramChannel openDatagramChannel() throws IOException {
-<span class="nc" id="L150">    return AFTIPCDatagramSocket.newInstance().getChannel();</span>
+<span class="nc" id="L158">    return AFTIPCDatagramSocket.newInstance().getChannel();</span>
+  }
+
+  @Override
+  public AFTIPCDatagramChannel openDatagramChannel(AFSocketType type) throws IOException {
+<span class="nc" id="L163">    return AFTIPCDatagramSocket.newInstance(type).getChannel();</span>
   }
 
   @Override
   public AFTIPCDatagramChannel openDatagramChannel(ProtocolFamily family) throws IOException {
-<span class="nc" id="L155">    return (AFTIPCDatagramChannel) super.openDatagramChannel(family);</span>
+<span class="nc" id="L168">    return (AFTIPCDatagramChannel) super.openDatagramChannel(family);</span>
   }
 
   @Override
   public AFTIPCServerSocketChannel openServerSocketChannel() throws IOException {
-<span class="nc" id="L160">    return AFTIPCServerSocket.newInstance().getChannel();</span>
+<span class="nc" id="L173">    return AFTIPCServerSocket.newInstance().getChannel();</span>
   }
 
   @Override
   public AFTIPCServerSocketChannel openServerSocketChannel(SocketAddress sa) throws IOException {
-<span class="nc" id="L165">    return AFTIPCServerSocket.bindOn(AFTIPCSocketAddress.unwrap(sa)).getChannel();</span>
+<span class="nc" id="L178">    return AFTIPCServerSocket.bindOn(AFTIPCSocketAddress.unwrap(sa)).getChannel();</span>
   }
 
   @Override
   public AFTIPCSocketChannel openSocketChannel() throws IOException {
-<span class="nc" id="L170">    return (AFTIPCSocketChannel) super.openSocketChannel();</span>
+<span class="nc" id="L183">    return (AFTIPCSocketChannel) super.openSocketChannel();</span>
   }
 
   @Override
   public AFTIPCSocketChannel openSocketChannel(SocketAddress sa) throws IOException {
-<span class="nc" id="L175">    return AFTIPCSocket.connectTo(AFTIPCSocketAddress.unwrap(sa)).getChannel();</span>
+<span class="nc" id="L188">    return AFTIPCSocket.connectTo(AFTIPCSocketAddress.unwrap(sa)).getChannel();</span>
   }
 
   @Override
   protected ProtocolFamily protocolFamily() {
-<span class="nc" id="L180">    return AFTIPCProtocolFamily.TIPC;</span>
+<span class="nc" id="L193">    return AFTIPCProtocolFamily.TIPC;</span>
   }
 
   @Override
   protected AFAddressFamily&lt;@NonNull AFTIPCSocketAddress&gt; addressFamily() {
-<span class="nc" id="L185">    return AF_TIPC;</span>
+<span class="nc" id="L198">    return AF_TIPC;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

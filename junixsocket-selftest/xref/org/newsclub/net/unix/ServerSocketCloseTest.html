@@ -76,55 +76,56 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">final</strong> CountDownLatch cdl = <strong class="jxr_keyword">new</strong> CountDownLatch(numThreads);
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          @SuppressWarnings(<span class="jxr_string">"resource"</span>) <em class="jxr_comment">// only since Java 19 ThreadPoolExecutor is AutoCloseable</em>
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          ThreadPoolExecutor threadPool = <strong class="jxr_keyword">new</strong> ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L,
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>              TimeUnit.SECONDS, <strong class="jxr_keyword">new</strong> SynchronousQueue&lt;&gt;());
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; numThreads; i++) {
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>            threadPool.submit(<strong class="jxr_keyword">new</strong> Runnable() {
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>              @Override
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>              <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() {
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>                <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>                  cdl.countDown();
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>                  <strong class="jxr_keyword">try</strong> (Socket accept = serverSocket.accept()) {
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>                    <em class="jxr_comment">// usually not reached</em>
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>                    assertNotNull(accept);
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>                  }
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>                } <strong class="jxr_keyword">catch</strong> (SocketException e) {
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>                  <strong class="jxr_keyword">if</strong> (serverSocket.isClosed()) {
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>                    <em class="jxr_comment">// ignore</em>
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>                  } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>                    fail(e);
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>                  }
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>                } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>                  e.printStackTrace();
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>                  fail(e);
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>                }
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>              }
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>            });
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>          }
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>  
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>          <em class="jxr_comment">// Wait until all threads are in accept</em>
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>         cdl.await();
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>         Thread.sleep(100);
-<a class="jxr_linenumber" name="L102" href="#L102">102</a> 
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>         serverSocket.close();
-<a class="jxr_linenumber" name="L104" href="#L104">104</a> 
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>         threadPool.shutdown();
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>         threadPool.awaitTermination(5, TimeUnit.SECONDS);
-<a class="jxr_linenumber" name="L107" href="#L107">107</a> 
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>         <strong class="jxr_keyword">int</strong> active = threadPool.getActiveCount();
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>         <strong class="jxr_keyword">if</strong> (active == numThreads) {
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>           checkFailedTestActuallySupported();
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>         }
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>         assertEquals(0, active, <span class="jxr_string">"There should be no pending accepts"</span>);
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>       }
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>     });
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>   }
-<a class="jxr_linenumber" name="L116" href="#L116">116</a> 
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> checkFailedTestActuallySupported() {
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>   }
-<a class="jxr_linenumber" name="L119" href="#L119">119</a> }
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          @SuppressWarnings(<span class="jxr_string">"all"</span>) <em class="jxr_comment">// "resource"; only since Java 19 ThreadPoolExecutor is</em>
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>                                   <em class="jxr_comment">// AutoCloseable</em>
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          ThreadPoolExecutor threadPool = <strong class="jxr_keyword">new</strong> ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L,
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>              TimeUnit.SECONDS, <strong class="jxr_keyword">new</strong> SynchronousQueue&lt;&gt;());
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; numThreads; i++) {
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>            threadPool.submit(<strong class="jxr_keyword">new</strong> Runnable() {
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>              @Override
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>              <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>                <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>                  cdl.countDown();
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>                  <strong class="jxr_keyword">try</strong> (Socket accept = serverSocket.accept()) {
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>                    <em class="jxr_comment">// usually not reached</em>
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>                    assertNotNull(accept);
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>                  }
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>                } <strong class="jxr_keyword">catch</strong> (SocketException e) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>                  <strong class="jxr_keyword">if</strong> (serverSocket.isClosed()) {
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>                    <em class="jxr_comment">// ignore</em>
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>                  } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>                    fail(e);
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>                  }
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>                } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>                  e.printStackTrace();
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>                  fail(e);
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>                }
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>              }
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>            });
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>          }
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>         <em class="jxr_comment">// Wait until all threads are in accept</em>
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         cdl.await();
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         Thread.sleep(100);
+<a class="jxr_linenumber" name="L103" href="#L103">103</a> 
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>         serverSocket.close();
+<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>         threadPool.shutdown();
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>         threadPool.awaitTermination(5, TimeUnit.SECONDS);
+<a class="jxr_linenumber" name="L108" href="#L108">108</a> 
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>         <strong class="jxr_keyword">int</strong> active = threadPool.getActiveCount();
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>         <strong class="jxr_keyword">if</strong> (active == numThreads) {
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>           checkFailedTestActuallySupported();
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>         }
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>         assertEquals(0, active, <span class="jxr_string">"There should be no pending accepts"</span>);
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>       }
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>     });
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>   }
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> 
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> checkFailedTestActuallySupported() {
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>   }
+<a class="jxr_linenumber" name="L120" href="#L120">120</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

@@ -32,6 +32,7 @@ import org.newsclub.net.unix.AFServerSocketChannel;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFSocketChannel;
 import org.newsclub.net.unix.AFSocketPair;
+import org.newsclub.net.unix.AFSocketType;
 import org.newsclub.net.unix.AFSomeSocket;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
@@ -41,55 +42,55 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * Service-provider class for junixsocket selectors and selectable channels.
  */
 public final class AFVSOCKSelectorProvider extends AFSelectorProvider&lt;AFVSOCKSocketAddress&gt; {
-<span class="fc" id="L44">  private static final AFVSOCKSelectorProvider INSTANCE = new AFVSOCKSelectorProvider();</span>
+<span class="fc" id="L45">  private static final AFVSOCKSelectorProvider INSTANCE = new AFVSOCKSelectorProvider();</span>
   @SuppressWarnings(&quot;null&quot;)
-<span class="fc" id="L46">  static final AFAddressFamily&lt;@NonNull AFVSOCKSocketAddress&gt; AF_VSOCK = AFAddressFamily</span>
-<span class="fc" id="L47">      .registerAddressFamilyImpl(&quot;vsock&quot;, AFVSOCKSocketAddress.addressFamily(),</span>
-<span class="fc" id="L48">          new AFAddressFamilyConfig&lt;AFVSOCKSocketAddress&gt;() {</span>
+<span class="fc" id="L47">  static final AFAddressFamily&lt;@NonNull AFVSOCKSocketAddress&gt; AF_VSOCK = AFAddressFamily</span>
+<span class="fc" id="L48">      .registerAddressFamilyImpl(&quot;vsock&quot;, AFVSOCKSocketAddress.addressFamily(),</span>
+<span class="fc" id="L49">          new AFAddressFamilyConfig&lt;AFVSOCKSocketAddress&gt;() {</span>
 
             @Override
             protected Class&lt;? extends AFSocket&lt;AFVSOCKSocketAddress&gt;&gt; socketClass() {
-<span class="fc" id="L52">              return AFVSOCKSocket.class;</span>
+<span class="fc" id="L53">              return AFVSOCKSocket.class;</span>
             }
 
             @Override
             protected AFSocket.Constructor&lt;AFVSOCKSocketAddress&gt; socketConstructor() {
-<span class="fc" id="L57">              return AFVSOCKSocket::new;</span>
+<span class="fc" id="L58">              return AFVSOCKSocket::new;</span>
             }
 
             @Override
             protected Class&lt;? extends AFServerSocket&lt;AFVSOCKSocketAddress&gt;&gt; serverSocketClass() {
-<span class="fc" id="L62">              return AFVSOCKServerSocket.class;</span>
+<span class="fc" id="L63">              return AFVSOCKServerSocket.class;</span>
             }
 
             @Override
             protected AFServerSocket.Constructor&lt;AFVSOCKSocketAddress&gt; serverSocketConstructor() {
-<span class="fc" id="L67">              return AFVSOCKServerSocket::new;</span>
+<span class="fc" id="L68">              return AFVSOCKServerSocket::new;</span>
             }
 
             @Override
             protected Class&lt;? extends AFSocketChannel&lt;AFVSOCKSocketAddress&gt;&gt; socketChannelClass() {
-<span class="fc" id="L72">              return AFVSOCKSocketChannel.class;</span>
+<span class="fc" id="L73">              return AFVSOCKSocketChannel.class;</span>
             }
 
             @Override
             protected Class&lt;? extends AFServerSocketChannel&lt;AFVSOCKSocketAddress&gt;&gt; serverSocketChannelClass() {
-<span class="fc" id="L77">              return AFVSOCKServerSocketChannel.class;</span>
+<span class="fc" id="L78">              return AFVSOCKServerSocketChannel.class;</span>
             }
 
             @Override
             protected Class&lt;? extends AFDatagramSocket&lt;AFVSOCKSocketAddress&gt;&gt; datagramSocketClass() {
-<span class="fc" id="L82">              return AFVSOCKDatagramSocket.class;</span>
+<span class="fc" id="L83">              return AFVSOCKDatagramSocket.class;</span>
             }
 
             @Override
             protected AFDatagramSocket.Constructor&lt;AFVSOCKSocketAddress&gt; datagramSocketConstructor() {
-<span class="nc" id="L87">              return AFVSOCKDatagramSocket::new;</span>
+<span class="nc" id="L88">              return AFVSOCKDatagramSocket::new;</span>
             }
 
             @Override
             protected Class&lt;? extends AFDatagramChannel&lt;AFVSOCKSocketAddress&gt;&gt; datagramChannelClass() {
-<span class="fc" id="L92">              return AFVSOCKDatagramChannel.class;</span>
+<span class="fc" id="L93">              return AFVSOCKDatagramChannel.class;</span>
             }
           });
 
@@ -104,7 +105,7 @@ public final class AFVSOCKSelectorProvider extends AFSelectorProvider&lt;AFVSOCK
    */
   @SuppressFBWarnings(&quot;MS_EXPOSE_REP&quot;)
   public static AFVSOCKSelectorProvider getInstance() {
-<span class="fc" id="L107">    return INSTANCE;</span>
+<span class="fc" id="L108">    return INSTANCE;</span>
   }
 
   /**
@@ -113,7 +114,7 @@ public final class AFVSOCKSelectorProvider extends AFSelectorProvider&lt;AFVSOCK
    * @return The instance.
    */
   public static AFVSOCKSelectorProvider provider() {
-<span class="nc" id="L116">    return getInstance();</span>
+<span class="nc" id="L117">    return getInstance();</span>
   }
 
   /**
@@ -125,64 +126,76 @@ public final class AFVSOCKSelectorProvider extends AFSelectorProvider&lt;AFVSOCK
    */
   @Override
   protected &lt;P extends AFSomeSocket&gt; AFSocketPair&lt;P&gt; newSocketPair(P s1, P s2) {
-<span class="nc" id="L128">    return new AFVSOCKSocketPair&lt;&gt;(s1, s2);</span>
+<span class="nc" id="L129">    return new AFVSOCKSocketPair&lt;&gt;(s1, s2);</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
   @Override
   public AFVSOCKSocketPair&lt;AFVSOCKSocketChannel&gt; openSocketChannelPair() throws IOException {
-<span class="nc" id="L134">    return (AFVSOCKSocketPair&lt;AFVSOCKSocketChannel&gt;) super.openSocketChannelPair();</span>
+<span class="nc" id="L135">    return (AFVSOCKSocketPair&lt;AFVSOCKSocketChannel&gt;) super.openSocketChannelPair();</span>
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
   @Override
   public AFVSOCKSocketPair&lt;AFVSOCKDatagramChannel&gt; openDatagramChannelPair() throws IOException {
-<span class="nc" id="L140">    return (AFVSOCKSocketPair&lt;AFVSOCKDatagramChannel&gt;) super.openDatagramChannelPair();</span>
+<span class="nc" id="L141">    return (AFVSOCKSocketPair&lt;AFVSOCKDatagramChannel&gt;) super.openDatagramChannelPair();</span>
+  }
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  @Override
+  public AFVSOCKSocketPair&lt;AFVSOCKDatagramChannel&gt; openDatagramChannelPair(AFSocketType type)
+      throws IOException {
+<span class="nc" id="L148">    return (AFVSOCKSocketPair&lt;AFVSOCKDatagramChannel&gt;) super.openDatagramChannelPair(type);</span>
   }
 
   @Override
   protected AFVSOCKSocket newSocket() throws IOException {
-<span class="nc" id="L145">    return AFVSOCKSocket.newInstance();</span>
+<span class="nc" id="L153">    return AFVSOCKSocket.newInstance();</span>
   }
 
   @Override
   public AFVSOCKDatagramChannel openDatagramChannel() throws IOException {
-<span class="nc" id="L150">    return AFVSOCKDatagramSocket.newInstance().getChannel();</span>
+<span class="nc" id="L158">    return AFVSOCKDatagramSocket.newInstance().getChannel();</span>
+  }
+
+  @Override
+  public AFVSOCKDatagramChannel openDatagramChannel(AFSocketType type) throws IOException {
+<span class="nc" id="L163">    return AFVSOCKDatagramSocket.newInstance(type).getChannel();</span>
   }
 
   @Override
   public AFVSOCKDatagramChannel openDatagramChannel(ProtocolFamily family) throws IOException {
-<span class="nc" id="L155">    return (AFVSOCKDatagramChannel) super.openDatagramChannel(family);</span>
+<span class="nc" id="L168">    return (AFVSOCKDatagramChannel) super.openDatagramChannel(family);</span>
   }
 
   @Override
   public AFVSOCKServerSocketChannel openServerSocketChannel() throws IOException {
-<span class="nc" id="L160">    return AFVSOCKServerSocket.newInstance().getChannel();</span>
+<span class="nc" id="L173">    return AFVSOCKServerSocket.newInstance().getChannel();</span>
   }
 
   @Override
   public AFVSOCKServerSocketChannel openServerSocketChannel(SocketAddress sa) throws IOException {
-<span class="nc" id="L165">    return AFVSOCKServerSocket.bindOn(AFVSOCKSocketAddress.unwrap(sa)).getChannel();</span>
+<span class="nc" id="L178">    return AFVSOCKServerSocket.bindOn(AFVSOCKSocketAddress.unwrap(sa)).getChannel();</span>
   }
 
   @Override
   public AFVSOCKSocketChannel openSocketChannel() throws IOException {
-<span class="nc" id="L170">    return (AFVSOCKSocketChannel) super.openSocketChannel();</span>
+<span class="nc" id="L183">    return (AFVSOCKSocketChannel) super.openSocketChannel();</span>
   }
 
   @Override
   public AFVSOCKSocketChannel openSocketChannel(SocketAddress sa) throws IOException {
-<span class="nc" id="L175">    return AFVSOCKSocket.connectTo(AFVSOCKSocketAddress.unwrap(sa)).getChannel();</span>
+<span class="nc" id="L188">    return AFVSOCKSocket.connectTo(AFVSOCKSocketAddress.unwrap(sa)).getChannel();</span>
   }
 
   @Override
   protected ProtocolFamily protocolFamily() {
-<span class="nc" id="L180">    return AFVSOCKProtocolFamily.VSOCK;</span>
+<span class="nc" id="L193">    return AFVSOCKProtocolFamily.VSOCK;</span>
   }
 
   @Override
   protected AFAddressFamily&lt;@NonNull AFVSOCKSocketAddress&gt; addressFamily() {
-<span class="nc" id="L185">    return AF_VSOCK;</span>
+<span class="nc" id="L198">    return AF_VSOCK;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

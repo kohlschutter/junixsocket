@@ -18,6 +18,7 @@
 package org.newsclub.net.unix;
 
 import java.io.IOException;
+import java.nio.channels.DatagramChannel;
 
 /**
  * A pair of sockets.
@@ -27,8 +28,8 @@ import java.io.IOException;
  */
 public final class AFUNIXSocketPair&lt;T extends AFSomeSocket&gt; extends AFSocketPair&lt;T&gt; {
   AFUNIXSocketPair(T socket1, T socket2) {
-<span class="fc" id="L30">    super(socket1, socket2);</span>
-<span class="fc" id="L31">  }</span>
+<span class="fc" id="L31">    super(socket1, socket2);</span>
+<span class="fc" id="L32">  }</span>
 
   /**
    * Opens a socket pair of interconnected channels.
@@ -37,7 +38,7 @@ public final class AFUNIXSocketPair&lt;T extends AFSomeSocket&gt; extends AFSock
    * @throws IOException on error.
    */
   public static AFUNIXSocketPair&lt;AFUNIXSocketChannel&gt; open() throws IOException {
-<span class="fc" id="L40">    return AFUNIXSelectorProvider.provider().openSocketChannelPair();</span>
+<span class="fc" id="L41">    return AFUNIXSelectorProvider.provider().openSocketChannelPair();</span>
   }
 
   /**
@@ -47,7 +48,19 @@ public final class AFUNIXSocketPair&lt;T extends AFSomeSocket&gt; extends AFSock
    * @throws IOException on error.
    */
   public static AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt; openDatagram() throws IOException {
-<span class="fc" id="L50">    return AFUNIXSelectorProvider.provider().openDatagramChannelPair();</span>
+<span class="fc" id="L51">    return AFUNIXSelectorProvider.provider().openDatagramChannelPair();</span>
+  }
+
+  /**
+   * Opens a socket pair of interconnected {@link DatagramChannel}s, using the given socket type.
+   *
+   * @param type The socket type.
+   * @return The new channel pair.
+   * @throws IOException on error.
+   */
+  public static AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt; openDatagram(AFSocketType type)
+      throws IOException {
+<span class="nc" id="L63">    return AFUNIXSelectorProvider.provider().openDatagramChannelPair(type);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

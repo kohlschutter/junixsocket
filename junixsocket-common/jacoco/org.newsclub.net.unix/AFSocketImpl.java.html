@@ -282,8 +282,8 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
           } else {
 <span class="nc" id="L283">            throw new SocketClosedException(&quot;Socket is closed&quot;);</span>
           }
-<span class="pc bpc" id="L285" title="1 of 2 branches missed.">        } else if (caught != null) {</span>
-<span class="nc" id="L286">          throw caught;</span>
+<span class="fc bfc" id="L285" title="All 2 branches covered.">        } else if (caught != null) {</span>
+<span class="fc" id="L286">          throw caught;</span>
         }
       }
     } finally {

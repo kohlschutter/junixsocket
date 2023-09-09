@@ -25,22 +25,55 @@
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">package</strong> org.newsclub.net.unix.domain;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketCapability;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketCapabilityRequirement;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocketAddress;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  @AFSocketCapabilityRequirement({
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>      AFSocketCapability.CAPABILITY_UNIX_DOMAIN, AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS})
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  @SuppressFBWarnings(<span class="jxr_string">"NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"</span>)
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> DatagramSocketTest <strong class="jxr_keyword">extends</strong>
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>      org.newsclub.net.unix.DatagramSocketTest&lt;AFUNIXSocketAddress&gt; {
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>    <strong class="jxr_keyword">public</strong> DatagramSocketTest() {
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">super</strong>(AFUNIXAddressSpecifics.INSTANCE);
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>    }
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  }
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.junit.jupiter.api.Assertions.assertEquals;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.nio.charset.StandardCharsets;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketCapability;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketCapabilityRequirement;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketType;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXDatagramChannel;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocketAddress;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocketPair;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.OperationNotSupportedSocketException;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.testutil.TestAbortedNotAnIssueException;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  @AFSocketCapabilityRequirement({
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      AFSocketCapability.CAPABILITY_UNIX_DOMAIN, AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS})
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  @SuppressFBWarnings(<span class="jxr_string">"NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"</span>)
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> DatagramSocketTest <strong class="jxr_keyword">extends</strong>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      org.newsclub.net.unix.DatagramSocketTest&lt;AFUNIXSocketAddress&gt; {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>    <strong class="jxr_keyword">public</strong> DatagramSocketTest() {
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      <strong class="jxr_keyword">super</strong>(AFUNIXAddressSpecifics.INSTANCE);
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    }
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>    @Test
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSeqPacket() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt; pair;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>        pair = AFUNIXSocketPair.openDatagram(AFSocketType.SOCK_SEQPACKET);
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      } <strong class="jxr_keyword">catch</strong> (OperationNotSupportedSocketException e) {
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>        <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> TestAbortedNotAnIssueException(<span class="jxr_string">"SEQPACKET not supported"</span>, e);
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      }
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      String msg = <span class="jxr_string">"Hello World"</span>;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      ByteBuffer buf = ByteBuffer.wrap(msg.getBytes(StandardCharsets.UTF_8));
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      ByteBuffer dst = ByteBuffer.allocate(64);
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      pair.getSocket1().send(buf, <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      <strong class="jxr_keyword">int</strong> r = pair.getSocket2().read(dst);
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      assertEquals(buf.limit(), r);
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      dst.flip();
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>      assertEquals(buf.limit(), dst.limit());
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      assertEquals(msg, StandardCharsets.UTF_8.decode(dst).toString());
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>    }
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

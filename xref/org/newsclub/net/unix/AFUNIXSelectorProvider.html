@@ -130,51 +130,63 @@
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>     <strong class="jxr_keyword">return</strong> (AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt;) <strong class="jxr_keyword">super</strong>.openDatagramChannelPair();
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>   }
 <a class="jxr_linenumber" name="L124" href="#L124">124</a> 
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>   @Override
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>   <strong class="jxr_keyword">protected</strong> <a name="AFUNIXSocket" href="../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> newSocket() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>     <strong class="jxr_keyword">return</strong> AFUNIXSocket.newInstance();
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>   }
-<a class="jxr_linenumber" name="L129" href="#L129">129</a> 
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>   @Override
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXDatagramChannel" href="../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> openDatagramChannel() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>     <strong class="jxr_keyword">return</strong> AFUNIXDatagramSocket.newInstance().getChannel();
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>   }
-<a class="jxr_linenumber" name="L134" href="#L134">134</a> 
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>   @Override
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXDatagramChannel" href="../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> openDatagramChannel(ProtocolFamily family) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>     <strong class="jxr_keyword">return</strong> (<a name="AFUNIXDatagramChannel" href="../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a>) <strong class="jxr_keyword">super</strong>.openDatagramChannel(family);
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>   }
-<a class="jxr_linenumber" name="L139" href="#L139">139</a> 
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>   @Override
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXServerSocketChannel" href="../../../../org/newsclub/net/unix/AFUNIXServerSocketChannel.html#AFUNIXServerSocketChannel">AFUNIXServerSocketChannel</a> openServerSocketChannel() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>     <strong class="jxr_keyword">return</strong> AFUNIXServerSocket.newInstance().getChannel();
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>   }
-<a class="jxr_linenumber" name="L144" href="#L144">144</a> 
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>   @Override
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXServerSocketChannel" href="../../../../org/newsclub/net/unix/AFUNIXServerSocketChannel.html#AFUNIXServerSocketChannel">AFUNIXServerSocketChannel</a> openServerSocketChannel(SocketAddress sa) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>     <strong class="jxr_keyword">return</strong> AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.unwrap(sa)).getChannel();
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>   }
-<a class="jxr_linenumber" name="L149" href="#L149">149</a> 
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>   @Override
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXSocketChannel" href="../../../../org/newsclub/net/unix/AFUNIXSocketChannel.html#AFUNIXSocketChannel">AFUNIXSocketChannel</a> openSocketChannel() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>     <strong class="jxr_keyword">return</strong> (<a name="AFUNIXSocketChannel" href="../../../../org/newsclub/net/unix/AFUNIXSocketChannel.html#AFUNIXSocketChannel">AFUNIXSocketChannel</a>) <strong class="jxr_keyword">super</strong>.openSocketChannel();
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>   }
-<a class="jxr_linenumber" name="L154" href="#L154">154</a> 
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>   @Override
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXSocketChannel" href="../../../../org/newsclub/net/unix/AFUNIXSocketChannel.html#AFUNIXSocketChannel">AFUNIXSocketChannel</a> openSocketChannel(SocketAddress sa) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>     <strong class="jxr_keyword">return</strong> AFUNIXSocket.connectTo(AFUNIXSocketAddress.unwrap(sa)).getChannel();
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>   }
-<a class="jxr_linenumber" name="L159" href="#L159">159</a> 
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>   @Override
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>   <strong class="jxr_keyword">protected</strong> ProtocolFamily protocolFamily() {
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <strong class="jxr_keyword">return</strong> AFUNIXProtocolFamily.UNIX;
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>   }
-<a class="jxr_linenumber" name="L164" href="#L164">164</a> 
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>   @Override
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>   <strong class="jxr_keyword">protected</strong> AFAddressFamily&lt;@NonNull AFUNIXSocketAddress&gt; addressFamily() {
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>     <strong class="jxr_keyword">return</strong> AFUNIXSocketAddress.AF_UNIX;
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>   }
-<a class="jxr_linenumber" name="L169" href="#L169">169</a> }
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>   @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>   @Override
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>   <strong class="jxr_keyword">public</strong> AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt; openDatagramChannelPair(<a name="AFSocketType" href="../../../../org/newsclub/net/unix/AFSocketType.html#AFSocketType">AFSocketType</a> type)
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>       <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>     <strong class="jxr_keyword">return</strong> (AFUNIXSocketPair&lt;AFUNIXDatagramChannel&gt;) <strong class="jxr_keyword">super</strong>.openDatagramChannelPair(type);
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>   }
+<a class="jxr_linenumber" name="L131" href="#L131">131</a> 
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>   @Override
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>   <strong class="jxr_keyword">protected</strong> <a name="AFUNIXSocket" href="../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> newSocket() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>     <strong class="jxr_keyword">return</strong> AFUNIXSocket.newInstance();
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>   }
+<a class="jxr_linenumber" name="L136" href="#L136">136</a> 
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>   @Override
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXDatagramChannel" href="../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> openDatagramChannel() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>     <strong class="jxr_keyword">return</strong> AFUNIXDatagramSocket.newInstance().getChannel();
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>   }
+<a class="jxr_linenumber" name="L141" href="#L141">141</a> 
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>   @Override
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXDatagramChannel" href="../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> openDatagramChannel(<a name="AFSocketType" href="../../../../org/newsclub/net/unix/AFSocketType.html#AFSocketType">AFSocketType</a> type) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">return</strong> AFUNIXDatagramSocket.newInstance(type).getChannel();
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>   }
+<a class="jxr_linenumber" name="L146" href="#L146">146</a> 
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>   @Override
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXDatagramChannel" href="../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> openDatagramChannel(ProtocolFamily family) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>     <strong class="jxr_keyword">return</strong> (<a name="AFUNIXDatagramChannel" href="../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a>) <strong class="jxr_keyword">super</strong>.openDatagramChannel(family);
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>   }
+<a class="jxr_linenumber" name="L151" href="#L151">151</a> 
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>   @Override
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXServerSocketChannel" href="../../../../org/newsclub/net/unix/AFUNIXServerSocketChannel.html#AFUNIXServerSocketChannel">AFUNIXServerSocketChannel</a> openServerSocketChannel() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>     <strong class="jxr_keyword">return</strong> AFUNIXServerSocket.newInstance().getChannel();
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>   }
+<a class="jxr_linenumber" name="L156" href="#L156">156</a> 
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>   @Override
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXServerSocketChannel" href="../../../../org/newsclub/net/unix/AFUNIXServerSocketChannel.html#AFUNIXServerSocketChannel">AFUNIXServerSocketChannel</a> openServerSocketChannel(SocketAddress sa) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>     <strong class="jxr_keyword">return</strong> AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.unwrap(sa)).getChannel();
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>   }
+<a class="jxr_linenumber" name="L161" href="#L161">161</a> 
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>   @Override
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXSocketChannel" href="../../../../org/newsclub/net/unix/AFUNIXSocketChannel.html#AFUNIXSocketChannel">AFUNIXSocketChannel</a> openSocketChannel() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>     <strong class="jxr_keyword">return</strong> (<a name="AFUNIXSocketChannel" href="../../../../org/newsclub/net/unix/AFUNIXSocketChannel.html#AFUNIXSocketChannel">AFUNIXSocketChannel</a>) <strong class="jxr_keyword">super</strong>.openSocketChannel();
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>   }
+<a class="jxr_linenumber" name="L166" href="#L166">166</a> 
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>   @Override
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>   <strong class="jxr_keyword">public</strong> <a name="AFUNIXSocketChannel" href="../../../../org/newsclub/net/unix/AFUNIXSocketChannel.html#AFUNIXSocketChannel">AFUNIXSocketChannel</a> openSocketChannel(SocketAddress sa) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>     <strong class="jxr_keyword">return</strong> AFUNIXSocket.connectTo(AFUNIXSocketAddress.unwrap(sa)).getChannel();
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>   }
+<a class="jxr_linenumber" name="L171" href="#L171">171</a> 
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>   @Override
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>   <strong class="jxr_keyword">protected</strong> ProtocolFamily protocolFamily() {
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>     <strong class="jxr_keyword">return</strong> AFUNIXProtocolFamily.UNIX;
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>   }
+<a class="jxr_linenumber" name="L176" href="#L176">176</a> 
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>   @Override
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>   <strong class="jxr_keyword">protected</strong> AFAddressFamily&lt;@NonNull AFUNIXSocketAddress&gt; addressFamily() {
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>     <strong class="jxr_keyword">return</strong> AFUNIXSocketAddress.AF_UNIX;
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>   }
+<a class="jxr_linenumber" name="L181" href="#L181">181</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

@@ -20,6 +20,7 @@ package org.newsclub.net.unix;
 import java.io.IOException;
 import java.net.ProtocolFamily;
 import java.net.SocketAddress;
+import java.nio.channels.DatagramChannel;
 import java.nio.channels.spi.AbstractSelector;
 import java.nio.channels.spi.SelectorProvider;
 
@@ -36,8 +37,8 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
    * Constructs a new {@link AFSelectorProvider}.
    */
   protected AFSelectorProvider() {
-<span class="fc" id="L39">    super();</span>
-<span class="fc" id="L40">  }</span>
+<span class="fc" id="L40">    super();</span>
+<span class="fc" id="L41">  }</span>
 
   /**
    * Constructs a new pipe.
@@ -47,7 +48,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
    * @throws IOException on error.
    */
   private AFPipe newPipe(boolean selectable) throws IOException {
-<span class="fc" id="L50">    return new AFPipe(this, selectable);</span>
+<span class="fc" id="L51">    return new AFPipe(this, selectable);</span>
   }
 
   /**
@@ -88,7 +89,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
    * @return The domain ID.
    */
   protected final int domainId() {
-<span class="fc" id="L91">    return addressFamily().getDomain();</span>
+<span class="fc" id="L92">    return addressFamily().getDomain();</span>
   }
 
   /**
@@ -99,16 +100,16 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
    */
   @SuppressWarnings(&quot;resource&quot;)
   public AFSocketPair&lt;? extends AFSocketChannel&lt;A&gt;&gt; openSocketChannelPair() throws IOException {
-<span class="fc" id="L102">    AFSocketChannel&lt;A&gt; s1 = openSocketChannel();</span>
-<span class="fc" id="L103">    AFSocketChannel&lt;A&gt; s2 = openSocketChannel();</span>
+<span class="fc" id="L103">    AFSocketChannel&lt;A&gt; s1 = openSocketChannel();</span>
+<span class="fc" id="L104">    AFSocketChannel&lt;A&gt; s2 = openSocketChannel();</span>
 
-<span class="fc" id="L105">    NativeUnixSocket.socketPair(domainId(), NativeUnixSocket.SOCK_STREAM, s1.getAFCore().fd, s2</span>
-<span class="fc" id="L106">        .getAFCore().fd);</span>
+<span class="fc" id="L106">    NativeUnixSocket.socketPair(domainId(), NativeUnixSocket.SOCK_STREAM, s1.getAFCore().fd, s2</span>
+<span class="fc" id="L107">        .getAFCore().fd);</span>
 
-<span class="fc" id="L108">    s1.socket().internalDummyConnect();</span>
-<span class="fc" id="L109">    s2.socket().internalDummyConnect();</span>
+<span class="fc" id="L109">    s1.socket().internalDummyConnect();</span>
+<span class="fc" id="L110">    s2.socket().internalDummyConnect();</span>
 
-<span class="fc" id="L111">    return newSocketPair(s1, s2);</span>
+<span class="fc" id="L112">    return newSocketPair(s1, s2);</span>
   }
 
   /**
@@ -117,37 +118,58 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
    * @return The new channel pair.
    * @throws IOException on error.
    */
-  @SuppressWarnings(&quot;resource&quot;)
   public AFSocketPair&lt;? extends AFDatagramChannel&lt;A&gt;&gt; openDatagramChannelPair() throws IOException {
-<span class="fc" id="L122">    ProtocolFamily pf = protocolFamily();</span>
-<span class="fc" id="L123">    AFDatagramChannel&lt;A&gt; s1 = openDatagramChannel(pf);</span>
-<span class="fc" id="L124">    AFDatagramChannel&lt;A&gt; s2 = openDatagramChannel(pf);</span>
+<span class="fc" id="L122">    return openDatagramChannelPair(AFSocketType.SOCK_DGRAM);</span>
+  }
 
-<span class="fc" id="L126">    NativeUnixSocket.socketPair(domainId(), NativeUnixSocket.SOCK_STREAM, s1.getAFCore().fd, s2</span>
-<span class="fc" id="L127">        .getAFCore().fd);</span>
+  /**
+   * Opens a socket pair of interconnected {@link DatagramChannel}s, using the given
+   * {@link AFSocketType}.
+   *
+   * @param type The socket type.
+   * @return The new channel pair.
+   * @throws IOException on error.
+   */
+  @SuppressWarnings(&quot;resource&quot;)
+  public AFSocketPair&lt;? extends AFDatagramChannel&lt;A&gt;&gt; openDatagramChannelPair(AFSocketType type)
+      throws IOException {
+<span class="fc" id="L136">    ProtocolFamily pf = protocolFamily();</span>
+<span class="fc" id="L137">    AFDatagramChannel&lt;A&gt; s1 = openDatagramChannel(pf);</span>
+<span class="fc" id="L138">    AFDatagramChannel&lt;A&gt; s2 = openDatagramChannel(pf);</span>
 
-<span class="fc" id="L129">    s1.socket().internalDummyBind();</span>
-<span class="fc" id="L130">    s2.socket().internalDummyBind();</span>
-<span class="fc" id="L131">    s1.socket().internalDummyConnect();</span>
-<span class="fc" id="L132">    s2.socket().internalDummyConnect();</span>
+<span class="fc" id="L140">    NativeUnixSocket.socketPair(domainId(), type.getId(), s1.getAFCore().fd, s2.getAFCore().fd);</span>
 
-<span class="fc" id="L134">    return newSocketPair(s1, s2);</span>
+<span class="fc" id="L142">    s1.socket().internalDummyBind();</span>
+<span class="fc" id="L143">    s2.socket().internalDummyBind();</span>
+<span class="fc" id="L144">    s1.socket().internalDummyConnect();</span>
+<span class="fc" id="L145">    s2.socket().internalDummyConnect();</span>
+
+<span class="fc" id="L147">    return newSocketPair(s1, s2);</span>
   }
 
   @Override
   public abstract AFDatagramChannel&lt;A&gt; openDatagramChannel() throws IOException;
 
+  /**
+   * Opens a {@link DatagramChannel} using the given socket type.
+   *
+   * @param type The socket type.
+   * @return the new channel
+   * @throws IOException on error.
+   */
+  public abstract AFDatagramChannel&lt;A&gt; openDatagramChannel(AFSocketType type) throws IOException;
+
   @Override
   public AFDatagramChannel&lt;A&gt; openDatagramChannel(ProtocolFamily family) throws IOException {
-<span class="pc bpc" id="L142" title="1 of 2 branches missed.">    if (!protocolFamily().name().equals(family.name())) {</span>
-<span class="nc" id="L143">      throw new UnsupportedOperationException(&quot;Unsupported protocol family&quot;);</span>
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">    if (!protocolFamily().name().equals(family.name())) {</span>
+<span class="nc" id="L165">      throw new UnsupportedOperationException(&quot;Unsupported protocol family&quot;);</span>
     }
-<span class="fc" id="L145">    return openDatagramChannel();</span>
+<span class="fc" id="L167">    return openDatagramChannel();</span>
   }
 
   @Override
   public final AFPipe openPipe() throws IOException {
-<span class="fc" id="L150">    return newPipe(false);</span>
+<span class="fc" id="L172">    return newPipe(false);</span>
   }
 
   /**
@@ -157,12 +179,12 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
    * @throws IOException on error.
    */
   final AFPipe openSelectablePipe() throws IOException {
-<span class="fc" id="L160">    return newPipe(true);</span>
+<span class="fc" id="L182">    return newPipe(true);</span>
   }
 
   @Override
   public final AbstractSelector openSelector() throws IOException {
-<span class="fc" id="L165">    return new AFSelector(this);</span>
+<span class="fc" id="L187">    return new AFSelector(this);</span>
   }
 
   @Override
@@ -180,7 +202,7 @@ public abstract class AFSelectorProvider&lt;A extends AFSocketAddress&gt; extend
 
   @Override
   public AFSocketChannel&lt;A&gt; openSocketChannel() throws IOException {
-<span class="fc" id="L183">    return newSocket().getChannel();</span>
+<span class="fc" id="L205">    return newSocket().getChannel();</span>
   }
 
   /**

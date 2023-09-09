@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1691150413603">
-    <module artifactId="junixsocket-mysql" groupId="com.kohlschutter.junixsocket" version="2.7.0"/>
+<licensePluginReport goal="CHECK" timestamp="1694281463895">
+    <module artifactId="junixsocket-mysql" groupId="com.kohlschutter.junixsocket" version="2.7.1"/>
     <files>
         <file path="src/main/java/org/newsclub/net/mysql/AFUNIXDatabaseSocketFactory.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/mysql/AFUNIXDatabaseSocketFactoryCJ.java" result="PRESENT"/>

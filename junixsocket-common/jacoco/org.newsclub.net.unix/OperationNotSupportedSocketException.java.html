@@ -21,7 +21,8 @@ import java.net.SocketException;
 
 /**
  * A {@link SocketException} that may be thrown upon some &quot;unsupported operation&quot; condition from
- * native code (e.g., EOPNOTSUPP is returned).
+ * native code (e.g., ENOTSUP, EOPNOTSUPP, EPROTONOSUPPORT, ESOCKTNOSUPPORT, EPFNOSUPPORT,
+ * EAFNOSUPPORT is returned).
  *
  * @author Christian Kohlschütter
  */
@@ -32,8 +33,8 @@ public class OperationNotSupportedSocketException extends InvalidSocketException
    * Constructs a new {@link OperationNotSupportedSocketException}.
    */
   public OperationNotSupportedSocketException() {
-<span class="nc" id="L35">    super();</span>
-<span class="nc" id="L36">  }</span>
+<span class="nc" id="L36">    super();</span>
+<span class="nc" id="L37">  }</span>
 
   /**
    * Constructs a new {@link OperationNotSupportedSocketException}.
@@ -41,7 +42,7 @@ public class OperationNotSupportedSocketException extends InvalidSocketException
    * @param msg The error message.
    */
   public OperationNotSupportedSocketException(String msg) {
-<span class="nc" id="L44">    super(msg);</span>
-<span class="nc" id="L45">  }</span>
+<span class="fc" id="L45">    super(msg);</span>
+<span class="fc" id="L46">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
