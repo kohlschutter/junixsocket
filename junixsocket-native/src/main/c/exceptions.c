@@ -129,6 +129,9 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
             exceptionType = kExceptionAddressUnavailableSocketException;
             break;
         case EOPNOTSUPP:
+#if EPROTOTYPE
+        case EPROTOTYPE:
+#endif
 #if EPROTONOSUPPORT
         case EPROTONOSUPPORT:
 #endif
