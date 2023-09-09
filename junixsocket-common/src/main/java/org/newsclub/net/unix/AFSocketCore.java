@@ -92,13 +92,14 @@ class AFSocketCore extends AFCore {
     return false;
   }
 
-  @SuppressWarnings({"unchecked", "null"})
+  @SuppressWarnings({"unchecked"})
   <T> T getOption(AFSocketOption<T> name) throws IOException {
     Class<T> type = name.type();
     if (Boolean.class.isAssignableFrom(type)) {
       return (T) (Object) (NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(),
           Integer.class) != 0);
     } else if (NamedInteger.HasOfValue.class.isAssignableFrom(type)) {
+      @SuppressWarnings("all") // "null" creates another warning
       int v = NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), Integer.class);
       try {
         return (T) type.getMethod("ofValue", int.class).invoke(null, v);
