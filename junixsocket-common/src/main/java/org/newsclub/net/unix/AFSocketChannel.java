@@ -49,7 +49,7 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
    * @param socket The socket.
    * @param sp The {@link SelectorProvider}.
    */
-  @SuppressWarnings("null")
+  @SuppressWarnings("all")
   protected AFSocketChannel(AFSocket<A> socket, AFSelectorProvider<A> sp) {
     super(sp);
     this.afSocket = Objects.requireNonNull(socket);

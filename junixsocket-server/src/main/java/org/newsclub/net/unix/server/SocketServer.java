@@ -77,7 +77,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    *
    * @param serverSocket The server socket to use (must be bound).
    */
-  @SuppressWarnings({"null", "unchecked"})
+  @SuppressWarnings("all") // unchecked, null
   public SocketServer(V serverSocket) {
     this((A) Objects.requireNonNull(serverSocket).getLocalSocketAddress(), serverSocket);
   }

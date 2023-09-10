@@ -47,7 +47,7 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
    * @param socket The corresponding {@link ServerSocket}.
    * @param sp The corresponding {@link SelectorProvider}.
    */
-  @SuppressWarnings("null")
+  @SuppressWarnings("all") // null
   protected AFServerSocketChannel(AFServerSocket<A> socket, AFSelectorProvider<A> sp) {
     super(sp);
     this.afSocket = Objects.requireNonNull(socket);
