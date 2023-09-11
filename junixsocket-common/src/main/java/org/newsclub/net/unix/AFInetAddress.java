@@ -17,9 +17,6 @@
  */
 package org.newsclub.net.unix;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.Inet4Address;
@@ -50,42 +47,7 @@ import java.util.Objects;
  * @author Christian Kohlschütter
  */
 class AFInetAddress {
-  private static final byte[] SERIALIZED_INET_ADDRESS_START = {
-      (byte) 0xac, (byte) 0xed, // STREAM_MAGIC
-      0x00, 0x05, // STREAM_VERSION
-      0x73, // TC_OBJECT
-      0x72, // TC_CLASSDESC,
-      0x00, 0x14, // length
-      'j', 'a', 'v', 'a', '.', 'n', 'e', 't', '.', //
-      'I', 'n', 'e', 't', 'A', 'd', 'd', 'r', 'e', 's', 's', // "java.net.InetAddress"
-
-      0x2d, (byte) 0x9b, 0x57, (byte) 0xaf, (byte) 0x9f, (byte) 0xe3, (byte) 0xeb, (byte) 0xdb, //
-      // serialVersionUID for java.net.InetAddress
-
-      0x03, // classDescFlags SC_WRITE_METHOD | SC_SERIALIZABLE
-      0x00, 0x03, // fieldCount (3)
-      'I', // int field
-      0x00, 0x07, // length (7)
-      'a', 'd', 'd', 'r', 'e', 's', 's', // "address"
-      'I', // int field
-      0x00, 0x06, // length (6)
-      'f', 'a', 'm', 'i', 'l', 'y', // "family"
-      'L', // Object field
-      0x00, 0x08, // length (8)
-      'h', 'o', 's', 't', 'N', 'a', 'm', 'e', // "hostName"
-      0x74, // (className1) TC_STRING
-      0x00, 0x12, // length (18)
-      'L', 'j', 'a', 'v', 'a', '/', 'l', 'a', 'n', 'g', '/', //
-      'O', 'b', 'j', 'e', 'c', 't', ';', // "Ljava/lang/Object;"
-      0x78, // TC_ENDBLOCKDATA,
-      0x70, // (superClassDesc) TC_NULL
-      0x7f, 0x00, 0x00, (byte) 0xaf, // "address" value: (int) 127.0.0.175 (0x7f0000af)
-      0x00, 0x00, 0x00, 0x01, // "family" value: (int) 1 (IPv4)
-      0x74, // "hostName" value is a TC_STRING
-      0x00, // high-byte of string length (always 0 in our case)
-      // low-byte of string length and string itself will be appended later
-      // followed by 0x78 (TC_ENDBLOCKDATA)
-  };
+  private static final byte[] LOCAL_AF = new byte[] {0x7f, 0, 0, (byte) 0xaf};
 
   private static final char PREFIX = '[';
   private static final String MARKER_HEX_ENCODING = "%%";
@@ -151,21 +113,15 @@ class AFInetAddress {
       return null;
     }
 
-    byte[] bytes = createUnresolvedHostname(socketAddress, af).getBytes(StandardCharsets.UTF_8);
+    String hostname = createUnresolvedHostname(socketAddress, af);
+    byte[] bytes = hostname.getBytes(StandardCharsets.UTF_8);
     if (bytes.length > 255) {
       throw new IllegalStateException("junixsocket address is too long to wrap as InetAddress");
     }
-    byte[] serializedData = new byte[SERIALIZED_INET_ADDRESS_START.length + 1 + bytes.length + 1];
-    System.arraycopy(SERIALIZED_INET_ADDRESS_START, 0, serializedData, 0,
-        SERIALIZED_INET_ADDRESS_START.length);
-    serializedData[SERIALIZED_INET_ADDRESS_START.length] = (byte) bytes.length;
-    System.arraycopy(bytes, 0, serializedData, SERIALIZED_INET_ADDRESS_START.length + 1,
-        bytes.length);
-    serializedData[serializedData.length - 1] = 0x78; // TC_ENDBLOCKDATA
 
-    try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(serializedData))) {
-      return (InetAddress) ois.readObject();
-    } catch (ClassNotFoundException | IOException e) {
+    try {
+      return InetAddress.getByAddress(hostname, LOCAL_AF);
+    } catch (UnknownHostException e) {
       throw new IllegalStateException(e);
     }
   }
