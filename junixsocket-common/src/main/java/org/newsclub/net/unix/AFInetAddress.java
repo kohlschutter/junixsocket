@@ -47,7 +47,7 @@ import java.util.Objects;
  * @author Christian Kohlschütter
  */
 class AFInetAddress {
-  private static final byte[] LOCAL_AF = new byte[] {0x7f, 0, 0, (byte) 0xaf};
+  private static final byte[] LOCAL_AF = {0x7f, 0, 0, (byte) 0xaf};
 
   private static final char PREFIX = '[';
   private static final String MARKER_HEX_ENCODING = "%%";
