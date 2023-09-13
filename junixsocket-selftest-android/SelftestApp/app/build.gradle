@@ -56,6 +56,7 @@ dependencies {
     implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.7.2-SNAPSHOT'
     implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.7.2-SNAPSHOT'
     implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.7.2-SNAPSHOT'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-darwin:2.7.2-SNAPSHOT'
 
     // selftest-specifics
     implementation('com.kohlschutter.junixsocket:junixsocket-selftest:2.7.2-SNAPSHOT') {
