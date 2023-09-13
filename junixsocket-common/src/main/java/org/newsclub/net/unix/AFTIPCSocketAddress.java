@@ -110,7 +110,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  * @author Christian Kohlschütter (documentation credits to Jon Maloy and the TIPC team).
  */
 public final class AFTIPCSocketAddress extends AFSocketAddress {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L; // do not change!
 
   private static final Pattern PAT_TIPC_URI_HOST_AND_PORT = Pattern.compile(
       "^((?:(?:(?<scope>cluster|node|default|[0-9a-fx]+)\\-)?(?<type>service|service-range|socket)\\.)|"
@@ -261,6 +261,12 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
   private AFTIPCSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress)
       throws SocketException {
     super(port, socketAddress, nativeAddress, addressFamily());
+  }
+
+  private static AFTIPCSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
+      ByteBuffer nativeAddress) throws SocketException {
+    return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),
+        AFTIPCSocketAddress::new);
   }
 
   /**
@@ -645,6 +651,10 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
       afTipc = AFAddressFamily.registerAddressFamily("tipc", //
           AFTIPCSocketAddress.class, new AFSocketAddressConfig<AFTIPCSocketAddress>() {
 
+            private final AFSocketAddressConstructor<AFTIPCSocketAddress> addrConstr =
+                isUseDeserializationForInit() ? AFTIPCSocketAddress::newAFSocketAddress
+                    : AFTIPCSocketAddress::new;
+
             @Override
             protected AFTIPCSocketAddress parseURI(URI u, int port) throws SocketException {
               return AFTIPCSocketAddress.of(u, port);
@@ -652,7 +662,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
             @Override
             protected AFSocketAddressConstructor<AFTIPCSocketAddress> addressConstructor() {
-              return AFTIPCSocketAddress::new;
+              return addrConstr;
             }
 
             @Override

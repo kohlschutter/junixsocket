@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
@@ -31,6 +32,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.URI;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -47,7 +49,7 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.CyclomaticComplexity"})
 public abstract class AFSocketAddress extends InetSocketAddress {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L; // do not change!
 
   /**
    * Just a marker for "don't actually bind" (checked with "=="). Used in combination with a
@@ -77,11 +79,19 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     }
   };
 
+  private static final boolean USE_DESERIALIZATION_FOR_INIT;
+
+  static {
+    String v = System.getProperty("org.newsclub.net.unix.AFSocketAddress.deserialize", "");
+    USE_DESERIALIZATION_FOR_INIT = v.isEmpty() ? NativeLibraryLoader.isAndroid() : Boolean.valueOf(
+        v);
+  }
+
   /**
    * Some byte-level representation of this address, which can only be converted to a native
    * representation in combination with the domain ID.
    */
-  private final byte[] bytes;
+  private byte[] bytes;
 
   /**
    * An {@link InetAddress}-wrapped representation of this address. Only created upon demand.
@@ -108,7 +118,6 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @param af The address family.
    * @throws SocketException on error.
    */
-  @SuppressWarnings({"cast", "this-escape"})
   protected AFSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress,
       AFAddressFamily<?> af) throws SocketException {
     /*
@@ -120,25 +129,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
      */
     super(AFInetAddress.createUnresolvedHostname(socketAddress, af), port >= 0 && port <= 0xffff
         ? port : 0);
-    if (socketAddress.length == 0) {
-      throw new SocketException("Illegal address length: " + socketAddress.length);
-    }
-
-    this.nativeAddress = nativeAddress == null ? null : (ByteBuffer) (Object) nativeAddress
-        .duplicate().rewind();
-    if (port < -1) {
-      throw new IllegalArgumentException("port out of range");
-    } else if (port > 0xffff) {
-      if (!NativeUnixSocket.isLoaded()) {
-        throw (SocketException) new SocketException(
-            "Cannot set SocketAddress port - junixsocket JNI library is not available").initCause(
-                NativeUnixSocket.unsupportedException());
-      }
-      NativeUnixSocket.setPort1(this, port);
-    }
-
-    this.bytes = socketAddress.clone();
-    this.addressFamily = af;
+    initAFSocketAddress(this, port, socketAddress, nativeAddress, af);
   }
 
   /**
@@ -153,6 +144,164 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     this.nativeAddress = null;
     this.bytes = new byte[0];
     this.addressFamily = null;
+  }
+
+  @SuppressWarnings({"cast", "this-escape"})
+  private static void initAFSocketAddress(AFSocketAddress addr, int port,
+      final byte[] socketAddress, ByteBuffer nativeAddress, AFAddressFamily<?> af)
+      throws SocketException {
+    if (socketAddress.length == 0) {
+      throw new SocketException("Illegal address length: " + socketAddress.length);
+    }
+
+    addr.nativeAddress = nativeAddress == null ? null : (ByteBuffer) (Object) nativeAddress
+        .duplicate().rewind();
+    if (port < -1) {
+      throw new IllegalArgumentException("port out of range");
+    } else if (port > 0xffff) {
+      if (!NativeUnixSocket.isLoaded()) {
+        throw (SocketException) new SocketException(
+            "Cannot set SocketAddress port - junixsocket JNI library is not available").initCause(
+                NativeUnixSocket.unsupportedException());
+      }
+      NativeUnixSocket.setPort1(addr, port);
+    }
+
+    addr.bytes = socketAddress.clone();
+    addr.addressFamily = af;
+  }
+
+  /**
+   * Returns a new {@link AFSocketAddress} instance via deserialization. This is a trick to
+   * workaround certain environments that do not allow the construction of {@link InetSocketAddress}
+   * instances without trying DNS resolution.
+   *
+   * @param <A> The subclass (must be a direct subclass of {@link AFSocketAddress}).
+   * @param port The port to use.
+   * @param socketAddress The junixsocket representation of the socket address.
+   * @param nativeAddress The system-native representation of the socket address, or {@code null}.
+   * @param af The address family, corresponding to the subclass
+   * @param constructor The constructor to use as fallback
+   * @return The new instance.
+   * @throws SocketException on error.
+   */
+  protected static <A extends AFSocketAddress> A newDeserializedAFSocketAddress(int port,
+      final byte[] socketAddress, ByteBuffer nativeAddress, AFAddressFamily<A> af,
+      AFSocketAddressConstructor<A> constructor) throws SocketException {
+    String hostname = AFInetAddress.createUnresolvedHostname(socketAddress, af);
+    if (hostname == null || hostname.isEmpty()) {
+      return constructor.newAFSocketAddress(port, socketAddress, nativeAddress);
+    }
+    try (ObjectInputStream oin = new ObjectInputStream(new ByteArrayInputStream(AFSocketAddress
+        .craftSerializedObject(af.getSocketAddressClass(), hostname, (port >= 0 && port <= 0xffff
+            ? port : 0))))) {
+      @SuppressWarnings("unchecked")
+      A addr = (A) oin.readObject();
+      initAFSocketAddress(addr, port, socketAddress, nativeAddress, af);
+      return addr;
+    } catch (SocketException e) {
+      throw e;
+    } catch (ClassNotFoundException | IOException e) {
+      throw (SocketException) new SocketException("Unexpected deserialization problem").initCause(
+          e);
+    }
+  }
+
+  /**
+   * Creates a byte-representation of a serialized {@link AFSocketAddress} instance, overriding
+   * hostname and port, which allows bypassing DNS resolution.
+   *
+   * @param className The actual subclass.
+   * @param hostname The hostname to use (must not be empty or null).
+   * @param port The port to use.
+   * @return The byte representation.
+   */
+  private static byte[] craftSerializedObject(Class<? extends AFSocketAddress> className,
+      String hostname, int port) {
+    ByteBuffer bb = ByteBuffer.allocate(768);
+    bb.putShort((short) 0xaced); // STREAM_MAGIC
+    bb.putShort((short) 5); // STREAM_VERSION
+    bb.put((byte) 0x73); // TC_OBJECT
+    bb.put((byte) 0x72); // TC_CLASSDESC
+
+    putShortLengthUtf8(bb, className.getName());
+    bb.putLong(1); // serialVersionUID of subclass (expected to be 1)
+    bb.putInt(0x02000078);
+    bb.put((byte) 0x72);
+
+    putShortLengthUtf8(bb, AFSocketAddress.class.getName());
+    bb.putLong(serialVersionUID); // serialVersionUID of AFSocketAddress
+    bb.putInt(0x0300025B);
+    putShortLengthUtf8(bb, "bytes");
+
+    bb.putInt(0x7400025B);
+    bb.putShort((short) 0x424C);
+
+    putShortLengthUtf8(bb, "inetAddress");
+    bb.put((byte) 0x74);
+
+    putShortLengthEncodedClassName(bb, InetAddress.class);
+
+    bb.putShort((short) 0x7872);
+    putShortLengthUtf8(bb, InetSocketAddress.class.getName());
+    bb.putLong(5076001401234631237L); // NOPMD InetSocketAddress serialVersionUID
+
+    bb.putInt(0x03000349);
+    putShortLengthUtf8(bb, "port");
+
+    bb.put((byte) 0x4C);
+    putShortLengthUtf8(bb, "addr");
+
+    bb.putInt(0x71007E00);
+    bb.putShort((short) 0x034C);
+    putShortLengthUtf8(bb, "hostname");
+    bb.put((byte) 0x74);
+
+    putShortLengthEncodedClassName(bb, String.class);
+
+    bb.putShort((short) 0x7872);
+    putShortLengthUtf8(bb, SocketAddress.class.getName());
+    bb.putLong(5215720748342549866L); // NOPMD SocketAddress serialVersionUID
+
+    bb.putInt(0x02000078);
+    bb.put((byte) 0x70);
+    bb.putInt(port);
+
+    bb.putShort((short) 0x7074);
+    putShortLengthUtf8(bb, hostname);
+
+    bb.putInt(0x78707077);
+    bb.put((byte) 0x0B);
+
+    putShortLengthUtf8(bb, "undefined");
+
+    bb.put((byte) 0x78); // TC_ENDBLOCKDATA
+    bb.flip();
+
+    byte[] buf = new byte[bb.remaining()];
+    bb.get(buf);
+    return buf;
+  }
+
+  private static void putShortLengthEncodedClassName(ByteBuffer bb, Class<?> klazz) {
+    putShortLengthUtf8(bb, "L" + klazz.getName().replace('.', '/') + ";");
+  }
+
+  private static void putShortLengthUtf8(ByteBuffer bb, String s) {
+    byte[] utf8 = s.getBytes(StandardCharsets.UTF_8);
+    bb.putShort((short) utf8.length);
+    bb.put(utf8);
+  }
+
+  /**
+   * Checks if {@link AFSocketAddress} instantiation should be performed via deserialization.
+   *
+   * @return {@code true} if so.
+   * @see #newDeserializedAFSocketAddress(int, byte[], ByteBuffer, AFAddressFamily,
+   *      AFSocketAddressConstructor)
+   */
+  protected static boolean isUseDeserializationForInit() {
+    return USE_DESERIALIZATION_FOR_INIT;
   }
 
   /**
@@ -730,8 +879,14 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    */
   private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
     in.defaultReadObject();
-    this.addressFamily = Objects.requireNonNull(AFAddressFamily.getAddressFamily(in.readUTF()),
-        "address family");
+
+    String af = in.readUTF();
+    if ("undefined".equals(af)) {
+      this.addressFamily = null;
+    } else {
+      this.addressFamily = Objects.requireNonNull(AFAddressFamily.getAddressFamily(af),
+          "address family");
+    }
   }
 
   /**
@@ -742,6 +897,6 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    */
   private void writeObject(ObjectOutputStream out) throws IOException {
     out.defaultWriteObject();
-    out.writeUTF(addressFamily.getJuxString());
+    out.writeUTF(addressFamily == null ? "undefined" : addressFamily.getJuxString());
   }
 }

@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  * @author Christian Kohlschütter
  */
 public final class AFVSOCKSocketAddress extends AFSocketAddress {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L; // do not change!
 
   private static final Pattern PAT_VSOCK_URI_HOST_AND_PORT = Pattern.compile(
       "^(?<port>any|[0-9a-fx\\-]+)(\\.(?<cid>any|hypervisor|local|host|[0-9a-fx\\-]+))?(?:\\:(?<javaPort>[0-9]+))?$");
@@ -74,6 +74,12 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
   private AFVSOCKSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress)
       throws SocketException {
     super(port, socketAddress, nativeAddress, addressFamily());
+  }
+
+  private static AFVSOCKSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
+      ByteBuffer nativeAddress) throws SocketException {
+    return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),
+        AFVSOCKSocketAddress::new);
   }
 
   /**
@@ -354,6 +360,10 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
       afVsock = AFAddressFamily.registerAddressFamily("vsock", //
           AFVSOCKSocketAddress.class, new AFSocketAddressConfig<AFVSOCKSocketAddress>() {
 
+            private final AFSocketAddressConstructor<AFVSOCKSocketAddress> addrConstr =
+                isUseDeserializationForInit() ? AFVSOCKSocketAddress::newAFSocketAddress
+                    : AFVSOCKSocketAddress::new;
+
             @Override
             protected AFVSOCKSocketAddress parseURI(URI u, int port) throws SocketException {
               return AFVSOCKSocketAddress.of(u, port);
@@ -361,7 +371,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
 
             @Override
             protected AFSocketAddressConstructor<AFVSOCKSocketAddress> addressConstructor() {
-              return AFVSOCKSocketAddress::new;
+              return addrConstr;
             }
 
             @Override

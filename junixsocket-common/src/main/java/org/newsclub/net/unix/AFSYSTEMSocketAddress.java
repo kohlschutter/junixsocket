@@ -39,7 +39,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  * @author Christian Kohlschütter
  */
 public final class AFSYSTEMSocketAddress extends AFSocketAddress {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L; // do not change!
 
   private static AFAddressFamily<AFSYSTEMSocketAddress> afSystem;
   private static final String SELECTOR_PROVIDER_CLASS =
@@ -85,6 +85,12 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
   private AFSYSTEMSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress)
       throws SocketException {
     super(port, socketAddress, nativeAddress, addressFamily());
+  }
+
+  private static AFSYSTEMSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
+      ByteBuffer nativeAddress) throws SocketException {
+    return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),
+        AFSYSTEMSocketAddress::new);
   }
 
   /**
@@ -270,6 +276,10 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
       afSystem = AFAddressFamily.registerAddressFamily("system", //
           AFSYSTEMSocketAddress.class, new AFSocketAddressConfig<AFSYSTEMSocketAddress>() {
 
+            private final AFSocketAddressConstructor<AFSYSTEMSocketAddress> addrConstr =
+                isUseDeserializationForInit() ? AFSYSTEMSocketAddress::newAFSocketAddress
+                    : AFSYSTEMSocketAddress::new;
+
             @Override
             protected AFSYSTEMSocketAddress parseURI(URI u, int port) throws SocketException {
               return AFSYSTEMSocketAddress.of(u, port);
@@ -277,7 +287,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
 
             @Override
             protected AFSocketAddressConstructor<AFSYSTEMSocketAddress> addressConstructor() {
-              return AFSYSTEMSocketAddress::new;
+              return addrConstr;
             }
 
             @Override

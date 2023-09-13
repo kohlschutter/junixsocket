@@ -48,6 +48,7 @@ final class NativeLibraryLoader implements Closeable {
   private static final String LIBRARY_NAME = "junixsocket-native";
 
   private static final AtomicBoolean LOADED = new AtomicBoolean(false);
+  private static final boolean IS_ANDROID = checkAndroid();
 
   static {
     String dir = System.getProperty(PROP_LIBRARY_TMPDIR, null);
@@ -412,13 +413,8 @@ final class NativeLibraryLoader implements Closeable {
     String arch = lookupArchProperty("os.arch", "UnknownArch");
     String osName = lookupArchProperty("os.name", "UnknownOS");
 
-    String vmName = lookupArchProperty("java.vm.name", "UnknownVM");
-    String vmSpecVendor = lookupArchProperty("java.vm.specification.vendor",
-        "UnknownSpecificationVendor");
-
     List<String> list = new ArrayList<>();
-
-    if ("Dalvik".equals(vmName) || vmSpecVendor.contains("Android")) {
+    if (IS_ANDROID) {
       // Android identifies itself as os.name="Linux"
       // let's probe for an Android-specific library first
       list.add(arch + "-Android");
@@ -429,6 +425,18 @@ final class NativeLibraryLoader implements Closeable {
     }
 
     return list;
+  }
+
+  private static boolean checkAndroid() {
+    String vmName = lookupArchProperty("java.vm.name", "UnknownVM");
+    String vmSpecVendor = lookupArchProperty("java.vm.specification.vendor",
+        "UnknownSpecificationVendor");
+
+    return ("Dalvik".equals(vmName) || vmSpecVendor.contains("Android"));
+  }
+
+  static boolean isAndroid() {
+    return IS_ANDROID;
   }
 
   static List<String> getArchitectureAndOS() {

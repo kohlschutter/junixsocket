@@ -49,7 +49,7 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 @SuppressWarnings("PMD.ShortMethodName")
 public final class AFUNIXSocketAddress extends AFSocketAddress {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L; // do not change!
 
   private static final Charset ADDRESS_CHARSET = Charset.defaultCharset();
 
@@ -58,6 +58,10 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
       .registerAddressFamily("un", //
           AFUNIXSocketAddress.class, new AFSocketAddressConfig<AFUNIXSocketAddress>() {
 
+            private final AFSocketAddressConstructor<AFUNIXSocketAddress> addrConstr =
+                isUseDeserializationForInit() ? AFUNIXSocketAddress::newAFSocketAddress
+                    : AFUNIXSocketAddress::new;
+
             @Override
             public AFUNIXSocketAddress parseURI(URI u, int port) throws SocketException {
               return AFUNIXSocketAddress.of(u, port);
@@ -65,7 +69,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
 
             @Override
             protected AFSocketAddressConstructor<AFUNIXSocketAddress> addressConstructor() {
-              return AFUNIXSocketAddress::new;
+              return addrConstr;
             }
 
             @Override
@@ -112,6 +116,12 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   public AFUNIXSocketAddress(File socketFile, int port) throws SocketException {
     this(port, of(socketFile, port).getPathAsBytes(), of(socketFile, port)
         .getNativeAddressDirectBuffer());
+  }
+
+  private static AFUNIXSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
+      ByteBuffer nativeAddress) throws SocketException {
+    return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, AF_UNIX,
+        AFUNIXSocketAddress::new);
   }
 
   /**
