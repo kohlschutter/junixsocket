@@ -49,16 +49,16 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    implementation 'com.kohlschutter.junixsocket:junixsocket-native-android:2.7.1@aar'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-native-android:2.7.2-SNAPSHOT@aar'
 
-    implementation 'com.kohlschutter.junixsocket:junixsocket-common:2.7.1'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-common:2.7.2-SNAPSHOT'
 
-    implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.7.1'
-    implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.7.1'
-    implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.7.1'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.7.2-SNAPSHOT'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.7.2-SNAPSHOT'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.7.2-SNAPSHOT'
 
     // selftest-specifics
-    implementation('com.kohlschutter.junixsocket:junixsocket-selftest:2.7.1') {
+    implementation('com.kohlschutter.junixsocket:junixsocket-selftest:2.7.2-SNAPSHOT') {
         exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-core"
         exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-native-common"
         exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-native-custom"
