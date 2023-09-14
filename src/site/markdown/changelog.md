@@ -12,6 +12,12 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 **Users of junixsocket are strongly advised to upgrade to version 2.7.0 or newer**
 
+### _(2023-09-XX)_ **junixsocket 2.7.2**
+
+- Fix SelectionKey logic (regression introduced in 2.7.1)
+- Improve AFSocketAddress creation, skip DNS resolution on Android
+- Code cleanup
+
 ### _(2023-09-09)_ **junixsocket 2.7.1**
 
 - Fix openDatagramChannelPair (was using STREAM instead of DGRAM), add AFSocketType support
