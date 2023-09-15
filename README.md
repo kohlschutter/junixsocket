@@ -47,6 +47,8 @@ from Java.
     - Sockets (`org.newsclub.net.unix.demo`)
     - RMI over Unix Sockets (`org.newsclub.net.unix.demo.rmi` and `org.newsclub.net.unix.demo.rmi.services`)
     - MySQL over Unix Sockets  (`org.newsclub.net.mysql.demo`)
+    - Apache Mina (`org.newsclub.net.unix.demo.mina`)
+    - Netty (`org.newsclub.net.unix.demo.netty`)
   * [API Javadocs](https://kohlschutter.github.io/junixsocket/apidocs/)
   * [Unix Domain Socket Reference](https://kohlschutter.github.io/junixsocket/unixsockets.html)
   * [TIPC documentation](https://kohlschutter.github.io/junixsocket/junixsocket-tipc/index.html)
