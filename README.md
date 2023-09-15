@@ -84,7 +84,7 @@ To include the core junixsocket functionality in your project, add the following
 <dependency>
   <groupId>com.kohlschutter.junixsocket</groupId>
   <artifactId>junixsocket-core</artifactId>
-  <version>2.7.1</version>
+  <version>2.7.2</version>
   <type>pom</type>
 </dependency>
 ```
