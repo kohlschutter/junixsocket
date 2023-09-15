@@ -16,6 +16,7 @@ module org.newsclub.net.unix.demo {
   requires mina.core;
   requires static com.kohlschutter.annotations.compiletime;
   requires static org.eclipse.jdt.annotation;
+  requires io.netty.all;
 
   exports org.newsclub.net.unix.demo.rmi.services to java.rmi;
   exports org.newsclub.net.unix.demo.rmi.fd to java.rmi;
