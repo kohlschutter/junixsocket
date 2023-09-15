@@ -19,7 +19,7 @@ package org.newsclub.net.unix.demo.mina;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
@@ -48,7 +48,7 @@ public class MinaTimeServer {
 
     acceptor.getFilterChain().addLast("logger", new LoggingFilter());
     acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(
-        Charset.forName("UTF-8"))));
+        StandardCharsets.UTF_8)));
     acceptor.setHandler(new TimeServerHandler());
     acceptor.getSessionConfig().setReadBufferSize(2048);
     acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
