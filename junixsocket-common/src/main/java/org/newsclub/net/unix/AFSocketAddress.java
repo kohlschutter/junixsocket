@@ -42,11 +42,15 @@ import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+import com.google.errorprone.annotations.Immutable;
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Some {@link SocketAddress} that is supported by junixsocket, such as {@link AFUNIXSocketAddress}.
  *
  * @author Christian Kohlschütter
  */
+@Immutable
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.CyclomaticComplexity"})
 public abstract class AFSocketAddress extends InetSocketAddress {
   private static final long serialVersionUID = 1L; // do not change!
@@ -91,12 +95,15 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * Some byte-level representation of this address, which can only be converted to a native
    * representation in combination with the domain ID.
    */
+  @SuppressFBWarnings("JCIP_FIELD_ISNT_FINAL_IN_IMMUTABLE_CLASS")
   private byte[] bytes;
 
   /**
    * An {@link InetAddress}-wrapped representation of this address. Only created upon demand.
    */
-  private InetAddress inetAddress = null;
+  @SuppressFBWarnings("JCIP_FIELD_ISNT_FINAL_IN_IMMUTABLE_CLASS") // only modified during
+                                                                  // construction/deserialization
+  private InetAddress inetAddress = null; // derived from bytes
 
   /**
    * The system-native representation of this address, or {@code null}.
