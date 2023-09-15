@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UngrowableSet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">UngrowableSet.java</span></div><h1>UngrowableSet.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2023 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
+
+/**
+ * A {@link Set} that won't allow adding elements.
+ *
+ * @param &lt;T&gt; The element type.
+ * @author Christian Kohlschütter
+ */
+final class UngrowableSet&lt;T&gt; implements Set&lt;T&gt; {
+  private final Set&lt;T&gt; set;
+
+<span class="fc" id="L33">  UngrowableSet(Set&lt;T&gt; set) {</span>
+<span class="fc" id="L34">    this.set = set;</span>
+<span class="fc" id="L35">  }</span>
+
+  @Override
+  public int size() {
+<span class="fc" id="L39">    return set.size();</span>
+  }
+
+  @Override
+  public boolean isEmpty() {
+<span class="fc" id="L44">    return set.isEmpty();</span>
+  }
+
+  @Override
+  public boolean contains(Object o) {
+<span class="nc" id="L49">    return set.contains(o);</span>
+  }
+
+  @Override
+  public Iterator&lt;T&gt; iterator() {
+<span class="fc" id="L54">    return set.iterator();</span>
+  }
+
+  @Override
+  public Object[] toArray() {
+<span class="nc" id="L59">    return set.toArray();</span>
+  }
+
+  @Override
+  public &lt;E&gt; E[] toArray(E[] a) {
+<span class="nc" id="L64">    return set.toArray(a);</span>
+  }
+
+  @Override
+  public boolean add(T e) {
+<span class="nc" id="L69">    throw new UnsupportedOperationException();</span>
+  }
+
+  @Override
+  public boolean remove(Object o) {
+<span class="nc" id="L74">    return set.remove(o);</span>
+  }
+
+  @Override
+  public boolean containsAll(Collection&lt;?&gt; c) {
+<span class="nc" id="L79">    return set.containsAll(c);</span>
+  }
+
+  @Override
+  public boolean addAll(Collection&lt;? extends T&gt; c) {
+<span class="nc" id="L84">    throw new UnsupportedOperationException();</span>
+  }
+
+  @Override
+  public boolean retainAll(Collection&lt;?&gt; c) {
+<span class="nc" id="L89">    return set.retainAll(c);</span>
+  }
+
+  @Override
+  public boolean removeAll(Collection&lt;?&gt; c) {
+<span class="nc" id="L94">    return set.removeAll(c);</span>
+  }
+
+  @Override
+  public void clear() {
+<span class="nc" id="L99">    set.clear();</span>
+<span class="nc" id="L100">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

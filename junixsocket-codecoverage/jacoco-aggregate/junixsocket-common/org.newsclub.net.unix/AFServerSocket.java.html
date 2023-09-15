@@ -293,7 +293,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
   @Override
   public final boolean isClosed() {
 <span class="pc bpc" id="L295" title="1 of 6 branches missed.">    return super.isClosed() || (isBound() &amp;&amp; !implementation.getFD().valid()) || implementation</span>
-<span class="fc bfc" id="L296" title="All 2 branches covered.">        .isClosed();</span>
+<span class="pc bpc" id="L296" title="1 of 2 branches missed.">        .isClosed();</span>
   }
 
   @Override

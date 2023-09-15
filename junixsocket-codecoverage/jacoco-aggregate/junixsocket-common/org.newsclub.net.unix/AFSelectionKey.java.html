@@ -30,109 +30,99 @@ final class AFSelectionKey extends SelectionKey {
   private int ops;
   private final SelectableChannel chann;
 <span class="fc" id="L32">  private final AtomicBoolean cancelled = new AtomicBoolean();</span>
-<span class="fc" id="L33">  private final AtomicBoolean removed = new AtomicBoolean();</span>
   private int opsReady;
 
   AFSelectionKey(AFSelector selector, AbstractSelectableChannel ch, int ops, Object att) {
-<span class="fc" id="L37">    super();</span>
-<span class="fc" id="L38">    this.chann = ch;</span>
-<span class="fc" id="L39">    this.sel = selector;</span>
-<span class="fc" id="L40">    this.ops = ops; // FIXME check</span>
+<span class="fc" id="L36">    super();</span>
+<span class="fc" id="L37">    this.chann = ch;</span>
+<span class="fc" id="L38">    this.sel = selector;</span>
+<span class="fc" id="L39">    this.ops = ops; // FIXME check</span>
 
-<span class="fc bfc" id="L42" title="All 2 branches covered.">    if (ch instanceof AFDatagramChannel&lt;?&gt;) {</span>
-<span class="fc" id="L43">      this.core = ((AFDatagramChannel&lt;?&gt;) ch).getAFCore();</span>
-<span class="fc bfc" id="L44" title="All 2 branches covered.">    } else if (ch instanceof AFSocketChannel&lt;?&gt;) {</span>
-<span class="fc" id="L45">      this.core = ((AFSocketChannel&lt;?&gt;) ch).getAFCore();</span>
-<span class="pc bpc" id="L46" title="1 of 2 branches missed.">    } else if (ch instanceof AFServerSocketChannel&lt;?&gt;) {</span>
-<span class="fc" id="L47">      this.core = ((AFServerSocketChannel&lt;?&gt;) ch).getAFCore();</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">    if (ch instanceof AFDatagramChannel&lt;?&gt;) {</span>
+<span class="fc" id="L42">      this.core = ((AFDatagramChannel&lt;?&gt;) ch).getAFCore();</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    } else if (ch instanceof AFSocketChannel&lt;?&gt;) {</span>
+<span class="fc" id="L44">      this.core = ((AFSocketChannel&lt;?&gt;) ch).getAFCore();</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">    } else if (ch instanceof AFServerSocketChannel&lt;?&gt;) {</span>
+<span class="fc" id="L46">      this.core = ((AFServerSocketChannel&lt;?&gt;) ch).getAFCore();</span>
     } else {
-<span class="nc" id="L49">      throw new UnsupportedOperationException();</span>
+<span class="nc" id="L48">      throw new UnsupportedOperationException();</span>
     }
 
-<span class="fc" id="L52">    attach(att);</span>
-<span class="fc" id="L53">  }</span>
+<span class="fc" id="L51">    attach(att);</span>
+<span class="fc" id="L52">  }</span>
 
   @Override
   public SelectableChannel channel() {
-<span class="fc" id="L57">    return chann;</span>
+<span class="fc" id="L56">    return chann;</span>
   }
 
   @Override
   public Selector selector() {
-<span class="fc" id="L62">    return sel;</span>
+<span class="fc" id="L61">    return sel;</span>
   }
 
   @Override
   public boolean isValid() {
-<span class="pc bpc" id="L67" title="2 of 8 branches missed.">    return !hasOpInvalid() &amp;&amp; !cancelled.get() &amp;&amp; chann.isOpen() &amp;&amp; sel.isOpen();</span>
+<span class="pc bpc" id="L66" title="2 of 8 branches missed.">    return !hasOpInvalid() &amp;&amp; !cancelled.get() &amp;&amp; chann.isOpen() &amp;&amp; sel.isOpen();</span>
   }
 
   boolean isCancelled() {
-<span class="nc" id="L71">    return cancelled.get();</span>
+<span class="nc" id="L70">    return cancelled.get();</span>
   }
 
   boolean hasOpInvalid() {
-<span class="fc bfc" id="L75" title="All 2 branches covered.">    return (opsReady &amp; OP_INVALID) != 0;</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">    return (opsReady &amp; OP_INVALID) != 0;</span>
   }
 
   boolean isSelected() {
-<span class="fc bfc" id="L79" title="All 2 branches covered.">    return readyOps() != 0;</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">    return readyOps() != 0;</span>
   }
-
-  boolean isRemovedFromSelected() {
-<span class="fc" id="L83">    return removed.get();</span>
-  }
-
-  void removeFromSelected(boolean r) {
-<span class="fc" id="L87">    removed.set(r);</span>
-<span class="fc" id="L88">  }</span>
 
   @Override
   public void cancel() {
-<span class="fc" id="L92">    removeFromSelected(true);</span>
-<span class="fc" id="L93">    sel.remove(this);</span>
-<span class="fc" id="L94">    cancelNoRemove();</span>
-<span class="fc" id="L95">  }</span>
+<span class="fc" id="L83">    sel.remove(this);</span>
+<span class="fc" id="L84">    cancelNoRemove();</span>
+<span class="fc" id="L85">  }</span>
 
   void cancelNoRemove() {
-<span class="pc bpc" id="L98" title="1 of 4 branches missed.">    if (!cancelled.compareAndSet(false, true) || !chann.isOpen()) {</span>
-<span class="fc" id="L99">      return;</span>
+<span class="fc bfc" id="L88" title="All 4 branches covered.">    if (!cancelled.compareAndSet(false, true) || !chann.isOpen()) {</span>
+<span class="fc" id="L89">      return;</span>
     }
 
-<span class="nc" id="L102">    cancel1();</span>
-<span class="nc" id="L103">  }</span>
+<span class="fc" id="L92">    cancel1();</span>
+<span class="fc" id="L93">  }</span>
 
   private void cancel1() {
     // FIXME
-<span class="nc" id="L107">  }</span>
+<span class="fc" id="L97">  }</span>
 
   @Override
   public int interestOps() {
-<span class="fc" id="L111">    return ops;</span>
+<span class="fc" id="L101">    return ops;</span>
   }
 
   @Override
   public SelectionKey interestOps(int interestOps) {
-<span class="fc" id="L116">    this.ops = interestOps; // FIXME check</span>
-<span class="fc" id="L117">    return this;</span>
+<span class="fc" id="L106">    this.ops = interestOps; // FIXME check</span>
+<span class="fc" id="L107">    return this;</span>
   }
 
   @Override
   public int readyOps() {
-<span class="fc" id="L122">    return opsReady &amp; ~OP_INVALID;</span>
+<span class="fc" id="L112">    return opsReady &amp; ~OP_INVALID;</span>
   }
 
   AFSocketCore getAFCore() {
-<span class="fc" id="L126">    return core;</span>
+<span class="fc" id="L116">    return core;</span>
   }
 
   void setOpsReady(int opsReady) {
-<span class="fc" id="L130">    this.opsReady = opsReady;</span>
-<span class="fc" id="L131">  }</span>
+<span class="fc" id="L120">    this.opsReady = opsReady;</span>
+<span class="fc" id="L121">  }</span>
 
   @Override
   public String toString() {
-<span class="nc" id="L135">    return super.toString() + &quot;[&quot; + readyOps() + &quot;;valid=&quot; + isValid() + &quot;;channel=&quot; + channel()</span>
+<span class="nc" id="L125">    return super.toString() + &quot;[&quot; + readyOps() + &quot;;valid=&quot; + isValid() + &quot;;channel=&quot; + channel()</span>
         + &quot;]&quot;;
   }
 }

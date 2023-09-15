@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
@@ -31,6 +32,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.URI;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -40,53 +42,68 @@ import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+import com.google.errorprone.annotations.Immutable;
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Some {@link SocketAddress} that is supported by junixsocket, such as {@link AFUNIXSocketAddress}.
  *
  * @author Christian Kohlschütter
  */
+@Immutable
 @SuppressWarnings({&quot;PMD.CouplingBetweenObjects&quot;, &quot;PMD.CyclomaticComplexity&quot;})
 public abstract class AFSocketAddress extends InetSocketAddress {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L; // do not change!
 
   /**
    * Just a marker for &quot;don't actually bind&quot; (checked with &quot;==&quot;). Used in combination with a
    * superclass' bind method, which should trigger &quot;setBound()&quot;, etc.
    */
-<span class="fc" id="L56">  static final AFSocketAddress INTERNAL_DUMMY_BIND = new SentinelSocketAddress(0);</span>
-<span class="fc" id="L57">  static final AFSocketAddress INTERNAL_DUMMY_CONNECT = new SentinelSocketAddress(1);</span>
-<span class="fc" id="L58">  static final AFSocketAddress INTERNAL_DUMMY_DONT_CONNECT = new SentinelSocketAddress(2);</span>
+<span class="fc" id="L62">  static final AFSocketAddress INTERNAL_DUMMY_BIND = new SentinelSocketAddress(0);</span>
+<span class="fc" id="L63">  static final AFSocketAddress INTERNAL_DUMMY_CONNECT = new SentinelSocketAddress(1);</span>
+<span class="fc" id="L64">  static final AFSocketAddress INTERNAL_DUMMY_DONT_CONNECT = new SentinelSocketAddress(2);</span>
 
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">  private static final int SOCKADDR_NATIVE_FAMILY_OFFSET = NativeUnixSocket.isLoaded() //</span>
-<span class="pc" id="L61">      ? NativeUnixSocket.sockAddrNativeFamilyOffset() : -1;</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">  private static final int SOCKADDR_NATIVE_FAMILY_OFFSET = NativeUnixSocket.isLoaded() //</span>
+<span class="pc" id="L67">      ? NativeUnixSocket.sockAddrNativeFamilyOffset() : -1;</span>
 
-<span class="pc bpc" id="L63" title="1 of 2 branches missed.">  private static final int SOCKADDR_NATIVE_DATA_OFFSET = NativeUnixSocket.isLoaded() //</span>
-<span class="pc" id="L64">      ? NativeUnixSocket.sockAddrNativeDataOffset() : -1;</span>
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">  private static final int SOCKADDR_NATIVE_DATA_OFFSET = NativeUnixSocket.isLoaded() //</span>
+<span class="pc" id="L70">      ? NativeUnixSocket.sockAddrNativeDataOffset() : -1;</span>
 
-<span class="pc bpc" id="L66" title="1 of 2 branches missed.">  private static final int SOCKADDR_MAX_LEN = NativeUnixSocket.isLoaded() //</span>
-<span class="pc" id="L67">      ? NativeUnixSocket.sockAddrLength(0) : 256;</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">  private static final int SOCKADDR_MAX_LEN = NativeUnixSocket.isLoaded() //</span>
+<span class="pc" id="L73">      ? NativeUnixSocket.sockAddrLength(0) : 256;</span>
 
-<span class="fc" id="L69">  private static final Map&lt;AFAddressFamily&lt;?&gt;, Map&lt;Integer, Map&lt;ByteBuffer, AFSocketAddress&gt;&gt;&gt; ADDRESS_CACHE =</span>
+<span class="fc" id="L75">  private static final Map&lt;AFAddressFamily&lt;?&gt;, Map&lt;Integer, Map&lt;ByteBuffer, AFSocketAddress&gt;&gt;&gt; ADDRESS_CACHE =</span>
       new HashMap&lt;&gt;();
 
-<span class="fc" id="L72">  static final ThreadLocal&lt;ByteBuffer&gt; SOCKETADDRESS_BUFFER_TL = new ThreadLocal&lt;ByteBuffer&gt;() {</span>
+<span class="fc" id="L78">  static final ThreadLocal&lt;ByteBuffer&gt; SOCKETADDRESS_BUFFER_TL = new ThreadLocal&lt;ByteBuffer&gt;() {</span>
 
     @Override
     protected ByteBuffer initialValue() {
-<span class="fc" id="L76">      return AFSocketAddress.newSockAddrDirectBuffer(SOCKADDR_MAX_LEN);</span>
+<span class="fc" id="L82">      return AFSocketAddress.newSockAddrDirectBuffer(SOCKADDR_MAX_LEN);</span>
     }
   };
+
+  private static final boolean USE_DESERIALIZATION_FOR_INIT;
+
+  static {
+<span class="fc" id="L89">    String v = System.getProperty(&quot;org.newsclub.net.unix.AFSocketAddress.deserialize&quot;, &quot;&quot;);</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">    USE_DESERIALIZATION_FOR_INIT = v.isEmpty() ? NativeLibraryLoader.isAndroid() : Boolean.valueOf(</span>
+        v);
+<span class="fc" id="L92">  }</span>
 
   /**
    * Some byte-level representation of this address, which can only be converted to a native
    * representation in combination with the domain ID.
    */
-  private final byte[] bytes;
+  @SuppressFBWarnings(&quot;JCIP_FIELD_ISNT_FINAL_IN_IMMUTABLE_CLASS&quot;)
+  private byte[] bytes;
 
   /**
    * An {@link InetAddress}-wrapped representation of this address. Only created upon demand.
    */
-<span class="fc" id="L89">  private InetAddress inetAddress = null;</span>
+<span class="fc" id="L104">  @SuppressFBWarnings(&quot;JCIP_FIELD_ISNT_FINAL_IN_IMMUTABLE_CLASS&quot;) // only modified during</span>
+                                                                  // construction/deserialization
+  private InetAddress inetAddress = null; // derived from bytes
 
   /**
    * The system-native representation of this address, or {@code null}.
@@ -108,7 +125,6 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @param af The address family.
    * @throws SocketException on error.
    */
-  @SuppressWarnings({&quot;cast&quot;, &quot;this-escape&quot;})
   protected AFSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress,
       AFAddressFamily&lt;?&gt; af) throws SocketException {
     /*
@@ -118,28 +134,10 @@ public abstract class AFSocketAddress extends InetSocketAddress {
      * Using a resolved address (with the address bit initialized) would be ideal, but resolved
      * addresses can only be IPv4 or IPv6 (at least as of Java 16 and earlier).
      */
-<span class="fc bfc" id="L121" title="All 4 branches covered.">    super(AFInetAddress.createUnresolvedHostname(socketAddress, af), port &gt;= 0 &amp;&amp; port &lt;= 0xffff</span>
-<span class="fc" id="L122">        ? port : 0);</span>
-<span class="pc bpc" id="L123" title="1 of 2 branches missed.">    if (socketAddress.length == 0) {</span>
-<span class="nc" id="L124">      throw new SocketException(&quot;Illegal address length: &quot; + socketAddress.length);</span>
-    }
-
-<span class="fc bfc" id="L127" title="All 2 branches covered.">    this.nativeAddress = nativeAddress == null ? null : (ByteBuffer) (Object) nativeAddress</span>
-<span class="fc" id="L128">        .duplicate().rewind();</span>
-<span class="fc bfc" id="L129" title="All 2 branches covered.">    if (port &lt; -1) {</span>
-<span class="fc" id="L130">      throw new IllegalArgumentException(&quot;port out of range&quot;);</span>
-<span class="fc bfc" id="L131" title="All 2 branches covered.">    } else if (port &gt; 0xffff) {</span>
-<span class="pc bpc" id="L132" title="1 of 2 branches missed.">      if (!NativeUnixSocket.isLoaded()) {</span>
-<span class="nc" id="L133">        throw (SocketException) new SocketException(</span>
-<span class="nc" id="L134">            &quot;Cannot set SocketAddress port - junixsocket JNI library is not available&quot;).initCause(</span>
-<span class="nc" id="L135">                NativeUnixSocket.unsupportedException());</span>
-      }
-<span class="fc" id="L137">      NativeUnixSocket.setPort1(this, port);</span>
-    }
-
-<span class="fc" id="L140">    this.bytes = socketAddress.clone();</span>
-<span class="fc" id="L141">    this.addressFamily = af;</span>
-<span class="fc" id="L142">  }</span>
+<span class="fc bfc" id="L137" title="All 4 branches covered.">    super(AFInetAddress.createUnresolvedHostname(socketAddress, af), port &gt;= 0 &amp;&amp; port &lt;= 0xffff</span>
+<span class="fc" id="L138">        ? port : 0);</span>
+<span class="fc" id="L139">    initAFSocketAddress(this, port, socketAddress, nativeAddress, af);</span>
+<span class="fc" id="L140">  }</span>
 
   /**
    * Only for {@link SentinelSocketAddress}.
@@ -149,11 +147,169 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    */
   @SuppressWarnings(&quot;PMD.UnusedFormalParameter&quot;)
   AFSocketAddress(Class&lt;SentinelSocketAddress&gt; clazz, int port) {
-<span class="fc" id="L152">    super(InetAddress.getLoopbackAddress(), port);</span>
-<span class="fc" id="L153">    this.nativeAddress = null;</span>
-<span class="fc" id="L154">    this.bytes = new byte[0];</span>
-<span class="fc" id="L155">    this.addressFamily = null;</span>
-<span class="fc" id="L156">  }</span>
+<span class="fc" id="L150">    super(InetAddress.getLoopbackAddress(), port);</span>
+<span class="fc" id="L151">    this.nativeAddress = null;</span>
+<span class="fc" id="L152">    this.bytes = new byte[0];</span>
+<span class="fc" id="L153">    this.addressFamily = null;</span>
+<span class="fc" id="L154">  }</span>
+
+  @SuppressWarnings({&quot;cast&quot;, &quot;this-escape&quot;})
+  private static void initAFSocketAddress(AFSocketAddress addr, int port,
+      final byte[] socketAddress, ByteBuffer nativeAddress, AFAddressFamily&lt;?&gt; af)
+      throws SocketException {
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">    if (socketAddress.length == 0) {</span>
+<span class="nc" id="L161">      throw new SocketException(&quot;Illegal address length: &quot; + socketAddress.length);</span>
+    }
+
+<span class="fc bfc" id="L164" title="All 2 branches covered.">    addr.nativeAddress = nativeAddress == null ? null : (ByteBuffer) (Object) nativeAddress</span>
+<span class="fc" id="L165">        .duplicate().rewind();</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">    if (port &lt; -1) {</span>
+<span class="fc" id="L167">      throw new IllegalArgumentException(&quot;port out of range&quot;);</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">    } else if (port &gt; 0xffff) {</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">      if (!NativeUnixSocket.isLoaded()) {</span>
+<span class="nc" id="L170">        throw (SocketException) new SocketException(</span>
+<span class="nc" id="L171">            &quot;Cannot set SocketAddress port - junixsocket JNI library is not available&quot;).initCause(</span>
+<span class="nc" id="L172">                NativeUnixSocket.unsupportedException());</span>
+      }
+<span class="fc" id="L174">      NativeUnixSocket.setPort1(addr, port);</span>
+    }
+
+<span class="fc" id="L177">    addr.bytes = socketAddress.clone();</span>
+<span class="fc" id="L178">    addr.addressFamily = af;</span>
+<span class="fc" id="L179">  }</span>
+
+  /**
+   * Returns a new {@link AFSocketAddress} instance via deserialization. This is a trick to
+   * workaround certain environments that do not allow the construction of {@link InetSocketAddress}
+   * instances without trying DNS resolution.
+   *
+   * @param &lt;A&gt; The subclass (must be a direct subclass of {@link AFSocketAddress}).
+   * @param port The port to use.
+   * @param socketAddress The junixsocket representation of the socket address.
+   * @param nativeAddress The system-native representation of the socket address, or {@code null}.
+   * @param af The address family, corresponding to the subclass
+   * @param constructor The constructor to use as fallback
+   * @return The new instance.
+   * @throws SocketException on error.
+   */
+  protected static &lt;A extends AFSocketAddress&gt; A newDeserializedAFSocketAddress(int port,
+      final byte[] socketAddress, ByteBuffer nativeAddress, AFAddressFamily&lt;A&gt; af,
+      AFSocketAddressConstructor&lt;A&gt; constructor) throws SocketException {
+<span class="nc" id="L198">    String hostname = AFInetAddress.createUnresolvedHostname(socketAddress, af);</span>
+<span class="nc bnc" id="L199" title="All 4 branches missed.">    if (hostname == null || hostname.isEmpty()) {</span>
+<span class="nc" id="L200">      return constructor.newAFSocketAddress(port, socketAddress, nativeAddress);</span>
+    }
+<span class="nc" id="L202">    try (ObjectInputStream oin = new ObjectInputStream(new ByteArrayInputStream(AFSocketAddress</span>
+<span class="nc bnc" id="L203" title="All 4 branches missed.">        .craftSerializedObject(af.getSocketAddressClass(), hostname, (port &gt;= 0 &amp;&amp; port &lt;= 0xffff</span>
+<span class="nc" id="L204">            ? port : 0))))) {</span>
+      @SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L206">      A addr = (A) oin.readObject();</span>
+<span class="nc" id="L207">      initAFSocketAddress(addr, port, socketAddress, nativeAddress, af);</span>
+<span class="nc" id="L208">      return addr;</span>
+<span class="nc" id="L209">    } catch (SocketException e) {</span>
+<span class="nc" id="L210">      throw e;</span>
+<span class="nc" id="L211">    } catch (ClassNotFoundException | IOException e) {</span>
+<span class="nc" id="L212">      throw (SocketException) new SocketException(&quot;Unexpected deserialization problem&quot;).initCause(</span>
+          e);
+    }
+  }
+
+  /**
+   * Creates a byte-representation of a serialized {@link AFSocketAddress} instance, overriding
+   * hostname and port, which allows bypassing DNS resolution.
+   *
+   * @param className The actual subclass.
+   * @param hostname The hostname to use (must not be empty or null).
+   * @param port The port to use.
+   * @return The byte representation.
+   */
+  private static byte[] craftSerializedObject(Class&lt;? extends AFSocketAddress&gt; className,
+      String hostname, int port) {
+<span class="nc" id="L228">    ByteBuffer bb = ByteBuffer.allocate(768);</span>
+<span class="nc" id="L229">    bb.putShort((short) 0xaced); // STREAM_MAGIC</span>
+<span class="nc" id="L230">    bb.putShort((short) 5); // STREAM_VERSION</span>
+<span class="nc" id="L231">    bb.put((byte) 0x73); // TC_OBJECT</span>
+<span class="nc" id="L232">    bb.put((byte) 0x72); // TC_CLASSDESC</span>
+
+<span class="nc" id="L234">    putShortLengthUtf8(bb, className.getName());</span>
+<span class="nc" id="L235">    bb.putLong(1); // serialVersionUID of subclass (expected to be 1)</span>
+<span class="nc" id="L236">    bb.putInt(0x02000078);</span>
+<span class="nc" id="L237">    bb.put((byte) 0x72);</span>
+
+<span class="nc" id="L239">    putShortLengthUtf8(bb, AFSocketAddress.class.getName());</span>
+<span class="nc" id="L240">    bb.putLong(serialVersionUID); // serialVersionUID of AFSocketAddress</span>
+<span class="nc" id="L241">    bb.putInt(0x0300025B);</span>
+<span class="nc" id="L242">    putShortLengthUtf8(bb, &quot;bytes&quot;);</span>
+
+<span class="nc" id="L244">    bb.putInt(0x7400025B);</span>
+<span class="nc" id="L245">    bb.putShort((short) 0x424C);</span>
+
+<span class="nc" id="L247">    putShortLengthUtf8(bb, &quot;inetAddress&quot;);</span>
+<span class="nc" id="L248">    bb.put((byte) 0x74);</span>
+
+<span class="nc" id="L250">    putShortLengthEncodedClassName(bb, InetAddress.class);</span>
+
+<span class="nc" id="L252">    bb.putShort((short) 0x7872);</span>
+<span class="nc" id="L253">    putShortLengthUtf8(bb, InetSocketAddress.class.getName());</span>
+<span class="nc" id="L254">    bb.putLong(5076001401234631237L); // NOPMD InetSocketAddress serialVersionUID</span>
+
+<span class="nc" id="L256">    bb.putInt(0x03000349);</span>
+<span class="nc" id="L257">    putShortLengthUtf8(bb, &quot;port&quot;);</span>
+
+<span class="nc" id="L259">    bb.put((byte) 0x4C);</span>
+<span class="nc" id="L260">    putShortLengthUtf8(bb, &quot;addr&quot;);</span>
+
+<span class="nc" id="L262">    bb.putInt(0x71007E00);</span>
+<span class="nc" id="L263">    bb.putShort((short) 0x034C);</span>
+<span class="nc" id="L264">    putShortLengthUtf8(bb, &quot;hostname&quot;);</span>
+<span class="nc" id="L265">    bb.put((byte) 0x74);</span>
+
+<span class="nc" id="L267">    putShortLengthEncodedClassName(bb, String.class);</span>
+
+<span class="nc" id="L269">    bb.putShort((short) 0x7872);</span>
+<span class="nc" id="L270">    putShortLengthUtf8(bb, SocketAddress.class.getName());</span>
+<span class="nc" id="L271">    bb.putLong(5215720748342549866L); // NOPMD SocketAddress serialVersionUID</span>
+
+<span class="nc" id="L273">    bb.putInt(0x02000078);</span>
+<span class="nc" id="L274">    bb.put((byte) 0x70);</span>
+<span class="nc" id="L275">    bb.putInt(port);</span>
+
+<span class="nc" id="L277">    bb.putShort((short) 0x7074);</span>
+<span class="nc" id="L278">    putShortLengthUtf8(bb, hostname);</span>
+
+<span class="nc" id="L280">    bb.putInt(0x78707077);</span>
+<span class="nc" id="L281">    bb.put((byte) 0x0B);</span>
+
+<span class="nc" id="L283">    putShortLengthUtf8(bb, &quot;undefined&quot;);</span>
+
+<span class="nc" id="L285">    bb.put((byte) 0x78); // TC_ENDBLOCKDATA</span>
+<span class="nc" id="L286">    bb.flip();</span>
+
+<span class="nc" id="L288">    byte[] buf = new byte[bb.remaining()];</span>
+<span class="nc" id="L289">    bb.get(buf);</span>
+<span class="nc" id="L290">    return buf;</span>
+  }
+
+  private static void putShortLengthEncodedClassName(ByteBuffer bb, Class&lt;?&gt; klazz) {
+<span class="nc" id="L294">    putShortLengthUtf8(bb, &quot;L&quot; + klazz.getName().replace('.', '/') + &quot;;&quot;);</span>
+<span class="nc" id="L295">  }</span>
+
+  private static void putShortLengthUtf8(ByteBuffer bb, String s) {
+<span class="nc" id="L298">    byte[] utf8 = s.getBytes(StandardCharsets.UTF_8);</span>
+<span class="nc" id="L299">    bb.putShort((short) utf8.length);</span>
+<span class="nc" id="L300">    bb.put(utf8);</span>
+<span class="nc" id="L301">  }</span>
+
+  /**
+   * Checks if {@link AFSocketAddress} instantiation should be performed via deserialization.
+   *
+   * @return {@code true} if so.
+   * @see #newDeserializedAFSocketAddress(int, byte[], ByteBuffer, AFAddressFamily,
+   *      AFSocketAddressConstructor)
+   */
+  protected static boolean isUseDeserializationForInit() {
+<span class="fc" id="L311">    return USE_DESERIALIZATION_FOR_INIT;</span>
+  }
 
   /**
    * Checks if the address can be resolved to a {@link File}.
@@ -179,7 +335,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @return The address family instance.
    */
   public final AFAddressFamily&lt;?&gt; getAddressFamily() {
-<span class="fc" id="L182">    return addressFamily;</span>
+<span class="fc" id="L338">    return addressFamily;</span>
   }
 
   /**
@@ -192,14 +348,14 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    */
   protected static final InetAddress getInetAddress(FileDescriptor fdesc, boolean peerName,
       AFAddressFamily&lt;?&gt; af) {
-<span class="pc bpc" id="L195" title="1 of 2 branches missed.">    if (!fdesc.valid()) {</span>
-<span class="nc" id="L196">      return null;</span>
+<span class="pc bpc" id="L351" title="1 of 2 branches missed.">    if (!fdesc.valid()) {</span>
+<span class="nc" id="L352">      return null;</span>
     }
-<span class="fc" id="L198">    byte[] addr = NativeUnixSocket.sockname(af.getDomain(), fdesc, peerName);</span>
-<span class="fc bfc" id="L199" title="All 2 branches covered.">    if (addr == null) {</span>
-<span class="fc" id="L200">      return null;</span>
+<span class="fc" id="L354">    byte[] addr = NativeUnixSocket.sockname(af.getDomain(), fdesc, peerName);</span>
+<span class="fc bfc" id="L355" title="All 2 branches covered.">    if (addr == null) {</span>
+<span class="fc" id="L356">      return null;</span>
     }
-<span class="fc" id="L202">    return AFInetAddress.wrapAddress(addr, af);</span>
+<span class="fc" id="L358">    return AFInetAddress.wrapAddress(addr, af);</span>
   }
 
   /**
@@ -214,54 +370,54 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    */
   protected static final &lt;A extends AFSocketAddress&gt; @Nullable A getSocketAddress(
       FileDescriptor fdesc, boolean peerName, int port, AFAddressFamily&lt;A&gt; af) {
-<span class="fc bfc" id="L217" title="All 2 branches covered.">    if (!fdesc.valid()) {</span>
-<span class="fc" id="L218">      return null;</span>
+<span class="fc bfc" id="L373" title="All 2 branches covered.">    if (!fdesc.valid()) {</span>
+<span class="fc" id="L374">      return null;</span>
     }
-<span class="fc" id="L220">    byte[] addr = NativeUnixSocket.sockname(af.getDomain(), fdesc, peerName);</span>
-<span class="fc bfc" id="L221" title="All 2 branches covered.">    if (addr == null) {</span>
-<span class="fc" id="L222">      return null;</span>
+<span class="fc" id="L376">    byte[] addr = NativeUnixSocket.sockname(af.getDomain(), fdesc, peerName);</span>
+<span class="fc bfc" id="L377" title="All 2 branches covered.">    if (addr == null) {</span>
+<span class="fc" id="L378">      return null;</span>
     }
     try {
       // FIXME we could infer the &quot;port&quot; from the path if the socket factory supports that
-<span class="fc" id="L226">      return AFSocketAddress.unwrap(AFInetAddress.wrapAddress(addr, af), port, af);</span>
-<span class="nc" id="L227">    } catch (SocketException e) {</span>
-<span class="nc" id="L228">      throw new IllegalStateException(e);</span>
+<span class="fc" id="L382">      return AFSocketAddress.unwrap(AFInetAddress.wrapAddress(addr, af), port, af);</span>
+<span class="nc" id="L383">    } catch (SocketException e) {</span>
+<span class="nc" id="L384">      throw new IllegalStateException(e);</span>
     }
   }
 
   static final AFSocketAddress preprocessSocketAddress(
       Class&lt;? extends AFSocketAddress&gt; supportedAddressClass, SocketAddress endpoint,
       AFSocketAddressFromHostname&lt;?&gt; afh) throws SocketException {
-<span class="fc" id="L235">    Objects.requireNonNull(endpoint);</span>
-<span class="fc bfc" id="L236" title="All 2 branches covered.">    if (endpoint instanceof SentinelSocketAddress) {</span>
-<span class="fc" id="L237">      return (SentinelSocketAddress) endpoint;</span>
+<span class="fc" id="L391">    Objects.requireNonNull(endpoint);</span>
+<span class="fc bfc" id="L392" title="All 2 branches covered.">    if (endpoint instanceof SentinelSocketAddress) {</span>
+<span class="fc" id="L393">      return (SentinelSocketAddress) endpoint;</span>
     }
 
-<span class="fc bfc" id="L240" title="All 2 branches covered.">    if (!(endpoint instanceof AFSocketAddress)) {</span>
-<span class="fc bfc" id="L241" title="All 2 branches covered.">      if (afh != null) {</span>
-<span class="pc bpc" id="L242" title="1 of 2 branches missed.">        if (endpoint instanceof InetSocketAddress) {</span>
-<span class="fc" id="L243">          InetSocketAddress isa = (InetSocketAddress) endpoint;</span>
+<span class="fc bfc" id="L396" title="All 2 branches covered.">    if (!(endpoint instanceof AFSocketAddress)) {</span>
+<span class="fc bfc" id="L397" title="All 2 branches covered.">      if (afh != null) {</span>
+<span class="pc bpc" id="L398" title="1 of 2 branches missed.">        if (endpoint instanceof InetSocketAddress) {</span>
+<span class="fc" id="L399">          InetSocketAddress isa = (InetSocketAddress) endpoint;</span>
 
-<span class="fc" id="L245">          String hostname = isa.getHostString();</span>
-<span class="fc bfc" id="L246" title="All 2 branches covered.">          if (afh.isHostnameSupported(hostname)) {</span>
+<span class="fc" id="L401">          String hostname = isa.getHostString();</span>
+<span class="fc bfc" id="L402" title="All 2 branches covered.">          if (afh.isHostnameSupported(hostname)) {</span>
             try {
-<span class="fc" id="L248">              endpoint = afh.addressFromHost(hostname, isa.getPort());</span>
-<span class="fc" id="L249">            } catch (SocketException e) {</span>
-<span class="fc" id="L250">              throw e;</span>
-<span class="fc" id="L251">            }</span>
+<span class="fc" id="L404">              endpoint = afh.addressFromHost(hostname, isa.getPort());</span>
+<span class="fc" id="L405">            } catch (SocketException e) {</span>
+<span class="fc" id="L406">              throw e;</span>
+<span class="fc" id="L407">            }</span>
           }
         }
       }
     }
 
-<span class="fc" id="L257">    Objects.requireNonNull(endpoint);</span>
+<span class="fc" id="L413">    Objects.requireNonNull(endpoint);</span>
 
-<span class="fc bfc" id="L259" title="All 2 branches covered.">    if (!supportedAddressClass.isAssignableFrom(endpoint.getClass())) {</span>
-<span class="fc" id="L260">      throw new IllegalArgumentException(&quot;Can only connect to endpoints of type &quot;</span>
-<span class="fc" id="L261">          + supportedAddressClass.getName() + &quot;, got: &quot; + endpoint.getClass() + &quot;: &quot; + endpoint);</span>
+<span class="fc bfc" id="L415" title="All 2 branches covered.">    if (!supportedAddressClass.isAssignableFrom(endpoint.getClass())) {</span>
+<span class="fc" id="L416">      throw new IllegalArgumentException(&quot;Can only connect to endpoints of type &quot;</span>
+<span class="fc" id="L417">          + supportedAddressClass.getName() + &quot;, got: &quot; + endpoint.getClass() + &quot;: &quot; + endpoint);</span>
     }
 
-<span class="fc" id="L264">    return (AFSocketAddress) endpoint;</span>
+<span class="fc" id="L420">    return (AFSocketAddress) endpoint;</span>
   }
 
   /**
@@ -270,7 +426,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @return The byte array.
    */
   protected final byte[] getBytes() {
-<span class="fc" id="L273">    return bytes; // NOPMD</span>
+<span class="fc" id="L429">    return bytes; // NOPMD</span>
   }
 
   /**
@@ -285,7 +441,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @return The &quot;special&quot; {@link InetAddress}.
    */
   public final InetAddress wrapAddress() {
-<span class="fc" id="L288">    return AFInetAddress.wrapAddress(bytes, getAddressFamily());</span>
+<span class="fc" id="L444">    return AFInetAddress.wrapAddress(bytes, getAddressFamily());</span>
   }
 
   /**
@@ -324,90 +480,90 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   @SuppressWarnings({&quot;unchecked&quot;, &quot;null&quot;})
   protected static final &lt;A extends AFSocketAddress&gt; A resolveAddress(final byte[] socketAddress,
       int port, AFAddressFamily&lt;A&gt; af) throws SocketException {
-<span class="fc bfc" id="L327" title="All 2 branches covered.">    if (socketAddress.length == 0) {</span>
-<span class="fc" id="L328">      throw new SocketException(&quot;Address cannot be empty&quot;);</span>
+<span class="fc bfc" id="L483" title="All 2 branches covered.">    if (socketAddress.length == 0) {</span>
+<span class="fc" id="L484">      throw new SocketException(&quot;Address cannot be empty&quot;);</span>
     }
 
-<span class="fc bfc" id="L331" title="All 2 branches covered.">    if (port == -1) {</span>
-<span class="fc" id="L332">      port = 0;</span>
+<span class="fc bfc" id="L487" title="All 2 branches covered.">    if (port == -1) {</span>
+<span class="fc" id="L488">      port = 0;</span>
     }
 
-<span class="fc" id="L335">    ByteBuffer direct = SOCKETADDRESS_BUFFER_TL.get();</span>
-<span class="pc bpc" id="L336" title="1 of 2 branches missed.">    int limit = NativeUnixSocket.isLoaded() ? NativeUnixSocket.bytesToSockAddr(af.getDomain(),</span>
-<span class="pc" id="L337">        direct, socketAddress) : -1;</span>
-<span class="fc bfc" id="L338" title="All 2 branches covered.">    if (limit == -1) {</span>
+<span class="fc" id="L491">    ByteBuffer direct = SOCKETADDRESS_BUFFER_TL.get();</span>
+<span class="pc bpc" id="L492" title="1 of 2 branches missed.">    int limit = NativeUnixSocket.isLoaded() ? NativeUnixSocket.bytesToSockAddr(af.getDomain(),</span>
+<span class="pc" id="L493">        direct, socketAddress) : -1;</span>
+<span class="fc bfc" id="L494" title="All 2 branches covered.">    if (limit == -1) {</span>
       // not supported, but we can still create an address
-<span class="fc" id="L340">      return af.getAddressConstructor().newAFSocketAddress(port, socketAddress, null);</span>
-<span class="pc bpc" id="L341" title="1 of 2 branches missed.">    } else if (limit &gt; SOCKADDR_MAX_LEN) {</span>
-<span class="nc" id="L342">      throw new IllegalStateException(&quot;Unexpected address length&quot;);</span>
+<span class="fc" id="L496">      return af.getAddressConstructor().newAFSocketAddress(port, socketAddress, null);</span>
+<span class="pc bpc" id="L497" title="1 of 2 branches missed.">    } else if (limit &gt; SOCKADDR_MAX_LEN) {</span>
+<span class="nc" id="L498">      throw new IllegalStateException(&quot;Unexpected address length&quot;);</span>
     }
-<span class="fc" id="L344">    direct.rewind();</span>
-<span class="fc" id="L345">    direct.limit(limit);</span>
+<span class="fc" id="L500">    direct.rewind();</span>
+<span class="fc" id="L501">    direct.limit(limit);</span>
 
     A instance;
-<span class="fc" id="L348">    synchronized (AFSocketAddress.class) {</span>
+<span class="fc" id="L504">    synchronized (AFSocketAddress.class) {</span>
       Map&lt;ByteBuffer, AFSocketAddress&gt; map;
-<span class="fc" id="L350">      Map&lt;Integer, Map&lt;ByteBuffer, AFSocketAddress&gt;&gt; mapPorts = ADDRESS_CACHE.get(af);</span>
-<span class="fc bfc" id="L351" title="All 2 branches covered.">      if (mapPorts == null) {</span>
-<span class="fc" id="L352">        instance = null;</span>
-<span class="fc" id="L353">        mapPorts = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L354">        map = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L355">        mapPorts.put(port, map);</span>
-<span class="fc" id="L356">        ADDRESS_CACHE.put(af, mapPorts);</span>
+<span class="fc" id="L506">      Map&lt;Integer, Map&lt;ByteBuffer, AFSocketAddress&gt;&gt; mapPorts = ADDRESS_CACHE.get(af);</span>
+<span class="fc bfc" id="L507" title="All 2 branches covered.">      if (mapPorts == null) {</span>
+<span class="fc" id="L508">        instance = null;</span>
+<span class="fc" id="L509">        mapPorts = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L510">        map = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L511">        mapPorts.put(port, map);</span>
+<span class="fc" id="L512">        ADDRESS_CACHE.put(af, mapPorts);</span>
       } else {
-<span class="fc" id="L358">        map = mapPorts.get(port);</span>
-<span class="fc bfc" id="L359" title="All 2 branches covered.">        if (map == null) {</span>
-<span class="fc" id="L360">          instance = null;</span>
-<span class="fc" id="L361">          map = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L362">          mapPorts.put(port, map);</span>
+<span class="fc" id="L514">        map = mapPorts.get(port);</span>
+<span class="fc bfc" id="L515" title="All 2 branches covered.">        if (map == null) {</span>
+<span class="fc" id="L516">          instance = null;</span>
+<span class="fc" id="L517">          map = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L518">          mapPorts.put(port, map);</span>
         } else {
-<span class="fc" id="L364">          instance = (A) map.get(direct);</span>
+<span class="fc" id="L520">          instance = (A) map.get(direct);</span>
         }
       }
 
-<span class="pc bpc" id="L368" title="1 of 2 branches missed.">      if (instance == null) {</span>
-<span class="fc" id="L369">        ByteBuffer key = newSockAddrKeyBuffer(limit);</span>
-<span class="fc" id="L370">        key.put(direct);</span>
-<span class="fc" id="L371">        key = key.asReadOnlyBuffer();</span>
+<span class="pc bpc" id="L524" title="1 of 2 branches missed.">      if (instance == null) {</span>
+<span class="fc" id="L525">        ByteBuffer key = newSockAddrKeyBuffer(limit);</span>
+<span class="fc" id="L526">        key.put(direct);</span>
+<span class="fc" id="L527">        key = key.asReadOnlyBuffer();</span>
 
-<span class="fc" id="L373">        instance = af.getAddressConstructor().newAFSocketAddress(port, socketAddress, key);</span>
+<span class="fc" id="L529">        instance = af.getAddressConstructor().newAFSocketAddress(port, socketAddress, key);</span>
 
-<span class="fc" id="L375">        map.put(key, instance);</span>
+<span class="fc" id="L531">        map.put(key, instance);</span>
       }
-<span class="fc" id="L377">    }</span>
+<span class="fc" id="L533">    }</span>
 
-<span class="fc" id="L379">    return instance;</span>
+<span class="fc" id="L535">    return instance;</span>
   }
 
   @SuppressWarnings(&quot;null&quot;)
   static final &lt;A extends AFSocketAddress&gt; A ofInternal(ByteBuffer socketAddressBuffer,
       AFAddressFamily&lt;A&gt; af) throws SocketException {
-<span class="fc" id="L385">    synchronized (AFSocketAddress.class) {</span>
-<span class="fc" id="L386">      Map&lt;Integer, Map&lt;ByteBuffer, AFSocketAddress&gt;&gt; mapPorts = ADDRESS_CACHE.get(af);</span>
-<span class="pc bpc" id="L387" title="1 of 2 branches missed.">      if (mapPorts != null) {</span>
-<span class="fc" id="L388">        Map&lt;ByteBuffer, AFSocketAddress&gt; map = mapPorts.get(0); // FIXME get port, something like</span>
+<span class="fc" id="L541">    synchronized (AFSocketAddress.class) {</span>
+<span class="fc" id="L542">      Map&lt;Integer, Map&lt;ByteBuffer, AFSocketAddress&gt;&gt; mapPorts = ADDRESS_CACHE.get(af);</span>
+<span class="pc bpc" id="L543" title="1 of 2 branches missed.">      if (mapPorts != null) {</span>
+<span class="fc" id="L544">        Map&lt;ByteBuffer, AFSocketAddress&gt; map = mapPorts.get(0); // FIXME get port, something like</span>
                                                                 // sockAddrToPort
-<span class="pc bpc" id="L390" title="1 of 2 branches missed.">        if (map != null) {</span>
+<span class="pc bpc" id="L546" title="1 of 2 branches missed.">        if (map != null) {</span>
           @SuppressWarnings(&quot;unchecked&quot;)
-<span class="fc" id="L392">          A address = (A) map.get(socketAddressBuffer.rewind());</span>
-<span class="pc bpc" id="L393" title="1 of 2 branches missed.">          if (address != null) {</span>
-<span class="nc" id="L394">            return address;</span>
+<span class="fc" id="L548">          A address = (A) map.get(socketAddressBuffer.rewind());</span>
+<span class="pc bpc" id="L549" title="1 of 2 branches missed.">          if (address != null) {</span>
+<span class="nc" id="L550">            return address;</span>
           }
         }
       }
 
-<span class="pc bpc" id="L399" title="1 of 2 branches missed.">      if (!socketAddressBuffer.isDirect()) {</span>
-<span class="nc" id="L400">        ByteBuffer buf = getNativeAddressDirectBuffer(Math.min(socketAddressBuffer.limit(),</span>
+<span class="pc bpc" id="L555" title="1 of 2 branches missed.">      if (!socketAddressBuffer.isDirect()) {</span>
+<span class="nc" id="L556">        ByteBuffer buf = getNativeAddressDirectBuffer(Math.min(socketAddressBuffer.limit(),</span>
             SOCKADDR_MAX_LEN));
-<span class="nc" id="L402">        buf.put(socketAddressBuffer);</span>
-<span class="nc" id="L403">        socketAddressBuffer = buf;</span>
+<span class="nc" id="L558">        buf.put(socketAddressBuffer);</span>
+<span class="nc" id="L559">        socketAddressBuffer = buf;</span>
       }
-<span class="fc" id="L405">      byte[] sockAddrToBytes = NativeUnixSocket.sockAddrToBytes(af.getDomain(),</span>
+<span class="fc" id="L561">      byte[] sockAddrToBytes = NativeUnixSocket.sockAddrToBytes(af.getDomain(),</span>
           socketAddressBuffer);
-<span class="pc bpc" id="L407" title="1 of 2 branches missed.">      if (sockAddrToBytes == null) {</span>
-<span class="nc" id="L408">        return null;</span>
+<span class="pc bpc" id="L563" title="1 of 2 branches missed.">      if (sockAddrToBytes == null) {</span>
+<span class="nc" id="L564">        return null;</span>
       } else {
-<span class="fc" id="L410">        return AFSocketAddress.resolveAddress(sockAddrToBytes, 0, af);</span>
+<span class="fc" id="L566">        return AFSocketAddress.resolveAddress(sockAddrToBytes, 0, af);</span>
       }
     }
   }
@@ -419,10 +575,10 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @return The {@link InetAddress}.
    */
   protected final synchronized InetAddress getInetAddress(AFAddressFamily&lt;?&gt; af) {
-<span class="pc bpc" id="L422" title="1 of 2 branches missed.">    if (inetAddress == null) {</span>
-<span class="fc" id="L423">      inetAddress = AFInetAddress.wrapAddress(bytes, af);</span>
+<span class="pc bpc" id="L578" title="1 of 2 branches missed.">    if (inetAddress == null) {</span>
+<span class="fc" id="L579">      inetAddress = AFInetAddress.wrapAddress(bytes, af);</span>
     }
-<span class="fc" id="L425">    return inetAddress;</span>
+<span class="fc" id="L581">    return inetAddress;</span>
   }
 
   /**
@@ -431,15 +587,15 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @return The {@link InetAddress}.
    */
   protected final InetAddress getInetAddress() {
-<span class="fc" id="L434">    return getInetAddress(getAddressFamily());</span>
+<span class="fc" id="L590">    return getInetAddress(getAddressFamily());</span>
   }
 
   static final ByteBuffer newSockAddrDirectBuffer(int length) {
-<span class="fc" id="L438">    return ByteBuffer.allocateDirect(length);</span>
+<span class="fc" id="L594">    return ByteBuffer.allocateDirect(length);</span>
   }
 
   static final ByteBuffer newSockAddrKeyBuffer(int length) {
-<span class="fc" id="L442">    return ByteBuffer.allocate(length);</span>
+<span class="fc" id="L598">    return ByteBuffer.allocate(length);</span>
   }
 
   /**
@@ -458,8 +614,8 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   @NonNull
   protected static final &lt;A extends AFSocketAddress&gt; A unwrap(InetAddress address, int port,
       AFAddressFamily&lt;A&gt; af) throws SocketException {
-<span class="fc" id="L461">    Objects.requireNonNull(address);</span>
-<span class="fc" id="L462">    return resolveAddress(AFInetAddress.unwrapAddress(address, af), port, af);</span>
+<span class="fc" id="L617">    Objects.requireNonNull(address);</span>
+<span class="fc" id="L618">    return resolveAddress(AFInetAddress.unwrapAddress(address, af), port, af);</span>
   }
 
   /**
@@ -479,36 +635,36 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   @NonNull
   protected static final &lt;A extends AFSocketAddress&gt; A unwrap(String hostname, int port,
       AFAddressFamily&lt;A&gt; af) throws SocketException {
-<span class="fc" id="L482">    Objects.requireNonNull(hostname);</span>
-<span class="fc" id="L483">    return resolveAddress(AFInetAddress.unwrapAddress(hostname, af), port, af);</span>
+<span class="fc" id="L638">    Objects.requireNonNull(hostname);</span>
+<span class="fc" id="L639">    return resolveAddress(AFInetAddress.unwrapAddress(hostname, af), port, af);</span>
   }
 
   static final int unwrapAddressDirectBufferInternal(ByteBuffer socketAddressBuffer,
       SocketAddress address) throws SocketException {
-<span class="nc bnc" id="L488" title="All 2 branches missed.">    if (!NativeUnixSocket.isLoaded()) {</span>
-<span class="nc" id="L489">      throw new SocketException(&quot;Unsupported operation; junixsocket native library is not loaded&quot;);</span>
+<span class="nc bnc" id="L644" title="All 2 branches missed.">    if (!NativeUnixSocket.isLoaded()) {</span>
+<span class="nc" id="L645">      throw new SocketException(&quot;Unsupported operation; junixsocket native library is not loaded&quot;);</span>
     }
-<span class="nc" id="L491">    Objects.requireNonNull(address);</span>
+<span class="nc" id="L647">    Objects.requireNonNull(address);</span>
 
-<span class="nc bnc" id="L493" title="All 2 branches missed.">    if (!(address instanceof AFSocketAddress)) {</span>
-<span class="nc" id="L494">      Supplier&lt;? extends AFSocketAddress&gt; supp = AFUNIXSocketAddress.supportedAddressSupplier(</span>
+<span class="nc bnc" id="L649" title="All 2 branches missed.">    if (!(address instanceof AFSocketAddress)) {</span>
+<span class="nc" id="L650">      Supplier&lt;? extends AFSocketAddress&gt; supp = AFUNIXSocketAddress.supportedAddressSupplier(</span>
           address);
-<span class="nc bnc" id="L496" title="All 2 branches missed.">      address = supp == null ? null : supp.get();</span>
-<span class="nc bnc" id="L497" title="All 2 branches missed.">      if (address == null) {</span>
-<span class="nc" id="L498">        throw new SocketException(&quot;Unsupported address&quot;);</span>
+<span class="nc bnc" id="L652" title="All 2 branches missed.">      address = supp == null ? null : supp.get();</span>
+<span class="nc bnc" id="L653" title="All 2 branches missed.">      if (address == null) {</span>
+<span class="nc" id="L654">        throw new SocketException(&quot;Unsupported address&quot;);</span>
       }
     }
 
-<span class="nc" id="L502">    AFSocketAddress socketAddress = (AFSocketAddress) address;</span>
+<span class="nc" id="L658">    AFSocketAddress socketAddress = (AFSocketAddress) address;</span>
 
-<span class="nc" id="L504">    byte[] addr = socketAddress.getBytes();</span>
-<span class="nc" id="L505">    int domain = socketAddress.getAddressFamily().getDomain();</span>
+<span class="nc" id="L660">    byte[] addr = socketAddress.getBytes();</span>
+<span class="nc" id="L661">    int domain = socketAddress.getAddressFamily().getDomain();</span>
 
-<span class="nc" id="L507">    int len = NativeUnixSocket.bytesToSockAddr(domain, socketAddressBuffer, addr);</span>
-<span class="nc bnc" id="L508" title="All 2 branches missed.">    if (len == -1) {</span>
-<span class="nc" id="L509">      throw new SocketException(&quot;Unsupported domain&quot;);</span>
+<span class="nc" id="L663">    int len = NativeUnixSocket.bytesToSockAddr(domain, socketAddressBuffer, addr);</span>
+<span class="nc bnc" id="L664" title="All 2 branches missed.">    if (len == -1) {</span>
+<span class="nc" id="L665">      throw new SocketException(&quot;Unsupported domain&quot;);</span>
     }
-<span class="nc" id="L511">    return len;</span>
+<span class="nc" id="L667">    return len;</span>
   }
 
   /**
@@ -518,24 +674,24 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @return The direct {@link ByteBuffer}.
    */
   final ByteBuffer getNativeAddressDirectBuffer() throws SocketException {
-<span class="fc" id="L521">    ByteBuffer address = nativeAddress;</span>
-<span class="pc bpc" id="L522" title="1 of 2 branches missed.">    if (address == null) {</span>
-<span class="nc" id="L523">      throw (SocketException) new SocketException(&quot;Cannot access native address&quot;).initCause(</span>
-<span class="nc" id="L524">          NativeUnixSocket.unsupportedException());</span>
+<span class="fc" id="L677">    ByteBuffer address = nativeAddress;</span>
+<span class="pc bpc" id="L678" title="1 of 2 branches missed.">    if (address == null) {</span>
+<span class="nc" id="L679">      throw (SocketException) new SocketException(&quot;Cannot access native address&quot;).initCause(</span>
+<span class="nc" id="L680">          NativeUnixSocket.unsupportedException());</span>
     }
 
-<span class="fc" id="L527">    ByteBuffer direct = getNativeAddressDirectBuffer(address.limit());</span>
-<span class="fc" id="L528">    address.position(0);</span>
-<span class="fc" id="L529">    direct.put(address);</span>
+<span class="fc" id="L683">    ByteBuffer direct = getNativeAddressDirectBuffer(address.limit());</span>
+<span class="fc" id="L684">    address.position(0);</span>
+<span class="fc" id="L685">    direct.put(address);</span>
 
-<span class="fc" id="L531">    return direct;</span>
+<span class="fc" id="L687">    return direct;</span>
   }
 
   static final ByteBuffer getNativeAddressDirectBuffer(int limit) {
-<span class="fc" id="L535">    ByteBuffer direct = SOCKETADDRESS_BUFFER_TL.get();</span>
-<span class="fc" id="L536">    direct.position(0);</span>
-<span class="fc" id="L537">    direct.limit(limit);</span>
-<span class="fc" id="L538">    return direct;</span>
+<span class="fc" id="L691">    ByteBuffer direct = SOCKETADDRESS_BUFFER_TL.get();</span>
+<span class="fc" id="L692">    direct.position(0);</span>
+<span class="fc" id="L693">    direct.limit(limit);</span>
+<span class="fc" id="L694">    return direct;</span>
   }
 
   /**
@@ -546,7 +702,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @return {@code true} if supported.
    */
   protected static final boolean isSupportedAddress(InetAddress addr, AFAddressFamily&lt;?&gt; af) {
-<span class="nc" id="L549">    return AFInetAddress.isSupportedAddress(addr, af);</span>
+<span class="nc" id="L705">    return AFInetAddress.isSupportedAddress(addr, af);</span>
   }
 
   /**
@@ -558,12 +714,12 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @throws IOException on error.
    */
   public final void writeNativeAddressTo(ByteBuffer buf) throws IOException {
-<span class="nc bnc" id="L561" title="All 2 branches missed.">    if (nativeAddress == null) {</span>
-<span class="nc" id="L562">      throw (SocketException) new SocketException(&quot;Cannot access native address&quot;).initCause(</span>
-<span class="nc" id="L563">          NativeUnixSocket.unsupportedException());</span>
+<span class="nc bnc" id="L717" title="All 2 branches missed.">    if (nativeAddress == null) {</span>
+<span class="nc" id="L718">      throw (SocketException) new SocketException(&quot;Cannot access native address&quot;).initCause(</span>
+<span class="nc" id="L719">          NativeUnixSocket.unsupportedException());</span>
     }
-<span class="nc" id="L565">    buf.put(nativeAddress);</span>
-<span class="nc" id="L566">  }</span>
+<span class="nc" id="L721">    buf.put(nativeAddress);</span>
+<span class="nc" id="L722">  }</span>
 
   /**
    * Creates a new socket connected to this address.
@@ -572,9 +728,9 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @throws IOException on error.
    */
   public AFSocket&lt;?&gt; newConnectedSocket() throws IOException {
-<span class="fc" id="L575">    AFSocket&lt;?&gt; socket = getAddressFamily().newSocket();</span>
-<span class="fc" id="L576">    socket.connect(this);</span>
-<span class="fc" id="L577">    return socket;</span>
+<span class="fc" id="L731">    AFSocket&lt;?&gt; socket = getAddressFamily().newSocket();</span>
+<span class="fc" id="L732">    socket.connect(this);</span>
+<span class="fc" id="L733">    return socket;</span>
   }
 
   /**
@@ -584,9 +740,9 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @throws IOException on error.
    */
   public AFServerSocket&lt;?&gt; newBoundServerSocket() throws IOException {
-<span class="nc" id="L587">    AFServerSocket&lt;?&gt; serverSocket = getAddressFamily().newServerSocket();</span>
-<span class="nc" id="L588">    serverSocket.bind(this);</span>
-<span class="nc" id="L589">    return serverSocket;</span>
+<span class="nc" id="L743">    AFServerSocket&lt;?&gt; serverSocket = getAddressFamily().newServerSocket();</span>
+<span class="nc" id="L744">    serverSocket.bind(this);</span>
+<span class="nc" id="L745">    return serverSocket;</span>
   }
 
   /**
@@ -598,9 +754,9 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @throws IOException on error.
    */
   public AFServerSocket&lt;?&gt; newForceBoundServerSocket() throws IOException {
-<span class="nc" id="L601">    AFServerSocket&lt;?&gt; serverSocket = getAddressFamily().newServerSocket();</span>
-<span class="nc" id="L602">    serverSocket.forceBindAddress(this).bind(this);</span>
-<span class="nc" id="L603">    return serverSocket;</span>
+<span class="nc" id="L757">    AFServerSocket&lt;?&gt; serverSocket = getAddressFamily().newServerSocket();</span>
+<span class="nc" id="L758">    serverSocket.forceBindAddress(this).bind(this);</span>
+<span class="nc" id="L759">    return serverSocket;</span>
   }
 
   /**
@@ -616,7 +772,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    */
   @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   public static AFSocketAddress of(URI u) throws SocketException {
-<span class="fc" id="L619">    return of(u, -1);</span>
+<span class="fc" id="L775">    return of(u, -1);</span>
   }
 
   /**
@@ -633,11 +789,11 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    */
   @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   public static AFSocketAddress of(URI u, int overridePort) throws SocketException {
-<span class="fc" id="L636">    AFAddressFamily&lt;?&gt; af = AFAddressFamily.getAddressFamily(u);</span>
-<span class="pc bpc" id="L637" title="1 of 2 branches missed.">    if (af == null) {</span>
-<span class="nc" id="L638">      throw new SocketException(&quot;Cannot resolve AFSocketAddress from URI scheme: &quot; + u.getScheme());</span>
+<span class="fc" id="L792">    AFAddressFamily&lt;?&gt; af = AFAddressFamily.getAddressFamily(u);</span>
+<span class="pc bpc" id="L793" title="1 of 2 branches missed.">    if (af == null) {</span>
+<span class="nc" id="L794">      throw new SocketException(&quot;Cannot resolve AFSocketAddress from URI scheme: &quot; + u.getScheme());</span>
     }
-<span class="fc" id="L640">    return af.parseURI(u, overridePort);</span>
+<span class="fc" id="L796">    return af.parseURI(u, overridePort);</span>
   }
 
   /**
@@ -650,7 +806,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @throws IOException on error.
    */
   public URI toURI(String scheme, URI template) throws IOException {
-<span class="nc" id="L653">    throw new IOException(&quot;Unsupported operation&quot;);</span>
+<span class="nc" id="L809">    throw new IOException(&quot;Unsupported operation&quot;);</span>
   }
 
   /**
@@ -670,39 +826,39 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   public @Nullable @SuppressWarnings(&quot;PMD.NPathComplexity&quot;) String toSocatAddressString(
       AFSocketType socketType, AFSocketProtocol socketProtocol) throws IOException {
 
-<span class="pc bpc" id="L673" title="2 of 4 branches missed.">    if (SOCKADDR_NATIVE_FAMILY_OFFSET == -1 || SOCKADDR_NATIVE_DATA_OFFSET == -1) {</span>
-<span class="nc" id="L674">      return null;</span>
+<span class="pc bpc" id="L829" title="2 of 4 branches missed.">    if (SOCKADDR_NATIVE_FAMILY_OFFSET == -1 || SOCKADDR_NATIVE_DATA_OFFSET == -1) {</span>
+<span class="nc" id="L830">      return null;</span>
     }
-<span class="fc bfc" id="L676" title="All 2 branches covered.">    if (nativeAddress == null) {</span>
-<span class="fc" id="L677">      throw (SocketException) new SocketException(&quot;Cannot access native address&quot;).initCause(</span>
-<span class="fc" id="L678">          NativeUnixSocket.unsupportedException());</span>
+<span class="fc bfc" id="L832" title="All 2 branches covered.">    if (nativeAddress == null) {</span>
+<span class="fc" id="L833">      throw (SocketException) new SocketException(&quot;Cannot access native address&quot;).initCause(</span>
+<span class="fc" id="L834">          NativeUnixSocket.unsupportedException());</span>
     }
-<span class="pc bpc" id="L680" title="2 of 4 branches missed.">    if (socketProtocol != null &amp;&amp; socketProtocol.getId() != 0) {</span>
-<span class="nc" id="L681">      throw new IOException(&quot;Protocol not (yet) supported&quot;); // FIXME support additional protocols</span>
+<span class="pc bpc" id="L836" title="2 of 4 branches missed.">    if (socketProtocol != null &amp;&amp; socketProtocol.getId() != 0) {</span>
+<span class="nc" id="L837">      throw new IOException(&quot;Protocol not (yet) supported&quot;); // FIXME support additional protocols</span>
     }
 
-<span class="fc" id="L684">    int family = (nativeAddress.get(SOCKADDR_NATIVE_FAMILY_OFFSET) &amp; 0xFF);</span>
-<span class="fc bfc" id="L685" title="All 2 branches covered.">    int type = socketType == null ? -1 : NativeUnixSocket.sockTypeToNative(socketType.getId());</span>
-<span class="fc" id="L686">    StringBuilder sb = new StringBuilder();</span>
-<span class="fc" id="L687">    sb.append(family);</span>
-<span class="fc bfc" id="L688" title="All 2 branches covered.">    if (type != -1) {</span>
-<span class="fc" id="L689">      sb.append(':');</span>
-<span class="fc" id="L690">      sb.append(type);</span>
+<span class="fc" id="L840">    int family = (nativeAddress.get(SOCKADDR_NATIVE_FAMILY_OFFSET) &amp; 0xFF);</span>
+<span class="fc bfc" id="L841" title="All 2 branches covered.">    int type = socketType == null ? -1 : NativeUnixSocket.sockTypeToNative(socketType.getId());</span>
+<span class="fc" id="L842">    StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L843">    sb.append(family);</span>
+<span class="fc bfc" id="L844" title="All 2 branches covered.">    if (type != -1) {</span>
+<span class="fc" id="L845">      sb.append(':');</span>
+<span class="fc" id="L846">      sb.append(type);</span>
     }
-<span class="pc bpc" id="L692" title="1 of 2 branches missed.">    if (socketProtocol != null) {</span>
-<span class="fc" id="L693">      sb.append(':');</span>
-<span class="fc" id="L694">      sb.append(socketProtocol.getId()); // FIXME needs native conversion</span>
+<span class="pc bpc" id="L848" title="1 of 2 branches missed.">    if (socketProtocol != null) {</span>
+<span class="fc" id="L849">      sb.append(':');</span>
+<span class="fc" id="L850">      sb.append(socketProtocol.getId()); // FIXME needs native conversion</span>
     }
-<span class="fc" id="L696">    sb.append(&quot;:x&quot;);</span>
-<span class="fc" id="L697">    int n = nativeAddress.limit();</span>
-<span class="pc bpc" id="L698" title="1 of 4 branches missed.">    while (n &gt; 1 &amp;&amp; nativeAddress.get(n - 1) == 0) {</span>
-<span class="fc" id="L699">      n--;</span>
+<span class="fc" id="L852">    sb.append(&quot;:x&quot;);</span>
+<span class="fc" id="L853">    int n = nativeAddress.limit();</span>
+<span class="pc bpc" id="L854" title="1 of 4 branches missed.">    while (n &gt; 1 &amp;&amp; nativeAddress.get(n - 1) == 0) {</span>
+<span class="fc" id="L855">      n--;</span>
     }
-<span class="fc bfc" id="L701" title="All 2 branches covered.">    for (int pos = SOCKADDR_NATIVE_DATA_OFFSET; pos &lt; n; pos++) {</span>
-<span class="fc" id="L702">      byte b = nativeAddress.get(pos);</span>
-<span class="fc" id="L703">      sb.append(String.format(Locale.ENGLISH, &quot;%02x&quot;, b));</span>
+<span class="fc bfc" id="L857" title="All 2 branches covered.">    for (int pos = SOCKADDR_NATIVE_DATA_OFFSET; pos &lt; n; pos++) {</span>
+<span class="fc" id="L858">      byte b = nativeAddress.get(pos);</span>
+<span class="fc" id="L859">      sb.append(String.format(Locale.ENGLISH, &quot;%02x&quot;, b));</span>
     }
-<span class="fc" id="L705">    return sb.toString();</span>
+<span class="fc" id="L861">    return sb.toString();</span>
   }
 
   /**
@@ -718,7 +874,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @return {@code true} if the other address could be covered.
    */
   public boolean covers(AFSocketAddress other) {
-<span class="nc" id="L721">    return this.equals(other);</span>
+<span class="nc" id="L877">    return this.equals(other);</span>
   }
 
   /**
@@ -729,10 +885,16 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @throws IOException on error.
    */
   private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
-<span class="fc" id="L732">    in.defaultReadObject();</span>
-<span class="fc" id="L733">    this.addressFamily = Objects.requireNonNull(AFAddressFamily.getAddressFamily(in.readUTF()),</span>
-        &quot;address family&quot;);
-<span class="fc" id="L735">  }</span>
+<span class="fc" id="L888">    in.defaultReadObject();</span>
+
+<span class="fc" id="L890">    String af = in.readUTF();</span>
+<span class="pc bpc" id="L891" title="1 of 2 branches missed.">    if (&quot;undefined&quot;.equals(af)) {</span>
+<span class="nc" id="L892">      this.addressFamily = null;</span>
+    } else {
+<span class="fc" id="L894">      this.addressFamily = Objects.requireNonNull(AFAddressFamily.getAddressFamily(af),</span>
+          &quot;address family&quot;);
+    }
+<span class="fc" id="L897">  }</span>
 
   /**
    * Custom serialization: Reference {@link AFAddressFamily} instance by identifier string.
@@ -741,8 +903,8 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @throws IOException on error.
    */
   private void writeObject(ObjectOutputStream out) throws IOException {
-<span class="fc" id="L744">    out.defaultWriteObject();</span>
-<span class="fc" id="L745">    out.writeUTF(addressFamily.getJuxString());</span>
-<span class="fc" id="L746">  }</span>
+<span class="fc" id="L906">    out.defaultWriteObject();</span>
+<span class="pc bpc" id="L907" title="1 of 2 branches missed.">    out.writeUTF(addressFamily == null ? &quot;undefined&quot; : addressFamily.getJuxString());</span>
+<span class="fc" id="L908">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1694281382478">
-    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.7.1"/>
+<licensePluginReport goal="CHECK" timestamp="1694774592230">
+    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.7.2"/>
     <files>
         <file path="src/main/java-unresolved-properties/org/newsclub/net/unix/BuildProperties.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamily.java" result="PRESENT"/>
@@ -86,6 +86,7 @@
         <file path="src/main/java/org/newsclub/net/unix/SocketImplShim.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SocketOptionsMapper.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/StackTraceUtil.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/UngrowableSet.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/Unsafe.java" result="PRESENT"/>
         <file path="src/main/java15/org/newsclub/net/unix/SocketAddressUtil.java" result="PRESENT"/>
         <file path="src/main/java8/org/newsclub/net/unix/AFInputStream.java" result="PRESENT"/>

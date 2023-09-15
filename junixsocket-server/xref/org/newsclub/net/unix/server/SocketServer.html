@@ -85,7 +85,7 @@
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  <em class="jxr_javadoccomment">   *</em>
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_javadoccomment">   * @param serverSocket The server socket to use (must be bound).</em>
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>    @SuppressWarnings({<span class="jxr_string">"null"</span>, <span class="jxr_string">"unchecked"</span>})
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>    @SuppressWarnings(<span class="jxr_string">"all"</span>) <em class="jxr_comment">// unchecked, null</em>
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>    <strong class="jxr_keyword">public</strong> <a name="SocketServer" href="../../../../../org/newsclub/net/unix/server/SocketServer.html#SocketServer">SocketServer</a>(V serverSocket) {
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>      <strong class="jxr_keyword">this</strong>((A) Objects.requireNonNull(serverSocket).getLocalSocketAddress(), serverSocket);
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>    }

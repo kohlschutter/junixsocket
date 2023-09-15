@@ -49,7 +49,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
    * @param socket The socket.
    * @param sp The {@link SelectorProvider}.
    */
-  @SuppressWarnings(&quot;null&quot;)
+  @SuppressWarnings(&quot;all&quot;)
   protected AFSocketChannel(AFSocket&lt;A&gt; socket, AFSelectorProvider&lt;A&gt; sp) {
 <span class="fc" id="L54">    super(sp);</span>
 <span class="fc" id="L55">    this.afSocket = Objects.requireNonNull(socket);</span>

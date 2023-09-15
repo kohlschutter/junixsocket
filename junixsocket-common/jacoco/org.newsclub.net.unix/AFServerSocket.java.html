@@ -287,13 +287,13 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   @Override
   public final boolean isBound() {
-<span class="fc bfc" id="L290" title="All 4 branches covered.">    return boundEndpoint0() != null &amp;&amp; implementation.getFD().valid();</span>
+<span class="pc bpc" id="L290" title="1 of 4 branches missed.">    return boundEndpoint0() != null &amp;&amp; implementation.getFD().valid();</span>
   }
 
   @Override
   public final boolean isClosed() {
 <span class="pc bpc" id="L295" title="1 of 6 branches missed.">    return super.isClosed() || (isBound() &amp;&amp; !implementation.getFD().valid()) || implementation</span>
-<span class="fc bfc" id="L296" title="All 2 branches covered.">        .isClosed();</span>
+<span class="pc bpc" id="L296" title="1 of 2 branches missed.">        .isClosed();</span>
   }
 
   @Override
@@ -376,7 +376,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
     try {
 <span class="fc" id="L377">      closeables.close(superException);</span>
     } finally {
-<span class="pc bpc" id="L379" title="1 of 6 branches missed.">      if (endpoint != null &amp;&amp; endpoint.hasFilename() &amp;&amp; localSocketAddressValid</span>
+<span class="pc bpc" id="L379" title="2 of 6 branches missed.">      if (endpoint != null &amp;&amp; endpoint.hasFilename() &amp;&amp; localSocketAddressValid</span>
 <span class="pc bpc" id="L380" title="1 of 2 branches missed.">          &amp;&amp; isDeleteOnClose()) {</span>
 <span class="fc" id="L381">        File f = endpoint.getFile();</span>
 <span class="pc bpc" id="L382" title="1 of 4 branches missed.">        if (!f.delete() &amp;&amp; f.exists()) {</span>

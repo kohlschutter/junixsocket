@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1694281337895">
-    <module artifactId="junixsocket-native-custom" groupId="com.kohlschutter.junixsocket" version="2.7.1"/>
+<licensePluginReport goal="CHECK" timestamp="1694774546114">
+    <module artifactId="junixsocket-native-custom" groupId="com.kohlschutter.junixsocket" version="2.7.2"/>
     <files>
         <file path="src/main/java/org/newsclub/lib/junixsocket/custom/NarMetadata.java" result="PRESENT"/>
     </files>

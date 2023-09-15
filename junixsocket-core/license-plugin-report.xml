@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1694281394430">
-    <module artifactId="junixsocket-core" groupId="com.kohlschutter.junixsocket" version="2.7.1"/>
+<licensePluginReport goal="CHECK" timestamp="1694774604370">
+    <module artifactId="junixsocket-core" groupId="com.kohlschutter.junixsocket" version="2.7.2"/>
     <files/>
 </licensePluginReport>

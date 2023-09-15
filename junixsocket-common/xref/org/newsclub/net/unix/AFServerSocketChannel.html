@@ -55,7 +55,7 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">   * @param socket The corresponding {@link ServerSocket}.</em>
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">   * @param sp The corresponding {@link SelectorProvider}.</em>
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>    @SuppressWarnings(<span class="jxr_string">"null"</span>)
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    @SuppressWarnings(<span class="jxr_string">"all"</span>) <em class="jxr_comment">// null</em>
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">protected</strong> <a name="AFServerSocketChannel" href="../../../../org/newsclub/net/unix/AFServerSocketChannel.html#AFServerSocketChannel">AFServerSocketChannel</a>(AFServerSocket&lt;A&gt; socket, AFSelectorProvider&lt;A&gt; sp) {
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">super</strong>(sp);
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">this</strong>.afSocket = Objects.requireNonNull(socket);

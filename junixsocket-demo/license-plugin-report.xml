@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1694281470419">
-    <module artifactId="junixsocket-demo" groupId="com.kohlschutter.junixsocket" version="2.7.1"/>
+<licensePluginReport goal="CHECK" timestamp="1694774682089">
+    <module artifactId="junixsocket-demo" groupId="com.kohlschutter.junixsocket" version="2.7.2"/>
     <files>
         <file path="src/main/java/org/newsclub/net/mysql/demo/AFUNIXDatabaseSocketFactoryDemo.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/demo/DemoHelper.java" result="PRESENT"/>
@@ -12,7 +12,11 @@
         <file path="src/main/java/org/newsclub/net/unix/demo/client/ReadFileHandleClient.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/demo/client/ReadWriteClient.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/demo/jdbc/PostgresDemo.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/mina/MinaTimeServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/mina/TimeServerHandler.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/demo/nanohttpd/NanoHttpdServerDemo.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/netty/EchoServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/netty/EchoServerHandler.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/demo/okhttp/OkHttpClientDemo.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/demo/okhttp/OkHttpClientTIPCDemo.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/demo/rmi/HelloWorldImpl.java" result="PRESENT"/>
