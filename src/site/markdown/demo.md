@@ -1,7 +1,7 @@
 # Command-line demo
 
 On the [junixsocket releases page](https://github.com/kohlschutter/junixsocket/releases),
-you can find an archive of junixsocket's release jars along with a script to run the demos from
+you can find an archive of junixsocket's release jars along with a script to run some demos from
 the `junixsocket-demo` artifact.
 
 junixsocket-dist comes either as a `.tar.gz` or `.zip` archive. Get either one of them.
@@ -13,7 +13,9 @@ as expected.
 
 junixsocket-dist provides a self-contained jar that performs this [selftest](selftest.html):
 
-    java -jar junixsocket-selftest-2.5.0-jar-with-dependencies.jar
+    java -jar junixsocket-selftest-X.Y.Z-jar-with-dependencies.jar
+
+(Replace X.Y.Z with the corresponding junixsocket version)
 
 The last line should read "Selftest PASSED", and you're good to go.
 
