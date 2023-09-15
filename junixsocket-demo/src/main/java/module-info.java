@@ -13,6 +13,7 @@ module org.newsclub.net.unix.demo {
   requires nanohttpd;
   requires okhttp3;
   requires com.kohlschutter.util;
+  requires mina.core;
   requires static com.kohlschutter.annotations.compiletime;
   requires static org.eclipse.jdt.annotation;
 
