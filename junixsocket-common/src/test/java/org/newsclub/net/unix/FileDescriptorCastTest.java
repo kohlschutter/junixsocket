@@ -84,17 +84,20 @@ public class FileDescriptorCastTest {
     // We can cast this file descriptor to an InputStream, but read access will fail
     assertEquals(fdc.as(InputStream.class).getClass(), fdc.as(FileInputStream.class).getClass());
 
-    try {
-      assertTimeoutPreemptively(Duration.ofMillis(100), () -> {
-        try {
-          fdc.as(InputStream.class).read();
-        } catch (IOException e) {
-          // expected, but not guaranteed (Linux won't throw this); ignore
-        }
-      });
-    } catch (AssertionFailedError e) {
-      // on Linux, we timeout, and that's OK, too.
-    }
+    // Below we see code that may or may not block indefinitely due to system constraints
+    // There's not much we can do other than not run it (it doesn't check state anyhow).
+
+    // try {
+    // assertTimeoutPreemptively(Duration.ofMillis(100), () -> {
+    // try {
+    // fdc.as(InputStream.class).read();
+    // } catch (IOException e) {
+    // // expected, but not guaranteed (Linux won't throw this); ignore
+    // }
+    // });
+    // } catch (AssertionFailedError e) {
+    // // on Linux, we timeout, and that's OK, too.
+    // }
   }
 
   @Test
