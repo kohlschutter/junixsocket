@@ -806,8 +806,16 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
           return;
         case SocketOptions.SO_TIMEOUT: {
           int timeout = expectInteger(value);
-          NativeUnixSocket.setSocketOptionInt(fdesc, 0x1005, timeout);
-          NativeUnixSocket.setSocketOptionInt(fdesc, 0x1006, timeout);
+          try {
+            NativeUnixSocket.setSocketOptionInt(fdesc, 0x1005, timeout);
+          } catch (InvalidArgumentSocketException e) {
+            // Perhaps the socket is shut down?
+          }
+          try {
+            NativeUnixSocket.setSocketOptionInt(fdesc, 0x1006, timeout);
+          } catch (InvalidArgumentSocketException e) {
+            // Perhaps the socket is shut down?
+          }
           if (acceptTimeout != null) {
             acceptTimeout.set(timeout);
           }
