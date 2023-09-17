@@ -24,7 +24,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import org.newsclub.net.unix.AFAddressFamily;
 import org.newsclub.net.unix.AFOutputStream;
@@ -58,7 +57,7 @@ public class ZeroServer {
       return;
     }
 
-    if (new AFSocketServer<AFSocketAddress>(address) {
+    new AFSocketServer<AFSocketAddress>(address) {
       @Override
       protected void doServeSocket(AFSocket<?> sock) throws IOException {
         System.out.println("Connected: " + sock);
@@ -93,8 +92,7 @@ public class ZeroServer {
               ? "unknown" : numBytes));
         }
       }
-    }.startAndWaitToBecomeReady(10, TimeUnit.SECONDS)) {
-      System.out.println("Server ready, listening on " + address);
-    }
+    }.startAndWaitToBecomeReady();
+    System.out.println("Server ready, listening on " + address);
   }
 }

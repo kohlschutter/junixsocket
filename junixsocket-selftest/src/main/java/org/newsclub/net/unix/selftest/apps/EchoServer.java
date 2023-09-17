@@ -19,7 +19,6 @@ package org.newsclub.net.unix.selftest.apps;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import org.newsclub.net.unix.AFAddressFamily;
 import org.newsclub.net.unix.AFSocket;
@@ -53,7 +52,7 @@ public class EchoServer {
       return;
     }
 
-    if (new AFSocketServer<AFSocketAddress>(address) {
+    new AFSocketServer<AFSocketAddress>(address) {
       @Override
       protected void doServeSocket(AFSocket<?> sock) throws IOException {
         System.out.println("Connected: " + sock);
@@ -69,8 +68,8 @@ public class EchoServer {
                   : (numBytes * 1000L / time) + "/s"));
         }
       }
-    }.startAndWaitToBecomeReady(10, TimeUnit.SECONDS)) {
-      System.out.println("Server ready, listening on " + address);
-    }
+    }.startAndWaitToBecomeReady();
+
+    System.out.println("Server ready, listening on " + address);
   }
 }

@@ -232,6 +232,20 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
   /**
    * Starts the server and waits until it is ready or had to shop due to an error.
    *
+   * @throws InterruptedException If the wait was interrupted.
+   */
+  public void startAndWaitToBecomeReady() throws InterruptedException {
+    synchronized (this) {
+      start();
+      while (!isReady()) {
+        this.wait();
+      }
+    }
+  }
+
+  /**
+   * Starts the server and waits until it is ready or had to shop due to an error.
+   *
    * @param duration The duration wait.
    * @param unit The duration's time unit.
    * @return {@code true} if the server is ready to serve requests.
