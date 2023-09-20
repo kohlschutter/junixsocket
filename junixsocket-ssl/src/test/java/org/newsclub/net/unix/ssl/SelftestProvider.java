@@ -33,9 +33,9 @@ public class SelftestProvider {
   public Map<String, Class<?>[]> tests() {
     Map<String, Class<?>[]> tests = new LinkedHashMap<>();
     tests.put("junixsocket-ssl", new Class<?>[] { //
-      SSLContextBuilderTest.class, //
-      SNIHostnameCaptureTest.class, //
-      ValidatingX509TrustManagerTest.class, //
+        SSLContextBuilderTest.class, //
+        SNIHostnameCaptureTest.class, //
+        ValidatingX509TrustManagerTest.class, //
     });
 
     return tests;
