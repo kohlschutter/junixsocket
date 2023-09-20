@@ -33,7 +33,7 @@ from Java.
 * Supports [HTTP over UNIX sockets](https://kohlschutter.github.io/junixsocket/http.html) (using [NanoHTTPD](https://github.com/NanoHttpd/nanohttpd), [OkHttp](https://github.com/square/okhttp), and [jetty](https://github.com/eclipse/jetty.project/)).
 * Supports JPMS/Jigsaw modules. The project is modularized so you can install only what you need.
 * Supports GraalVM native-image AOT/ahead-of-time compilation (since 2.6.0)
-* Provides a selftest package with 100+ tests to ensure compatibility with any target platform.
+* Provides a selftest package with 300+ tests to ensure compatibility with any target platform.
 * Apache 2.0 licensed.
 
 `*` (Tested up to Java 22; support for Java 7 was dropped in version 2.5.0).
