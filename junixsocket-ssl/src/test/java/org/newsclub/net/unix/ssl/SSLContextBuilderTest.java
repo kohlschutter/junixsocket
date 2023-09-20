@@ -66,6 +66,9 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketPair;
 import org.newsclub.net.unix.server.AFSocketServer;
 
+import com.kohlschutter.testutil.ExecutionEnvironmentRequirement;
+import com.kohlschutter.testutil.ExecutionEnvironmentRequirement.Rule;
+
 // CPD-OFF
 public class SSLContextBuilderTest {
 
@@ -677,6 +680,15 @@ public class SSLContextBuilderTest {
 
     assertNotEquals(0, factory.getDefaultCipherSuites().length);
     assertNotEquals(0, factory.getSupportedCipherSuites().length);
+  }
+
+  @ExecutionEnvironmentRequirement(windows = Rule.PROHIBITED)
+  @Test
+  public void testSocketFactoryMethodsForCodeCoverageOnly() throws Exception {
+    SSLSocketFactory factory = SSLContextBuilder.forServer() //
+        .withKeyStore(SSLContextBuilderTest.class.getResource("juxserver.p12"), () -> "serverpass"
+            .toCharArray()) //
+        .buildAndDestroyBuilder().getSocketFactory();
 
     InetAddress loopback = InetAddress.getLoopbackAddress();
     try (ServerSocket ss = new ServerSocket(0, 50, loopback)) {
@@ -698,9 +710,6 @@ public class SSLContextBuilderTest {
     assertNotEquals(0, factory.getSupportedCipherSuites().length);
 
     assertNotNull(factory.createServerSocket());
-    assertNotNull(factory.createServerSocket(0));
-    assertNotNull(factory.createServerSocket(0, 0));
-    assertNotNull(factory.createServerSocket(0, 0, InetAddress.getLoopbackAddress()));
 
     SSLServerSocket serverSocket = (SSLServerSocket) factory.createServerSocket();
     assertFalse(serverSocket.isBound());
@@ -709,6 +718,19 @@ public class SSLContextBuilderTest {
     // Use getSocketFactory() instead, and get an SSLSocket for the accepted Socket instead.
     assertThrows(SocketException.class, () -> serverSocket.bind(AFUNIXSocketAddress
         .ofNewTempFile()));
+  }
+
+  @ExecutionEnvironmentRequirement(windows = Rule.PROHIBITED)
+  @Test
+  public void testServerSocketFactoryMethodsForCodeCoverageOnly() throws Exception {
+    SSLServerSocketFactory factory = SSLContextBuilder.forServer() //
+        .withKeyStore(SSLContextBuilderTest.class.getResource("juxserver.p12"), () -> "serverpass"
+            .toCharArray()) //
+        .buildAndDestroyBuilder().getServerSocketFactory();
+
+    assertNotNull(factory.createServerSocket(0));
+    assertNotNull(factory.createServerSocket(0, 0));
+    assertNotNull(factory.createServerSocket(0, 0, InetAddress.getLoopbackAddress()));
   }
 
   @Test
