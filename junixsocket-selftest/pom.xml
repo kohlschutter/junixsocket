@@ -97,6 +97,34 @@
                                     </sources>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>add-sources-from-junixsocket-ssl</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>${project.parent.basedir}/junixsocket-ssl/src/test/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>add-resources-from-junixsocket-ssl</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>add-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>
+                                                ${project.parent.basedir}/junixsocket-ssl/src/test/resources
+                                            </directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
@@ -294,6 +322,24 @@
                                             </excludes>
                                         </resource>
                                         <resource>
+                                            <directory>${project.parent.basedir}/junixsocket-ssl/src/test/java</directory>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
+                                        </resource>
+                                        <resource>
+                                            <directory>${project.parent.basedir}/junixsocket-ssl/src/test/java8</directory>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
+                                        </resource>
+                                        <resource>
                                             <directory>${project.parent.basedir}/junixsocket-darwin/src/test/java</directory>
                                             <includes>
                                                 <include>**</include>
@@ -427,6 +473,12 @@
                                                 <include>**</include>
                                             </includes>
                                         </resource>
+                                        <resource>
+                                            <directory>${project.parent.basedir}/junixsocket-ssl/src/test/java</directory>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                        </resource>
                                     </resources>
                                     <overwrite>true</overwrite>
                                 </configuration>
@@ -549,6 +601,11 @@
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-rmi</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-ssl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -82,6 +82,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <module>junixsocket-vsock</module>
         <module>junixsocket-darwin</module>
         <module>junixsocket-server</module>
+        <module>junixsocket-ssl</module>
         <module>junixsocket-rmi</module>
         <module>junixsocket-mysql</module>
         <module>junixsocket-core</module>

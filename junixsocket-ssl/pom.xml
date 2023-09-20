@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>junixsocket-ssl</artifactId>
+    <packaging>jar</packaging>
+    <parent>
+        <groupId>com.kohlschutter.junixsocket</groupId>
+        <artifactId>junixsocket</artifactId>
+        <version>2.7.3-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <name>junixsocket-ssl</name>
+    <properties>
+        <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+    </properties>
+
+    <description>junixsocket SSL support</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-server</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-core</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+</project>
