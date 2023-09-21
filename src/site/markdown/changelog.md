@@ -12,6 +12,14 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 **Users of junixsocket are strongly advised to upgrade to version 2.7.2 or newer**
 
+### _(2023-09-XX)_ **junixsocket 2.7.3**
+
+- Fix AFSocket shutdown to ignore InvalidSocketException upon setTimeout
+- Fix a potential hang in selftest
+- Improve AFSocketServer with a parameterless startAndWaitToBecomeReady method
+- Improve crossclang to support Xcode 15
+- Add junixsocket-ssl, tools to simplify securing junixsocket connections
+
 ### _(2023-09-15)_ **junixsocket 2.7.2**
 
 - Fix SelectionKey logic (regression introduced in 2.7.1)
