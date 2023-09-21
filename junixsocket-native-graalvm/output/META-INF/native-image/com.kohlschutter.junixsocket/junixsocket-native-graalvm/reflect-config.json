@@ -1,5 +1,18 @@
 [
 {
+  "name":"[B"
+},
+{
+  "name":"[Ljava.lang.String;"
+},
+{
+  "name":"[Lsun.security.pkcs.SignerInfo;"
+},
+{
+  "name":"apple.security.AppleProvider",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.kohlschutter.testutil.AvailabilityExecutionCondition",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -24,7 +37,70 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"com.sun.crypto.provider.AESCipher$General",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.AESKeyGenerator",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.ARCFOURCipher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.DESCipher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.DESedeCipher",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.DHParameters",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.GaloisCounterMode$AESGCM",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.HmacCore$HmacSHA256",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.HmacCore$HmacSHA384",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.HmacPKCS12PBECore$HmacPKCS12PBE_SHA256",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.PBEKeyFactory$PBEWithMD5AndDES",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.PBES2Core$HmacSHA256AndAES_256",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.PBES2Parameters$General",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.crypto.provider.TlsMasterSecretGenerator",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"java.lang.ProcessBuilder$RedirectPipeImpl"
+},
+{
+  "name":"java.lang.String"
 },
 {
   "name":"java.lang.Thread",
@@ -40,7 +116,25 @@
   "name":"java.nio.channels.spi.AbstractSelectableChannel"
 },
 {
+  "name":"java.security.AlgorithmParametersSpi"
+},
+{
+  "name":"java.security.KeyStoreSpi"
+},
+{
   "name":"java.security.SecureRandomParameters"
+},
+{
+  "name":"java.security.cert.CertStoreParameters"
+},
+{
+  "name":"java.security.interfaces.RSAPrivateKey"
+},
+{
+  "name":"java.security.interfaces.RSAPublicKey"
+},
+{
+  "name":"java.util.Date"
 },
 {
   "name":"java.util.concurrent.ForkJoinTask",
@@ -59,11 +153,19 @@
   "fields":[{"name":"base"}, {"name":"cellsBusy"}]
 },
 {
+  "name":"javax.security.auth.x500.X500Principal",
+  "fields":[{"name":"thisX500Name"}],
+  "methods":[{"name":"<init>","parameterTypes":["sun.security.x509.X500Name"] }]
+},
+{
   "name":"jdk.internal.misc.Unsafe"
 },
 {
   "name":"org.apiguardian.api.API",
   "queryAllPublicMethods":true
+},
+{
+  "name":"org.junit.internal.AssumptionViolatedException"
 },
 {
   "name":"org.junit.jupiter.api.MethodOrderer$MethodName",
@@ -150,6 +252,9 @@
   "methods":[{"name":"testAcceptWithoutBindToService","parameterTypes":[] }, {"name":"testCatchTimeout","parameterTypes":[] }, {"name":"testTimeoutAfterDelay","parameterTypes":[] }]
 },
 {
+  "name":"org.newsclub.net.unix.AddressUnavailableSocketException"
+},
+{
   "name":"org.newsclub.net.unix.AncillaryMessageTest",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
@@ -222,6 +327,12 @@
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testFromToBytes","parameterTypes":[] }, {"name":"testHostnameString","parameterTypes":[] }, {"name":"testHostnameStringEndsWithJunixSocket","parameterTypes":[] }, {"name":"testIsLoopbackAddress","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.InvalidArgumentSocketException"
+},
+{
+  "name":"org.newsclub.net.unix.NoSuchDeviceSocketException"
 },
 {
   "name":"org.newsclub.net.unix.OperationNotSupportedSocketException"
@@ -414,7 +525,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testSeqPacket","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.domain.EndOfFileTest",
@@ -585,6 +696,33 @@
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConvertUnixDomainSocketAddress","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.ssl.SNIHostnameCaptureTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testSNISuccess","parameterTypes":[] }, {"name":"testWonkySSLSocket","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.ssl.SSLContextBuilderTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testBadProtocol","parameterTypes":[] }, {"name":"testBothKeyManagersAndKeyStore","parameterTypes":[] }, {"name":"testBothKeyStoreAndKeyManagers","parameterTypes":[] }, {"name":"testBothTrustManagersAndTrustStore","parameterTypes":[] }, {"name":"testBothTrustStoreAndTrustManagers","parameterTypes":[] }, {"name":"testClientAuthRequired","parameterTypes":[] }, {"name":"testClientAuthRequiredButClientIsNotSendingAKey","parameterTypes":[] }, {"name":"testClientAuthRequiredButClientKeyIsNotTrusted","parameterTypes":[] }, {"name":"testClientHasNoTrustStore","parameterTypes":[] }, {"name":"testDestroyablePasswordSupplier","parameterTypes":[] }, {"name":"testDestroyablePasswordSupplierDestroyed","parameterTypes":[] }, {"name":"testKeyStoreFileNotFound","parameterTypes":[] }, {"name":"testKeyStoreNullPasswordSupplied","parameterTypes":[] }, {"name":"testKeyStoreNullPasswordSupplier","parameterTypes":[] }, {"name":"testKeyStoreNullURL","parameterTypes":[] }, {"name":"testKeyStoreURLNotFound","parameterTypes":[] }, {"name":"testNoClientAuth","parameterTypes":[] }, {"name":"testSSLEngineMethods","parameterTypes":[] }, {"name":"testServerAndClientBlindlyTrustAnything","parameterTypes":[] }, {"name":"testServerSocketFactoryMethods","parameterTypes":[] }, {"name":"testServerSocketFactoryMethodsForCodeCoverageOnly","parameterTypes":[] }, {"name":"testSocketFactoryMethods","parameterTypes":[] }, {"name":"testSocketFactoryMethodsForCodeCoverageOnly","parameterTypes":[] }, {"name":"testTrustStoreFileNotFound","parameterTypes":[] }, {"name":"testTrustStoreNullPasswordSupplied","parameterTypes":[] }, {"name":"testTrustStoreNullPasswordSupplier","parameterTypes":[] }, {"name":"testTrustStoreNullURL","parameterTypes":[] }, {"name":"testTrustStoreURLNotFound","parameterTypes":[] }, {"name":"testUndestroyablePasswordSupplier","parameterTypes":[] }, {"name":"testUndestroyablePasswordSuppliers","parameterTypes":[] }, {"name":"testWithDefaultParameters1","parameterTypes":[] }, {"name":"testWithDefaultParameters2","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.ssl.ValidatingX509TrustManagerTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testInspectTrustedCertificateExpired","parameterTypes":[] }, {"name":"testInspectTrustedCertificateExpiredNested","parameterTypes":[] }, {"name":"testInspectTrustedCertificateExpiredNestedFilter","parameterTypes":[] }, {"name":"testInspectTrustedCertificateNotExpired","parameterTypes":[] }, {"name":"testInspectTrustedClientCertificate","parameterTypes":[] }, {"name":"testInspectTrustedClientCertificateExpired","parameterTypes":[] }, {"name":"testInspectTrustedClientCertificateExpiredNested","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.tipc.AFTIPCSelectorProvider"
@@ -910,6 +1048,30 @@
   "queryAllDeclaredConstructors":true
 },
 {
+  "name":"sun.security.pkcs12.PKCS12KeyStore",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.pkcs12.PKCS12KeyStore$DualFormatPKCS12",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.DSA$SHA224withDSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.DSA$SHA256withDSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.JavaKeyStore$DualFormatJKS",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.JavaKeyStore$JKS",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"sun.security.provider.NativePRNG",
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
 },
@@ -920,5 +1082,119 @@
 {
   "name":"sun.security.provider.SHA",
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA2$SHA224",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA2$SHA256",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA5$SHA384",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.SHA5$SHA512",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.X509Factory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.provider.certpath.CollectionCertStore",
+  "methods":[{"name":"<init>","parameterTypes":["java.security.cert.CertStoreParameters"] }]
+},
+{
+  "name":"sun.security.provider.certpath.SunCertPathBuilder",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.PSSParameters",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSAKeyFactory$Legacy",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSAPSSSignature",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSASignature$SHA224withRSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.rsa.RSASignature$SHA384withRSA",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.KeyManagerFactoryImpl$SunX509",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.SSLContextImpl$TLSContext",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.TrustManagerFactoryImpl$PKIXFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.util.ObjectIdentifier"
+},
+{
+  "name":"sun.security.x509.AuthorityInfoAccessExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.AuthorityKeyIdentifierExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.BasicConstraintsExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.CRLDistributionPointsExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.CertificateExtensions"
+},
+{
+  "name":"sun.security.x509.CertificatePoliciesExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.ExtendedKeyUsageExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.IssuerAlternativeNameExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.KeyUsageExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.NetscapeCertTypeExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.PrivateKeyUsageExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.SubjectAlternativeNameExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
+},
+{
+  "name":"sun.security.x509.SubjectKeyIdentifierExtension",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
 }
 ]

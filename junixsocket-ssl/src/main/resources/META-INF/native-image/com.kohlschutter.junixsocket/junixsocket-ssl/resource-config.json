@@ -1,0 +1,18 @@
+{
+  "resources":{
+  "includes":[
+    {
+      "pattern":"\\Qorg/newsclub/net/unix/ssl/juxclient.p12\\E"
+    },
+    {
+      "pattern":"\\Qorg/newsclub/net/unix/ssl/juxclient.truststore\\E"
+    },
+    {
+      "pattern":"\\Qorg/newsclub/net/unix/ssl/juxserver.p12\\E"
+    },
+    {
+      "pattern":"\\Qorg/newsclub/net/unix/ssl/juxserver.truststore\\E"
+    }
+  ]},
+  "bundles":[]
+}

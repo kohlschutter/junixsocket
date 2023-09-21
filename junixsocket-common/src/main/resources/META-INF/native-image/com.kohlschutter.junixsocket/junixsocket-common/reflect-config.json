@@ -69,5 +69,14 @@
 },
 {
   "name":"org.newsclub.net.unix.OperationNotSupportedSocketException"
+},
+{
+  "name":"org.newsclub.net.unix.InvalidArgumentSocketException"
+},
+{
+  "name":"org.newsclub.net.unix.NoSuchDeviceSocketException"
+},
+{
+  "name":"org.newsclub.net.unix.AddressUnavailableSocketException"
 }
 ]

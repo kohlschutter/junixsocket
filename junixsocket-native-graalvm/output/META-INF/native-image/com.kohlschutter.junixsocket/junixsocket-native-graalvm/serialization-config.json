@@ -7,9 +7,6 @@
       "name":"java.lang.String"
     },
     {
-      "name":"java.net.InetAddress"
-    },
-    {
       "name":"java.net.InetSocketAddress"
     },
     {

@@ -119,6 +119,10 @@
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {
+  "name":"org.newsclub.net.unix.NoSuchDeviceSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
   "name":"org.newsclub.net.unix.OperationNotSupportedSocketException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },

@@ -11,7 +11,23 @@
   }, {
     "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.TestExecutionListener\\E"
   }, {
-    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.7.0-SNAPSHOT.dylib\\E"
+    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.7.3-SNAPSHOT.dylib\\E"
+  }, {
+    "pattern":"\\Qorg/newsclub/net/unix/ssl/juxclient.p12\\E"
+  }, {
+    "pattern":"\\Qorg/newsclub/net/unix/ssl/juxclient.truststore\\E"
+  }, {
+    "pattern":"\\Qorg/newsclub/net/unix/ssl/juxserver.p12\\E"
+  }, {
+    "pattern":"\\Qorg/newsclub/net/unix/ssl/juxserver.truststore\\E"
+  }, {
+    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt72b/nfc.nrm\\E"
+  }, {
+    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt72b/nfkc.nrm\\E"
+  }, {
+    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt72b/uprops.icu\\E"
+  }, {
+    "pattern":"java.base:\\Qsun/net/idn/uidna.spp\\E"
   }]},
   "bundles":[]
 }
