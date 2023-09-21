@@ -21,6 +21,7 @@ import static org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder.r
 
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -45,12 +46,27 @@ import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
+import org.opentest4j.AssertionFailedError;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.util.ConsolePrintStream;
 
 @SuppressFBWarnings({"THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 class SelftestExecutor {
+  /**
+   * A custom {@link UncaughtExceptionHandler} that does nothing.
+   *
+   * This is required on Android, where an {@link AssertionFailedError} on a background thread may
+   * terminate the entire app.
+   */
+  private static final UncaughtExceptionHandler IGNORANT_EXCEPTION_HANDLER =
+      new UncaughtExceptionHandler() {
+
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+        }
+      };
+
   private final List<Class<?>> testClasses;
   private final String prefix;
   private final Map<String, TestIdentifier> tids = new HashMap<>();
@@ -89,30 +105,37 @@ class SelftestExecutor {
 
       TestPlan testPlan = launcher.discover(discoveryRequest);
 
-      tids.clear();
-      launcher.execute(testPlan, new TestExecutionListener() {
+      UncaughtExceptionHandler defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
+      Thread.setDefaultUncaughtExceptionHandler(IGNORANT_EXCEPTION_HANDLER);
+      try {
+        tids.clear();
+        launcher.execute(testPlan, new TestExecutionListener() {
 
-        @Override
-        public void executionStarted(TestIdentifier tid) {
-          tids.put(tid.getUniqueId(), tid);
-          Optional<String> pid = tid.getParentId();
-          if (tid.getType().isTest() && pid.isPresent()) {
-            out0.update(prefix + tids.get(pid.get()).getDisplayName() + "." + tid.getDisplayName()
-                + "... ");
-          }
-        }
-
-        @Override
-        public void executionFinished(TestIdentifier tid, TestExecutionResult testExecutionResult) {
-          if (!tid.getParentId().isPresent()) {
-            out0.updateln(prefix + "done");
+          @Override
+          public void executionStarted(TestIdentifier tid) {
+            tids.put(tid.getUniqueId(), tid);
+            Optional<String> pid = tid.getParentId();
+            if (tid.getType().isTest() && pid.isPresent()) {
+              out0.update(prefix + tids.get(pid.get()).getDisplayName() + "." + tid.getDisplayName()
+                  + "... ");
+            }
           }
 
-          if (testExecutionResult.getStatus() == Status.ABORTED) {
-            testsWithWarnings.put(tid, testExecutionResult);
+          @Override
+          public void executionFinished(TestIdentifier tid,
+              TestExecutionResult testExecutionResult) {
+            if (!tid.getParentId().isPresent()) {
+              out0.updateln(prefix + "done");
+            }
+
+            if (testExecutionResult.getStatus() == Status.ABORTED) {
+              testsWithWarnings.put(tid, testExecutionResult);
+            }
           }
-        }
-      });
+        });
+      } finally {
+        Thread.setDefaultUncaughtExceptionHandler(defaultUEH);
+      }
 
       TestExecutionSummary summary = summaryListener.getSummary();
       summary.printFailuresTo(out);
