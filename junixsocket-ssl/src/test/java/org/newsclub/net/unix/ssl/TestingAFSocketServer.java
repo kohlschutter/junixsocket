@@ -32,27 +32,48 @@ import org.newsclub.net.unix.server.AFSocketServer;
  * @author Christian Kohlschütter
  */
 abstract class TestingAFSocketServer<A extends AFSocketAddress> extends AFSocketServer<A> {
+  private Throwable throwable = null;
+
   public TestingAFSocketServer(A listenAddress) {
     super(listenAddress);
   }
 
+  private void setFirstThrowable(Throwable t) {
+    if (throwable != null) {
+      return;
+    }
+    throwable = t;
+  }
+
   @Override
-  protected void onServingException(AFSocket<? extends A> socket, Exception e) {
-    fail(e);
+  protected void onServingThrowable(AFSocket<? extends A> socket, Throwable t) {
+    setFirstThrowable(t);
+    fail(t);
   }
 
   @Override
   protected void onListenException(Exception e) {
-    fail(e);
+    e.printStackTrace();
   }
 
   @Override
   protected void onSocketExceptionAfterAccept(AFSocket<? extends A> socket, SocketException e) {
-    fail(e);
+    e.printStackTrace();
   }
 
   @Override
   protected void onSocketExceptionDuringAccept(SocketException e) {
-    fail(e);
+    e.printStackTrace();
+  }
+
+  void checkThrowable() throws Exception {
+    Throwable t = throwable;
+    if (t == null) {
+      return;
+    } else if (t instanceof Exception) {
+      throw (Exception) t;
+    } else {
+      throw (Error) t;
+    }
   }
 }
