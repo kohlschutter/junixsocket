@@ -74,6 +74,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <kohlschutter.multirelease.java.release>16</kohlschutter.multirelease.java.release>
 
         <kohlschutter.custom.package.folder>org/newsclub</kohlschutter.custom.package.folder>
+
+        <bouncycastle.version>1.76</bouncycastle.version>
     </properties>
 
     <modules>
@@ -354,6 +356,21 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
             </repositories>
         </profile>
     </profiles>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bctls-jdk18on</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
