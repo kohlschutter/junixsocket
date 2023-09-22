@@ -331,7 +331,14 @@ public class Selftest {
         messagesAtEnd.add("Skipping required module: " + module + "; this taints the test");
         st.withIssues = true;
       }
-      st.runTests(module, en.getValue());
+      try {
+        st.runTests(module, en.getValue());
+      } catch (Error | RuntimeException t) { // NOPMD
+        messagesAtEnd.add("INTERNAL INCONSISTENCY: Unexpected error while running tests for  "
+            + module + ": " + t);
+        t.printStackTrace();
+        st.fail = true;
+      }
     }
 
     if (!messagesAtEnd.isEmpty()) {
