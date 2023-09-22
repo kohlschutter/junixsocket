@@ -679,6 +679,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
       throw (SocketException) new SocketException("Cannot access native address").initCause(
           NativeUnixSocket.unsupportedException());
     }
+    address = address.duplicate();
 
     ByteBuffer direct = getNativeAddressDirectBuffer(address.limit());
     address.position(0);
