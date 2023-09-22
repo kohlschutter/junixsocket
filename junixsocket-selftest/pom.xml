@@ -522,6 +522,7 @@
                                             <excludes>
                                                 <exclude>module-info.class</exclude>
                                                 <exclude>**/module-info.class</exclude>
+                                                <exclude>META-INF/LICENSE</exclude>
                                                 <exclude>META-INF/*.md</exclude>
                                                 <exclude>META-INF/*.MF</exclude>
                                                 <exclude>META-INF/*.SF</exclude>
