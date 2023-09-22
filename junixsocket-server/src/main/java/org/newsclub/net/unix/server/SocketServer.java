@@ -429,15 +429,29 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
           synchronized (connectionsMonitor) {
             connectionsMonitor.notifyAll();
           }
-          try {
-            socket.close();
-          } catch (IOException e) {
-            // ignore
-          }
+
+          doSocketClose(socket);
           onAfterServingSocket(socket);
         }
       }
     });
+  }
+
+  /**
+   * Called upon closing a socket after serving the connection.
+   * <p>
+   * The default implementation closes the socket directly, ignoring any {@link IOException}s. You
+   * may override this method to close the socket in a separate thread, for example.
+   *
+   * @param socket The socket to close.
+   */
+  @SuppressWarnings("null")
+  protected void doSocketClose(S socket) {
+    try {
+      socket.close();
+    } catch (IOException e) {
+      // ignore
+    }
   }
 
   /**
