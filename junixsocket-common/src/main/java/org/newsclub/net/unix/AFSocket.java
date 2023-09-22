@@ -610,4 +610,13 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
       }
     }
   }
+
+  /**
+   * Checks if we're running on Android (as far as junixsocket is concerned).
+   *
+   * @return {@code true} if running on Android.
+   */
+  public static boolean isRunningOnAndroid() {
+    return NativeLibraryLoader.isAndroid();
+  }
 }
