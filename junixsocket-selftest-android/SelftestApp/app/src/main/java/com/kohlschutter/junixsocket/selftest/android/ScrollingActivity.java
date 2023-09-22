@@ -50,9 +50,9 @@ public class ScrollingActivity extends AppCompatActivity {
 
         @Override
         public void flush() {
-//            sv.post(() -> {
-//                sv.fullScroll(View.FOCUS_DOWN);
-//            });
+            sv.post(() -> {
+                sv.fullScroll(View.FOCUS_DOWN);
+            });
         }
 
         @Override
