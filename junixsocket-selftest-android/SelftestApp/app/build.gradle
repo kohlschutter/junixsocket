@@ -59,13 +59,15 @@ dependencies {
     implementation 'com.kohlschutter.junixsocket:junixsocket-ssl:2.7.3-SNAPSHOT'
     implementation 'com.kohlschutter.junixsocket:junixsocket-darwin:2.7.3-SNAPSHOT'
 
-    // Android's built-in Bouncycastle fork lacks PKCS12 support
-    // junixsocket-ssl will automatically use the real Bouncycastle when available
-    // This is REQUIRED for junixsocket-ssl tests and RECOMMENDED for junixsocket-ssl users
+    // junixsocket-ssl will automatically use the real Bouncycastle on Android when available.
+    // This is REQUIRED for junixsocket-ssl tests and RECOMMENDED for junixsocket-ssl users.
+    // Android's built-in Bouncycastle fork lacks PKCS12 support.
     implementation 'org.bouncycastle:bcprov-jdk18on:1.76'
 
-    // junixsocket-ssl will automatically use Bouncycastle-TLS when available
-    // implementation 'org.bouncycastle:bctls-jdk18on:1.76'
+    // junixsocket-ssl will automatically use Bouncycastle-TLS on Android when available.
+    // This is REQUIRED for junixsocket-ssl tests and RECOMMENDED for junixsocket-ssl users.
+    // Android's built-in TLS code has problems with sending SNI hostname requests.
+    implementation 'org.bouncycastle:bctls-jdk18on:1.76'
 
     // selftest-specifics
     implementation('com.kohlschutter.junixsocket:junixsocket-selftest:2.7.3-SNAPSHOT') {
