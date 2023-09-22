@@ -420,8 +420,10 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
         try { // NOPMD
           doServeSocket(socket);
-        } catch (Exception e) {
-          onServingException(socket, e);
+        } catch (Exception e) { // NOPMD
+          onServingException(socket, e); // NOPMD
+        } catch (Throwable t) { // NOPMD
+          onServingThrowable(socket, t); // NOPMD
         } finally {
           // Notify the server's accept thread that we handled the connection
           synchronized (connectionsMonitor) {
@@ -571,8 +573,21 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    *
    * @param socket The socket.
    * @param e The exception.
+   * @deprecated Use {@link #onServingThrowable(Socket, Throwable)}
+   * @see #onServingThrowable(Socket, Throwable)
    */
+  @Deprecated
   protected void onServingException(S socket, Exception e) {
+    onServingThrowable(socket, e);
+  }
+
+  /**
+   * Called when a throwable was thrown while serving a socket.
+   *
+   * @param socket The socket.
+   * @param t The throwable.
+   */
+  protected void onServingThrowable(S socket, Throwable t) {
   }
 
   /**
