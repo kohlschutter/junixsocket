@@ -46,13 +46,13 @@ abstract class TestingAFSocketServer<A extends AFSocketAddress> extends AFSocket
   }
 
   @Override
-  protected void onServingThrowable(AFSocket<? extends A> socket, Throwable t) {
+  protected void onServingException(AFSocket<? extends A> socket, Throwable t) {
     setFirstThrowable(t);
     fail(t);
   }
 
   @Override
-  protected void onListenException(Exception e) {
+  protected void onListenException(Throwable e) {
     e.printStackTrace();
   }
 

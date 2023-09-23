@@ -118,7 +118,7 @@ abstract class DemoServerBase extends SocketServer<SocketAddress, Socket, Server
   }
 
   @Override
-  protected void onServingThrowable(Socket socket, Throwable t) {
+  protected void onServingException(Socket socket, Throwable t) {
     if (socket.isClosed()) {
       // "Broken pipe", etc.
       System.out.println("The other end disconnected (" + t.getMessage() + "): " + socket);

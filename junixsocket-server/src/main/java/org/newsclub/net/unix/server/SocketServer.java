@@ -220,6 +220,8 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
             listen();
           } catch (Exception e) {
             onListenException(e);
+          } catch (Throwable e) { // NOPMD
+            onListenException(e);
           }
         }
       };
@@ -427,7 +429,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
         } catch (Exception e) { // NOPMD
           onServingException(socket, e); // NOPMD
         } catch (Throwable t) { // NOPMD
-          onServingThrowable(socket, t); // NOPMD
+          onServingException(socket, t); // NOPMD
         } finally {
           // Notify the server's accept thread that we handled the connection
           synchronized (connectionsMonitor) {
@@ -591,12 +593,12 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    *
    * @param socket The socket.
    * @param e The exception.
-   * @deprecated Use {@link #onServingThrowable(Socket, Throwable)}
-   * @see #onServingThrowable(Socket, Throwable)
+   * @deprecated Use {@link #onServingException(Socket, Throwable)}
+   * @see #onServingException(Socket, Throwable)
    */
   @Deprecated
   protected void onServingException(S socket, Exception e) {
-    onServingThrowable(socket, e);
+    onServingException(socket, (Throwable) e);
   }
 
   /**
@@ -605,7 +607,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    * @param socket The socket.
    * @param t The throwable.
    */
-  protected void onServingThrowable(S socket, Throwable t) {
+  protected void onServingException(S socket, Throwable t) {
   }
 
   /**
@@ -620,8 +622,20 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    * Called when an exception was thrown while listening on the server socket.
    *
    * @param e The exception.
+   * @deprecated Use {@link #onListenException(Throwable)}
+   * @see #onListenException(Throwable)
    */
+  @Deprecated
   protected void onListenException(Exception e) {
+    onListenException((Throwable) e);
+  }
+
+  /**
+   * Called when an exception was thrown while listening on the server socket.
+   *
+   * @param t The throwable.
+   */
+  protected void onListenException(Throwable t) {
   }
 
   /**
