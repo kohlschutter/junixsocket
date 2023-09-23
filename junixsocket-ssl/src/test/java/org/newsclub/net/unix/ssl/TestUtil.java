@@ -20,6 +20,7 @@ package org.newsclub.net.unix.ssl;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.SocketException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
@@ -27,6 +28,14 @@ final class TestUtil {
 
   private TestUtil() {
     throw new IllegalStateException("No instances");
+  }
+
+  static URL getTestResource(Class<?> classRef, String name) {
+    URL url = classRef.getResource(name);
+    if (url == null) {
+      throw new IllegalStateException("Missing expected test resource: " + name);
+    }
+    return url;
   }
 
   @SafeVarargs

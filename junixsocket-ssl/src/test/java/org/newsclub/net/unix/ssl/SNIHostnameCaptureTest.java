@@ -62,8 +62,8 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
   private static SSLSocketFactory initClientSocketFactory(TestSSLConfiguration configuration)
       throws Exception {
     return configuration.configure(SSLContextBuilder.forClient()) //
-        .withTrustStore(SSLContextBuilderTest.class.getResource("juxclient.truststore"),
-            () -> "clienttrustpass".toCharArray()) //
+        .withTrustStore(TestUtil.getTestResource(SSLContextBuilderTest.class,
+            "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
   }
 
@@ -136,8 +136,8 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(SSLContextBuilderTest.class.getResource("juxserver.p12"), () -> "serverpass"
-            .toCharArray()) //
+        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
+            () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
     try {
