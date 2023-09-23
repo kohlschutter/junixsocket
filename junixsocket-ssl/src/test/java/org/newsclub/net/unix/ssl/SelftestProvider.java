@@ -33,6 +33,7 @@ public class SelftestProvider {
   public Map<String, Class<?>[]> tests() {
     Map<String, Class<?>[]> tests = new LinkedHashMap<>();
     tests.put("junixsocket-ssl", new Class<?>[] { //
+        ProviderTest.class, // should be at the top
         SSLContextBuilderTest.class, //
         SNIHostnameCaptureTest.class, //
         ValidatingX509TrustManagerTest.class, //
