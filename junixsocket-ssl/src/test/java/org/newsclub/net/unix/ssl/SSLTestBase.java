@@ -57,6 +57,9 @@ public abstract class SSLTestBase {
   private static final Provider PROVIDER_BOUNCYCASTLE_JSSE_FIPS = ReflectionUtil
       .instantiateIfPossible("org.bouncycastle.jsse.provider.BouncyCastleJsseProvider", true);
 
+  private static final Provider PROVIDER_IAIK_JCE = ReflectionUtil.instantiateIfPossible(
+      "iaik.security.provider.IAIK");
+
   private static final String DEFAULT_PROVIDER_NAME = new Supplier<String>() {
     @Override
     public String get() {
@@ -91,6 +94,7 @@ public abstract class SSLTestBase {
   private static void removeAllConfigurableProviders() {
     removeProvider("BC", PROVIDER_BOUNCYCASTLE_JCE);
     removeProvider("BCJSSE", PROVIDER_BOUNCYCASTLE_JSSE);
+    Security.removeProvider("IAIK");
   }
 
   private static void removeProvider(String name, Provider ifThis) {
@@ -147,7 +151,17 @@ public abstract class SSLTestBase {
       b.withProvider(PROVIDER_BOUNCYCASTLE_JSSE_FIPS);
       b.withKeyStoreSupplier(() -> KeyStore.getInstance("PKCS12", PROVIDER_BOUNCYCASTLE_JCE));
       return b;
-    });
+    }),
+
+    IAIK_JCE((b) -> {
+      if (PROVIDER_IAIK_JCE == null) {
+        throw new TestAbortedNotAnIssueException("IAIK JCE provider unvailable");
+      }
+      removeAllConfigurableProviders();
+      Security.insertProviderAt(PROVIDER_IAIK_JCE, 0);
+      return b;
+    }), //
+    ;
 
     private final TestSSLContextBuilderConfigurator builderConfigurator;
 
