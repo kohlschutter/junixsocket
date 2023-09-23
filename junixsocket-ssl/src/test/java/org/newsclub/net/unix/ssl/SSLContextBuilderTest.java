@@ -51,6 +51,7 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLProtocolException;
 import javax.net.ssl.SSLServerSocket;
@@ -177,17 +178,15 @@ public class SSLContextBuilderTest extends SSLTestBase {
 
         // both client and server should throw an SSLHandshakeException or SocketException
         assertInstanceOf(serverException.get(), SSLHandshakeException.class, SocketException.class, //
-            SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION /*
-                                                                    * org.bouncycastle.tls.
-                                                                    * TlsFatalAlert
-                                                                    */ // Bouncycastle
+            SSLProtocolException.class, //
+            BOUNCYCASTLE_TLS_EXCEPTION, // org.bouncycastle.tls.TlsFatalAlert
+            SSLException.class // IBMJSSEProvider2
         );
         assertInstanceOf(clientException.get(), null, SSLHandshakeException.class,
             SocketException.class, //
-            SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION/*
-                                                                   * org.bouncycastle.tls.
-                                                                   * TlsFatalAlert
-                                                                   */ // Bouncycastle
+            SSLProtocolException.class, //
+            BOUNCYCASTLE_TLS_EXCEPTION, // org.bouncycastle.tls.TlsFatalAlert
+            SSLException.class // IBMJSSEProvider2
         );
       });
     } finally {
@@ -227,17 +226,15 @@ public class SSLContextBuilderTest extends SSLTestBase {
 
         // both client and server should throw an SSLHandshakeException or SocketException
         assertInstanceOf(serverException.get(), SSLHandshakeException.class, SocketException.class, //
-            SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION /*
-                                                                    * org.bouncycastle.tls.
-                                                                    * TlsFatalAlert
-                                                                    */ // Bouncycastle
+            SSLProtocolException.class, //
+            BOUNCYCASTLE_TLS_EXCEPTION, // org.bouncycastle.tls.TlsFatalAlert
+            SSLException.class // IBMJSSEProvider2
         );
         assertInstanceOf(clientException.get(), null, SSLHandshakeException.class,
             SocketException.class, //
-            SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION /*
-                                                                    * org.bouncycastle.tls.
-                                                                    * TlsFatalAlert
-                                                                    */ // Bouncycastle
+            SSLProtocolException.class, //
+            BOUNCYCASTLE_TLS_EXCEPTION, // org.bouncycastle.tls.TlsFatalAlert
+            SSLException.class // IBMJSSEProvider2
         );
       });
     } finally {
@@ -272,17 +269,15 @@ public class SSLContextBuilderTest extends SSLTestBase {
 
         // both client and server should throw an SSLHandshakeException or SocketException
         assertInstanceOf(serverException.get(), SSLHandshakeException.class, SocketException.class, //
-            SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION /*
-                                                                    * org.bouncycastle.tls.
-                                                                    * TlsFatalAlert
-                                                                    */ // Bouncycastle
+            SSLProtocolException.class, //
+            BOUNCYCASTLE_TLS_EXCEPTION, // org.bouncycastle.tls.TlsFatalAlert
+            SSLException.class // IBMJSSEProvider2
         );
         assertInstanceOf(clientException.get(), null, SSLHandshakeException.class,
             SocketException.class, //
-            SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION /*
-                                                                    * org.bouncycastle.tls.
-                                                                    * TlsFatalAlert
-                                                                    */ // Bouncycastle
+            SSLProtocolException.class, //
+            BOUNCYCASTLE_TLS_EXCEPTION, // org.bouncycastle.tls.TlsFatalAlert
+            SSLException.class // IBMJSSEProvider2
         );
       });
     } finally {

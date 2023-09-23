@@ -40,6 +40,7 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.net.ssl.SNIHostName;
 import javax.net.ssl.SNIServerName;
+import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLProtocolException;
 import javax.net.ssl.SSLSocket;
@@ -96,10 +97,12 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
       });
 
       assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class, //
-          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION // Bouncycastle
+          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION, // Bouncycastle,
+          SSLException.class // IBMJSSEProvider2
       );
       assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class, //
-          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION // Bouncycastle
+          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION, // Bouncycastle,
+          SSLException.class // IBMJSSEProvider2
       );
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
@@ -198,10 +201,12 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
       });
 
       assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class, //
-          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION // Bouncycastle
+          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION, // Bouncycastle,
+          SSLException.class // IBMJSSEProvider2
       );
       assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class, //
-          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION // Bouncycastle
+          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION, // Bouncycastle,
+          SSLException.class // IBMJSSEProvider2
       );
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
@@ -367,10 +372,12 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
       });
 
       assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class, //
-          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION // Bouncycastle
+          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION, // Bouncycastle,
+          SSLException.class // IBMJSSEProvider2
       );
       assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class, //
-          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION // Bouncycastle
+          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION, // Bouncycastle,
+          SSLException.class // IBMJSSEProvider2
       );
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
