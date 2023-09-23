@@ -520,6 +520,7 @@
                                         <filter>
                                             <artifact>*:*</artifact>
                                             <excludes>
+                                                <exclude>/logging.properties</exclude>
                                                 <exclude>module-info.class</exclude>
                                                 <exclude>**/module-info.class</exclude>
                                                 <exclude>META-INF/LICENSE</exclude>
