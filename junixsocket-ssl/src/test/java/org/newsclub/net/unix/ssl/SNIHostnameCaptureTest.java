@@ -187,6 +187,9 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
           @Override
           protected void doServeSocket(AFSocket<? extends AFUNIXSocketAddress> plainSocket)
               throws IOException {
+
+            boolean sniBroken = false;
+
             try (SSLSocket sslSocket = (SSLSocket) serverSocketFactory.createSocket(plainSocket,
                 "localhost.junixsocket", plainSocket.getPort(), false)) {
 
@@ -203,22 +206,31 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
 
               hnc.isComplete(1, TimeUnit.SECONDS);
               gotHostnameInTime.set(hnc.isComplete());
-              if (expectDefault) {
-                if (serverNullDefaultHostname && clientEmptyDefaultHostname) {
-                  assertNull(hnc.getHostname());
-                } else if (clientEmptyDefaultHostname) {
-                  assertEquals("defaulthost", hnc.getHostname());
+
+              try {
+                if (expectDefault) {
+                  if (serverNullDefaultHostname && clientEmptyDefaultHostname) {
+                    assertNull(hnc.getHostname());
+                  } else if (clientEmptyDefaultHostname) {
+                    assertEquals("defaulthost", hnc.getHostname());
+                  } else {
+                    assertEquals("localhost.junixsocket", hnc.getHostname());
+                  }
                 } else {
-                  assertEquals("localhost.junixsocket", hnc.getHostname());
+                  if ("defaulthost".equals(hnc.getHostname()) && AFSocket.isRunningOnAndroid()) {
+                    // This is a known edge case.
+                    failureServer.complete(new TestAbortedWithImportantMessageException(
+                        MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+                        "Android seems to not properly send the SNI hostname request"));
+                  } else {
+                    assertEquals("subdomain.example.com", hnc.getHostname());
+                  }
                 }
-              } else {
-                if ("defaulthost".equals(hnc.getHostname()) && AFSocket.isRunningOnAndroid()) {
-                  // This is a known edge case.
-                  failureServer.complete(new TestAbortedWithImportantMessageException(
-                      MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
-                      "Android seems to not properly send the SNI hostname request"));
+              } catch (AssertionFailedError e) {
+                if (configuration.isSniBroken()) {
+                  sniBroken = true;
                 } else {
-                  assertEquals("subdomain.example.com", hnc.getHostname());
+                  throw e;
                 }
               }
 
@@ -252,6 +264,11 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
               }
               if (!gotHostnameInTime.get()) {
                 fail("Handshake was not marked complete in time, but eventually was");
+              }
+              if (sniBroken) {
+                throw new TestAbortedWithImportantMessageException(
+                    MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+                    "SNI support is knowingly incomplete for " + configuration);
               }
             } catch (Exception | Error e) {
               failureServer.complete(e);

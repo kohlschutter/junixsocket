@@ -19,6 +19,8 @@ package org.newsclub.net.unix.ssl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.security.Provider;
 import java.util.HashMap;
@@ -52,6 +54,20 @@ final class ReflectionUtil {
       return (Class<? extends Throwable>) Class.forName(className);
     } catch (ClassNotFoundException e) {
       return ExceptionPlaceholder.class;
+    }
+  }
+
+  static Provider singletonIfPossible(String className, String methodName) {
+    try {
+      Class<?> klazz = Class.forName(className);
+      Method m = klazz.getMethod(methodName);
+      if ((m.getModifiers() & Modifier.STATIC) == 0) {
+        return null;
+      }
+      return (Provider) m.invoke(null);
+    } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
+        | IllegalAccessException | InvocationTargetException | ClassCastException e) {
+      return null; // NOPMD.ReturnEmptyCollectionRatherThanNull
     }
   }
 

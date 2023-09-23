@@ -60,6 +60,22 @@ public abstract class SSLTestBase {
   private static final Provider PROVIDER_IAIK_JCE = ReflectionUtil.instantiateIfPossible(
       "iaik.security.provider.IAIK");
 
+  // Not supported yet (bug in IAIKJSSEProvider)
+  private static final Provider PROVIDER_IAIK_JSSE = ReflectionUtil.instantiateIfPossible(
+      "iaik.security.jsse.provider.IAIKJSSEProvider");
+
+  // Works on Java 8 only
+  private static final Provider PROVIDER_OPENJSSE = ReflectionUtil.instantiateIfPossible(
+      "org.openjsse.net.ssl.OpenJSSE");
+
+  private static final Provider PROVIDER_CONSCRYPT = ReflectionUtil.singletonIfPossible(
+      "org.conscrypt.Conscrypt", "newProvider");
+
+  private static final Provider PROVIDER_WOLFSSL_JSSE = ReflectionUtil.instantiateIfPossible(
+      "com.wolfssl.provider.jsse.WolfSSLProvider");
+  private static final Provider PROVIDER_WOLFCRYPT_JCE = ReflectionUtil.instantiateIfPossible(
+      "com.wolfssl.provider.jce.WolfCryptProvider");
+
   private static final String DEFAULT_PROVIDER_NAME = new Supplier<String>() {
     @Override
     public String get() {
@@ -91,16 +107,29 @@ public abstract class SSLTestBase {
     SSLContextBuilder configure(SSLContextBuilder builder) throws Exception;
   }
 
-  private static void removeAllConfigurableProviders() {
-    removeProvider("BC", PROVIDER_BOUNCYCASTLE_JCE);
+  static void removeAllConfigurableProviders() {
     removeProvider("BCJSSE", PROVIDER_BOUNCYCASTLE_JSSE);
-    Security.removeProvider("IAIK");
+    removeProvider("BC", PROVIDER_BOUNCYCASTLE_JCE);
+    removeProvider("IAIK_JSSE", PROVIDER_IAIK_JSSE);
+    removeProvider("IAIK", PROVIDER_IAIK_JCE);
+    removeProvider("OpenJSSE", PROVIDER_OPENJSSE);
+    removeProvider("wolfJSSE", PROVIDER_WOLFSSL_JSSE);
+    removeProvider("wolfJCE", PROVIDER_WOLFCRYPT_JCE);
+    removeProvider("Conscrypt", PROVIDER_CONSCRYPT);
   }
 
-  private static void removeProvider(String name, Provider ifThis) {
-    Provider p = Security.getProvider(name);
-    if (p == ifThis && p != null) { // NOPMD.CompareObjectsWithEquals
-      Security.removeProvider(name);
+  private static void removeProvider(String name, Provider provider) {
+    if (provider == null) {
+      return;
+    }
+    String providerName = provider.getName();
+    if (!name.equals(providerName)) {
+      System.err.println("WARNING: Unexpected provider name " + providerName + " for provider "
+          + provider);
+    }
+    Provider p = Security.getProvider(providerName);
+    if (p == provider) { // NOPMD.CompareObjectsWithEquals
+      Security.removeProvider(providerName);
     }
   }
 
@@ -109,13 +138,13 @@ public abstract class SSLTestBase {
     DEFAULT((b) -> {
       removeAllConfigurableProviders();
       return b;
-    }), //
+    }, false), //
 
     SYSTEM((b) -> {
       removeAllConfigurableProviders();
       b.withProvider((Provider) null);
       return b;
-    }), //
+    }, false), //
 
     BOUNCYCASTLE_JCE((b) -> {
       if (PROVIDER_BOUNCYCASTLE_JCE == null) {
@@ -124,7 +153,7 @@ public abstract class SSLTestBase {
       removeAllConfigurableProviders();
       Security.addProvider(PROVIDER_BOUNCYCASTLE_JCE);
       return b;
-    }), //
+    }, false), //
     BOUNCYCASTLE_JCE_AND_JSEE((b) -> {
       if (PROVIDER_BOUNCYCASTLE_JCE == null) {
         throw new TestAbortedNotAnIssueException("BouncyCastle JCE provider unvailable");
@@ -137,7 +166,7 @@ public abstract class SSLTestBase {
       Security.addProvider(PROVIDER_BOUNCYCASTLE_JSSE);
       b.withProvider(PROVIDER_BOUNCYCASTLE_JSSE);
       return b;
-    }), //
+    }, false), //
     BOUNCYCASTLE_JCE_AND_JSEE_FIPS((b) -> {
       if (PROVIDER_BOUNCYCASTLE_JCE == null) {
         throw new TestAbortedNotAnIssueException("BouncyCastle JCE provider unvailable");
@@ -151,7 +180,7 @@ public abstract class SSLTestBase {
       b.withProvider(PROVIDER_BOUNCYCASTLE_JSSE_FIPS);
       b.withKeyStoreSupplier(() -> KeyStore.getInstance("PKCS12", PROVIDER_BOUNCYCASTLE_JCE));
       return b;
-    }),
+    }, false),
 
     IAIK_JCE((b) -> {
       if (PROVIDER_IAIK_JCE == null) {
@@ -160,13 +189,69 @@ public abstract class SSLTestBase {
       removeAllConfigurableProviders();
       Security.insertProviderAt(PROVIDER_IAIK_JCE, 0);
       return b;
-    }), //
+    }, false), //
+
+    // NOTE: Currently disabled because IAIK JSSE cannot switch to server mode
+    // (iaik.security.ssl.SSLException "SSLServerContext required in server mode!")
+    IAIK_JCE_AND_JSSE((b) -> {
+      if (PROVIDER_IAIK_JCE == null) {
+        throw new TestAbortedNotAnIssueException("IAIK JCE provider unvailable");
+      }
+      if (PROVIDER_IAIK_JSSE == null) {
+        throw new TestAbortedNotAnIssueException("IAIK JSSE provider unvailable");
+      }
+      removeAllConfigurableProviders();
+      Security.insertProviderAt(PROVIDER_IAIK_JCE, 0);
+      Security.addProvider(PROVIDER_IAIK_JSSE);
+      b.withProvider(PROVIDER_IAIK_JSSE);
+      return b;
+    }, false), //
+
+    OPENJSSE((b) -> {
+      if (PROVIDER_OPENJSSE == null) {
+        throw new TestAbortedNotAnIssueException("OPENJSSE provider unvailable");
+      }
+      removeAllConfigurableProviders();
+      Security.addProvider(PROVIDER_OPENJSSE);
+      b.withProvider(PROVIDER_OPENJSSE);
+      return b;
+    }, false), //
+
+    // Works mostly, but has some problems with our test certificates
+    // ("verify problem on certificate (error code: -329)")
+    // WOLFCRYPT_WOLFSSL((b) -> {
+    // if (PROVIDER_WOLFCRYPT_JCE == null) {
+    // throw new TestAbortedNotAnIssueException("Wolfcrypt JCE provider unvailable");
+    // }
+    // if (PROVIDER_WOLFSSL_JSSE == null) {
+    // throw new TestAbortedNotAnIssueException("WolfSSL JSSE provider unvailable");
+    // }
+    // removeAllConfigurableProviders();
+    // Security.addProvider(PROVIDER_WOLFCRYPT_JCE);
+    // Security.addProvider(PROVIDER_WOLFSSL_JSSE);
+    // // b.withKeyStoreSupplier(() -> KeyStore.getInstance("PKCS12", PROVIDER_WOLFCRYPT_JSSE));
+    // b.withProvider(PROVIDER_WOLFSSL_JSSE);
+    // return b;
+    // }), //
+
+    CONSCRYPT((b) -> {
+      if (PROVIDER_CONSCRYPT == null) {
+        throw new TestAbortedNotAnIssueException("Conscrypt provider unvailable");
+      }
+
+      removeAllConfigurableProviders();
+      Security.addProvider(PROVIDER_CONSCRYPT);
+      b.withProvider(PROVIDER_CONSCRYPT);
+      return b;
+    }, true), //
     ;
 
+    private final boolean sniBroken;
     private final TestSSLContextBuilderConfigurator builderConfigurator;
 
-    TestSSLConfiguration(TestSSLContextBuilderConfigurator configurator) {
+    TestSSLConfiguration(TestSSLContextBuilderConfigurator configurator, boolean sniBroken) {
       this.builderConfigurator = configurator;
+      this.sniBroken = sniBroken;
     }
 
     @Override
@@ -179,6 +264,10 @@ public abstract class SSLTestBase {
         default:
           return name();
       }
+    }
+
+    public boolean isSniBroken() {
+      return sniBroken;
     }
 
     @Override
