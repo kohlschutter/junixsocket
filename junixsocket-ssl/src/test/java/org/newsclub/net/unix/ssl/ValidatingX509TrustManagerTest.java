@@ -41,19 +41,20 @@ import java.util.concurrent.CompletableFuture;
 import javax.net.ssl.SNIHostName;
 import javax.net.ssl.SNIServerName;
 import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLProtocolException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.bouncycastle.tls.TlsException;
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
-import org.newsclub.net.unix.server.AFSocketServer;
 
 // CPD-OFF
-public class ValidatingX509TrustManagerTest {
+public class ValidatingX509TrustManagerTest extends SSLTestBase {
 
   @Test
   public void testInspectTrustedCertificateExpired() throws Exception {
@@ -67,7 +68,7 @@ public class ValidatingX509TrustManagerTest {
     SSLSocketFactory clientSocketFactory = SSLContextBuilder.forClient() //
         .withTrustManagers((tmf) -> {
 
-          KeyStore ks = KeyStore.getInstance("JKS");
+          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
           try (InputStream in = SSLContextBuilderTest.class.getResourceAsStream(
               "juxclient.truststore")) {
             ks.load(in, "clienttrustpass".toCharArray());
@@ -92,8 +93,12 @@ public class ValidatingX509TrustManagerTest {
             clientSocketFactory, serverException, clientException));
       });
 
-      assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class);
-      assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class);
+      assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class, //
+          SSLProtocolException.class, TlsException.class // Bouncycastle
+      );
+      assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class, //
+          SSLProtocolException.class, TlsException.class // Bouncycastle
+      );
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
     }
@@ -114,7 +119,7 @@ public class ValidatingX509TrustManagerTest {
     SSLSocketFactory clientSocketFactory = SSLContextBuilder.forClient() //
         .withTrustManagers((tmf) -> {
 
-          KeyStore ks = KeyStore.getInstance("JKS");
+          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
           try (InputStream in = SSLContextBuilderTest.class.getResourceAsStream(
               "juxserver.truststore")) {
             ks.load(in, "servertrustpass".toCharArray());
@@ -158,7 +163,7 @@ public class ValidatingX509TrustManagerTest {
     SSLSocketFactory clientSocketFactory = SSLContextBuilder.forClient() //
         .withTrustManagers((tmf) -> {
 
-          KeyStore ks = KeyStore.getInstance("JKS");
+          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
           try (InputStream in = SSLContextBuilderTest.class.getResourceAsStream(
               "juxclient.truststore")) {
             ks.load(in, "clienttrustpass".toCharArray());
@@ -186,8 +191,12 @@ public class ValidatingX509TrustManagerTest {
             clientSocketFactory, serverException, clientException));
       });
 
-      assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class);
-      assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class);
+      assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class, //
+          SSLProtocolException.class, TlsException.class // Bouncycastle
+      );
+      assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class, //
+          SSLProtocolException.class, TlsException.class // Bouncycastle
+      );
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
     }
@@ -205,7 +214,7 @@ public class ValidatingX509TrustManagerTest {
     SSLSocketFactory clientSocketFactory = SSLContextBuilder.forClient() //
         .withTrustManagers((tmf) -> {
 
-          KeyStore ks = KeyStore.getInstance("JKS");
+          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
           try (InputStream in = SSLContextBuilderTest.class.getResourceAsStream(
               "juxclient.truststore")) {
             ks.load(in, "clienttrustpass".toCharArray());
@@ -246,11 +255,6 @@ public class ValidatingX509TrustManagerTest {
         runServerAndClient(addr, serverSocketFactory, clientSocketFactory, serverException,
             clientException);
       });
-
-      // assertInstanceOf(serverException.get(), SocketException.class,
-      // SSLHandshakeException.class);
-      // assertInstanceOf(clientException.get(), SocketException.class,
-      // SSLHandshakeException.class);
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
     }
@@ -268,7 +272,7 @@ public class ValidatingX509TrustManagerTest {
         }) //
         .withTrustManagers((tmf) -> {
 
-          KeyStore ks = KeyStore.getInstance("JKS");
+          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
           try (InputStream in = SSLContextBuilderTest.class.getResourceAsStream(
               "juxserver.truststore")) {
             ks.load(in, "servertrustpass".toCharArray());
@@ -320,7 +324,7 @@ public class ValidatingX509TrustManagerTest {
         }) //
         .withTrustManagers((tmf) -> {
 
-          KeyStore ks = KeyStore.getInstance("JKS");
+          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
           try (InputStream in = SSLContextBuilderTest.class.getResourceAsStream(
               "juxclient.truststore")) {
             ks.load(in, "clienttrustpass".toCharArray());
@@ -350,8 +354,12 @@ public class ValidatingX509TrustManagerTest {
             clientSocketFactory, serverException, clientException));
       });
 
-      assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class);
-      assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class);
+      assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class, //
+          SSLProtocolException.class, TlsException.class // Bouncycastle
+      );
+      assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class, //
+          SSLProtocolException.class, TlsException.class // Bouncycastle
+      );
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
     }
@@ -372,7 +380,7 @@ public class ValidatingX509TrustManagerTest {
         }) //
         .withTrustManagers((tmf) -> {
 
-          KeyStore ks = KeyStore.getInstance("JKS");
+          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
           try (InputStream in = SSLContextBuilderTest.class.getResourceAsStream(
               "juxclient.truststore")) {
             ks.load(in, "clienttrustpass".toCharArray());
@@ -428,60 +436,73 @@ public class ValidatingX509TrustManagerTest {
       SSLSocketFactory clientSocketFactory, CompletableFuture<Exception> serverException,
       CompletableFuture<Exception> clientException) throws Exception {
 
-    AFSocketServer<AFUNIXSocketAddress> server = new TestingAFSocketServer<AFUNIXSocketAddress>(
-        addr) {
-      @Override
-      protected void doServeSocket(AFSocket<? extends AFUNIXSocketAddress> plainSocket)
-          throws IOException {
-        Exception caught = null;
-        try (SSLSocket sslSocket = (SSLSocket) serverSocketFactory.createSocket(plainSocket,
-            "localhost.junixsocket", plainSocket.getPort(), false)) {
+    TestingAFSocketServer<AFUNIXSocketAddress> server =
+        new TestingAFSocketServer<AFUNIXSocketAddress>(addr) {
+          @Override
+          protected void doServeSocket(AFSocket<? extends AFUNIXSocketAddress> plainSocket)
+              throws IOException {
+            Exception caught = null;
+            try (SSLSocket sslSocket = (SSLSocket) serverSocketFactory.createSocket(plainSocket,
+                "localhost.junixsocket", plainSocket.getPort(), false)) {
 
-          try (InputStream in = sslSocket.getInputStream();
-              OutputStream out = sslSocket.getOutputStream();) {
+              try (InputStream in = sslSocket.getInputStream();
+                  OutputStream out = sslSocket.getOutputStream();) {
 
-            int v = in.read();
-            assertEquals('!', v);
+                int v = in.read();
+                assertEquals('!', v);
 
-            out.write("Hello World".getBytes(StandardCharsets.UTF_8));
-            out.flush();
-            stop();
+                out.write("Hello World".getBytes(StandardCharsets.UTF_8));
+                out.flush();
+              }
+            } catch (Exception e) {
+              caught = e;
+            } finally {
+              serverException.complete(caught);
+            }
           }
-        } catch (Exception e) {
-          caught = e;
-          throw e;
-        } finally {
-          serverException.complete(caught);
+        };
+    try {
+      server.startAndWaitToBecomeReady();
+
+      SNIServerName hostname = new SNIHostName("subdomain.example.com");
+
+      Exception caught = null;
+      try (AFUNIXSocket plainSocket = AFUNIXSocket.connectTo(addr);
+          SSLSocket sslSocket = (SSLSocket) clientSocketFactory.createSocket(plainSocket,
+              "localhost.junixsocket", plainSocket.getPort(), false)) {
+
+        SSLParametersUtil.setSNIServerName(sslSocket, hostname);
+
+        sslSocket.startHandshake();
+
+        try (InputStream in = sslSocket.getInputStream();
+            OutputStream out = sslSocket.getOutputStream()) {
+          out.write('!');
+          out.flush();
+
+          byte[] by = new byte[11];
+          int offset = 0;
+          int r;
+          while (offset < by.length && (r = in.read(by, offset, by.length - offset)) >= 0) {
+            offset += r;
+          }
+          assertEquals("Hello World", new String(by, 0, offset, StandardCharsets.UTF_8));
         }
+      } catch (SocketException e) {
+        caught = e;
+      } catch (Exception e) {
+        caught = e;
+        throw e;
+      } finally {
+        clientException.complete(caught);
       }
-    };
-    server.startAndWaitToBecomeReady();
-
-    SNIServerName hostname = new SNIHostName("subdomain.example.com");
-
-    Exception caught = null;
-    try (AFUNIXSocket plainSocket = AFUNIXSocket.connectTo(addr);
-        SSLSocket sslSocket = (SSLSocket) clientSocketFactory.createSocket(plainSocket,
-            "localhost.junixsocket", plainSocket.getPort(), false)) {
-
-      SSLParametersUtil.setSNIServerName(sslSocket, hostname);
-
-      sslSocket.startHandshake();
-
-      try (InputStream in = sslSocket.getInputStream();
-          OutputStream out = sslSocket.getOutputStream()) {
-        out.write('!');
-        out.flush();
-
-        byte[] by = new byte[11];
-        int r = in.read(by);
-        assertEquals("Hello World", new String(by, 0, r, StandardCharsets.UTF_8));
-      }
-    } catch (Exception e) {
-      caught = e;
-      throw e;
     } finally {
-      clientException.complete(caught);
+      server.stop();
+
+      TestUtil.throwMoreInterestingThrowableThanSocketException(() -> serverException.getNow(null),
+          () -> clientException.getNow(null));
+
+      server.checkThrowable();
     }
   }
 }

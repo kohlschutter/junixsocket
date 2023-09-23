@@ -21,8 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -37,13 +40,21 @@ final class BuilderSSLSocketFactory extends SSLSocketFactory {
   private final SSLSocketFactory factory;
   private final SSLParameters defaultParams;
   private final boolean clientMode;
+  private final SSLContext context;
+  private final SocketFactory underlyingSocketFactory;
 
-  BuilderSSLSocketFactory(boolean clientMode, SSLSocketFactory factory,
-      SSLParameters defaultParams) {
+  BuilderSSLSocketFactory(boolean clientMode, SSLContext context, SSLSocketFactory factory,
+      SSLParameters defaultParams, SocketFactory socketFactory) {
     super();
     this.clientMode = clientMode;
+    this.context = context;
     this.factory = factory;
     this.defaultParams = defaultParams;
+    this.underlyingSocketFactory = socketFactory;
+  }
+
+  SSLContext getContext() {
+    return context;
   }
 
   @Override
@@ -65,38 +76,45 @@ final class BuilderSSLSocketFactory extends SSLSocketFactory {
   @Override
   public Socket createSocket(Socket s, String host, int port, boolean autoClose)
       throws IOException {
-    return init((SSLSocket) factory.createSocket(s, host, port, autoClose));
+    return init(new BuilderSSLSocket((SSLSocket) factory.createSocket(s, host, port, autoClose), s,
+        autoClose));
   }
 
   @Override
   public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
-    return init((SSLSocket) factory.createSocket(host, port));
+    Socket socket = underlyingSocketFactory.createSocket(host, port);
+    return createSocket(socket, host, port, true);
   }
 
   @Override
   public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
       throws IOException, UnknownHostException {
-    return init((SSLSocket) factory.createSocket(host, port, localHost, localPort));
+    Socket socket = underlyingSocketFactory.createSocket(host, port, localHost, localPort);
+    return createSocket(socket, host, port, true);
   }
 
   @Override
   public Socket createSocket(InetAddress host, int port) throws IOException {
-    return init((SSLSocket) factory.createSocket(host, port));
+    Socket socket = underlyingSocketFactory.createSocket(host, port);
+    return createSocket(socket, host.getHostName(), port, true);
   }
 
   @Override
   public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
       throws IOException {
-    return init((SSLSocket) factory.createSocket(address, port, localAddress, localPort));
+    Socket socket = underlyingSocketFactory.createSocket(address, port, localAddress, localPort);
+    return createSocket(socket, address.getHostName(), port, true);
   }
 
   @Override
   public Socket createSocket(Socket s, InputStream consumed, boolean autoClose) throws IOException {
-    return init((SSLSocket) factory.createSocket(s, consumed, autoClose));
+    return init(new BuilderSSLSocket((SSLSocket) factory.createSocket(s, consumed, autoClose), s,
+        autoClose));
   }
 
   @Override
   public Socket createSocket() throws IOException {
-    return init((SSLSocket) factory.createSocket());
+    throw (SocketException) new SocketException("Unconnected sockets not implemented").initCause(
+        new UnsupportedOperationException());
   }
 }

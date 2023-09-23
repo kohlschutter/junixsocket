@@ -46,11 +46,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLProtocolException;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
@@ -59,18 +61,20 @@ import javax.net.ssl.TrustManager;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
+import org.bouncycastle.tls.TlsException;
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketPair;
-import org.newsclub.net.unix.server.AFSocketServer;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.ExecutionEnvironmentRequirement;
 import com.kohlschutter.testutil.ExecutionEnvironmentRequirement.Rule;
 
 // CPD-OFF
-public class SSLContextBuilderTest {
+@SuppressWarnings("PMD.ExcessiveImports")
+public class SSLContextBuilderTest extends SSLTestBase {
 
   @Test
   public void testNoClientAuth() throws Exception {
@@ -94,7 +98,7 @@ public class SSLContextBuilderTest {
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
     try {
       assertTimeoutPreemptively(Duration.ofSeconds(5), () -> runServerAndClient(addr,
-          serverSocketFactory, clientSocketFactory, serverException, clientException));
+          serverSocketFactory, clientSocketFactory, serverException, clientException, false));
 
       // no exceptions expected
       assertNull(serverException.get());
@@ -130,7 +134,7 @@ public class SSLContextBuilderTest {
     try {
       assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
         runServerAndClient(addr, serverSocketFactory, clientSocketFactory, serverException,
-            clientException);
+            clientException, false);
 
         // no exceptions expected
         assertNull(serverException.get());
@@ -164,12 +168,17 @@ public class SSLContextBuilderTest {
       assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
         assertThrows(IOException.class, () -> {
           runServerAndClient(addr, serverSocketFactory, clientSocketFactory, serverException,
-              clientException);
+              clientException, true);
         });
 
         // both client and server should throw an SSLHandshakeException or SocketException
-        assertInstanceOf(serverException.get(), SSLHandshakeException.class, SocketException.class);
-        assertInstanceOf(clientException.get(), SSLHandshakeException.class, SocketException.class);
+        assertInstanceOf(serverException.get(), SSLHandshakeException.class, SocketException.class, //
+            SSLProtocolException.class, TlsException.class /* org.bouncycastle.tls.TlsFatalAlert */ // Bouncycastle
+        );
+        assertInstanceOf(clientException.get(), null, SSLHandshakeException.class,
+            SocketException.class, //
+            SSLProtocolException.class, TlsException.class /* org.bouncycastle.tls.TlsFatalAlert */ // Bouncycastle
+        );
       });
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
@@ -201,12 +210,17 @@ public class SSLContextBuilderTest {
       assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
         assertThrows(IOException.class, () -> {
           runServerAndClient(addr, serverSocketFactory, clientSocketFactory, serverException,
-              clientException);
+              clientException, true);
         });
 
         // both client and server should throw an SSLHandshakeException or SocketException
-        assertInstanceOf(serverException.get(), SSLHandshakeException.class, SocketException.class);
-        assertInstanceOf(clientException.get(), SSLHandshakeException.class, SocketException.class);
+        assertInstanceOf(serverException.get(), SSLHandshakeException.class, SocketException.class, //
+            SSLProtocolException.class, TlsException.class /* org.bouncycastle.tls.TlsFatalAlert */ // Bouncycastle
+        );
+        assertInstanceOf(clientException.get(), null, SSLHandshakeException.class,
+            SocketException.class, //
+            SSLProtocolException.class, TlsException.class /* org.bouncycastle.tls.TlsFatalAlert */ // Bouncycastle
+        );
       });
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
@@ -234,12 +248,17 @@ public class SSLContextBuilderTest {
       assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
         assertThrows(IOException.class, () -> {
           runServerAndClient(addr, serverSocketFactory, clientSocketFactory, serverException,
-              clientException);
+              clientException, true);
         });
 
         // both client and server should throw an SSLHandshakeException or SocketException
-        assertInstanceOf(serverException.get(), SSLHandshakeException.class, SocketException.class);
-        assertInstanceOf(clientException.get(), SSLHandshakeException.class, SocketException.class);
+        assertInstanceOf(serverException.get(), SSLHandshakeException.class, SocketException.class, //
+            SSLProtocolException.class, TlsException.class /* org.bouncycastle.tls.TlsFatalAlert */ // Bouncycastle
+        );
+        assertInstanceOf(clientException.get(), null, SSLHandshakeException.class,
+            SocketException.class, //
+            SSLProtocolException.class, TlsException.class /* org.bouncycastle.tls.TlsFatalAlert */ // Bouncycastle
+        );
       });
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
@@ -257,7 +276,7 @@ public class SSLContextBuilderTest {
           p.setNeedClientAuth(true);
         }) //
         .withKeyManagers((kmf) -> {
-          KeyStore ks = KeyStore.getInstance("JKS");
+          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
           try (InputStream in = SSLContextBuilderTest.class.getResourceAsStream("juxserver.p12")) {
             ks.load(in, "serverpass".toCharArray());
           }
@@ -277,12 +296,22 @@ public class SSLContextBuilderTest {
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
     try {
       assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
-        runServerAndClient(addr, serverSocketFactory, clientSocketFactory, serverException,
-            clientException);
+
+        Exception exception = null;
+        try {
+          runServerAndClient(addr, serverSocketFactory, clientSocketFactory, serverException,
+              clientException, false);
+        } catch (Exception e) {
+          exception = e;
+        }
 
         // no exceptions expected
         assertNull(serverException.get());
         assertNull(clientException.get());
+
+        if (exception != null) {
+          throw exception;
+        }
       });
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
@@ -291,56 +320,73 @@ public class SSLContextBuilderTest {
 
   private void runServerAndClient(AFUNIXSocketAddress addr, SSLSocketFactory serverSocketFactory,
       SSLSocketFactory clientSocketFactory, CompletableFuture<Exception> serverException,
-      CompletableFuture<Exception> clientException) throws Exception {
+      CompletableFuture<Exception> clientException, boolean expectClientTrouble) throws Exception {
 
-    AFSocketServer<AFUNIXSocketAddress> server = new TestingAFSocketServer<AFUNIXSocketAddress>(
-        addr) {
-      @Override
-      protected void doServeSocket(AFSocket<? extends AFUNIXSocketAddress> plainSocket)
-          throws IOException {
-        Exception caught = null;
-        try (SSLSocket sslSocket = (SSLSocket) serverSocketFactory.createSocket(plainSocket,
-            "localhost.junixsocket", plainSocket.getPort(), false)) {
+    TestingAFSocketServer<AFUNIXSocketAddress> server =
+        new TestingAFSocketServer<AFUNIXSocketAddress>(addr) {
+          @Override
+          protected void doServeSocket(AFSocket<? extends AFUNIXSocketAddress> plainSocket)
+              throws IOException {
+            Exception caught = null;
+            try (SSLSocket sslSocket = (SSLSocket) serverSocketFactory.createSocket(plainSocket,
+                "localhost.junixsocket", plainSocket.getPort(), false)) {
 
-          try (InputStream in = sslSocket.getInputStream();
-              OutputStream out = sslSocket.getOutputStream();) {
+              try (InputStream in = sslSocket.getInputStream();
+                  OutputStream out = sslSocket.getOutputStream();) {
 
-            int v = in.read();
-            assertEquals('!', v);
+                int v = in.read();
+                assertEquals('!', v);
 
-            out.write("Hello World".getBytes(StandardCharsets.UTF_8));
-            out.flush();
-            stop();
+                out.write("Hello World".getBytes(StandardCharsets.UTF_8));
+                out.flush();
+              }
+            } catch (Exception e) {
+              caught = e;
+            } finally {
+              serverException.complete(caught);
+            }
           }
-        } catch (Exception e) {
-          caught = e;
-          throw e;
-        } finally {
-          serverException.complete(caught);
+        };
+
+    try {
+      server.startAndWaitToBecomeReady();
+
+      Exception caught = null;
+      try (AFUNIXSocket plainSocket = AFUNIXSocket.connectTo(addr);
+          SSLSocket sslSocket = (SSLSocket) clientSocketFactory.createSocket(plainSocket,
+              "localhost.junixsocket", plainSocket.getPort(), false)) {
+
+        try (InputStream in = sslSocket.getInputStream();
+            OutputStream out = sslSocket.getOutputStream()) {
+          out.write('!');
+          out.flush();
+
+          byte[] by = new byte[11];
+          int offset = 0;
+          int r;
+          while (offset < by.length && (r = in.read(by, offset, by.length - offset)) >= 0) {
+            offset += r;
+          }
+          assertEquals("Hello World", new String(by, 0, offset, StandardCharsets.UTF_8));
+        } catch (SocketException e) {
+          if (expectClientTrouble) {
+            // ignore
+          } else {
+            throw e;
+          }
         }
+      } catch (Exception e) {
+        caught = e;
+      } finally {
+        clientException.complete(caught);
       }
-    };
-    server.startAndWaitToBecomeReady();
-
-    Exception caught = null;
-    try (AFUNIXSocket plainSocket = AFUNIXSocket.connectTo(addr);
-        SSLSocket sslSocket = (SSLSocket) clientSocketFactory.createSocket(plainSocket,
-            "localhost.junixsocket", plainSocket.getPort(), false)) {
-
-      try (InputStream in = sslSocket.getInputStream();
-          OutputStream out = sslSocket.getOutputStream()) {
-        out.write('!');
-        out.flush();
-
-        byte[] by = new byte[11];
-        int r = in.read(by);
-        assertEquals("Hello World", new String(by, 0, r, StandardCharsets.UTF_8));
-      }
-    } catch (Exception e) {
-      caught = e;
-      throw e;
     } finally {
-      clientException.complete(caught);
+      server.stop();
+
+      TestUtil.throwMoreInterestingThrowableThanSocketException(() -> serverException.getNow(null),
+          () -> clientException.getNow(null));
+
+      server.checkThrowable();
     }
   }
 
@@ -427,23 +473,41 @@ public class SSLContextBuilderTest {
   }
 
   @Test
+  @SuppressFBWarnings("DCN_NULLPOINTER_EXCEPTION")
   public void testKeyStoreNullPasswordSupplied() throws Exception {
     SSLContextBuilder builder = SSLContextBuilder.forServer() //
         .withKeyStore(SSLContextBuilderTest.class.getResource("juxserver.p12"), () -> null) //
         .withDefaultSSLParameters((p) -> {
         }); //
 
-    assertThrows(UnrecoverableKeyException.class, () -> builder.build());
+    boolean fail = true;
+    try {
+      builder.build();
+    } catch (UnrecoverableKeyException | NullPointerException e) {
+      fail = false;
+    }
+    if (fail) {
+      fail("Should have thrown an UnrecoverableKeyException or NullPointerException");
+    }
   }
 
   @Test
+  @SuppressFBWarnings("DCN_NULLPOINTER_EXCEPTION")
   public void testKeyStoreNullPasswordSupplier() throws Exception {
     SSLContextBuilder builder = SSLContextBuilder.forServer() //
         .withKeyStore(SSLContextBuilderTest.class.getResource("juxserver.p12"), null) //
         .withDefaultSSLParameters((p) -> {
         }); //
 
-    assertThrows(UnrecoverableKeyException.class, () -> builder.build());
+    boolean fail = true;
+    try {
+      builder.build();
+    } catch (UnrecoverableKeyException | NullPointerException e) {
+      fail = false;
+    }
+    if (fail) {
+      fail("Should have thrown an UnrecoverableKeyException or NullPointerException");
+    }
   }
 
   @Test
@@ -485,7 +549,16 @@ public class SSLContextBuilderTest {
         .withDefaultSSLParameters((p) -> {
         }); //
 
-    builder.build(); // no exception
+    assertNoExceptionOrNullPointerException(() -> builder.build());
+  }
+
+  @SuppressFBWarnings("DCN_NULLPOINTER_EXCEPTION")
+  private static void assertNoExceptionOrNullPointerException(Callable<?> op) throws Exception {
+    try {
+      op.call(); // no exception with standard Java provider
+    } catch (NullPointerException e) {
+      // bouncycastle throws NPE "no password supplied when one expected"
+    }
   }
 
   @Test
@@ -495,7 +568,7 @@ public class SSLContextBuilderTest {
         .withDefaultSSLParameters((p) -> {
         }); //
 
-    builder.build(); // no exception
+    assertNoExceptionOrNullPointerException(() -> builder.build());
   }
 
   @Test
@@ -664,14 +737,19 @@ public class SSLContextBuilderTest {
             .toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
-    assertNotNull(factory.createSocket());
+    assertThrows(SocketException.class, () -> factory.createSocket(),
+        "Creating unconnected sockets is not supported, as they're very difficult to wrap");
 
     Socket someSocket = AFUNIXSocketPair.open().getFirst().socket();
     SSLSocket sslSocket = null;
 
-    sslSocket = (SSLSocket) factory.createSocket(someSocket, null, false);
-    assertNotNull(sslSocket);
-    assertTrue(sslSocket.isConnected());
+    try {
+      sslSocket = (SSLSocket) factory.createSocket(someSocket, null, false);
+      assertNotNull(sslSocket);
+      assertTrue(sslSocket.isConnected());
+    } catch (UnsupportedOperationException e) {
+      // on Android
+    }
 
     sslSocket = (SSLSocket) factory.createSocket(someSocket, "some.ignored.host.identifier", 123,
         false);

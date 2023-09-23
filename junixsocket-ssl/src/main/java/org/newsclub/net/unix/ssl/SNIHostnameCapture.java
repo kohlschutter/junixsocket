@@ -17,12 +17,18 @@
  */
 package org.newsclub.net.unix.ssl;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import javax.net.ssl.ExtendedSSLSession;
 import javax.net.ssl.SNIHostName;
 import javax.net.ssl.SNIMatcher;
+import javax.net.ssl.SNIServerName;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
+import javax.net.ssl.StandardConstants;
 
 /**
  * Helper class to simplify retrieving the requested SNI hostname sent from an SSL client to an SSL
@@ -34,12 +40,24 @@ public final class SNIHostnameCapture {
   /**
    * {@link SNIMatcher} that accepts and matches "any hostname".
    */
-  public static final SNIMatcher ACCEPT_ANY_HOSTNAME = SNIHostName.createSNIMatcher(".*");
+  public static final SNIMatcher ACCEPT_ANY_HOSTNAME = new SNIMatcher(
+      StandardConstants.SNI_HOST_NAME) {
+
+    @Override
+    public boolean matches(SNIServerName serverName) {
+      return serverName.getType() == StandardConstants.SNI_HOST_NAME;
+    }
+  };
+
+  private static final Supplier<String> NULL_SUPPLIER = () -> null;
 
   private final AtomicBoolean complete = new AtomicBoolean();
   private String hostname = null;
 
-  private SNIHostnameCapture() {
+  private final Supplier<String> defaultHostnameSupplier;
+
+  private SNIHostnameCapture(Supplier<String> defaultHostnameSupplier) {
+    this.defaultHostnameSupplier = defaultHostnameSupplier;
   }
 
   /**
@@ -72,11 +90,12 @@ public final class SNIHostnameCapture {
    */
   public static SNIHostnameCapture configure(SSLSocket sslSocket, SNIMatcher hostnameMatcher,
       Supplier<String> defaultHostnameSupplier) {
-    SNIHostnameCapture capture = new SNIHostnameCapture();
+    SNIHostnameCapture capture = new SNIHostnameCapture(defaultHostnameSupplier == null
+        ? NULL_SUPPLIER : defaultHostnameSupplier);
 
     sslSocket.addHandshakeCompletedListener((e) -> {
       if (capture.hostname == null) {
-        capture.set(defaultHostnameSupplier == null ? null : defaultHostnameSupplier.get());
+        capture.set(null);
       }
     });
 
@@ -93,6 +112,9 @@ public final class SNIHostnameCapture {
   // @ExcludeFromCodeCoverageGeneratedReport(reason = "if-statement is just a precaution")
   private void set(String hostname) {
     if (complete.compareAndSet(false, true)) {
+      if (hostname == null) {
+        hostname = defaultHostnameSupplier.get();
+      }
       this.hostname = hostname;
     }
   }
@@ -123,5 +145,40 @@ public final class SNIHostnameCapture {
       throw new IllegalStateException("Handshake not yet complete");
     }
     return hostname;
+  }
+
+  /**
+   * Returns the hostname from the data stored in a socket's {@link ExtendedSSLSession}, if
+   * available. The default fallback handler is used if the data could not be retrieved.
+   * <p>
+   * This is only for testing purposes. BouncyCastle doesn't support this, for example.
+   *
+   * @param socket The socket.
+   * @return The hostname (retrieved or fallback).
+   */
+  String getHostnameFromSSLSession(SSLSocket socket,
+      Consumer<UnsupportedOperationException> usoCallback) {
+    SSLSession session = socket.getSession();
+    if (session instanceof ExtendedSSLSession) {
+      ExtendedSSLSession extSession = (ExtendedSSLSession) session;
+      try {
+        List<SNIServerName> list = extSession.getRequestedServerNames();
+        if (list != null) {
+          for (SNIServerName sn : list) {
+            if (sn instanceof SNIHostName) {
+              return ((SNIHostName) sn).getAsciiName();
+            } else if (sn.getType() == StandardConstants.SNI_HOST_NAME) {
+              return new SNIHostName(sn.getEncoded()).getAsciiName();
+            }
+          }
+        }
+      } catch (UnsupportedOperationException e) {
+        // fall through
+        if (usoCallback != null) {
+          usoCallback.accept(e);
+        }
+      }
+    }
+    return defaultHostnameSupplier.get();
   }
 }

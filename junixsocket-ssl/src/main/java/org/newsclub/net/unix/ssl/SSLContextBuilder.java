@@ -21,17 +21,26 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Provider;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.UnrecoverableKeyException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import javax.net.SocketFactory;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -41,6 +50,8 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
+import org.newsclub.net.unix.AFSocket;
+
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
@@ -49,6 +60,14 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 public final class SSLContextBuilder {
+  private static final Provider PROVIDER_PKCS12 = AFSocket.isRunningOnAndroid()
+      ? bouncyCastleInstanceIfPossible() : null;
+  private static final Provider PROVIDER_JSSE = AFSocket.isRunningOnAndroid()
+      ? bouncyCastleJSSEInstanceIfPossible() : null;
+  private static final String DEFAULT_PROVIDER = AFSocket.isRunningOnAndroid()
+      && PROVIDER_JSSE != null
+          ? "org.bouncycastle.jsse.provider.BouncyCastleJsseProvider,org.bouncycastle.jce.provider.BouncyCastleProvider"
+          : null;
   private final boolean clientMode;
 
   private String protocol = "TLS";
@@ -62,8 +81,12 @@ public final class SSLContextBuilder {
 
   private Function<SSLParameters, SSLParameters> parametersFunction = null;
 
+  private SSLSupplier<KeyStore> keyStoreSupplier = SSLContextBuilder::newKeyStorePKCS12;
   private SSLFunction<KeyManagerFactory, KeyManager[]> keyManager = null;
   private SSLFunction<TrustManagerFactory, TrustManager[]> trustManager = null;
+  private Object provider = DEFAULT_PROVIDER;
+
+  private SocketFactory socketFactory = SocketFactory.getDefault();
 
   /**
    * Creates a new {@link SSLContextBuilder} instance.
@@ -91,6 +114,18 @@ public final class SSLContextBuilder {
   }
 
   /**
+   * Configures this builder to use the given {@link SocketFactory} to create the underlying
+   * insecure sockets.
+   *
+   * @param sf The {@link SocketFactory}.
+   * @return This builder.
+   */
+  public SSLContextBuilder withSocketFactory(SocketFactory sf) {
+    this.socketFactory = sf == null ? SocketFactory.getDefault() : sf;
+    return this;
+  }
+
+  /**
    * Configures this builder to use the given protocol. Note that "{@code TLS}" is the default.
    *
    * @param p The protocol to use, e.g. {@code TLSv1.2}.
@@ -98,6 +133,41 @@ public final class SSLContextBuilder {
    */
   public SSLContextBuilder withProtocol(String p) {
     this.protocol = p;
+    return this;
+  }
+
+  /**
+   * Configures this builder to use the given provider, {@code null} being the default.
+   *
+   * @param p The provider to use, e.g. {@code BouncyCastleJsseProvider}, or {@code null} for
+   *          default.
+   * @return This builder.
+   */
+  public SSLContextBuilder withProvider(Provider p) {
+    this.provider = p;
+    return this;
+  }
+
+  /**
+   * Configures this builder to use the given provider, identified by ID, {@code null} being the
+   * default.
+   * <p>
+   * In addition to the standard JSSE IDs, you can specify one or more Provider classnames as a
+   * comma-separated list. These providers will be added via {@link Security#addProvider(Provider)}.
+   * The first entry is then attempted to be resolved using {@link Provider#getName()}, with any
+   * optionally remaining {@link Provider}s simply being added to the list of available providers,
+   * in case they're actually required by the first one. It is expected that the classes have a
+   * public no-arg constructor.
+   * <p>
+   * This is the case, for example, with BouncyCastle. Specify
+   * {@code org.bouncycastle.jsse.provider.BouncyCastleJsseProvider,org.bouncycastle.jce.provider.BouncyCastleProvider}
+   * to enable TLS-secured communication with PKCS12 keys, for example.
+   *
+   * @param id The provider to use, e.g. {@code BCJSSE}, or {@code null}/{@code ""} for default.
+   * @return This builder.
+   */
+  public SSLContextBuilder withProvider(String id) {
+    this.provider = id.isEmpty() ? null : id;
     return this;
   }
 
@@ -147,6 +217,22 @@ public final class SSLContextBuilder {
   @SuppressFBWarnings("EI_EXPOSE_REP2")
   public SSLContextBuilder withSecureRandom(SecureRandom s) {
     this.secureRandom = s;
+    return this;
+  }
+
+  /**
+   * Configures this builder to use the given supplier to provide {@link KeyStore} instances.
+   *
+   * If {@code null} is specified, the default supplier is used, which is configured for
+   * {@code PKCS12}-type keystores. In that case, on Android, it is expected that the
+   * <em>BouncyCastle</em> SSL provider ({@code org.bouncycastle.jce.provider.BouncyCastleProvider})
+   * is on the classpath.
+   *
+   * @param supplier The supplier, or {@code null} for default.
+   * @return This builder.
+   */
+  public SSLContextBuilder withKeyStoreSupplier(SSLSupplier<KeyStore> supplier) {
+    this.keyStoreSupplier = supplier == null ? SSLContextBuilder::newKeyStorePKCS12 : supplier;
     return this;
   }
 
@@ -236,6 +322,7 @@ public final class SSLContextBuilder {
    * @param function The function to configure SSL parameters.
    * @return This builder.
    */
+  @SuppressWarnings("overloads")
   public SSLContextBuilder withDefaultSSLParameters(
       Function<SSLParameters, SSLParameters> function) {
     if (parametersFunction != null) {
@@ -255,6 +342,7 @@ public final class SSLContextBuilder {
    * @param consumer The function to configure SSL parameters.
    * @return This builder.
    */
+  @SuppressWarnings("overloads")
   public SSLContextBuilder withDefaultSSLParameters(Consumer<SSLParameters> consumer) {
     return withDefaultSSLParameters((p) -> {
       consumer.accept(p);
@@ -277,7 +365,7 @@ public final class SSLContextBuilder {
       return null; // NOPMD.ReturnEmptyCollectionRatherThanNull
     }
 
-    KeyStore ks = KeyStore.getInstance("JKS");
+    KeyStore ks = keyStoreSupplier.get();
 
     char[] password = keyStorePassword == null ? null : keyStorePassword.get();
     try (InputStream in = keyStoreUrl.openStream()) {
@@ -298,7 +386,7 @@ public final class SSLContextBuilder {
       return null; // NOPMD.ReturnEmptyCollectionRatherThanNull
     }
 
-    KeyStore ks = KeyStore.getInstance("JKS");
+    KeyStore ks = keyStoreSupplier.get();
 
     char[] password = trustManagerPassword == null ? null : trustManagerPassword.get();
     try (InputStream in = trustManagerUrl.openStream()) {
@@ -320,6 +408,51 @@ public final class SSLContextBuilder {
   }
 
   /**
+   * Try to initialize the SSLContext with a provider specified by classname.
+   *
+   * If {@code providerString} contains a comma-separated list, all providers in the list are
+   * initialized (if possible), but the first one used to initialize the {@link SSLContext}.
+   *
+   * @param e The original exception when trying to resolve the provider by ID.
+   * @param protocol The desired protocol.
+   * @param providerString The provider string with the classname(s).
+   * @return The context.
+   * @throws NoSuchAlgorithmException on error.
+   * @throws NoSuchProviderException on error.
+   */
+  @SuppressFBWarnings("DCN_NULLPOINTER_EXCEPTION")
+  private static SSLContext tryInitContextFallback(NoSuchProviderException e, String protocol,
+      String providerString) throws NoSuchAlgorithmException, NoSuchProviderException {
+    try {
+      List<Provider> providers = new ArrayList<>();
+      for (String pn : providerString.split(",")) {
+        pn = pn.trim(); // NOPMD.AvoidReassigningLoopVariables
+        if (pn.isEmpty()) {
+          continue;
+        }
+        Provider p = (Provider) Class.forName(pn).getConstructor().newInstance();
+        providers.add(p);
+
+        try {
+          Security.addProvider(p);
+        } catch (SecurityException | NullPointerException e1) {
+          e.addSuppressed(e1);
+        }
+      }
+      if (providers.isEmpty()) {
+        throw e;
+      } else {
+        return SSLContext.getInstance(protocol, Objects.requireNonNull(providers.get(0)).getName());
+      }
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+        | InvocationTargetException | NoSuchMethodException | SecurityException
+        | ClassNotFoundException | NullPointerException e1) {
+      e.addSuppressed(e1);
+      throw e;
+    }
+  }
+
+  /**
    * Builds an {@link SSLContext} using the current builder state.
    * <p>
    * <b>IMPORTANT:</b> Use {@link #buildAndDestroyBuilder()} to ensure sensitive information, such
@@ -331,7 +464,19 @@ public final class SSLContextBuilder {
    * @see #buildAndDestroyBuilder()
    */
   public SSLContext build() throws GeneralSecurityException, IOException {
-    SSLContext sslContext = SSLContext.getInstance(protocol);
+    SSLContext sslContext;
+    if (provider == null) {
+      sslContext = SSLContext.getInstance(protocol);
+    } else if (provider instanceof String) {
+      String providerString = (String) provider;
+      try {
+        sslContext = SSLContext.getInstance(protocol, providerString);
+      } catch (NoSuchProviderException e) {
+        sslContext = tryInitContextFallback(e, protocol, providerString);
+      }
+    } else {
+      sslContext = SSLContext.getInstance(protocol, (Provider) provider);
+    }
 
     SSLFunction<KeyManagerFactory, KeyManager[]> km = this.keyManager;
     if (km == null) {
@@ -343,12 +488,12 @@ public final class SSLContextBuilder {
       tm = this::buildTrustManagers;
     }
 
-    sslContext.init( //
-        km.apply(buildKeyManagerFactory()), //
-        tm.apply(buildTrustManagerFactory()), //
-        secureRandom);
+    KeyManager[] kms = km.apply(buildKeyManagerFactory());
+    TrustManager[] tms = tm.apply(buildTrustManagerFactory());
 
-    return new BuilderSSLContext(clientMode, sslContext, parametersFunction);
+    BuilderSSLContext.initContext(sslContext, kms, tms, secureRandom);
+
+    return new BuilderSSLContext(clientMode, sslContext, parametersFunction, socketFactory);
   }
 
   /**
@@ -407,6 +552,45 @@ public final class SSLContextBuilder {
 
     if (dfe != null) {
       throw dfe;
+    }
+  }
+
+  private static Provider resolveProviderIfPossible(String className) {
+    Class<?> klazz;
+    try {
+      klazz = Class.forName(className);
+    } catch (ClassNotFoundException e) {
+      return null; // NOPMD
+    }
+    try {
+      return (Provider) klazz.getConstructor().newInstance();
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+        | InvocationTargetException | NoSuchMethodException | SecurityException
+        | ClassCastException e) {
+      throw new IllegalStateException("Cannot instantiate provider '" + className
+          + "', despite being on the classpath", e);
+    }
+  }
+
+  private static Provider bouncyCastleInstanceIfPossible() {
+    return resolveProviderIfPossible("org.bouncycastle.jce.provider.BouncyCastleProvider");
+  }
+
+  private static Provider bouncyCastleJSSEInstanceIfPossible() {
+    return resolveProviderIfPossible("org.bouncycastle.jsse.provider.BouncyCastleJsseProvider");
+  }
+
+  /**
+   * Returns a new {@code PKCS12} {@link KeyStoreException} instance.
+   *
+   * @return The keystore instance.
+   * @throws KeyStoreException on error.
+   */
+  public static KeyStore newKeyStorePKCS12() throws KeyStoreException {
+    if (PROVIDER_PKCS12 == null) {
+      return KeyStore.getInstance("PKCS12");
+    } else {
+      return KeyStore.getInstance("PKCS12", PROVIDER_PKCS12);
     }
   }
 }

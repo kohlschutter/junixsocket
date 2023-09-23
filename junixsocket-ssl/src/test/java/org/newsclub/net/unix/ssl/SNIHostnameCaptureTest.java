@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,13 +30,16 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.GeneralSecurityException;
+import java.security.Provider;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
 import javax.net.ssl.SNIHostName;
 import javax.net.ssl.SNIMatcher;
 import javax.net.ssl.SNIServerName;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
@@ -47,11 +50,14 @@ import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
-import org.newsclub.net.unix.server.AFSocketServer;
+import org.opentest4j.AssertionFailedError;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
+import com.kohlschutter.util.ExecutionEnvironmentUtil;
 
-public class SNIHostnameCaptureTest {
+public class SNIHostnameCaptureTest extends SSLTestBase {
   private static SSLSocketFactory initClientSocketFactory() throws GeneralSecurityException,
       IOException, DestroyFailedException {
     return SSLContextBuilder.forClient() //
@@ -61,7 +67,63 @@ public class SNIHostnameCaptureTest {
   }
 
   @Test
-  public void testSNISuccess() throws Exception {
+  @SuppressWarnings("PMD.MethodNamingConventions")
+  public void testSNISuccessExpectDefault_NO_serverNullDefault_NO_clientEmptyDefault_NO()
+      throws Exception {
+    testSNISuccess(false, false, false);
+  }
+
+  @Test
+  @SuppressWarnings("PMD.MethodNamingConventions")
+  public void testSNISuccessExpectDefault_NO_serverNullDefault_YES_clientEmptyDefault_NO()
+      throws Exception {
+    testSNISuccess(false, true, false);
+  }
+
+  @Test
+  @SuppressWarnings("PMD.MethodNamingConventions")
+  public void testSNISuccessExpectDefault_NO_serverNullDefault_NO_clientEmptyDefault_YES()
+      throws Exception {
+    testSNISuccess(false, false, true);
+  }
+
+  @Test
+  @SuppressWarnings("PMD.MethodNamingConventions")
+  public void testSNISuccessExpectDefault_NO_serverNullDefault_YES_clientEmptyDefault_YES()
+      throws Exception {
+    testSNISuccess(false, true, true);
+  }
+
+  @Test
+  @SuppressWarnings("PMD.MethodNamingConventions")
+  public void testSNISuccessExpectDefault_YES_serverNullDefault_NO_clientEmptyDefault_NO()
+      throws Exception {
+    testSNISuccess(true, false, false);
+  }
+
+  @Test
+  @SuppressWarnings("PMD.MethodNamingConventions")
+  public void testSNISuccessExpectDefault_YES_serverNullDefault_YES_clientEmptyDefault_NO()
+      throws Exception {
+    testSNISuccess(true, true, false);
+  }
+
+  @Test
+  @SuppressWarnings("PMD.MethodNamingConventions")
+  public void testSNISuccessExpectDefault_YES_serverNullDefault_NO_clientEmptyDefault_YES()
+      throws Exception {
+    testSNISuccess(true, false, true);
+  }
+
+  @Test
+  @SuppressWarnings("PMD.MethodNamingConventions")
+  public void testSNISuccessExpectDefault_YES_serverNullDefault_YES_clientEmptyDefault_YES()
+      throws Exception {
+    testSNISuccess(true, true, true);
+  }
+
+  private void testSNISuccess(boolean expectDefault, boolean serverNullDefaultHostname,
+      boolean clientEmptyDefaultHostname) throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     SSLSocketFactory serverSocketFactory = SSLContextBuilder.forServer() //
@@ -69,117 +131,195 @@ public class SNIHostnameCaptureTest {
             .toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
-    SSLSocketFactory clientSocketFactory = initClientSocketFactory();
-
     try {
-      assertTimeoutPreemptively(Duration.ofSeconds(5), () -> runServerAndClient(addr,
-          serverSocketFactory, clientSocketFactory, false, false, false));
-      assertTimeoutPreemptively(Duration.ofSeconds(5), () -> runServerAndClient(addr,
-          serverSocketFactory, clientSocketFactory, false, true, false));
-      assertTimeoutPreemptively(Duration.ofSeconds(5), () -> runServerAndClient(addr,
-          serverSocketFactory, clientSocketFactory, false, false, true));
-      assertTimeoutPreemptively(Duration.ofSeconds(5), () -> runServerAndClient(addr,
-          serverSocketFactory, clientSocketFactory, false, true, true));
-      assertTimeoutPreemptively(Duration.ofSeconds(5), () -> runServerAndClient(addr,
-          serverSocketFactory, clientSocketFactory, true, false, false));
-      assertTimeoutPreemptively(Duration.ofSeconds(5), () -> runServerAndClient(addr,
-          serverSocketFactory, clientSocketFactory, true, false, true));
-      assertTimeoutPreemptively(Duration.ofSeconds(5), () -> runServerAndClient(addr,
-          serverSocketFactory, clientSocketFactory, true, true, false));
-      assertTimeoutPreemptively(Duration.ofSeconds(5), () -> runServerAndClient(addr,
-          serverSocketFactory, clientSocketFactory, true, true, true));
+      assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
+        runServerAndClient(addr, serverSocketFactory, expectDefault, serverNullDefaultHostname,
+            clientEmptyDefaultHostname);
+      });
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
     }
   }
 
-  @SuppressWarnings("PMD.CognitiveComplexity")
+  private static boolean isBouncyCastleJSSE(SSLSocketFactory socketFactory) {
+    SSLContext context;
+    if (socketFactory instanceof BuilderSSLSocketFactory) {
+      context = ((BuilderSSLSocketFactory) socketFactory).getContext();
+    } else {
+      context = null;
+    }
+    Provider p;
+    if (context != null && (p = context.getProvider()) != null && "BCJSSE".equals(p.getName())) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NcssCount", "PMD.NPathComplexity"})
   private void runServerAndClient(AFUNIXSocketAddress addr, SSLSocketFactory serverSocketFactory,
-      SSLSocketFactory clientSocketFactory, boolean expectDefault,
-      boolean serverNullDefaultHostname, boolean clientEmptyDefaultHostname) throws Exception {
+      boolean expectDefault, boolean serverNullDefaultHostname, boolean clientEmptyDefaultHostname)
+      throws Exception {
+
+    CompletableFuture<Throwable> failureServer = new CompletableFuture<>();
+    CompletableFuture<Throwable> failureClient = new CompletableFuture<>();
+
     // We cannot reuse SSLContext due to a potential Java bug, see
     // https://github.com/kohlschuetter/snisslbug
-    clientSocketFactory = initClientSocketFactory();
+    SSLSocketFactory clientSocketFactory = initClientSocketFactory();
 
-    AFSocketServer<AFUNIXSocketAddress> server = new TestingAFSocketServer<AFUNIXSocketAddress>(
-        addr) {
+    TestingAFSocketServer<AFUNIXSocketAddress> server =
+        new TestingAFSocketServer<AFUNIXSocketAddress>(addr) {
 
-      @Override
-      protected void doServeSocket(AFSocket<? extends AFUNIXSocketAddress> plainSocket)
-          throws IOException {
-        try (SSLSocket sslSocket = (SSLSocket) serverSocketFactory.createSocket(plainSocket,
-            "localhost.junixsocket", plainSocket.getPort(), false)) {
+          @Override
+          protected void doServeSocket(AFSocket<? extends AFUNIXSocketAddress> plainSocket)
+              throws IOException {
+            try (SSLSocket sslSocket = (SSLSocket) serverSocketFactory.createSocket(plainSocket,
+                "localhost.junixsocket", plainSocket.getPort(), false)) {
 
-          SNIHostnameCapture hnc = serverNullDefaultHostname ? //
-              SNIHostnameCapture.configure(sslSocket, SNIHostnameCapture.ACCEPT_ANY_HOSTNAME) : //
-              SNIHostnameCapture.configure(sslSocket, SNIHostnameCapture.ACCEPT_ANY_HOSTNAME,
-                  () -> "defaulthost");
+              SNIHostnameCapture hnc = serverNullDefaultHostname ? //
+                  SNIHostnameCapture.configure(sslSocket, SNIHostnameCapture.ACCEPT_ANY_HOSTNAME) : //
+                  SNIHostnameCapture.configure(sslSocket, SNIHostnameCapture.ACCEPT_ANY_HOSTNAME,
+                      () -> "defaulthost");
 
-          assertFalse(hnc.isComplete());
-          assertThrows(IllegalStateException.class, () -> hnc.getHostname());
+              assertFalse(hnc.isComplete());
+              assertThrows(IllegalStateException.class, () -> hnc.getHostname());
 
-          // make sure handshake is completed, otherwise we have to wait until the first read/write
-          sslSocket.startHandshake();
+              // make sure handshake is completed, otherwise we have to wait until the first
+              // read/write
+              sslSocket.startHandshake();
 
-          assertTrue(hnc.isComplete());
+              boolean didReadFirstByte = false;
 
-          if (expectDefault) {
-            if (serverNullDefaultHostname && clientEmptyDefaultHostname) {
-              assertNull(hnc.getHostname());
-            } else if (clientEmptyDefaultHostname) {
-              assertEquals("defaulthost", hnc.getHostname());
-            } else {
-              assertEquals("localhost.junixsocket", hnc.getHostname());
+              if (hnc.isComplete()) {
+                if (expectDefault) {
+                  if (serverNullDefaultHostname && clientEmptyDefaultHostname) {
+                    assertNull(hnc.getHostname());
+                  } else if (clientEmptyDefaultHostname) {
+                    assertEquals("defaulthost", hnc.getHostname());
+                  } else {
+                    assertEquals("localhost.junixsocket", hnc.getHostname());
+                  }
+                } else {
+                  if ("defaulthost".equals(hnc.getHostname()) && AFSocket.isRunningOnAndroid()) {
+                    // This is a known edge case.
+                    failureServer.complete(new TestAbortedWithImportantMessageException(
+                        MessageType.TEST_ABORTED_WITH_ISSUES,
+                        "Android seems to not properly send the SNI hostname request"));
+                  } else {
+                    assertEquals("subdomain.example.com", hnc.getHostname());
+                  }
+                }
+
+                CompletableFuture<UnsupportedOperationException> cf =
+                    new CompletableFuture<UnsupportedOperationException>();
+                try {
+                  assertEquals(hnc.getHostnameFromSSLSession(sslSocket, cf::complete), hnc
+                      .getHostname());
+                } catch (AssertionFailedError e) {
+                  if (cf.isDone() && isBouncyCastleJSSE(serverSocketFactory)) {
+                    // BouncyCastle doesn't support this
+                  } else {
+                    throw e;
+                  }
+                }
+              } else {
+                // unexpected, but we need to fail from the main thread
+                int r = -1;
+                Throwable t1 = null;
+                try {
+                  r = sslSocket.getInputStream().read();
+                } catch (Throwable t) { // NOPMD
+                  t1 = t;
+                }
+                if (r == '?') {
+                  didReadFirstByte = true;
+                  if (clientEmptyDefaultHostname) {
+
+                    String explanation;
+                    if (isBouncyCastleJSSE(serverSocketFactory)) {
+                      explanation = "a Bouncycastle JSSE version";
+                    } else if (ExecutionEnvironmentUtil.isWindows()) {
+                      explanation = "a Windows environment";
+                    } else {
+                      explanation = "an unknown environment";
+                    }
+
+                    failureServer.complete(new TestAbortedWithImportantMessageException(
+                        MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+                        "TLS Handshake is not marked complete, but data can be read. "
+                            + "You're using " + explanation + " that appears to be buggy when "
+                            + "specifying an empty or unqualified server host name on the client side."));
+                    // continue with the exchange below
+                  } else {
+                    fail("Handshake is not marked complete, but data can be read");
+                  }
+                } else {
+                  fail("Handshake is not complete", t1);
+                }
+                return;
+              }
+
+              try (InputStream in = sslSocket.getInputStream();
+                  OutputStream out = sslSocket.getOutputStream();) {
+                if (!didReadFirstByte) {
+                  int v = in.read();
+                  assertEquals('?', v);
+                }
+
+                assertEquals(expectDefault ? 1 : 0, in.read());
+                assertEquals(serverNullDefaultHostname ? 1 : 0, in.read());
+                assertEquals(clientEmptyDefaultHostname ? 1 : 0, in.read());
+
+                out.write("Hello World".getBytes(StandardCharsets.UTF_8));
+                out.flush();
+              }
+            } catch (Exception | Error e) {
+              failureServer.complete(e);
             }
-          } else {
-            assertEquals("subdomain.example.com", hnc.getHostname());
           }
+        };
 
-          try (InputStream in = sslSocket.getInputStream();
-              OutputStream out = sslSocket.getOutputStream();) {
+    try {
+      server.startAndWaitToBecomeReady();
 
-            int v = in.read();
-            assertEquals('?', v);
+      try (AFUNIXSocket plainSocket = AFUNIXSocket.connectTo(addr);
+          SSLSocket sslSocket = (SSLSocket) clientSocketFactory.createSocket(plainSocket,
+              clientEmptyDefaultHostname ? "" : "localhost.junixsocket", plainSocket.getPort(),
+              false)) {
 
-            assertEquals(expectDefault ? 1 : 0, in.read());
-            assertEquals(serverNullDefaultHostname ? 1 : 0, in.read());
-            assertEquals(clientEmptyDefaultHostname ? 1 : 0, in.read());
+        if (!expectDefault) {
+          SSLParametersUtil.setSNIServerName(sslSocket, new SNIHostName("subdomain.example.com"));
+        }
 
-            out.write("Hello World".getBytes(StandardCharsets.UTF_8));
-            out.flush();
-            stop();
+        try (InputStream in = sslSocket.getInputStream();
+            OutputStream out = sslSocket.getOutputStream()) {
+          out.write('?');
+
+          out.write(expectDefault ? 1 : 0);
+          out.write(serverNullDefaultHostname ? 1 : 0);
+          out.write(clientEmptyDefaultHostname ? 1 : 0);
+
+          out.flush();
+
+          byte[] by = new byte[11];
+          int offset = 0;
+          int r;
+          while (offset < by.length && (r = in.read(by, offset, by.length - offset)) >= 0) {
+            offset += r;
           }
-        } catch (Exception | Error e) {
-          e.printStackTrace();
-          throw e;
+          assertEquals("Hello World", new String(by, 0, offset, StandardCharsets.UTF_8));
+        } catch (Exception e) {
+          failureClient.complete(e);
         }
       }
-    };
-    server.startAndWaitToBecomeReady();
+    } finally {
+      server.stop();
 
-    try (AFUNIXSocket plainSocket = AFUNIXSocket.connectTo(addr);
-        SSLSocket sslSocket = (SSLSocket) clientSocketFactory.createSocket(plainSocket,
-            clientEmptyDefaultHostname ? "" : "localhost.junixsocket", plainSocket.getPort(),
-            false)) {
+      TestUtil.throwMoreInterestingThrowableThanSocketException(() -> failureServer.getNow(null),
+          () -> failureClient.getNow(null));
 
-      if (!expectDefault) {
-        SSLParametersUtil.setSNIServerName(sslSocket, new SNIHostName("subdomain.example.com"));
-      }
-
-      try (InputStream in = sslSocket.getInputStream();
-          OutputStream out = sslSocket.getOutputStream()) {
-        out.write('?');
-
-        out.write(expectDefault ? 1 : 0);
-        out.write(serverNullDefaultHostname ? 1 : 0);
-        out.write(clientEmptyDefaultHostname ? 1 : 0);
-
-        out.flush();
-
-        byte[] by = new byte[11];
-        int r = in.read(by);
-        assertEquals("Hello World", new String(by, 0, r, StandardCharsets.UTF_8));
-      }
+      server.checkThrowable();
     }
   }
 
