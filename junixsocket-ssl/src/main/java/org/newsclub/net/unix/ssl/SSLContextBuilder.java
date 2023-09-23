@@ -139,7 +139,7 @@ public final class SSLContextBuilder {
   /**
    * Configures this builder to use the given provider, {@code null} being the default.
    *
-   * @param p The provider to use, e.g. {@code BouncyCastleJsseProvider}, or {@code null} for
+   * @param p The provider to use, e.g. {@code BouncyCastleJsseProvider}, or {@code null} for system
    *          default.
    * @return This builder.
    */
@@ -163,7 +163,8 @@ public final class SSLContextBuilder {
    * {@code org.bouncycastle.jsse.provider.BouncyCastleJsseProvider,org.bouncycastle.jce.provider.BouncyCastleProvider}
    * to enable TLS-secured communication with PKCS12 keys, for example.
    *
-   * @param id The provider to use, e.g. {@code BCJSSE}, or {@code null}/{@code ""} for default.
+   * @param id The provider to use, e.g. {@code BCJSSE}, or {@code null}/{@code ""} for system
+   *          default.
    * @return This builder.
    */
   public SSLContextBuilder withProvider(String id) {

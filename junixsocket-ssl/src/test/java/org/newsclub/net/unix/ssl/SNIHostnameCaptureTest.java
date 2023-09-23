@@ -29,10 +29,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.security.GeneralSecurityException;
 import java.security.Provider;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
@@ -44,9 +45,10 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import javax.security.auth.DestroyFailedException;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
@@ -55,87 +57,96 @@ import org.opentest4j.AssertionFailedError;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
-import com.kohlschutter.util.ExecutionEnvironmentUtil;
 
 public class SNIHostnameCaptureTest extends SSLTestBase {
-  private static SSLSocketFactory initClientSocketFactory() throws GeneralSecurityException,
-      IOException, DestroyFailedException {
-    return SSLContextBuilder.forClient() //
+  private static SSLSocketFactory initClientSocketFactory(TestSSLConfiguration configuration)
+      throws Exception {
+    return configuration.configure(SSLContextBuilder.forClient()) //
         .withTrustStore(SSLContextBuilderTest.class.getResource("juxclient.truststore"),
             () -> "clienttrustpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
   }
 
-  @Test
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
   @SuppressWarnings("PMD.MethodNamingConventions")
-  public void testSNISuccessExpectDefault_NO_serverNullDefault_NO_clientEmptyDefault_NO()
-      throws Exception {
-    testSNISuccess(false, false, false);
+  public void testSNISuccessExpectDefault_NO_serverNullDefault_NO_clientEmptyDefault_NO(
+      TestSSLConfiguration configuration) throws Exception {
+    testSNISuccess(configuration, false, false, false);
   }
 
-  @Test
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
   @SuppressWarnings("PMD.MethodNamingConventions")
-  public void testSNISuccessExpectDefault_NO_serverNullDefault_YES_clientEmptyDefault_NO()
-      throws Exception {
-    testSNISuccess(false, true, false);
+  public void testSNISuccessExpectDefault_NO_serverNullDefault_YES_clientEmptyDefault_NO(
+      TestSSLConfiguration configuration) throws Exception {
+    testSNISuccess(configuration, false, true, false);
   }
 
-  @Test
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
   @SuppressWarnings("PMD.MethodNamingConventions")
-  public void testSNISuccessExpectDefault_NO_serverNullDefault_NO_clientEmptyDefault_YES()
-      throws Exception {
-    testSNISuccess(false, false, true);
+  public void testSNISuccessExpectDefault_NO_serverNullDefault_NO_clientEmptyDefault_YES(
+      TestSSLConfiguration configuration) throws Exception {
+    testSNISuccess(configuration, false, false, true);
   }
 
-  @Test
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
   @SuppressWarnings("PMD.MethodNamingConventions")
-  public void testSNISuccessExpectDefault_NO_serverNullDefault_YES_clientEmptyDefault_YES()
-      throws Exception {
-    testSNISuccess(false, true, true);
+  public void testSNISuccessExpectDefault_NO_serverNullDefault_YES_clientEmptyDefault_YES(
+      TestSSLConfiguration configuration) throws Exception {
+    testSNISuccess(configuration, false, true, true);
   }
 
-  @Test
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
   @SuppressWarnings("PMD.MethodNamingConventions")
-  public void testSNISuccessExpectDefault_YES_serverNullDefault_NO_clientEmptyDefault_NO()
-      throws Exception {
-    testSNISuccess(true, false, false);
+  public void testSNISuccessExpectDefault_YES_serverNullDefault_NO_clientEmptyDefault_NO(
+      TestSSLConfiguration configuration) throws Exception {
+    testSNISuccess(configuration, true, false, false);
   }
 
-  @Test
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
   @SuppressWarnings("PMD.MethodNamingConventions")
-  public void testSNISuccessExpectDefault_YES_serverNullDefault_YES_clientEmptyDefault_NO()
-      throws Exception {
-    testSNISuccess(true, true, false);
+  public void testSNISuccessExpectDefault_YES_serverNullDefault_YES_clientEmptyDefault_NO(
+      TestSSLConfiguration configuration) throws Exception {
+    testSNISuccess(configuration, true, true, false);
   }
 
-  @Test
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
   @SuppressWarnings("PMD.MethodNamingConventions")
-  public void testSNISuccessExpectDefault_YES_serverNullDefault_NO_clientEmptyDefault_YES()
-      throws Exception {
-    testSNISuccess(true, false, true);
+  public void testSNISuccessExpectDefault_YES_serverNullDefault_NO_clientEmptyDefault_YES(
+      TestSSLConfiguration configuration) throws Exception {
+    testSNISuccess(configuration, true, false, true);
   }
 
-  @Test
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
   @SuppressWarnings("PMD.MethodNamingConventions")
-  public void testSNISuccessExpectDefault_YES_serverNullDefault_YES_clientEmptyDefault_YES()
-      throws Exception {
-    testSNISuccess(true, true, true);
+  public void testSNISuccessExpectDefault_YES_serverNullDefault_YES_clientEmptyDefault_YES(
+      TestSSLConfiguration configuration) throws Exception {
+    testSNISuccess(configuration, true, true, true);
   }
 
-  private void testSNISuccess(boolean expectDefault, boolean serverNullDefaultHostname,
-      boolean clientEmptyDefaultHostname) throws Exception {
+  private void testSNISuccess(TestSSLConfiguration configuration, boolean expectDefault,
+      boolean serverNullDefaultHostname, boolean clientEmptyDefaultHostname) throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = SSLContextBuilder.forServer() //
+    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
         .withKeyStore(SSLContextBuilderTest.class.getResource("juxserver.p12"), () -> "serverpass"
             .toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
     try {
       assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
-        runServerAndClient(addr, serverSocketFactory, expectDefault, serverNullDefaultHostname,
-            clientEmptyDefaultHostname);
+        runServerAndClient(configuration, addr, serverSocketFactory, expectDefault,
+            serverNullDefaultHostname, clientEmptyDefaultHostname);
       });
+    } catch (Exception | Error e) {
+      throw configuration.handleException(e);
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
     }
@@ -157,16 +168,18 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
   }
 
   @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NcssCount", "PMD.NPathComplexity"})
-  private void runServerAndClient(AFUNIXSocketAddress addr, SSLSocketFactory serverSocketFactory,
-      boolean expectDefault, boolean serverNullDefaultHostname, boolean clientEmptyDefaultHostname)
-      throws Exception {
+  private void runServerAndClient(TestSSLConfiguration configuration, AFUNIXSocketAddress addr,
+      SSLSocketFactory serverSocketFactory, boolean expectDefault,
+      boolean serverNullDefaultHostname, boolean clientEmptyDefaultHostname) throws Exception {
 
     CompletableFuture<Throwable> failureServer = new CompletableFuture<>();
     CompletableFuture<Throwable> failureClient = new CompletableFuture<>();
 
     // We cannot reuse SSLContext due to a potential Java bug, see
     // https://github.com/kohlschuetter/snisslbug
-    SSLSocketFactory clientSocketFactory = initClientSocketFactory();
+    SSLSocketFactory clientSocketFactory = initClientSocketFactory(configuration);
+
+    AtomicBoolean gotHostnameInTime = new AtomicBoolean(false);
 
     TestingAFSocketServer<AFUNIXSocketAddress> server =
         new TestingAFSocketServer<AFUNIXSocketAddress>(addr) {
@@ -185,30 +198,36 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
               assertFalse(hnc.isComplete());
               assertThrows(IllegalStateException.class, () -> hnc.getHostname());
 
-              // make sure handshake is completed, otherwise we have to wait until the first
-              // read/write
+              // NOTE: starting a handshake doesn't mean it's completed before reading the 1st byte!
               sslSocket.startHandshake();
 
-              boolean didReadFirstByte = false;
-
-              if (hnc.isComplete()) {
-                if (expectDefault) {
-                  if (serverNullDefaultHostname && clientEmptyDefaultHostname) {
-                    assertNull(hnc.getHostname());
-                  } else if (clientEmptyDefaultHostname) {
-                    assertEquals("defaulthost", hnc.getHostname());
-                  } else {
-                    assertEquals("localhost.junixsocket", hnc.getHostname());
-                  }
+              hnc.isComplete(1, TimeUnit.SECONDS);
+              gotHostnameInTime.set(hnc.isComplete());
+              if (expectDefault) {
+                if (serverNullDefaultHostname && clientEmptyDefaultHostname) {
+                  assertNull(hnc.getHostname());
+                } else if (clientEmptyDefaultHostname) {
+                  assertEquals("defaulthost", hnc.getHostname());
                 } else {
-                  if ("defaulthost".equals(hnc.getHostname()) && AFSocket.isRunningOnAndroid()) {
-                    // This is a known edge case.
-                    failureServer.complete(new TestAbortedWithImportantMessageException(
-                        MessageType.TEST_ABORTED_WITH_ISSUES,
-                        "Android seems to not properly send the SNI hostname request"));
-                  } else {
-                    assertEquals("subdomain.example.com", hnc.getHostname());
-                  }
+                  assertEquals("localhost.junixsocket", hnc.getHostname());
+                }
+              } else {
+                if ("defaulthost".equals(hnc.getHostname()) && AFSocket.isRunningOnAndroid()) {
+                  // This is a known edge case.
+                  failureServer.complete(new TestAbortedWithImportantMessageException(
+                      MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+                      "Android seems to not properly send the SNI hostname request"));
+                } else {
+                  assertEquals("subdomain.example.com", hnc.getHostname());
+                }
+              }
+
+              try (InputStream in = sslSocket.getInputStream();
+                  OutputStream out = sslSocket.getOutputStream();) {
+                int v = in.read();
+                assertEquals('?', v);
+                if (!hnc.isComplete()) {
+                  fail("Handshake is not marked complete, but data can be read");
                 }
 
                 CompletableFuture<UnsupportedOperationException> cf =
@@ -223,49 +242,6 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
                     throw e;
                   }
                 }
-              } else {
-                // unexpected, but we need to fail from the main thread
-                int r = -1;
-                Throwable t1 = null;
-                try {
-                  r = sslSocket.getInputStream().read();
-                } catch (Throwable t) { // NOPMD
-                  t1 = t;
-                }
-                if (r == '?') {
-                  didReadFirstByte = true;
-                  if (clientEmptyDefaultHostname) {
-
-                    String explanation;
-                    if (isBouncyCastleJSSE(serverSocketFactory)) {
-                      explanation = "a Bouncycastle JSSE version";
-                    } else if (ExecutionEnvironmentUtil.isWindows()) {
-                      explanation = "a Windows environment";
-                    } else {
-                      explanation = "an unknown environment";
-                    }
-
-                    failureServer.complete(new TestAbortedWithImportantMessageException(
-                        MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
-                        "TLS Handshake is not marked complete, but data can be read. "
-                            + "You're using " + explanation + " that appears to be buggy when "
-                            + "specifying an empty or unqualified server host name on the client side."));
-                    // continue with the exchange below
-                  } else {
-                    fail("Handshake is not marked complete, but data can be read");
-                  }
-                } else {
-                  fail("Handshake is not complete", t1);
-                }
-                return;
-              }
-
-              try (InputStream in = sslSocket.getInputStream();
-                  OutputStream out = sslSocket.getOutputStream();) {
-                if (!didReadFirstByte) {
-                  int v = in.read();
-                  assertEquals('?', v);
-                }
 
                 assertEquals(expectDefault ? 1 : 0, in.read());
                 assertEquals(serverNullDefaultHostname ? 1 : 0, in.read());
@@ -274,9 +250,17 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
                 out.write("Hello World".getBytes(StandardCharsets.UTF_8));
                 out.flush();
               }
+              if (!gotHostnameInTime.get()) {
+                fail("Handshake was not marked complete in time, but eventually was");
+              }
             } catch (Exception | Error e) {
               failureServer.complete(e);
             }
+            if (!gotHostnameInTime.get()) {
+              failureServer.complete(new AssertionFailedError(
+                  "Handshake was not marked complete in time"));
+            }
+
           }
         };
 

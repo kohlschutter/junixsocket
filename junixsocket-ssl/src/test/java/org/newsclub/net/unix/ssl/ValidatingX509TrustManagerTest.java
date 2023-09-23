@@ -47,8 +47,8 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.bouncycastle.tls.TlsException;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
@@ -56,16 +56,18 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 // CPD-OFF
 public class ValidatingX509TrustManagerTest extends SSLTestBase {
 
-  @Test
-  public void testInspectTrustedCertificateExpired() throws Exception {
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
+  public void testInspectTrustedCertificateExpired(TestSSLConfiguration configuration)
+      throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = SSLContextBuilder.forServer() //
+    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
         .withKeyStore(ValidatingX509TrustManagerTest.class.getResource("juxserver.p12"),
             () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
-    SSLSocketFactory clientSocketFactory = SSLContextBuilder.forClient() //
+    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
         .withTrustManagers((tmf) -> {
 
           KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
@@ -94,29 +96,31 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
       });
 
       assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class, //
-          SSLProtocolException.class, TlsException.class // Bouncycastle
+          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION // Bouncycastle
       );
       assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class, //
-          SSLProtocolException.class, TlsException.class // Bouncycastle
+          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION // Bouncycastle
       );
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
     }
   }
 
-  @Test
-  public void testInspectTrustedCertificateNotExpired() throws Exception {
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
+  public void testInspectTrustedCertificateNotExpired(TestSSLConfiguration configuration)
+      throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     // NOTE: we simply swap client and server certificates here, since only the server certificate
     // is expired
 
-    SSLSocketFactory serverSocketFactory = SSLContextBuilder.forServer() //
+    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
         .withKeyStore(ValidatingX509TrustManagerTest.class.getResource("juxclient.p12"),
             () -> "clientpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
-    SSLSocketFactory clientSocketFactory = SSLContextBuilder.forClient() //
+    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
         .withTrustManagers((tmf) -> {
 
           KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
@@ -151,16 +155,18 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     }
   }
 
-  @Test
-  public void testInspectTrustedCertificateExpiredNested() throws Exception {
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
+  public void testInspectTrustedCertificateExpiredNested(TestSSLConfiguration configuration)
+      throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = SSLContextBuilder.forServer() //
+    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
         .withKeyStore(ValidatingX509TrustManagerTest.class.getResource("juxserver.p12"),
             () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
-    SSLSocketFactory clientSocketFactory = SSLContextBuilder.forClient() //
+    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
         .withTrustManagers((tmf) -> {
 
           KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
@@ -192,26 +198,28 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
       });
 
       assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class, //
-          SSLProtocolException.class, TlsException.class // Bouncycastle
+          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION // Bouncycastle
       );
       assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class, //
-          SSLProtocolException.class, TlsException.class // Bouncycastle
+          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION // Bouncycastle
       );
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
     }
   }
 
-  @Test
-  public void testInspectTrustedCertificateExpiredNestedFilter() throws Exception {
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
+  public void testInspectTrustedCertificateExpiredNestedFilter(TestSSLConfiguration configuration)
+      throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = SSLContextBuilder.forServer() //
+    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
         .withKeyStore(ValidatingX509TrustManagerTest.class.getResource("juxserver.p12"),
             () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
-    SSLSocketFactory clientSocketFactory = SSLContextBuilder.forClient() //
+    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
         .withTrustManagers((tmf) -> {
 
           KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
@@ -260,11 +268,13 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     }
   }
 
-  @Test
-  public void testInspectTrustedClientCertificate() throws Exception {
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
+  public void testInspectTrustedClientCertificate(TestSSLConfiguration configuration)
+      throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = SSLContextBuilder.forServer() //
+    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
         .withKeyStore(ValidatingX509TrustManagerTest.class.getResource("juxserver.p12"),
             () -> "serverpass".toCharArray()) //
         .withDefaultSSLParameters((p) -> {
@@ -287,7 +297,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         }) //
         .buildAndDestroyBuilder().getSocketFactory();
 
-    SSLSocketFactory clientSocketFactory = SSLContextBuilder.forClient() //
+    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
         .withKeyStore(ValidatingX509TrustManagerTest.class.getResource("juxclient.p12"),
             () -> "clientpass".toCharArray()) //
         .withTrustStore(ValidatingX509TrustManagerTest.class.getResource("juxclient.truststore"),
@@ -309,14 +319,16 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     }
   }
 
-  @Test
-  public void testInspectTrustedClientCertificateExpired() throws Exception {
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
+  public void testInspectTrustedClientCertificateExpired(TestSSLConfiguration configuration)
+      throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     // NOTE: we simply swap client and server certificates here, since only the server certificate
     // is expired
 
-    SSLSocketFactory serverSocketFactory = SSLContextBuilder.forServer() //
+    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
         .withKeyStore(ValidatingX509TrustManagerTest.class.getResource("juxclient.p12"),
             () -> "clientpass".toCharArray()) //
         .withDefaultSSLParameters((p) -> {
@@ -339,7 +351,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         }) //
         .buildAndDestroyBuilder().getSocketFactory();
 
-    SSLSocketFactory clientSocketFactory = SSLContextBuilder.forClient() //
+    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
         .withKeyStore(ValidatingX509TrustManagerTest.class.getResource("juxserver.p12"),
             () -> "serverpass".toCharArray()) //
         .withTrustStore(ValidatingX509TrustManagerTest.class.getResource("juxserver.truststore"),
@@ -355,24 +367,26 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
       });
 
       assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class, //
-          SSLProtocolException.class, TlsException.class // Bouncycastle
+          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION // Bouncycastle
       );
       assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class, //
-          SSLProtocolException.class, TlsException.class // Bouncycastle
+          SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION // Bouncycastle
       );
     } finally {
       Files.deleteIfExists(addr.getFile().toPath());
     }
   }
 
-  @Test
-  public void testInspectTrustedClientCertificateExpiredNested() throws Exception {
+  @ParameterizedTest
+  @EnumSource(TestSSLConfiguration.class)
+  public void testInspectTrustedClientCertificateExpiredNested(TestSSLConfiguration configuration)
+      throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     // NOTE: we simply swap client and server certificates here, since only the server certificate
     // is expired
 
-    SSLSocketFactory serverSocketFactory = SSLContextBuilder.forServer() //
+    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
         .withKeyStore(ValidatingX509TrustManagerTest.class.getResource("juxclient.p12"),
             () -> "clientpass".toCharArray()) //
         .withDefaultSSLParameters((p) -> {
@@ -410,7 +424,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         }) //
         .buildAndDestroyBuilder().getSocketFactory();
 
-    SSLSocketFactory clientSocketFactory = SSLContextBuilder.forClient() //
+    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
         .withKeyStore(ValidatingX509TrustManagerTest.class.getResource("juxserver.p12"),
             () -> "serverpass".toCharArray()) //
         .withTrustStore(ValidatingX509TrustManagerTest.class.getResource("juxserver.truststore"),
