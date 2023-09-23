@@ -230,21 +230,21 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
   }
 
   /**
-   * Starts the server and waits until it is ready or had to shop due to an error.
+   * Starts the server and waits until it is ready or had to stop due to an error.
    *
    * @throws InterruptedException If the wait was interrupted.
    */
   public void startAndWaitToBecomeReady() throws InterruptedException {
     synchronized (this) {
       start();
-      while (!isReady()) {
-        this.wait();
+      while (!ready.get() && !stopRequested.get()) {
+        this.wait(1000);
       }
     }
   }
 
   /**
-   * Starts the server and waits until it is ready or had to shop due to an error.
+   * Starts the server and waits until it is ready or had to stop due to an error.
    *
    * @param duration The duration wait.
    * @param unit The duration's time unit.
@@ -278,22 +278,26 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   @SuppressWarnings("null")
   private void listen() throws IOException {
-    V server;
-
-    synchronized (this) {
-      if (reuseSocket != null) {
-        serverSocket = reuseSocket;
-      } else {
+    V server = null;
+    try {
+      synchronized (this) {
+        if (reuseSocket != null) {
+          server = reuseSocket;
+        } else {
+          server = null;
+        }
+      }
+      if (server == null) {
+        server = newServerSocket();
+      }
+      synchronized (this) {
         if (serverSocket != null) {
           throw new IllegalStateException("The server is already listening");
         }
-        serverSocket = newServerSocket();
+        serverSocket = server;
       }
-      server = serverSocket;
-    }
-    onServerStarting();
+      onServerStarting();
 
-    try {
       if (!server.isBound()) {
         server.bind(listenAddress);
         onServerBound(listenAddress);
@@ -536,7 +540,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
   /**
    * Called when the server has been stopped.
    *
-   * @param socket The server's socket that stopped.
+   * @param socket The server's socket that stopped, or {@code null}.
    */
   protected void onServerStopped(V socket) {
   }
