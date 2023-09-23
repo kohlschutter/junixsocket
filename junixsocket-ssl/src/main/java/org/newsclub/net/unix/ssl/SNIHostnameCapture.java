@@ -18,7 +18,10 @@
 package org.newsclub.net.unix.ssl;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -51,8 +54,7 @@ public final class SNIHostnameCapture {
 
   private static final Supplier<String> NULL_SUPPLIER = () -> null;
 
-  private final AtomicBoolean complete = new AtomicBoolean();
-  private String hostname = null;
+  private final CompletableFuture<String> hostnameFuture = new CompletableFuture<>();
 
   private final Supplier<String> defaultHostnameSupplier;
 
@@ -94,9 +96,7 @@ public final class SNIHostnameCapture {
         ? NULL_SUPPLIER : defaultHostnameSupplier);
 
     sslSocket.addHandshakeCompletedListener((e) -> {
-      if (capture.hostname == null) {
-        capture.set(null);
-      }
+      capture.set(null);
     });
 
     SSLParametersUtil.setSNIMatcher(sslSocket, new CallbackSNIMatcher(hostnameMatcher, (name,
@@ -111,11 +111,25 @@ public final class SNIHostnameCapture {
 
   // @ExcludeFromCodeCoverageGeneratedReport(reason = "if-statement is just a precaution")
   private void set(String hostname) {
-    if (complete.compareAndSet(false, true)) {
-      if (hostname == null) {
-        hostname = defaultHostnameSupplier.get();
-      }
-      this.hostname = hostname;
+    hostnameFuture.complete(hostname);
+  }
+
+  /**
+   * Checks if a hostname can be returned by calling {@link #getHostname()} (which most likely means
+   * the handshake is complete), optionally waiting up to the given time interval if not yet
+   * complete.
+   *
+   * @param timeout The maximum timeout value to wait for.
+   * @param unit Timeout unit.
+   * @return {@code true} if {@link #getHostname()} will not throw an {@link IllegalStateException}.
+   * @throws InterruptedException if the current thread was interrupted while waiting.
+   */
+  public boolean isComplete(long timeout, TimeUnit unit) throws InterruptedException {
+    try {
+      hostnameFuture.get(timeout, unit);
+      return hostnameFuture.isDone();
+    } catch (ExecutionException | TimeoutException e) {
+      return false;
     }
   }
 
@@ -126,7 +140,7 @@ public final class SNIHostnameCapture {
    * @return {@code true} if {@link #getHostname()} will not throw an {@link IllegalStateException}.
    */
   public boolean isComplete() {
-    return complete.get();
+    return hostnameFuture.isDone();
   }
 
   /**
@@ -141,10 +155,15 @@ public final class SNIHostnameCapture {
    * @throws IllegalStateException if the method was called before a hostname could be retrieved.
    */
   public String getHostname() {
-    if (!complete.get()) {
+    if (!isComplete()) {
       throw new IllegalStateException("Handshake not yet complete");
     }
-    return hostname;
+    String hn = hostnameFuture.getNow(null);
+    if (hn == null) {
+      return defaultHostnameSupplier.get();
+    } else {
+      return hn;
+    }
   }
 
   /**
