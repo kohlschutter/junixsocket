@@ -27,6 +27,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SNIMatcher;
 import javax.net.ssl.SSLSocket;
@@ -104,7 +105,13 @@ public class SSLDemoServer {
           sslSocket.startHandshake();
           // Make sure the handshake is complete before we check the hostname
           // (otherwise: IllegalStateException)
-          System.out.println("Requested SNI hostname: " + sniHostname.getHostname());
+          try {
+            if (sniHostname.isComplete(1, TimeUnit.SECONDS)) {
+              System.out.println("Requested SNI hostname: " + sniHostname.getHostname());
+            }
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
 
           try (InputStream in = sslSocket.getInputStream();
               OutputStream out = sslSocket.getOutputStream();) {
