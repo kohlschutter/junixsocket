@@ -87,6 +87,17 @@ If you're going to use the Jetty connectors, add the following dependency:
       <version>${project.version}</version>
     </dependency>
 
+If you're going to use the SSL extension, add the following dependency:
+
+    <dependency>
+      <groupId>com.kohlschutter.junixsocket</groupId>
+      <artifactId>junixsocket-ssl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+(On Android, you may also want to add `org.bouncycastle:bcprov-jdk18on` and
+`org.bouncycastle:bctls-jdk18on`, since the default SSL implementation is incomplete)
+
 If you're going to use Darwin-specific sockets, add the following dependency:
 
     <dependency>
@@ -156,6 +167,13 @@ For VSOCK support, add:
 For Jetty support, add:
  
         implementation 'com.kohlschutter.junixsocket:junixsocket-jetty:${project.version}'
+
+For SSL support, add:
+
+        implementation 'com.kohlschutter.junixsocket:junixsocket-ssl:${project.version}'
+
+(On Android, you may also want to add `org.bouncycastle:bcprov-jdk18on` and
+`org.bouncycastle:bctls-jdk18on`, since the default SSL implementation is incomplete)
 
 For Darwin socket support, add:
 
