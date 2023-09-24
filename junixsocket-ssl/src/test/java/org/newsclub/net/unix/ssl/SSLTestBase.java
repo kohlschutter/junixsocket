@@ -25,10 +25,13 @@ import java.util.function.Supplier;
 
 import javax.net.ssl.SSLContext;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Named;
 import org.newsclub.net.unix.AFSocket;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.LoggerUtil;
 import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
 
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
@@ -131,6 +134,17 @@ public abstract class SSLTestBase {
     if (p == provider) { // NOPMD.CompareObjectsWithEquals
       Security.removeProvider(providerName);
     }
+  }
+
+  @BeforeAll
+  public static void beforeAll() {
+    LoggerUtil.overrideDefaultConfiguration(SSLTestBase.class, "logging.properties");
+  }
+
+  @AfterAll
+  public static void afterAll() {
+    LoggerUtil.revertToDefaultConfiguration();
+    removeAllConfigurableProviders();
   }
 
   @SuppressFBWarnings("SE_BAD_FIELD")
