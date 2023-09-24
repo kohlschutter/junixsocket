@@ -243,20 +243,20 @@ public abstract class SSLTestBase {
 
     // Works mostly, but has some problems with our test certificates
     // ("verify problem on certificate (error code: -329)")
-    // WOLFCRYPT_WOLFSSL((b) -> {
-    // if (PROVIDER_WOLFCRYPT_JCE == null) {
-    // throw new TestAbortedNotAnIssueException("Wolfcrypt JCE provider unvailable");
-    // }
-    // if (PROVIDER_WOLFSSL_JSSE == null) {
-    // throw new TestAbortedNotAnIssueException("WolfSSL JSSE provider unvailable");
-    // }
-    // removeAllConfigurableProviders();
-    // Security.addProvider(PROVIDER_WOLFCRYPT_JCE);
-    // Security.addProvider(PROVIDER_WOLFSSL_JSSE);
-    // // b.withKeyStoreSupplier(() -> KeyStore.getInstance("PKCS12", PROVIDER_WOLFCRYPT_JSSE));
-    // b.withProvider(PROVIDER_WOLFSSL_JSSE);
-    // return b;
-    // }), //
+    WOLFCRYPT_WOLFSSL((b) -> {
+      if (PROVIDER_WOLFCRYPT_JCE == null) {
+        throw new TestAbortedNotAnIssueException("Wolfcrypt JCE provider unvailable");
+      }
+      if (PROVIDER_WOLFSSL_JSSE == null) {
+        throw new TestAbortedNotAnIssueException("WolfSSL JSSE provider unvailable");
+      }
+      removeAllConfigurableProviders();
+      Security.addProvider(PROVIDER_WOLFCRYPT_JCE);
+      Security.addProvider(PROVIDER_WOLFSSL_JSSE);
+      // b.withKeyStoreSupplier(() -> KeyStore.getInstance("PKCS12", PROVIDER_WOLFCRYPT_JSSE));
+      b.withProvider(PROVIDER_WOLFSSL_JSSE);
+      return b;
+    }, false), //
 
     CONSCRYPT((b) -> {
       if (PROVIDER_CONSCRYPT == null) {
