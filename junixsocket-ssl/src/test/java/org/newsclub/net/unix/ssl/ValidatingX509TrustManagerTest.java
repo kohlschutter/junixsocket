@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.newsclub.net.unix.ssl.TestUtil.assertInstanceOf;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +53,9 @@ import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
+import com.kohlschutter.testutil.AssertUtil;
+import com.kohlschutter.testutil.TestResourceUtil;
+
 // CPD-OFF
 public class ValidatingX509TrustManagerTest extends SSLTestBase {
 
@@ -64,7 +66,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
@@ -72,7 +74,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         .withTrustManagers((tmf) -> {
 
           KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestUtil.getTestResource(SSLContextBuilderTest.class,
+          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
               "juxclient.truststore").openStream()) {
             ks.load(in, "clienttrustpass".toCharArray());
           }
@@ -96,11 +98,13 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
             clientSocketFactory, serverException, clientException));
       });
 
-      assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class, //
+      AssertUtil.assertInstanceOf(serverException.get(), SocketException.class,
+          SSLHandshakeException.class, //
           SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION, // Bouncycastle,
           SSLException.class // IBMJSSEProvider2
       );
-      assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class, //
+      AssertUtil.assertInstanceOf(clientException.get(), SocketException.class,
+          SSLHandshakeException.class, //
           SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION, // Bouncycastle,
           SSLException.class // IBMJSSEProvider2
       );
@@ -119,7 +123,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     // is expired
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxclient.p12"), () -> "clientpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
@@ -127,7 +131,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         .withTrustManagers((tmf) -> {
 
           KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestUtil.getTestResource(SSLContextBuilderTest.class,
+          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
               "juxserver.truststore").openStream()) {
             ks.load(in, "servertrustpass".toCharArray());
           }
@@ -165,7 +169,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
@@ -173,7 +177,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         .withTrustManagers((tmf) -> {
 
           KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestUtil.getTestResource(SSLContextBuilderTest.class,
+          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
               "juxclient.truststore").openStream()) {
             ks.load(in, "clienttrustpass".toCharArray());
           }
@@ -200,11 +204,13 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
             clientSocketFactory, serverException, clientException));
       });
 
-      assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class, //
+      AssertUtil.assertInstanceOf(serverException.get(), SocketException.class,
+          SSLHandshakeException.class, //
           SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION, // Bouncycastle,
           SSLException.class // IBMJSSEProvider2
       );
-      assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class, //
+      AssertUtil.assertInstanceOf(clientException.get(), SocketException.class,
+          SSLHandshakeException.class, //
           SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION, // Bouncycastle,
           SSLException.class // IBMJSSEProvider2
       );
@@ -220,7 +226,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
@@ -228,7 +234,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         .withTrustManagers((tmf) -> {
 
           KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestUtil.getTestResource(SSLContextBuilderTest.class,
+          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
               "juxclient.truststore").openStream()) {
             ks.load(in, "clienttrustpass".toCharArray());
           }
@@ -280,7 +286,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .withDefaultSSLParameters((p) -> {
           p.setNeedClientAuth(true);
@@ -288,7 +294,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         .withTrustManagers((tmf) -> {
 
           KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestUtil.getTestResource(SSLContextBuilderTest.class,
+          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
               "juxserver.truststore").openStream()) {
             ks.load(in, "servertrustpass".toCharArray());
           }
@@ -303,9 +309,9 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         .buildAndDestroyBuilder().getSocketFactory();
 
     SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withKeyStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxclient.p12"), () -> "clientpass".toCharArray()) //
-        .withTrustStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
@@ -334,7 +340,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     // is expired
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxclient.p12"), () -> "clientpass".toCharArray()) //
         .withDefaultSSLParameters((p) -> {
           p.setNeedClientAuth(true);
@@ -342,7 +348,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         .withTrustManagers((tmf) -> {
 
           KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestUtil.getTestResource(SSLContextBuilderTest.class,
+          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
               "juxclient.truststore").openStream()) {
             ks.load(in, "clienttrustpass".toCharArray());
           }
@@ -357,9 +363,9 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         .buildAndDestroyBuilder().getSocketFactory();
 
     SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withKeyStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .withTrustStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxserver.truststore"), () -> "servertrustpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
@@ -371,11 +377,13 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
             clientSocketFactory, serverException, clientException));
       });
 
-      assertInstanceOf(serverException.get(), SocketException.class, SSLHandshakeException.class, //
+      AssertUtil.assertInstanceOf(serverException.get(), SocketException.class,
+          SSLHandshakeException.class, //
           SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION, // Bouncycastle,
           SSLException.class // IBMJSSEProvider2
       );
-      assertInstanceOf(clientException.get(), SocketException.class, SSLHandshakeException.class, //
+      AssertUtil.assertInstanceOf(clientException.get(), SocketException.class,
+          SSLHandshakeException.class, //
           SSLProtocolException.class, BOUNCYCASTLE_TLS_EXCEPTION, // Bouncycastle,
           SSLException.class // IBMJSSEProvider2
       );
@@ -394,7 +402,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     // is expired
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxclient.p12"), () -> "clientpass".toCharArray()) //
         .withDefaultSSLParameters((p) -> {
           p.setNeedClientAuth(true);
@@ -402,7 +410,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         .withTrustManagers((tmf) -> {
 
           KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestUtil.getTestResource(SSLContextBuilderTest.class,
+          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
               "juxclient.truststore").openStream()) {
             ks.load(in, "clienttrustpass".toCharArray());
           }
@@ -432,9 +440,9 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
         .buildAndDestroyBuilder().getSocketFactory();
 
     SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withKeyStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .withTrustStore(TestUtil.getTestResource(ValidatingX509TrustManagerTest.class,
+        .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
             "juxserver.truststore"), () -> "servertrustpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 

@@ -57,12 +57,13 @@ import org.opentest4j.AssertionFailedError;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
+import com.kohlschutter.testutil.TestResourceUtil;
 
 public class SNIHostnameCaptureTest extends SSLTestBase {
   private static SSLSocketFactory initClientSocketFactory(TestSSLConfiguration configuration)
       throws Exception {
     return configuration.configure(SSLContextBuilder.forClient()) //
-        .withTrustStore(TestUtil.getTestResource(SSLContextBuilderTest.class,
+        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
             "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
   }
@@ -136,8 +137,8 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-            () -> "serverpass".toCharArray()) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
     try {

@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.newsclub.net.unix.ssl.TestUtil.assertInstanceOf;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,8 +69,10 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketPair;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.AssertUtil;
 import com.kohlschutter.testutil.ExecutionEnvironmentRequirement;
 import com.kohlschutter.testutil.ExecutionEnvironmentRequirement.Rule;
+import com.kohlschutter.testutil.TestResourceUtil;
 
 // CPD-OFF
 @SuppressWarnings("PMD.ExcessiveImports")
@@ -83,8 +84,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-            () -> "serverpass".toCharArray()) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .withDefaultSSLParameters((p) -> {
           SSLParametersUtil.disableCipherSuites(p, "SOME_REALLY_BAD_CIPHER"); // for code coverage
           SSLParametersUtil.disableProtocols(p, "TLSv1.0", "TLSv1.1");
@@ -92,7 +93,7 @@ public class SSLContextBuilderTest extends SSLTestBase {
         .buildAndDestroyBuilder().getSocketFactory();
 
     SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withTrustStore(TestUtil.getTestResource(SSLContextBuilderTest.class,
+        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
             "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
@@ -116,9 +117,9 @@ public class SSLContextBuilderTest extends SSLTestBase {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-            () -> "serverpass".toCharArray()) //
-        .withTrustStore(TestUtil.getTestResource(SSLContextBuilderTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), () -> "serverpass".toCharArray()) //
+        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
             "juxserver.truststore"), () -> "servertrustpass".toCharArray()) //
         .withDefaultSSLParameters((p) -> {
           p.setNeedClientAuth(true);
@@ -126,9 +127,9 @@ public class SSLContextBuilderTest extends SSLTestBase {
         .buildAndDestroyBuilder().getSocketFactory();
 
     SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxclient.p12"),
-            () -> "clientpass".toCharArray()) //
-        .withTrustStore(TestUtil.getTestResource(SSLContextBuilderTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxclient.p12"), () -> "clientpass".toCharArray()) //
+        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
             "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
@@ -155,15 +156,15 @@ public class SSLContextBuilderTest extends SSLTestBase {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-            () -> "serverpass".toCharArray()) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .withDefaultSSLParameters((p) -> {
           p.setNeedClientAuth(true);
         }) //
         .buildAndDestroyBuilder().getSocketFactory();
 
     SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withTrustStore(TestUtil.getTestResource(SSLContextBuilderTest.class,
+        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
             "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
@@ -177,12 +178,13 @@ public class SSLContextBuilderTest extends SSLTestBase {
         });
 
         // both client and server should throw an SSLHandshakeException or SocketException
-        assertInstanceOf(serverException.get(), SSLHandshakeException.class, SocketException.class, //
+        AssertUtil.assertInstanceOf(serverException.get(), SSLHandshakeException.class,
+            SocketException.class, //
             SSLProtocolException.class, //
             BOUNCYCASTLE_TLS_EXCEPTION, // org.bouncycastle.tls.TlsFatalAlert
             SSLException.class // IBMJSSEProvider2
         );
-        assertInstanceOf(clientException.get(), null, SSLHandshakeException.class,
+        AssertUtil.assertInstanceOf(clientException.get(), null, SSLHandshakeException.class,
             SocketException.class, //
             SSLProtocolException.class, //
             BOUNCYCASTLE_TLS_EXCEPTION, // org.bouncycastle.tls.TlsFatalAlert
@@ -201,17 +203,17 @@ public class SSLContextBuilderTest extends SSLTestBase {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-            () -> "serverpass".toCharArray()) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .withDefaultSSLParameters((p) -> {
           p.setNeedClientAuth(true);
         }) //
         .buildAndDestroyBuilder().getSocketFactory();
 
     SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxclient.p12"),
-            () -> "clientpass".toCharArray()) //
-        .withTrustStore(TestUtil.getTestResource(SSLContextBuilderTest.class,
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxclient.p12"), () -> "clientpass".toCharArray()) //
+        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
             "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
@@ -225,12 +227,13 @@ public class SSLContextBuilderTest extends SSLTestBase {
         });
 
         // both client and server should throw an SSLHandshakeException or SocketException
-        assertInstanceOf(serverException.get(), SSLHandshakeException.class, SocketException.class, //
+        AssertUtil.assertInstanceOf(serverException.get(), SSLHandshakeException.class,
+            SocketException.class, //
             SSLProtocolException.class, //
             BOUNCYCASTLE_TLS_EXCEPTION, // org.bouncycastle.tls.TlsFatalAlert
             SSLException.class // IBMJSSEProvider2
         );
-        assertInstanceOf(clientException.get(), null, SSLHandshakeException.class,
+        AssertUtil.assertInstanceOf(clientException.get(), null, SSLHandshakeException.class,
             SocketException.class, //
             SSLProtocolException.class, //
             BOUNCYCASTLE_TLS_EXCEPTION, // org.bouncycastle.tls.TlsFatalAlert
@@ -248,8 +251,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
     SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-            () -> "serverpass".toCharArray()) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .withSecureRandom(null) // just for code coverage
         .withDefaultSSLParameters((p) -> {
         }) //
@@ -268,12 +271,13 @@ public class SSLContextBuilderTest extends SSLTestBase {
         });
 
         // both client and server should throw an SSLHandshakeException or SocketException
-        assertInstanceOf(serverException.get(), SSLHandshakeException.class, SocketException.class, //
+        AssertUtil.assertInstanceOf(serverException.get(), SSLHandshakeException.class,
+            SocketException.class, //
             SSLProtocolException.class, //
             BOUNCYCASTLE_TLS_EXCEPTION, // org.bouncycastle.tls.TlsFatalAlert
             SSLException.class // IBMJSSEProvider2
         );
-        assertInstanceOf(clientException.get(), null, SSLHandshakeException.class,
+        AssertUtil.assertInstanceOf(clientException.get(), null, SSLHandshakeException.class,
             SocketException.class, //
             SSLProtocolException.class, //
             BOUNCYCASTLE_TLS_EXCEPTION, // org.bouncycastle.tls.TlsFatalAlert
@@ -299,7 +303,7 @@ public class SSLContextBuilderTest extends SSLTestBase {
         }) //
         .withKeyManagers((kmf) -> {
           KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestUtil.getTestResource(SSLContextBuilderTest.class,
+          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
               "juxserver.p12").openStream()) {
             ks.load(in, "serverpass".toCharArray());
           }
@@ -309,8 +313,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
         .buildAndDestroyBuilder().getSocketFactory();
 
     SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxclient.p12"),
-            () -> "clientpass".toCharArray()) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxclient.p12"), () -> "clientpass".toCharArray()) //
         .withTrustManagers((tmf) -> {
           return new TrustManager[] {IgnorantX509TrustManager.getInstance()};
         }).buildAndDestroyBuilder().getSocketFactory();
@@ -419,7 +423,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
     DestroyablePasswordSupplier dps = new DestroyablePasswordSupplier();
 
     SSLContextBuilder builder = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"), dps) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), dps) //
         .withDefaultSSLParameters((p) -> {
         }); //
 
@@ -439,7 +444,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
     DestroyablePasswordSupplier dps = new DestroyablePasswordSupplier();
 
     SSLContextBuilder builder = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"), dps) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), dps) //
         .withDefaultSSLParameters((p) -> {
         }); //
 
@@ -461,7 +467,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
     UndestroyablePasswordSupplier dps = new UndestroyablePasswordSupplier();
 
     SSLContextBuilder builder = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"), dps) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), dps) //
         .withDefaultSSLParameters((p) -> {
         }); //
 
@@ -481,8 +488,10 @@ public class SSLContextBuilderTest extends SSLTestBase {
     UndestroyablePasswordSupplier dps = new UndestroyablePasswordSupplier();
 
     SSLContextBuilder builder = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"), dps) //
-        .withTrustStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"), dps) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), dps) //
+        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), dps) //
         .withDefaultSSLParameters((p) -> {
         }); //
 
@@ -496,7 +505,7 @@ public class SSLContextBuilderTest extends SSLTestBase {
     } catch (DestroyFailedException e) {
       Throwable[] suppressed = e.getSuppressed();
       assertEquals(1, suppressed.length);
-      assertInstanceOf(suppressed[0], DestroyFailedException.class);
+      AssertUtil.assertInstanceOf(suppressed[0], DestroyFailedException.class);
     }
 
     assertFalse(dps.isDestroyed());
@@ -508,8 +517,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
   public void testKeyStoreNullPasswordSupplied(TestSSLConfiguration configuration)
       throws Exception {
     SSLContextBuilder builder = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-            () -> null) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), () -> null) //
         .withDefaultSSLParameters((p) -> {
         }); //
 
@@ -530,7 +539,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
   public void testKeyStoreNullPasswordSupplier(TestSSLConfiguration configuration)
       throws Exception {
     SSLContextBuilder builder = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"), null) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), null) //
         .withDefaultSSLParameters((p) -> {
         }); //
 
@@ -585,7 +595,7 @@ public class SSLContextBuilderTest extends SSLTestBase {
   public void testTrustStoreNullPasswordSupplied(TestSSLConfiguration configuration)
       throws Exception {
     SSLContextBuilder builder = configuration.configure(SSLContextBuilder.forServer()) //
-        .withTrustStore(TestUtil.getTestResource(SSLContextBuilderTest.class,
+        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
             "juxserver.truststore"), () -> null) //
         .withDefaultSSLParameters((p) -> {
         }); //
@@ -607,7 +617,7 @@ public class SSLContextBuilderTest extends SSLTestBase {
   public void testTrustStoreNullPasswordSupplier(TestSSLConfiguration configuration)
       throws Exception {
     SSLContextBuilder builder = configuration.configure(SSLContextBuilder.forServer()) //
-        .withTrustStore(TestUtil.getTestResource(SSLContextBuilderTest.class,
+        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
             "juxserver.truststore"), null) //
         .withDefaultSSLParameters((p) -> {
         }); //
@@ -663,8 +673,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
   @EnumSource(TestSSLConfiguration.class)
   public void testBothKeyStoreAndKeyManagers(TestSSLConfiguration configuration) throws Exception {
     SSLContextBuilder builder = configuration.configure(SSLContextBuilder.forServer());
-    builder.withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-        () -> "serverpass".toCharArray());
+    builder.withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+        "juxserver.p12"), () -> "serverpass".toCharArray());
 
     assertThrows(IllegalStateException.class, () -> {
       builder.withKeyManagers((kmf) -> {
@@ -684,8 +694,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
     });
 
     assertThrows(IllegalStateException.class, () -> {
-      builder.withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-          () -> "serverpass".toCharArray());
+      builder.withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+          "juxserver.p12"), () -> "serverpass".toCharArray());
     });
   }
 
@@ -694,7 +704,7 @@ public class SSLContextBuilderTest extends SSLTestBase {
   public void testBothTrustStoreAndTrustManagers(TestSSLConfiguration configuration)
       throws Exception {
     SSLContextBuilder builder = configuration.configure(SSLContextBuilder.forServer());
-    builder.withTrustStore(TestUtil.getTestResource(SSLContextBuilderTest.class,
+    builder.withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
         "juxserver.truststore"), () -> "servertrustpass".toCharArray());
 
     assertThrows(IllegalStateException.class, () -> {
@@ -716,7 +726,7 @@ public class SSLContextBuilderTest extends SSLTestBase {
     });
 
     assertThrows(IllegalStateException.class, () -> {
-      builder.withTrustStore(TestUtil.getTestResource(SSLContextBuilderTest.class,
+      builder.withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
           "juxserver.truststore"), () -> "servertrustpass".toCharArray());
     });
   }
@@ -790,8 +800,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
   @EnumSource(TestSSLConfiguration.class)
   public void testSocketFactoryMethods(TestSSLConfiguration configuration) throws Exception {
     SSLSocketFactory factory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-            () -> "serverpass".toCharArray()) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
     assertThrows(SocketException.class, () -> factory.createSocket(),
@@ -823,8 +833,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
   public void testSocketFactoryMethodsForCodeCoverageOnly(TestSSLConfiguration configuration)
       throws Exception {
     SSLSocketFactory factory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-            () -> "serverpass".toCharArray()) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder().getSocketFactory();
 
     InetAddress loopback = InetAddress.getLoopbackAddress();
@@ -840,8 +850,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
   @EnumSource(TestSSLConfiguration.class)
   public void testServerSocketFactoryMethods(TestSSLConfiguration configuration) throws Exception {
     SSLServerSocketFactory factory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-            () -> "serverpass".toCharArray()) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder().getServerSocketFactory();
 
     assertNotEquals(0, factory.getDefaultCipherSuites().length);
@@ -864,8 +874,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
   public void testServerSocketFactoryMethodsForCodeCoverageOnly(TestSSLConfiguration configuration)
       throws Exception {
     SSLServerSocketFactory factory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-            () -> "serverpass".toCharArray()) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder().getServerSocketFactory();
 
     assertNotNull(factory.createServerSocket(0));
@@ -877,8 +887,8 @@ public class SSLContextBuilderTest extends SSLTestBase {
   @EnumSource(TestSSLConfiguration.class)
   public void testSSLEngineMethods(TestSSLConfiguration configuration) throws Exception {
     SSLContext context = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestUtil.getTestResource(SSLContextBuilderTest.class, "juxserver.p12"),
-            () -> "serverpass".toCharArray()) //
+        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+            "juxserver.p12"), () -> "serverpass".toCharArray()) //
         .buildAndDestroyBuilder();
 
     SSLEngine engine;

@@ -17,48 +17,12 @@
  */
 package org.newsclub.net.unix.ssl;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.net.SocketException;
-import java.net.URL;
-import java.util.Arrays;
 import java.util.function.Supplier;
 
 final class TestUtil {
-
   private TestUtil() {
     throw new IllegalStateException("No instances");
-  }
-
-  static URL getTestResource(Class<?> classRef, String name) {
-    URL url = classRef.getResource(name);
-    if (url == null) {
-      throw new IllegalStateException("Missing expected test resource: " + name);
-    }
-    return url;
-  }
-
-  @SafeVarargs
-  @SuppressWarnings("varargs")
-  static void assertInstanceOf(Throwable t, Class<? extends Throwable>... expected) {
-    Class<? extends Throwable> thrownClass = t == null ? null : t.getClass();
-    for (Class<? extends Throwable> e : expected) {
-      if (thrownClass == null) {
-        if (e == null) {
-          return;
-        }
-      } else if (e == null) {
-        // continue
-      } else if (e.isAssignableFrom(thrownClass)) {
-        return;
-      }
-    }
-
-    if (t == null) {
-      fail("Should have thrown something, specifically one of " + Arrays.toString(expected));
-    } else {
-      fail("Should have thrown one of " + Arrays.toString(expected) + " but did: " + t);
-    }
   }
 
   /**

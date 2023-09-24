@@ -34,6 +34,7 @@ import com.google.errorprone.annotations.Immutable;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.LoggerUtil;
 import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
+import com.kohlschutter.util.ReflectionUtil;
 
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
 public abstract class SSLTestBase {
