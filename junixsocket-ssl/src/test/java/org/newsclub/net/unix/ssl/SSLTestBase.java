@@ -191,7 +191,7 @@ public abstract class SSLTestBase {
       return b;
     }, false), //
 
-    // NOTE: Currently disabled because IAIK JSSE cannot switch to server mode
+    // NOTE: Currently broken because IAIK JSSE cannot switch to server mode
     // (iaik.security.ssl.SSLException "SSLServerContext required in server mode!")
     IAIK_JCE_AND_JSSE((b) -> {
       if (PROVIDER_IAIK_JCE == null) {
