@@ -62,7 +62,7 @@ final class ReflectionUtil {
       Class<?> klazz = Class.forName(className);
       Method m = klazz.getMethod(methodName);
       if ((m.getModifiers() & Modifier.STATIC) == 0) {
-        return null;
+        return null; // NOPMD.ReturnEmptyCollectionRatherThanNull
       }
       return (Provider) m.invoke(null);
     } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
