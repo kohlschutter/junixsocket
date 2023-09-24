@@ -152,6 +152,8 @@ public class Selftest {
   }
 
   public Selftest(PrintStream out, SelftestProvider sp) {
+    System.setProperty("com.kohlschutter.selftest", getClass().getName());
+
     this.out = ConsolePrintStream.wrapPrintStream(out);
     this.sp = sp;
   }
