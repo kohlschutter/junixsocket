@@ -22,9 +22,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
-import java.security.Provider;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 final class ReflectionUtil {
   private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_BOXED = new HashMap<>();
@@ -57,14 +58,18 @@ final class ReflectionUtil {
     }
   }
 
-  static Provider singletonIfPossible(String className, String methodName) {
+  static <T> @Nullable T singletonIfPossible(Class<T> desiredType, String className,
+      String methodName) {
     try {
       Class<?> klazz = Class.forName(className);
+      if (!desiredType.isAssignableFrom(klazz)) {
+        return null; // NOPMD.ReturnEmptyCollectionRatherThanNull
+      }
       Method m = klazz.getMethod(methodName);
       if ((m.getModifiers() & Modifier.STATIC) == 0) {
         return null; // NOPMD.ReturnEmptyCollectionRatherThanNull
       }
-      return (Provider) m.invoke(null);
+      return desiredType.cast(m.invoke(null));
     } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
         | IllegalAccessException | InvocationTargetException | ClassCastException e) {
       return null; // NOPMD.ReturnEmptyCollectionRatherThanNull
@@ -72,9 +77,13 @@ final class ReflectionUtil {
   }
 
   @SuppressWarnings("PMD.CognitiveComplexity")
-  static Provider instantiateIfPossible(String className, Object... args) {
+  static <T> @Nullable T instantiateIfPossible(Class<T> desiredType, String className,
+      Object... args) {
     try {
       Class<?> klazz = Class.forName(className);
+      if (!desiredType.isAssignableFrom(klazz)) {
+        return null;
+      }
       Constructor<?> constructor = null;
       for (Constructor<?> constr : klazz.getConstructors()) {
         if (constr.getParameterCount() != args.length) {
@@ -131,7 +140,7 @@ final class ReflectionUtil {
       if (constructor == null) {
         throw new NoSuchMethodException("Could not find constructor for " + className);
       }
-      return (Provider) constructor.newInstance(args);
+      return desiredType.cast(constructor.newInstance(args));
     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
         | InvocationTargetException | NoSuchMethodException | SecurityException
         | ClassNotFoundException | ClassCastException e) {

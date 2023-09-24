@@ -54,8 +54,6 @@ public final class SNIHostnameCapture {
     }
   };
 
-  private static final Supplier<String> NULL_SUPPLIER = () -> null;
-
   private final CompletableFuture<String> hostnameFuture = new CompletableFuture<>();
 
   private final Supplier<String> defaultHostnameSupplier;
@@ -94,8 +92,8 @@ public final class SNIHostnameCapture {
    */
   public static SNIHostnameCapture configure(SSLSocket sslSocket, SNIMatcher hostnameMatcher,
       Supplier<String> defaultHostnameSupplier) {
-    SNIHostnameCapture capture = new SNIHostnameCapture(defaultHostnameSupplier == null
-        ? NULL_SUPPLIER : defaultHostnameSupplier);
+    SNIHostnameCapture capture = new SNIHostnameCapture(defaultHostnameSupplier == null ? () -> null
+        : defaultHostnameSupplier);
 
     sslSocket.addHandshakeCompletedListener((e) -> {
       capture.set(null);

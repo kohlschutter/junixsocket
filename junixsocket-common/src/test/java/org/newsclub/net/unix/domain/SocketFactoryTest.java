@@ -46,6 +46,7 @@ public final class SocketFactoryTest extends SocketTestBase<AFUNIXSocketAddress>
     super(AFUNIXAddressSpecifics.INSTANCE);
   }
 
+  @SuppressWarnings("AddressSelection" /* errorprone */)
   @Test
   public void testURISchemeCeateSocketThenConnect() throws Exception {
     AFUNIXSocketFactory.URIScheme factory = new AFUNIXSocketFactory.URIScheme();
@@ -89,6 +90,7 @@ public final class SocketFactoryTest extends SocketTestBase<AFUNIXSocketAddress>
     });
   }
 
+  @SuppressWarnings("AddressSelection" /* errorprone */)
   @Test
   public void testURISchemeCeateSocketWithInvalidHostname() throws Exception {
     AFUNIXSocketFactory.URIScheme factory = new AFUNIXSocketFactory.URIScheme();

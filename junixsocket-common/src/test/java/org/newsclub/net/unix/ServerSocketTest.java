@@ -75,6 +75,7 @@ public abstract class ServerSocketTest<A extends SocketAddress> extends SocketTe
     assertTrue(closed.get());
   }
 
+  @SuppressWarnings("AddressSelection" /* errorprone */)
   @Test
   public void testBindBadArguments() throws Exception {
     try (ServerSocket sock = newServerSocket()) {

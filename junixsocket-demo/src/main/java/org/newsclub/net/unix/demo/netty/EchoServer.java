@@ -40,6 +40,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  * Based on example code from <a href="https://netty.io/wiki/user-guide-for-4.x.html">Netty user
  * guide for 4.x</a>
  */
+@SuppressWarnings("FutureReturnValueIgnored" /* errorprone */)
 public class EchoServer {
   private final AFSocketAddress addr;
 

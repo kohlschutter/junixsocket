@@ -30,6 +30,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Named;
 import org.newsclub.net.unix.AFSocket;
 
+import com.google.errorprone.annotations.Immutable;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.LoggerUtil;
 import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
@@ -52,32 +53,39 @@ public abstract class SSLTestBase {
     }
   }.get();
 
-  private static final Provider PROVIDER_BOUNCYCASTLE_JCE = ReflectionUtil.instantiateIfPossible(
-      "org.bouncycastle.jce.provider.BouncyCastleProvider");
+  private static final Provider PROVIDER_BOUNCYCASTLE_JCE = //
+      ReflectionUtil.instantiateIfPossible(Provider.class,
+          "org.bouncycastle.jce.provider.BouncyCastleProvider");
+  private static final Provider PROVIDER_BOUNCYCASTLE_JSSE = //
+      ReflectionUtil.instantiateIfPossible(Provider.class,
+          "org.bouncycastle.jsse.provider.BouncyCastleJsseProvider");
+  private static final Provider PROVIDER_BOUNCYCASTLE_JSSE_FIPS = //
+      ReflectionUtil.instantiateIfPossible(Provider.class,
+          "org.bouncycastle.jsse.provider.BouncyCastleJsseProvider", true);
 
-  private static final Provider PROVIDER_BOUNCYCASTLE_JSSE = ReflectionUtil.instantiateIfPossible(
-      "org.bouncycastle.jsse.provider.BouncyCastleJsseProvider");
-  private static final Provider PROVIDER_BOUNCYCASTLE_JSSE_FIPS = ReflectionUtil
-      .instantiateIfPossible("org.bouncycastle.jsse.provider.BouncyCastleJsseProvider", true);
-
-  private static final Provider PROVIDER_IAIK_JCE = ReflectionUtil.instantiateIfPossible(
-      "iaik.security.provider.IAIK");
-
+  private static final Provider PROVIDER_IAIK_JCE = //
+      ReflectionUtil.instantiateIfPossible(Provider.class, //
+          "iaik.security.provider.IAIK");
   // Not supported yet (bug in IAIKJSSEProvider)
-  private static final Provider PROVIDER_IAIK_JSSE = ReflectionUtil.instantiateIfPossible(
-      "iaik.security.jsse.provider.IAIKJSSEProvider");
+  private static final Provider PROVIDER_IAIK_JSSE = //
+      ReflectionUtil.instantiateIfPossible(Provider.class,
+          "iaik.security.jsse.provider.IAIKJSSEProvider");
 
   // Works on Java 8 only
-  private static final Provider PROVIDER_OPENJSSE = ReflectionUtil.instantiateIfPossible(
-      "org.openjsse.net.ssl.OpenJSSE");
+  private static final Provider PROVIDER_OPENJSSE = //
+      ReflectionUtil.instantiateIfPossible(Provider.class, //
+          "org.openjsse.net.ssl.OpenJSSE");
 
-  private static final Provider PROVIDER_CONSCRYPT = ReflectionUtil.singletonIfPossible(
-      "org.conscrypt.Conscrypt", "newProvider");
+  private static final Provider PROVIDER_CONSCRYPT = //
+      ReflectionUtil.singletonIfPossible(Provider.class, //
+          "org.conscrypt.Conscrypt", "newProvider");
 
-  private static final Provider PROVIDER_WOLFSSL_JSSE = ReflectionUtil.instantiateIfPossible(
-      "com.wolfssl.provider.jsse.WolfSSLProvider");
-  private static final Provider PROVIDER_WOLFCRYPT_JCE = ReflectionUtil.instantiateIfPossible(
-      "com.wolfssl.provider.jce.WolfCryptProvider");
+  private static final Provider PROVIDER_WOLFSSL_JSSE = //
+      ReflectionUtil.instantiateIfPossible(Provider.class,
+          "com.wolfssl.provider.jsse.WolfSSLProvider");
+  private static final Provider PROVIDER_WOLFCRYPT_JCE = //
+      ReflectionUtil.instantiateIfPossible(Provider.class,
+          "com.wolfssl.provider.jce.WolfCryptProvider");
 
   private static final String DEFAULT_PROVIDER_NAME = new Supplier<String>() {
     @Override
@@ -106,6 +114,7 @@ public abstract class SSLTestBase {
   }
 
   @FunctionalInterface
+  @Immutable
   public interface TestSSLContextBuilderConfigurator {
     SSLContextBuilder configure(SSLContextBuilder builder) throws Exception;
   }

@@ -431,7 +431,11 @@ public final class SSLContextBuilder {
         if (pn.isEmpty()) {
           continue;
         }
-        Provider p = (Provider) Class.forName(pn).getConstructor().newInstance();
+        Class<?> klazz = Class.forName(pn);
+        if (!Provider.class.isAssignableFrom(klazz)) {
+          continue;
+        }
+        Provider p = (Provider) klazz.getConstructor().newInstance();
         providers.add(p);
 
         try {

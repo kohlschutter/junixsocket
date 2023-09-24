@@ -102,6 +102,10 @@ import java.util.concurrent.CompletableFuture;
  * @see org.newsclub.net.unix.demo.ssl.SSLDemoServer
  * @see org.newsclub.net.unix.demo.ssl.SSLDemoClient
  */
+@SuppressWarnings({
+    "FutureReturnValueIgnored", // errorprone
+    "CatchAndPrintStackTrace", // errorprone
+})
 public class SSLDemoPrerequisites {
   private static final boolean runCommand(String explanation, String... command) throws IOException,
       InterruptedException {

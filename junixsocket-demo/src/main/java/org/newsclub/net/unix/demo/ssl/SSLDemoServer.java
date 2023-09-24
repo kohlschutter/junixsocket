@@ -49,6 +49,7 @@ import org.newsclub.net.unix.ssl.SSLContextBuilder;
  * @see SSLDemoClient
  * @see SSLDemoPrerequisites
  */
+@SuppressWarnings("CatchAndPrintStackTrace" /* errorprone */)
 public class SSLDemoServer {
   public static void main(String[] args) throws InterruptedException, IOException,
       GeneralSecurityException, DestroyFailedException {

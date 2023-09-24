@@ -45,6 +45,7 @@ public abstract class SocketTest<A extends SocketAddress> extends SocketTestBase
     super(asp);
   }
 
+  @SuppressWarnings("AddressSelection" /* errorprone */)
   @Test
   public void testConnectBadArguments() throws Exception {
     try (Socket socket = newSocket()) {
@@ -86,6 +87,7 @@ public abstract class SocketTest<A extends SocketAddress> extends SocketTestBase
     }
   }
 
+  @SuppressWarnings("AddressSelection" /* errorprone */)
   @Test
   public void testBindBadArguments() throws Exception {
     try (Socket sock = newSocket()) {

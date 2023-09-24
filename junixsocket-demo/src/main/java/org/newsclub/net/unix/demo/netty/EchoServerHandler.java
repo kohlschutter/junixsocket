@@ -26,6 +26,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  * Based on example code from <a href="https://netty.io/wiki/user-guide-for-4.x.html">Netty user
  * guide for 4.x</a>
  */
+@SuppressWarnings("FutureReturnValueIgnored" /* errorprone */ )
 class EchoServerHandler extends ChannelInboundHandlerAdapter { // (1)
 
   @Override
