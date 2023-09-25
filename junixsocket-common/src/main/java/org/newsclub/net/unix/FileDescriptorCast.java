@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -73,7 +72,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   private static final Map<Class<?>, CastingProviderMap> PRIMARY_TYPE_PROVIDERS_MAP = Collections
       .synchronizedMap(new HashMap<>());
 
-  private static final Function<FileDescriptor, FileInputStream> FD_IS_PROVIDER = System
+  private static final AFFunction<FileDescriptor, FileInputStream> FD_IS_PROVIDER = System
       .getProperty("osv.version") != null ? LenientFileInputStream::new : FileInputStream::new;
 
   private static final CastingProviderMap GLOBAL_PROVIDERS_FINAL = new CastingProviderMap() {

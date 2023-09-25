@@ -35,7 +35,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -331,7 +330,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   public static AFUNIXSocketAddress unwrap(SocketAddress address) throws SocketException {
     // FIXME: add support for UnixDomainSocketAddress
     Objects.requireNonNull(address);
-    Supplier<AFUNIXSocketAddress> supplier = supportedAddressSupplier(address);
+    AFSupplier<AFUNIXSocketAddress> supplier = supportedAddressSupplier(address);
     if (supplier == null) {
       throw new SocketException("Unsupported address");
     }
@@ -527,7 +526,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    * @param addr The address.
    * @return The supplier, or {@code null}.
    */
-  static Supplier<AFUNIXSocketAddress> supportedAddressSupplier(SocketAddress addr) {
+  static AFSupplier<AFUNIXSocketAddress> supportedAddressSupplier(SocketAddress addr) {
     if (addr == null) {
       return null;
     } else if (addr instanceof AFUNIXSocketAddress) {

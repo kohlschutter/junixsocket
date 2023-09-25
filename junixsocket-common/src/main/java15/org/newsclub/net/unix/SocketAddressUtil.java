@@ -19,7 +19,6 @@ package org.newsclub.net.unix;
 
 import java.net.SocketAddress;
 import java.net.SocketException;
-import java.util.function.Supplier;
 
 /**
  * {@link SocketAddress}-related helper methods.
@@ -37,7 +36,7 @@ final class SocketAddressUtil {
    * @param address The address.
    * @return A supplier for the given address, or {@code null}.
    */
-  static Supplier<AFUNIXSocketAddress> supplyAFUNIXSocketAddress(SocketAddress address) {
+  static AFSupplier<AFUNIXSocketAddress> supplyAFUNIXSocketAddress(SocketAddress address) {
     return null;
   }
 }

@@ -29,8 +29,7 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.spi.AbstractSelectableChannel;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.newsclub.net.unix.AFSelector.PollFd;
 
@@ -43,7 +42,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 final class NativeUnixSocket {
-  private static final CompletableFuture<Boolean> LOADED = new CompletableFuture<>();
+  private static final AtomicBoolean LOADED = new AtomicBoolean(false);
 
   static final int DOMAIN_UNIX = 1;
   static final int DOMAIN_TIPC = 30;
@@ -105,13 +104,7 @@ final class NativeUnixSocket {
   }
 
   static boolean isLoaded() {
-    boolean loadSuccessful;
-    try {
-      loadSuccessful = LOADED.get();
-    } catch (InterruptedException | ExecutionException e) {
-      loadSuccessful = false;
-    }
-    return loadSuccessful;
+    return LOADED.get();
   }
 
   static void ensureSupported() throws UnsupportedOperationException {
@@ -319,6 +312,6 @@ final class NativeUnixSocket {
   static native int systemResolveCtlId(FileDescriptor fd, String ctlName) throws IOException;
 
   static void setLoaded(boolean successful) {
-    LOADED.complete(successful);
+    LOADED.compareAndSet(false, successful);
   }
 }

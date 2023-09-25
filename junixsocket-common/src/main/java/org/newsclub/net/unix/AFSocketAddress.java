@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -647,7 +646,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     Objects.requireNonNull(address);
 
     if (!(address instanceof AFSocketAddress)) {
-      Supplier<? extends AFSocketAddress> supp = AFUNIXSocketAddress.supportedAddressSupplier(
+      AFSupplier<? extends AFSocketAddress> supp = AFUNIXSocketAddress.supportedAddressSupplier(
           address);
       address = supp == null ? null : supp.get();
       if (address == null) {
