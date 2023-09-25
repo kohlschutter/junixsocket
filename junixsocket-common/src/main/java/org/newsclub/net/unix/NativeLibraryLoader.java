@@ -424,6 +424,10 @@ final class NativeLibraryLoader implements Closeable {
       list.add(arch + "-" + "Windows10");
     }
 
+    if ("MacOSX".equals(osName) && "x86_64".equals(arch)) {
+      list.add("aarch64-MacOSX"); // Rosetta 2
+    }
+
     return list;
   }
 
