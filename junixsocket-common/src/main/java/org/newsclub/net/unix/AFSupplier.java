@@ -20,7 +20,7 @@ package org.newsclub.net.unix;
 /**
  * junixsocket-internal variant of {@code java.util.Supplier}, to allow compiling junixsocket-common
  * with retrolambda for Java 1.7.
- * 
+ *
  * @param <T> the type of results supplied by this supplier
  */
 @FunctionalInterface
