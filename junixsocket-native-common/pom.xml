@@ -103,8 +103,7 @@
             <id>release</id>
             <activation>
                 <property>
-                    <name>cross</name>
-                    <value>true</value>
+                    <name>release</name>
                 </property>
             </activation>
             <properties>

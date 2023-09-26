@@ -61,6 +61,12 @@
         </profile>
         <profile>
             <id>cross</id>
+            <activation>
+                <property>
+                    <name>cross</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -128,6 +134,11 @@
         </profile>
         <profile>
             <id>codeql-skip-c</id>
+            <activation>
+                <property>
+                    <name>codeql-skip-c</name>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
