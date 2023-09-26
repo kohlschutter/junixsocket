@@ -52,6 +52,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.KnownJavaBugIOException;
 import org.opentest4j.AssertionFailedError;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
@@ -62,10 +63,15 @@ import com.kohlschutter.testutil.TestResourceUtil;
 public class SNIHostnameCaptureTest extends SSLTestBase {
   private static SSLSocketFactory initClientSocketFactory(TestSSLConfiguration configuration)
       throws Exception {
-    return configuration.configure(SSLContextBuilder.forClient()) //
-        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    try {
+      return configuration.configure(SSLContextBuilder.forClient()) //
+          .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
   }
 
   @ParameterizedTest
@@ -136,16 +142,19 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
       boolean serverNullDefaultHostname, boolean clientEmptyDefaultHostname) throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
-
     try {
+      SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
+
       assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
         runServerAndClient(configuration, addr, serverSocketFactory, expectDefault,
             serverNullDefaultHostname, clientEmptyDefaultHostname);
       });
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
     } catch (Exception | Error e) {
       throw configuration.handleException(e);
     } finally {

@@ -67,11 +67,14 @@ import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketPair;
+import org.newsclub.net.unix.KnownJavaBugIOException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.AssertUtil;
 import com.kohlschutter.testutil.ExecutionEnvironmentRequirement;
 import com.kohlschutter.testutil.ExecutionEnvironmentRequirement.Rule;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 import com.kohlschutter.testutil.TestResourceUtil;
 
 // CPD-OFF
@@ -83,19 +86,26 @@ public class SSLContextBuilderTest extends SSLTestBase {
   public void testNoClientAuth(TestSSLConfiguration configuration) throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .withDefaultSSLParameters((p) -> {
-          SSLParametersUtil.disableCipherSuites(p, "SOME_REALLY_BAD_CIPHER"); // for code coverage
-          SSLParametersUtil.disableProtocols(p, "TLSv1.0", "TLSv1.1");
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .withDefaultSSLParameters((p) -> {
+            SSLParametersUtil.disableCipherSuites(p, "SOME_REALLY_BAD_CIPHER"); // for code coverage
+            SSLParametersUtil.disableProtocols(p, "TLSv1.0", "TLSv1.1");
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
@@ -116,22 +126,30 @@ public class SSLContextBuilderTest extends SSLTestBase {
   public void testClientAuthRequired(TestSSLConfiguration configuration) throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxserver.truststore"), () -> "servertrustpass".toCharArray()) //
-        .withDefaultSSLParameters((p) -> {
-          p.setNeedClientAuth(true);
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxclient.p12"), () -> "clientpass".toCharArray()) //
-        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxserver.truststore"), () -> "servertrustpass".toCharArray()) //
+          .withDefaultSSLParameters((p) -> {
+            p.setNeedClientAuth(true);
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
+
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxclient.p12"), () -> "clientpass".toCharArray()) //
+          .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
@@ -155,18 +173,26 @@ public class SSLContextBuilderTest extends SSLTestBase {
       throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .withDefaultSSLParameters((p) -> {
-          p.setNeedClientAuth(true);
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .withDefaultSSLParameters((p) -> {
+            p.setNeedClientAuth(true);
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
+
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
@@ -202,20 +228,28 @@ public class SSLContextBuilderTest extends SSLTestBase {
       throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .withDefaultSSLParameters((p) -> {
-          p.setNeedClientAuth(true);
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxclient.p12"), () -> "clientpass".toCharArray()) //
-        .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .withDefaultSSLParameters((p) -> {
+            p.setNeedClientAuth(true);
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
+
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxclient.p12"), () -> "clientpass".toCharArray()) //
+          .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
@@ -250,16 +284,24 @@ public class SSLContextBuilderTest extends SSLTestBase {
   public void testClientHasNoTrustStore(TestSSLConfiguration configuration) throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .withSecureRandom(null) // just for code coverage
-        .withDefaultSSLParameters((p) -> {
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .withSecureRandom(null) // just for code coverage
+          .withDefaultSSLParameters((p) -> {
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
+
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
@@ -295,29 +337,44 @@ public class SSLContextBuilderTest extends SSLTestBase {
       throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withTrustManagers((tmf) -> {
-          return new TrustManager[] {IgnorantX509TrustManager.getInstance()};
-        }).withDefaultSSLParameters(p -> {
-          p.setNeedClientAuth(true);
-        }) //
-        .withKeyManagers((kmf) -> {
-          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-              "juxserver.p12").openStream()) {
-            ks.load(in, "serverpass".toCharArray());
-          }
-          kmf.init(ks, "serverpass".toCharArray());
-          return kmf.getKeyManagers();
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxclient.p12"), () -> "clientpass".toCharArray()) //
-        .withTrustManagers((tmf) -> {
-          return new TrustManager[] {IgnorantX509TrustManager.getInstance()};
-        }).buildAndDestroyBuilder().getSocketFactory();
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withTrustManagers((tmf) -> {
+            return new TrustManager[] {IgnorantX509TrustManager.getInstance()};
+          }).withDefaultSSLParameters(p -> {
+            p.setNeedClientAuth(true);
+          }) //
+          .withKeyManagers((kmf) -> {
+            KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
+            try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+                "juxserver.p12").openStream()) {
+              try {
+                ks.load(in, "serverpass".toCharArray());
+              } catch (IOException e) {
+                throw SSLContextBuilder.wrapIOExceptionIfJDKBug(e);
+              }
+            } catch (KnownJavaBugIOException e) {
+              throw new TestAbortedWithImportantMessageException(
+                  MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, e.getMessage(), e);
+            }
+            kmf.init(ks, "serverpass".toCharArray());
+            return kmf.getKeyManagers();
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
+
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxclient.p12"), () -> "clientpass".toCharArray()) //
+          .withTrustManagers((tmf) -> {
+            return new TrustManager[] {IgnorantX509TrustManager.getInstance()};
+          }).buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
@@ -428,7 +485,12 @@ public class SSLContextBuilderTest extends SSLTestBase {
         .withDefaultSSLParameters((p) -> {
         }); //
 
-    builder.build();
+    try {
+      builder.build();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     assertFalse(dps.isDestroyed());
 
@@ -449,7 +511,12 @@ public class SSLContextBuilderTest extends SSLTestBase {
         .withDefaultSSLParameters((p) -> {
         }); //
 
-    builder.build();
+    try {
+      builder.build();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     assertFalse(dps.isDestroyed());
     dps.destroy(); // destroy manually
@@ -472,7 +539,12 @@ public class SSLContextBuilderTest extends SSLTestBase {
         .withDefaultSSLParameters((p) -> {
         }); //
 
-    builder.build();
+    try {
+      builder.build();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     assertFalse(dps.isDestroyed());
 
@@ -495,7 +567,12 @@ public class SSLContextBuilderTest extends SSLTestBase {
         .withDefaultSSLParameters((p) -> {
         }); //
 
-    builder.build();
+    try {
+      builder.build();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     assertFalse(dps.isDestroyed());
 
@@ -525,7 +602,7 @@ public class SSLContextBuilderTest extends SSLTestBase {
     boolean fail = true;
     try {
       builder.build();
-    } catch (UnrecoverableKeyException | NullPointerException e) {
+    } catch (UnrecoverableKeyException | NullPointerException | KnownJavaBugIOException e) {
       fail = false;
     }
     if (fail) {
@@ -547,7 +624,7 @@ public class SSLContextBuilderTest extends SSLTestBase {
     boolean fail = true;
     try {
       builder.build();
-    } catch (UnrecoverableKeyException | NullPointerException e) {
+    } catch (UnrecoverableKeyException | NullPointerException | KnownJavaBugIOException e) {
       fail = false;
     }
     if (fail) {
@@ -574,7 +651,14 @@ public class SSLContextBuilderTest extends SSLTestBase {
 
     builder.withKeyStore(f.toURI().toURL(), () -> "serverpass".toCharArray());
 
-    assertThrows(FileNotFoundException.class, builder::build);
+    assertThrows(FileNotFoundException.class, () -> {
+      try {
+        builder.build();
+      } catch (KnownJavaBugIOException e) {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, e.getMessage(), e);
+      }
+    });
   }
 
   @ParameterizedTest
@@ -587,7 +671,14 @@ public class SSLContextBuilderTest extends SSLTestBase {
 
     builder.withKeyStore(f, () -> "serverpass".toCharArray());
 
-    assertThrows(FileNotFoundException.class, builder::build);
+    assertThrows(FileNotFoundException.class, () -> {
+      try {
+        builder.build();
+      } catch (KnownJavaBugIOException e) {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, e.getMessage(), e);
+      }
+    });
   }
 
   @ParameterizedTest
@@ -600,7 +691,14 @@ public class SSLContextBuilderTest extends SSLTestBase {
         .withDefaultSSLParameters((p) -> {
         }); //
 
-    assertNoExceptionOrNullPointerException(() -> builder.build());
+    assertNoExceptionOrNullPointerException(() -> {
+      try {
+        return builder.build();
+      } catch (KnownJavaBugIOException e) {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, e.getMessage(), e);
+      }
+    });
   }
 
   @SuppressFBWarnings("DCN_NULLPOINTER_EXCEPTION")
@@ -622,7 +720,14 @@ public class SSLContextBuilderTest extends SSLTestBase {
         .withDefaultSSLParameters((p) -> {
         }); //
 
-    assertNoExceptionOrNullPointerException(() -> builder.build());
+    assertNoExceptionOrNullPointerException(() -> {
+      try {
+        return builder.build();
+      } catch (KnownJavaBugIOException e) {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, e.getMessage(), e);
+      }
+    });
   }
 
   @ParameterizedTest
@@ -644,7 +749,14 @@ public class SSLContextBuilderTest extends SSLTestBase {
 
     builder.withTrustStore(f.toURI().toURL(), () -> "servertrustpass".toCharArray());
 
-    assertThrows(FileNotFoundException.class, builder::build);
+    assertThrows(FileNotFoundException.class, () -> {
+      try {
+        builder.build();
+      } catch (KnownJavaBugIOException e) {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, e.getMessage(), e);
+      }
+    });
   }
 
   @ParameterizedTest
@@ -657,7 +769,14 @@ public class SSLContextBuilderTest extends SSLTestBase {
 
     builder.withTrustStore(f, () -> "servertrustpass".toCharArray());
 
-    assertThrows(FileNotFoundException.class, builder::build);
+    assertThrows(FileNotFoundException.class, () -> {
+      try {
+        builder.build();
+      } catch (KnownJavaBugIOException e) {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, e.getMessage(), e);
+      }
+    });
   }
 
   @ParameterizedTest
@@ -666,7 +785,14 @@ public class SSLContextBuilderTest extends SSLTestBase {
     SSLContextBuilder builder = configuration.configure(SSLContextBuilder.forClient()) //
         .withProtocol("UnknownProtocol/UnitTesting");
 
-    assertThrows(NoSuchAlgorithmException.class, builder::build);
+    assertThrows(NoSuchAlgorithmException.class, () -> {
+      try {
+        builder.build();
+      } catch (KnownJavaBugIOException e) {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, e.getMessage(), e);
+      }
+    });
   }
 
   @ParameterizedTest
@@ -799,10 +925,16 @@ public class SSLContextBuilderTest extends SSLTestBase {
   @ParameterizedTest
   @EnumSource(TestSSLConfiguration.class)
   public void testSocketFactoryMethods(TestSSLConfiguration configuration) throws Exception {
-    SSLSocketFactory factory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    SSLSocketFactory factory;
+    try {
+      factory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     assertThrows(SocketException.class, () -> factory.createSocket(),
         "Creating unconnected sockets is not supported, as they're very difficult to wrap");
@@ -832,10 +964,16 @@ public class SSLContextBuilderTest extends SSLTestBase {
   @EnumSource(TestSSLConfiguration.class)
   public void testSocketFactoryMethodsForCodeCoverageOnly(TestSSLConfiguration configuration)
       throws Exception {
-    SSLSocketFactory factory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    SSLSocketFactory factory;
+    try {
+      factory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     InetAddress loopback = InetAddress.getLoopbackAddress();
     try (ServerSocket ss = new ServerSocket(0, 50, loopback)) {
@@ -849,10 +987,16 @@ public class SSLContextBuilderTest extends SSLTestBase {
   @ParameterizedTest
   @EnumSource(TestSSLConfiguration.class)
   public void testServerSocketFactoryMethods(TestSSLConfiguration configuration) throws Exception {
-    SSLServerSocketFactory factory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .buildAndDestroyBuilder().getServerSocketFactory();
+    SSLServerSocketFactory factory;
+    try {
+      factory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .buildAndDestroyBuilder().getServerSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     assertNotEquals(0, factory.getDefaultCipherSuites().length);
     assertNotEquals(0, factory.getSupportedCipherSuites().length);
@@ -873,10 +1017,16 @@ public class SSLContextBuilderTest extends SSLTestBase {
   @EnumSource(TestSSLConfiguration.class)
   public void testServerSocketFactoryMethodsForCodeCoverageOnly(TestSSLConfiguration configuration)
       throws Exception {
-    SSLServerSocketFactory factory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .buildAndDestroyBuilder().getServerSocketFactory();
+    SSLServerSocketFactory factory;
+    try {
+      factory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .buildAndDestroyBuilder().getServerSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     assertNotNull(factory.createServerSocket(0));
     assertNotNull(factory.createServerSocket(0, 0));
@@ -886,10 +1036,16 @@ public class SSLContextBuilderTest extends SSLTestBase {
   @ParameterizedTest
   @EnumSource(TestSSLConfiguration.class)
   public void testSSLEngineMethods(TestSSLConfiguration configuration) throws Exception {
-    SSLContext context = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .buildAndDestroyBuilder();
+    SSLContext context;
+    try {
+      context = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .buildAndDestroyBuilder();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     SSLEngine engine;
 

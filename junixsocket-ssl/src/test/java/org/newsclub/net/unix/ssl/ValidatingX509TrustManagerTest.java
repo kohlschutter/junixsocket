@@ -52,8 +52,11 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.KnownJavaBugIOException;
 
 import com.kohlschutter.testutil.AssertUtil;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 import com.kohlschutter.testutil.TestResourceUtil;
 
 // CPD-OFF
@@ -65,30 +68,38 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
       throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withTrustManagers((tmf) -> {
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
 
-          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-              "juxclient.truststore").openStream()) {
-            ks.load(in, "clienttrustpass".toCharArray());
-          }
-          tmf.init(ks);
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .withTrustManagers((tmf) -> {
 
-          X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
-          ValidatingX509TrustManager tm = new ValidatingX509TrustManager(underlyingTrustManager);
+            KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
+            try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+                "juxclient.truststore").openStream()) {
+              ks.load(in, "clienttrustpass".toCharArray());
+            }
+            tmf.init(ks);
 
-          // we didn't change them here
-          assertArrayEquals(underlyingTrustManager.getAcceptedIssuers(), tm.getAcceptedIssuers());
+            X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
+            ValidatingX509TrustManager tm = new ValidatingX509TrustManager(underlyingTrustManager);
 
-          return new TrustManager[] {tm};
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+            // we didn't change them here
+            assertArrayEquals(underlyingTrustManager.getAcceptedIssuers(), tm.getAcceptedIssuers());
+
+            return new TrustManager[] {tm};
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
@@ -122,30 +133,38 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     // NOTE: we simply swap client and server certificates here, since only the server certificate
     // is expired
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxclient.p12"), () -> "clientpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withTrustManagers((tmf) -> {
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxclient.p12"), () -> "clientpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
 
-          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-              "juxserver.truststore").openStream()) {
-            ks.load(in, "servertrustpass".toCharArray());
-          }
-          tmf.init(ks);
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .withTrustManagers((tmf) -> {
 
-          X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
-          ValidatingX509TrustManager tm = new ValidatingX509TrustManager(underlyingTrustManager);
+            KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
+            try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+                "juxserver.truststore").openStream()) {
+              ks.load(in, "servertrustpass".toCharArray());
+            }
+            tmf.init(ks);
 
-          // we didn't change them here
-          assertArrayEquals(underlyingTrustManager.getAcceptedIssuers(), tm.getAcceptedIssuers());
+            X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
+            ValidatingX509TrustManager tm = new ValidatingX509TrustManager(underlyingTrustManager);
 
-          return new TrustManager[] {tm};
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+            // we didn't change them here
+            assertArrayEquals(underlyingTrustManager.getAcceptedIssuers(), tm.getAcceptedIssuers());
+
+            return new TrustManager[] {tm};
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
@@ -168,33 +187,41 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
       throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withTrustManagers((tmf) -> {
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
 
-          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-              "juxclient.truststore").openStream()) {
-            ks.load(in, "clienttrustpass".toCharArray());
-          }
-          tmf.init(ks);
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .withTrustManagers((tmf) -> {
 
-          X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
+            KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
+            try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+                "juxclient.truststore").openStream()) {
+              ks.load(in, "clienttrustpass".toCharArray());
+            }
+            tmf.init(ks);
 
-          // nesting two ValidatingX509TrustManager, just to cover onCertificateException
-          ValidatingX509TrustManager tm = new ValidatingX509TrustManager(
-              new ValidatingX509TrustManager(underlyingTrustManager));
+            X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
 
-          // we didn't change them here
-          assertArrayEquals(underlyingTrustManager.getAcceptedIssuers(), tm.getAcceptedIssuers());
+            // nesting two ValidatingX509TrustManager, just to cover onCertificateException
+            ValidatingX509TrustManager tm = new ValidatingX509TrustManager(
+                new ValidatingX509TrustManager(underlyingTrustManager));
 
-          return new TrustManager[] {tm};
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+            // we didn't change them here
+            assertArrayEquals(underlyingTrustManager.getAcceptedIssuers(), tm.getAcceptedIssuers());
+
+            return new TrustManager[] {tm};
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
@@ -225,47 +252,55 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
       throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withTrustManagers((tmf) -> {
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
 
-          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-              "juxclient.truststore").openStream()) {
-            ks.load(in, "clienttrustpass".toCharArray());
-          }
-          tmf.init(ks);
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .withTrustManagers((tmf) -> {
 
-          X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
-
-          // nesting two FilterX509TrustManager, just to cover onCertificateException
-          X509TrustManager tm = new FilterX509TrustManager(new ValidatingX509TrustManager(
-              underlyingTrustManager)) {
-
-            @Override
-            protected void onCertificateException(boolean checkClient, CertificateException e,
-                X509Certificate[] chain, String authType) throws CertificateException {
-              // swallow exception
-              assertFalse(checkClient); // we're checking the server certificate
+            KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
+            try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+                "juxclient.truststore").openStream()) {
+              ks.load(in, "clienttrustpass".toCharArray());
             }
+            tmf.init(ks);
 
-            @Override
-            protected void onCertificateTrusted(boolean checkClient, X509Certificate[] chain,
-                String authType) throws CertificateException {
-              fail("unexpected");
-            }
-          };
+            X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
 
-          // we didn't change them here
-          assertArrayEquals(underlyingTrustManager.getAcceptedIssuers(), tm.getAcceptedIssuers());
+            // nesting two FilterX509TrustManager, just to cover onCertificateException
+            X509TrustManager tm = new FilterX509TrustManager(new ValidatingX509TrustManager(
+                underlyingTrustManager)) {
 
-          return new TrustManager[] {tm};
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+              @Override
+              protected void onCertificateException(boolean checkClient, CertificateException e,
+                  X509Certificate[] chain, String authType) throws CertificateException {
+                // swallow exception
+                assertFalse(checkClient); // we're checking the server certificate
+              }
+
+              @Override
+              protected void onCertificateTrusted(boolean checkClient, X509Certificate[] chain,
+                  String authType) throws CertificateException {
+                fail("unexpected");
+              }
+            };
+
+            // we didn't change them here
+            assertArrayEquals(underlyingTrustManager.getAcceptedIssuers(), tm.getAcceptedIssuers());
+
+            return new TrustManager[] {tm};
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
@@ -285,35 +320,43 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
       throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .withDefaultSSLParameters((p) -> {
-          p.setNeedClientAuth(true);
-        }) //
-        .withTrustManagers((tmf) -> {
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
 
-          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-              "juxserver.truststore").openStream()) {
-            ks.load(in, "servertrustpass".toCharArray());
-          }
-          tmf.init(ks);
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .withDefaultSSLParameters((p) -> {
+            p.setNeedClientAuth(true);
+          }) //
+          .withTrustManagers((tmf) -> {
 
-          X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
+            KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
+            try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+                "juxserver.truststore").openStream()) {
+              ks.load(in, "servertrustpass".toCharArray());
+            }
+            tmf.init(ks);
 
-          X509TrustManager tm = new ValidatingX509TrustManager(underlyingTrustManager);
+            X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
 
-          return new TrustManager[] {tm};
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+            X509TrustManager tm = new ValidatingX509TrustManager(underlyingTrustManager);
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxclient.p12"), () -> "clientpass".toCharArray()) //
-        .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+            return new TrustManager[] {tm};
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
+
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxclient.p12"), () -> "clientpass".toCharArray()) //
+          .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
@@ -339,35 +382,43 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     // NOTE: we simply swap client and server certificates here, since only the server certificate
     // is expired
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxclient.p12"), () -> "clientpass".toCharArray()) //
-        .withDefaultSSLParameters((p) -> {
-          p.setNeedClientAuth(true);
-        }) //
-        .withTrustManagers((tmf) -> {
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
 
-          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-              "juxclient.truststore").openStream()) {
-            ks.load(in, "clienttrustpass".toCharArray());
-          }
-          tmf.init(ks);
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxclient.p12"), () -> "clientpass".toCharArray()) //
+          .withDefaultSSLParameters((p) -> {
+            p.setNeedClientAuth(true);
+          }) //
+          .withTrustManagers((tmf) -> {
 
-          X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
+            KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
+            try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+                "juxclient.truststore").openStream()) {
+              ks.load(in, "clienttrustpass".toCharArray());
+            }
+            tmf.init(ks);
 
-          X509TrustManager tm = new ValidatingX509TrustManager(underlyingTrustManager);
+            X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
 
-          return new TrustManager[] {tm};
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+            X509TrustManager tm = new ValidatingX509TrustManager(underlyingTrustManager);
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxserver.truststore"), () -> "servertrustpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+            return new TrustManager[] {tm};
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
+
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxserver.truststore"), () -> "servertrustpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();
@@ -401,50 +452,58 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     // NOTE: we simply swap client and server certificates here, since only the server certificate
     // is expired
 
-    SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxclient.p12"), () -> "clientpass".toCharArray()) //
-        .withDefaultSSLParameters((p) -> {
-          p.setNeedClientAuth(true);
-        }) //
-        .withTrustManagers((tmf) -> {
+    SSLSocketFactory serverSocketFactory;
+    SSLSocketFactory clientSocketFactory;
 
-          KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
-          try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-              "juxclient.truststore").openStream()) {
-            ks.load(in, "clienttrustpass".toCharArray());
-          }
-          tmf.init(ks);
+    try {
+      serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxclient.p12"), () -> "clientpass".toCharArray()) //
+          .withDefaultSSLParameters((p) -> {
+            p.setNeedClientAuth(true);
+          }) //
+          .withTrustManagers((tmf) -> {
 
-          X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
-
-          X509TrustManager tm = new FilterX509TrustManager(new ValidatingX509TrustManager(
-              underlyingTrustManager)) {
-
-            @Override
-            protected void onCertificateTrusted(boolean checkClient, X509Certificate[] chain,
-                String authType) throws CertificateException {
-              // that's good (but unexpected)
-              fail("unexpected");
+            KeyStore ks = SSLContextBuilder.newKeyStorePKCS12();
+            try (InputStream in = TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+                "juxclient.truststore").openStream()) {
+              ks.load(in, "clienttrustpass".toCharArray());
             }
+            tmf.init(ks);
 
-            @Override
-            protected void onCertificateException(boolean checkClient, CertificateException e,
-                X509Certificate[] chain, String authType) throws CertificateException {
-              // still accept certificate
-            }
-          };
+            X509TrustManager underlyingTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
 
-          return new TrustManager[] {tm};
-        }) //
-        .buildAndDestroyBuilder().getSocketFactory();
+            X509TrustManager tm = new FilterX509TrustManager(new ValidatingX509TrustManager(
+                underlyingTrustManager)) {
 
-    SSLSocketFactory clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
-        .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxserver.p12"), () -> "serverpass".toCharArray()) //
-        .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-            "juxserver.truststore"), () -> "servertrustpass".toCharArray()) //
-        .buildAndDestroyBuilder().getSocketFactory();
+              @Override
+              protected void onCertificateTrusted(boolean checkClient, X509Certificate[] chain,
+                  String authType) throws CertificateException {
+                // that's good (but unexpected)
+                fail("unexpected");
+              }
+
+              @Override
+              protected void onCertificateException(boolean checkClient, CertificateException e,
+                  X509Certificate[] chain, String authType) throws CertificateException {
+                // still accept certificate
+              }
+            };
+
+            return new TrustManager[] {tm};
+          }) //
+          .buildAndDestroyBuilder().getSocketFactory();
+
+      clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
+          .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
+              "juxserver.truststore"), () -> "servertrustpass".toCharArray()) //
+          .buildAndDestroyBuilder().getSocketFactory();
+    } catch (KnownJavaBugIOException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          e.getMessage(), e);
+    }
 
     CompletableFuture<Exception> serverException = new CompletableFuture<>();
     CompletableFuture<Exception> clientException = new CompletableFuture<>();

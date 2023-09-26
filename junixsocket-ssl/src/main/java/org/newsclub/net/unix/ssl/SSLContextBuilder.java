@@ -51,6 +51,7 @@ import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
 import org.newsclub.net.unix.AFSocket;
+import org.newsclub.net.unix.KnownJavaBugIOException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
@@ -372,11 +373,39 @@ public final class SSLContextBuilder {
     try (InputStream in = keyStoreUrl.openStream()) {
       ks.load(in, password);
       kmf.init(ks, password);
+    } catch (IOException e) {
+      throw wrapIOExceptionIfJDKBug(e);
     } finally {
       clear(password);
     }
 
     return kmf.getKeyManagers();
+  }
+
+  /**
+   * For a given {@link IOException} thrown from within {@link SSLContextBuilder}, check if it is
+   * due to a known JDK bug, and if so, wrap that exception in a {@link KnownJavaBugIOException}
+   * with a proper explanation.
+   *
+   * @param e The exception to check/wrap.
+   * @return The exception, or a {@link KnownJavaBugIOException}.
+   */
+  public static IOException wrapIOExceptionIfJDKBug(IOException e) {
+    String msg = e.getMessage();
+    if (msg != null && msg.contains("data isn't an object ID (tag = 48)")) {
+      String specVersion = System.getProperty("java.specification.version", "");
+      if (specVersion.startsWith("1.")) {
+        return new KnownJavaBugIOException(
+            "Bug JDK-8202837 detected -- please upgrade to Java 8u312 or newer", e);
+      } else if ("9".equals(specVersion) || "10".equals(specVersion) || "11".equals(specVersion)) {
+        return new KnownJavaBugIOException(
+            "Bug JDK-8202837 detected -- please upgrade to Java 11.0.3 or newer", e);
+      } else {
+        return new KnownJavaBugIOException(
+            "Bug JDK-8202837 detected -- please upgrade your Java release", e);
+      }
+    }
+    return e;
   }
 
   private TrustManager[] buildTrustManagers(TrustManagerFactory tmf) throws IOException,
@@ -392,6 +421,8 @@ public final class SSLContextBuilder {
     char[] password = trustManagerPassword == null ? null : trustManagerPassword.get();
     try (InputStream in = trustManagerUrl.openStream()) {
       ks.load(in, password);
+    } catch (IOException e) {
+      throw wrapIOExceptionIfJDKBug(e);
     } finally {
       clear(password);
     }
