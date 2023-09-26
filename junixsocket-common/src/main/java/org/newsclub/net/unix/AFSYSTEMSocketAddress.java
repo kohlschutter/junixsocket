@@ -358,7 +358,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
     for (String p : host.split("\\.")) {
       int v;
       try {
-        v = Integer.parseUnsignedInt(p);
+        v = parseUnsignedInt(p, 10);
       } catch (NumberFormatException e) {
         throw (SocketException) new SocketException("Unsupported URI: " + uri).initCause(e);
       }
@@ -396,7 +396,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
     ByteBuffer bb = ByteBuffer.wrap(getBytes());
     StringBuilder sb = new StringBuilder();
     while (bb.remaining() > 0) {
-      sb.append(Integer.toUnsignedString(bb.getInt()));
+      sb.append(toUnsignedString(bb.getInt()));
       if (bb.remaining() > 0) {
         sb.append('.');
       }

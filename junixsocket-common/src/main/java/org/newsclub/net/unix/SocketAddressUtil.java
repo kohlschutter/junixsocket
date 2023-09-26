@@ -21,11 +21,14 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnixDomainSocketAddress;
 
+import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+
 /**
  * {@link SocketAddress}-related helper methods.
  *
  * @author Christian Kohlschütter
  */
+@IgnoreJRERequirement // see src/main/java15
 final class SocketAddressUtil {
   private SocketAddressUtil() {
     throw new IllegalStateException("No instances");

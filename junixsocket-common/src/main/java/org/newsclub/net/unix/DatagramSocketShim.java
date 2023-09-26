@@ -22,6 +22,9 @@ import java.net.DatagramSocket;
 import java.net.DatagramSocketImpl;
 import java.net.SocketOption;
 
+import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+
+@IgnoreJRERequirement // see src/main/java8
 abstract class DatagramSocketShim extends DatagramSocket {
 
   protected DatagramSocketShim(DatagramSocketImpl impl) {

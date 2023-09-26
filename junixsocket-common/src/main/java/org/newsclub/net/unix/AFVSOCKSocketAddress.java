@@ -518,7 +518,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
         portStr = "any";
         break;
       default:
-        portStr = Integer.toUnsignedString(port);
+        portStr = toUnsignedString(port);
         break;
     }
 
@@ -540,7 +540,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
         cidStr = "host";
         break;
       default:
-        cidStr = Integer.toUnsignedString(cid);
+        cidStr = toUnsignedString(cid);
         break;
     }
 
@@ -551,11 +551,11 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
 
   private static int parseInt(String v) {
     if (v.startsWith("0x")) {
-      return Integer.parseUnsignedInt(v.substring(2), 16);
+      return parseUnsignedInt(v.substring(2), 16);
     } else if (v.startsWith("-")) {
       return Integer.parseInt(v);
     } else {
-      return Integer.parseUnsignedInt(v);
+      return parseUnsignedInt(v, 10);
     }
   }
 

@@ -906,4 +906,64 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     out.defaultWriteObject();
     out.writeUTF(addressFamily == null ? "undefined" : addressFamily.getJuxString());
   }
+
+  /**
+   * Returns a string representation of the argument as an unsigned decimal value.
+   * <p>
+   * Works like {@link Integer#toUnsignedString(int)}; added to allow execution on Java 1.7.
+   *
+   * @param i The value.
+   * @return The string.
+   */
+  protected static String toUnsignedString(int i) {
+    return Long.toString(toUnsignedLong(i));
+  }
+
+  /**
+   * Returns a string representation of the first argument as an unsigned integer value in the radix
+   * specified by the second argument; added to allow execution on Java 1.7.
+   *
+   * @param i The value.
+   * @param radix The radix.
+   * @return The string.
+   */
+  protected static String toUnsignedString(int i, int radix) {
+    return Long.toUnsignedString(toUnsignedLong(i), radix);
+  }
+
+  private static long toUnsignedLong(long x) {
+    return x & 0xffffffffL;
+  }
+
+  /**
+   * Parses the string argument as an unsigned integer in the radix specified by the second
+   * argument. Works like {@link Integer#parseUnsignedInt(String, int)}; added to allow execution on
+   * Java 1.7.
+   *
+   * @param s The string.
+   * @param radix The radix.
+   * @return The integer.
+   * @throws NumberFormatException on parse error.
+   */
+  protected static int parseUnsignedInt(String s, int radix) throws NumberFormatException {
+    if (s == null || s.isEmpty()) {
+      throw new NumberFormatException("Cannot parse null or empty string");
+    }
+
+    int len = s.length();
+    if (s.startsWith("-")) {
+      throw new NumberFormatException("Illegal leading minus sign on unsigned string " + s);
+    }
+
+    if (len <= 5 || (radix == 10 && len <= 9)) {
+      return Integer.parseInt(s, radix);
+    } else {
+      long ell = Long.parseLong(s, radix);
+      if ((ell & 0xffff_ffff_0000_0000L) == 0) {
+        return (int) ell;
+      } else {
+        throw new NumberFormatException("String value exceeds " + "range of unsigned int: " + s);
+      }
+    }
+  }
 }

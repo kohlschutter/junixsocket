@@ -21,6 +21,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.lang.ref.Cleaner;
 
+import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+
 /**
  * This wrapper (along with the Java 8-specific counterpart in src/main/java8) allows us to
  * implement cleanup logic for objects that are garbage-collectable/no longer reachable.
@@ -49,6 +51,7 @@ import java.lang.ref.Cleaner;
  *
  * @author Christian Kohlschütter
  */
+@IgnoreJRERequirement // see src/main/java8
 abstract class CleanableState implements Closeable {
   private static final Cleaner CLEANER = Cleaner.create();
   private final Cleaner.Cleanable cleanable;

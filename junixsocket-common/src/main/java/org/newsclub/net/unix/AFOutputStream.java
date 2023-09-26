@@ -21,11 +21,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+
 /**
  * An {@link OutputStream} for {@link AFSocket}, etc.
  *
  * @author Christian Kohlschütter
  */
+@IgnoreJRERequirement // see src/main/java8
 public abstract class AFOutputStream extends OutputStream implements FileDescriptorAccess {
   AFOutputStream() {
     super();

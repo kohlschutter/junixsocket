@@ -171,8 +171,8 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
     private AddressType(int id) {
       super(id);
-      this.ds = (a, b, c) -> ":" + Integer.toUnsignedString(a) + ":" + Integer.toUnsignedString(b)
-          + ":" + Integer.toUnsignedString(c);
+      this.ds = (a, b, c) -> ":" + toUnsignedString(a) + ":" + toUnsignedString(b) + ":"
+          + toUnsignedString(c);
     }
 
     private AddressType(String name, int id, DebugStringProvider ds) {
@@ -431,9 +431,9 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   private static int parseUnsignedInt(String v) {
     if (v.startsWith("0x")) {
-      return Integer.parseUnsignedInt(v.substring(2), 16);
+      return parseUnsignedInt(v.substring(2), 16);
     } else {
-      return Integer.parseUnsignedInt(v);
+      return parseUnsignedInt(v, 10);
     }
   }
 
@@ -686,9 +686,9 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   private String toTipcInt(int v) {
     if (v < 0) {
-      return "0x" + Integer.toUnsignedString(v, 16);
+      return "0x" + toUnsignedString(v, 16);
     } else {
-      return Integer.toUnsignedString(v);
+      return toUnsignedString(v);
     }
   }
 

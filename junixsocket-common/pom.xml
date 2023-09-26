@@ -85,5 +85,11 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>animal-sniffer-annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

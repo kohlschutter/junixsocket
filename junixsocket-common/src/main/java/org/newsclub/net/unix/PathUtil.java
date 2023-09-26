@@ -21,11 +21,14 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
+import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+
 /**
  * Some {@link Path}-related helper methods.
  *
  * @author Christian Kohlschütter
  */
+@IgnoreJRERequirement // see src/main/java8
 final class PathUtil {
   private PathUtil() {
     throw new IllegalStateException("No instances");
