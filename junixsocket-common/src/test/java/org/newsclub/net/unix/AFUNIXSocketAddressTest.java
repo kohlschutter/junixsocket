@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,6 +29,7 @@ import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -154,5 +156,18 @@ public class AFUNIXSocketAddressTest {
         assertEquals(addr.getAddressFamily(), addr2.getAddressFamily());
       }
     }
+  }
+
+  @Test
+  public void testCraftDeserialization() throws Exception {
+    AFUNIXSocketAddress sa1 = AFUNIXSocketAddress.ofNewTempFile();
+    byte[] socketAddress = sa1.getBytes();
+    ByteBuffer nativeAddress = sa1.getNativeAddressDirectBuffer();
+    int port = sa1.getPort();
+
+    AFUNIXSocketAddress sa2 = AFUNIXSocketAddress.newAFSocketAddress(port, socketAddress,
+        nativeAddress);
+    assertEquals(sa1, sa2);
+    assertNotEquals(AFUNIXSocketAddress.ofNewTempFile(), sa2);
   }
 }

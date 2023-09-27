@@ -117,7 +117,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
         .getNativeAddressDirectBuffer());
   }
 
-  private static AFUNIXSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
+  static AFUNIXSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
       ByteBuffer nativeAddress) throws SocketException {
     return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, AF_UNIX,
         AFUNIXSocketAddress::new);
