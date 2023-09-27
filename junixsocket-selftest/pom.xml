@@ -151,6 +151,24 @@
                                             </excludes>
                                         </resource>
                                         <resource>
+                                            <directory>${project.parent.basedir}/junixsocket-common/src/test/java22</directory>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
+                                        </resource>
+                                        <resource>
+                                            <directory>${project.parent.basedir}/junixsocket-common/src/test/java21</directory>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
+                                        </resource>
+                                        <resource>
                                             <directory>${project.parent.basedir}/junixsocket-common/src/test/java20</directory>
                                             <includes>
                                                 <include>**</include>
