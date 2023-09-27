@@ -17,10 +17,16 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.channels.SocketChannel;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -169,7 +175,8 @@ public final class AFUNIXSocket extends AFSocket<AFUNIXSocketAddress> implements
    * @param args ignored.
    */
   public static void main(String[] args) {
-    // If you want to run this directly from within Eclipse, see AFUNIXSocketTest#testMain.
+    // If you want to run this directly from within Eclipse, see
+    // org.newsclub.net.unix.domain.SocketTest#testMain.
     System.out.print(AFUNIXSocket.class.getName() + ".isSupported(): ");
     System.out.flush();
     System.out.println(AFUNIXSocket.isSupported());
@@ -178,6 +185,76 @@ public final class AFUNIXSocket extends AFSocket<AFUNIXSocketAddress> implements
       System.out.print(cap + ": ");
       System.out.flush();
       System.out.println(AFSocket.supports(cap));
+    }
+    System.out.println();
+    if (AFSocket.supports(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)) {
+      System.out.println("Starting mini selftest...");
+      miniSelftest();
+    } else {
+      System.out.println(
+          "Skipping mini selftest; AFSocketCapability.CAPABILITY_UNIX_DOMAIN is missing");
+    }
+  }
+
+  private static void miniSelftest() {
+    AtomicBoolean success = new AtomicBoolean(true);
+    try {
+      AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
+      System.out.println("Using temporary address: " + addr);
+      try (AFUNIXServerSocket server = addr.newBoundServerSocket()) {
+        Thread t = new Thread(() -> {
+          try {
+            try (AFUNIXSocket client = server.accept()) {
+              System.out.println("Server accepted client connection");
+              try (SocketChannel chann = client.getChannel()) {
+                ByteBuffer bb = ByteBuffer.allocate(64).order(ByteOrder.BIG_ENDIAN);
+
+                int numRead = 0;
+                while (bb.position() != 4 && numRead != -1) {
+                  numRead = chann.read(bb);
+                }
+                if (bb.position() != 4) {
+                  throw new IOException("Unexpected number of bytes read: " + bb.position());
+                }
+                bb.flip();
+                int v;
+                if ((v = bb.getInt()) != 0xABCDEF12) {
+                  throw new IOException("Received unexpected data from client: 0x" + Integer
+                      .toHexString(v));
+                }
+                bb.clear();
+                bb.putLong(0x00112233456789L);
+                bb.flip();
+                chann.write(bb);
+              }
+            } finally {
+              server.close(); // NOPMD
+            }
+          } catch (Exception e) { // NOPMD
+            success.set(false);
+            e.printStackTrace();
+          }
+        });
+        t.start();
+
+        try (AFUNIXSocket socket = addr.newConnectedSocket();
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());) {
+          out.writeInt(0xABCDEF12);
+          out.flush();
+          long v = in.readLong();
+          if (v != 0x00112233456789L) {
+            throw new IOException("Received unexpected data from server: 0x" + Long.toHexString(v));
+          }
+        }
+        System.out.println("Data exchange succeeded");
+      }
+    } catch (Exception e) { // NOPMD
+      success.set(false);
+      e.printStackTrace();
+      return;
+    } finally {
+      System.out.println("mini selftest " + (success.get() ? "passed" : "failed"));
     }
   }
 }
