@@ -174,19 +174,19 @@ public class Selftest {
     if (isSubstrateVM) {
       important.add("Substrate VM detected: Support for native-images is work in progress");
 
-      if (!getSkipModeForModule("junixsocket-rmi").isDeclared()) {
-        String vendorVersion = System.getProperty("java.vendor.version", "");
-        if (vendorVersion.contains("GraalVM 20") || vendorVersion.contains("GraalVM 19")) {
+      String vendorVersion = System.getProperty("java.vendor.version", "");
+      if (vendorVersion.contains("GraalVM 20") || vendorVersion.contains("GraalVM 19")) {
+        if (!getSkipModeForModule("junixsocket-rmi").isDeclared()) {
           important.add("Auto-skipping junixsocket-rmi tests due to old Substrate VM");
           System.setProperty("selftest.skip.junixsocket-rmi", "force_auto");
           withIssues = true;
         }
-      }
 
-      if (!getSkipModeForClass("org.newsclub.net.unix.FileDescriptorCastTest").isDeclared()) {
-        important.add("Auto-skipping FileDescriptorCastTest tests due to Substrate VM");
-        System.setProperty("selftest.skip.FileDescriptorCastTest", "force_auto");
-        withIssues = true;
+        if (!getSkipModeForClass("org.newsclub.net.unix.FileDescriptorCastTest").isDeclared()) {
+          important.add("Auto-skipping FileDescriptorCastTest tests due to Substrate VM");
+          System.setProperty("selftest.skip.FileDescriptorCastTest", "force_auto");
+          withIssues = true;
+        }
       }
     } else {
       if (!getSkipModeForModule("junixsocket-rmi").isDeclared()) {
