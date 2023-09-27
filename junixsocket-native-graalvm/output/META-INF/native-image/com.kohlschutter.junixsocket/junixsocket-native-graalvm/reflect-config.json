@@ -97,6 +97,18 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.wolfssl.provider.jce.WolfCryptProvider"
+},
+{
+  "name":"com.wolfssl.provider.jsse.WolfSSLProvider"
+},
+{
+  "name":"iaik.security.jsse.provider.IAIKJSSEProvider"
+},
+{
+  "name":"iaik.security.provider.IAIK"
+},
+{
   "name":"java.lang.ProcessBuilder$RedirectPipeImpl"
 },
 {
@@ -153,6 +165,10 @@
   "fields":[{"name":"base"}, {"name":"cellsBusy"}]
 },
 {
+  "name":"java.util.function.Consumer",
+  "queryAllPublicMethods":true
+},
+{
   "name":"javax.security.auth.x500.X500Principal",
   "fields":[{"name":"thisX500Name"}],
   "methods":[{"name":"<init>","parameterTypes":["sun.security.x509.X500Name"] }]
@@ -163,6 +179,18 @@
 {
   "name":"org.apiguardian.api.API",
   "queryAllPublicMethods":true
+},
+{
+  "name":"org.bouncycastle.jce.provider.BouncyCastleProvider"
+},
+{
+  "name":"org.bouncycastle.jsse.provider.BouncyCastleJsseProvider"
+},
+{
+  "name":"org.bouncycastle.tls.TlsException"
+},
+{
+  "name":"org.conscrypt.Conscrypt"
 },
 {
   "name":"org.junit.internal.AssumptionViolatedException"
@@ -180,6 +208,10 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.junit.jupiter.api.TestTemplate",
+  "queryAllPublicMethods":true
+},
+{
   "name":"org.junit.jupiter.api.Timeout",
   "queryAllPublicMethods":true
 },
@@ -190,6 +222,41 @@
 {
   "name":"org.junit.jupiter.engine.extension.TimeoutInvocationFactory$SingleThreadExecutorResource",
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.junit.jupiter.params.ParameterizedTest",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.junit.jupiter.params.ParameterizedTestExtension",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.junit.jupiter.params.provider.AnnotationBasedArgumentsProvider",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.junit.jupiter.params.provider.ArgumentsProvider",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.junit.jupiter.params.provider.ArgumentsSource",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.junit.jupiter.params.provider.EnumArgumentsProvider",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.junit.jupiter.params.provider.EnumSource",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.junit.jupiter.params.support.AnnotationConsumer",
+  "queryAllPublicMethods":true
 },
 {
   "name":"org.junit.platform.commons.annotation.Testable",
@@ -237,7 +304,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testAbstractNamespace","parameterTypes":[] }, {"name":"testFileScheme","parameterTypes":[] }, {"name":"testHttpUnix","parameterTypes":[] }, {"name":"testParseURIandBack","parameterTypes":[] }, {"name":"testSchemesAvailable","parameterTypes":[] }, {"name":"testSerialize","parameterTypes":[] }, {"name":"testSocatString","parameterTypes":[] }, {"name":"testURITemplate","parameterTypes":[] }, {"name":"testURITemplateWithPortNumber","parameterTypes":[] }, {"name":"testUnixScheme","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testAbstractNamespace","parameterTypes":[] }, {"name":"testCraftDeserialization","parameterTypes":[] }, {"name":"testFileScheme","parameterTypes":[] }, {"name":"testHttpUnix","parameterTypes":[] }, {"name":"testParseURIandBack","parameterTypes":[] }, {"name":"testSchemesAvailable","parameterTypes":[] }, {"name":"testSerialize","parameterTypes":[] }, {"name":"testSocatString","parameterTypes":[] }, {"name":"testURITemplate","parameterTypes":[] }, {"name":"testURITemplateWithPortNumber","parameterTypes":[] }, {"name":"testUnixScheme","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.AFVSOCKSocketAddress",
@@ -300,7 +367,7 @@
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"testBindConnect","parameterTypes":[] }, {"name":"testPeekTimeout","parameterTypes":[] }, {"name":"testReadTimeout","parameterTypes":[] }]
+  "methods":[{"name":"testBindConnect","parameterTypes":[] }, {"name":"testChannelSendTo","parameterTypes":[] }, {"name":"testPeekTimeout","parameterTypes":[] }, {"name":"testReadTimeout","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.EndOfFileTest",
@@ -698,13 +765,22 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConvertUnixDomainSocketAddress","parameterTypes":[] }]
 },
 {
+  "name":"org.newsclub.net.unix.ssl.ProviderTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testDumpDefaultProviders","parameterTypes":[] }]
+},
+{
   "name":"org.newsclub.net.unix.ssl.SNIHostnameCaptureTest",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testSNISuccess","parameterTypes":[] }, {"name":"testWonkySSLSocket","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testSNISuccessExpectDefault_NO_serverNullDefault_NO_clientEmptyDefault_NO","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testSNISuccessExpectDefault_NO_serverNullDefault_NO_clientEmptyDefault_YES","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testSNISuccessExpectDefault_NO_serverNullDefault_YES_clientEmptyDefault_NO","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testSNISuccessExpectDefault_NO_serverNullDefault_YES_clientEmptyDefault_YES","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testSNISuccessExpectDefault_YES_serverNullDefault_NO_clientEmptyDefault_NO","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testSNISuccessExpectDefault_YES_serverNullDefault_NO_clientEmptyDefault_YES","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testSNISuccessExpectDefault_YES_serverNullDefault_YES_clientEmptyDefault_NO","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testSNISuccessExpectDefault_YES_serverNullDefault_YES_clientEmptyDefault_YES","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testWonkySSLSocket","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.ssl.SSLContextBuilderTest",
@@ -713,7 +789,15 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testBadProtocol","parameterTypes":[] }, {"name":"testBothKeyManagersAndKeyStore","parameterTypes":[] }, {"name":"testBothKeyStoreAndKeyManagers","parameterTypes":[] }, {"name":"testBothTrustManagersAndTrustStore","parameterTypes":[] }, {"name":"testBothTrustStoreAndTrustManagers","parameterTypes":[] }, {"name":"testClientAuthRequired","parameterTypes":[] }, {"name":"testClientAuthRequiredButClientIsNotSendingAKey","parameterTypes":[] }, {"name":"testClientAuthRequiredButClientKeyIsNotTrusted","parameterTypes":[] }, {"name":"testClientHasNoTrustStore","parameterTypes":[] }, {"name":"testDestroyablePasswordSupplier","parameterTypes":[] }, {"name":"testDestroyablePasswordSupplierDestroyed","parameterTypes":[] }, {"name":"testKeyStoreFileNotFound","parameterTypes":[] }, {"name":"testKeyStoreNullPasswordSupplied","parameterTypes":[] }, {"name":"testKeyStoreNullPasswordSupplier","parameterTypes":[] }, {"name":"testKeyStoreNullURL","parameterTypes":[] }, {"name":"testKeyStoreURLNotFound","parameterTypes":[] }, {"name":"testNoClientAuth","parameterTypes":[] }, {"name":"testSSLEngineMethods","parameterTypes":[] }, {"name":"testServerAndClientBlindlyTrustAnything","parameterTypes":[] }, {"name":"testServerSocketFactoryMethods","parameterTypes":[] }, {"name":"testServerSocketFactoryMethodsForCodeCoverageOnly","parameterTypes":[] }, {"name":"testSocketFactoryMethods","parameterTypes":[] }, {"name":"testSocketFactoryMethodsForCodeCoverageOnly","parameterTypes":[] }, {"name":"testTrustStoreFileNotFound","parameterTypes":[] }, {"name":"testTrustStoreNullPasswordSupplied","parameterTypes":[] }, {"name":"testTrustStoreNullPasswordSupplier","parameterTypes":[] }, {"name":"testTrustStoreNullURL","parameterTypes":[] }, {"name":"testTrustStoreURLNotFound","parameterTypes":[] }, {"name":"testUndestroyablePasswordSupplier","parameterTypes":[] }, {"name":"testUndestroyablePasswordSuppliers","parameterTypes":[] }, {"name":"testWithDefaultParameters1","parameterTypes":[] }, {"name":"testWithDefaultParameters2","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testBadProtocol","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testBothKeyManagersAndKeyStore","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testBothKeyStoreAndKeyManagers","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testBothTrustManagersAndTrustStore","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testBothTrustStoreAndTrustManagers","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testClientAuthRequired","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testClientAuthRequiredButClientIsNotSendingAKey","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testClientAuthRequiredButClientKeyIsNotTrusted","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testClientHasNoTrustStore","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testDestroyablePasswordSupplier","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testDestroyablePasswordSupplierDestroyed","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testKeyStoreFileNotFound","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testKeyStoreNullPasswordSupplied","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testKeyStoreNullPasswordSupplier","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testKeyStoreNullURL","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testKeyStoreURLNotFound","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testNoClientAuth","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testSSLEngineMethods","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testServerAndClientBlindlyTrustAnything","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testServerSocketFactoryMethods","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testServerSocketFactoryMethodsForCodeCoverageOnly","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testSocketFactoryMethods","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testSocketFactoryMethodsForCodeCoverageOnly","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testTrustStoreFileNotFound","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testTrustStoreNullPasswordSupplied","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testTrustStoreNullPasswordSupplier","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testTrustStoreNullURL","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testTrustStoreURLNotFound","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testUndestroyablePasswordSupplier","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testUndestroyablePasswordSuppliers","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testWithDefaultParameters1","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testWithDefaultParameters2","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }]
+},
+{
+  "name":"org.newsclub.net.unix.ssl.SSLTestBase",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"afterAll","parameterTypes":[] }, {"name":"beforeAll","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.ssl.ValidatingX509TrustManagerTest",
@@ -722,7 +806,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testInspectTrustedCertificateExpired","parameterTypes":[] }, {"name":"testInspectTrustedCertificateExpiredNested","parameterTypes":[] }, {"name":"testInspectTrustedCertificateExpiredNestedFilter","parameterTypes":[] }, {"name":"testInspectTrustedCertificateNotExpired","parameterTypes":[] }, {"name":"testInspectTrustedClientCertificate","parameterTypes":[] }, {"name":"testInspectTrustedClientCertificateExpired","parameterTypes":[] }, {"name":"testInspectTrustedClientCertificateExpiredNested","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testInspectTrustedCertificateExpired","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testInspectTrustedCertificateExpiredNested","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testInspectTrustedCertificateExpiredNestedFilter","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testInspectTrustedCertificateNotExpired","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testInspectTrustedClientCertificate","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testInspectTrustedClientCertificateExpired","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }, {"name":"testInspectTrustedClientCertificateExpiredNested","parameterTypes":["org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"] }]
 },
 {
   "name":"org.newsclub.net.unix.tipc.AFTIPCSelectorProvider"
@@ -1048,6 +1132,9 @@
   "queryAllDeclaredConstructors":true
 },
 {
+  "name":"org.openjsse.net.ssl.OpenJSSE"
+},
+{
   "name":"sun.security.pkcs12.PKCS12KeyStore",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -1061,14 +1148,6 @@
 },
 {
   "name":"sun.security.provider.DSA$SHA256withDSA",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"sun.security.provider.JavaKeyStore$DualFormatJKS",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"sun.security.provider.JavaKeyStore$JKS",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1133,6 +1212,10 @@
 },
 {
   "name":"sun.security.ssl.KeyManagerFactoryImpl$SunX509",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.security.ssl.SSLContextImpl$DefaultSSLContext",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {

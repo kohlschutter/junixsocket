@@ -869,5 +869,93 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.ssl.ProviderTest",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.ssl.SSLTestBase",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"com.wolfssl.provider.jce.WolfCryptProvider"
+},
+{
+  "name":"com.wolfssl.provider.jsse.WolfSSLProvider"
+},
+{
+  "name":"iaik.security.jsse.provider.IAIKJSSEProvider"
+},
+{
+  "name":"iaik.security.provider.IAIK"
+},
+{
+  "name":"org.bouncycastle.jce.provider.BouncyCastleProvider"
+},
+{
+  "name":"org.bouncycastle.jsse.provider.BouncyCastleJsseProvider"
+},
+{
+  "name":"org.bouncycastle.tls.TlsException"
+},
+{
+  "name":"org.conscrypt.Conscrypt"
+},
+{
+  "name":"org.junit.jupiter.api.TestTemplate",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.junit.jupiter.params.ParameterizedTest",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.junit.jupiter.params.ParameterizedTestExtension",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.junit.jupiter.params.provider.AnnotationBasedArgumentsProvider",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.junit.jupiter.params.provider.ArgumentsProvider",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.junit.jupiter.params.provider.ArgumentsSource",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.junit.jupiter.params.provider.EnumArgumentsProvider",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.junit.jupiter.params.provider.EnumSource",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.junit.jupiter.params.support.AnnotationConsumer",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.openjsse.net.ssl.OpenJSSE"
 }
 ]

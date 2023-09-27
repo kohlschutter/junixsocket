@@ -9,9 +9,33 @@
   }, {
     "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-selftest/git.properties\\E"
   }, {
+    "pattern":"\\QMETA-INF/services/java.lang.System$LoggerFinder\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.net.spi.InetAddressResolverProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.net.spi.URLStreamHandlerProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.time.zone.ZoneRulesProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.LauncherDiscoveryListener\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.LauncherSessionListener\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.PostDiscoveryFilter\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.TestExecutionListener\\E"
   }, {
-    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.7.3-SNAPSHOT.dylib\\E"
+    "pattern":"\\Qjunit-platform.properties\\E"
+  }, {
+    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.8.0.dylib\\E"
+  }, {
+    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.8.0.nodeps.dylib\\E"
+  }, {
+    "pattern":"\\Qlib/aarch64-MacOSX-gcc/jni/libjunixsocket-native-2.8.0.dylib\\E"
+  }, {
+    "pattern":"\\Qlib/aarch64-MacOSX-gcc/jni/libjunixsocket-native-2.8.0.nodeps.dylib\\E"
   }, {
     "pattern":"\\Qorg/newsclub/net/unix/ssl/juxclient.p12\\E"
   }, {
@@ -20,6 +44,8 @@
     "pattern":"\\Qorg/newsclub/net/unix/ssl/juxserver.p12\\E"
   }, {
     "pattern":"\\Qorg/newsclub/net/unix/ssl/juxserver.truststore\\E"
+  }, {
+    "pattern":"\\Qorg/newsclub/net/unix/ssl/logging.properties\\E"
   }, {
     "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt72b/nfc.nrm\\E"
   }, {

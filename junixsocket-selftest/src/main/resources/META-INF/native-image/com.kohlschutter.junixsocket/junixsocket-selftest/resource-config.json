@@ -8,6 +8,36 @@
       "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.TestExecutionListener\\E"
     }, 
     {
+      "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.LauncherDiscoveryListener\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.LauncherSessionListener\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.PostDiscoveryFilter\\E"
+    }, 
+    {
+      "pattern":"\\Qjunit-platform.properties\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/java.time.zone.ZoneRulesProvider\\E"
+    },
+    {
+      "pattern":"\\Qorg/newsclub/net/unix/ssl/juxclient.p12\\E"
+    },
+    {
+      "pattern":"\\Qorg/newsclub/net/unix/ssl/juxclient.truststore\\E"
+    },
+    {
+      "pattern":"\\Qorg/newsclub/net/unix/ssl/juxserver.p12\\E"
+    },
+    {
+      "pattern":"\\Qorg/newsclub/net/unix/ssl/juxserver.truststore\\E"
+    },
+    {
+      "pattern":"\\Qorg/newsclub/net/unix/ssl/logging.properties\\E"
+    },
+    {
       "pattern":"^lib/aarch64-MacOSX-clang/jni/libjunixsocket-native-.*\\.dylib$"
     }
   ]},

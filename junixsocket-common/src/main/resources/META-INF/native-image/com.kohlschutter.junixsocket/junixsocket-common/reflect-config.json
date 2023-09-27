@@ -78,5 +78,9 @@
 },
 {
   "name":"org.newsclub.net.unix.AddressUnavailableSocketException"
+},
+{
+  "name":"java.util.function.Consumer",
+  "queryAllPublicMethods":true
 }
 ]
