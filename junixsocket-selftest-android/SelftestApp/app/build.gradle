@@ -75,8 +75,8 @@ dependencies {
         exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-native-common"
         exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-native-custom"
     }
-    implementation 'com.kohlschutter:kohlschutter-util:1.5.8'
-    implementation 'com.kohlschutter:kohlschutter-test-util:1.5.8'
+    implementation 'com.kohlschutter:kohlschutter-util:1.6.1'
+    implementation 'com.kohlschutter:kohlschutter-test-util:1.6.1'
     implementation 'org.junit.platform:junit-platform-console:1.9.3'
     implementation 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
     implementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
