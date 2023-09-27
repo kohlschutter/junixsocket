@@ -41,7 +41,7 @@ That's it!
 
 Development versions may need SNAPSHOT versions of dependencies. Use the following command to build:
 
-    mvn clean install -Puse-snapshots
+    mvn clean install -Duse-snapshots
 
 ## Build options
 
@@ -49,15 +49,15 @@ While the default build options are a good start, you may want to change the lev
 
 Here's how to make building stricter (more potential errors are found):
 
-    mvn clean install -Pstrict
+    mvn clean install -Dstrict
 
 Here's how to make building less strict (this turns off several code quality checkers but will dramatically shorten build times):
 
-    mvn clean install -Dignorant=true
+    mvn clean install -Dignorant
 
 If some tests fail, you may try
 
-    mvn clean install -DskipTests=true
+    mvn clean install -DskipTests
 
 If you're having problems with building the native library, you can skip directly to building the Java code via
 
@@ -65,7 +65,7 @@ If you're having problems with building the native library, you can skip directl
 
 You can also try to build the full release version of junixsocket (which will include all cross-compile destinations) -- see the [release instructions](release.html) for details:
 
-    mvn clean install -Pstrict -Prelease
+    mvn clean install -Dstrict -Drelease
 
 ## Issues and Workarounds
 
@@ -80,7 +80,7 @@ If you don't have clang, try compiling with gcc. You may need to specify the com
 You're building a SNAPSHOT version, skipping over native artifacts, and access to some native
 artifacts is missing. Try building with the "use-snapshot" profile first:
 
-    mvn clean install -Puse-snapshot -rf :junixsocket-native-custom
+    mvn clean install -Duse-snapshot -rf :junixsocket-native-custom
 
 If that doesn't work, try ignoring junixsocket-native-custom as an optional dependency for testing:
 

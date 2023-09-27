@@ -11,11 +11,11 @@ junixsocketDir=$(pwd)
 (
 set -x
 mvn clean && \
-mvn install site -P strict,release -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross' && \
+mvn install site -D strict -Drelease -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross' && \
 mvn install site -pl junixsocket-jetty,junixsocket-selftest-native-image && \
-mvn javadoc:aggregate -P '!with-non-modularized,strict' -pl '!junixsocket-native' && \
-mvn jxr:aggregate jxr:test-aggregate -P strict,release && \
-mvn site:stage -Pstrict,release -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross'
+mvn javadoc:aggregate -P '!with-non-modularized' -Dstrict -pl '!junixsocket-native' && \
+mvn jxr:aggregate jxr:test-aggregate -Dstrict -Drelease && \
+mvn site:stage -Dstrict -Drelease -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross'
 ) || exit $?
 
 echo "The website should now be inspected at ${junixsocketDir}/target/staging/index.html"

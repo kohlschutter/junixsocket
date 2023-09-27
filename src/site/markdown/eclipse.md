@@ -38,7 +38,7 @@ above the `junixsocket` parent project).
 You are encouraged to import the corresponding configuration files to your Eclipse workspace.
 
 If you don't want to apply these settings to your other projects, create a new Eclipse workspace
-for junixsocket. You can also run `mvn process-sources -Preformat` to apply the formatting rules (along with other reformatting operations) from the command line. 
+for junixsocket. You can also run `mvn process-sources -Dreformat` to apply the formatting rules (along with other reformatting operations) from the command line. 
 
 ## Code quality checks
 
@@ -50,7 +50,7 @@ The `coding-style` project has configurations for both. Import them into Eclipse
    - `coding-style/eclipse/checkstyle-configuration.xml` (add to Eclipse Preferences -> Checkstyle -> New... -> External Configuration File) 
    - `coding-style/eclipse/spotbugs-exclude.xml` (add to Eclipse Preferences -> Java -> SpotBugs -> Filter Files -> Exclude filter files)
 
-You can use `mvn clean install` to check from the command line. Add `-Pstrict` to fail if there are issues.
+You can use `mvn clean install` to check from the command line. Add `-Dstrict` to fail if there are issues.
 
 ## Native hooks
 

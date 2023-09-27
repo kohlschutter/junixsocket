@@ -84,7 +84,7 @@ and add/commit both sets of changes.
 First, view the `LICENSE` file and verify that it's up to date. Then run the code formatters and commit.
 
     cd junixsocket
-    mvn process-sources -Preformat
+    mvn process-sources -Dreformat
     # git add / commit here...
 
 #[[###]]# Bump project version
@@ -97,13 +97,13 @@ First, view the `LICENSE` file and verify that it's up to date. Then run the cod
 
 #[[###]]# Build native libraries on other supported, common platforms
 
-> *NOTE:* This section can presently be skipped since all targets shipped in `junixsocket-native-common` cross-compile with `-Prelease`.
+> *NOTE:* This section can presently be skipped since all targets shipped in `junixsocket-native-common` cross-compile with `-Drelease`.
 
 On the target machine, install junixsocket. Make sure you use the very same version as on your
 development machine from where you do the release!
 
     cd junixsocket
-    mvn clean install -Pstrict
+    mvn clean install -Dstrict
 
 The platform-dependent nar files should now be available in the local maven repository cache.
 
@@ -128,7 +128,7 @@ This will create a directory, a .tar.gz and a .zip archive, containing the proje
 a script to run the demo classes from the command-line.
 
     cd junixsocket
-    mvn clean install -Pstrict -Prelease
+    mvn clean install -Dstrict -Drelease
 
 The files can be found in
 
@@ -146,7 +146,7 @@ Also run the selftest with Java 8, e.g.:
 
 	/Library/Java/JavaVirtualMachines/1.8.0.jdk/Contents/Home/bin/java -jar junixsocket-selftest/target/junixsocket-selftest-${project.version}-jar-with-dependencies.jar
 
-Run `junixsocket-native-graalvm/bin/with-graalvm mvn package -pl junixsocket-selftest-native-image -Pnative`
+Run `junixsocket-native-graalvm/bin/with-graalvm mvn package -pl junixsocket-selftest-native-image -Dnative`
 (on all native-image supported platforms) to build the GraalVM native-image.  Test the native-image
 by running `junixsocket-selftest-native-image/target/junixsocket-selftest-native-image-X.Y.Z`.
 
@@ -163,18 +163,18 @@ If you need to make a revision afterwards, retag with `git tag -f TAG` and `git 
 #[[####]]# Deploy to staging
   
     cd junixsocket
-    mvn clean install -Pstrict -Prelease
+    mvn clean install -Dstrict -Drelease
 
     # after gpgkeyname, specify the key you want to use for signing
-    mvn deploy -Pstrict -Prelease -Psigned -Dgpgkeyname=$(git config --get user.email) -Dgpg.executable=$(which gpg)
+    mvn deploy -Dstrict -Drelease -Dsigned -Dgpgkeyname=$(git config --get user.email) -Dgpg.executable=$(which gpg)
     
 #[[#####]]# Notes
 
-`-Pstrict` enforces code quality checks to succeed (e.g., *spotbugs*, *checkstyle*). 
+`-Dstrict` enforces code quality checks to succeed (e.g., *spotbugs*, *checkstyle*). 
 
-`-Prelease` makes sure we include all common native binaries in junixsocket-native-common.
+`-Drelease` makes sure we include all common native binaries in junixsocket-native-common.
 
-`-Psigned` enables signing the artifacts with our GPG key. 
+`-Dsigned` enables signing the artifacts with our GPG key. 
 
 #[[#####]]# In case of failures while staging:
 
@@ -225,7 +225,7 @@ Also check the header, especially the `Git properties` at the beginning of the o
   
 **IMPORTANT** Once released, it cannot be undone! Make sure you verify the staged artifact first!
   
-    MAVEN_OPTS="--add-opens java.base/java.util=ALL-UNNAMED" mvn nexus-staging:release -Prelease
+    MAVEN_OPTS="--add-opens java.base/java.util=ALL-UNNAMED" mvn nexus-staging:release -Drelease
 
 NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in Maven Central.
 
@@ -259,7 +259,7 @@ The website should now be inspected at `junixsocket/target/staging/index.html`
 If everything looks good, we can publish it to
 [https://kohlschutter.github.io/junixsocket/](https://kohlschutter.github.io/junixsocket/):
    
-    mvn scm-publish:publish-scm -Pstrict,release
+    mvn scm-publish:publish-scm -Dstrict -Drelease
 
 > **NOTE:** There can be a 10-minute delay until the pages get updated.
 

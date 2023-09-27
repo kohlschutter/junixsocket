@@ -45,7 +45,7 @@ For example:
 ```
 # Build the platform-native executable:
 cd junixsocket/junixsocket-selftest-native-image
-mvn -Pnative clean package
+mvn -Dnative clean package
 
 # Run the platform-native executable:
 ./target/junixsocket-selftest-native-image-X.Y.Z
