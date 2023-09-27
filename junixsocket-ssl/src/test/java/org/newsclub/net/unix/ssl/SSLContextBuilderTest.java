@@ -47,6 +47,9 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -64,6 +67,8 @@ import javax.security.auth.Destroyable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.newsclub.net.unix.AFSocket;
+import org.newsclub.net.unix.AFSocketFactory.FixedAddressSocketFactory;
+import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketPair;
@@ -71,8 +76,6 @@ import org.newsclub.net.unix.KnownJavaBugIOException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.AssertUtil;
-import com.kohlschutter.testutil.ExecutionEnvironmentRequirement;
-import com.kohlschutter.testutil.ExecutionEnvironmentRequirement.Rule;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 import com.kohlschutter.testutil.TestResourceUtil;
@@ -959,28 +962,53 @@ public class SSLContextBuilderTest extends SSLTestBase {
     assertNotEquals(0, factory.getSupportedCipherSuites().length);
   }
 
-  @ExecutionEnvironmentRequirement(windows = Rule.PROHIBITED)
   @ParameterizedTest
   @EnumSource(TestSSLConfiguration.class)
   public void testSocketFactoryMethodsForCodeCoverageOnly(TestSSLConfiguration configuration)
       throws Exception {
-    SSLSocketFactory factory;
-    try {
-      factory = configuration.configure(SSLContextBuilder.forServer()) //
-          .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-              "juxserver.p12"), () -> "serverpass".toCharArray()) //
-          .buildAndDestroyBuilder().getSocketFactory();
-    } catch (KnownJavaBugIOException e) {
-      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
-          e.getMessage(), e);
-    }
+    AFUNIXSocketAddress address = AFUNIXSocketAddress.ofNewTempFile();
 
-    InetAddress loopback = InetAddress.getLoopbackAddress();
-    try (ServerSocket ss = new ServerSocket(0, 50, loopback)) {
-      factory.createSocket(loopback.getHostAddress(), ss.getLocalPort());
-      factory.createSocket(loopback, ss.getLocalPort());
-      factory.createSocket(loopback.getHostAddress(), ss.getLocalPort(), loopback, 0);
-      factory.createSocket(loopback, ss.getLocalPort(), loopback, 0);
+    AtomicBoolean stop = new AtomicBoolean(false);
+    Semaphore sema = new Semaphore(0);
+
+    try (AFUNIXServerSocket server = AFUNIXServerSocket.bindOn(address)) {
+      CompletableFuture<Exception> serverError = CompletableFuture.supplyAsync(() -> {
+        while (!server.isClosed() && !stop.get()) {
+          try (AFUNIXSocket socket = server.accept()) {
+            sema.acquire();
+          } catch (InterruptedException | IOException e) {
+            return e;
+          }
+        }
+        return null;
+      });
+
+      SSLSocketFactory factory;
+      try {
+        factory = configuration.configure(SSLContextBuilder.forServer()) //
+            .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
+                "juxserver.p12"), () -> "serverpass".toCharArray()) //
+            .withSocketFactory(new FixedAddressSocketFactory(address)) //
+            .buildAndDestroyBuilder().getSocketFactory();
+      } catch (KnownJavaBugIOException e) {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, e.getMessage(), e);
+      }
+
+      InetAddress loopback = InetAddress.getLoopbackAddress();
+      try (ServerSocket ss = new ServerSocket(0, 50, loopback)) {
+        factory.createSocket(loopback.getHostAddress(), ss.getLocalPort());
+        sema.release();
+        factory.createSocket(loopback, ss.getLocalPort());
+        sema.release();
+        factory.createSocket(loopback.getHostAddress(), ss.getLocalPort(), loopback, 0);
+        sema.release();
+        factory.createSocket(loopback, ss.getLocalPort(), loopback, 0);
+        stop.set(true);
+        sema.release();
+      }
+
+      serverError.get(5, TimeUnit.SECONDS);
     }
   }
 
@@ -1012,25 +1040,34 @@ public class SSLContextBuilderTest extends SSLTestBase {
         .ofNewTempFile()));
   }
 
-  @ExecutionEnvironmentRequirement(windows = Rule.PROHIBITED)
   @ParameterizedTest
   @EnumSource(TestSSLConfiguration.class)
   public void testServerSocketFactoryMethodsForCodeCoverageOnly(TestSSLConfiguration configuration)
       throws Exception {
+    AFUNIXSocketAddress address = AFUNIXSocketAddress.ofNewTempFile();
+
     SSLServerSocketFactory factory;
     try {
       factory = configuration.configure(SSLContextBuilder.forServer()) //
           .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
               "juxserver.p12"), () -> "serverpass".toCharArray()) //
+          .withSocketFactory(new FixedAddressSocketFactory(address)) //
           .buildAndDestroyBuilder().getServerSocketFactory();
     } catch (KnownJavaBugIOException e) {
       throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
           e.getMessage(), e);
     }
 
-    assertNotNull(factory.createServerSocket(0));
-    assertNotNull(factory.createServerSocket(0, 0));
-    assertNotNull(factory.createServerSocket(0, 0, InetAddress.getLoopbackAddress()));
+    try {
+      factory.createServerSocket();
+    } catch (SocketException e) {
+      // ignore
+    }
+
+    // Since we cannot change the socket type from TCP/IP, calling this may interfere with firewalls
+    // assertNotNull(factory.createServerSocket(0));
+    // assertNotNull(factory.createServerSocket(0, 0));
+    // assertNotNull(factory.createServerSocket(0, 0, InetAddress.getLoopbackAddress()));
   }
 
   @ParameterizedTest
