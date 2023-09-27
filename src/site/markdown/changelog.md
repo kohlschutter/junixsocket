@@ -12,7 +12,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 **Users of junixsocket are strongly advised to upgrade to version 2.8.0 or newer**
 
-### _(2023-XX-XX)_ **junixsocket 2.8.0**
+### _(2023-09-27)_ **junixsocket 2.8.0**
 
 - Java 7 support is back! (junixsocket-common only, as it was before version 2.5.0)
 - Fix AFSocket shutdown to ignore InvalidSocketException upon setTimeout
