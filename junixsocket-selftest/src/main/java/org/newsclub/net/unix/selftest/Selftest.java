@@ -156,6 +156,16 @@ public class Selftest {
 
     this.out = ConsolePrintStream.wrapPrintStream(out);
     this.sp = sp;
+
+    checkSystemProperties();
+  }
+
+  private void checkSystemProperties() {
+    String tmpDir = System.getProperty("java.io.tmpdir", "");
+    if (System.getProperty("java.home", "").isEmpty()) {
+      System.setProperty("java.home", tmpDir);
+      out.println("Setting java.home to temporary directory: " + tmpDir);
+    }
   }
 
   public void checkVM() {
