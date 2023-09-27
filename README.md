@@ -2,7 +2,7 @@
 
 [![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/kohlschutter/junixsocket/codeql-analysis.yml?cacheSeconds=60)](https://github.com/kohlschutter/junixsocket/actions/workflows/codeql-analysis.yml) [![Last commit on main](https://img.shields.io/github/last-commit/kohlschutter/junixsocket/main)](https://github.com/kohlschutter/junixsocket/commits/main) [![Maven Central version](https://img.shields.io/maven-central/v/com.kohlschutter.junixsocket/junixsocket)](https://search.maven.org/artifact/com.kohlschutter.junixsocket/junixsocket) [![Apache 2.0 Licensed](https://img.shields.io/github/license/kohlschutter/junixsocket)](https://github.com/kohlschutter/junixsocket/blob/main/NOTICE)
 
-**Users of junixsocket are strongly advised to upgrade to version 2.7.2 or newer ([changelog](https://kohlschutter.github.io/junixsocket/changelog.html))**
+**Users of junixsocket are strongly advised to upgrade to version 2.8.0 or newer ([changelog](https://kohlschutter.github.io/junixsocket/changelog.html))**
 
 # junixsocket
 
@@ -19,7 +19,7 @@ from Java.
 * Comes with pre-built native libraries for most operating systems and platforms, including
   macOS, Linux, Android, Windows, Solaris, FreeBSD, NetBSD, OpenBSD, DragonFlyBSD, AIX, IBM i.
 * Additionally, you can build and run junixsocket natively on IBM z/OS (experimental).
-* Supports all Java versions since Java 8*
+* Supports all Java versions since Java 8* (with common AF_UNIX support available for Java 7 and newer)
 * Supports both the Java Socket API and NIO (`java.net.Socket`, `java.net.SocketChannel`, etc.)
 * Supports streams and datagrams.
 * Supports Remote Method Invocation (RMI) over AF_UNIX.
@@ -36,7 +36,7 @@ from Java.
 * Provides a selftest package with 300+ tests to ensure compatibility with any target platform.
 * Apache 2.0 licensed.
 
-`*` (Tested up to Java 22; support for Java 7 was dropped in version 2.5.0).
+`*` (Tested up to Java 22; basic support for Java 7 was dropped in version 2.5.0 and reintroduced in version 2.8.0).
 
 ## Quick links
 
@@ -88,7 +88,7 @@ To include the core junixsocket functionality in your project, add the following
 <dependency>
   <groupId>com.kohlschutter.junixsocket</groupId>
   <artifactId>junixsocket-core</artifactId>
-  <version>2.7.2</version>
+  <version>2.8.0</version>
   <type>pom</type>
 </dependency>
 ```

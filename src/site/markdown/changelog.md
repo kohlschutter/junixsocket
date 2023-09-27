@@ -10,13 +10,17 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ## Noteworthy changes
 
-**Users of junixsocket are strongly advised to upgrade to version 2.7.2 or newer**
+**Users of junixsocket are strongly advised to upgrade to version 2.8.0 or newer**
 
-### _(2023-09-XX)_ **junixsocket 2.7.3**
+### _(2023-XX-XX)_ **junixsocket 2.8.0**
 
+- Java 7 support is back! (junixsocket-common only, as it was before version 2.5.0)
 - Fix AFSocket shutdown to ignore InvalidSocketException upon setTimeout
 - Fix a potential hang in selftest
-- Improve AFSocketServer with a parameterless startAndWaitToBecomeReady method
+- Fix loading of the native library when running under macOS Rosetta 2
+- Fix a potential bug when trying to serialize an AFRMISocketFactory
+- Fix a potential race condition when working with native addresses
+- Improve AFSocketServer, add new methods
 - Improve crossclang to support Xcode 15
 - Add junixsocket-ssl, tools to simplify securing junixsocket connections
 
