@@ -1,15 +1,9 @@
 [
   {
-    "interfaces":["org.newsclub.net.unix.rmi.AFRMIService"]
-  },
-  {
     "interfaces":["org.newsclub.net.unix.rmi.Hello"]
   },
   {
     "interfaces":["org.newsclub.net.unix.rmi.NaiveFileInputStreamRemote"]
-  },
-  {
-    "interfaces":["org.newsclub.net.unix.rmi.RemoteCloseable"]
   },
   {
     "interfaces":["org.newsclub.net.unix.rmi.TestService"]

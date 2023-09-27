@@ -82,5 +82,38 @@
 {
   "name":"java.util.function.Consumer",
   "queryAllPublicMethods":true
+},
+{
+  "name":"[J"
+},
+{
+  "name":"[Ljava.lang.StackTraceElement;"
+},
+{
+  "name":"java.io.IOException"
+},
+{
+  "name":"java.lang.Exception"
+},
+{
+  "name":"java.lang.Number"
+},
+{
+  "name":"java.lang.Throwable"
+},
+{
+  "name":"java.lang.reflect.Proxy"
+},
+{
+  "name":"java.util.Collections$EmptyList"
+},
+{
+  "name":"java.util.UUID"
+},
+{
+  "name":"java.util.concurrent.atomic.AtomicInteger"
+},
+{
+  "name":"org.newsclub.net.unix.AFUNIXSocketCredentials"
 }
 ]

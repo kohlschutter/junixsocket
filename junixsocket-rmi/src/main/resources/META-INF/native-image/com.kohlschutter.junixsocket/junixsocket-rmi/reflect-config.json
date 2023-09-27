@@ -1,0 +1,121 @@
+[
+{
+  "name":"[Ljava.rmi.server.ObjID;"
+},
+{
+  "name":"java.rmi.NoSuchObjectException"
+},
+{
+  "name":"java.rmi.Remote",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.rmi.RemoteException"
+},
+{
+  "name":"java.rmi.dgc.Lease"
+},
+{
+  "name":"java.rmi.dgc.VMID"
+},
+{
+  "name":"java.rmi.registry.Registry",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.rmi.NoSuchObjectException"
+},
+{
+  "name":"java.rmi.Remote",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.rmi.RemoteException"
+},
+{
+  "name":"java.rmi.dgc.Lease"
+},
+{
+  "name":"java.rmi.dgc.VMID"
+},
+{
+  "name":"java.rmi.registry.Registry",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.rmi.server.ObjID"
+},
+{
+  "name":"java.rmi.server.RemoteObject"
+},
+{
+  "name":"java.rmi.server.RemoteObjectInvocationHandler"
+},
+{
+  "name":"java.rmi.server.UID"
+},
+{
+  "name":"org.newsclub.net.unix.rmi.AFRMIService",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.newsclub.net.unix.rmi.AFRMIServiceImpl_Stub"
+},
+{
+  "name":"org.newsclub.net.unix.rmi.AFRMISocketFactory"
+},
+{
+  "name":"org.newsclub.net.unix.rmi.AFRegistry$1_Stub"
+},
+{
+  "name":"org.newsclub.net.unix.rmi.AFSocketCapabilityCondition",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.rmi.AFSocketCapabilityRequirement",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.newsclub.net.unix.rmi.AFUNIXRMISocketFactory"
+},
+{
+  "name":"org.newsclub.net.unix.rmi.RemoteCloseable",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"close","parameterTypes":[] }, {"name":"get","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.rmi.RemoteCloseableImpl_Stub"
+},
+{
+  "name":"org.newsclub.net.unix.rmi.RemoteFileDescriptor"
+},
+{
+  "name":"org.newsclub.net.unix.rmi.RemoteFileDescriptorBase"
+},
+{
+  "name":"org.newsclub.net.unix.rmi.RemoteFileInput"
+},
+{
+  "name":"org.newsclub.net.unix.rmi.RemoteFileOutput"
+},
+{
+  "name":"sun.rmi.registry.RegistryImpl_Skel",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.rmi.registry.RegistryImpl_Stub",
+  "methods":[{"name":"<init>","parameterTypes":["java.rmi.server.RemoteRef"] }]
+},
+{
+  "name":"sun.rmi.server.UnicastRef2",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.rmi.transport.DGCImpl_Skel",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"sun.rmi.transport.DGCImpl_Stub",
+  "methods":[{"name":"<init>","parameterTypes":["java.rmi.server.RemoteRef"] }]
+}
+]

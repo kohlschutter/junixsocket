@@ -214,5 +214,9 @@
 },
 {
   "name":"org.newsclub.net.unix.darwin.system.AFSYSTEMSocket"
+},
+{
+  "name":"java.lang.ThreadLocal",
+  "methods":[{"name":"get","parameterTypes":[] }]
 }
 ]

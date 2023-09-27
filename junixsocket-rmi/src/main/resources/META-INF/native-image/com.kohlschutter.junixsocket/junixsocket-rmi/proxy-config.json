@@ -1,0 +1,8 @@
+[
+  {
+    "interfaces":["org.newsclub.net.unix.rmi.AFRMIService"]
+  },
+  {
+    "interfaces":["org.newsclub.net.unix.rmi.RemoteCloseable"]
+  }
+]

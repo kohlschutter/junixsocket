@@ -76,7 +76,7 @@ echo jar: $jar
 
 echo
 echo Running junixsocket-selftest with GraalVM native-image-agent...
-( set -x ; java -agentlib:native-image-agent=config-output-dir=${tmpDir}/native-image.{pid} -Dselftest.skip.junixsocket-rmi=force -jar "$jar" >/dev/null )
+( set -x ; java -agentlib:native-image-agent=config-output-dir=${tmpDir}/native-image.{pid} -jar "$jar" >/dev/null )
 
 if [[ $? -ne 0 ]]; then
     echo "Error: junixsocket-selftest failed" >&2

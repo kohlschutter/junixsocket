@@ -1,0 +1,80 @@
+{
+    "types": [
+        {
+            "name": "java.rmi.NoSuchObjectException"
+        },
+        {
+            "name": "java.rmi.RemoteException"
+        },
+        {
+            "name": "java.rmi.dgc.Lease"
+        },
+        {
+            "name": "java.rmi.dgc.VMID"
+        },
+        {
+            "name": "java.rmi.server.ObjID"
+        },
+        {
+            "name": "java.rmi.server.ObjID[]"
+        },
+        {
+            "name": "java.rmi.server.RemoteObject"
+        },
+        {
+            "name": "java.rmi.server.RemoteObjectInvocationHandler"
+        },
+        {
+            "name": "java.rmi.server.UID"
+        },
+        {
+            "name": "org.newsclub.net.unix.AFUNIXSocketCredentials"
+        },
+        {
+            "name": "org.newsclub.net.unix.rmi.AFRMISocketFactory"
+        },
+        {
+            "name": "org.newsclub.net.unix.rmi.AFUNIXRMISocketFactory"
+        },
+        {
+            "name": "org.newsclub.net.unix.rmi.RemoteCloseableThing$IsCloseable"
+        },
+        {
+            "name": "org.newsclub.net.unix.rmi.RemoteCloseableThing$NotCloseable"
+        },
+        {
+            "name": "org.newsclub.net.unix.rmi.RemoteCloseableThingImpl"
+        },
+        {
+            "name": "org.newsclub.net.unix.rmi.RemoteCloseableThingImpl$IsCloseableImpl"
+        },
+        {
+            "name": "org.newsclub.net.unix.rmi.RemoteCloseableThingImpl$NotCloseableImpl"
+        },
+        {
+            "name": "org.newsclub.net.unix.rmi.RemoteFileDescriptor"
+        },
+        {
+            "name": "org.newsclub.net.unix.rmi.RemoteFileDescriptorBase"
+        },
+        {
+            "name": "org.newsclub.net.unix.rmi.RemoteFileInput"
+        },
+        {
+            "name": "org.newsclub.net.unix.rmi.RemoteFileOutput"
+        }
+    ],
+    "lambdaCapturingTypes": [],
+    "proxies": [
+        {
+            "interfaces": [
+                "org.newsclub.net.unix.rmi.NaiveFileInputStreamRemote"
+            ]
+        },
+        {
+            "interfaces": [
+                "org.newsclub.net.unix.rmi.RemoteCloseable"
+            ]
+        }
+    ]
+}

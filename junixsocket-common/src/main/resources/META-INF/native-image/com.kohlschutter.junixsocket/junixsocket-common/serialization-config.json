@@ -1,34 +1,67 @@
 {
   "types":[
     {
-      "name":"byte[]"
+        "name": "byte[]"
     },
     {
-      "name":"java.lang.String"
+        "name": "java.lang.String"
     },
     {
-      "name":"java.net.InetAddress"
+        "name": "java.io.IOException"
     },
     {
-      "name":"java.net.InetSocketAddress"
+        "name": "java.lang.Exception"
     },
     {
-      "name":"java.net.SocketAddress"
+        "name": "java.lang.Number"
     },
     {
-      "name":"org.newsclub.net.unix.AFSocketAddress"
+        "name": "java.lang.StackTraceElement[]"
     },
     {
-      "name":"org.newsclub.net.unix.AFUNIXSocketAddress"
+        "name": "java.lang.Throwable"
     },
     {
-      "name":"org.newsclub.net.unix.AFTIPCSocketAddress"
+        "name": "java.lang.reflect.Proxy"
     },
     {
-      "name":"org.newsclub.net.unix.AFVSOCKSocketAddress"
+        "name": "java.net.InetAddress"
     },
     {
-      "name":"org.newsclub.net.unix.AFSYSTEMSocketAddress"
+        "name": "java.net.InetSocketAddress"
+    },
+    {
+        "name": "java.net.SocketAddress"
+    },
+    {
+        "name": "org.newsclub.net.unix.AFSocketAddress"
+    },
+    {
+        "name": "java.util.Collections$EmptyList"
+    },
+    {
+        "name": "java.util.UUID"
+    },
+    {
+        "name": "java.util.concurrent.atomic.AtomicInteger"
+    },
+    {
+        "name": "long[]"
+    },
+    {
+        "name": "org.newsclub.net.unix.AFUNIXSocketAddress"
+    },
+    {
+        "name": "org.newsclub.net.unix.AFTIPCSocketAddress"
+    },
+    {
+        "name": "org.newsclub.net.unix.AFVSOCKSocketAddress"
+    },
+    {
+        "name": "org.newsclub.net.unix.AFSYSTEMSocketAddress"
+    },
+    {
+        "name": "org.newsclub.net.unix.AFUNIXSocketCredentials"
     }
   ],
   "lambdaCapturingTypes":[
