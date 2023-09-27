@@ -22,6 +22,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 - Fix a potential race condition when working with native addresses
 - Improve AFSocketServer, add new methods
 - Improve crossclang to support Xcode 15
+- Enable RMI support for GraalVM native-image; selftest now passes without issues
 - Add junixsocket-ssl, tools to simplify securing junixsocket connections
 
 ### _(2023-09-15)_ **junixsocket 2.7.2**
