@@ -49,15 +49,15 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    implementation 'com.kohlschutter.junixsocket:junixsocket-native-android:2.7.3-SNAPSHOT@aar'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-native-android:2.8.0@aar'
 
-    implementation 'com.kohlschutter.junixsocket:junixsocket-common:2.7.3-SNAPSHOT'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-common:2.8.0'
 
-    implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.7.3-SNAPSHOT'
-    implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.7.3-SNAPSHOT'
-    implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.7.3-SNAPSHOT'
-    implementation 'com.kohlschutter.junixsocket:junixsocket-ssl:2.7.3-SNAPSHOT'
-    implementation 'com.kohlschutter.junixsocket:junixsocket-darwin:2.7.3-SNAPSHOT'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.8.0'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.8.0'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.8.0'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-ssl:2.8.0'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-darwin:2.8.0'
 
     // junixsocket-ssl will automatically use the real Bouncycastle on Android when available.
     // This is REQUIRED for junixsocket-ssl tests and RECOMMENDED for junixsocket-ssl users.
@@ -70,7 +70,7 @@ dependencies {
     implementation 'org.bouncycastle:bctls-jdk18on:1.76'
 
     // selftest-specifics
-    implementation('com.kohlschutter.junixsocket:junixsocket-selftest:2.7.3-SNAPSHOT') {
+    implementation('com.kohlschutter.junixsocket:junixsocket-selftest:2.8.0') {
         exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-core"
         exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-native-common"
         exclude group: "com.kohlschutter.junixsocket", module: "junixsocket-native-custom"
