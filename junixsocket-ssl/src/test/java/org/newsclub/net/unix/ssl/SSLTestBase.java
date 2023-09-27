@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix.ssl;
 
+import java.io.FileNotFoundException;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
@@ -153,7 +154,15 @@ public abstract class SSLTestBase {
 
   @AfterAll
   public static void afterAll() {
-    LoggerUtil.revertToDefaultConfiguration();
+    try {
+      LoggerUtil.revertToDefaultConfiguration();
+    } catch (IllegalStateException e) {
+      if (e.getCause() instanceof FileNotFoundException) {
+        // GraalVM -- ignore
+      } else {
+        throw e;
+      }
+    }
     removeAllConfigurableProviders();
   }
 
