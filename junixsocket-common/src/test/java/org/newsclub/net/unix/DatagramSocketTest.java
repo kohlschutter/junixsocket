@@ -33,6 +33,8 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
@@ -166,11 +168,51 @@ public abstract class DatagramSocketTest<A extends SocketAddress> extends Socket
       assertEquals(12, dp1.getLength());
       assertEquals(ds2Addr.wrapAddress(), dp1.getAddress());
 
+      ByteBuffer bb1 = ByteBuffer.allocate(512);
+      ByteBuffer bb2 = ByteBuffer.allocateDirect(512);
+
+      bb1.putLong(0xF00BAA);
+      bb1.flip();
+
+      ds1.getChannel().send(bb1, null); // can specify null here but no address, since it's already
+                                        // connected
+
+      SocketAddress receivedFrom = ds2.getChannel().receive(bb2);
+      assertEquals(ds1Addr, receivedFrom);
+      bb2.flip();
+      assertEquals(0xF00BAA, bb2.getLong());
+
       ds1.close();
       assertClosedDatagramSocket(ds1);
 
       ds2.close();
       assertClosedDatagramSocket(ds2);
+    }
+  }
+
+  @Test
+  public void testChannelSendTo() throws Exception {
+    AFSocketAddress ds1Addr = (AFSocketAddress) newTempAddressForDatagram();
+    AFSocketAddress ds2Addr = (AFSocketAddress) newTempAddressForDatagram();
+    try (DatagramChannel dc1 = newDatagramChannel(); //
+        DatagramChannel dc2 = newDatagramChannel()) {
+
+      // dc1 is neither connected nor bound
+      dc1.bind(ds1Addr);
+      dc2.bind(ds2Addr);
+
+      ByteBuffer bb1 = ByteBuffer.allocate(512);
+      ByteBuffer bb2 = ByteBuffer.allocateDirect(512);
+
+      bb1.putLong(0xF00BAA);
+      bb1.flip();
+
+      dc1.send(bb1, ds2Addr);
+
+      SocketAddress receivedFrom = dc2.receive(bb2);
+      assertEquals(ds1Addr, receivedFrom);
+      bb2.flip();
+      assertEquals(0xF00BAA, bb2.getLong());
     }
   }
 

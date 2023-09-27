@@ -538,13 +538,15 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   static final <A extends AFSocketAddress> A ofInternal(ByteBuffer socketAddressBuffer,
       AFAddressFamily<A> af) throws SocketException {
     synchronized (AFSocketAddress.class) {
+      socketAddressBuffer.rewind();
+
       Map<Integer, Map<ByteBuffer, AFSocketAddress>> mapPorts = ADDRESS_CACHE.get(af);
       if (mapPorts != null) {
         Map<ByteBuffer, AFSocketAddress> map = mapPorts.get(0); // FIXME get port, something like
                                                                 // sockAddrToPort
         if (map != null) {
           @SuppressWarnings("unchecked")
-          A address = (A) map.get(socketAddressBuffer.rewind());
+          A address = (A) map.get(socketAddressBuffer);
           if (address != null) {
             return address;
           }
@@ -557,6 +559,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
         buf.put(socketAddressBuffer);
         socketAddressBuffer = buf;
       }
+
       byte[] sockAddrToBytes = NativeUnixSocket.sockAddrToBytes(af.getDomain(),
           socketAddressBuffer);
       if (sockAddrToBytes == null) {
