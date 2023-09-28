@@ -918,7 +918,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @param i The value.
    * @return The string.
    */
-  protected static String toUnsignedString(int i) {
+  static String toUnsignedString(int i) {
     return Long.toString(toUnsignedLong(i));
   }
 
@@ -930,7 +930,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @param radix The radix.
    * @return The string.
    */
-  protected static String toUnsignedString(int i, int radix) {
+  static String toUnsignedString(int i, int radix) {
     return Long.toUnsignedString(toUnsignedLong(i), radix);
   }
 
