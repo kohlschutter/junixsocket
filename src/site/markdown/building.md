@@ -4,7 +4,7 @@ Here's how you build junixsocket from the source.
 
 ## Prerequisites
  
- 1. Make sure you have a 64-bit Intel machine running macOS or Linux.
+ 1. Make sure you have a 64-bit machine running macOS or Linux.
  
     If you have a different platform or architecture, [continue here](customarch.html).
  
