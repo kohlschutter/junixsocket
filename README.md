@@ -96,7 +96,7 @@ To include the core junixsocket functionality in your project, add the following
 While you should definitely pin your dependency to a specific version, you are very much encouraged
 to keep updating to the most recent version. Check back frequently.
 
-For more, optional packages (RMI, MySQL, Jetty, TIPC, VSOCK, server, Darwin, GraalVM, etc.) and
+For more, optional packages (RMI, MySQL, Jetty, TIPC, VSOCK, server, Darwin, SSL, GraalVM, etc.) and
 Gradle instructions see [here](https://kohlschutter.github.io/junixsocket/dependency.html)
 
 ## Snapshot builds for testing
