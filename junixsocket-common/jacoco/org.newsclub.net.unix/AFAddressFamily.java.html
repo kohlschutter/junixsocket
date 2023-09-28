@@ -141,29 +141,29 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
   }
 
   private synchronized void checkProvider() {
-<span class="nc bnc" id="L144" title="All 4 branches missed.">    if (socketConstructor == null &amp;&amp; selectorProvider == null) {</span>
+<span class="pc bpc" id="L144" title="3 of 4 branches missed.">    if (socketConstructor == null &amp;&amp; selectorProvider == null) {</span>
       try {
 <span class="nc" id="L146">        getSelectorProvider();</span>
 <span class="nc" id="L147">      } catch (IllegalStateException e) {</span>
         // ignore
 <span class="nc" id="L149">      }</span>
     }
-<span class="nc" id="L151">  }</span>
+<span class="fc" id="L151">  }</span>
 
   AFSocket.Constructor&lt;A&gt; getSocketConstructor() {
-<span class="nc" id="L154">    checkProvider();</span>
-<span class="nc bnc" id="L155" title="All 2 branches missed.">    if (socketConstructor == null) {</span>
+<span class="fc" id="L154">    checkProvider();</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">    if (socketConstructor == null) {</span>
 <span class="nc" id="L156">      throw new UnsupportedAddressTypeException();</span>
     }
-<span class="nc" id="L158">    return socketConstructor;</span>
+<span class="fc" id="L158">    return socketConstructor;</span>
   }
 
   AFServerSocket.Constructor&lt;A&gt; getServerSocketConstructor() {
-<span class="nc" id="L162">    checkProvider();</span>
-<span class="nc bnc" id="L163" title="All 2 branches missed.">    if (serverSocketConstructor == null) {</span>
+<span class="fc" id="L162">    checkProvider();</span>
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">    if (serverSocketConstructor == null) {</span>
 <span class="nc" id="L164">      throw new UnsupportedAddressTypeException();</span>
     }
-<span class="nc" id="L166">    return serverSocketConstructor;</span>
+<span class="fc" id="L166">    return serverSocketConstructor;</span>
   }
 
   Class&lt;A&gt; getSocketAddressClass() {
@@ -282,7 +282,7 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
    */
   public AFSocket&lt;?&gt; newSocket() throws IOException {
     try {
-<span class="nc" id="L285">      return getSocketConstructor().newInstance(null, null);</span>
+<span class="fc" id="L285">      return getSocketConstructor().newInstance(null, null);</span>
 <span class="nc" id="L286">    } catch (UnsupportedOperationException e) {</span>
 <span class="nc" id="L287">      throw (SocketException) new SocketException().initCause(e);</span>
     }
@@ -296,7 +296,7 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
    */
   public AFServerSocket&lt;?&gt; newServerSocket() throws IOException {
     try {
-<span class="nc" id="L299">      return getServerSocketConstructor().newInstance(null);</span>
+<span class="fc" id="L299">      return getServerSocketConstructor().newInstance(null);</span>
 <span class="nc" id="L300">    } catch (UnsupportedOperationException e) {</span>
 <span class="nc" id="L301">      throw (SocketException) new SocketException().initCause(e);</span>
     }

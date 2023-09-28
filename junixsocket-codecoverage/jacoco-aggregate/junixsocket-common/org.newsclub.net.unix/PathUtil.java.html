@@ -21,14 +21,17 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
+import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+
 /**
  * Some {@link Path}-related helper methods.
  *
  * @author Christian Kohlschütter
  */
+@IgnoreJRERequirement // see src/main/java8
 final class PathUtil {
-<span class="nc" id="L30">  private PathUtil() {</span>
-<span class="nc" id="L31">    throw new IllegalStateException(&quot;No instances&quot;);</span>
+<span class="nc" id="L33">  private PathUtil() {</span>
+<span class="nc" id="L34">    throw new IllegalStateException(&quot;No instances&quot;);</span>
   }
 
   /**
@@ -39,11 +42,11 @@ final class PathUtil {
    */
   @SuppressWarnings(&quot;PMD.CompareObjectsWithEquals&quot;)
   static boolean isPathInDefaultFileSystem(Path p) {
-<span class="fc" id="L42">    FileSystem fs = p.getFileSystem();</span>
-<span class="pc bpc" id="L43" title="2 of 4 branches missed.">    if (fs != FileSystems.getDefault() || fs.getClass().getModule() != Object.class.getModule()) {</span>
-<span class="nc" id="L44">      return false;</span>
+<span class="fc" id="L45">    FileSystem fs = p.getFileSystem();</span>
+<span class="pc bpc" id="L46" title="2 of 4 branches missed.">    if (fs != FileSystems.getDefault() || fs.getClass().getModule() != Object.class.getModule()) {</span>
+<span class="nc" id="L47">      return false;</span>
     }
-<span class="fc" id="L46">    return true;</span>
+<span class="fc" id="L49">    return true;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

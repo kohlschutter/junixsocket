@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="CHECK" timestamp="1695936783699">
+    <module artifactId="junixsocket-ssl" groupId="com.kohlschutter.junixsocket" version="2.8.0"/>
+    <files>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/BuilderSSLContext.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/BuilderSSLServerSocketFactory.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/BuilderSSLSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/BuilderSSLSocketFactory.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/CallbackSNIMatcher.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/FilterSSLSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/FilterX509TrustManager.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/IgnorantX509TrustManager.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/SNIHostnameCapture.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/SSLContextBuilder.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/SSLFunction.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/SSLParametersUtil.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/SSLSupplier.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ssl/ValidatingX509TrustManager.java" result="PRESENT"/>
+        <file path="src/main/java8/org/newsclub/net/unix/ssl/FilterSSLSocket.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/ssl/ProviderTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/ssl/SNIHostnameCaptureTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/ssl/SSLContextBuilderTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/ssl/SSLTestBase.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/ssl/SelftestProvider.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/ssl/TestUtil.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/ssl/TestingAFSocketServer.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/ssl/ValidatingX509TrustManagerTest.java" result="PRESENT"/>
+    </files>
+</licensePluginReport>

@@ -63,10 +63,10 @@ class AFSocketCore extends AFCore {
 <span class="fc" id="L63">  }</span>
 
   AFSocketAddress receive(ByteBuffer dst) throws IOException {
-<span class="nc" id="L66">    ByteBuffer socketAddressBuffer = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();</span>
-<span class="nc" id="L67">    int read = read(dst, socketAddressBuffer, 0);</span>
-<span class="nc bnc" id="L68" title="All 2 branches missed.">    if (read &gt; 0) {</span>
-<span class="nc" id="L69">      return AFSocketAddress.ofInternal(socketAddressBuffer, af);</span>
+<span class="fc" id="L66">    ByteBuffer socketAddressBuffer = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();</span>
+<span class="fc" id="L67">    int read = read(dst, socketAddressBuffer, 0);</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">    if (read &gt; 0) {</span>
+<span class="fc" id="L69">      return AFSocketAddress.ofInternal(socketAddressBuffer, af);</span>
     } else {
 <span class="nc" id="L71">      return null;</span>
     }

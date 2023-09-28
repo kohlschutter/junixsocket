@@ -301,10 +301,10 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
             }
           });
       try {
-<span class="nc" id="L304">        Class.forName(SELECTOR_PROVIDER_CLASS);</span>
+<span class="fc" id="L304">        Class.forName(SELECTOR_PROVIDER_CLASS);</span>
 <span class="fc" id="L305">      } catch (ClassNotFoundException e) {</span>
         // ignore
-<span class="nc" id="L307">      }</span>
+<span class="fc" id="L307">      }</span>
     }
 <span class="fc" id="L309">    return afSystem;</span>
   }
@@ -358,7 +358,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
 <span class="fc bfc" id="L358" title="All 2 branches covered.">    for (String p : host.split(&quot;\\.&quot;)) {</span>
       int v;
       try {
-<span class="fc" id="L361">        v = Integer.parseUnsignedInt(p);</span>
+<span class="fc" id="L361">        v = parseUnsignedInt(p, 10);</span>
 <span class="fc" id="L362">      } catch (NumberFormatException e) {</span>
 <span class="fc" id="L363">        throw (SocketException) new SocketException(&quot;Unsupported URI: &quot; + uri).initCause(e);</span>
 <span class="fc" id="L364">      }</span>
@@ -396,7 +396,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
 <span class="fc" id="L396">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
 <span class="fc" id="L397">    StringBuilder sb = new StringBuilder();</span>
 <span class="fc bfc" id="L398" title="All 2 branches covered.">    while (bb.remaining() &gt; 0) {</span>
-<span class="fc" id="L399">      sb.append(Integer.toUnsignedString(bb.getInt()));</span>
+<span class="fc" id="L399">      sb.append(toUnsignedString(bb.getInt()));</span>
 <span class="fc bfc" id="L400" title="All 2 branches covered.">      if (bb.remaining() &gt; 0) {</span>
 <span class="fc" id="L401">        sb.append('.');</span>
       }

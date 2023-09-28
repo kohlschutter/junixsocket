@@ -48,56 +48,57 @@
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment"> * Based on example code from &lt;a href="<a href="https://netty.io/wiki/user-guide-for-4.x.html" target="alexandria_uri">https://netty.io/wiki/user-guide-for-4.x.html</a>"&gt;Netty user</em>
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment"> * guide for 4.x&lt;/a&gt;</em>
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="EchoServer" href="../../../../../../org/newsclub/net/unix/demo/netty/EchoServer.html#EchoServer">EchoServer</a> {
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AFSocketAddress addr;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">public</strong> <a name="EchoServer" href="../../../../../../org/newsclub/net/unix/demo/netty/EchoServer.html#EchoServer">EchoServer</a>(AFSocketAddress addr) {
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">this</strong>.addr = addr;
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>    }
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>      SelectorProvider provider = AFUNIXSelectorProvider.provider();
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <em class="jxr_comment">// SelectorProvider provider = AFTIPCSelectorProvider.provider();</em>
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      <em class="jxr_comment">// We need to specify our custom selector provider here (1), as well as in (3)</em>
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      EventLoopGroup bossGroup = <strong class="jxr_keyword">new</strong> NioEventLoopGroup(0, (Executor) <strong class="jxr_keyword">null</strong>, provider); <em class="jxr_comment">// (1)</em>
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      EventLoopGroup workerGroup = <strong class="jxr_keyword">new</strong> NioEventLoopGroup(0, (Executor) <strong class="jxr_keyword">null</strong>, provider); <em class="jxr_comment">// (1)</em>
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>        ServerBootstrap b = <strong class="jxr_keyword">new</strong> ServerBootstrap(); <em class="jxr_comment">// (2)</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>        b.group(bossGroup, workerGroup) <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>            .channelFactory(() -&gt; <strong class="jxr_keyword">new</strong> NioServerSocketChannel(provider)) <em class="jxr_comment">// (3)</em>
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>            .childHandler(<strong class="jxr_keyword">new</strong> ChannelInitializer&lt;SocketChannel&gt;() { <em class="jxr_comment">// (4)</em>
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>              @Override
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>              <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> initChannel(SocketChannel ch) <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>                ch.pipeline().addLast(<strong class="jxr_keyword">new</strong> <a name="EchoServerHandler" href="../../../../../../org/newsclub/net/unix/demo/netty/EchoServerHandler.html#EchoServerHandler">EchoServerHandler</a>());
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>              }
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>            }) <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>            .option(ChannelOption.SO_BACKLOG, 128) <em class="jxr_comment">// (5)</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>            .childOption(ChannelOption.SO_KEEPALIVE, <strong class="jxr_keyword">true</strong>); <em class="jxr_comment">// (6)</em>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>        <em class="jxr_comment">// Bind and start to accept incoming connections.</em>
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>        ChannelFuture f = b.bind(addr).sync(); <em class="jxr_comment">// (7)</em>
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>  
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>        <em class="jxr_comment">// Wait until the server socket is closed.</em>
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>        <em class="jxr_comment">// In this example, this does not happen, but you can do that to gracefully</em>
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>        <em class="jxr_comment">// shut down your server.</em>
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>        f.channel().closeFuture().sync();
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>      } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>        workerGroup.shutdownGracefully();
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>        bossGroup.shutdownGracefully();
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      }
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>    }
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>  
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> main(String[] args) <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>      File path = <strong class="jxr_keyword">new</strong> File(<span class="jxr_string">"/tmp/nettyecho"</span>);
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">if</strong> (args.length &gt; 0) {
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>        path = <strong class="jxr_keyword">new</strong> File(args[0]);
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>      }
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>      <strong class="jxr_keyword">new</strong> <a name="EchoServer" href="../../../../../../org/newsclub/net/unix/demo/netty/EchoServer.html#EchoServer">EchoServer</a>(AFUNIXSocketAddress.of(path)).run();
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <em class="jxr_comment">// new EchoServer(AFTIPCSocketAddress.ofService(Scope.SCOPE_CLUSTER, 128, 3)).run();</em>
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>    }
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>  }
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  @SuppressWarnings(<span class="jxr_string">"FutureReturnValueIgnored"</span> <em class="jxr_comment">/* errorprone */</em>)
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="EchoServer" href="../../../../../../org/newsclub/net/unix/demo/netty/EchoServer.html#EchoServer">EchoServer</a> {
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AFSocketAddress addr;
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>    <strong class="jxr_keyword">public</strong> <a name="EchoServer" href="../../../../../../org/newsclub/net/unix/demo/netty/EchoServer.html#EchoServer">EchoServer</a>(AFSocketAddress addr) {
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>      <strong class="jxr_keyword">this</strong>.addr = addr;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>    }
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      SelectorProvider provider = AFUNIXSelectorProvider.provider();
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <em class="jxr_comment">// SelectorProvider provider = AFTIPCSelectorProvider.provider();</em>
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <em class="jxr_comment">// We need to specify our custom selector provider here (1), as well as in (3)</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      EventLoopGroup bossGroup = <strong class="jxr_keyword">new</strong> NioEventLoopGroup(0, (Executor) <strong class="jxr_keyword">null</strong>, provider); <em class="jxr_comment">// (1)</em>
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      EventLoopGroup workerGroup = <strong class="jxr_keyword">new</strong> NioEventLoopGroup(0, (Executor) <strong class="jxr_keyword">null</strong>, provider); <em class="jxr_comment">// (1)</em>
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>        ServerBootstrap b = <strong class="jxr_keyword">new</strong> ServerBootstrap(); <em class="jxr_comment">// (2)</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>        b.group(bossGroup, workerGroup) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>            .channelFactory(() -&gt; <strong class="jxr_keyword">new</strong> NioServerSocketChannel(provider)) <em class="jxr_comment">// (3)</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>            .childHandler(<strong class="jxr_keyword">new</strong> ChannelInitializer&lt;SocketChannel&gt;() { <em class="jxr_comment">// (4)</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>              @Override
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>              <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> initChannel(SocketChannel ch) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>                ch.pipeline().addLast(<strong class="jxr_keyword">new</strong> <a name="EchoServerHandler" href="../../../../../../org/newsclub/net/unix/demo/netty/EchoServerHandler.html#EchoServerHandler">EchoServerHandler</a>());
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>              }
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>            }) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>            .option(ChannelOption.SO_BACKLOG, 128) <em class="jxr_comment">// (5)</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>            .childOption(ChannelOption.SO_KEEPALIVE, <strong class="jxr_keyword">true</strong>); <em class="jxr_comment">// (6)</em>
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>        <em class="jxr_comment">// Bind and start to accept incoming connections.</em>
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>        ChannelFuture f = b.bind(addr).sync(); <em class="jxr_comment">// (7)</em>
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>        <em class="jxr_comment">// Wait until the server socket is closed.</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>        <em class="jxr_comment">// In this example, this does not happen, but you can do that to gracefully</em>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>        <em class="jxr_comment">// shut down your server.</em>
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>        f.channel().closeFuture().sync();
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>      } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>        workerGroup.shutdownGracefully();
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>        bossGroup.shutdownGracefully();
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      }
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>    }
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> main(String[] args) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      File path = <strong class="jxr_keyword">new</strong> File(<span class="jxr_string">"/tmp/nettyecho"</span>);
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">if</strong> (args.length &gt; 0) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>        path = <strong class="jxr_keyword">new</strong> File(args[0]);
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">new</strong> <a name="EchoServer" href="../../../../../../org/newsclub/net/unix/demo/netty/EchoServer.html#EchoServer">EchoServer</a>(AFUNIXSocketAddress.of(path)).run();
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <em class="jxr_comment">// new EchoServer(AFTIPCSocketAddress.ofService(Scope.SCOPE_CLUSTER, 128, 3)).run();</em>
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>    }
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

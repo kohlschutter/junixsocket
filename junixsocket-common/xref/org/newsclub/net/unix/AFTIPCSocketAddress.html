@@ -179,8 +179,8 @@
 <a class="jxr_linenumber" name="L171" href="#L171">171</a> 
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>     <strong class="jxr_keyword">private</strong> AddressType(<strong class="jxr_keyword">int</strong> id) {
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>       <strong class="jxr_keyword">super</strong>(id);
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>       <strong class="jxr_keyword">this</strong>.ds = (a, b, c) -&gt; <span class="jxr_string">":"</span> + Integer.toUnsignedString(a) + <span class="jxr_string">":"</span> + Integer.toUnsignedString(b)
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>           + <span class="jxr_string">":"</span> + Integer.toUnsignedString(c);
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>       <strong class="jxr_keyword">this</strong>.ds = (a, b, c) -&gt; <span class="jxr_string">":"</span> + toUnsignedString(a) + <span class="jxr_string">":"</span> + toUnsignedString(b) + <span class="jxr_string">":"</span>
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>           + toUnsignedString(c);
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>     }
 <a class="jxr_linenumber" name="L177" href="#L177">177</a> 
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>     <strong class="jxr_keyword">private</strong> AddressType(String name, <strong class="jxr_keyword">int</strong> id, DebugStringProvider ds) {
@@ -439,9 +439,9 @@
 <a class="jxr_linenumber" name="L431" href="#L431">431</a> 
 <a class="jxr_linenumber" name="L432" href="#L432">432</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">int</strong> parseUnsignedInt(String v) {
 <a class="jxr_linenumber" name="L433" href="#L433">433</a>     <strong class="jxr_keyword">if</strong> (v.startsWith(<span class="jxr_string">"0x"</span>)) {
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>       <strong class="jxr_keyword">return</strong> Integer.parseUnsignedInt(v.substring(2), 16);
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>       <strong class="jxr_keyword">return</strong> parseUnsignedInt(v.substring(2), 16);
 <a class="jxr_linenumber" name="L435" href="#L435">435</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>       <strong class="jxr_keyword">return</strong> Integer.parseUnsignedInt(v);
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>       <strong class="jxr_keyword">return</strong> parseUnsignedInt(v, 10);
 <a class="jxr_linenumber" name="L437" href="#L437">437</a>     }
 <a class="jxr_linenumber" name="L438" href="#L438">438</a>   }
 <a class="jxr_linenumber" name="L439" href="#L439">439</a> 
@@ -694,9 +694,9 @@
 <a class="jxr_linenumber" name="L686" href="#L686">686</a> 
 <a class="jxr_linenumber" name="L687" href="#L687">687</a>   <strong class="jxr_keyword">private</strong> String toTipcInt(<strong class="jxr_keyword">int</strong> v) {
 <a class="jxr_linenumber" name="L688" href="#L688">688</a>     <strong class="jxr_keyword">if</strong> (v &lt; 0) {
-<a class="jxr_linenumber" name="L689" href="#L689">689</a>       <strong class="jxr_keyword">return</strong> <span class="jxr_string">"0x"</span> + Integer.toUnsignedString(v, 16);
+<a class="jxr_linenumber" name="L689" href="#L689">689</a>       <strong class="jxr_keyword">return</strong> <span class="jxr_string">"0x"</span> + toUnsignedString(v, 16);
 <a class="jxr_linenumber" name="L690" href="#L690">690</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L691" href="#L691">691</a>       <strong class="jxr_keyword">return</strong> Integer.toUnsignedString(v);
+<a class="jxr_linenumber" name="L691" href="#L691">691</a>       <strong class="jxr_keyword">return</strong> toUnsignedString(v);
 <a class="jxr_linenumber" name="L692" href="#L692">692</a>     }
 <a class="jxr_linenumber" name="L693" href="#L693">693</a>   }
 <a class="jxr_linenumber" name="L694" href="#L694">694</a> 

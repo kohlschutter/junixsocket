@@ -424,87 +424,91 @@ final class NativeLibraryLoader implements Closeable {
 <span class="nc" id="L424">      list.add(arch + &quot;-&quot; + &quot;Windows10&quot;);</span>
     }
 
-<span class="fc" id="L427">    return list;</span>
+<span class="pc bpc" id="L427" title="2 of 4 branches missed.">    if (&quot;MacOSX&quot;.equals(osName) &amp;&amp; &quot;x86_64&quot;.equals(arch)) {</span>
+<span class="nc" id="L428">      list.add(&quot;aarch64-MacOSX&quot;); // Rosetta 2</span>
+    }
+
+<span class="fc" id="L431">    return list;</span>
   }
 
   private static boolean checkAndroid() {
-<span class="fc" id="L431">    String vmName = lookupArchProperty(&quot;java.vm.name&quot;, &quot;UnknownVM&quot;);</span>
-<span class="fc" id="L432">    String vmSpecVendor = lookupArchProperty(&quot;java.vm.specification.vendor&quot;,</span>
+<span class="fc" id="L435">    String vmName = lookupArchProperty(&quot;java.vm.name&quot;, &quot;UnknownVM&quot;);</span>
+<span class="fc" id="L436">    String vmSpecVendor = lookupArchProperty(&quot;java.vm.specification.vendor&quot;,</span>
         &quot;UnknownSpecificationVendor&quot;);
 
-<span class="pc bpc" id="L435" title="2 of 4 branches missed.">    return (&quot;Dalvik&quot;.equals(vmName) || vmSpecVendor.contains(&quot;Android&quot;));</span>
+<span class="pc bpc" id="L439" title="2 of 4 branches missed.">    return (&quot;Dalvik&quot;.equals(vmName) || vmSpecVendor.contains(&quot;Android&quot;));</span>
   }
 
   static boolean isAndroid() {
-<span class="fc" id="L439">    return IS_ANDROID;</span>
+<span class="fc" id="L443">    return IS_ANDROID;</span>
   }
 
   static List&lt;String&gt; getArchitectureAndOS() {
-<span class="nc" id="L443">    return ARCHITECTURE_AND_OS;</span>
+<span class="nc" id="L447">    return ARCHITECTURE_AND_OS;</span>
   }
 
   private static URL validateResourceURL(URL url) {
-<span class="fc bfc" id="L447" title="All 2 branches covered.">    if (url == null) {</span>
-<span class="fc" id="L448">      return null;</span>
+<span class="fc bfc" id="L451" title="All 2 branches covered.">    if (url == null) {</span>
+<span class="fc" id="L452">      return null;</span>
     }
-<span class="fc" id="L450">    try (InputStream in = url.openStream()) {</span>
-<span class="fc" id="L451">      return url;</span>
-<span class="nc" id="L452">    } catch (IOException e) {</span>
-<span class="nc" id="L453">      return null;</span>
+<span class="fc" id="L454">    try (InputStream in = url.openStream()) {</span>
+<span class="fc" id="L455">      return url;</span>
+<span class="nc" id="L456">    } catch (IOException e) {</span>
+<span class="nc" id="L457">      return null;</span>
     }
   }
 
   private List&lt;LibraryCandidate&gt; findLibraryCandidates(String artifactName,
       String libraryNameAndVersion, Class&lt;?&gt; providerClass) {
-<span class="fc" id="L459">    String mappedName = System.mapLibraryName(libraryNameAndVersion);</span>
+<span class="fc" id="L463">    String mappedName = System.mapLibraryName(libraryNameAndVersion);</span>
 
-<span class="pc bpc" id="L461" title="1 of 2 branches missed.">    String[] prefixes = mappedName.startsWith(&quot;lib&quot;) ? new String[] {&quot;&quot;} : new String[] {&quot;&quot;, &quot;lib&quot;};</span>
+<span class="pc bpc" id="L465" title="1 of 2 branches missed.">    String[] prefixes = mappedName.startsWith(&quot;lib&quot;) ? new String[] {&quot;&quot;} : new String[] {&quot;&quot;, &quot;lib&quot;};</span>
 
-<span class="fc" id="L463">    List&lt;LibraryCandidate&gt; list = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L464" title="All 2 branches covered.">    for (String archOs : ARCHITECTURE_AND_OS) {</span>
-<span class="fc bfc" id="L465" title="All 2 branches covered.">      for (String compiler : new String[] {&quot;clang&quot;, &quot;gcc&quot;</span>
+<span class="fc" id="L467">    List&lt;LibraryCandidate&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L468" title="All 2 branches covered.">    for (String archOs : ARCHITECTURE_AND_OS) {</span>
+<span class="fc bfc" id="L469" title="All 2 branches covered.">      for (String compiler : new String[] {&quot;clang&quot;, &quot;gcc&quot;</span>
           // &quot;gpp&quot;, &quot;g++&quot;, &quot;linker&quot;, &quot;clang&quot;, &quot;gcc&quot;, &quot;cc&quot;, &quot;CC&quot;, &quot;icpc&quot;, &quot;icc&quot;, &quot;xlC&quot;, &quot;xlC_r&quot;,
           // &quot;msvc&quot;,
           // &quot;icl&quot;, &quot;ecpc&quot;, &quot;ecc&quot;
       }) {
-<span class="fc bfc" id="L470" title="All 2 branches covered.">        for (String prefix : prefixes) {</span>
-<span class="fc" id="L471">          String path = &quot;/lib/&quot; + archOs + &quot;-&quot; + compiler + &quot;/jni/&quot; + prefix + mappedName;</span>
+<span class="fc bfc" id="L474" title="All 2 branches covered.">        for (String prefix : prefixes) {</span>
+<span class="fc" id="L475">          String path = &quot;/lib/&quot; + archOs + &quot;-&quot; + compiler + &quot;/jni/&quot; + prefix + mappedName;</span>
 
           URL url;
 
-<span class="fc" id="L475">          url = validateResourceURL(providerClass.getResource(path));</span>
-<span class="fc bfc" id="L476" title="All 2 branches covered.">          if (url != null) {</span>
-<span class="fc" id="L477">            list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion, path, url));</span>
+<span class="fc" id="L479">          url = validateResourceURL(providerClass.getResource(path));</span>
+<span class="fc bfc" id="L480" title="All 2 branches covered.">          if (url != null) {</span>
+<span class="fc" id="L481">            list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion, path, url));</span>
           }
 
           // NOTE: we have to try .nodeps version _after_ trying the properly linked one.
           // While the former may throw an UnsatisfiedLinkError, this one may just terminate the VM
           // with a &quot;symbol lookup error&quot;
-<span class="fc" id="L483">          String nodepsPath = nodepsPath(path);</span>
-<span class="pc bpc" id="L484" title="1 of 2 branches missed.">          if (nodepsPath != null) {</span>
-<span class="fc" id="L485">            url = validateResourceURL(providerClass.getResource(nodepsPath));</span>
-<span class="pc bpc" id="L486" title="1 of 2 branches missed.">            if (url != null) {</span>
-<span class="nc" id="L487">              list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion,</span>
+<span class="fc" id="L487">          String nodepsPath = nodepsPath(path);</span>
+<span class="pc bpc" id="L488" title="1 of 2 branches missed.">          if (nodepsPath != null) {</span>
+<span class="fc" id="L489">            url = validateResourceURL(providerClass.getResource(nodepsPath));</span>
+<span class="pc bpc" id="L490" title="1 of 2 branches missed.">            if (url != null) {</span>
+<span class="nc" id="L491">              list.add(new ClasspathLibraryCandidate(artifactName, libraryNameAndVersion,</span>
                   nodepsPath, url));
             }
           }
         }
       }
-<span class="fc" id="L493">    }</span>
-<span class="fc" id="L494">    return list;</span>
+<span class="fc" id="L497">    }</span>
+<span class="fc" id="L498">    return list;</span>
   }
 
   private String nodepsPath(String path) {
-<span class="fc" id="L498">    int lastDot = path.lastIndexOf('.');</span>
-<span class="pc bpc" id="L499" title="1 of 2 branches missed.">    if (lastDot == -1) {</span>
-<span class="nc" id="L500">      return null;</span>
+<span class="fc" id="L502">    int lastDot = path.lastIndexOf('.');</span>
+<span class="pc bpc" id="L503" title="1 of 2 branches missed.">    if (lastDot == -1) {</span>
+<span class="nc" id="L504">      return null;</span>
     } else {
-<span class="fc" id="L502">      return path.substring(0, lastDot) + &quot;.nodeps&quot; + path.substring(lastDot);</span>
+<span class="fc" id="L506">      return path.substring(0, lastDot) + &quot;.nodeps&quot; + path.substring(lastDot);</span>
     }
   }
 
   @Override
   public void close() {
-<span class="fc" id="L508">  }</span>
+<span class="fc" id="L512">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

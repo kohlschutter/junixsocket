@@ -179,12 +179,12 @@ class AFCore extends CleanableState {
 <span class="fc" id="L179">    FileDescriptor fdesc = validFdOrException();</span>
     final ByteBuffer addressTo;
     final int addressToLen;
-<span class="pc bpc" id="L182" title="1 of 2 branches missed.">    if (target == null) {</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">    if (target == null) {</span>
 <span class="fc" id="L183">      addressTo = null;</span>
 <span class="fc" id="L184">      addressToLen = 0;</span>
     } else {
-<span class="nc" id="L186">      addressTo = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();</span>
-<span class="nc" id="L187">      addressToLen = AFSocketAddress.unwrapAddressDirectBufferInternal(addressTo, target);</span>
+<span class="fc" id="L186">      addressTo = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();</span>
+<span class="fc" id="L187">      addressToLen = AFSocketAddress.unwrapAddressDirectBufferInternal(addressTo, target);</span>
     }
 
     // accept &quot;send buffer overflow&quot; as packet loss

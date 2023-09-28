@@ -34,428 +34,472 @@
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> java.io.BufferedReader;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> java.io.FileDescriptor;
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> java.io.InputStreamReader;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> java.lang.ProcessBuilder.Redirect;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> java.net.Socket;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> java.net.SocketException;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> java.net.SocketTimeoutException;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> java.net.StandardSocketOptions;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> java.nio.channels.DatagramChannel;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> java.nio.channels.FileChannel;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> java.nio.channels.ReadableByteChannel;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> java.nio.channels.WritableByteChannel;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> java.nio.charset.StandardCharsets;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.TimeUnit;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketAddress;
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketCapability;
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketCapabilityRequirement;
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXDatagramChannel;
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXServerSocket;
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocket;
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocketAddress;
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocketChannel;
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocketPair;
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.FileDescriptorCast;
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.StdinSocketApp;
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.TestUtil;
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <strong class="jxr_keyword">import</strong> org.opentest4j.AssertionFailedError;
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.testutil.ForkedVM;
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.testutil.ProcessUtilRequirement;
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>  
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>  @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>  @SuppressWarnings(<span class="jxr_string">"PMD.CouplingBetweenObjects"</span>)
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  @SuppressFBWarnings({
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <span class="jxr_string">"THROWS_METHOD_THROWS_CLAUSE_THROWABLE"</span>, <span class="jxr_string">"THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"</span>})
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> FileDescriptorCastTest {
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>    @Test
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>    @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSocketPair() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>      AFUNIXSocketPair&lt;AFUNIXSocketChannel&gt; socketPair = AFUNIXSocketPair.open();
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>      <a name="AFUNIXSocketChannel" href="../../../../../org/newsclub/net/unix/AFUNIXSocketChannel.html#AFUNIXSocketChannel">AFUNIXSocketChannel</a> sock1chan = socketPair.getSocket1();
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      FileDescriptor sock2fd = socketPair.getSocket2().getFileDescriptor();
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>      assertTrue(sock1chan.isConnected());
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>      <a name="FileDescriptorCast" href="../../../../../org/newsclub/net/unix/FileDescriptorCast.html#FileDescriptorCast">FileDescriptorCast</a> fdc = FileDescriptorCast.using(sock2fd);
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> java.io.InputStreamReader;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> java.lang.ProcessBuilder.Redirect;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> java.net.Socket;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> java.net.SocketException;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> java.net.SocketTimeoutException;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> java.net.StandardSocketOptions;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> java.nio.channels.DatagramChannel;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> java.nio.channels.FileChannel;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> java.nio.channels.ReadableByteChannel;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> java.nio.channels.WritableByteChannel;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> java.nio.charset.StandardCharsets;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.CompletableFuture;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.TimeUnit;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketAddress;
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketCapability;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketCapabilityRequirement;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXDatagramChannel;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXServerSocket;
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocket;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocketAddress;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocketChannel;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFUNIXSocketPair;
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.FileDescriptorCast;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.StdinSocketApp;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.TestUtil;
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <strong class="jxr_keyword">import</strong> org.opentest4j.AssertionFailedError;
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.testutil.ForkedVM;
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.testutil.ProcessUtilRequirement;
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  @SuppressWarnings(<span class="jxr_string">"PMD.CouplingBetweenObjects"</span>)
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  @SuppressFBWarnings({
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <span class="jxr_string">"THROWS_METHOD_THROWS_CLAUSE_THROWABLE"</span>, <span class="jxr_string">"THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"</span>})
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> FileDescriptorCastTest {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>    @Test
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSocketPair() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      AFUNIXSocketPair&lt;AFUNIXSocketChannel&gt; socketPair = AFUNIXSocketPair.open();
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      <a name="AFUNIXSocketChannel" href="../../../../../org/newsclub/net/unix/AFUNIXSocketChannel.html#AFUNIXSocketChannel">AFUNIXSocketChannel</a> sock1chan = socketPair.getSocket1();
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      FileDescriptor sock2fd = socketPair.getSocket2().getFileDescriptor();
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>      <em class="jxr_comment">// Limitation: When we emulate socket pairs through non AF_UNIX sockets, we currently do not</em>
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <em class="jxr_comment">// support casting to Socket.class</em>
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>      assertEquals(AFUNIXSocket.supports(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR), fdc
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>          .isAvailable(Socket.<strong class="jxr_keyword">class</strong>));
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>  
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>      <strong class="jxr_keyword">if</strong> (!AFUNIXSocket.supports(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)) {
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>        FileDescriptorCast.using(sock2fd).as(FileChannel.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>        Socket sock2 = FileDescriptorCast.using(sock2fd).as(Socket.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>        assertEquals(AFUNIXSocket.<strong class="jxr_keyword">class</strong>, sock2.getClass());
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>        assertEquals(sock2fd, ((<a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a>) sock2).getFileDescriptor());
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>        <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>          assertTrue(sock2.isConnected());
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>        } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>          <strong class="jxr_keyword">if</strong> (TestUtil.isHaikuOS()) {
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>            <strong class="jxr_keyword">throw</strong> TestUtil.haikuBug18534(e);
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>          } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>            <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>          }
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>        }
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>     }
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>   }
-<a class="jxr_linenumber" name="L102" href="#L102">102</a> 
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>   @Test
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSocketPairNative() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>     AFUNIXSocketPair&lt;AFUNIXSocketChannel&gt; socketPair = AFUNIXSocketPair.open();
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>     <a name="AFUNIXSocketChannel" href="../../../../../org/newsclub/net/unix/AFUNIXSocketChannel.html#AFUNIXSocketChannel">AFUNIXSocketChannel</a> sock1chan = socketPair.getSocket1();
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>     FileDescriptor sock2fd = socketPair.getSocket2().getFileDescriptor();
-<a class="jxr_linenumber" name="L109" href="#L109">109</a> 
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>     assertTrue(sock1chan.isConnected());
-<a class="jxr_linenumber" name="L111" href="#L111">111</a> 
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>     <a name="AFUNIXSocketChannel" href="../../../../../org/newsclub/net/unix/AFUNIXSocketChannel.html#AFUNIXSocketChannel">AFUNIXSocketChannel</a> sock2chan = FileDescriptorCast.using(sock2fd).as(AFUNIXSocketChannel.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>     assertEquals(sock2fd, sock2chan.getFileDescriptor());
-<a class="jxr_linenumber" name="L114" href="#L114">114</a> 
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>       assertTrue(sock2chan.isConnected());
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>     } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>       <strong class="jxr_keyword">if</strong> (TestUtil.isHaikuOS()) {
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>         <strong class="jxr_keyword">throw</strong> TestUtil.haikuBug18534(e);
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>       } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>         <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>       }
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>     }
-<a class="jxr_linenumber" name="L124" href="#L124">124</a> 
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>     ByteBuffer bb = ByteBuffer.allocate(32);
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>     bb.putInt(0x12345678);
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>     bb.flip();
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>     sock1chan.write(bb);
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>     bb.clear();
-<a class="jxr_linenumber" name="L130" href="#L130">130</a> 
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>     assertEquals(4, sock2chan.read(bb));
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>     bb.flip();
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>     assertEquals(0x12345678, bb.getInt());
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>   }
-<a class="jxr_linenumber" name="L135" href="#L135">135</a> 
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>   @Test
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUnconnectedServerAsSocket() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> ass = AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.ofNewTempFile(),
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>         <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>         <a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> ass2 = AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.ofNewTempFile(),
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>             <strong class="jxr_keyword">true</strong>)) {
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>       FileDescriptor fd = ass.getFileDescriptor();
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>       assertTrue(fd.valid());
-<a class="jxr_linenumber" name="L144" href="#L144">144</a> 
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>       <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> sock = FileDescriptorCast.using(fd).as(AFUNIXSocket.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>       assertTrue(sock.isBound());
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>       assertFalse(sock.isConnected());
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      assertTrue(sock1chan.isConnected());
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      <a name="FileDescriptorCast" href="../../../../../org/newsclub/net/unix/FileDescriptorCast.html#FileDescriptorCast">FileDescriptorCast</a> fdc = FileDescriptorCast.using(sock2fd);
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      <em class="jxr_comment">// Limitation: When we emulate socket pairs through non AF_UNIX sockets, we currently do not</em>
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      <em class="jxr_comment">// support casting to Socket.class</em>
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      assertEquals(AFUNIXSocket.supports(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR), fdc
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          .isAvailable(Socket.<strong class="jxr_keyword">class</strong>));
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>      <strong class="jxr_keyword">if</strong> (!AFUNIXSocket.supports(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)) {
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>        FileDescriptorCast.using(sock2fd).as(FileChannel.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>        Socket sock2 = FileDescriptorCast.using(sock2fd).as(Socket.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>        assertEquals(AFUNIXSocket.<strong class="jxr_keyword">class</strong>, sock2.getClass());
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>        assertEquals(sock2fd, ((<a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a>) sock2).getFileDescriptor());
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>        <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>          assertTrue(sock2.isConnected());
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>        } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>          <strong class="jxr_keyword">if</strong> (TestUtil.isHaikuOS()) {
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>            <strong class="jxr_keyword">throw</strong> TestUtil.haikuBug18534(e);
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>           <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         }
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>       }
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>     }
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>   }
+<a class="jxr_linenumber" name="L106" href="#L106">106</a> 
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>   @Test
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSocketPairNative() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>     AFUNIXSocketPair&lt;AFUNIXSocketChannel&gt; socketPair = AFUNIXSocketPair.open();
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>     <a name="AFUNIXSocketChannel" href="../../../../../org/newsclub/net/unix/AFUNIXSocketChannel.html#AFUNIXSocketChannel">AFUNIXSocketChannel</a> sock1chan = socketPair.getSocket1();
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>     FileDescriptor sock2fd = socketPair.getSocket2().getFileDescriptor();
+<a class="jxr_linenumber" name="L113" href="#L113">113</a> 
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>     assertTrue(sock1chan.isConnected());
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> 
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>     <a name="AFUNIXSocketChannel" href="../../../../../org/newsclub/net/unix/AFUNIXSocketChannel.html#AFUNIXSocketChannel">AFUNIXSocketChannel</a> sock2chan = FileDescriptorCast.using(sock2fd).as(AFUNIXSocketChannel.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>     assertEquals(sock2fd, sock2chan.getFileDescriptor());
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> 
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>       assertTrue(sock2chan.isConnected());
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>     } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>       <strong class="jxr_keyword">if</strong> (TestUtil.isHaikuOS()) {
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>         <strong class="jxr_keyword">throw</strong> TestUtil.haikuBug18534(e);
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>       } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>         <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>       }
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>     }
+<a class="jxr_linenumber" name="L128" href="#L128">128</a> 
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>     ByteBuffer bb = ByteBuffer.allocate(32);
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>     bb.putInt(0x12345678);
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>     bb.flip();
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>     sock1chan.write(bb);
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>     bb.clear();
+<a class="jxr_linenumber" name="L134" href="#L134">134</a> 
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>     assertEquals(4, sock2chan.read(bb));
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>     bb.flip();
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>     assertEquals(0x12345678, bb.getInt());
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>   }
+<a class="jxr_linenumber" name="L139" href="#L139">139</a> 
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>   @Test
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUnconnectedServerAsSocket() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> ass = AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.ofNewTempFile(),
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>         <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>         <a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> ass2 = AFUNIXServerSocket.bindOn(AFUNIXSocketAddress.ofNewTempFile(),
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>             <strong class="jxr_keyword">true</strong>)) {
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>       FileDescriptor fd = ass.getFileDescriptor();
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>       assertTrue(fd.valid());
 <a class="jxr_linenumber" name="L148" href="#L148">148</a> 
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>       <em class="jxr_comment">// We can cast a server socket (which is listening by default) to a socket, but we can't</em>
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>       <em class="jxr_comment">// connect</em>
-<a class="jxr_linenumber" name="L151" href="#L151">151</a> 
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>       <em class="jxr_comment">// NOTE: OpenBSD blocks on such a non-permissible cast, so we set a timeout</em>
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>       <em class="jxr_comment">// This will cause a SocketTimeoutException, which we change to a SocketException</em>
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>       <em class="jxr_comment">// so our tests can still pass</em>
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>       sock.setSoTimeout(1);
-<a class="jxr_linenumber" name="L156" href="#L156">156</a> 
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>       assertThrows(SocketException.<strong class="jxr_keyword">class</strong>, () -&gt; {
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>           sock.connect(ass2.getLocalSocketAddress());
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>         } <strong class="jxr_keyword">catch</strong> (SocketTimeoutException e) {
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SocketException().initCause(e);
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>         }
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>       });
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>       assertThrows(SocketException.<strong class="jxr_keyword">class</strong>, () -&gt; {
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>           sock.connect(ass.getLocalSocketAddress());
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>         } <strong class="jxr_keyword">catch</strong> (SocketTimeoutException e) {
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SocketException().initCause(e);
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>         }
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>       });
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>       assertThrows(SocketException.<strong class="jxr_keyword">class</strong>, () -&gt; {
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>           sock.getInputStream().read();
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>         } <strong class="jxr_keyword">catch</strong> (SocketTimeoutException e) {
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SocketException().initCause(e);
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>         }
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>       });
-<a class="jxr_linenumber" name="L178" href="#L178">178</a> 
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>       assertNull(sock.getRemoteSocketAddress());
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>       assertFalse(sock.isConnected());
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>     }
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>   }
-<a class="jxr_linenumber" name="L183" href="#L183">183</a> 
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>   @Test
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testServer() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> serverAddress = AFUNIXSocketAddress.ofNewTempFile();
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> ass = AFUNIXServerSocket.bindOn(serverAddress, <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>         <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> sock = AFUNIXSocket.connectTo(serverAddress)) {
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>       <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> sock1 = FileDescriptorCast.using(sock.getFileDescriptor()).as(
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>           AFUNIXSocket.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>         assertEquals(sock.isBound(), sock1.isBound());
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>         assertEquals(sock.isConnected(), sock1.isConnected());
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>         assertTrue(sock1.isConnected());
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>       } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>         <strong class="jxr_keyword">if</strong> (TestUtil.isHaikuOS()) {
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>           <strong class="jxr_keyword">throw</strong> TestUtil.haikuBug18534(e);
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>           <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>         }
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>       }
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>       assertEquals(sock.getRemoteSocketAddress(), sock1.getRemoteSocketAddress());
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>       assertEquals(ass.getLocalSocketAddress(), sock.getRemoteSocketAddress());
-<a class="jxr_linenumber" name="L204" href="#L204">204</a> 
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>       <a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> serverSock = FileDescriptorCast.using(ass.getFileDescriptor()).as(
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>           AFUNIXServerSocket.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>       <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> sock0 = serverSock.accept();
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>       assertEquals(ass.getLocalSocketAddress(), sock0.getLocalSocketAddress());
-<a class="jxr_linenumber" name="L209" href="#L209">209</a> 
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>       sock0.getOutputStream().write(23);
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>       assertEquals(23, sock1.getInputStream().read());
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>     }
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>   }
-<a class="jxr_linenumber" name="L214" href="#L214">214</a> 
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>   @Test
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDatagramSocket() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L218" href="#L218">218</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr1 = AFUNIXSocketAddress.ofNewTempFile();
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr2 = AFUNIXSocketAddress.ofNewTempFile();
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc1 = AFUNIXDatagramChannel.open();
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc2 = AFUNIXDatagramChannel.open()) {
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>       dc1.setDeleteOnClose(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>       dc2.setDeleteOnClose(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>       ByteBuffer bb = ByteBuffer.allocate(32);
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>       bb.putInt(1234);
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>       bb.flip();
-<a class="jxr_linenumber" name="L227" href="#L227">227</a> 
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>       dc1.getOption(StandardSocketOptions.SO_SNDBUF);
-<a class="jxr_linenumber" name="L229" href="#L229">229</a> 
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>       <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc1c = FileDescriptorCast.using(dc1.getFileDescriptor()).as(
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>           AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>       <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc2c = FileDescriptorCast.using(dc2.getFileDescriptor()).as(
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>           AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L234" href="#L234">234</a> 
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>       assertFalse(dc1.isBound());
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>       assertFalse(dc1c.isBound());
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>       assertFalse(dc2.isBound());
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>       assertFalse(dc2c.isBound());
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>       dc1.bind(addr1);
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>       dc2.bind(addr2);
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>       assertTrue(dc1.isBound());
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>       assertTrue(dc1c.isBound());
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>       assertTrue(dc2.isBound());
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>       assertTrue(dc2c.isBound());
-<a class="jxr_linenumber" name="L245" href="#L245">245</a> 
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>       assertEquals(dc1.getLocalAddress(), dc1c.getLocalAddress());
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>       assertEquals(dc2.getLocalAddress(), dc2c.getLocalAddress());
-<a class="jxr_linenumber" name="L248" href="#L248">248</a> 
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>       dc1c.connect(addr2);
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>       dc2c.connect(addr1);
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>       assertTrue(dc1c.isConnected());
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>       <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> sock = FileDescriptorCast.using(fd).as(AFUNIXSocket.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>       assertTrue(sock.isBound());
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>       assertFalse(sock.isConnected());
+<a class="jxr_linenumber" name="L152" href="#L152">152</a> 
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>       <em class="jxr_comment">// We can cast a server socket (which is listening by default) to a socket, but we can't</em>
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>       <em class="jxr_comment">// connect</em>
+<a class="jxr_linenumber" name="L155" href="#L155">155</a> 
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>       <em class="jxr_comment">// NOTE: OpenBSD blocks on such a non-permissible cast, so we set a timeout</em>
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>       <em class="jxr_comment">// This will cause a SocketTimeoutException, which we change to a SocketException</em>
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>       <em class="jxr_comment">// so our tests can still pass</em>
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>       sock.setSoTimeout(1);
+<a class="jxr_linenumber" name="L160" href="#L160">160</a> 
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>       assertThrows(SocketException.<strong class="jxr_keyword">class</strong>, () -&gt; {
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>           sock.connect(ass2.getLocalSocketAddress());
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>         } <strong class="jxr_keyword">catch</strong> (SocketTimeoutException e) {
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SocketException().initCause(e);
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>         }
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>       });
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>       assertThrows(SocketException.<strong class="jxr_keyword">class</strong>, () -&gt; {
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>           sock.connect(ass.getLocalSocketAddress());
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>         } <strong class="jxr_keyword">catch</strong> (SocketTimeoutException e) {
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SocketException().initCause(e);
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>         }
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>       });
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>       assertThrows(SocketException.<strong class="jxr_keyword">class</strong>, () -&gt; {
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>           sock.getInputStream().read();
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>         } <strong class="jxr_keyword">catch</strong> (SocketTimeoutException e) {
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> SocketException().initCause(e);
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>         }
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>       });
+<a class="jxr_linenumber" name="L182" href="#L182">182</a> 
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>       assertNull(sock.getRemoteSocketAddress());
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>       assertFalse(sock.isConnected());
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>     }
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>   }
+<a class="jxr_linenumber" name="L187" href="#L187">187</a> 
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>   @Test
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testServer() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> serverAddress = AFUNIXSocketAddress.ofNewTempFile();
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> ass = AFUNIXServerSocket.bindOn(serverAddress, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>         <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> sock = AFUNIXSocket.connectTo(serverAddress)) {
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>       <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> sock1 = FileDescriptorCast.using(sock.getFileDescriptor()).as(
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>           AFUNIXSocket.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>         assertEquals(sock.isBound(), sock1.isBound());
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>         assertEquals(sock.isConnected(), sock1.isConnected());
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>         assertTrue(sock1.isConnected());
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>       } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>         <strong class="jxr_keyword">if</strong> (TestUtil.isHaikuOS()) {
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>           <strong class="jxr_keyword">throw</strong> TestUtil.haikuBug18534(e);
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>           <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>         }
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>       }
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>       assertEquals(sock.getRemoteSocketAddress(), sock1.getRemoteSocketAddress());
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>       assertEquals(ass.getLocalSocketAddress(), sock.getRemoteSocketAddress());
+<a class="jxr_linenumber" name="L208" href="#L208">208</a> 
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>       <a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> serverSock = FileDescriptorCast.using(ass.getFileDescriptor()).as(
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>           AFUNIXServerSocket.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>       <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> sock0 = serverSock.accept();
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>       assertEquals(ass.getLocalSocketAddress(), sock0.getLocalSocketAddress());
+<a class="jxr_linenumber" name="L213" href="#L213">213</a> 
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>       sock0.getOutputStream().write(23);
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>       assertEquals(23, sock1.getInputStream().read());
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>     }
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>   }
+<a class="jxr_linenumber" name="L218" href="#L218">218</a> 
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>   @Test
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDatagramSocket() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr1 = AFUNIXSocketAddress.ofNewTempFile();
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr2 = AFUNIXSocketAddress.ofNewTempFile();
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc1 = AFUNIXDatagramChannel.open();
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc2 = AFUNIXDatagramChannel.open()) {
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>       dc1.setDeleteOnClose(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>       dc2.setDeleteOnClose(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>       ByteBuffer bb = ByteBuffer.allocate(32);
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>       bb.putInt(1234);
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>       bb.flip();
+<a class="jxr_linenumber" name="L231" href="#L231">231</a> 
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>       dc1.getOption(StandardSocketOptions.SO_SNDBUF);
+<a class="jxr_linenumber" name="L233" href="#L233">233</a> 
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>       <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc1c = FileDescriptorCast.using(dc1.getFileDescriptor()).as(
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>           AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>       <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc2c = FileDescriptorCast.using(dc2.getFileDescriptor()).as(
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>           AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L238" href="#L238">238</a> 
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>       assertFalse(dc1.isBound());
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>       assertFalse(dc1c.isBound());
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>       assertFalse(dc2.isBound());
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>       assertFalse(dc2c.isBound());
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>       dc1.bind(addr1);
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>       dc2.bind(addr2);
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>       assertTrue(dc1.isBound());
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>       assertTrue(dc1c.isBound());
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>       assertTrue(dc2.isBound());
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>       assertTrue(dc2c.isBound());
+<a class="jxr_linenumber" name="L249" href="#L249">249</a> 
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>       assertEquals(dc1.getLocalAddress(), dc1c.getLocalAddress());
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>       assertEquals(dc2.getLocalAddress(), dc2c.getLocalAddress());
 <a class="jxr_linenumber" name="L252" href="#L252">252</a> 
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>       assertEquals(4, dc1c.write(bb));
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>       bb.clear();
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>       assertEquals(4, dc2c.read(bb));
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>       bb.flip();
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>       assertEquals(1234, bb.getInt());
-<a class="jxr_linenumber" name="L258" href="#L258">258</a> 
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>         assertTrue(dc1.isConnected());
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>         assertEquals(dc1.getLocalAddress(), dc2c.getRemoteAddress());
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>         assertEquals(dc1.getRemoteAddress(), dc2c.getLocalAddress());
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>         assertEquals(dc1c.getLocalAddress(), dc2.getRemoteAddress());
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>         assertEquals(dc1c.getRemoteAddress(), dc2.getLocalAddress());
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>       } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>         <strong class="jxr_keyword">if</strong> (TestUtil.isHaikuOS()) {
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>           <strong class="jxr_keyword">throw</strong> TestUtil.haikuBug18534(e);
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>           <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>         }
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>       }
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>     }
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>   }
-<a class="jxr_linenumber" name="L274" href="#L274">274</a> 
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>   @Test
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>   @SuppressFBWarnings(<span class="jxr_string">"DCN_NULLPOINTER_EXCEPTION"</span>)
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSocketPorts() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr = AFUNIXSocketAddress.ofNewTempPath(123);
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> ass = AFUNIXServerSocket.bindOn(addr)) {
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>       assertEquals(123, ass.getLocalPort());
-<a class="jxr_linenumber" name="L281" href="#L281">281</a> 
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>       @SuppressWarnings(<span class="jxr_string">"checkstyle:VariableDeclarationUsageDistance"</span>)
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>       <a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> ass1 = FileDescriptorCast.using(ass.getFileDescriptor()).withLocalPort(123)
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>           .as(AFUNIXServerSocket.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>       assertEquals(123, ass.getLocalPort());
-<a class="jxr_linenumber" name="L286" href="#L286">286</a> 
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>       <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> socket = AFUNIXSocket.connectTo(addr);
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>       <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> rsa = socket.getRemoteSocketAddress();
-<a class="jxr_linenumber" name="L289" href="#L289">289</a> 
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>         Objects.requireNonNull(rsa);
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>       } <strong class="jxr_keyword">catch</strong> (NullPointerException e) {
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>         <strong class="jxr_keyword">if</strong> (TestUtil.isHaikuOS()) {
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>           <strong class="jxr_keyword">throw</strong> TestUtil.haikuBug18534(e);
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>           <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>         }
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>       }
-<a class="jxr_linenumber" name="L299" href="#L299">299</a> 
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>       assertEquals(123, rsa.getPort());
-<a class="jxr_linenumber" name="L301" href="#L301">301</a> 
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>       <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> socket1 = FileDescriptorCast.using(socket.getFileDescriptor()).withRemotePort(
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>           123).as(AFUNIXSocket.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>       assertEquals(socket.getRemoteSocketAddress(), socket1.getRemoteSocketAddress());
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>       assertEquals(123, socket1.getRemoteSocketAddress().getPort());
-<a class="jxr_linenumber" name="L306" href="#L306">306</a> 
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>       <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> ss = ass1.accept();
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>       assertEquals(123, ss.getLocalPort());
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>       assertEquals(123, ss.getLocalSocketAddress().getPort());
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>     }
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>   }
-<a class="jxr_linenumber" name="L312" href="#L312">312</a> 
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> getPort(AFSocketAddress addr) {
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>     <strong class="jxr_keyword">if</strong> (addr == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>       <strong class="jxr_keyword">return</strong> -1;
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>       <strong class="jxr_keyword">return</strong> addr.getPort();
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>     }
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>   }
-<a class="jxr_linenumber" name="L320" href="#L320">320</a> 
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>   @Test
-<a class="jxr_linenumber" name="L322" href="#L322">322</a>   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDatagramPorts() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr = AFUNIXSocketAddress.ofNewTempPath(123);
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>     assertEquals(123, addr.getPort());
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc1 = AFUNIXDatagramChannel.open();
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc2 = AFUNIXDatagramChannel.open()) {
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>       dc1.setDeleteOnClose(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>       dc2.setDeleteOnClose(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L330" href="#L330">330</a> 
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>       assertNull(dc1.getLocalAddress());
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>       assertNull(dc1.getRemoteAddress());
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>       assertNull(dc2.getLocalAddress());
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>       assertNull(dc2.getRemoteAddress());
-<a class="jxr_linenumber" name="L335" href="#L335">335</a> 
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>       dc1.bind(addr);
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>       dc2.connect(addr);
-<a class="jxr_linenumber" name="L338" href="#L338">338</a> 
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>         assertEquals(dc1.getLocalAddress(), dc2.getRemoteAddress());
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>       } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>         <strong class="jxr_keyword">if</strong> (TestUtil.isHaikuOS() &amp;&amp; dc2.getRemoteAddress() == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>           <strong class="jxr_keyword">throw</strong> TestUtil.haikuBug18534(e);
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>           <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>         }
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>       }
-<a class="jxr_linenumber" name="L348" href="#L348">348</a> 
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>       assertEquals(123, getPort(dc1.getLocalAddress()));
-<a class="jxr_linenumber" name="L350" href="#L350">350</a> 
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>       <em class="jxr_comment">// if we don't specify a port, we'll lose that information when casting (only stored in Java)</em>
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>       {
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc1c = FileDescriptorCast.using(dc1.getFileDescriptor()).as(
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>             AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc2c = FileDescriptorCast.using(dc2.getFileDescriptor()).as(
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>             AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L357" href="#L357">357</a> 
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>         assertEquals(0, getPort(dc1c.getLocalAddress()));
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>         assertEquals(0, getPort(dc2c.getRemoteAddress()));
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>       }
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>       dc1c.connect(addr2);
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>       dc2c.connect(addr1);
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>       assertTrue(dc1c.isConnected());
+<a class="jxr_linenumber" name="L256" href="#L256">256</a> 
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>       assertEquals(4, dc1c.write(bb));
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>       bb.clear();
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>       assertEquals(4, dc2c.read(bb));
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>       bb.flip();
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>       assertEquals(1234, bb.getInt());
+<a class="jxr_linenumber" name="L262" href="#L262">262</a> 
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>         assertTrue(dc1.isConnected());
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>         assertEquals(dc1.getLocalAddress(), dc2c.getRemoteAddress());
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>         assertEquals(dc1.getRemoteAddress(), dc2c.getLocalAddress());
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>         assertEquals(dc1c.getLocalAddress(), dc2.getRemoteAddress());
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>         assertEquals(dc1c.getRemoteAddress(), dc2.getLocalAddress());
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>       } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>         <strong class="jxr_keyword">if</strong> (TestUtil.isHaikuOS()) {
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>           <strong class="jxr_keyword">throw</strong> TestUtil.haikuBug18534(e);
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>           <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>         }
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>       }
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>     }
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>   }
+<a class="jxr_linenumber" name="L278" href="#L278">278</a> 
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>   @Test
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>   @SuppressFBWarnings(<span class="jxr_string">"DCN_NULLPOINTER_EXCEPTION"</span>)
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testSocketPorts() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr = AFUNIXSocketAddress.ofNewTempPath(123);
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> ass = AFUNIXServerSocket.bindOn(addr)) {
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>       assertEquals(123, ass.getLocalPort());
+<a class="jxr_linenumber" name="L285" href="#L285">285</a> 
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>       @SuppressWarnings(<span class="jxr_string">"checkstyle:VariableDeclarationUsageDistance"</span>)
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>       <a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> ass1 = FileDescriptorCast.using(ass.getFileDescriptor()).withLocalPort(123)
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>           .as(AFUNIXServerSocket.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>       assertEquals(123, ass.getLocalPort());
+<a class="jxr_linenumber" name="L290" href="#L290">290</a> 
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>       <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> socket = AFUNIXSocket.connectTo(addr);
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>       <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> rsa = socket.getRemoteSocketAddress();
+<a class="jxr_linenumber" name="L293" href="#L293">293</a> 
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>         Objects.requireNonNull(rsa);
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>       } <strong class="jxr_keyword">catch</strong> (NullPointerException e) {
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>         <strong class="jxr_keyword">if</strong> (TestUtil.isHaikuOS()) {
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>           <strong class="jxr_keyword">throw</strong> TestUtil.haikuBug18534(e);
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>           <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         }
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>       }
+<a class="jxr_linenumber" name="L303" href="#L303">303</a> 
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>       assertEquals(123, rsa.getPort());
+<a class="jxr_linenumber" name="L305" href="#L305">305</a> 
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>       <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> socket1 = FileDescriptorCast.using(socket.getFileDescriptor()).withRemotePort(
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>           123).as(AFUNIXSocket.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>       assertEquals(socket.getRemoteSocketAddress(), socket1.getRemoteSocketAddress());
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>       assertEquals(123, socket1.getRemoteSocketAddress().getPort());
+<a class="jxr_linenumber" name="L310" href="#L310">310</a> 
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>       <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> ss = ass1.accept();
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>       assertEquals(123, ss.getLocalPort());
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>       assertEquals(123, ss.getLocalSocketAddress().getPort());
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>     }
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>   }
+<a class="jxr_linenumber" name="L316" href="#L316">316</a> 
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> getPort(AFSocketAddress addr) {
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>     <strong class="jxr_keyword">if</strong> (addr == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>       <strong class="jxr_keyword">return</strong> -1;
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>       <strong class="jxr_keyword">return</strong> addr.getPort();
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>     }
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>   }
+<a class="jxr_linenumber" name="L324" href="#L324">324</a> 
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>   @Test
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDatagramPorts() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr = AFUNIXSocketAddress.ofNewTempPath(123);
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>     assertEquals(123, addr.getPort());
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc1 = AFUNIXDatagramChannel.open();
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc2 = AFUNIXDatagramChannel.open()) {
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>       dc1.setDeleteOnClose(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>       dc2.setDeleteOnClose(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L334" href="#L334">334</a> 
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>       assertNull(dc1.getLocalAddress());
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>       assertNull(dc1.getRemoteAddress());
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>       assertNull(dc2.getLocalAddress());
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>       assertNull(dc2.getRemoteAddress());
+<a class="jxr_linenumber" name="L339" href="#L339">339</a> 
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>       dc1.bind(addr);
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>       dc2.connect(addr);
+<a class="jxr_linenumber" name="L342" href="#L342">342</a> 
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>         assertEquals(dc1.getLocalAddress(), dc2.getRemoteAddress());
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>       } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>         <strong class="jxr_keyword">if</strong> (TestUtil.isHaikuOS() &amp;&amp; dc2.getRemoteAddress() == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>           <strong class="jxr_keyword">throw</strong> TestUtil.haikuBug18534(e);
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>           <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>         }
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>       }
+<a class="jxr_linenumber" name="L352" href="#L352">352</a> 
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>       assertEquals(123, getPort(dc1.getLocalAddress()));
+<a class="jxr_linenumber" name="L354" href="#L354">354</a> 
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>       <em class="jxr_comment">// if we don't specify a port, we'll lose that information when casting (only stored in Java)</em>
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>       {
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc1c = FileDescriptorCast.using(dc1.getFileDescriptor()).as(
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>             AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc2c = FileDescriptorCast.using(dc2.getFileDescriptor()).as(
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>             AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L361" href="#L361">361</a> 
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>       <em class="jxr_comment">// we need to specify local and/or remote ports when working directly with file descriptors</em>
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>       {
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc1c = FileDescriptorCast.using(dc1.getFileDescriptor())
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>             .withLocalPort(123).as(AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc2c = FileDescriptorCast.using(dc2.getFileDescriptor())
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>             .withRemotePort(123).as(AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L368" href="#L368">368</a> 
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>         assertEquals(123, getPort(dc1c.getLocalAddress()));
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>         <strong class="jxr_keyword">int</strong> remotePort = getPort(dc2c.getRemoteAddress());
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>         <strong class="jxr_keyword">if</strong> (remotePort == -1) {
-<a class="jxr_linenumber" name="L372" href="#L372">372</a>           <em class="jxr_comment">// that's acceptable, too (seen on z/OS)</em>
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>           assertNull(dc2c.getRemoteAddress());
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>           assertEquals(123, remotePort);
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>         }
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>       }
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>     }
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>   }
-<a class="jxr_linenumber" name="L380" href="#L380">380</a> 
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>   @Test
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDatagramFileChannel() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr = AFUNIXSocketAddress.ofNewTempPath(123);
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc1 = AFUNIXDatagramChannel.open();
-<a class="jxr_linenumber" name="L386" href="#L386">386</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc2 = AFUNIXDatagramChannel.open()) {
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>       dc1.setDeleteOnClose(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>       dc2.setDeleteOnClose(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>       dc1.bind(addr);
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>       dc2.connect(addr);
-<a class="jxr_linenumber" name="L391" href="#L391">391</a> 
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>       <a name="FileDescriptorCast" href="../../../../../org/newsclub/net/unix/FileDescriptorCast.html#FileDescriptorCast">FileDescriptorCast</a> fdc1 = FileDescriptorCast.using(dc1.getFileDescriptor());
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>       assertTrue(fdc1.isAvailable(DatagramChannel.<strong class="jxr_keyword">class</strong>));
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>       assertTrue(fdc1.isAvailable(AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>));
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>       assertTrue(fdc1.isAvailable(FileChannel.<strong class="jxr_keyword">class</strong>));
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>       assertTrue(fdc1.availableTypes().contains(ReadableByteChannel.<strong class="jxr_keyword">class</strong>));
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>       assertTrue(fdc1.availableTypes().contains(WritableByteChannel.<strong class="jxr_keyword">class</strong>));
-<a class="jxr_linenumber" name="L398" href="#L398">398</a> 
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>       FileChannel fc = fdc1.as(FileChannel.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>       ByteBuffer bb = ByteBuffer.allocate(4);
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>       bb.putInt(0x12345678);
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>       bb.flip();
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>       dc2.write(bb);
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>       bb.clear();
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>       assertEquals(4, fc.read(bb));
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>         assertEquals(0, getPort(dc1c.getLocalAddress()));
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>         assertEquals(0, getPort(dc2c.getRemoteAddress()));
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>       }
+<a class="jxr_linenumber" name="L365" href="#L365">365</a> 
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>       <em class="jxr_comment">// we need to specify local and/or remote ports when working directly with file descriptors</em>
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>       {
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc1c = FileDescriptorCast.using(dc1.getFileDescriptor())
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>             .withLocalPort(123).as(AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc2c = FileDescriptorCast.using(dc2.getFileDescriptor())
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>             .withRemotePort(123).as(AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L372" href="#L372">372</a> 
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>         assertEquals(123, getPort(dc1c.getLocalAddress()));
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>         <strong class="jxr_keyword">int</strong> remotePort = getPort(dc2c.getRemoteAddress());
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>         <strong class="jxr_keyword">if</strong> (remotePort == -1) {
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>           <em class="jxr_comment">// that's acceptable, too (seen on z/OS)</em>
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>           assertNull(dc2c.getRemoteAddress());
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>           assertEquals(123, remotePort);
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>         }
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>       }
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>     }
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>   }
+<a class="jxr_linenumber" name="L384" href="#L384">384</a> 
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>   @Test
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDatagramFileChannel() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr = AFUNIXSocketAddress.ofNewTempPath(123);
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc1 = AFUNIXDatagramChannel.open();
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>         <a name="AFUNIXDatagramChannel" href="../../../../../org/newsclub/net/unix/AFUNIXDatagramChannel.html#AFUNIXDatagramChannel">AFUNIXDatagramChannel</a> dc2 = AFUNIXDatagramChannel.open()) {
+<a class="jxr_linenumber" name="L391" href="#L391">391</a>       dc1.setDeleteOnClose(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>       dc2.setDeleteOnClose(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>       dc1.bind(addr);
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>       dc2.connect(addr);
+<a class="jxr_linenumber" name="L395" href="#L395">395</a> 
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>       <a name="FileDescriptorCast" href="../../../../../org/newsclub/net/unix/FileDescriptorCast.html#FileDescriptorCast">FileDescriptorCast</a> fdc1 = FileDescriptorCast.using(dc1.getFileDescriptor());
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>       assertTrue(fdc1.isAvailable(DatagramChannel.<strong class="jxr_keyword">class</strong>));
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>       assertTrue(fdc1.isAvailable(AFUNIXDatagramChannel.<strong class="jxr_keyword">class</strong>));
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>       assertTrue(fdc1.isAvailable(FileChannel.<strong class="jxr_keyword">class</strong>));
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>       assertTrue(fdc1.availableTypes().contains(ReadableByteChannel.<strong class="jxr_keyword">class</strong>));
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>       assertTrue(fdc1.availableTypes().contains(WritableByteChannel.<strong class="jxr_keyword">class</strong>));
+<a class="jxr_linenumber" name="L402" href="#L402">402</a> 
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>       FileChannel fc = fdc1.as(FileChannel.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>       ByteBuffer bb = ByteBuffer.allocate(4);
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>       bb.putInt(0x12345678);
 <a class="jxr_linenumber" name="L406" href="#L406">406</a>       bb.flip();
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>       assertEquals(0x12345678, bb.getInt());
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>     }
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>   }
-<a class="jxr_linenumber" name="L410" href="#L410">410</a> 
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L412" href="#L412">412</a> <em class="jxr_javadoccomment">   * Passes a socket to a newly created Java process as "standard input". The new process sends back</em>
-<a class="jxr_linenumber" name="L413" href="#L413">413</a> <em class="jxr_javadoccomment">   * "Hello world" over that socket.</em>
-<a class="jxr_linenumber" name="L414" href="#L414">414</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L415" href="#L415">415</a> <em class="jxr_javadoccomment">   * @throws Exception on failure.</em>
-<a class="jxr_linenumber" name="L416" href="#L416">416</a> <em class="jxr_javadoccomment">   * @see StdinSocketApp</em>
-<a class="jxr_linenumber" name="L417" href="#L417">417</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>   @Test
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_FD_AS_REDIRECT)
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>   @ProcessUtilRequirement(canGetJavaCommandArguments = <strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testForkedVMRedirectStdin() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr = AFUNIXSocketAddress.ofNewTempFile();
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> serverSocket = AFUNIXServerSocket.bindOn(addr);
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>         <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> clientConn = AFUNIXSocket.connectTo(addr);
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>         <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> serverConn = serverSocket.accept()) {
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>       assertTrue(addr.getFile().delete());
-<a class="jxr_linenumber" name="L427" href="#L427">427</a> 
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>       ForkedVM vm = <strong class="jxr_keyword">new</strong> ForkedVM(StdinSocketApp.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L429" href="#L429">429</a>       vm.setRedirectInput(FileDescriptorCast.using(clientConn.getFileDescriptor()).as(
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>           Redirect.<strong class="jxr_keyword">class</strong>));
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>       vm.setRedirectError(Redirect.INHERIT);
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>       <em class="jxr_comment">// vm.setRedirectOutput(Redirect.INHERIT);</em>
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>       Process p = vm.fork();
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>         <strong class="jxr_keyword">try</strong> (BufferedReader br = <strong class="jxr_keyword">new</strong> BufferedReader(<strong class="jxr_keyword">new</strong> InputStreamReader(serverConn
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>             .getInputStream(), StandardCharsets.UTF_8))) {
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>           assertEquals(<span class="jxr_string">"Hello world"</span>, br.readLine());
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>           String l;
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>           <strong class="jxr_keyword">if</strong> ((l = br.readLine()) != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>             fail(<span class="jxr_string">"Unexpected output: "</span> + l);
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>           }
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>         }
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>         assertTrue(p.waitFor(30, TimeUnit.SECONDS));
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>         assertEquals(0, p.exitValue());
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>       } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>         p.destroyForcibly();
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>       }
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>     }
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>   }
-<a class="jxr_linenumber" name="L450" href="#L450">450</a> }
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>       dc2.write(bb);
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>       bb.clear();
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>       assertEquals(4, fc.read(bb));
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>       bb.flip();
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>       assertEquals(0x12345678, bb.getInt());
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>     }
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>   }
+<a class="jxr_linenumber" name="L414" href="#L414">414</a> 
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L416" href="#L416">416</a> <em class="jxr_javadoccomment">   * Passes a socket to a newly created Java process as "standard input". The new process sends back</em>
+<a class="jxr_linenumber" name="L417" href="#L417">417</a> <em class="jxr_javadoccomment">   * "Hello world" over that socket.</em>
+<a class="jxr_linenumber" name="L418" href="#L418">418</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L419" href="#L419">419</a> <em class="jxr_javadoccomment">   * @throws Exception on failure.</em>
+<a class="jxr_linenumber" name="L420" href="#L420">420</a> <em class="jxr_javadoccomment">   * @see StdinSocketApp</em>
+<a class="jxr_linenumber" name="L421" href="#L421">421</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>   @Test
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_FD_AS_REDIRECT)
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>   @ProcessUtilRequirement(canGetJavaCommandArguments = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testForkedVMRedirectStdin() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>     <a name="AFUNIXSocketAddress" href="../../../../../org/newsclub/net/unix/AFUNIXSocketAddress.html#AFUNIXSocketAddress">AFUNIXSocketAddress</a> addr = AFUNIXSocketAddress.ofNewTempFile();
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>     <strong class="jxr_keyword">try</strong> (<a name="AFUNIXServerSocket" href="../../../../../org/newsclub/net/unix/AFUNIXServerSocket.html#AFUNIXServerSocket">AFUNIXServerSocket</a> serverSocket = AFUNIXServerSocket.bindOn(addr);
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>         <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> clientConn = AFUNIXSocket.connectTo(addr);
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>         <a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> serverConn = serverSocket.accept()) {
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>       assertTrue(addr.getFile().delete());
+<a class="jxr_linenumber" name="L431" href="#L431">431</a> 
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>       ForkedVM vm = <strong class="jxr_keyword">new</strong> ForkedVM(StdinSocketApp.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>       vm.setRedirectInput(FileDescriptorCast.using(clientConn.getFileDescriptor()).as(
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>           Redirect.<strong class="jxr_keyword">class</strong>));
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>       vm.setRedirectError(Redirect.INHERIT);
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>       <em class="jxr_comment">// vm.setRedirectOutput(Redirect.INHERIT);</em>
+<a class="jxr_linenumber" name="L437" href="#L437">437</a> 
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>       CompletableFuture&lt;Object&gt; cf = CompletableFuture.supplyAsync(() -&gt; {
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>           <strong class="jxr_keyword">return</strong> vm.fork();
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>         } <strong class="jxr_keyword">catch</strong> (UnsupportedOperationException | IOException e) {
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>           <strong class="jxr_keyword">return</strong> e;
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>         }
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>       });
+<a class="jxr_linenumber" name="L445" href="#L445">445</a> 
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>       Object processObject;
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>         processObject = cf.get(10, TimeUnit.SECONDS);
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>       } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_INFORMATIONAL,
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>             <span class="jxr_string">"Environment may not support forking new processes, which one test requires"</span>, e);
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>       }
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>       <strong class="jxr_keyword">if</strong> (!(processObject instanceof Process)) {
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>         <strong class="jxr_keyword">if</strong> (processObject instanceof Exception) {
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>           <strong class="jxr_keyword">throw</strong> (Exception) processObject;
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (processObject instanceof Throwable) {
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_INFORMATIONAL,
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>               <span class="jxr_string">"Environment may not support forking new processes, which one test requires"</span>,
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>               (Throwable) processObject);
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_INFORMATIONAL,
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>               <span class="jxr_string">"Environment may not support forking new processes, which one test requires"</span>);
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>         }
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>       }
+<a class="jxr_linenumber" name="L465" href="#L465">465</a> 
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>       Process p = (Process) processObject;
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>         <strong class="jxr_keyword">try</strong> (BufferedReader br = <strong class="jxr_keyword">new</strong> BufferedReader(<strong class="jxr_keyword">new</strong> InputStreamReader(serverConn
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>             .getInputStream(), StandardCharsets.UTF_8))) {
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>           assertEquals(<span class="jxr_string">"Hello world"</span>, br.readLine());
+<a class="jxr_linenumber" name="L471" href="#L471">471</a>           String l;
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>           <strong class="jxr_keyword">if</strong> ((l = br.readLine()) != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>             fail(<span class="jxr_string">"Unexpected output: "</span> + l);
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>           }
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>         }
+<a class="jxr_linenumber" name="L476" href="#L476">476</a> 
+<a class="jxr_linenumber" name="L477" href="#L477">477</a>         <strong class="jxr_keyword">long</strong> time = System.currentTimeMillis();
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>         <strong class="jxr_keyword">long</strong> elapsed;
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>         <strong class="jxr_keyword">while</strong> ((elapsed = (System.currentTimeMillis() - time)) &lt; 30 * 1000L) {
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>           <strong class="jxr_keyword">if</strong> (p.waitFor(1, TimeUnit.SECONDS)) {
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>             <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>           }
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>           <strong class="jxr_keyword">if</strong> (elapsed &gt; 5000) {
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>             System.out.println(<span class="jxr_string">"Still waiting for process to terminate: "</span> + p);
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>           }
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>         }
+<a class="jxr_linenumber" name="L487" href="#L487">487</a> 
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>         assertEquals(0, p.exitValue());
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>       } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>         p.destroyForcibly();
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>       }
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>     }
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>   }
+<a class="jxr_linenumber" name="L494" href="#L494">494</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

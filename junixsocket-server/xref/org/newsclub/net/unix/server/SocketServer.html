@@ -228,372 +228,433 @@
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>             listen();
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>           } <strong class="jxr_keyword">catch</strong> (Exception e) {
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>             onListenException(e);
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>           }
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>         }
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>       };
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>       t.start();
-<a class="jxr_linenumber" name="L227" href="#L227">227</a> 
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>       listenThread = t;
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>     }
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>   }
-<a class="jxr_linenumber" name="L231" href="#L231">231</a> 
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L233" href="#L233">233</a> <em class="jxr_javadoccomment">   * Starts the server and waits until it is ready or had to shop due to an error.</em>
-<a class="jxr_linenumber" name="L234" href="#L234">234</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L235" href="#L235">235</a> <em class="jxr_javadoccomment">   * @param duration The duration wait.</em>
-<a class="jxr_linenumber" name="L236" href="#L236">236</a> <em class="jxr_javadoccomment">   * @param unit The duration's time unit.</em>
-<a class="jxr_linenumber" name="L237" href="#L237">237</a> <em class="jxr_javadoccomment">   * @return {@code true} if the server is ready to serve requests.</em>
-<a class="jxr_linenumber" name="L238" href="#L238">238</a> <em class="jxr_javadoccomment">   * @throws InterruptedException If the wait was interrupted.</em>
-<a class="jxr_linenumber" name="L239" href="#L239">239</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> startAndWaitToBecomeReady(<strong class="jxr_keyword">long</strong> duration, TimeUnit unit)
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>       <strong class="jxr_keyword">throws</strong> InterruptedException {
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>     <strong class="jxr_keyword">synchronized</strong> (<strong class="jxr_keyword">this</strong>) {
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>       start();
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>       <strong class="jxr_keyword">long</strong> timeStart = System.currentTimeMillis();
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>       <strong class="jxr_keyword">while</strong> (duration &gt; 0) {
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>         <strong class="jxr_keyword">if</strong> (isReady()) {
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>         }
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>         <strong class="jxr_keyword">this</strong>.wait(unit.toMillis(duration));
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>         duration -= (System.currentTimeMillis() - timeStart);
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>       }
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>       <strong class="jxr_keyword">return</strong> isReady();
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>     }
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>   }
-<a class="jxr_linenumber" name="L255" href="#L255">255</a> 
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L257" href="#L257">257</a> <em class="jxr_javadoccomment">   * Returns a new server socket.</em>
-<a class="jxr_linenumber" name="L258" href="#L258">258</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L259" href="#L259">259</a> <em class="jxr_javadoccomment">   * @return The new socket (an {@link AFServerSocket} if the listen address is an</em>
-<a class="jxr_linenumber" name="L260" href="#L260">260</a> <em class="jxr_javadoccomment">   *         {@link AFSocketAddress}).</em>
-<a class="jxr_linenumber" name="L261" href="#L261">261</a> <em class="jxr_javadoccomment">   * @throws IOException on error.</em>
-<a class="jxr_linenumber" name="L262" href="#L262">262</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">abstract</strong> V newServerSocket() <strong class="jxr_keyword">throws</strong> IOException;
-<a class="jxr_linenumber" name="L264" href="#L264">264</a> 
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>   @SuppressWarnings(<span class="jxr_string">"null"</span>)
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> listen() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>     V server;
-<a class="jxr_linenumber" name="L268" href="#L268">268</a> 
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>     <strong class="jxr_keyword">synchronized</strong> (<strong class="jxr_keyword">this</strong>) {
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>       <strong class="jxr_keyword">if</strong> (reuseSocket != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>         serverSocket = reuseSocket;
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>       } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>         <strong class="jxr_keyword">if</strong> (serverSocket != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"The server is already listening"</span>);
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>         }
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>         serverSocket = newServerSocket();
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>       }
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>       server = serverSocket;
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>     }
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>     onServerStarting();
-<a class="jxr_linenumber" name="L281" href="#L281">281</a> 
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>       <strong class="jxr_keyword">if</strong> (!server.isBound()) {
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>         server.bind(listenAddress);
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>         onServerBound(listenAddress);
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>       }
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>       server.setSoTimeout(serverTimeout);
-<a class="jxr_linenumber" name="L288" href="#L288">288</a> 
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>       acceptLoop(server);
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>     } <strong class="jxr_keyword">catch</strong> (SocketException e) {
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>       onSocketExceptionDuringAccept(e);
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>     } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>       stop();
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>       onServerStopped(server);
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>     }
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>   }
-<a class="jxr_linenumber" name="L297" href="#L297">297</a> 
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>   @SuppressWarnings(<span class="jxr_string">"PMD.CognitiveComplexity"</span>)
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>   @SuppressFBWarnings(<span class="jxr_string">"NN_NAKED_NOTIFY"</span>)
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>   @SuppressLint(<span class="jxr_string">"RESOURCE_LEAK"</span>)
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> acceptLoop(V server) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>     <strong class="jxr_keyword">long</strong> busyStartTime = 0;
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>     acceptLoop : <strong class="jxr_keyword">while</strong> (!stopRequested.get() &amp;&amp; !Thread.interrupted()) {
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>         <strong class="jxr_keyword">while</strong> (!stopRequested.get() &amp;&amp; connectionPool
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>             .getActiveThreadCount() &gt;= maxConcurrentConnections) {
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>           <strong class="jxr_keyword">if</strong> (busyStartTime == 0) {
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>             busyStartTime = System.currentTimeMillis();
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>           }
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>           onServerBusy(busyStartTime);
-<a class="jxr_linenumber" name="L311" href="#L311">311</a> 
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>           <strong class="jxr_keyword">synchronized</strong> (connectionsMonitor) {
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>             <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>               connectionsMonitor.wait(serverBusyTimeout);
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>             } <strong class="jxr_keyword">catch</strong> (InterruptedException e) {
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>               <strong class="jxr_keyword">throw</strong> (InterruptedIOException) <strong class="jxr_keyword">new</strong> InterruptedIOException(
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>                   <span class="jxr_string">"Interrupted while waiting on server resources"</span>).initCause(e);
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>             }
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>           }
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>         }
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>         busyStartTime = 0;
-<a class="jxr_linenumber" name="L322" href="#L322">322</a> 
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>         <strong class="jxr_keyword">if</strong> (stopRequested.get() || server == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>           <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>         }
-<a class="jxr_linenumber" name="L326" href="#L326">326</a> 
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>         <strong class="jxr_keyword">synchronized</strong> (SocketServer.<strong class="jxr_keyword">this</strong>) {
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>           SocketServer.<strong class="jxr_keyword">this</strong>.notifyAll();
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>         }
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>         ready.set(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>         onServerReady(connectionPool.getActiveThreadCount());
-<a class="jxr_linenumber" name="L332" href="#L332">332</a> 
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>         <strong class="jxr_keyword">final</strong> S socket;
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>           @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>           S theSocket = (S) server.accept();
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>           socket = theSocket;
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>         } <strong class="jxr_keyword">catch</strong> (SocketException e) {
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>           <strong class="jxr_keyword">if</strong> (server.isClosed()) {
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>             <em class="jxr_comment">// already closed, ignore</em>
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>             <strong class="jxr_keyword">break</strong> acceptLoop;
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>           } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>             <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>           }
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>           } <strong class="jxr_keyword">catch</strong> (Throwable e) { <em class="jxr_comment">// NOPMD</em>
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>             onListenException(e);
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>           }
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>         }
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>       };
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>       t.start();
+<a class="jxr_linenumber" name="L229" href="#L229">229</a> 
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>       listenThread = t;
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>     }
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>   }
+<a class="jxr_linenumber" name="L233" href="#L233">233</a> 
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L235" href="#L235">235</a> <em class="jxr_javadoccomment">   * Starts the server and waits until it is ready or had to stop due to an error.</em>
+<a class="jxr_linenumber" name="L236" href="#L236">236</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L237" href="#L237">237</a> <em class="jxr_javadoccomment">   * @throws InterruptedException If the wait was interrupted.</em>
+<a class="jxr_linenumber" name="L238" href="#L238">238</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> startAndWaitToBecomeReady() <strong class="jxr_keyword">throws</strong> InterruptedException {
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>     <strong class="jxr_keyword">synchronized</strong> (<strong class="jxr_keyword">this</strong>) {
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>       start();
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>       <strong class="jxr_keyword">while</strong> (!ready.get() &amp;&amp; !stopRequested.get()) {
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>         <strong class="jxr_keyword">this</strong>.wait(1000);
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>       }
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>     }
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>   }
+<a class="jxr_linenumber" name="L247" href="#L247">247</a> 
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L249" href="#L249">249</a> <em class="jxr_javadoccomment">   * Starts the server and waits until it is ready or had to stop due to an error.</em>
+<a class="jxr_linenumber" name="L250" href="#L250">250</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L251" href="#L251">251</a> <em class="jxr_javadoccomment">   * @param duration The duration wait.</em>
+<a class="jxr_linenumber" name="L252" href="#L252">252</a> <em class="jxr_javadoccomment">   * @param unit The duration's time unit.</em>
+<a class="jxr_linenumber" name="L253" href="#L253">253</a> <em class="jxr_javadoccomment">   * @return {@code true} if the server is ready to serve requests.</em>
+<a class="jxr_linenumber" name="L254" href="#L254">254</a> <em class="jxr_javadoccomment">   * @throws InterruptedException If the wait was interrupted.</em>
+<a class="jxr_linenumber" name="L255" href="#L255">255</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> startAndWaitToBecomeReady(<strong class="jxr_keyword">long</strong> duration, TimeUnit unit)
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>       <strong class="jxr_keyword">throws</strong> InterruptedException {
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>     <strong class="jxr_keyword">synchronized</strong> (<strong class="jxr_keyword">this</strong>) {
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>       start();
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>       <strong class="jxr_keyword">long</strong> timeStart = System.currentTimeMillis();
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>       <strong class="jxr_keyword">while</strong> (duration &gt; 0) {
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>         <strong class="jxr_keyword">if</strong> (isReady()) {
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>         }
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>         <strong class="jxr_keyword">this</strong>.wait(unit.toMillis(duration));
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>         duration -= (System.currentTimeMillis() - timeStart);
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>       }
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>       <strong class="jxr_keyword">return</strong> isReady();
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>     }
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>   }
+<a class="jxr_linenumber" name="L271" href="#L271">271</a> 
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L273" href="#L273">273</a> <em class="jxr_javadoccomment">   * Returns a new server socket.</em>
+<a class="jxr_linenumber" name="L274" href="#L274">274</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L275" href="#L275">275</a> <em class="jxr_javadoccomment">   * @return The new socket (an {@link AFServerSocket} if the listen address is an</em>
+<a class="jxr_linenumber" name="L276" href="#L276">276</a> <em class="jxr_javadoccomment">   *         {@link AFSocketAddress}).</em>
+<a class="jxr_linenumber" name="L277" href="#L277">277</a> <em class="jxr_javadoccomment">   * @throws IOException on error.</em>
+<a class="jxr_linenumber" name="L278" href="#L278">278</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">abstract</strong> V newServerSocket() <strong class="jxr_keyword">throws</strong> IOException;
+<a class="jxr_linenumber" name="L280" href="#L280">280</a> 
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>   @SuppressWarnings(<span class="jxr_string">"null"</span>)
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> listen() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>     V server = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>       <strong class="jxr_keyword">synchronized</strong> (<strong class="jxr_keyword">this</strong>) {
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>         <strong class="jxr_keyword">if</strong> (reuseSocket != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>           server = reuseSocket;
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>           server = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>         }
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>       }
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>       <strong class="jxr_keyword">if</strong> (server == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>         server = newServerSocket();
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>       }
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>       <strong class="jxr_keyword">synchronized</strong> (<strong class="jxr_keyword">this</strong>) {
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>         <strong class="jxr_keyword">if</strong> (serverSocket != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"The server is already listening"</span>);
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>         }
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>         serverSocket = server;
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>       }
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>       onServerStarting();
+<a class="jxr_linenumber" name="L302" href="#L302">302</a> 
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>       <strong class="jxr_keyword">if</strong> (!server.isBound()) {
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>         server.bind(listenAddress);
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>         onServerBound(listenAddress);
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>       }
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>       server.setSoTimeout(serverTimeout);
+<a class="jxr_linenumber" name="L308" href="#L308">308</a> 
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>       acceptLoop(server);
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>     } <strong class="jxr_keyword">catch</strong> (SocketException e) {
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>       onSocketExceptionDuringAccept(e);
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>     } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>       stop();
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>       onServerStopped(server);
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>     }
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>   }
+<a class="jxr_linenumber" name="L317" href="#L317">317</a> 
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>   @SuppressWarnings(<span class="jxr_string">"PMD.CognitiveComplexity"</span>)
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>   @SuppressFBWarnings(<span class="jxr_string">"NN_NAKED_NOTIFY"</span>)
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>   @SuppressLint(<span class="jxr_string">"RESOURCE_LEAK"</span>)
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> acceptLoop(V server) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>     <strong class="jxr_keyword">long</strong> busyStartTime = 0;
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>     acceptLoop : <strong class="jxr_keyword">while</strong> (!stopRequested.get() &amp;&amp; !Thread.interrupted()) {
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>         <strong class="jxr_keyword">while</strong> (!stopRequested.get() &amp;&amp; connectionPool
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>             .getActiveThreadCount() &gt;= maxConcurrentConnections) {
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>           <strong class="jxr_keyword">if</strong> (busyStartTime == 0) {
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>             busyStartTime = System.currentTimeMillis();
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>           }
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>           onServerBusy(busyStartTime);
+<a class="jxr_linenumber" name="L331" href="#L331">331</a> 
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>           <strong class="jxr_keyword">synchronized</strong> (connectionsMonitor) {
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>             <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>               connectionsMonitor.wait(serverBusyTimeout);
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>             } <strong class="jxr_keyword">catch</strong> (InterruptedException e) {
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>               <strong class="jxr_keyword">throw</strong> (InterruptedIOException) <strong class="jxr_keyword">new</strong> InterruptedIOException(
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>                   <span class="jxr_string">"Interrupted while waiting on server resources"</span>).initCause(e);
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>             }
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>           }
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>         }
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>         busyStartTime = 0;
+<a class="jxr_linenumber" name="L342" href="#L342">342</a> 
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>         <strong class="jxr_keyword">if</strong> (stopRequested.get() || server == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>           <strong class="jxr_keyword">break</strong>;
 <a class="jxr_linenumber" name="L345" href="#L345">345</a>         }
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>           socket.setSoTimeout(socketTimeout);
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>         } <strong class="jxr_keyword">catch</strong> (SocketException e) {
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>           <em class="jxr_comment">// Connection closed before we could do anything</em>
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>           onSocketExceptionAfterAccept(socket, e);
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>           socket.close();
+<a class="jxr_linenumber" name="L346" href="#L346">346</a> 
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>         <strong class="jxr_keyword">synchronized</strong> (SocketServer.<strong class="jxr_keyword">this</strong>) {
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>           SocketServer.<strong class="jxr_keyword">this</strong>.notifyAll();
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>         }
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>         ready.set(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>         onServerReady(connectionPool.getActiveThreadCount());
 <a class="jxr_linenumber" name="L352" href="#L352">352</a> 
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>           <strong class="jxr_keyword">continue</strong> acceptLoop;
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>         }
-<a class="jxr_linenumber" name="L355" href="#L355">355</a> 
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>         onSubmitted(socket, submit(socket, connectionPool));
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>       } <strong class="jxr_keyword">catch</strong> (SocketTimeoutException e) {
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>         <strong class="jxr_keyword">if</strong> (!connectionPool.isQuiescent()) {
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>           <strong class="jxr_keyword">continue</strong> acceptLoop;
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>           onServerShuttingDown();
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>           connectionPool.shutdown();
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>           <strong class="jxr_keyword">break</strong> acceptLoop;
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>         }
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>       }
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>     }
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>   }
-<a class="jxr_linenumber" name="L368" href="#L368">368</a> 
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L370" href="#L370">370</a> <em class="jxr_javadoccomment">   * Stops the server.</em>
-<a class="jxr_linenumber" name="L371" href="#L371">371</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L372" href="#L372">372</a> <em class="jxr_javadoccomment">   * @throws IOException If there was an error.</em>
-<a class="jxr_linenumber" name="L373" href="#L373">373</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>   @SuppressWarnings(<span class="jxr_string">"null"</span>)
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>   @SuppressFBWarnings(<span class="jxr_string">"NN_NAKED_NOTIFY"</span>)
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> stop() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>     stopRequested.set(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>     ready.set(false);
-<a class="jxr_linenumber" name="L379" href="#L379">379</a> 
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>     <strong class="jxr_keyword">synchronized</strong> (<strong class="jxr_keyword">this</strong>) {
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>       V theServerSocket = serverSocket;
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>       serverSocket = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>         <strong class="jxr_keyword">if</strong> (theServerSocket == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>           <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="L386" href="#L386">386</a>         }
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>         ScheduledFuture&lt;IOException&gt; future = <strong class="jxr_keyword">this</strong>.timeoutFuture;
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>         <strong class="jxr_keyword">if</strong> (future != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>           future.cancel(false);
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>           <strong class="jxr_keyword">this</strong>.timeoutFuture = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>         }
-<a class="jxr_linenumber" name="L392" href="#L392">392</a> 
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>         theServerSocket.close();
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>       } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>         SocketServer.<strong class="jxr_keyword">this</strong>.notifyAll();
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>       }
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>     }
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>   }
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>         <strong class="jxr_keyword">final</strong> S socket;
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>           @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>           S theSocket = (S) server.accept();
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>           socket = theSocket;
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>         } <strong class="jxr_keyword">catch</strong> (SocketException e) {
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>           <strong class="jxr_keyword">if</strong> (server.isClosed()) {
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>             <em class="jxr_comment">// already closed, ignore</em>
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>             <strong class="jxr_keyword">break</strong> acceptLoop;
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>           } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>             <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>           }
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>         }
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>           socket.setSoTimeout(socketTimeout);
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>         } <strong class="jxr_keyword">catch</strong> (SocketException e) {
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>           <em class="jxr_comment">// Connection closed before we could do anything</em>
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>           onSocketExceptionAfterAccept(socket, e);
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>           socket.close();
+<a class="jxr_linenumber" name="L372" href="#L372">372</a> 
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>           <strong class="jxr_keyword">continue</strong> acceptLoop;
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>         }
+<a class="jxr_linenumber" name="L375" href="#L375">375</a> 
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>         onSubmitted(socket, submit(socket, connectionPool));
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>       } <strong class="jxr_keyword">catch</strong> (SocketTimeoutException e) {
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>         <strong class="jxr_keyword">if</strong> (!connectionPool.isQuiescent()) {
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>           <strong class="jxr_keyword">continue</strong> acceptLoop;
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>           onServerShuttingDown();
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>           connectionPool.shutdown();
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>           <strong class="jxr_keyword">break</strong> acceptLoop;
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>         }
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>       }
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>     }
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>   }
+<a class="jxr_linenumber" name="L388" href="#L388">388</a> 
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L390" href="#L390">390</a> <em class="jxr_javadoccomment">   * Stops the server.</em>
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L392" href="#L392">392</a> <em class="jxr_javadoccomment">   * @throws IOException If there was an error.</em>
+<a class="jxr_linenumber" name="L393" href="#L393">393</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>   @SuppressWarnings(<span class="jxr_string">"null"</span>)
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>   @SuppressFBWarnings(<span class="jxr_string">"NN_NAKED_NOTIFY"</span>)
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> stop() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>     stopRequested.set(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>     ready.set(false);
 <a class="jxr_linenumber" name="L399" href="#L399">399</a> 
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>   <strong class="jxr_keyword">private</strong> Future&lt;?&gt; submit(<strong class="jxr_keyword">final</strong> S socket, ExecutorService executor) {
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>     Objects.requireNonNull(socket);
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>     <strong class="jxr_keyword">return</strong> executor.submit(<strong class="jxr_keyword">new</strong> Runnable() {
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>       @Override
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() {
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>         onBeforeServingSocket(socket);
-<a class="jxr_linenumber" name="L406" href="#L406">406</a> 
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>         <strong class="jxr_keyword">try</strong> { <em class="jxr_comment">// NOPMD</em>
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>           doServeSocket(socket);
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>           onServingException(socket, e);
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>         } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>           <em class="jxr_comment">// Notify the server's accept thread that we handled the connection</em>
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>           <strong class="jxr_keyword">synchronized</strong> (connectionsMonitor) {
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>             connectionsMonitor.notifyAll();
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>           }
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>           <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>             socket.close();
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>           } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>             <em class="jxr_comment">// ignore</em>
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>           }
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>           onAfterServingSocket(socket);
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>         }
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>       }
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>     });
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>   }
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>     <strong class="jxr_keyword">synchronized</strong> (<strong class="jxr_keyword">this</strong>) {
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>       V theServerSocket = serverSocket;
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>       serverSocket = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>       <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>         <strong class="jxr_keyword">if</strong> (theServerSocket == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>           <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>         }
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>         ScheduledFuture&lt;IOException&gt; future = <strong class="jxr_keyword">this</strong>.timeoutFuture;
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>         <strong class="jxr_keyword">if</strong> (future != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>           future.cancel(false);
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>           <strong class="jxr_keyword">this</strong>.timeoutFuture = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>         }
+<a class="jxr_linenumber" name="L412" href="#L412">412</a> 
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>         theServerSocket.close();
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>       } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>         SocketServer.<strong class="jxr_keyword">this</strong>.notifyAll();
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>       }
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>     }
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>   }
+<a class="jxr_linenumber" name="L419" href="#L419">419</a> 
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>   <strong class="jxr_keyword">private</strong> Future&lt;?&gt; submit(<strong class="jxr_keyword">final</strong> S socket, ExecutorService executor) {
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>     Objects.requireNonNull(socket);
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>     <strong class="jxr_keyword">return</strong> executor.submit(<strong class="jxr_keyword">new</strong> Runnable() {
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>       @Override
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run() {
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>         onBeforeServingSocket(socket);
 <a class="jxr_linenumber" name="L426" href="#L426">426</a> 
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L428" href="#L428">428</a> <em class="jxr_javadoccomment">   * Requests that the server will be stopped after the given time delay. If the server is not</em>
-<a class="jxr_linenumber" name="L429" href="#L429">429</a> <em class="jxr_javadoccomment">   * started yet (and {@link #stop()} was not called yet, it will be started first.</em>
-<a class="jxr_linenumber" name="L430" href="#L430">430</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L431" href="#L431">431</a> <em class="jxr_javadoccomment">   * @param delay The delay.</em>
-<a class="jxr_linenumber" name="L432" href="#L432">432</a> <em class="jxr_javadoccomment">   * @param unit The time unit for the delay.</em>
-<a class="jxr_linenumber" name="L433" href="#L433">433</a> <em class="jxr_javadoccomment">   * @return A scheduled future that can be used to monitor progress / cancel the request. If there</em>
-<a class="jxr_linenumber" name="L434" href="#L434">434</a> <em class="jxr_javadoccomment">   *         was a problem with stopping, an IOException is returned as the value (not thrown). If</em>
-<a class="jxr_linenumber" name="L435" href="#L435">435</a> <em class="jxr_javadoccomment">   *         stop was already requested, {@code null} is returned.</em>
-<a class="jxr_linenumber" name="L436" href="#L436">436</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>   <strong class="jxr_keyword">public</strong> ScheduledFuture&lt;IOException&gt; startThenStopAfter(<strong class="jxr_keyword">long</strong> delay, TimeUnit unit) {
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>     <strong class="jxr_keyword">if</strong> (stopRequested.get()) {
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>     }
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>     <strong class="jxr_keyword">synchronized</strong> (<strong class="jxr_keyword">this</strong>) {
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>       start();
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>       ScheduledFuture&lt;?&gt; existingFuture = <strong class="jxr_keyword">this</strong>.timeoutFuture;
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>       <strong class="jxr_keyword">if</strong> (existingFuture != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>         existingFuture.cancel(false);
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>       }
-<a class="jxr_linenumber" name="L447" href="#L447">447</a> 
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>       <strong class="jxr_keyword">return</strong> (<strong class="jxr_keyword">this</strong>.timeoutFuture = TIMEOUTS.schedule(<strong class="jxr_keyword">new</strong> Callable&lt;IOException&gt;() {
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>         @SuppressFBWarnings(<span class="jxr_string">"THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"</span>)
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>         @Override
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>         <strong class="jxr_keyword">public</strong> IOException call() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>           <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>             stop();
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>           } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="L456" href="#L456">456</a>             <strong class="jxr_keyword">return</strong> e;
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>           }
-<a class="jxr_linenumber" name="L458" href="#L458">458</a>         }
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>       }, delay, unit));
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>         <strong class="jxr_keyword">try</strong> { <em class="jxr_comment">// NOPMD</em>
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>           doServeSocket(socket);
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) { <em class="jxr_comment">// NOPMD</em>
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>           onServingException(socket, e); <em class="jxr_comment">// NOPMD</em>
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>         } <strong class="jxr_keyword">catch</strong> (Throwable t) { <em class="jxr_comment">// NOPMD</em>
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>           onServingException(socket, t); <em class="jxr_comment">// NOPMD</em>
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>         } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>           <em class="jxr_comment">// Notify the server's accept thread that we handled the connection</em>
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>           <strong class="jxr_keyword">synchronized</strong> (connectionsMonitor) {
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>             connectionsMonitor.notifyAll();
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>           }
+<a class="jxr_linenumber" name="L438" href="#L438">438</a> 
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>           doSocketClose(socket);
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>           onAfterServingSocket(socket);
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>         }
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>       }
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>     });
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>   }
+<a class="jxr_linenumber" name="L445" href="#L445">445</a> 
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L447" href="#L447">447</a> <em class="jxr_javadoccomment">   * Called upon closing a socket after serving the connection.</em>
+<a class="jxr_linenumber" name="L448" href="#L448">448</a> <em class="jxr_javadoccomment">   * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L449" href="#L449">449</a> <em class="jxr_javadoccomment">   * The default implementation closes the socket directly, ignoring any {@link IOException}s. You</em>
+<a class="jxr_linenumber" name="L450" href="#L450">450</a> <em class="jxr_javadoccomment">   * may override this method to close the socket in a separate thread, for example.</em>
+<a class="jxr_linenumber" name="L451" href="#L451">451</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L452" href="#L452">452</a> <em class="jxr_javadoccomment">   * @param socket The socket to close.</em>
+<a class="jxr_linenumber" name="L453" href="#L453">453</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>   @SuppressWarnings(<span class="jxr_string">"null"</span>)
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> doSocketClose(S socket) {
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>       socket.close();
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>     } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>       <em class="jxr_comment">// ignore</em>
 <a class="jxr_linenumber" name="L460" href="#L460">460</a>     }
 <a class="jxr_linenumber" name="L461" href="#L461">461</a>   }
 <a class="jxr_linenumber" name="L462" href="#L462">462</a> 
 <a class="jxr_linenumber" name="L463" href="#L463">463</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L464" href="#L464">464</a> <em class="jxr_javadoccomment">   * Called when a socket is ready to be served.</em>
-<a class="jxr_linenumber" name="L465" href="#L465">465</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L466" href="#L466">466</a> <em class="jxr_javadoccomment">   * @param socket The socket to serve.</em>
-<a class="jxr_linenumber" name="L467" href="#L467">467</a> <em class="jxr_javadoccomment">   * @throws IOException If there was an error.</em>
-<a class="jxr_linenumber" name="L468" href="#L468">468</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L469" href="#L469">469</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">void</strong> doServeSocket(S socket) <strong class="jxr_keyword">throws</strong> IOException;
-<a class="jxr_linenumber" name="L470" href="#L470">470</a> 
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L472" href="#L472">472</a> <em class="jxr_javadoccomment">   * Called when the server is starting up.</em>
-<a class="jxr_linenumber" name="L473" href="#L473">473</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L474" href="#L474">474</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServerStarting() {
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>   }
-<a class="jxr_linenumber" name="L476" href="#L476">476</a> 
-<a class="jxr_linenumber" name="L477" href="#L477">477</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L478" href="#L478">478</a> <em class="jxr_javadoccomment">   * Called when the server has been bound to a socket.</em>
-<a class="jxr_linenumber" name="L479" href="#L479">479</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L480" href="#L480">480</a> <em class="jxr_javadoccomment">   * This is not called when you instantiated the server with a pre-bound socket.</em>
-<a class="jxr_linenumber" name="L481" href="#L481">481</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L482" href="#L482">482</a> <em class="jxr_javadoccomment">   * @param address The bound address.</em>
-<a class="jxr_linenumber" name="L483" href="#L483">483</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L484" href="#L484">484</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServerBound(A address) {
-<a class="jxr_linenumber" name="L485" href="#L485">485</a>   }
-<a class="jxr_linenumber" name="L486" href="#L486">486</a> 
-<a class="jxr_linenumber" name="L487" href="#L487">487</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L488" href="#L488">488</a> <em class="jxr_javadoccomment">   * Called when the server is ready to accept a new connection.</em>
-<a class="jxr_linenumber" name="L489" href="#L489">489</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L490" href="#L490">490</a> <em class="jxr_javadoccomment">   * @param activeCount The current number of active tasks (= serving sockets).</em>
-<a class="jxr_linenumber" name="L491" href="#L491">491</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L492" href="#L492">492</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServerReady(<strong class="jxr_keyword">int</strong> activeCount) {
-<a class="jxr_linenumber" name="L493" href="#L493">493</a>   }
-<a class="jxr_linenumber" name="L494" href="#L494">494</a> 
-<a class="jxr_linenumber" name="L495" href="#L495">495</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L496" href="#L496">496</a> <em class="jxr_javadoccomment">   * Called when the server is busy / not ready to accept a new connection.</em>
-<a class="jxr_linenumber" name="L497" href="#L497">497</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L498" href="#L498">498</a> <em class="jxr_javadoccomment">   * The frequency on how often this method is called when the server is busy is determined by</em>
-<a class="jxr_linenumber" name="L499" href="#L499">499</a> <em class="jxr_javadoccomment">   * {@link #getServerBusyTimeout()}.</em>
-<a class="jxr_linenumber" name="L500" href="#L500">500</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L501" href="#L501">501</a> <em class="jxr_javadoccomment">   * @param busyStartTime The time stamp since the server became busy.</em>
-<a class="jxr_linenumber" name="L502" href="#L502">502</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L503" href="#L503">503</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServerBusy(<strong class="jxr_keyword">long</strong> busyStartTime) {
-<a class="jxr_linenumber" name="L504" href="#L504">504</a>   }
-<a class="jxr_linenumber" name="L505" href="#L505">505</a> 
-<a class="jxr_linenumber" name="L506" href="#L506">506</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L507" href="#L507">507</a> <em class="jxr_javadoccomment">   * Called when the server has been stopped.</em>
-<a class="jxr_linenumber" name="L508" href="#L508">508</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L509" href="#L509">509</a> <em class="jxr_javadoccomment">   * @param socket The server's socket that stopped.</em>
-<a class="jxr_linenumber" name="L510" href="#L510">510</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L511" href="#L511">511</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServerStopped(V socket) {
-<a class="jxr_linenumber" name="L512" href="#L512">512</a>   }
-<a class="jxr_linenumber" name="L513" href="#L513">513</a> 
-<a class="jxr_linenumber" name="L514" href="#L514">514</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L515" href="#L515">515</a> <em class="jxr_javadoccomment">   * Called when a socket gets submitted into the process queue.</em>
-<a class="jxr_linenumber" name="L516" href="#L516">516</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L517" href="#L517">517</a> <em class="jxr_javadoccomment">   * @param socket The socket.</em>
-<a class="jxr_linenumber" name="L518" href="#L518">518</a> <em class="jxr_javadoccomment">   * @param submission The {@link Future} referencing the submission; it's "done" after the socket</em>
-<a class="jxr_linenumber" name="L519" href="#L519">519</a> <em class="jxr_javadoccomment">   *          has been served.</em>
-<a class="jxr_linenumber" name="L520" href="#L520">520</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L521" href="#L521">521</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onSubmitted(S socket, Future&lt;?&gt; submission) {
-<a class="jxr_linenumber" name="L522" href="#L522">522</a>   }
-<a class="jxr_linenumber" name="L523" href="#L523">523</a> 
-<a class="jxr_linenumber" name="L524" href="#L524">524</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L525" href="#L525">525</a> <em class="jxr_javadoccomment">   * Called when the server is shutting down.</em>
-<a class="jxr_linenumber" name="L526" href="#L526">526</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L527" href="#L527">527</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServerShuttingDown() {
-<a class="jxr_linenumber" name="L528" href="#L528">528</a>   }
-<a class="jxr_linenumber" name="L529" href="#L529">529</a> 
-<a class="jxr_linenumber" name="L530" href="#L530">530</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L531" href="#L531">531</a> <em class="jxr_javadoccomment">   * Called when a {@link SocketException} was thrown during "accept".</em>
-<a class="jxr_linenumber" name="L532" href="#L532">532</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L533" href="#L533">533</a> <em class="jxr_javadoccomment">   * @param e The exception.</em>
-<a class="jxr_linenumber" name="L534" href="#L534">534</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L535" href="#L535">535</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onSocketExceptionDuringAccept(SocketException e) {
-<a class="jxr_linenumber" name="L536" href="#L536">536</a>   }
-<a class="jxr_linenumber" name="L537" href="#L537">537</a> 
-<a class="jxr_linenumber" name="L538" href="#L538">538</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L539" href="#L539">539</a> <em class="jxr_javadoccomment">   * Called when a {@link SocketException} was thrown during "accept".</em>
-<a class="jxr_linenumber" name="L540" href="#L540">540</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L541" href="#L541">541</a> <em class="jxr_javadoccomment">   * @param socket The socket.</em>
-<a class="jxr_linenumber" name="L542" href="#L542">542</a> <em class="jxr_javadoccomment">   * @param e The exception.</em>
-<a class="jxr_linenumber" name="L543" href="#L543">543</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L544" href="#L544">544</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onSocketExceptionAfterAccept(S socket, SocketException e) {
-<a class="jxr_linenumber" name="L545" href="#L545">545</a>   }
-<a class="jxr_linenumber" name="L546" href="#L546">546</a> 
-<a class="jxr_linenumber" name="L547" href="#L547">547</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L548" href="#L548">548</a> <em class="jxr_javadoccomment">   * Called before serving the socket.</em>
-<a class="jxr_linenumber" name="L549" href="#L549">549</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L550" href="#L550">550</a> <em class="jxr_javadoccomment">   * @param socket The socket.</em>
-<a class="jxr_linenumber" name="L551" href="#L551">551</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L552" href="#L552">552</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onBeforeServingSocket(S socket) {
-<a class="jxr_linenumber" name="L553" href="#L553">553</a>   }
-<a class="jxr_linenumber" name="L554" href="#L554">554</a> 
-<a class="jxr_linenumber" name="L555" href="#L555">555</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L556" href="#L556">556</a> <em class="jxr_javadoccomment">   * Called when an exception was thrown while serving a socket.</em>
-<a class="jxr_linenumber" name="L557" href="#L557">557</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L558" href="#L558">558</a> <em class="jxr_javadoccomment">   * @param socket The socket.</em>
-<a class="jxr_linenumber" name="L559" href="#L559">559</a> <em class="jxr_javadoccomment">   * @param e The exception.</em>
-<a class="jxr_linenumber" name="L560" href="#L560">560</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L561" href="#L561">561</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServingException(S socket, Exception e) {
-<a class="jxr_linenumber" name="L562" href="#L562">562</a>   }
-<a class="jxr_linenumber" name="L563" href="#L563">563</a> 
-<a class="jxr_linenumber" name="L564" href="#L564">564</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L565" href="#L565">565</a> <em class="jxr_javadoccomment">   * Called after the socket has been served.</em>
-<a class="jxr_linenumber" name="L566" href="#L566">566</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L567" href="#L567">567</a> <em class="jxr_javadoccomment">   * @param socket The socket.</em>
-<a class="jxr_linenumber" name="L568" href="#L568">568</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L569" href="#L569">569</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onAfterServingSocket(S socket) {
-<a class="jxr_linenumber" name="L570" href="#L570">570</a>   }
-<a class="jxr_linenumber" name="L571" href="#L571">571</a> 
-<a class="jxr_linenumber" name="L572" href="#L572">572</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L573" href="#L573">573</a> <em class="jxr_javadoccomment">   * Called when an exception was thrown while listening on the server socket.</em>
-<a class="jxr_linenumber" name="L574" href="#L574">574</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L575" href="#L575">575</a> <em class="jxr_javadoccomment">   * @param e The exception.</em>
-<a class="jxr_linenumber" name="L576" href="#L576">576</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L577" href="#L577">577</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onListenException(Exception e) {
-<a class="jxr_linenumber" name="L578" href="#L578">578</a>   }
-<a class="jxr_linenumber" name="L579" href="#L579">579</a> 
-<a class="jxr_linenumber" name="L580" href="#L580">580</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L581" href="#L581">581</a> <em class="jxr_javadoccomment">   * Returns the address the server listens to.</em>
-<a class="jxr_linenumber" name="L582" href="#L582">582</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L583" href="#L583">583</a> <em class="jxr_javadoccomment">   * @return The listen address.</em>
-<a class="jxr_linenumber" name="L584" href="#L584">584</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L585" href="#L585">585</a>   <strong class="jxr_keyword">protected</strong> @NonNull A getListenAddress() {
-<a class="jxr_linenumber" name="L586" href="#L586">586</a>     <strong class="jxr_keyword">return</strong> listenAddress;
-<a class="jxr_linenumber" name="L587" href="#L587">587</a>   }
-<a class="jxr_linenumber" name="L588" href="#L588">588</a> }
+<a class="jxr_linenumber" name="L464" href="#L464">464</a> <em class="jxr_javadoccomment">   * Requests that the server will be stopped after the given time delay. If the server is not</em>
+<a class="jxr_linenumber" name="L465" href="#L465">465</a> <em class="jxr_javadoccomment">   * started yet (and {@link #stop()} was not called yet, it will be started first.</em>
+<a class="jxr_linenumber" name="L466" href="#L466">466</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L467" href="#L467">467</a> <em class="jxr_javadoccomment">   * @param delay The delay.</em>
+<a class="jxr_linenumber" name="L468" href="#L468">468</a> <em class="jxr_javadoccomment">   * @param unit The time unit for the delay.</em>
+<a class="jxr_linenumber" name="L469" href="#L469">469</a> <em class="jxr_javadoccomment">   * @return A scheduled future that can be used to monitor progress / cancel the request. If there</em>
+<a class="jxr_linenumber" name="L470" href="#L470">470</a> <em class="jxr_javadoccomment">   *         was a problem with stopping, an IOException is returned as the value (not thrown). If</em>
+<a class="jxr_linenumber" name="L471" href="#L471">471</a> <em class="jxr_javadoccomment">   *         stop was already requested, {@code null} is returned.</em>
+<a class="jxr_linenumber" name="L472" href="#L472">472</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>   <strong class="jxr_keyword">public</strong> ScheduledFuture&lt;IOException&gt; startThenStopAfter(<strong class="jxr_keyword">long</strong> delay, TimeUnit unit) {
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>     <strong class="jxr_keyword">if</strong> (stopRequested.get()) {
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>       <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>     }
+<a class="jxr_linenumber" name="L477" href="#L477">477</a>     <strong class="jxr_keyword">synchronized</strong> (<strong class="jxr_keyword">this</strong>) {
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>       start();
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>       ScheduledFuture&lt;?&gt; existingFuture = <strong class="jxr_keyword">this</strong>.timeoutFuture;
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>       <strong class="jxr_keyword">if</strong> (existingFuture != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>         existingFuture.cancel(false);
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>       }
+<a class="jxr_linenumber" name="L483" href="#L483">483</a> 
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>       <strong class="jxr_keyword">return</strong> (<strong class="jxr_keyword">this</strong>.timeoutFuture = TIMEOUTS.schedule(<strong class="jxr_keyword">new</strong> Callable&lt;IOException&gt;() {
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>         @SuppressFBWarnings(<span class="jxr_string">"THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"</span>)
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>         @Override
+<a class="jxr_linenumber" name="L487" href="#L487">487</a>         <strong class="jxr_keyword">public</strong> IOException call() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>           <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>             stop();
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>           } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>             <strong class="jxr_keyword">return</strong> e;
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>           }
+<a class="jxr_linenumber" name="L494" href="#L494">494</a>         }
+<a class="jxr_linenumber" name="L495" href="#L495">495</a>       }, delay, unit));
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>     }
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>   }
+<a class="jxr_linenumber" name="L498" href="#L498">498</a> 
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L500" href="#L500">500</a> <em class="jxr_javadoccomment">   * Called when a socket is ready to be served.</em>
+<a class="jxr_linenumber" name="L501" href="#L501">501</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L502" href="#L502">502</a> <em class="jxr_javadoccomment">   * @param socket The socket to serve.</em>
+<a class="jxr_linenumber" name="L503" href="#L503">503</a> <em class="jxr_javadoccomment">   * @throws IOException If there was an error.</em>
+<a class="jxr_linenumber" name="L504" href="#L504">504</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">void</strong> doServeSocket(S socket) <strong class="jxr_keyword">throws</strong> IOException;
+<a class="jxr_linenumber" name="L506" href="#L506">506</a> 
+<a class="jxr_linenumber" name="L507" href="#L507">507</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L508" href="#L508">508</a> <em class="jxr_javadoccomment">   * Called when the server is starting up.</em>
+<a class="jxr_linenumber" name="L509" href="#L509">509</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServerStarting() {
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>   }
+<a class="jxr_linenumber" name="L512" href="#L512">512</a> 
+<a class="jxr_linenumber" name="L513" href="#L513">513</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L514" href="#L514">514</a> <em class="jxr_javadoccomment">   * Called when the server has been bound to a socket.</em>
+<a class="jxr_linenumber" name="L515" href="#L515">515</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L516" href="#L516">516</a> <em class="jxr_javadoccomment">   * This is not called when you instantiated the server with a pre-bound socket.</em>
+<a class="jxr_linenumber" name="L517" href="#L517">517</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L518" href="#L518">518</a> <em class="jxr_javadoccomment">   * @param address The bound address.</em>
+<a class="jxr_linenumber" name="L519" href="#L519">519</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L520" href="#L520">520</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServerBound(A address) {
+<a class="jxr_linenumber" name="L521" href="#L521">521</a>   }
+<a class="jxr_linenumber" name="L522" href="#L522">522</a> 
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L524" href="#L524">524</a> <em class="jxr_javadoccomment">   * Called when the server is ready to accept a new connection.</em>
+<a class="jxr_linenumber" name="L525" href="#L525">525</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L526" href="#L526">526</a> <em class="jxr_javadoccomment">   * @param activeCount The current number of active tasks (= serving sockets).</em>
+<a class="jxr_linenumber" name="L527" href="#L527">527</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServerReady(<strong class="jxr_keyword">int</strong> activeCount) {
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>   }
+<a class="jxr_linenumber" name="L530" href="#L530">530</a> 
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L532" href="#L532">532</a> <em class="jxr_javadoccomment">   * Called when the server is busy / not ready to accept a new connection.</em>
+<a class="jxr_linenumber" name="L533" href="#L533">533</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L534" href="#L534">534</a> <em class="jxr_javadoccomment">   * The frequency on how often this method is called when the server is busy is determined by</em>
+<a class="jxr_linenumber" name="L535" href="#L535">535</a> <em class="jxr_javadoccomment">   * {@link #getServerBusyTimeout()}.</em>
+<a class="jxr_linenumber" name="L536" href="#L536">536</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L537" href="#L537">537</a> <em class="jxr_javadoccomment">   * @param busyStartTime The time stamp since the server became busy.</em>
+<a class="jxr_linenumber" name="L538" href="#L538">538</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServerBusy(<strong class="jxr_keyword">long</strong> busyStartTime) {
+<a class="jxr_linenumber" name="L540" href="#L540">540</a>   }
+<a class="jxr_linenumber" name="L541" href="#L541">541</a> 
+<a class="jxr_linenumber" name="L542" href="#L542">542</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L543" href="#L543">543</a> <em class="jxr_javadoccomment">   * Called when the server has been stopped.</em>
+<a class="jxr_linenumber" name="L544" href="#L544">544</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L545" href="#L545">545</a> <em class="jxr_javadoccomment">   * @param socket The server's socket that stopped, or {@code null}.</em>
+<a class="jxr_linenumber" name="L546" href="#L546">546</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L547" href="#L547">547</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServerStopped(V socket) {
+<a class="jxr_linenumber" name="L548" href="#L548">548</a>   }
+<a class="jxr_linenumber" name="L549" href="#L549">549</a> 
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L551" href="#L551">551</a> <em class="jxr_javadoccomment">   * Called when a socket gets submitted into the process queue.</em>
+<a class="jxr_linenumber" name="L552" href="#L552">552</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L553" href="#L553">553</a> <em class="jxr_javadoccomment">   * @param socket The socket.</em>
+<a class="jxr_linenumber" name="L554" href="#L554">554</a> <em class="jxr_javadoccomment">   * @param submission The {@link Future} referencing the submission; it's "done" after the socket</em>
+<a class="jxr_linenumber" name="L555" href="#L555">555</a> <em class="jxr_javadoccomment">   *          has been served.</em>
+<a class="jxr_linenumber" name="L556" href="#L556">556</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L557" href="#L557">557</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onSubmitted(S socket, Future&lt;?&gt; submission) {
+<a class="jxr_linenumber" name="L558" href="#L558">558</a>   }
+<a class="jxr_linenumber" name="L559" href="#L559">559</a> 
+<a class="jxr_linenumber" name="L560" href="#L560">560</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L561" href="#L561">561</a> <em class="jxr_javadoccomment">   * Called when the server is shutting down.</em>
+<a class="jxr_linenumber" name="L562" href="#L562">562</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L563" href="#L563">563</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServerShuttingDown() {
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>   }
+<a class="jxr_linenumber" name="L565" href="#L565">565</a> 
+<a class="jxr_linenumber" name="L566" href="#L566">566</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L567" href="#L567">567</a> <em class="jxr_javadoccomment">   * Called when a {@link SocketException} was thrown during "accept".</em>
+<a class="jxr_linenumber" name="L568" href="#L568">568</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L569" href="#L569">569</a> <em class="jxr_javadoccomment">   * @param e The exception.</em>
+<a class="jxr_linenumber" name="L570" href="#L570">570</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L571" href="#L571">571</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onSocketExceptionDuringAccept(SocketException e) {
+<a class="jxr_linenumber" name="L572" href="#L572">572</a>   }
+<a class="jxr_linenumber" name="L573" href="#L573">573</a> 
+<a class="jxr_linenumber" name="L574" href="#L574">574</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L575" href="#L575">575</a> <em class="jxr_javadoccomment">   * Called when a {@link SocketException} was thrown during "accept".</em>
+<a class="jxr_linenumber" name="L576" href="#L576">576</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L577" href="#L577">577</a> <em class="jxr_javadoccomment">   * @param socket The socket.</em>
+<a class="jxr_linenumber" name="L578" href="#L578">578</a> <em class="jxr_javadoccomment">   * @param e The exception.</em>
+<a class="jxr_linenumber" name="L579" href="#L579">579</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L580" href="#L580">580</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onSocketExceptionAfterAccept(S socket, SocketException e) {
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>   }
+<a class="jxr_linenumber" name="L582" href="#L582">582</a> 
+<a class="jxr_linenumber" name="L583" href="#L583">583</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L584" href="#L584">584</a> <em class="jxr_javadoccomment">   * Called before serving the socket.</em>
+<a class="jxr_linenumber" name="L585" href="#L585">585</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L586" href="#L586">586</a> <em class="jxr_javadoccomment">   * @param socket The socket.</em>
+<a class="jxr_linenumber" name="L587" href="#L587">587</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L588" href="#L588">588</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onBeforeServingSocket(S socket) {
+<a class="jxr_linenumber" name="L589" href="#L589">589</a>   }
+<a class="jxr_linenumber" name="L590" href="#L590">590</a> 
+<a class="jxr_linenumber" name="L591" href="#L591">591</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L592" href="#L592">592</a> <em class="jxr_javadoccomment">   * Called when an exception was thrown while serving a socket.</em>
+<a class="jxr_linenumber" name="L593" href="#L593">593</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L594" href="#L594">594</a> <em class="jxr_javadoccomment">   * @param socket The socket.</em>
+<a class="jxr_linenumber" name="L595" href="#L595">595</a> <em class="jxr_javadoccomment">   * @param e The exception.</em>
+<a class="jxr_linenumber" name="L596" href="#L596">596</a> <em class="jxr_javadoccomment">   * @deprecated Use {@link #onServingException(Socket, Throwable)}</em>
+<a class="jxr_linenumber" name="L597" href="#L597">597</a> <em class="jxr_javadoccomment">   * @see #onServingException(Socket, Throwable)</em>
+<a class="jxr_linenumber" name="L598" href="#L598">598</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L599" href="#L599">599</a>   @Deprecated
+<a class="jxr_linenumber" name="L600" href="#L600">600</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServingException(S socket, Exception e) {
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>     onServingException(socket, (Throwable) e);
+<a class="jxr_linenumber" name="L602" href="#L602">602</a>   }
+<a class="jxr_linenumber" name="L603" href="#L603">603</a> 
+<a class="jxr_linenumber" name="L604" href="#L604">604</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L605" href="#L605">605</a> <em class="jxr_javadoccomment">   * Called when a throwable was thrown while serving a socket.</em>
+<a class="jxr_linenumber" name="L606" href="#L606">606</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L607" href="#L607">607</a> <em class="jxr_javadoccomment">   * @param socket The socket.</em>
+<a class="jxr_linenumber" name="L608" href="#L608">608</a> <em class="jxr_javadoccomment">   * @param t The throwable.</em>
+<a class="jxr_linenumber" name="L609" href="#L609">609</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L610" href="#L610">610</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onServingException(S socket, Throwable t) {
+<a class="jxr_linenumber" name="L611" href="#L611">611</a>   }
+<a class="jxr_linenumber" name="L612" href="#L612">612</a> 
+<a class="jxr_linenumber" name="L613" href="#L613">613</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L614" href="#L614">614</a> <em class="jxr_javadoccomment">   * Called after the socket has been served.</em>
+<a class="jxr_linenumber" name="L615" href="#L615">615</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L616" href="#L616">616</a> <em class="jxr_javadoccomment">   * @param socket The socket.</em>
+<a class="jxr_linenumber" name="L617" href="#L617">617</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L618" href="#L618">618</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onAfterServingSocket(S socket) {
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>   }
+<a class="jxr_linenumber" name="L620" href="#L620">620</a> 
+<a class="jxr_linenumber" name="L621" href="#L621">621</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L622" href="#L622">622</a> <em class="jxr_javadoccomment">   * Called when an exception was thrown while listening on the server socket.</em>
+<a class="jxr_linenumber" name="L623" href="#L623">623</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L624" href="#L624">624</a> <em class="jxr_javadoccomment">   * @param e The exception.</em>
+<a class="jxr_linenumber" name="L625" href="#L625">625</a> <em class="jxr_javadoccomment">   * @deprecated Use {@link #onListenException(Throwable)}</em>
+<a class="jxr_linenumber" name="L626" href="#L626">626</a> <em class="jxr_javadoccomment">   * @see #onListenException(Throwable)</em>
+<a class="jxr_linenumber" name="L627" href="#L627">627</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L628" href="#L628">628</a>   @Deprecated
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onListenException(Exception e) {
+<a class="jxr_linenumber" name="L630" href="#L630">630</a>     onListenException((Throwable) e);
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>   }
+<a class="jxr_linenumber" name="L632" href="#L632">632</a> 
+<a class="jxr_linenumber" name="L633" href="#L633">633</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L634" href="#L634">634</a> <em class="jxr_javadoccomment">   * Called when an exception was thrown while listening on the server socket.</em>
+<a class="jxr_linenumber" name="L635" href="#L635">635</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L636" href="#L636">636</a> <em class="jxr_javadoccomment">   * @param t The throwable.</em>
+<a class="jxr_linenumber" name="L637" href="#L637">637</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onListenException(Throwable t) {
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>   }
+<a class="jxr_linenumber" name="L640" href="#L640">640</a> 
+<a class="jxr_linenumber" name="L641" href="#L641">641</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L642" href="#L642">642</a> <em class="jxr_javadoccomment">   * Returns the address the server listens to.</em>
+<a class="jxr_linenumber" name="L643" href="#L643">643</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L644" href="#L644">644</a> <em class="jxr_javadoccomment">   * @return The listen address.</em>
+<a class="jxr_linenumber" name="L645" href="#L645">645</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>   <strong class="jxr_keyword">protected</strong> @NonNull A getListenAddress() {
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>     <strong class="jxr_keyword">return</strong> listenAddress;
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>   }
+<a class="jxr_linenumber" name="L649" href="#L649">649</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

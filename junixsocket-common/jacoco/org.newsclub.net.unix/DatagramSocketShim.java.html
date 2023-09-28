@@ -22,27 +22,30 @@ import java.net.DatagramSocket;
 import java.net.DatagramSocketImpl;
 import java.net.SocketOption;
 
+import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+
+@IgnoreJRERequirement // see src/main/java8
 abstract class DatagramSocketShim extends DatagramSocket {
 
   protected DatagramSocketShim(DatagramSocketImpl impl) {
-<span class="fc" id="L28">    super(impl);</span>
-<span class="fc" id="L29">  }</span>
+<span class="fc" id="L31">    super(impl);</span>
+<span class="fc" id="L32">  }</span>
 
   @Override
   public &lt;T&gt; T getOption(SocketOption&lt;T&gt; name) throws IOException {
-<span class="nc bnc" id="L33" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="nc" id="L34">      return getOption((AFSocketOption&lt;T&gt;) name);</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L37">      return getOption((AFSocketOption&lt;T&gt;) name);</span>
     } else {
-<span class="nc" id="L36">      return super.getOption(name);</span>
+<span class="nc" id="L39">      return super.getOption(name);</span>
     }
   }
 
   @Override
   public &lt;T&gt; DatagramSocket setOption(SocketOption&lt;T&gt; name, T value) throws IOException {
-<span class="nc bnc" id="L42" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="nc" id="L43">      return setOption((AFSocketOption&lt;T&gt;) name, value);</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L46">      return setOption((AFSocketOption&lt;T&gt;) name, value);</span>
     } else {
-<span class="nc" id="L45">      return super.setOption(name, value);</span>
+<span class="nc" id="L48">      return super.setOption(name, value);</span>
     }
   }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1694774682089">
-    <module artifactId="junixsocket-demo" groupId="com.kohlschutter.junixsocket" version="2.7.2"/>
+<licensePluginReport goal="CHECK" timestamp="1695936819802">
+    <module artifactId="junixsocket-demo" groupId="com.kohlschutter.junixsocket" version="2.8.0"/>
     <files>
         <file path="src/main/java/org/newsclub/net/mysql/demo/AFUNIXDatabaseSocketFactoryDemo.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/demo/DemoHelper.java" result="PRESENT"/>
@@ -37,5 +37,8 @@
         <file path="src/main/java/org/newsclub/net/unix/demo/server/SendFileHandleServer.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/demo/server/SocketServerDemo.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/demo/server/ZeroServer.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/ssl/SSLDemoClient.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/ssl/SSLDemoPrerequisites.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/demo/ssl/SSLDemoServer.java" result="PRESENT"/>
     </files>
 </licensePluginReport>

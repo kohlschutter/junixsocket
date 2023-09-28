@@ -262,13 +262,13 @@ public final class AFAddressFamily&lt;A extends AFSocketAddress&gt; {
 
   @SuppressWarnings(&quot;unchecked&quot;)
   AFSocketImplExtensions&lt;A&gt; initImplExtensions(AncillaryDataSupport ancillaryDataSupport) {
-<span class="nc bnc" id="L265" title="All 4 branches missed.">    switch (getDomain()) {</span>
+<span class="pc bpc" id="L265" title="2 of 4 branches missed.">    switch (getDomain()) {</span>
       case NativeUnixSocket.DOMAIN_TIPC:
 <span class="nc" id="L267">        return (AFSocketImplExtensions&lt;A&gt;) new AFTIPCSocketImplExtensions(ancillaryDataSupport);</span>
       case NativeUnixSocket.DOMAIN_VSOCK:
-<span class="nc" id="L269">        return (AFSocketImplExtensions&lt;A&gt;) new AFVSOCKSocketImplExtensions(ancillaryDataSupport);</span>
+<span class="fc" id="L269">        return (AFSocketImplExtensions&lt;A&gt;) new AFVSOCKSocketImplExtensions(ancillaryDataSupport);</span>
       case NativeUnixSocket.DOMAIN_SYSTEM:
-<span class="nc" id="L271">        return (AFSocketImplExtensions&lt;A&gt;) new AFSYSTEMSocketImplExtensions(ancillaryDataSupport);</span>
+<span class="fc" id="L271">        return (AFSocketImplExtensions&lt;A&gt;) new AFSYSTEMSocketImplExtensions(ancillaryDataSupport);</span>
       default:
 <span class="nc" id="L273">        throw new UnsupportedOperationException();</span>
     }

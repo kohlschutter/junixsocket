@@ -779,11 +779,11 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
     try {
 <span class="fc" id="L780">      setOption0(optID, value);</span>
 <span class="fc" id="L781">    } catch (SocketException e) {</span>
-<span class="fc bfc" id="L782" title="All 2 branches covered.">      switch (optID) {</span>
+<span class="pc bpc" id="L782" title="1 of 2 branches missed.">      switch (optID) {</span>
         case SocketOptions.TCP_NODELAY:
 <span class="fc" id="L784">          return;</span>
         default:
-<span class="fc" id="L786">          throw e;</span>
+<span class="nc" id="L786">          throw e;</span>
       }
 <span class="fc" id="L788">    }</span>
 <span class="fc" id="L789">  }</span>
@@ -806,40 +806,48 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
 <span class="fc" id="L806">          return;</span>
         case SocketOptions.SO_TIMEOUT: {
 <span class="fc" id="L808">          int timeout = expectInteger(value);</span>
-<span class="fc" id="L809">          NativeUnixSocket.setSocketOptionInt(fdesc, 0x1005, timeout);</span>
-<span class="fc" id="L810">          NativeUnixSocket.setSocketOptionInt(fdesc, 0x1006, timeout);</span>
-<span class="pc bpc" id="L811" title="1 of 2 branches missed.">          if (acceptTimeout != null) {</span>
-<span class="fc" id="L812">            acceptTimeout.set(timeout);</span>
+          try {
+<span class="fc" id="L810">            NativeUnixSocket.setSocketOptionInt(fdesc, 0x1005, timeout);</span>
+<span class="fc" id="L811">          } catch (InvalidArgumentSocketException e) {</span>
+            // Perhaps the socket is shut down?
+<span class="fc" id="L813">          }</span>
+          try {
+<span class="fc" id="L815">            NativeUnixSocket.setSocketOptionInt(fdesc, 0x1006, timeout);</span>
+<span class="fc" id="L816">          } catch (InvalidArgumentSocketException e) {</span>
+            // Perhaps the socket is shut down?
+<span class="fc" id="L818">          }</span>
+<span class="pc bpc" id="L819" title="1 of 2 branches missed.">          if (acceptTimeout != null) {</span>
+<span class="fc" id="L820">            acceptTimeout.set(timeout);</span>
           }
-<span class="fc" id="L814">          return;</span>
+<span class="fc" id="L822">          return;</span>
         }
         case SocketOptions.SO_RCVBUF:
         case SocketOptions.SO_SNDBUF:
-<span class="fc" id="L818">          NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectInteger(value));</span>
-<span class="fc" id="L819">          return;</span>
+<span class="fc" id="L826">          NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectInteger(value));</span>
+<span class="fc" id="L827">          return;</span>
         case SocketOptions.SO_KEEPALIVE:
           try {
-<span class="fc" id="L822">            NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectBoolean(value));</span>
-<span class="fc" id="L823">          } catch (SocketException e) {</span>
+<span class="fc" id="L830">            NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectBoolean(value));</span>
+<span class="fc" id="L831">          } catch (SocketException e) {</span>
             // ignore
-<span class="fc" id="L825">          }</span>
-<span class="fc" id="L826">          return;</span>
+<span class="fc" id="L833">          }</span>
+<span class="fc" id="L834">          return;</span>
         case SocketOptions.TCP_NODELAY:
-<span class="nc" id="L828">          NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectBoolean(value));</span>
-<span class="nc" id="L829">          return;</span>
+<span class="nc" id="L836">          NativeUnixSocket.setSocketOptionInt(fdesc, optID, expectBoolean(value));</span>
+<span class="nc" id="L837">          return;</span>
         case SocketOptions.IP_TOS:
           // ignore
-<span class="fc" id="L832">          return;</span>
+<span class="fc" id="L840">          return;</span>
         case SocketOptions.SO_REUSEADDR:
           // ignore
-<span class="nc" id="L835">          return;</span>
+<span class="nc" id="L843">          return;</span>
         default:
-<span class="nc" id="L837">          throw new SocketException(&quot;Unsupported option: &quot; + optID);</span>
+<span class="nc" id="L845">          throw new SocketException(&quot;Unsupported option: &quot; + optID);</span>
       }
-<span class="fc" id="L839">    } catch (final SocketException e) {</span>
-<span class="fc" id="L840">      throw e;</span>
-<span class="nc" id="L841">    } catch (final Exception e) {</span>
-<span class="nc" id="L842">      throw (SocketException) new SocketException(&quot;Error while setting option&quot;).initCause(e);</span>
+<span class="fc" id="L847">    } catch (final SocketException e) {</span>
+<span class="fc" id="L848">      throw e;</span>
+<span class="nc" id="L849">    } catch (final Exception e) {</span>
+<span class="nc" id="L850">      throw (SocketException) new SocketException(&quot;Error while setting option&quot;).initCause(e);</span>
     }
   }
 
@@ -850,149 +858,149 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
    * @throws IOException on error.
    */
   protected final void shutdown() throws IOException {
-<span class="fc" id="L853">    FileDescriptor fdesc = core.validFd();</span>
-<span class="fc bfc" id="L854" title="All 2 branches covered.">    if (fdesc != null) {</span>
-<span class="fc" id="L855">      NativeUnixSocket.shutdown(fdesc, SHUT_RD_WR);</span>
-<span class="fc" id="L856">      shutdownState = 0;</span>
+<span class="fc" id="L861">    FileDescriptor fdesc = core.validFd();</span>
+<span class="fc bfc" id="L862" title="All 2 branches covered.">    if (fdesc != null) {</span>
+<span class="fc" id="L863">      NativeUnixSocket.shutdown(fdesc, SHUT_RD_WR);</span>
+<span class="fc" id="L864">      shutdownState = 0;</span>
     }
-<span class="fc" id="L858">  }</span>
+<span class="fc" id="L866">  }</span>
 
   @Override
   protected final void shutdownInput() throws IOException {
-<span class="nc" id="L862">    FileDescriptor fdesc = core.validFd();</span>
-<span class="nc bnc" id="L863" title="All 2 branches missed.">    if (fdesc != null) {</span>
-<span class="nc" id="L864">      NativeUnixSocket.shutdown(fdesc, SHUT_RD);</span>
-<span class="nc" id="L865">      shutdownState |= 1 &lt;&lt; (SHUT_RD);</span>
-<span class="nc bnc" id="L866" title="All 2 branches missed.">      if (shutdownState == SHUTDOWN_RD_WR) {</span>
-<span class="nc" id="L867">        NativeUnixSocket.shutdown(fdesc, SHUT_RD_WR);</span>
-<span class="nc" id="L868">        shutdownState = 0;</span>
+<span class="nc" id="L870">    FileDescriptor fdesc = core.validFd();</span>
+<span class="nc bnc" id="L871" title="All 2 branches missed.">    if (fdesc != null) {</span>
+<span class="nc" id="L872">      NativeUnixSocket.shutdown(fdesc, SHUT_RD);</span>
+<span class="nc" id="L873">      shutdownState |= 1 &lt;&lt; (SHUT_RD);</span>
+<span class="nc bnc" id="L874" title="All 2 branches missed.">      if (shutdownState == SHUTDOWN_RD_WR) {</span>
+<span class="nc" id="L875">        NativeUnixSocket.shutdown(fdesc, SHUT_RD_WR);</span>
+<span class="nc" id="L876">        shutdownState = 0;</span>
       }
     }
-<span class="nc" id="L871">  }</span>
+<span class="nc" id="L879">  }</span>
 
   @Override
   protected final void shutdownOutput() throws IOException {
-<span class="fc" id="L875">    FileDescriptor fdesc = core.validFd();</span>
-<span class="pc bpc" id="L876" title="1 of 2 branches missed.">    if (fdesc != null) {</span>
-<span class="fc" id="L877">      NativeUnixSocket.shutdown(fdesc, SHUT_WR);</span>
-<span class="fc" id="L878">      shutdownState |= 1 &lt;&lt; (SHUT_RD_WR);</span>
-<span class="pc bpc" id="L879" title="1 of 2 branches missed.">      if (shutdownState == SHUTDOWN_RD_WR) {</span>
-<span class="nc" id="L880">        NativeUnixSocket.shutdown(fdesc, SHUT_RD_WR);</span>
-<span class="nc" id="L881">        shutdownState = 0;</span>
+<span class="fc" id="L883">    FileDescriptor fdesc = core.validFd();</span>
+<span class="pc bpc" id="L884" title="1 of 2 branches missed.">    if (fdesc != null) {</span>
+<span class="fc" id="L885">      NativeUnixSocket.shutdown(fdesc, SHUT_WR);</span>
+<span class="fc" id="L886">      shutdownState |= 1 &lt;&lt; (SHUT_RD_WR);</span>
+<span class="pc bpc" id="L887" title="1 of 2 branches missed.">      if (shutdownState == SHUTDOWN_RD_WR) {</span>
+<span class="nc" id="L888">        NativeUnixSocket.shutdown(fdesc, SHUT_RD_WR);</span>
+<span class="nc" id="L889">        shutdownState = 0;</span>
       }
     }
-<span class="fc" id="L884">  }</span>
+<span class="fc" id="L892">  }</span>
 
   final int getAncillaryReceiveBufferSize() {
-<span class="fc" id="L887">    return ancillaryDataSupport.getAncillaryReceiveBufferSize();</span>
+<span class="fc" id="L895">    return ancillaryDataSupport.getAncillaryReceiveBufferSize();</span>
   }
 
   final void setAncillaryReceiveBufferSize(int size) {
-<span class="fc" id="L891">    ancillaryDataSupport.setAncillaryReceiveBufferSize(size);</span>
-<span class="fc" id="L892">  }</span>
+<span class="fc" id="L899">    ancillaryDataSupport.setAncillaryReceiveBufferSize(size);</span>
+<span class="fc" id="L900">  }</span>
 
   final void ensureAncillaryReceiveBufferSize(int minSize) {
-<span class="fc" id="L895">    ancillaryDataSupport.ensureAncillaryReceiveBufferSize(minSize);</span>
-<span class="fc" id="L896">  }</span>
+<span class="fc" id="L903">    ancillaryDataSupport.ensureAncillaryReceiveBufferSize(minSize);</span>
+<span class="fc" id="L904">  }</span>
 
   AncillaryDataSupport getAncillaryDataSupport() {
-<span class="nc" id="L899">    return ancillaryDataSupport;</span>
+<span class="nc" id="L907">    return ancillaryDataSupport;</span>
   }
 
   final SocketAddress receive(ByteBuffer dst) throws IOException {
-<span class="nc" id="L903">    return core.receive(dst);</span>
+<span class="nc" id="L911">    return core.receive(dst);</span>
   }
 
   final int send(ByteBuffer src, SocketAddress target) throws IOException {
-<span class="nc" id="L907">    return core.write(src, target, 0);</span>
+<span class="nc" id="L915">    return core.write(src, target, 0);</span>
   }
 
   final int read(ByteBuffer dst, ByteBuffer socketAddressBuffer) throws IOException {
-<span class="fc" id="L911">    return core.read(dst, socketAddressBuffer, 0);</span>
+<span class="fc" id="L919">    return core.read(dst, socketAddressBuffer, 0);</span>
   }
 
   final int write(ByteBuffer src) throws IOException {
-<span class="fc" id="L915">    return core.write(src);</span>
+<span class="fc" id="L923">    return core.write(src);</span>
   }
 
   @Override
   protected final FileDescriptor getFileDescriptor() {
-<span class="fc" id="L920">    return core.fd;</span>
+<span class="fc" id="L928">    return core.fd;</span>
   }
 
   final void updatePorts(int local, int remote) {
-<span class="fc" id="L924">    this.localport = local;</span>
-<span class="fc bfc" id="L925" title="All 2 branches covered.">    if (remote &gt;= 0) {</span>
-<span class="fc" id="L926">      this.port = remote;</span>
+<span class="fc" id="L932">    this.localport = local;</span>
+<span class="fc bfc" id="L933" title="All 2 branches covered.">    if (remote &gt;= 0) {</span>
+<span class="fc" id="L934">      this.port = remote;</span>
     }
-<span class="fc" id="L928">  }</span>
+<span class="fc" id="L936">  }</span>
 
   final @Nullable A getLocalSocketAddress() {
-<span class="fc" id="L931">    return AFSocketAddress.getSocketAddress(getFileDescriptor(), false, localport, addressFamily);</span>
+<span class="fc" id="L939">    return AFSocketAddress.getSocketAddress(getFileDescriptor(), false, localport, addressFamily);</span>
   }
 
   final @Nullable A getRemoteSocketAddress() {
-<span class="fc" id="L935">    return AFSocketAddress.getSocketAddress(getFileDescriptor(), true, port, addressFamily);</span>
+<span class="fc" id="L943">    return AFSocketAddress.getSocketAddress(getFileDescriptor(), true, port, addressFamily);</span>
   }
 
   final int getLocalPort1() {
-<span class="fc" id="L939">    return localport;</span>
+<span class="fc" id="L947">    return localport;</span>
   }
 
   final int getRemotePort() {
-<span class="fc" id="L943">    return port;</span>
+<span class="fc" id="L951">    return port;</span>
   }
 
   @Override
   protected final InetAddress getInetAddress() {
     @Nullable
-<span class="fc" id="L949">    A rsa = getRemoteSocketAddress();</span>
-<span class="pc bpc" id="L950" title="1 of 2 branches missed.">    if (rsa == null) {</span>
-<span class="fc" id="L951">      return InetAddress.getLoopbackAddress();</span>
+<span class="fc" id="L957">    A rsa = getRemoteSocketAddress();</span>
+<span class="fc bfc" id="L958" title="All 2 branches covered.">    if (rsa == null) {</span>
+<span class="fc" id="L959">      return InetAddress.getLoopbackAddress();</span>
     } else {
-<span class="nc" id="L953">      return rsa.getInetAddress();</span>
+<span class="fc" id="L961">      return rsa.getInetAddress();</span>
     }
   }
 
   final void createSocket(FileDescriptor fdTarget, AFSocketType type) throws IOException {
-<span class="fc" id="L958">    NativeUnixSocket.createSocket(fdTarget, addressFamily.getDomain(), type.getId());</span>
-<span class="fc" id="L959">  }</span>
+<span class="fc" id="L966">    NativeUnixSocket.createSocket(fdTarget, addressFamily.getDomain(), type.getId());</span>
+<span class="fc" id="L967">  }</span>
 
   final AFAddressFamily&lt;A&gt; getAddressFamily() {
-<span class="fc" id="L962">    return addressFamily;</span>
+<span class="fc" id="L970">    return addressFamily;</span>
   }
 
   @Override
   protected &lt;T&gt; void setOption(SocketOption&lt;T&gt; name, T value) throws IOException {
-<span class="pc bpc" id="L967" title="1 of 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="nc" id="L968">      getCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
-<span class="nc" id="L969">      return;</span>
+<span class="pc bpc" id="L975" title="1 of 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L976">      getCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
+<span class="nc" id="L977">      return;</span>
     }
-<span class="fc" id="L971">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
-<span class="pc bpc" id="L972" title="1 of 2 branches missed.">    if (optionId == null) {</span>
-<span class="nc" id="L973">      super.setOption(name, value);</span>
+<span class="fc" id="L979">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="pc bpc" id="L980" title="1 of 2 branches missed.">    if (optionId == null) {</span>
+<span class="nc" id="L981">      super.setOption(name, value);</span>
     } else {
-<span class="fc" id="L975">      setOption(optionId, value);</span>
+<span class="fc" id="L983">      setOption(optionId, value);</span>
     }
-<span class="fc" id="L977">  }</span>
+<span class="fc" id="L985">  }</span>
 
   @SuppressWarnings(&quot;unchecked&quot;)
   @Override
   protected &lt;T&gt; T getOption(SocketOption&lt;T&gt; name) throws IOException {
-<span class="pc bpc" id="L982" title="1 of 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="nc" id="L983">      return getCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
+<span class="pc bpc" id="L990" title="1 of 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L991">      return getCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
     }
-<span class="fc" id="L985">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
-<span class="fc bfc" id="L986" title="All 2 branches covered.">    if (optionId == null) {</span>
-<span class="nc" id="L987">      return super.getOption(name);</span>
+<span class="fc" id="L993">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="fc bfc" id="L994" title="All 2 branches covered.">    if (optionId == null) {</span>
+<span class="nc" id="L995">      return super.getOption(name);</span>
     } else {
-<span class="fc" id="L989">      return (T) getOption(optionId);</span>
+<span class="fc" id="L997">      return (T) getOption(optionId);</span>
     }
   }
 
   @Override
   protected Set&lt;SocketOption&lt;?&gt;&gt; supportedOptions() {
-<span class="fc" id="L995">    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;</span>
+<span class="fc" id="L1003">    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;</span>
   }
 
   /**
@@ -1003,10 +1011,10 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
    *           type.
    */
   protected final synchronized AFSocketImplExtensions&lt;A&gt; getImplExtensions() {
-<span class="nc bnc" id="L1006" title="All 2 branches missed.">    if (implExtensions == null) {</span>
-<span class="nc" id="L1007">      implExtensions = addressFamily.initImplExtensions(ancillaryDataSupport);</span>
+<span class="pc bpc" id="L1014" title="1 of 2 branches missed.">    if (implExtensions == null) {</span>
+<span class="fc" id="L1015">      implExtensions = addressFamily.initImplExtensions(ancillaryDataSupport);</span>
     }
-<span class="nc" id="L1009">    return implExtensions;</span>
+<span class="fc" id="L1017">    return implExtensions;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

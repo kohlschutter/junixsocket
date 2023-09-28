@@ -7,5 +7,6 @@ org.newsclub.net.unix.java
 org.newsclub.net.unix.rmi
 org.newsclub.net.unix.selftest
 org.newsclub.net.unix.selftest.apps
+org.newsclub.net.unix.ssl
 org.newsclub.net.unix.tipc
 org.newsclub.net.unix.vsock

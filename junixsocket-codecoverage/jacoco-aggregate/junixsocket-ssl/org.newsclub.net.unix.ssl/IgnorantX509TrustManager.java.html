@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>IgnorantX509TrustManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-ssl</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.ssl</a> &gt; <span class="el_source">IgnorantX509TrustManager.java</span></div><h1>IgnorantX509TrustManager.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2023 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.ssl;
+
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.X509TrustManager;
+
+/**
+ * An ignorant {@link X509TrustManager} that doesn't check certificates at all.
+ * &lt;p&gt;
+ * &lt;b&gt;IMPORTANT:&lt;/b&gt; Not checking certificates is a bad idea. The rationale for providing this class
+ * nevertheless is that it's easier to search for usages of this class than to search for usages of
+ * some lookalikes.
+ *
+ * @author Christian Kohlschütter
+ */
+public final class IgnorantX509TrustManager implements X509TrustManager {
+<span class="fc" id="L35">  private static final IgnorantX509TrustManager INSTANCE = new IgnorantX509TrustManager();</span>
+<span class="fc" id="L36">  private static final X509Certificate[] EMPTY_ACCEPTED_ISSUERS = new X509Certificate[0];</span>
+
+  private IgnorantX509TrustManager() {
+  }
+
+  /**
+   * Returns the singleton instance.
+   *
+   * @return The instance.
+   */
+  public static IgnorantX509TrustManager getInstance() {
+<span class="fc" id="L47">    return INSTANCE;</span>
+  }
+
+  @Override
+  public void checkClientTrusted(X509Certificate[] chain, String authType)
+      throws CertificateException {
+<span class="fc" id="L53">  }</span>
+
+  @Override
+  public void checkServerTrusted(X509Certificate[] chain, String authType)
+      throws CertificateException {
+<span class="fc" id="L58">  }</span>
+
+  @Override
+  public X509Certificate[] getAcceptedIssuers() {
+<span class="fc" id="L62">    return EMPTY_ACCEPTED_ISSUERS;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

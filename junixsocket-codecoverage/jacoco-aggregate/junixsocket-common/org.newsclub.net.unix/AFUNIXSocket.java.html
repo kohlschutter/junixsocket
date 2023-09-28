@@ -17,10 +17,16 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.channels.SocketChannel;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -31,29 +37,29 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 public final class AFUNIXSocket extends AFSocket&lt;AFUNIXSocketAddress&gt; implements
     AFUNIXSocketExtensions {
-<span class="fc" id="L34">  private static final Constructor&lt;AFUNIXSocketAddress&gt; CONSTRUCTOR_STRICT =</span>
-<span class="fc" id="L35">      new Constructor&lt;AFUNIXSocketAddress&gt;() {</span>
+<span class="fc" id="L40">  private static final Constructor&lt;AFUNIXSocketAddress&gt; CONSTRUCTOR_STRICT =</span>
+<span class="fc" id="L41">      new Constructor&lt;AFUNIXSocketAddress&gt;() {</span>
 
         @Override
         public @NonNull AFSocket&lt;AFUNIXSocketAddress&gt; newInstance(FileDescriptor fdObj,
             AFSocketFactory&lt;AFUNIXSocketAddress&gt; factory) throws SocketException {
-<span class="fc" id="L40">          return new AFUNIXSocket(new AFUNIXSocketImpl(fdObj), factory); // NOPMD</span>
+<span class="fc" id="L46">          return new AFUNIXSocket(new AFUNIXSocketImpl(fdObj), factory); // NOPMD</span>
         }
       };
 
   private AFUNIXSocket(AFSocketImpl&lt;AFUNIXSocketAddress&gt; impl,
       AFSocketFactory&lt;AFUNIXSocketAddress&gt; factory) throws SocketException {
-<span class="fc" id="L46">    super(impl, factory);</span>
-<span class="fc" id="L47">  }</span>
+<span class="fc" id="L52">    super(impl, factory);</span>
+<span class="fc" id="L53">  }</span>
 
   AFUNIXSocket(FileDescriptor fd, AFSocketFactory&lt;AFUNIXSocketAddress&gt; factory)
       throws SocketException {
-<span class="fc" id="L51">    this(new AFUNIXSocketImpl.Lenient(fd), factory);</span>
-<span class="fc" id="L52">  }</span>
+<span class="fc" id="L57">    this(new AFUNIXSocketImpl.Lenient(fd), factory);</span>
+<span class="fc" id="L58">  }</span>
 
   @Override
   protected AFUNIXSocketChannel newChannel() {
-<span class="fc" id="L56">    return new AFUNIXSocketChannel(this);</span>
+<span class="fc" id="L62">    return new AFUNIXSocketChannel(this);</span>
   }
 
   /**
@@ -68,21 +74,21 @@ public final class AFUNIXSocket extends AFSocket&lt;AFUNIXSocketAddress&gt; impl
    * @throws IOException if the operation fails.
    */
   public static AFUNIXSocket newInstance() throws IOException {
-<span class="fc" id="L71">    return (AFUNIXSocket) AFSocket.newInstance(AFUNIXSocket::new, (AFUNIXSocketFactory) null);</span>
+<span class="fc" id="L77">    return (AFUNIXSocket) AFSocket.newInstance(AFUNIXSocket::new, (AFUNIXSocketFactory) null);</span>
   }
 
   static AFUNIXSocket newLenientInstance() throws IOException {
-<span class="nc" id="L75">    return newInstance();</span>
+<span class="nc" id="L81">    return newInstance();</span>
   }
 
   static AFUNIXSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
       throws IOException {
-<span class="nc" id="L80">    return (AFUNIXSocket) AFSocket.newInstance(AFUNIXSocket::new, (AFUNIXSocketFactory) null, fdObj,</span>
+<span class="nc" id="L86">    return (AFUNIXSocket) AFSocket.newInstance(AFUNIXSocket::new, (AFUNIXSocketFactory) null, fdObj,</span>
         localPort, remotePort);
   }
 
   static AFUNIXSocket newInstance(AFUNIXSocketFactory factory) throws SocketException {
-<span class="fc" id="L85">    return (AFUNIXSocket) AFSocket.newInstance(AFUNIXSocket::new, factory);</span>
+<span class="fc" id="L91">    return (AFUNIXSocket) AFSocket.newInstance(AFUNIXSocket::new, factory);</span>
   }
 
   /**
@@ -95,7 +101,7 @@ public final class AFUNIXSocket extends AFSocket&lt;AFUNIXSocketAddress&gt; impl
    * @throws IOException if the operation fails.
    */
   public static AFUNIXSocket newStrictInstance() throws IOException {
-<span class="fc" id="L98">    return (AFUNIXSocket) AFSocket.newInstance(CONSTRUCTOR_STRICT, (AFUNIXSocketFactory) null);</span>
+<span class="fc" id="L104">    return (AFUNIXSocket) AFSocket.newInstance(CONSTRUCTOR_STRICT, (AFUNIXSocketFactory) null);</span>
   }
 
   /**
@@ -106,43 +112,43 @@ public final class AFUNIXSocket extends AFSocket&lt;AFUNIXSocketAddress&gt; impl
    * @throws IOException if the operation fails.
    */
   public static AFUNIXSocket connectTo(AFUNIXSocketAddress addr) throws IOException {
-<span class="fc" id="L109">    return (AFUNIXSocket) AFSocket.connectTo(AFUNIXSocket::new, addr);</span>
+<span class="fc" id="L115">    return (AFUNIXSocket) AFSocket.connectTo(AFUNIXSocket::new, addr);</span>
   }
 
   @Override
   public AFUNIXSocketChannel getChannel() {
-<span class="fc" id="L114">    return (AFUNIXSocketChannel) super.getChannel();</span>
+<span class="fc" id="L120">    return (AFUNIXSocketChannel) super.getChannel();</span>
   }
 
   @Override
   public AFUNIXSocketCredentials getPeerCredentials() throws IOException {
-<span class="pc bpc" id="L119" title="2 of 4 branches missed.">    if (isClosed() || !isConnected()) {</span>
-<span class="nc" id="L120">      throw new SocketException(&quot;Not connected&quot;);</span>
+<span class="pc bpc" id="L125" title="2 of 4 branches missed.">    if (isClosed() || !isConnected()) {</span>
+<span class="nc" id="L126">      throw new SocketException(&quot;Not connected&quot;);</span>
     }
-<span class="fc" id="L122">    return ((AFUNIXSocketImpl) getAFImpl()).getPeerCredentials();</span>
+<span class="fc" id="L128">    return ((AFUNIXSocketImpl) getAFImpl()).getPeerCredentials();</span>
   }
 
   @Override
   public FileDescriptor[] getReceivedFileDescriptors() throws IOException {
-<span class="fc" id="L127">    return ((AFUNIXSocketImpl) getAFImpl()).getReceivedFileDescriptors();</span>
+<span class="fc" id="L133">    return ((AFUNIXSocketImpl) getAFImpl()).getReceivedFileDescriptors();</span>
   }
 
   @Override
   public void clearReceivedFileDescriptors() {
-<span class="fc" id="L132">    ((AFUNIXSocketImpl) getAFImpl()).clearReceivedFileDescriptors();</span>
-<span class="fc" id="L133">  }</span>
+<span class="fc" id="L138">    ((AFUNIXSocketImpl) getAFImpl()).clearReceivedFileDescriptors();</span>
+<span class="fc" id="L139">  }</span>
 
   @Override
   public void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
-<span class="pc bpc" id="L137" title="1 of 6 branches missed.">    if (fdescs != null &amp;&amp; fdescs.length &gt; 0 &amp;&amp; !isConnected()) {</span>
-<span class="nc" id="L138">      throw new SocketException(&quot;Not connected&quot;);</span>
+<span class="pc bpc" id="L143" title="1 of 6 branches missed.">    if (fdescs != null &amp;&amp; fdescs.length &gt; 0 &amp;&amp; !isConnected()) {</span>
+<span class="nc" id="L144">      throw new SocketException(&quot;Not connected&quot;);</span>
     }
-<span class="fc" id="L140">    ((AFUNIXSocketImpl) getAFImpl()).setOutboundFileDescriptors(fdescs);</span>
-<span class="fc" id="L141">  }</span>
+<span class="fc" id="L146">    ((AFUNIXSocketImpl) getAFImpl()).setOutboundFileDescriptors(fdescs);</span>
+<span class="fc" id="L147">  }</span>
 
   @Override
   public boolean hasOutboundFileDescriptors() {
-<span class="fc" id="L145">    return ((AFUNIXSocketImpl) getAFImpl()).hasOutboundFileDescriptors();</span>
+<span class="fc" id="L151">    return ((AFUNIXSocketImpl) getAFImpl()).hasOutboundFileDescriptors();</span>
   }
 
   /**
@@ -158,7 +164,7 @@ public final class AFUNIXSocket extends AFSocket&lt;AFUNIXSocketAddress&gt; impl
    * @return {@code true} iff supported.
    */
   public static boolean isSupported() {
-<span class="pc bpc" id="L161" title="2 of 4 branches missed.">    return AFSocket.isSupported() &amp;&amp; AFSocket.supports(AFSocketCapability.CAPABILITY_UNIX_DOMAIN);</span>
+<span class="pc bpc" id="L167" title="2 of 4 branches missed.">    return AFSocket.isSupported() &amp;&amp; AFSocket.supports(AFSocketCapability.CAPABILITY_UNIX_DOMAIN);</span>
   }
 
   /**
@@ -169,16 +175,87 @@ public final class AFUNIXSocket extends AFSocket&lt;AFUNIXSocketAddress&gt; impl
    * @param args ignored.
    */
   public static void main(String[] args) {
-    // If you want to run this directly from within Eclipse, see AFUNIXSocketTest#testMain.
-<span class="fc" id="L173">    System.out.print(AFUNIXSocket.class.getName() + &quot;.isSupported(): &quot;);</span>
-<span class="fc" id="L174">    System.out.flush();</span>
-<span class="fc" id="L175">    System.out.println(AFUNIXSocket.isSupported());</span>
+    // If you want to run this directly from within Eclipse, see
+    // org.newsclub.net.unix.domain.SocketTest#testMain.
+<span class="fc" id="L180">    System.out.print(AFUNIXSocket.class.getName() + &quot;.isSupported(): &quot;);</span>
+<span class="fc" id="L181">    System.out.flush();</span>
+<span class="fc" id="L182">    System.out.println(AFUNIXSocket.isSupported());</span>
 
-<span class="fc bfc" id="L177" title="All 2 branches covered.">    for (AFSocketCapability cap : AFSocketCapability.values()) {</span>
-<span class="fc" id="L178">      System.out.print(cap + &quot;: &quot;);</span>
-<span class="fc" id="L179">      System.out.flush();</span>
-<span class="fc" id="L180">      System.out.println(AFSocket.supports(cap));</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">    for (AFSocketCapability cap : AFSocketCapability.values()) {</span>
+<span class="fc" id="L185">      System.out.print(cap + &quot;: &quot;);</span>
+<span class="fc" id="L186">      System.out.flush();</span>
+<span class="fc" id="L187">      System.out.println(AFSocket.supports(cap));</span>
     }
-<span class="fc" id="L182">  }</span>
+<span class="fc" id="L189">    System.out.println();</span>
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">    if (AFSocket.supports(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)) {</span>
+<span class="fc" id="L191">      System.out.println(&quot;Starting mini selftest...&quot;);</span>
+<span class="fc" id="L192">      miniSelftest();</span>
+    } else {
+<span class="nc" id="L194">      System.out.println(</span>
+          &quot;Skipping mini selftest; AFSocketCapability.CAPABILITY_UNIX_DOMAIN is missing&quot;);
+    }
+<span class="fc" id="L197">  }</span>
+
+  private static void miniSelftest() {
+<span class="fc" id="L200">    AtomicBoolean success = new AtomicBoolean(true);</span>
+    try {
+<span class="fc" id="L202">      AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();</span>
+<span class="fc" id="L203">      System.out.println(&quot;Using temporary address: &quot; + addr);</span>
+<span class="fc" id="L204">      try (AFUNIXServerSocket server = addr.newBoundServerSocket()) {</span>
+<span class="fc" id="L205">        Thread t = new Thread(() -&gt; {</span>
+          try {
+<span class="fc" id="L207">            try (AFUNIXSocket client = server.accept()) {</span>
+<span class="fc" id="L208">              System.out.println(&quot;Server accepted client connection&quot;);</span>
+<span class="fc" id="L209">              try (SocketChannel chann = client.getChannel()) {</span>
+<span class="fc" id="L210">                ByteBuffer bb = ByteBuffer.allocate(64).order(ByteOrder.BIG_ENDIAN);</span>
+
+<span class="fc" id="L212">                int numRead = 0;</span>
+<span class="pc bpc" id="L213" title="1 of 4 branches missed.">                while (bb.position() != 4 &amp;&amp; numRead != -1) {</span>
+<span class="fc" id="L214">                  numRead = chann.read(bb);</span>
+                }
+<span class="pc bpc" id="L216" title="1 of 2 branches missed.">                if (bb.position() != 4) {</span>
+<span class="nc" id="L217">                  throw new IOException(&quot;Unexpected number of bytes read: &quot; + bb.position());</span>
+                }
+<span class="fc" id="L219">                bb.flip();</span>
+                int v;
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">                if ((v = bb.getInt()) != 0xABCDEF12) {</span>
+<span class="nc" id="L222">                  throw new IOException(&quot;Received unexpected data from client: 0x&quot; + Integer</span>
+<span class="nc" id="L223">                      .toHexString(v));</span>
+                }
+<span class="fc" id="L225">                bb.clear();</span>
+<span class="fc" id="L226">                bb.putLong(0x00112233456789L);</span>
+<span class="fc" id="L227">                bb.flip();</span>
+<span class="fc" id="L228">                chann.write(bb);</span>
+              }
+            } finally {
+<span class="fc" id="L231">              server.close(); // NOPMD</span>
+            }
+<span class="nc" id="L233">          } catch (Exception e) { // NOPMD</span>
+<span class="nc" id="L234">            success.set(false);</span>
+<span class="nc" id="L235">            e.printStackTrace();</span>
+<span class="fc" id="L236">          }</span>
+<span class="fc" id="L237">        });</span>
+<span class="fc" id="L238">        t.start();</span>
+
+<span class="fc" id="L240">        try (AFUNIXSocket socket = addr.newConnectedSocket();</span>
+<span class="fc" id="L241">            DataInputStream in = new DataInputStream(socket.getInputStream());</span>
+<span class="fc" id="L242">            DataOutputStream out = new DataOutputStream(socket.getOutputStream());) {</span>
+<span class="fc" id="L243">          out.writeInt(0xABCDEF12);</span>
+<span class="fc" id="L244">          out.flush();</span>
+<span class="fc" id="L245">          long v = in.readLong();</span>
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">          if (v != 0x00112233456789L) {</span>
+<span class="nc" id="L247">            throw new IOException(&quot;Received unexpected data from server: 0x&quot; + Long.toHexString(v));</span>
+          }
+        }
+<span class="fc" id="L250">        System.out.println(&quot;Data exchange succeeded&quot;);</span>
+      }
+<span class="nc" id="L252">    } catch (Exception e) { // NOPMD</span>
+<span class="nc" id="L253">      success.set(false);</span>
+<span class="nc" id="L254">      e.printStackTrace();</span>
+<span class="nc" id="L255">      return;</span>
+    } finally {
+<span class="pc bpc" id="L257" title="1 of 2 branches missed.">      System.out.println(&quot;mini selftest &quot; + (success.get() ? &quot;passed&quot; : &quot;failed&quot;));</span>
+    }
+<span class="fc" id="L259">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

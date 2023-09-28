@@ -550,7 +550,7 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
    *           type.
    */
   protected final AFSocketImplExtensions&lt;A&gt; getImplExtensions() {
-<span class="nc" id="L553">    return getAFImpl(false).getImplExtensions();</span>
+<span class="fc" id="L553">    return getAFImpl(false).getImplExtensions();</span>
   }
 
   /**
@@ -609,6 +609,15 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
 <span class="nc" id="L609">        throw e;</span>
       }
     }
+  }
+
+  /**
+   * Checks if we're running on Android (as far as junixsocket is concerned).
+   *
+   * @return {@code true} if running on Android.
+   */
+  public static boolean isRunningOnAndroid() {
+<span class="fc" id="L620">    return NativeLibraryLoader.isAndroid();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

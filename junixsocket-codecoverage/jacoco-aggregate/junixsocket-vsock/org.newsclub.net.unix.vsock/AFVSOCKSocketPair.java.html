@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFVSOCKSocketPair.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-vsock</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.vsock</a> &gt; <span class="el_source">AFVSOCKSocketPair.java</span></div><h1>AFVSOCKSocketPair.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2023 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.vsock;
+
+import java.io.IOException;
+
+import org.newsclub.net.unix.AFSocketPair;
+import org.newsclub.net.unix.AFSomeSocket;
+
+/**
+ * A pair of sockets.
+ *
+ * @param &lt;T&gt; The socket type.
+ * @author Christian Kohlschütter
+ */
+public final class AFVSOCKSocketPair&lt;T extends AFSomeSocket&gt; extends AFSocketPair&lt;T&gt; {
+  /**
+   * Creates a new socket pair.
+   *
+   * @param socket1 The first socket.
+   * @param socket2 The second socket.
+   */
+  AFVSOCKSocketPair(T socket1, T socket2) {
+<span class="nc" id="L39">    super(socket1, socket2);</span>
+<span class="nc" id="L40">  }</span>
+
+  /**
+   * Opens a socket pair of interconnected channels.
+   *
+   * @return The new channel pair.
+   * @throws IOException on error.
+   */
+  public static AFVSOCKSocketPair&lt;AFVSOCKSocketChannel&gt; open() throws IOException {
+<span class="nc" id="L49">    return AFVSOCKSelectorProvider.provider().openSocketChannelPair();</span>
+  }
+
+  /**
+   * Opens a socket pair of interconnected datagram channels.
+   *
+   * @return The new channel pair.
+   * @throws IOException on error.
+   */
+  public static AFVSOCKSocketPair&lt;AFVSOCKDatagramChannel&gt; openDatagram() throws IOException {
+<span class="nc" id="L59">    return AFVSOCKSelectorProvider.provider().openDatagramChannelPair();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

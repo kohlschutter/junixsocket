@@ -306,7 +306,7 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
   @SuppressWarnings(&quot;unchecked&quot;)
   final A receive(ByteBuffer dst) throws IOException {
     try {
-<span class="nc" id="L309">      return (A) core.receive(dst);</span>
+<span class="fc" id="L309">      return (A) core.receive(dst);</span>
 <span class="nc" id="L310">    } catch (SocketClosedException e) {</span>
 <span class="nc" id="L311">      throw (ClosedChannelException) new ClosedChannelException().initCause(e);</span>
     }
@@ -314,7 +314,7 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
 
   final int send(ByteBuffer src, SocketAddress target) throws IOException {
     try {
-<span class="nc" id="L317">      return core.write(src, target, 0);</span>
+<span class="fc" id="L317">      return core.write(src, target, 0);</span>
 <span class="nc" id="L318">    } catch (SocketClosedException e) {</span>
 <span class="nc" id="L319">      throw (ClosedChannelException) new ClosedChannelException().initCause(e);</span>
     }
@@ -354,8 +354,8 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
 <span class="fc bfc" id="L354" title="All 2 branches covered.">    if (bound.get()) {</span>
 <span class="fc" id="L355">      return true;</span>
     }
-<span class="pc bpc" id="L357" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L358">      return false;</span>
+<span class="fc bfc" id="L357" title="All 2 branches covered.">    if (isClosed()) {</span>
+<span class="fc" id="L358">      return false;</span>
     }
 <span class="fc bfc" id="L360" title="All 2 branches covered.">    if (core.isConnected(true)) {</span>
 <span class="fc" id="L361">      bound.set(true);</span>
@@ -396,10 +396,10 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
    *           type.
    */
   protected final synchronized AFSocketImplExtensions&lt;A&gt; getImplExtensions() {
-<span class="nc bnc" id="L399" title="All 2 branches missed.">    if (implExtensions == null) {</span>
-<span class="nc" id="L400">      implExtensions = addressFamily.initImplExtensions(ancillaryDataSupport);</span>
+<span class="fc bfc" id="L399" title="All 2 branches covered.">    if (implExtensions == null) {</span>
+<span class="fc" id="L400">      implExtensions = addressFamily.initImplExtensions(ancillaryDataSupport);</span>
     }
-<span class="nc" id="L402">    return implExtensions;</span>
+<span class="fc" id="L402">    return implExtensions;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

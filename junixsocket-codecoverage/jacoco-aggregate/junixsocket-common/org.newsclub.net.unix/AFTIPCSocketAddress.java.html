@@ -171,8 +171,8 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
     private AddressType(int id) {
 <span class="nc" id="L173">      super(id);</span>
-<span class="nc" id="L174">      this.ds = (a, b, c) -&gt; &quot;:&quot; + Integer.toUnsignedString(a) + &quot;:&quot; + Integer.toUnsignedString(b)</span>
-<span class="nc" id="L175">          + &quot;:&quot; + Integer.toUnsignedString(c);</span>
+<span class="nc" id="L174">      this.ds = (a, b, c) -&gt; &quot;:&quot; + toUnsignedString(a) + &quot;:&quot; + toUnsignedString(b) + &quot;:&quot;</span>
+<span class="nc" id="L175">          + toUnsignedString(c);</span>
 <span class="nc" id="L176">    }</span>
 
     private AddressType(String name, int id, DebugStringProvider ds) {
@@ -431,9 +431,9 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   private static int parseUnsignedInt(String v) {
 <span class="fc bfc" id="L433" title="All 2 branches covered.">    if (v.startsWith(&quot;0x&quot;)) {</span>
-<span class="fc" id="L434">      return Integer.parseUnsignedInt(v.substring(2), 16);</span>
+<span class="fc" id="L434">      return parseUnsignedInt(v.substring(2), 16);</span>
     } else {
-<span class="fc" id="L436">      return Integer.parseUnsignedInt(v);</span>
+<span class="fc" id="L436">      return parseUnsignedInt(v, 10);</span>
     }
   }
 
@@ -686,9 +686,9 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
   private String toTipcInt(int v) {
 <span class="fc bfc" id="L688" title="All 2 branches covered.">    if (v &lt; 0) {</span>
-<span class="fc" id="L689">      return &quot;0x&quot; + Integer.toUnsignedString(v, 16);</span>
+<span class="fc" id="L689">      return &quot;0x&quot; + toUnsignedString(v, 16);</span>
     } else {
-<span class="fc" id="L691">      return Integer.toUnsignedString(v);</span>
+<span class="fc" id="L691">      return toUnsignedString(v);</span>
     }
   }
 

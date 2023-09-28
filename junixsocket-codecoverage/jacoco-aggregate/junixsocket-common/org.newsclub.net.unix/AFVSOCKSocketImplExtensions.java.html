@@ -30,9 +30,9 @@ public final class AFVSOCKSocketImplExtensions implements
   @SuppressWarnings(&quot;unused&quot;)
   private final AncillaryDataSupport ancillaryDataSupport; // NOPMD
 
-<span class="nc" id="L33">  AFVSOCKSocketImplExtensions(AncillaryDataSupport ancillaryDataSupport) {</span>
-<span class="nc" id="L34">    this.ancillaryDataSupport = ancillaryDataSupport;</span>
-<span class="nc" id="L35">  }</span>
+<span class="fc" id="L33">  AFVSOCKSocketImplExtensions(AncillaryDataSupport ancillaryDataSupport) {</span>
+<span class="fc" id="L34">    this.ancillaryDataSupport = ancillaryDataSupport;</span>
+<span class="fc" id="L35">  }</span>
 
   /**
    * Returns the local CID.
@@ -46,7 +46,7 @@ public final class AFVSOCKSocketImplExtensions implements
    * @throws IOException on error.
    */
   public int getLocalCID() throws IOException {
-<span class="nc" id="L49">    return NativeUnixSocket.vsockGetLocalCID();</span>
+<span class="fc" id="L49">    return NativeUnixSocket.vsockGetLocalCID();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -610,5 +610,14 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
       }
     }
   }
+
+  /**
+   * Checks if we're running on Android (as far as junixsocket is concerned).
+   *
+   * @return {@code true} if running on Android.
+   */
+  public static boolean isRunningOnAndroid() {
+<span class="nc" id="L620">    return NativeLibraryLoader.isAndroid();</span>
+  }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

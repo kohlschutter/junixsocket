@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SSLContextBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-ssl</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.ssl</a> &gt; <span class="el_source">SSLContextBuilder.java</span></div><h1>SSLContextBuilder.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2023 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.ssl;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Provider;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.UnrecoverableKeyException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.security.auth.DestroyFailedException;
+import javax.security.auth.Destroyable;
+
+import org.newsclub.net.unix.AFSocket;
+import org.newsclub.net.unix.KnownJavaBugIOException;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+/**
+ * Helper class to simplify building {@link SSLContext} instances.
+ *
+ * @author Christian Kohlschütter
+ */
+public final class SSLContextBuilder {
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">  private static final Provider PROVIDER_PKCS12 = AFSocket.isRunningOnAndroid()</span>
+<span class="pc" id="L65">      ? bouncyCastleInstanceIfPossible() : null;</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">  private static final Provider PROVIDER_JSSE = AFSocket.isRunningOnAndroid()</span>
+<span class="pc" id="L67">      ? bouncyCastleJSSEInstanceIfPossible() : null;</span>
+<span class="pc bpc" id="L68" title="3 of 4 branches missed.">  private static final String DEFAULT_PROVIDER = AFSocket.isRunningOnAndroid()</span>
+      &amp;&amp; PROVIDER_JSSE != null
+<span class="nc" id="L70">          ? &quot;org.bouncycastle.jsse.provider.BouncyCastleJsseProvider,org.bouncycastle.jce.provider.BouncyCastleProvider&quot;</span>
+<span class="fc" id="L71">          : null;</span>
+  private final boolean clientMode;
+
+<span class="fc" id="L74">  private String protocol = &quot;TLS&quot;;</span>
+<span class="fc" id="L75">  private SecureRandom secureRandom = null;</span>
+
+  private URL keyStoreUrl;
+  private SSLSupplier&lt;char[]&gt; keyStorePassword;
+
+  private URL trustManagerUrl;
+  private SSLSupplier&lt;char[]&gt; trustManagerPassword;
+
+<span class="fc" id="L83">  private Function&lt;SSLParameters, SSLParameters&gt; parametersFunction = null;</span>
+
+<span class="fc" id="L85">  private SSLSupplier&lt;KeyStore&gt; keyStoreSupplier = SSLContextBuilder::newKeyStorePKCS12;</span>
+<span class="fc" id="L86">  private SSLFunction&lt;KeyManagerFactory, KeyManager[]&gt; keyManager = null;</span>
+<span class="fc" id="L87">  private SSLFunction&lt;TrustManagerFactory, TrustManager[]&gt; trustManager = null;</span>
+<span class="fc" id="L88">  private Object provider = DEFAULT_PROVIDER;</span>
+
+<span class="fc" id="L90">  private SocketFactory socketFactory = SocketFactory.getDefault();</span>
+
+  /**
+   * Creates a new {@link SSLContextBuilder} instance.
+   */
+<span class="fc" id="L95">  private SSLContextBuilder(boolean clientMode) {</span>
+<span class="fc" id="L96">    this.clientMode = clientMode;</span>
+<span class="fc" id="L97">  }</span>
+
+  /**
+   * Creates an {@link SSLContextBuilder} to be used in a server context.
+   *
+   * @return The builder instance.
+   */
+  public static SSLContextBuilder forServer() {
+<span class="fc" id="L105">    return new SSLContextBuilder(false);</span>
+  }
+
+  /**
+   * Creates an {@link SSLContextBuilder} to be used in a client context.
+   *
+   * @return The builder instance.
+   */
+  public static SSLContextBuilder forClient() {
+<span class="fc" id="L114">    return new SSLContextBuilder(true);</span>
+  }
+
+  /**
+   * Configures this builder to use the given {@link SocketFactory} to create the underlying
+   * insecure sockets.
+   *
+   * @param sf The {@link SocketFactory}.
+   * @return This builder.
+   */
+  public SSLContextBuilder withSocketFactory(SocketFactory sf) {
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">    this.socketFactory = sf == null ? SocketFactory.getDefault() : sf;</span>
+<span class="fc" id="L126">    return this;</span>
+  }
+
+  /**
+   * Configures this builder to use the given protocol. Note that &quot;{@code TLS}&quot; is the default.
+   *
+   * @param p The protocol to use, e.g. {@code TLSv1.2}.
+   * @return This builder.
+   */
+  public SSLContextBuilder withProtocol(String p) {
+<span class="fc" id="L136">    this.protocol = p;</span>
+<span class="fc" id="L137">    return this;</span>
+  }
+
+  /**
+   * Configures this builder to use the given provider, {@code null} being the default.
+   *
+   * @param p The provider to use, e.g. {@code BouncyCastleJsseProvider}, or {@code null} for system
+   *          default.
+   * @return This builder.
+   */
+  public SSLContextBuilder withProvider(Provider p) {
+<span class="fc" id="L148">    this.provider = p;</span>
+<span class="fc" id="L149">    return this;</span>
+  }
+
+  /**
+   * Configures this builder to use the given provider, identified by ID, {@code null} being the
+   * default.
+   * &lt;p&gt;
+   * In addition to the standard JSSE IDs, you can specify one or more Provider classnames as a
+   * comma-separated list. These providers will be added via {@link Security#addProvider(Provider)}.
+   * The first entry is then attempted to be resolved using {@link Provider#getName()}, with any
+   * optionally remaining {@link Provider}s simply being added to the list of available providers,
+   * in case they're actually required by the first one. It is expected that the classes have a
+   * public no-arg constructor.
+   * &lt;p&gt;
+   * This is the case, for example, with BouncyCastle. Specify
+   * {@code org.bouncycastle.jsse.provider.BouncyCastleJsseProvider,org.bouncycastle.jce.provider.BouncyCastleProvider}
+   * to enable TLS-secured communication with PKCS12 keys, for example.
+   *
+   * @param id The provider to use, e.g. {@code BCJSSE}, or {@code null}/{@code &quot;&quot;} for system
+   *          default.
+   * @return This builder.
+   */
+  public SSLContextBuilder withProvider(String id) {
+<span class="nc bnc" id="L172" title="All 2 branches missed.">    this.provider = id.isEmpty() ? null : id;</span>
+<span class="nc" id="L173">    return this;</span>
+  }
+
+  /**
+   * Configures this builder to use the given supplier for {link KeyManager}{@code []}.
+   *
+   * Note that setting any value other than {@code null} means that the parameters specified with
+   * {@link #withKeyStore(File, SSLSupplier)}, etc. are ignored.
+   *
+   * @param s The supplier to use, or {@code null} to use the built-in default.
+   * @return This builder.
+   * @throws IllegalStateException if {@link #withKeyStore(File, SSLSupplier)}, etc., was already
+   *           called.
+   */
+  public SSLContextBuilder withKeyManagers(SSLFunction&lt;KeyManagerFactory, KeyManager[]&gt; s) {
+<span class="fc bfc" id="L188" title="All 2 branches covered.">    if (keyStoreUrl != null) {</span>
+<span class="fc" id="L189">      throw new IllegalStateException(&quot;withKeyStore was already called&quot;);</span>
+    }
+<span class="fc" id="L191">    this.keyManager = s;</span>
+<span class="fc" id="L192">    return this;</span>
+  }
+
+  /**
+   * Configures this builder to use the given supplier for {@link TrustManager}{@code []}.
+   *
+   * Note that setting any value other than {@code null} means that the parameters specified with
+   * {@link #withTrustStore(File, SSLSupplier)}, etc. are ignored.
+   *
+   * @param s The supplier to use, or {@code null} to use the built-in default.
+   * @return This builder.
+   */
+  public SSLContextBuilder withTrustManagers(SSLFunction&lt;TrustManagerFactory, TrustManager[]&gt; s) {
+<span class="fc bfc" id="L205" title="All 2 branches covered.">    if (trustManagerUrl != null) {</span>
+<span class="fc" id="L206">      throw new IllegalStateException(&quot;withTrustStore was already called&quot;);</span>
+    }
+<span class="fc" id="L208">    this.trustManager = s;</span>
+<span class="fc" id="L209">    return this;</span>
+  }
+
+  /**
+   * Configures this builder to use the given protocol. Note that &quot;{@code null}&quot; is the default,
+   * which means that it's up the SSL implementation what {@link SecureRandom} to use.
+   *
+   * @param s The instance to use, e.g. {@code null}.
+   * @return This builder.
+   */
+  @SuppressFBWarnings(&quot;EI_EXPOSE_REP2&quot;)
+  public SSLContextBuilder withSecureRandom(SecureRandom s) {
+<span class="fc" id="L221">    this.secureRandom = s;</span>
+<span class="fc" id="L222">    return this;</span>
+  }
+
+  /**
+   * Configures this builder to use the given supplier to provide {@link KeyStore} instances.
+   *
+   * If {@code null} is specified, the default supplier is used, which is configured for
+   * {@code PKCS12}-type keystores. In that case, on Android, it is expected that the
+   * &lt;em&gt;BouncyCastle&lt;/em&gt; SSL provider ({@code org.bouncycastle.jce.provider.BouncyCastleProvider})
+   * is on the classpath.
+   *
+   * @param supplier The supplier, or {@code null} for default.
+   * @return This builder.
+   */
+  public SSLContextBuilder withKeyStoreSupplier(SSLSupplier&lt;KeyStore&gt; supplier) {
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">    this.keyStoreSupplier = supplier == null ? SSLContextBuilder::newKeyStorePKCS12 : supplier;</span>
+<span class="fc" id="L238">    return this;</span>
+  }
+
+  /**
+   * Configures this builder to use the given keystore, identified by path and password.
+   *
+   * @param path The path to the keystore.
+   * @param password The supplier that returns the password to unlock the keystore; the password
+   *          will be overwritten with blanks immediately after use.
+   * @return This builder.
+   * @throws FileNotFoundException on error.
+   * @throws MalformedURLException on error.
+   * @throws IllegalStateException if {@link #withKeyManagers(SSLFunction)} was already called.
+   * @see #withKeyManagers(SSLFunction)
+   */
+  public SSLContextBuilder withKeyStore(File path, SSLSupplier&lt;char[]&gt; password)
+      throws FileNotFoundException, MalformedURLException {
+<span class="fc" id="L255">    return withKeyStore(path.toURI().toURL(), password);</span>
+  }
+
+  /**
+   * Configures this builder to use the given keystore, identified by URL and password.
+   *
+   * @param url The {@link URL} specifying the location of the keystore
+   * @param password The supplier that returns the password to unlock the keystore; the password
+   *          will be overwritten with blanks immediately after use.
+   * @return This builder.
+   * @throws FileNotFoundException on error.
+   * @see #withKeyManagers(SSLFunction)
+   */
+  public SSLContextBuilder withKeyStore(URL url, SSLSupplier&lt;char[]&gt; password)
+      throws FileNotFoundException {
+<span class="fc bfc" id="L270" title="All 2 branches covered.">    if (this.keyManager != null) {</span>
+<span class="fc" id="L271">      throw new IllegalStateException(&quot;withKeyManagers was already called&quot;);</span>
+    }
+<span class="fc" id="L273">    this.keyStoreUrl = Objects.requireNonNull(url);</span>
+<span class="fc" id="L274">    this.keyStorePassword = password;</span>
+<span class="fc" id="L275">    this.keyManager = this::buildKeyManagers;</span>
+
+<span class="fc" id="L277">    return this;</span>
+  }
+
+  /**
+   * Configures this builder to use the given truststore, identified by path and password.
+   *
+   * @param path The path to the truststore.
+   * @param password The supplier that returns the password to unlock the keystore; the password
+   *          will be overwritten with blanks immediately after use.
+   * @return This builder.
+   * @throws FileNotFoundException on error.
+   * @throws MalformedURLException on error.
+   * @see #withTrustManagers(SSLFunction)
+   */
+  public SSLContextBuilder withTrustStore(File path, SSLSupplier&lt;char[]&gt; password)
+      throws FileNotFoundException, MalformedURLException {
+<span class="fc" id="L293">    return withTrustStore(path.toURI().toURL(), password);</span>
+  }
+
+  /**
+   * Configures this builder to use the given truststore, identified by path and password.
+   *
+   * @param url The {@link URL} specifying the location of the truststore.
+   * @param password The supplier that returns the password to unlock the keystore; the password
+   *          will be overwritten with blanks immediately after use.
+   * @return This builder.
+   * @throws FileNotFoundException on error.
+   * @see #withTrustManagers(SSLFunction)
+   */
+  public SSLContextBuilder withTrustStore(URL url, SSLSupplier&lt;char[]&gt; password)
+      throws FileNotFoundException {
+<span class="fc bfc" id="L308" title="All 2 branches covered.">    if (this.trustManager != null) {</span>
+<span class="fc" id="L309">      throw new IllegalStateException(&quot;withTrustManagers was already called&quot;);</span>
+    }
+<span class="fc" id="L311">    this.trustManagerUrl = Objects.requireNonNull(url, &quot;trustStore&quot;);</span>
+<span class="fc" id="L312">    this.trustManagerPassword = password;</span>
+<span class="fc" id="L313">    return this;</span>
+  }
+
+  /**
+   * Configures this builder to use the given function to configure the default SSL parameters.
+   *
+   * The function is called with the context's default SSL parameters instance.
+   *
+   * The function may modify and return the given instance, or return a completely different
+   * instance.
+   *
+   * @param function The function to configure SSL parameters.
+   * @return This builder.
+   */
+  @SuppressWarnings(&quot;overloads&quot;)
+  public SSLContextBuilder withDefaultSSLParameters(
+      Function&lt;SSLParameters, SSLParameters&gt; function) {
+<span class="fc bfc" id="L330" title="All 2 branches covered.">    if (parametersFunction != null) {</span>
+<span class="fc" id="L331">      throw new IllegalStateException(&quot;Default parameters already set&quot;);</span>
+    }
+<span class="fc" id="L333">    this.parametersFunction = function;</span>
+<span class="fc" id="L334">    return this;</span>
+  }
+
+  /**
+   * Configures this builder to use the given consumer to configure the default SSL parameters.
+   *
+   * The consumer is called with the context's default SSL parameters instance.
+   *
+   * The consumer may modify or just inspect the given instance.
+   *
+   * @param consumer The function to configure SSL parameters.
+   * @return This builder.
+   */
+  @SuppressWarnings(&quot;overloads&quot;)
+  public SSLContextBuilder withDefaultSSLParameters(Consumer&lt;SSLParameters&gt; consumer) {
+<span class="fc" id="L349">    return withDefaultSSLParameters((p) -&gt; {</span>
+<span class="fc" id="L350">      consumer.accept(p);</span>
+<span class="fc" id="L351">      return p;</span>
+    });
+  }
+
+  private KeyManagerFactory buildKeyManagerFactory() throws GeneralSecurityException {
+<span class="fc" id="L356">    return KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());</span>
+  }
+
+  private TrustManagerFactory buildTrustManagerFactory() throws GeneralSecurityException {
+<span class="fc" id="L360">    return TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());</span>
+  }
+
+  private KeyManager[] buildKeyManagers(KeyManagerFactory kmf) throws GeneralSecurityException,
+      IOException, UnrecoverableKeyException {
+<span class="fc bfc" id="L365" title="All 2 branches covered.">    if (keyStoreUrl == null) {</span>
+      // use default
+<span class="fc" id="L367">      return null; // NOPMD.ReturnEmptyCollectionRatherThanNull</span>
+    }
+
+<span class="fc" id="L370">    KeyStore ks = keyStoreSupplier.get();</span>
+
+<span class="fc bfc" id="L372" title="All 2 branches covered.">    char[] password = keyStorePassword == null ? null : keyStorePassword.get();</span>
+<span class="fc" id="L373">    try (InputStream in = keyStoreUrl.openStream()) {</span>
+<span class="fc" id="L374">      ks.load(in, password);</span>
+<span class="fc" id="L375">      kmf.init(ks, password);</span>
+<span class="fc" id="L376">    } catch (IOException e) {</span>
+<span class="fc" id="L377">      throw wrapIOExceptionIfJDKBug(e);</span>
+    } finally {
+<span class="fc" id="L379">      clear(password);</span>
+    }
+
+<span class="fc" id="L382">    return kmf.getKeyManagers();</span>
+  }
+
+  /**
+   * For a given {@link IOException} thrown from within {@link SSLContextBuilder}, check if it is
+   * due to a known JDK bug, and if so, wrap that exception in a {@link KnownJavaBugIOException}
+   * with a proper explanation.
+   *
+   * @param e The exception to check/wrap.
+   * @return The exception, or a {@link KnownJavaBugIOException}.
+   */
+  public static IOException wrapIOExceptionIfJDKBug(IOException e) {
+<span class="fc" id="L394">    String msg = e.getMessage();</span>
+<span class="pc bpc" id="L395" title="1 of 2 branches missed.">    if (msg == null) {</span>
+<span class="nc" id="L396">      return e;</span>
+    }
+<span class="pc bpc" id="L398" title="1 of 2 branches missed.">    if (msg.contains(&quot;data isn't an object ID (tag = 48)&quot;)) {</span>
+<span class="nc" id="L399">      return knownJDKBug(e, &quot;JDK-8202837&quot;, &quot;8u312&quot;, &quot;11.0.3&quot;);</span>
+<span class="pc bpc" id="L400" title="1 of 2 branches missed.">    } else if (msg.contains(&quot;HmacPBESHA256 not available&quot;)) {</span>
+<span class="nc" id="L401">      return knownJDKBug(e, &quot;JDK-8267701&quot;, &quot;8u301&quot;, &quot;11.0.12&quot;);</span>
+    }
+<span class="fc" id="L403">    return e;</span>
+  }
+
+  private static KnownJavaBugIOException knownJDKBug(Exception e, String bugId, String java8Version,
+      String java11Version) {
+<span class="nc" id="L408">    String specVersion = System.getProperty(&quot;java.specification.version&quot;, &quot;&quot;);</span>
+<span class="nc bnc" id="L409" title="All 2 branches missed.">    if (specVersion.startsWith(&quot;1.&quot;)) {</span>
+<span class="nc" id="L410">      return new KnownJavaBugIOException(&quot;Bug &quot; + bugId + &quot; detected -- please upgrade to Java &quot;</span>
+          + java8Version + &quot; or newer&quot;, e);
+<span class="nc bnc" id="L412" title="All 6 branches missed.">    } else if (&quot;9&quot;.equals(specVersion) || &quot;10&quot;.equals(specVersion) || &quot;11&quot;.equals(specVersion)) {</span>
+<span class="nc" id="L413">      return new KnownJavaBugIOException(&quot;Bug &quot; + bugId + &quot; detected -- please upgrade to Java &quot;</span>
+          + java11Version + &quot; or newer&quot;, e);
+    } else {
+<span class="nc" id="L416">      return new KnownJavaBugIOException(&quot;Bug &quot; + bugId</span>
+          + &quot; detected -- please upgrade your Java release&quot;, e);
+    }
+  }
+
+  private TrustManager[] buildTrustManagers(TrustManagerFactory tmf) throws IOException,
+      GeneralSecurityException {
+
+<span class="fc bfc" id="L424" title="All 2 branches covered.">    if (trustManagerUrl == null) {</span>
+      // use default
+<span class="fc" id="L426">      return null; // NOPMD.ReturnEmptyCollectionRatherThanNull</span>
+    }
+
+<span class="fc" id="L429">    KeyStore ks = keyStoreSupplier.get();</span>
+
+<span class="fc bfc" id="L431" title="All 2 branches covered.">    char[] password = trustManagerPassword == null ? null : trustManagerPassword.get();</span>
+<span class="fc" id="L432">    try (InputStream in = trustManagerUrl.openStream()) {</span>
+<span class="fc" id="L433">      ks.load(in, password);</span>
+<span class="fc" id="L434">    } catch (IOException e) {</span>
+<span class="fc" id="L435">      throw wrapIOExceptionIfJDKBug(e);</span>
+    } finally {
+<span class="fc" id="L437">      clear(password);</span>
+    }
+
+<span class="fc" id="L440">    tmf.init(ks);</span>
+
+<span class="fc" id="L442">    return tmf.getTrustManagers();</span>
+  }
+
+  private static void clear(char[] password) {
+<span class="fc bfc" id="L446" title="All 2 branches covered.">    if (password == null) {</span>
+<span class="fc" id="L447">      return;</span>
+    }
+<span class="fc" id="L449">    Arrays.fill(password, ' ');</span>
+<span class="fc" id="L450">  }</span>
+
+  /**
+   * Try to initialize the SSLContext with a provider specified by classname.
+   *
+   * If {@code providerString} contains a comma-separated list, all providers in the list are
+   * initialized (if possible), but the first one used to initialize the {@link SSLContext}.
+   *
+   * @param e The original exception when trying to resolve the provider by ID.
+   * @param protocol The desired protocol.
+   * @param providerString The provider string with the classname(s).
+   * @return The context.
+   * @throws NoSuchAlgorithmException on error.
+   * @throws NoSuchProviderException on error.
+   */
+  @SuppressFBWarnings(&quot;DCN_NULLPOINTER_EXCEPTION&quot;)
+  private static SSLContext tryInitContextFallback(NoSuchProviderException e, String protocol,
+      String providerString) throws NoSuchAlgorithmException, NoSuchProviderException {
+    try {
+<span class="nc" id="L469">      List&lt;Provider&gt; providers = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L470" title="All 2 branches missed.">      for (String pn : providerString.split(&quot;,&quot;)) {</span>
+<span class="nc" id="L471">        pn = pn.trim(); // NOPMD.AvoidReassigningLoopVariables</span>
+<span class="nc bnc" id="L472" title="All 2 branches missed.">        if (pn.isEmpty()) {</span>
+<span class="nc" id="L473">          continue;</span>
+        }
+<span class="nc" id="L475">        Class&lt;?&gt; klazz = Class.forName(pn);</span>
+<span class="nc bnc" id="L476" title="All 2 branches missed.">        if (!Provider.class.isAssignableFrom(klazz)) {</span>
+<span class="nc" id="L477">          continue;</span>
+        }
+<span class="nc" id="L479">        Provider p = (Provider) klazz.getConstructor().newInstance();</span>
+<span class="nc" id="L480">        providers.add(p);</span>
+
+        try {
+<span class="nc" id="L483">          Security.addProvider(p);</span>
+<span class="nc" id="L484">        } catch (SecurityException | NullPointerException e1) {</span>
+<span class="nc" id="L485">          e.addSuppressed(e1);</span>
+<span class="nc" id="L486">        }</span>
+      }
+<span class="nc bnc" id="L488" title="All 2 branches missed.">      if (providers.isEmpty()) {</span>
+<span class="nc" id="L489">        throw e;</span>
+      } else {
+<span class="nc" id="L491">        return SSLContext.getInstance(protocol, Objects.requireNonNull(providers.get(0)).getName());</span>
+      }
+<span class="nc" id="L493">    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException</span>
+        | InvocationTargetException | NoSuchMethodException | SecurityException
+        | ClassNotFoundException | NullPointerException e1) {
+<span class="nc" id="L496">      e.addSuppressed(e1);</span>
+<span class="nc" id="L497">      throw e;</span>
+    }
+  }
+
+  /**
+   * Builds an {@link SSLContext} using the current builder state.
+   * &lt;p&gt;
+   * &lt;b&gt;IMPORTANT:&lt;/b&gt; Use {@link #buildAndDestroyBuilder()} to ensure sensitive information, such
+   * as passwords, are properly destroyed/removed from memory.
+   *
+   * @return The new {@link SSLContext} instance.
+   * @throws GeneralSecurityException on error.
+   * @throws IOException on error.
+   * @see #buildAndDestroyBuilder()
+   */
+  public SSLContext build() throws GeneralSecurityException, IOException {
+    SSLContext sslContext;
+<span class="fc bfc" id="L514" title="All 2 branches covered.">    if (provider == null) {</span>
+<span class="fc" id="L515">      sslContext = SSLContext.getInstance(protocol);</span>
+<span class="pc bpc" id="L516" title="1 of 2 branches missed.">    } else if (provider instanceof String) {</span>
+<span class="nc" id="L517">      String providerString = (String) provider;</span>
+      try {
+<span class="nc" id="L519">        sslContext = SSLContext.getInstance(protocol, providerString);</span>
+<span class="nc" id="L520">      } catch (NoSuchProviderException e) {</span>
+<span class="nc" id="L521">        sslContext = tryInitContextFallback(e, protocol, providerString);</span>
+<span class="nc" id="L522">      }</span>
+<span class="nc" id="L523">    } else {</span>
+<span class="fc" id="L524">      sslContext = SSLContext.getInstance(protocol, (Provider) provider);</span>
+    }
+
+<span class="fc" id="L527">    SSLFunction&lt;KeyManagerFactory, KeyManager[]&gt; km = this.keyManager;</span>
+<span class="fc bfc" id="L528" title="All 2 branches covered.">    if (km == null) {</span>
+<span class="fc" id="L529">      km = this::buildKeyManagers;</span>
+    }
+
+<span class="fc" id="L532">    SSLFunction&lt;TrustManagerFactory, TrustManager[]&gt; tm = this.trustManager;</span>
+<span class="fc bfc" id="L533" title="All 2 branches covered.">    if (tm == null) {</span>
+<span class="fc" id="L534">      tm = this::buildTrustManagers;</span>
+    }
+
+<span class="fc" id="L537">    KeyManager[] kms = km.apply(buildKeyManagerFactory());</span>
+<span class="fc" id="L538">    TrustManager[] tms = tm.apply(buildTrustManagerFactory());</span>
+
+<span class="fc" id="L540">    BuilderSSLContext.initContext(sslContext, kms, tms, secureRandom);</span>
+
+<span class="fc" id="L542">    return new BuilderSSLContext(clientMode, sslContext, parametersFunction, socketFactory);</span>
+  }
+
+  /**
+   * Builds an {@link SSLContext} using the current builder state, and destroys the builder's state,
+   * to reduce the chance of information leakage.
+   *
+   * @return The new {@link SSLContext} instance.
+   * @throws GeneralSecurityException on error.
+   * @throws IOException on error.
+   * @throws DestroyFailedException on error.
+   * @see #destroy()
+   */
+  public SSLContext buildAndDestroyBuilder() throws GeneralSecurityException, IOException,
+      DestroyFailedException {
+<span class="fc" id="L557">    SSLContext context = build();</span>
+<span class="fc" id="L558">    destroy();</span>
+<span class="fc" id="L559">    return context;</span>
+  }
+
+  /**
+   * Destroys the state of this builder and all key-/trust-related settings specified.
+   *
+   * @throws DestroyFailedException on error (thrown at the end, to increase level of destruction).
+   */
+  public void destroy() throws DestroyFailedException {
+<span class="fc" id="L568">    DestroyFailedException dfe = null;</span>
+
+<span class="fc bfc" id="L570" title="All 2 branches covered.">    for (Object o : new Object[] {</span>
+        keyStorePassword, trustManagerPassword, keyManager, trustManager}) {
+<span class="fc bfc" id="L572" title="All 2 branches covered.">      if (o instanceof Destroyable) {</span>
+<span class="fc" id="L573">        Destroyable d = (Destroyable) o;</span>
+<span class="fc bfc" id="L574" title="All 2 branches covered.">        if (!d.isDestroyed()) {</span>
+          try {
+<span class="fc" id="L576">            d.destroy();</span>
+<span class="fc" id="L577">          } catch (DestroyFailedException e) {</span>
+<span class="fc bfc" id="L578" title="All 2 branches covered.">            if (dfe == null) {</span>
+<span class="fc" id="L579">              dfe = e;</span>
+            } else {
+<span class="fc" id="L581">              dfe.addSuppressed(e);</span>
+            }
+<span class="fc" id="L583">          }</span>
+        }
+      }
+    }
+
+<span class="fc" id="L588">    this.keyStoreUrl = null;</span>
+<span class="fc" id="L589">    this.keyStorePassword = null;</span>
+<span class="fc" id="L590">    this.keyManager = null;</span>
+
+<span class="fc" id="L592">    this.trustManagerUrl = null;</span>
+<span class="fc" id="L593">    this.trustManagerPassword = null;</span>
+<span class="fc" id="L594">    this.trustManager = null;</span>
+
+<span class="fc" id="L596">    this.parametersFunction = null;</span>
+<span class="fc" id="L597">    this.secureRandom = null;</span>
+
+<span class="fc bfc" id="L599" title="All 2 branches covered.">    if (dfe != null) {</span>
+<span class="fc" id="L600">      throw dfe;</span>
+    }
+<span class="fc" id="L602">  }</span>
+
+  private static Provider resolveProviderIfPossible(String className) {
+    Class&lt;?&gt; klazz;
+    try {
+<span class="nc" id="L607">      klazz = Class.forName(className);</span>
+<span class="nc" id="L608">    } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L609">      return null; // NOPMD</span>
+<span class="nc" id="L610">    }</span>
+    try {
+<span class="nc" id="L612">      return (Provider) klazz.getConstructor().newInstance();</span>
+<span class="nc" id="L613">    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException</span>
+        | InvocationTargetException | NoSuchMethodException | SecurityException
+        | ClassCastException e) {
+<span class="nc" id="L616">      throw new IllegalStateException(&quot;Cannot instantiate provider '&quot; + className</span>
+          + &quot;', despite being on the classpath&quot;, e);
+    }
+  }
+
+  private static Provider bouncyCastleInstanceIfPossible() {
+<span class="nc" id="L622">    return resolveProviderIfPossible(&quot;org.bouncycastle.jce.provider.BouncyCastleProvider&quot;);</span>
+  }
+
+  private static Provider bouncyCastleJSSEInstanceIfPossible() {
+<span class="nc" id="L626">    return resolveProviderIfPossible(&quot;org.bouncycastle.jsse.provider.BouncyCastleJsseProvider&quot;);</span>
+  }
+
+  /**
+   * Returns a new {@code PKCS12} {@link KeyStoreException} instance.
+   *
+   * @return The keystore instance.
+   * @throws KeyStoreException on error.
+   */
+  public static KeyStore newKeyStorePKCS12() throws KeyStoreException {
+<span class="pc bpc" id="L636" title="1 of 2 branches missed.">    if (PROVIDER_PKCS12 == null) {</span>
+<span class="fc" id="L637">      return KeyStore.getInstance(&quot;PKCS12&quot;);</span>
+    } else {
+<span class="nc" id="L639">      return KeyStore.getInstance(&quot;PKCS12&quot;, PROVIDER_PKCS12);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

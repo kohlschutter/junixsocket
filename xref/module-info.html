@@ -11,26 +11,27 @@
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   @SuppressWarnings(<span class="jxr_string">"module"</span>) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   module org.newsclub.net.unix.demo {
-<a class="jxr_linenumber" name="L6" href="#L6">6</a>     requires org.newsclub.net.unix;
-<a class="jxr_linenumber" name="L7" href="#L7">7</a>     requires org.newsclub.net.unix.tipc;
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>     requires org.newsclub.net.unix.server;
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>     requires org.newsclub.net.mysql;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>    requires transitive org.newsclub.net.unix.rmi;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>    requires java.rmi;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>    requires java.sql;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>    requires nanohttpd;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>    requires okhttp3;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>    requires com.kohlschutter.util;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>    requires mina.core;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>    requires <strong class="jxr_keyword">static</strong> com.kohlschutter.annotations.compiletime;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>    requires <strong class="jxr_keyword">static</strong> org.eclipse.jdt.annotation;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>    requires io.netty.common;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>    requires io.netty.buffer;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>    requires io.netty.transport;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>    exports org.newsclub.net.unix.demo.rmi.services to java.rmi;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>    exports org.newsclub.net.unix.demo.rmi.fd to java.rmi;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  }
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>     requires com.kohlschutter.util;
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>     requires org.newsclub.net.unix;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>     requires org.newsclub.net.unix.tipc;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>     requires org.newsclub.net.unix.server;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>    requires org.newsclub.net.unix.ssl;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>    requires org.newsclub.net.mysql;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>    requires transitive org.newsclub.net.unix.rmi;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>    requires java.rmi;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>    requires java.sql;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>    requires nanohttpd;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>    requires okhttp3;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>    requires mina.core;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>    requires <strong class="jxr_keyword">static</strong> com.kohlschutter.annotations.compiletime;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>    requires <strong class="jxr_keyword">static</strong> org.eclipse.jdt.annotation;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>    requires io.netty.common;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>    requires io.netty.buffer;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>    requires io.netty.transport;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>    exports org.newsclub.net.unix.demo.rmi.services to java.rmi;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>    exports org.newsclub.net.unix.demo.rmi.fd to java.rmi;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

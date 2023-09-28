@@ -15,6 +15,8 @@ module:org.newsclub.net.unix.rmi
 org.newsclub.net.unix.rmi
 module:org.newsclub.net.unix.server
 org.newsclub.net.unix.server
+module:org.newsclub.net.unix.ssl
+org.newsclub.net.unix.ssl
 module:org.newsclub.net.unix.tipc
 org.newsclub.net.unix.tipc
 module:org.newsclub.net.unix.vsock

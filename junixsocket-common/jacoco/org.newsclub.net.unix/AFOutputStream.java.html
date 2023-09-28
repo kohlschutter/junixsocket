@@ -21,15 +21,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+
 /**
  * An {@link OutputStream} for {@link AFSocket}, etc.
  *
  * @author Christian Kohlschütter
  */
+@IgnoreJRERequirement // see src/main/java8
 public abstract class AFOutputStream extends OutputStream implements FileDescriptorAccess {
   AFOutputStream() {
-<span class="fc" id="L31">    super();</span>
-<span class="fc" id="L32">  }</span>
+<span class="fc" id="L34">    super();</span>
+<span class="fc" id="L35">  }</span>
 
   // IMPORTANT! also see src/main/java8/org/newsclub/net/unix/AFOutputStream shim
 
@@ -47,7 +50,7 @@ public abstract class AFOutputStream extends OutputStream implements FileDescrip
    * @throws IOException on error.
    */
   public long transferFrom(InputStream in) throws IOException {
-<span class="nc" id="L50">    return in.transferTo(this);</span>
+<span class="nc" id="L53">    return in.transferTo(this);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

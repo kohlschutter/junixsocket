@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFVSOCKProxySocketConnector.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-vsock</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.vsock</a> &gt; <span class="el_source">AFVSOCKProxySocketConnector.java</span></div><h1>AFVSOCKProxySocketConnector.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2023 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.vsock;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.newsclub.net.unix.AFSocket;
+import org.newsclub.net.unix.AFSocketAddress;
+import org.newsclub.net.unix.AFSocketConnector;
+import org.newsclub.net.unix.AFUNIXSocket;
+import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.AFVSOCKSocketAddress;
+import org.newsclub.net.unix.AddressUnavailableSocketException;
+
+/**
+ * Provides access to AF_VSOCK connections that aren't directly accessible but exposed via a
+ * proxying/multiplexing Unix domain socket.
+ *
+ * @author Christian Kohlschütter
+ * @see #openFirecrackerStyleConnector(AFUNIXSocketAddress, int)
+ * @see #openDirectConnector()
+ */
+public final class AFVSOCKProxySocketConnector implements
+    AFSocketConnector&lt;AFVSOCKSocketAddress, AFSocketAddress&gt; {
+<span class="nc" id="L46">  private static final AFSocketConnector&lt;AFVSOCKSocketAddress, AFSocketAddress&gt; DIRECT_CONNECTOR =</span>
+<span class="nc" id="L47">      new AFSocketConnector&lt;AFVSOCKSocketAddress, AFSocketAddress&gt;() {</span>
+
+        @Override
+        public AFSocket&lt;? extends AFSocketAddress&gt; connect(AFVSOCKSocketAddress addr)
+            throws IOException {
+<span class="nc" id="L52">          return addr.newConnectedSocket();</span>
+        }
+      };
+
+<span class="nc" id="L56">  private static final Pattern PAT_OK = Pattern.compile(&quot;OK ([0-9]+)&quot;);</span>
+<span class="nc" id="L57">  private static final byte[] OK = {'O', 'K', ' '};</span>
+  private final AFUNIXSocketAddress connectorAddress;
+  private final int allowedCID;
+
+<span class="nc" id="L61">  private AFVSOCKProxySocketConnector(AFUNIXSocketAddress connectorAddress, int allowedCID) {</span>
+<span class="nc" id="L62">    this.connectorAddress = connectorAddress;</span>
+<span class="nc" id="L63">    this.allowedCID = allowedCID;</span>
+<span class="nc" id="L64">  }</span>
+
+  /**
+   * Returns an instance that is configured to support
+   * [Firecracker-style](https://github.com/firecracker-microvm/firecracker/blob/main/docs/vsock.md)
+   * Unix domain sockets.
+   *
+   * @param connectorAddress The unix socket address pointing at the Firecracker-style multiplexing
+   *          domain socket.
+   * @param allowedCID The permitted CID, or {@link AFVSOCKSocketAddress#VMADDR_CID_ANY} for &quot;any&quot;.
+   * @return The instance.
+   */
+  public static AFSocketConnector&lt;AFVSOCKSocketAddress, AFSocketAddress&gt; openFirecrackerStyleConnector(
+      AFUNIXSocketAddress connectorAddress, int allowedCID) {
+<span class="nc" id="L78">    return new AFVSOCKProxySocketConnector(connectorAddress, allowedCID);</span>
+  }
+
+  /**
+   * Returns an instance that is configured to connect directly to the given address.
+   *
+   * @return The direct instance.
+   */
+  public static AFSocketConnector&lt;AFVSOCKSocketAddress, AFSocketAddress&gt; openDirectConnector() {
+<span class="nc" id="L87">    return DIRECT_CONNECTOR;</span>
+  }
+
+  /**
+   * Connects to the given AF_VSOCK address.
+   *
+   * @param vsockAddress The address to connect to.
+   * @return The connected socket.
+   * @throws IOException on error.
+   * @throws AddressUnavailableSocketException if the CID is not covered by this connector.
+   */
+  @Override
+  @SuppressWarnings(&quot;Finally&quot; /* errorprone */)
+  public AFSocket&lt;?&gt; connect(AFVSOCKSocketAddress vsockAddress) throws IOException {
+<span class="nc" id="L101">    int cid = vsockAddress.getVSOCKCID();</span>
+<span class="nc bnc" id="L102" title="All 6 branches missed.">    if (cid != allowedCID &amp;&amp; cid != AFVSOCKSocketAddress.VMADDR_CID_ANY</span>
+        &amp;&amp; allowedCID != AFVSOCKSocketAddress.VMADDR_CID_ANY) {
+<span class="nc" id="L104">      throw new AddressUnavailableSocketException(&quot;Connector does not cover CID &quot; + cid);</span>
+    }
+
+    @SuppressWarnings(&quot;resource&quot;)
+<span class="nc" id="L108">    AFUNIXSocket sock = connectorAddress.newConnectedSocket();</span>
+<span class="nc" id="L109">    InputStream in = sock.getInputStream();</span>
+<span class="nc" id="L110">    OutputStream out = sock.getOutputStream();</span>
+
+<span class="nc" id="L112">    boolean success = false;</span>
+
+    try { // NOPMD.UseTryWithResources
+<span class="nc" id="L115">      String connectLine = &quot;CONNECT &quot; + vsockAddress.getVSOCKPort() + &quot;\n&quot;;</span>
+<span class="nc" id="L116">      out.write(connectLine.getBytes(StandardCharsets.ISO_8859_1));</span>
+
+<span class="nc" id="L118">      byte[] buf = new byte[16];</span>
+      int b;
+<span class="nc" id="L120">      int i = 0;</span>
+<span class="nc bnc" id="L121" title="All 6 branches missed.">      while ((b = in.read()) != -1 &amp;&amp; b != '\n' &amp;&amp; i &lt; buf.length) {</span>
+<span class="nc" id="L122">        buf[i] = (byte) b;</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (i &lt; 3) {</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">          if (OK[i] != b) {</span>
+<span class="nc" id="L125">            break;</span>
+          }
+        }
+<span class="nc" id="L128">        i++;</span>
+      }
+<span class="nc bnc" id="L130" title="All 4 branches missed.">      if (b == '\n' &amp;&amp; i &gt; 3) {</span>
+<span class="nc" id="L131">        Matcher m = PAT_OK.matcher(new String(buf, 0, i, StandardCharsets.ISO_8859_1));</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (m.matches()) {</span>
+<span class="nc" id="L133">          /* int hostPort = */ Integer.parseInt(m.group(1));</span>
+<span class="nc" id="L134">          success = true;</span>
+        }
+      }
+    } finally { // NOPMD.DoNotThrowExceptionInFinally
+<span class="nc bnc" id="L138" title="All 2 branches missed.">      if (!success) {</span>
+<span class="nc" id="L139">        sock.close();</span>
+<span class="nc" id="L140">        throw new SocketException(&quot;Unexpected response from proxy socket&quot;);</span>
+      }
+    }
+
+<span class="nc" id="L144">    return sock;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

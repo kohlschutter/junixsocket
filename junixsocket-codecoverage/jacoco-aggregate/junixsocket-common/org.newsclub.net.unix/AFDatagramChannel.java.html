@@ -138,12 +138,12 @@ public abstract class AFDatagramChannel&lt;A extends AFSocketAddress&gt; extends
 
   @Override
   public final A receive(ByteBuffer dst) throws IOException {
-<span class="nc" id="L141">    return afSocket.getAFImpl().receive(dst);</span>
+<span class="fc" id="L141">    return afSocket.getAFImpl().receive(dst);</span>
   }
 
   @Override
   public final int send(ByteBuffer src, SocketAddress target) throws IOException {
-<span class="nc" id="L146">    return afSocket.getAFImpl().send(src, target);</span>
+<span class="fc" id="L146">    return afSocket.getAFImpl().send(src, target);</span>
   }
 
   @Override

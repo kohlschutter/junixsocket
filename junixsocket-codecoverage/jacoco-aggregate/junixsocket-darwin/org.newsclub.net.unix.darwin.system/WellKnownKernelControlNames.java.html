@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>WellKnownKernelControlNames.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-darwin</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.darwin.system</a> &gt; <span class="el_source">WellKnownKernelControlNames.java</span></div><h1>WellKnownKernelControlNames.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2023 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.darwin.system;
+
+/**
+ * Well-known AF_SYSTEM control names.
+ *
+ * Most of these can only be accessed by the superuser (root). Unless otherwise specified, one
+ * usually accesses these as datagrams (SOCK_DGRAM).
+ *
+ * You can see which control names are registered via {@code netstat -an}; check for the IDs below
+ * &quot;Registered kernel control modules&quot;.
+ *
+ * Also see &lt;a href=&quot;http://newosxbook.com/bonus/vol1ch16.html&quot;&gt;New OSX Book Volume 1 Chapter 16&lt;/a&gt;
+ *
+ * @author Christian Kohlschütter
+ */
+<span class="fc" id="L33">public enum WellKnownKernelControlNames {</span>
+
+  /**
+   * {@code com.apple.netsrc}. Network/route policies and statistics.
+   *
+   * Available to non-root.
+   *
+   * See https://github.com/apple-oss-distributions/xnu/blob/main/bsd/net/netsrc.h and
+   * https://github.com/apple-oss-distributions/xnu/blob/main/bsd/net/netsrc.c, as well as
+   * https://github.com/appleopen/Libinfo/blob/master/lookup.subproj/si_compare.c
+   */
+<span class="fc" id="L44">  NETSRC(&quot;com.apple.netsrc&quot;), //</span>
+
+  /**
+   * {@code com.apple.network.statistics}. Live socket statistics and notifications.
+   *
+   * Available to non-root.
+   *
+   * See {@code http://newosxbook.com/src.jl?tree=listings&amp;file=lsock.c} as well as
+   * https://github.com/packetzero/libntstat
+   */
+<span class="fc" id="L54">  NETWORK_STATISTICS(&quot;com.apple.network.statistics&quot;), //</span>
+
+  /**
+   * {@code com.apple.flow-divert}. MPTCP flow diversions (XNU-2422).
+   *
+   * See https://github.com/apple-oss-distributions/xnu/blob/main/bsd/netinet/flow_divert.c and
+   * https://github.com/apple-oss-distributions/xnu/blob/main/bsd/netinet/flow_divert.h
+   */
+<span class="fc" id="L62">  FLOW_DIVERT(&quot;com.apple.flow-divert&quot;), //</span>
+
+  /**
+   * {@code com.apple.net.netagent}.
+   */
+<span class="fc" id="L67">  NET_NETAGENT(&quot;com.apple.net.netagent&quot;), //</span>
+
+  /**
+   * {@code com.apple.content-filter}.
+   */
+<span class="fc" id="L72">  CONTENT_FILTER(&quot;com.apple.content-filter&quot;), //</span>
+
+  /**
+   * {@code com.apple.net.utun_control}. User-mode tunneling (VPN).
+   */
+<span class="fc" id="L77">  UTUN_CONTROL(&quot;com.apple.net.utun_control&quot;), //</span>
+
+  /**
+   * {@code com.apple.net.ipsec_control}.
+   */
+<span class="fc" id="L82">  IPSEC_CONTROL(&quot;com.apple.net.ipsec_control&quot;), //</span>
+
+  /**
+   * {@code com.apple.network.tcp_ccdebug}. Requires SOCK_STREAM.
+   */
+<span class="fc" id="L87">  NETWORK_TCP_CCDEBUG(&quot;com.apple.network.tcp_ccdebug&quot;), //</span>
+
+  /**
+   * {@code com.apple.network.advisory}.
+   */
+<span class="fc" id="L92">  NETWORK_ADVISORY(&quot;com.apple.network.advisory&quot;), //</span>
+
+  /**
+   * {@code com.apple.net.rvi_control}.
+   */
+<span class="fc" id="L97">  NET_RVI_CONTROL(&quot;com.apple.net.rvi_control&quot;), //</span>
+
+  /**
+   * {@code com.apple.nke.sockwall}.
+   */
+<span class="fc" id="L102">  NKE_SOCKWALL(&quot;com.apple.nke.sockwall&quot;), //</span>
+
+  /**
+   * {@code com.apple.spmi.nfc}. Available to non-root. Requires SOCK_STREAM.
+   */
+<span class="fc" id="L107">  SPMI_NFC(&quot;com.apple.spmi.nfc&quot;), //</span>
+
+  /**
+   * {@code com.apple.packet-mangler}.
+   */
+<span class="fc" id="L112">  PACKET_MANGLER(&quot;com.apple.packet-mangler&quot;), //</span>
+
+  /**
+   * {@code com.apple.net.necp_control}.
+   */
+<span class="fc" id="L117">  NECP_CONTROL(&quot;com.apple.net.necp_control&quot;), //</span>
+
+  /**
+   * {@code com.apple.fileutil.kext.stateful.ctl}.
+   */
+<span class="fc" id="L122">  FILEUTIL_KEXT_STATEFUL_CTL(&quot;com.apple.fileutil.kext.stateful.ctl&quot;), //</span>
+
+  /**
+   * {@code com.apple.fileutil.kext.stateless.ctl}.
+   */
+<span class="fc" id="L127">  FILEUTIL_KEXT_STATELESS_CTL(&quot;com.apple.fileutil.kext.stateless.ctl&quot;), //</span>
+
+  /**
+   * {@code com.apple.mcx.kernctl.alr}.
+   */
+<span class="fc" id="L132">  MCX_KERNCTL_ALR(&quot;com.apple.mcx.kernctl.alr&quot;), //</span>
+
+  /**
+   * {@code com.apple.nke.webcontentfilter}.
+   */
+<span class="fc" id="L137">  NKE_WEBCONTENTFILTER(&quot;com.apple.nke.webcontentfilter&quot;), //</span>
+
+  /**
+   * {@code com.apple.uart.wlan-debug}.
+   */
+<span class="fc" id="L142">  UART_WLAN_DEBUG(&quot;com.apple.uart.wlan-debug&quot;), //</span>
+
+  /**
+   * {@code com.apple.uart.sk.wlan-debug}.
+   */
+<span class="fc" id="L147">  UART_SK_WLAN_DEBUG(&quot;com.apple.uart.sk.wlan-debug&quot;), //</span>
+
+  /**
+   * {@code com.apple.uart.debug-console}.
+   */
+<span class="fc" id="L152">  UART_DEBUG_CONSOLE(&quot;com.apple.uart.debug-console&quot;), //</span>
+
+  /**
+   * {@code com.apple.uart.sk.debug-console}.
+   */
+<span class="fc" id="L157">  UART_SK_DEBUG_CONSOLE(&quot;com.apple.uart.sk.debug-console&quot;), //</span>
+
+  /**
+   * {@code com.apple.userspace_ethernet}.
+   */
+<span class="fc" id="L162">  USERSPACE_ETHERNET(&quot;com.apple.userspace_ethernet&quot;), //</span>
+
+  ;
+
+  // non-Apple:
+  // - com.avira.fac
+  // - com.vmware.kext.vmci
+  // - com.vmware.kext.vmnet
+  // - com.vmware.kext.vmx86
+
+  private final String name;
+
+<span class="fc" id="L174">  WellKnownKernelControlNames(String name) {</span>
+<span class="fc" id="L175">    this.name = name;</span>
+<span class="fc" id="L176">  }</span>
+
+  /**
+   * Returns the control name identifier.
+   *
+   * @return The name.
+   */
+  public String getControlName() {
+<span class="fc" id="L184">    return name;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

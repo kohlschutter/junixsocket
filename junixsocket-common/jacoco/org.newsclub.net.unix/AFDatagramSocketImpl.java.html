@@ -306,7 +306,7 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
   @SuppressWarnings(&quot;unchecked&quot;)
   final A receive(ByteBuffer dst) throws IOException {
     try {
-<span class="nc" id="L309">      return (A) core.receive(dst);</span>
+<span class="fc" id="L309">      return (A) core.receive(dst);</span>
 <span class="nc" id="L310">    } catch (SocketClosedException e) {</span>
 <span class="nc" id="L311">      throw (ClosedChannelException) new ClosedChannelException().initCause(e);</span>
     }
@@ -314,7 +314,7 @@ public abstract class AFDatagramSocketImpl&lt;A extends AFSocketAddress&gt; exte
 
   final int send(ByteBuffer src, SocketAddress target) throws IOException {
     try {
-<span class="nc" id="L317">      return core.write(src, target, 0);</span>
+<span class="fc" id="L317">      return core.write(src, target, 0);</span>
 <span class="nc" id="L318">    } catch (SocketClosedException e) {</span>
 <span class="nc" id="L319">      throw (ClosedChannelException) new ClosedChannelException().initCause(e);</span>
     }

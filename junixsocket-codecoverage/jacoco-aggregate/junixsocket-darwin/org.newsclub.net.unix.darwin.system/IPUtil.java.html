@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>IPUtil.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-darwin</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.darwin.system</a> &gt; <span class="el_source">IPUtil.java</span></div><h1>IPUtil.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2023 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.darwin.system;
+
+import java.nio.ByteBuffer;
+
+/**
+ * Some IP protocol-related helper methods.
+ *
+ * @author Christian Kohlschütter
+ */
+public final class IPUtil {
+  /**
+   * The length (in bytes) of the &quot;domain&quot; header used in loopback packet systems like UTUN_CONTROL.
+   */
+  public static final int DOMAIN_HEADER_LENGTH = 4; // bytes
+
+  /**
+   * The identifier for AF_INET (at least on Darwin).
+   */
+  public static final int DOMAIN_AF_INET = 2;
+
+  /**
+   * The length (in bytes) of an IPv4 header without options.
+   */
+  public static final int IPV4_DEFAULT_HEADER_SIZE = 20; // bytes
+
+  /**
+   * The ICMP protocol.
+   */
+  public static final byte AF_INET_PROTOCOL_ICMP = 1;
+
+<span class="nc" id="L48">  private IPUtil() {</span>
+<span class="nc" id="L49">    throw new IllegalStateException(&quot;No instances&quot;);</span>
+  }
+
+  /**
+   * Computes the checksum for an IPv4 header, and overwrites any existing checksum with the correct
+   * one.
+   *
+   * @param bb The buffer containing the IPv4 header
+   * @param start The beginning position of the header in the buffer.
+   * @param end The end position (exclusive) of the header in the buffer.
+   * @return The computed 16-bit checksum
+   */
+  public static int checksumIPv4header(ByteBuffer bb, int start, int end) {
+<span class="fc" id="L62">    return checksumIPstyle(bb, start, end, 10);</span>
+  }
+
+  /**
+   * Computes the checksum for an ICMP header, and overwrites any existing checksum with the correct
+   * one.
+   *
+   * Also see &lt;a href=&quot;https://datatracker.ietf.org/doc/html/rfc792&quot;&gt;RFC 792&lt;/a&gt;.
+   *
+   * @param bb The buffer containing the ICMP header
+   * @param start The beginning position of the header in the buffer.
+   * @param end The end position (exclusive) of the header in the buffer.
+   * @return The computed 16-bit checksum
+   */
+  public static int checksumICMPheader(ByteBuffer bb, int start, int end) {
+<span class="nc" id="L77">    return checksumIPstyle(bb, start, end, 2);</span>
+  }
+
+  /**
+   * Computes the 16-bit checksum for some header used in IP networking, and overwrites any existing
+   * checksum with the correct one.
+   *
+   * Also see &lt;a href=&quot;https://datatracker.ietf.org/doc/html/rfc1071&quot;&gt;RFC 1071&lt;/a&gt;.
+   *
+   * @param bb The buffer containing the ICMP header
+   * @param start The beginning position of the header in the buffer.
+   * @param end The end position (exclusive) of the header in the buffer.
+   * @param checksumOffset The offset from start for an existing 16-bit checksum that is to be
+   *          ignored.
+   * @return The computed 16-bit checksum
+   */
+  private static int checksumIPstyle(ByteBuffer bb, int start, int end, int checksumOffset) {
+<span class="fc" id="L94">    final int checksumAt = start + checksumOffset;</span>
+<span class="fc" id="L95">    int sum = 0;</span>
+
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">    if (checksumOffset &gt;= end) {</span>
+<span class="nc" id="L98">      throw new IllegalArgumentException(&quot;checksumOffset&quot;);</span>
+    }
+
+    // While we could pretend the checksum is 0 (by ignoring the computation at position
+    // checksumAt), we zero it out here, and later put the correct checksum back in.
+    // This should not only be faster than two for-loops or checking the position prior to adding,
+    // it also puts the correct checksum in place, which can come in handy when composing packets.
+    // It is also the recommended strategy as per RFC 1071. The downside is that we modify the
+    // contents of the buffer, but that's OK since we control the API.
+<span class="fc" id="L107">    bb.putShort(checksumAt, (short) 0);</span>
+
+<span class="fc bfc" id="L109" title="All 2 branches covered.">    for (int i = start; i &lt; end; i += 2) {</span>
+<span class="fc" id="L110">      int v = bb.getShort(i) &amp; 0xFFFF;</span>
+
+<span class="fc" id="L112">      sum += v;</span>
+
+<span class="fc" id="L114">      int overflow = (sum &amp; ~0xFFFF);</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">      if (overflow != 0) {</span>
+        // overflow -&gt; add carry and trim to 16-bit
+<span class="fc" id="L117">        sum = (sum + (overflow &gt;&gt;&gt; 16)) &amp; 0xFFFF;</span>
+      }
+    }
+
+<span class="fc" id="L121">    int checksum = (~sum) &amp; 0xFFFF;</span>
+
+    // fix checksum
+<span class="fc" id="L124">    bb.putShort(checksumAt, (short) checksum);</span>
+
+<span class="fc" id="L126">    return checksum;</span>
+  }
+
+  /**
+   * Put (write) an IPv4 header to the given byte buffer, using the given parameters.
+   *
+   * This should write exactly 20 bytes to the buffer. The buffer position then is at the end of the
+   * header.
+   *
+   * @param bb The target byte buffer.
+   * @param payloadLength The length of the payload (excluding the IPv4 header).
+   * @param protocol The protocol identifier.
+   * @param srcIP The source IPv4 address.
+   * @param dstIP The destination IPv4 address.
+   */
+  public static void putIPv4Header(ByteBuffer bb, int payloadLength, byte protocol, int srcIP,
+      int dstIP) {
+<span class="nc" id="L143">    bb.put((byte) 0x45); // IPv4, 5*4=20 bytes header</span>
+<span class="nc" id="L144">    bb.put((byte) 0); // TOS/DSCP</span>
+<span class="nc" id="L145">    bb.putShort((short) (20 + payloadLength)); // total length = header + payload</span>
+<span class="nc" id="L146">    bb.putShort((short) 0); // identification</span>
+<span class="nc" id="L147">    bb.putShort((short) 0); // flags and fragment offset</span>
+<span class="nc" id="L148">    bb.put((byte) 65); // TTL</span>
+<span class="nc" id="L149">    bb.put(protocol); // protocol (e.g., ICMP)</span>
+<span class="nc" id="L150">    bb.putShort((short) 0); // header checksum (placeholder)</span>
+<span class="nc" id="L151">    bb.putInt(srcIP);</span>
+<span class="nc" id="L152">    bb.putInt(dstIP);</span>
+    // end of header (20 bytes)
+<span class="nc" id="L154">  }</span>
+
+  /**
+   * Put (write) an ICMP echo response header to the given byte buffer, using the given parameters.
+   *
+   * @param bb The target byte buffer.
+   * @param echoIdentifier The identifier, from the ICMP echo request.
+   * @param sequenceNumber The sequence number, from the ICMP echo request.
+   * @param payload The payload, from the ICMP echo request.
+   */
+  public static void putICMPEchoResponse(ByteBuffer bb, short echoIdentifier, short sequenceNumber,
+      ByteBuffer payload) {
+<span class="nc" id="L166">    bb.put((byte) 0); // Echo response</span>
+<span class="nc" id="L167">    bb.put((byte) 0); // Echo has no other code</span>
+<span class="nc" id="L168">    bb.putShort((short) 0); // ICMP checksum (placeholder)</span>
+<span class="nc" id="L169">    bb.putShort(echoIdentifier); // ICMP echo identifier</span>
+<span class="nc" id="L170">    bb.putShort(sequenceNumber); // ICMP echo sequence number</span>
+<span class="nc" id="L171">    bb.put(payload);</span>
+<span class="nc" id="L172">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

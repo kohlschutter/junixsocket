@@ -250,7 +250,7 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
     }
 <span class="fc" id="L251">    getAFImpl().close();</span>
 <span class="fc" id="L252">    boolean wasBound = isBound();</span>
-<span class="pc bpc" id="L253" title="2 of 4 branches missed.">    if (wasBound &amp;&amp; deleteOnClose.get()) {</span>
+<span class="pc bpc" id="L253" title="1 of 4 branches missed.">    if (wasBound &amp;&amp; deleteOnClose.get()) {</span>
 <span class="fc" id="L254">      InetAddress addr = getLocalAddress();</span>
 <span class="pc bpc" id="L255" title="1 of 2 branches missed.">      if (AFInetAddress.isSupportedAddress(addr, addressFamily())) {</span>
         try {
@@ -364,10 +364,10 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
   }
 
   final AFDatagramSocketImpl&lt;A&gt; getAFImpl(boolean create) {
-<span class="nc bnc" id="L367" title="All 2 branches missed.">    if (create) {</span>
+<span class="pc bpc" id="L367" title="1 of 2 branches missed.">    if (create) {</span>
 <span class="nc" id="L368">      return getAFImpl();</span>
     } else {
-<span class="nc" id="L370">      return impl;</span>
+<span class="fc" id="L370">      return impl;</span>
     }
   }
 
@@ -388,7 +388,7 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
 
   @Override
   public final boolean isClosed() {
-<span class="pc bpc" id="L391" title="1 of 4 branches missed.">    return super.isClosed() || getAFImpl().isClosed();</span>
+<span class="fc bfc" id="L391" title="All 4 branches covered.">    return super.isClosed() || getAFImpl().isClosed();</span>
   }
 
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
@@ -424,7 +424,7 @@ public abstract class AFDatagramSocket&lt;A extends AFSocketAddress&gt; extends 
    *           type.
    */
   protected AFSocketImplExtensions&lt;A&gt; getImplExtensions() {
-<span class="nc" id="L427">    return getAFImpl(false).getImplExtensions();</span>
+<span class="fc" id="L427">    return getAFImpl(false).getImplExtensions();</span>
   }
 
   /**

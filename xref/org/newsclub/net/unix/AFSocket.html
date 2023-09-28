@@ -618,7 +618,16 @@
 <a class="jxr_linenumber" name="L610" href="#L610">610</a>       }
 <a class="jxr_linenumber" name="L611" href="#L611">611</a>     }
 <a class="jxr_linenumber" name="L612" href="#L612">612</a>   }
-<a class="jxr_linenumber" name="L613" href="#L613">613</a> }
+<a class="jxr_linenumber" name="L613" href="#L613">613</a> 
+<a class="jxr_linenumber" name="L614" href="#L614">614</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L615" href="#L615">615</a> <em class="jxr_javadoccomment">   * Checks if we're running on Android (as far as junixsocket is concerned).</em>
+<a class="jxr_linenumber" name="L616" href="#L616">616</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L617" href="#L617">617</a> <em class="jxr_javadoccomment">   * @return {@code true} if running on Android.</em>
+<a class="jxr_linenumber" name="L618" href="#L618">618</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> isRunningOnAndroid() {
+<a class="jxr_linenumber" name="L620" href="#L620">620</a>     <strong class="jxr_keyword">return</strong> NativeLibraryLoader.isAndroid();
+<a class="jxr_linenumber" name="L621" href="#L621">621</a>   }
+<a class="jxr_linenumber" name="L622" href="#L622">622</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

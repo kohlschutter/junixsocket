@@ -366,7 +366,7 @@
 <a class="jxr_linenumber" name="L358" href="#L358">358</a>     <strong class="jxr_keyword">for</strong> (String p : host.split(<span class="jxr_string">"&#92;&#92;."</span>)) {
 <a class="jxr_linenumber" name="L359" href="#L359">359</a>       <strong class="jxr_keyword">int</strong> v;
 <a class="jxr_linenumber" name="L360" href="#L360">360</a>       <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>         v = Integer.parseUnsignedInt(p);
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>         v = parseUnsignedInt(p, 10);
 <a class="jxr_linenumber" name="L362" href="#L362">362</a>       } <strong class="jxr_keyword">catch</strong> (NumberFormatException e) {
 <a class="jxr_linenumber" name="L363" href="#L363">363</a>         <strong class="jxr_keyword">throw</strong> (SocketException) <strong class="jxr_keyword">new</strong> SocketException(<span class="jxr_string">"Unsupported URI: "</span> + uri).initCause(e);
 <a class="jxr_linenumber" name="L364" href="#L364">364</a>       }
@@ -404,7 +404,7 @@
 <a class="jxr_linenumber" name="L396" href="#L396">396</a>     ByteBuffer bb = ByteBuffer.wrap(getBytes());
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>     StringBuilder sb = <strong class="jxr_keyword">new</strong> StringBuilder();
 <a class="jxr_linenumber" name="L398" href="#L398">398</a>     <strong class="jxr_keyword">while</strong> (bb.remaining() &gt; 0) {
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>       sb.append(Integer.toUnsignedString(bb.getInt()));
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>       sb.append(toUnsignedString(bb.getInt()));
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>       <strong class="jxr_keyword">if</strong> (bb.remaining() &gt; 0) {
 <a class="jxr_linenumber" name="L401" href="#L401">401</a>         sb.append('.');
 <a class="jxr_linenumber" name="L402" href="#L402">402</a>       }

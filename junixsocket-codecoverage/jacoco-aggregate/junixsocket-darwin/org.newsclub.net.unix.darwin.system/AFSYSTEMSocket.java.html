@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFSYSTEMSocket.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-darwin</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.darwin.system</a> &gt; <span class="el_source">AFSYSTEMSocket.java</span></div><h1>AFSYSTEMSocket.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2023 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.darwin.system;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
+
+import org.newsclub.net.unix.AFSYSTEMSocketAddress;
+import org.newsclub.net.unix.AFSYSTEMSocketImplExtensions;
+import org.newsclub.net.unix.AFSocket;
+import org.newsclub.net.unix.AFSocketCapability;
+import org.newsclub.net.unix.AFSocketFactory;
+
+/**
+ * Implementation of an {@code AF_SYSTEM} socket.
+ *
+ * @author Christian Kohlschütter
+ */
+public final class AFSYSTEMSocket extends AFSocket&lt;AFSYSTEMSocketAddress&gt; implements
+    AFSYSTEMSocketExtensions {
+<span class="fc" id="L38">  private static AFSYSTEMSocketImplExtensions staticExtensions = null;</span>
+
+  AFSYSTEMSocket(FileDescriptor fdObj, AFSocketFactory&lt;AFSYSTEMSocketAddress&gt; factory)
+      throws SocketException {
+<span class="nc" id="L42">    super(new AFSYSTEMSocketImpl(fdObj), factory);</span>
+<span class="nc" id="L43">  }</span>
+
+  @SuppressWarnings(&quot;unused&quot;)
+  private static synchronized AFSYSTEMSocketImplExtensions getStaticImplExtensions()
+      throws IOException {
+<span class="nc bnc" id="L48" title="All 2 branches missed.">    if (staticExtensions == null) {</span>
+<span class="nc" id="L49">      try (AFSYSTEMSocket socket = new AFSYSTEMSocket(null, null)) {</span>
+<span class="nc" id="L50">        staticExtensions = (AFSYSTEMSocketImplExtensions) socket.getImplExtensions();</span>
+      }
+    }
+<span class="nc" id="L53">    return staticExtensions;</span>
+  }
+
+  /**
+   * Returns &lt;code&gt;true&lt;/code&gt; iff {@link AFSYSTEMSocket}s (sockets of type &quot;AF_SYSTEM&quot;) are
+   * supported by the current Java VM and the kernel.
+   *
+   * To support {@link AFSYSTEMSocket}s, a custom JNI library must be loaded that is supplied with
+   * &lt;em&gt;junixsocket&lt;/em&gt;, and the system must support AF_SYSTEM sockets.
+   *
+   * This call is equivalent to checking {@link AFSocket#isSupported()} and
+   * {@link AFSocket#supports(AFSocketCapability)} with
+   * {@link AFSocketCapability#CAPABILITY_DARWIN}.
+   *
+   * @return {@code true} iff supported.
+   */
+  public static boolean isSupported() {
+<span class="nc bnc" id="L70" title="All 4 branches missed.">    return AFSocket.isSupported() &amp;&amp; AFSocket.supports(AFSocketCapability.CAPABILITY_DARWIN);</span>
+  }
+
+  @Override
+  protected AFSYSTEMSocketChannel newChannel() {
+<span class="nc" id="L75">    return new AFSYSTEMSocketChannel(this);</span>
+  }
+
+  /**
+   * Creates a new, unbound {@link AFSocket}.
+   *
+   * This &quot;default&quot; implementation is a bit &quot;lenient&quot; with respect to the specification.
+   *
+   * In particular, we ignore calls to {@link Socket#getTcpNoDelay()} and
+   * {@link Socket#setTcpNoDelay(boolean)}.
+   *
+   * @return A new, unbound socket.
+   * @throws IOException if the operation fails.
+   */
+  public static AFSYSTEMSocket newInstance() throws IOException {
+<span class="nc" id="L90">    return (AFSYSTEMSocket) AFSocket.newInstance(AFSYSTEMSocket::new, (AFSYSTEMSocketFactory) null);</span>
+  }
+
+  static AFSYSTEMSocket newInstance(AFSYSTEMSocketFactory factory) throws SocketException {
+<span class="nc" id="L94">    return (AFSYSTEMSocket) AFSocket.newInstance(AFSYSTEMSocket::new, factory);</span>
+  }
+
+  /**
+   * Creates a new, unbound, &quot;strict&quot; {@link AFSocket}.
+   *
+   * This call uses an implementation that tries to be closer to the specification than
+   * {@link #newInstance()}, at least for some cases.
+   *
+   * @return A new, unbound socket.
+   * @throws IOException if the operation fails.
+   */
+  public static AFSYSTEMSocket newStrictInstance() throws IOException {
+<span class="nc" id="L107">    return (AFSYSTEMSocket) AFSocket.newInstance(AFSYSTEMSocket::new, (AFSYSTEMSocketFactory) null);</span>
+  }
+
+  /**
+   * Creates a new {@link AFSocket} and connects it to the given {@link AFSYSTEMSocketAddress}.
+   *
+   * @param addr The address to connect to.
+   * @return A new, connected socket.
+   * @throws IOException if the operation fails.
+   */
+  public static AFSYSTEMSocket connectTo(AFSYSTEMSocketAddress addr) throws IOException {
+<span class="nc" id="L118">    return (AFSYSTEMSocket) AFSocket.connectTo(AFSYSTEMSocket::new, addr);</span>
+  }
+
+  @Override
+  public AFSYSTEMSocketChannel getChannel() {
+<span class="nc" id="L123">    return (AFSYSTEMSocketChannel) super.getChannel();</span>
+  }
+
+  /**
+   * Very basic self-test function.
+   *
+   * Prints &quot;supported&quot; and &quot;capabilities&quot; status to System.out.
+   *
+   * @param args ignored.
+   */
+  public static void main(String[] args) {
+<span class="nc" id="L134">    System.out.print(AFSYSTEMSocket.class.getName() + &quot;.isSupported(): &quot;);</span>
+<span class="nc" id="L135">    System.out.flush();</span>
+<span class="nc" id="L136">    System.out.println(AFSYSTEMSocket.isSupported());</span>
+<span class="nc" id="L137">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -518,7 +518,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
 <span class="fc" id="L518">        portStr = &quot;any&quot;;</span>
 <span class="fc" id="L519">        break;</span>
       default:
-<span class="fc" id="L521">        portStr = Integer.toUnsignedString(port);</span>
+<span class="fc" id="L521">        portStr = toUnsignedString(port);</span>
         break;
     }
 
@@ -540,7 +540,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
 <span class="fc" id="L540">        cidStr = &quot;host&quot;;</span>
 <span class="fc" id="L541">        break;</span>
       default:
-<span class="fc" id="L543">        cidStr = Integer.toUnsignedString(cid);</span>
+<span class="fc" id="L543">        cidStr = toUnsignedString(cid);</span>
         break;
     }
 
@@ -551,11 +551,11 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
 
   private static int parseInt(String v) {
 <span class="fc bfc" id="L553" title="All 2 branches covered.">    if (v.startsWith(&quot;0x&quot;)) {</span>
-<span class="fc" id="L554">      return Integer.parseUnsignedInt(v.substring(2), 16);</span>
+<span class="fc" id="L554">      return parseUnsignedInt(v.substring(2), 16);</span>
 <span class="fc bfc" id="L555" title="All 2 branches covered.">    } else if (v.startsWith(&quot;-&quot;)) {</span>
 <span class="fc" id="L556">      return Integer.parseInt(v);</span>
     } else {
-<span class="fc" id="L558">      return Integer.parseUnsignedInt(v);</span>
+<span class="fc" id="L558">      return parseUnsignedInt(v, 10);</span>
     }
   }
 

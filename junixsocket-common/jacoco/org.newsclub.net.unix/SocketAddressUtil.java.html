@@ -20,16 +20,18 @@ package org.newsclub.net.unix;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnixDomainSocketAddress;
-import java.util.function.Supplier;
+
+import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
 
 /**
  * {@link SocketAddress}-related helper methods.
  *
  * @author Christian Kohlschütter
  */
+@IgnoreJRERequirement // see src/main/java15
 final class SocketAddressUtil {
-<span class="nc" id="L31">  private SocketAddressUtil() {</span>
-<span class="nc" id="L32">    throw new IllegalStateException(&quot;No instances&quot;);</span>
+<span class="nc" id="L33">  private SocketAddressUtil() {</span>
+<span class="nc" id="L34">    throw new IllegalStateException(&quot;No instances&quot;);</span>
   }
 
   /**
@@ -38,19 +40,19 @@ final class SocketAddressUtil {
    * @param address The address.
    * @return A supplier for the given address, or {@code null}.
    */
-  static Supplier&lt;AFUNIXSocketAddress&gt; supplyAFUNIXSocketAddress(SocketAddress address) {
-<span class="pc bpc" id="L42" title="1 of 2 branches missed.">    if (address instanceof UnixDomainSocketAddress) {</span>
-<span class="fc" id="L43">      UnixDomainSocketAddress udsa = (UnixDomainSocketAddress) address;</span>
+  static AFSupplier&lt;AFUNIXSocketAddress&gt; supplyAFUNIXSocketAddress(SocketAddress address) {
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">    if (address instanceof UnixDomainSocketAddress) {</span>
+<span class="fc" id="L45">      UnixDomainSocketAddress udsa = (UnixDomainSocketAddress) address;</span>
 
-<span class="fc" id="L45">      return () -&gt; {</span>
+<span class="fc" id="L47">      return () -&gt; {</span>
         try {
-<span class="fc" id="L47">          return AFUNIXSocketAddress.of(udsa.getPath());</span>
-<span class="nc" id="L48">        } catch (SocketException e) {</span>
-<span class="nc" id="L49">          return null;</span>
+<span class="fc" id="L49">          return AFUNIXSocketAddress.of(udsa.getPath());</span>
+<span class="nc" id="L50">        } catch (SocketException e) {</span>
+<span class="nc" id="L51">          return null;</span>
         }
       };
     } else {
-<span class="nc" id="L53">      return null;</span>
+<span class="nc" id="L55">      return null;</span>
     }
   }
 }
