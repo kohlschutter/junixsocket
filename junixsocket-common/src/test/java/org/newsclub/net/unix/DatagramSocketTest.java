@@ -215,14 +215,19 @@ public abstract class DatagramSocketTest<A extends SocketAddress> extends Socket
       bb2.flip();
       assertEquals(0xF00BAA, bb2.getLong());
 
-      try {
-        assertEquals(ds1Addr, receivedFrom);
-      } catch (AssertionFailedError e) {
-        throw new TestAbortedWithImportantMessageException(
-            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
-            "DatagramChannel.receive did not return expected the sender address; "
-                + "this may be a limitation of your system environment.");
-      }
+      assertEquals(ds1Addr, receivedFrom);
+    }
+  }
+
+  @SuppressWarnings("PMD.PreserveStackTrace")
+  protected void assertExpectedSocketAddressFromDatagramChannelReceive(AFSocketAddress expected,
+      AFSocketAddress received) {
+    try {
+      assertEquals(expected, received);
+    } catch (AssertionFailedError e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          "DatagramChannel.receive did not return expected the sender address; "
+              + "this may be a limitation of your system environment.");
     }
   }
 
