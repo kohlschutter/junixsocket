@@ -21,11 +21,12 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 - Fix a potential exception when trying to serialize an AFRMISocketFactory
 - Fix a potential race condition when working with native addresses
 - Fix a potential crash in TIPC code when compiling the native library against an old Linux SDK
+- Fix a potential hang in selftest's FileDescriptorCastTest
 - Improve AFSocketServer, add new methods
 - Improve crossclang to support Xcode 15
 - Enable RMI support for GraalVM native-image; selftest now passes without issues
-- Add junixsocket-ssl, tools to simplify securing junixsocket connections
-- Requires Java 17 to build (and JDK 8 if Java 7 support is desired)
+- Add junixsocket-ssl, to simplify securing junixsocket connections
+- Requires Java 17 to build (and JDK 8 if Java 7 support is desired); build instructions have changed
 
 ### _(2023-09-15)_ **junixsocket 2.7.2**
 
