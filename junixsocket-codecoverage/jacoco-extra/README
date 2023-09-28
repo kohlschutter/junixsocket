@@ -8,6 +8,7 @@ certain features enabled/disabled and configured differently (e.g., TIPC
 enabled but not configured).
 
 Run the following command to collect these *.exec files on a target system:
+(requires "hostname" and "uuidgen" to work as commands)
 
 ./run-selftest-coverage.sh
 (this may download the JaCoCo agent jar if it's not already there)

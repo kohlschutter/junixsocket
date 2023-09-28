@@ -13,5 +13,5 @@ fi
 mkdir -p ../target
 
 java \
--javaagent:./lib/jacocoagent.jar=destfile=../target/$(uuidgen).exec,excludes='org/apache/maven/**:org/junit/**:org/apiguardian/**:sun/**' \
+	-javaagent:./lib/jacocoagent.jar=destfile=../target/jacoco-$(hostname)-$(uuidgen).exec,excludes='org/apache/maven/**:org/junit/**:org/apiguardian/**:sun/**' \
 -jar ../../junixsocket-selftest/target/junixsocket-selftest-*-jar-with-dependencies.jar
