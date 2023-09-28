@@ -57,9 +57,9 @@ You can use `mvn clean install` to check from the command line. Add `-Dstrict` t
 Enable "Refresh using native hooks or polling" (under Eclipse Preferences -> General -> Workspace)
 I don't know why this isn't on by default.
 
-## Use Java 11 or newer for development
+## Use Java 17 or newer for development
 
-Make sure Java 11 or later is installed and available in Eclipse.
+Make sure Java 17 or later is installed and available in Eclipse.
 
 ## Working with the native C JNI library
 

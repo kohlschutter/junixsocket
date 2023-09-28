@@ -8,9 +8,9 @@ Here's how you build junixsocket from the source.
  
     If you have a different platform or architecture, [continue here](customarch.html).
  
- 2. Install the Java JDK 16 or newer, Maven 3.8.8 or newer, and junixsocket.
+ 2. Install the Java JDK 17 or newer, Maven 3.8.8 or newer, and junixsocket.
  
-    Even though junixsocket can run on Java 8, you need Java 16 or better to build it, so we can
+    Even though junixsocket can run on Java 8 (and even on Java 7 for the common part), you need Java 17 or better to build it, so we can
     support the new Java module system on newer Java versions as well as features that are only
     available on newer versions (e.g., UnixDomainSocketAddress).
  

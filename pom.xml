@@ -72,6 +72,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
 
         <kohlschutter.multirelease.java8.release>8</kohlschutter.multirelease.java8.release>
         <kohlschutter.multirelease.java.release>16</kohlschutter.multirelease.java.release>
+        <kohlschutter.maven.java-version.min>17</kohlschutter.maven.java-version.min>
 
         <kohlschutter.custom.package.folder>org/newsclub</kohlschutter.custom.package.folder>
 

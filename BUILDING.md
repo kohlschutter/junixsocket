@@ -6,7 +6,7 @@ Details see `src/site/markdown/building.md` or [online here](https://kohlschutte
 
 To get started with building from source, you really only need:
 
-- Java 16 or newer
+- Java 17 or newer
 - Maven 3.8.8 or newer
 - clang (for the native library). Note that building the library doesn't work from Windows (use WSL2 with Linux).
 
