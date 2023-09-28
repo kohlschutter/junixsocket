@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
 import java.io.FileDescriptor;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.Socket;
@@ -39,6 +40,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
@@ -59,6 +61,8 @@ import org.opentest4j.AssertionFailedError;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.ForkedVM;
 import com.kohlschutter.testutil.ProcessUtilRequirement;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
 @SuppressWarnings("PMD.CouplingBetweenObjects")
@@ -430,7 +434,36 @@ public class FileDescriptorCastTest {
           Redirect.class));
       vm.setRedirectError(Redirect.INHERIT);
       // vm.setRedirectOutput(Redirect.INHERIT);
-      Process p = vm.fork();
+
+      CompletableFuture<Object> cf = CompletableFuture.supplyAsync(() -> {
+        try {
+          return vm.fork();
+        } catch (UnsupportedOperationException | IOException e) {
+          return e;
+        }
+      });
+
+      Object processObject;
+      try {
+        processObject = cf.get(10, TimeUnit.SECONDS);
+      } catch (Exception e) {
+        throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_INFORMATIONAL,
+            "Environment may not support forking new processes, which one test requires", e);
+      }
+      if (!(processObject instanceof Process)) {
+        if (processObject instanceof Exception) {
+          throw (Exception) processObject;
+        } else if (processObject instanceof Throwable) {
+          throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_INFORMATIONAL,
+              "Environment may not support forking new processes, which one test requires",
+              (Throwable) processObject);
+        } else {
+          throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_INFORMATIONAL,
+              "Environment may not support forking new processes, which one test requires");
+        }
+      }
+
+      Process p = (Process) processObject;
       try {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(serverConn
             .getInputStream(), StandardCharsets.UTF_8))) {
@@ -440,7 +473,18 @@ public class FileDescriptorCastTest {
             fail("Unexpected output: " + l);
           }
         }
-        assertTrue(p.waitFor(30, TimeUnit.SECONDS));
+
+        long time = System.currentTimeMillis();
+        long elapsed;
+        while ((elapsed = (System.currentTimeMillis() - time)) < 30 * 1000L) {
+          if (p.waitFor(1, TimeUnit.SECONDS)) {
+            break;
+          }
+          if (elapsed > 5000) {
+            System.out.println("Still waiting for process to terminate: " + p);
+          }
+        }
+
         assertEquals(0, p.exitValue());
       } finally {
         p.destroyForcibly();
