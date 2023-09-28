@@ -44,7 +44,9 @@ jobs:
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: |
+          8
+          17
         cache: 'maven'
 
     # Initializes the CodeQL tools for scanning.
@@ -60,6 +62,9 @@ jobs:
         # queries: security-extended,security-and-quality
 
     - run: |
+       echo "toolchain config:"
+       cat $HOME/.m2/toolchains.xml
+       cat ~/.m2/toolchains.xml
        echo "Build junixsocket with Maven (no tests)"
        mvn clean install -Dcodeql -Dstrict -Duse-snapshots
 
