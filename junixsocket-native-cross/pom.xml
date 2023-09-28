@@ -111,6 +111,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -137,6 +138,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -170,6 +172,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -203,6 +206,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -236,6 +240,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -269,6 +274,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -302,6 +308,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -335,6 +342,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -368,6 +376,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -401,6 +410,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -434,6 +444,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -467,6 +478,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -500,6 +512,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -534,6 +547,7 @@
             <ignorant>${ignorant}</ignorant>
             <gpgkeyname>${gpgkeyname}</gpgkeyname>
             <gpg.executable>${gpg.executable}</gpg.executable>
+            <retrolambda>${retrolambda}</retrolambda>
             </properties>
             </configuration>
             </execution>
@@ -568,6 +582,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -601,6 +616,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -634,6 +650,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -667,6 +684,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -700,6 +718,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -734,6 +753,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -767,6 +787,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -799,6 +820,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -831,6 +853,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>
@@ -863,6 +886,7 @@
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
+                                <retrolambda>${retrolambda}</retrolambda>
                             </properties>
                         </configuration>
                     </execution>

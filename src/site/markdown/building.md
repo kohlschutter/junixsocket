@@ -28,7 +28,7 @@ Here's how you build junixsocket from the source.
 
 		sudo apk add git maven clang gcc binutils bash musl-dev libc-dev linux-headers
 
-4. Install the Java JDK 8 as well (or exclude a profile when building; see below)
+4. Install the Java JDK 8 as well (or exclude a config when building; see below)
 
     Since version 2.8.0, we support Java 7 again. This works through a plugin called "retrolambda",
     which translates Java 8 bytecode in a way that it works on Java 7 again. This plugin stopped
@@ -52,8 +52,8 @@ Here's how you build junixsocket from the source.
     Replace the path at `jdkHome` with your system's configuration. For the purposes of building
     junixsocket, you can have a version `1.8` or `8`; both will work.
 
-    If you cannot/do not want to install JDK 8, add the following profile exclusion to the `mvn`
-    command below: `-P '!retrolambda'`.
+    If you cannot/do not want to install JDK 8, add the following parameter to the `mvn`
+    command below: `-Dretrolambda=false`.
 
 ## Building with Maven
 
@@ -62,7 +62,7 @@ Build and test junixsocket.
     cd junixsocket
     mvn clean install
     # or:
-    # mvn clean install -P '!retrolambda'
+    # mvn clean install -Dretrolambda=false
 
 That's it!
 
@@ -107,7 +107,7 @@ If you don't have clang, try compiling with gcc. You may need to specify the com
 ### Failure to find com.kohlschutter.junixsocket:junixsocket-native-custom:jar:default:...-SNAPSHOT
 
 You're building a SNAPSHOT version, skipping over native artifacts, and access to some native
-artifacts is missing. Try building with the "use-snapshot" profile first:
+artifacts is missing. Try building with the "use-snapshot" config first:
 
     mvn clean install -Duse-snapshot -rf :junixsocket-native-custom
 

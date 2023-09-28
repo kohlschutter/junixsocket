@@ -21,12 +21,12 @@ Then try one the following commands:
 
 #### Build everything, except for the native library and Java 7 support
 
-    mvn clean install -P '!retrolambda' -rf :junixsocket-common
+    mvn clean install -Dretrolambda=false -rf :junixsocket-common
 
 #### I really don't care about code quality, just build really quick
 
-    mvn clean install -P '!retrolambda' -rf :junixsocket-common -Dignorant
+    mvn clean install -Dretrolambda=false -rf :junixsocket-common -Dignorant
 
 #### I really don't care about code quality or test results, just build really quick
 
-    mvn clean install -P '!retrolambda' -rf :junixsocket-common -Dignorant -DskipTests
+    mvn clean install -Dretrolambda=false -rf :junixsocket-common -Dignorant -DskipTests
