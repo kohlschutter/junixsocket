@@ -55,4 +55,10 @@ public final class DatagramSocketTest extends
       throws SocketException {
     // with TIPC, we may not get a remote address
   }
+
+  @Override
+  protected void assertExpectedSocketAddressFromDatagramChannelReceive(SocketAddress expected,
+      SocketAddress received) {
+    // ignore for TIPC (we get a SOCKET_ADDR address back, not a SERVICE_ADDR)
+  }
 }

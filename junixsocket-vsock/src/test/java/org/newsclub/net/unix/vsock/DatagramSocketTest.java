@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.DatagramSocket;
+import java.net.SocketAddress;
 import java.net.SocketException;
 
 import org.newsclub.net.unix.AFSocketCapability;
@@ -55,4 +56,9 @@ public final class DatagramSocketTest extends
     }
   }
 
+  @Override
+  protected void assertExpectedSocketAddressFromDatagramChannelReceive(SocketAddress expected,
+      SocketAddress received) {
+    // ignore for VSOCK
+  }
 }

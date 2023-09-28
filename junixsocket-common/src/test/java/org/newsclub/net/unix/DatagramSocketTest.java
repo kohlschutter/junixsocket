@@ -215,13 +215,13 @@ public abstract class DatagramSocketTest<A extends SocketAddress> extends Socket
       bb2.flip();
       assertEquals(0xF00BAA, bb2.getLong());
 
-      assertEquals(ds1Addr, receivedFrom);
+      assertExpectedSocketAddressFromDatagramChannelReceive(ds1Addr, receivedFrom);
     }
   }
 
   @SuppressWarnings("PMD.PreserveStackTrace")
-  protected void assertExpectedSocketAddressFromDatagramChannelReceive(AFSocketAddress expected,
-      AFSocketAddress received) {
+  protected void assertExpectedSocketAddressFromDatagramChannelReceive(SocketAddress expected,
+     SocketAddress received) {
     try {
       assertEquals(expected, received);
     } catch (AssertionFailedError e) {
