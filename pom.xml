@@ -76,6 +76,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <kohlschutter.custom.package.folder>org/newsclub</kohlschutter.custom.package.folder>
 
         <bouncycastle.version>1.76</bouncycastle.version>
+
+        <junixsocket.repo.use-staging>https://oss.sonatype.org/content/groups/staging/</junixsocket.repo.use-staging>
     </properties>
 
     <modules>
@@ -369,8 +371,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
             </activation>
             <repositories>
                 <repository>
-                    <id>snapshots-staging</id>
-                    <url>https://oss.sonatype.org/content/groups/staging/</url>
+                    <id>staging-repo</id>
+                    <url>${junixsocket.repo.use-staging}</url>
                     <releases>
                         <enabled>true</enabled>
                     </releases>
