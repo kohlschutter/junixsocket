@@ -258,9 +258,9 @@ public class Selftest {
 
   public static int runSelftest(Writer out) throws Exception {
     PipedInputStream pis = new PipedInputStream();
-    @SuppressWarnings("resource")
+    @SuppressWarnings("all")
     PipedOutputStream pos = new PipedOutputStream(pis);
-    @SuppressWarnings("resource")
+    @SuppressWarnings("all")
     PrintStream ps = new PrintStream(pos, false, Charset.defaultCharset().name());
 
     InputStreamReader isr = new InputStreamReader(pis, Charset.defaultCharset());
