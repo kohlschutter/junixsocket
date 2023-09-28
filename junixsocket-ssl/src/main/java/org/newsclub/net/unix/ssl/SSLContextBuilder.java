@@ -392,20 +392,30 @@ public final class SSLContextBuilder {
    */
   public static IOException wrapIOExceptionIfJDKBug(IOException e) {
     String msg = e.getMessage();
-    if (msg != null && msg.contains("data isn't an object ID (tag = 48)")) {
-      String specVersion = System.getProperty("java.specification.version", "");
-      if (specVersion.startsWith("1.")) {
-        return new KnownJavaBugIOException(
-            "Bug JDK-8202837 detected -- please upgrade to Java 8u312 or newer", e);
-      } else if ("9".equals(specVersion) || "10".equals(specVersion) || "11".equals(specVersion)) {
-        return new KnownJavaBugIOException(
-            "Bug JDK-8202837 detected -- please upgrade to Java 11.0.3 or newer", e);
-      } else {
-        return new KnownJavaBugIOException(
-            "Bug JDK-8202837 detected -- please upgrade your Java release", e);
-      }
+    if (msg == null) {
+      return e;
+    }
+    if (msg.contains("data isn't an object ID (tag = 48)")) {
+      return knownJDKBug(e, "JDK-8202837", "8u312", "11.0.3");
+    } else if (msg.contains("HmacPBESHA256 not available")) {
+      return knownJDKBug(e, "JDK-8267701", "8u301", "11.0.12");
     }
     return e;
+  }
+
+  private static KnownJavaBugIOException knownJDKBug(Exception e, String bugId, String java8Version,
+      String java11Version) {
+    String specVersion = System.getProperty("java.specification.version", "");
+    if (specVersion.startsWith("1.")) {
+      return new KnownJavaBugIOException("Bug " + bugId + " detected -- please upgrade to Java "
+          + java8Version + " or newer", e);
+    } else if ("9".equals(specVersion) || "10".equals(specVersion) || "11".equals(specVersion)) {
+      return new KnownJavaBugIOException("Bug " + bugId + " detected -- please upgrade to Java "
+          + java11Version + " or newer", e);
+    } else {
+      return new KnownJavaBugIOException("Bug " + bugId
+          + " detected -- please upgrade your Java release", e);
+    }
   }
 
   private TrustManager[] buildTrustManagers(TrustManagerFactory tmf) throws IOException,
