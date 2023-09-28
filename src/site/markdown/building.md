@@ -28,12 +28,41 @@ Here's how you build junixsocket from the source.
 
 		sudo apk add git maven clang gcc binutils bash musl-dev libc-dev linux-headers
 
+4. Install the Java JDK 8 as well (or exclude a profile when building; see below)
+
+    Since version 2.8.0, we support Java 7 again. This works through a plugin called "retrolambda",
+    which translates Java 8 bytecode in a way that it works on Java 7 again. This plugin stopped
+    working with newer Java versions, so we need to run Java 8 in a forked process.
+
+    In order for the plugin to find the Java 8 installation, make sure that you have a `$HOME/.m2/toolchains.xml` file
+    with at least the following configuration:
+
+        <toolchains>
+          <toolchain>
+            <type>jdk</type>
+            <provides>
+              <version>1.8</version>
+            </provides>
+            <configuration>
+              <jdkHome>/Library/Java/JavaVirtualMachines/1.8.0.jdk/Contents/Home/</jdkHome>
+            </configuration>
+          </toolchain>
+        </toolchains>
+
+    Replace the path at `jdkHome` with your system's configuration. For the purposes of building
+    junixsocket, you can have a version `1.8` or `8`; both will work.
+
+    If you cannot/do not want to install JDK 8, add the following profile exclusion to the `mvn`
+    command below: `-P '!retrolambda'`.
+
 ## Building with Maven
 
 Build and test junixsocket.
 
     cd junixsocket
     mvn clean install
+    # or:
+    # mvn clean install -P '!retrolambda'
 
 That's it!
 

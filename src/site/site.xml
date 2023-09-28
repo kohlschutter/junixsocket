@@ -33,6 +33,7 @@
       <item name="Welcome" href="index.html" />
       <item name="New &amp; Noteworthy" href="changelog.html" />
       <item name="Quick Start" href="quickstart.html" />
+      <item name="Building" href="building.html" />
       <item name="Compatibility" href="compatibility.html" />
       <item name="Selftest" href="selftest.html" />
       <item name="Add junixsocket to your project"
