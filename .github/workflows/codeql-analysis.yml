@@ -64,7 +64,7 @@ jobs:
     - run: |
        echo "toolchain config:"
        echo "Build junixsocket with Maven (no tests)"
-       mvn clean install -Dcodeql -Dstrict -Duse-snapshots -Duse-staging -Djunixsocket.repo.use-staging=https://oss.sonatype.org/content/repositories/comkohlschutter-1132
+       mvn clean install -Dcodeql -Dstrict -Duse-snapshots
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
