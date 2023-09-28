@@ -18,8 +18,9 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 - Fix AFSocket shutdown to ignore InvalidSocketException upon setTimeout
 - Fix a potential hang in selftest
 - Fix loading of the native library when running under macOS Rosetta 2
-- Fix a potential bug when trying to serialize an AFRMISocketFactory
+- Fix a potential exception when trying to serialize an AFRMISocketFactory
 - Fix a potential race condition when working with native addresses
+- Fix a potential crash in TIPC code when compiling the native library against an old Linux SDK
 - Improve AFSocketServer, add new methods
 - Improve crossclang to support Xcode 15
 - Enable RMI support for GraalVM native-image; selftest now passes without issues
