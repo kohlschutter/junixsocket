@@ -63,10 +63,8 @@ jobs:
 
     - run: |
        echo "toolchain config:"
-       cat $HOME/.m2/toolchains.xml
-       cat ~/.m2/toolchains.xml
        echo "Build junixsocket with Maven (no tests)"
-       mvn clean install -Dcodeql -Dstrict -Duse-snapshots
+       mvn clean install -Dcodeql -Dstrict -Duse-snapshots -Duse-staging
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
