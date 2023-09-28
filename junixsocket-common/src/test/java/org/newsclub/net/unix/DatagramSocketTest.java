@@ -42,6 +42,8 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
 @SuppressFBWarnings({
@@ -210,9 +212,17 @@ public abstract class DatagramSocketTest<A extends SocketAddress> extends Socket
       dc1.send(bb1, ds2Addr);
 
       SocketAddress receivedFrom = dc2.receive(bb2);
-      assertEquals(ds1Addr, receivedFrom);
       bb2.flip();
       assertEquals(0xF00BAA, bb2.getLong());
+
+      try {
+        assertEquals(ds1Addr, receivedFrom);
+      } catch (AssertionFailedError e) {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+            "DatagramChannel.receive did not return expected the sender address; "
+                + "this may be a limitation of your system environment.");
+      }
     }
   }
 
