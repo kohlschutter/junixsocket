@@ -8,6 +8,7 @@ To get started with building from source, you really only need:
 
 - Java 16 or newer
 - Maven 3.8.8 or newer
+- clang (for the native library). Note that building the library doesn't work from Windows (use WSL2 with Linux).
 
 Then try one the following commands:
 
@@ -15,7 +16,7 @@ Then try one the following commands:
 
     mvn clean install
 
-##### Build everything, except for the native library
+##### Build everything, except for the native library (recommended)
 
     mvn clean install -rf :junixsocket-common
 
@@ -23,10 +24,10 @@ Then try one the following commands:
 
     mvn clean install -Dretrolambda=false -rf :junixsocket-common
 
-#### I really don't care about code quality, just build really quick
+#### ... and I really don't care about code quality, just build really quick
 
     mvn clean install -Dretrolambda=false -rf :junixsocket-common -Dignorant
 
-#### I really don't care about code quality or test results, just build really quick
+#### ... nor do I care about test results
 
     mvn clean install -Dretrolambda=false -rf :junixsocket-common -Dignorant -DskipTests
