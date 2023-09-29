@@ -12,6 +12,10 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 **Users of junixsocket are strongly advised to upgrade to version 2.8.0 or newer**
 
+### _(2023-09-29)_ **junixsocket 2.8.1**
+
+- Fix UnsatisfiedLinkError with noexec temporary directory on RHEL 9 and others
+
 ### _(2023-09-28)_ **junixsocket 2.8.0**
 
 - Java 7 support is back! (junixsocket-common only, as it was before version 2.5.0)
