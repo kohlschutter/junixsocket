@@ -28,7 +28,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -194,11 +193,6 @@ final class NativeLibraryLoader implements Closeable {
         try {
           System.load(libFile.getAbsolutePath());
         } catch (UnsatisfiedLinkError e) {
-          String message = e.getMessage().toLowerCase(Locale.getDefault());
-          if (!message.contains("perm")) {
-            throw e;
-          }
-
           // Operation not permitted; permission denied; EPERM...
           // -> tmp directory may be mounted with "noexec", try loading from user.home, user.dir
 
