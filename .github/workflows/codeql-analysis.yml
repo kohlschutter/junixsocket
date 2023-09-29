@@ -62,7 +62,6 @@ jobs:
         # queries: security-extended,security-and-quality
 
     - run: |
-       echo "toolchain config:"
        echo "Build junixsocket with Maven (no tests)"
        mvn clean install -Dcodeql -Dstrict -Duse-snapshots
 

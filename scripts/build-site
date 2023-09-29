@@ -11,7 +11,6 @@ junixsocketDir=$(pwd)
 (
 set -x
 mvn clean && \
-cp junixsocket-codecoverage/jacoco-extra/*.exec junixsocket-codecoverage/target/ && \
 mvn install site -D strict -Drelease -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross' && \
 mvn install site -pl junixsocket-jetty,junixsocket-selftest-native-image && \
 mvn javadoc:aggregate -P '!with-non-modularized' -Dstrict -pl '!junixsocket-native' && \
