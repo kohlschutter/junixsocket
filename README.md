@@ -2,7 +2,7 @@
 
 [![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/kohlschutter/junixsocket/codeql-analysis.yml?cacheSeconds=60)](https://github.com/kohlschutter/junixsocket/actions/workflows/codeql-analysis.yml) [![Last commit on main](https://img.shields.io/github/last-commit/kohlschutter/junixsocket/main)](https://github.com/kohlschutter/junixsocket/commits/main) [![Maven Central version](https://img.shields.io/maven-central/v/com.kohlschutter.junixsocket/junixsocket)](https://search.maven.org/artifact/com.kohlschutter.junixsocket/junixsocket) [![Apache 2.0 Licensed](https://img.shields.io/github/license/kohlschutter/junixsocket)](https://github.com/kohlschutter/junixsocket/blob/main/NOTICE)
 
-**Users of junixsocket are strongly advised to upgrade to version 2.8.0 or newer ([changelog](https://kohlschutter.github.io/junixsocket/changelog.html))**
+**Users of junixsocket are strongly advised to upgrade to version 2.8.1 or newer ([changelog](https://kohlschutter.github.io/junixsocket/changelog.html))**
 
 # junixsocket
 
@@ -88,7 +88,7 @@ To include the core junixsocket functionality in your project, add the following
 <dependency>
   <groupId>com.kohlschutter.junixsocket</groupId>
   <artifactId>junixsocket-core</artifactId>
-  <version>2.8.0</version>
+  <version>2.8.1</version>
   <type>pom</type>
 </dependency>
 ```
