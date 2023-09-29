@@ -47,7 +47,7 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFAddressFamil
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocketImpl.AFOutputStreamImpl,26,119,15,15,8,29,13,7,1,4
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,SocketAddressUtil,12,13,1,1,5,4,2,2,1,2
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,InvalidArgumentSocketException,3,4,0,0,2,2,1,1,1,1
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSelectionKey,26,124,4,18,4,32,6,21,3,13
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSelectionKey,26,124,5,17,4,32,7,20,3,13
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXSocketAddress,106,457,27,49,17,97,26,52,2,37
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader,200,478,42,40,54,115,38,25,4,18
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocketFactory,24,100,5,17,6,24,5,13,0,7
@@ -80,8 +80,8 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,DatagramSocket
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFServerSocketChannel,71,53,8,2,19,15,10,10,6,9
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFTIPCSocketAddress.Scope,0,51,0,0,0,6,0,4,0,4
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXServerSocket,27,39,0,0,7,10,5,9,5,9
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSelector,87,519,23,55,22,131,16,38,0,15
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFCore,20,346,10,50,6,101,10,35,1,14
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSelector,86,520,26,52,24,129,20,34,0,15
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFCore,19,347,10,50,5,102,10,35,1,14
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXDatagramSocket,40,52,5,5,9,12,10,8,5,8
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXServerSocketChannel,3,9,0,0,1,3,1,2,1,2
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXSocketFactory.SystemProperty,0,25,0,4,0,7,0,4,0,2
@@ -98,7 +98,7 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFServerSocket
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocketAddress.new ThreadLocal() {...},0,6,0,0,0,2,0,2,0,2
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXSocketAddress.new AFSocketAddressConfig() {...},2,37,1,1,0,8,1,5,0,5
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXSocketFactory.URIScheme,5,105,1,17,1,25,1,12,0,4
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader.ClasspathLibraryCandidate,49,69,8,5,15,20,7,4,1,3
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader.ClasspathLibraryCandidate,38,69,6,5,12,20,6,4,1,3
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFInputStream,0,3,0,0,0,2,0,1,0,1
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFDatagramChannel,96,111,10,2,27,31,17,21,11,21
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocketCore,128,63,17,8,25,21,11,10,2,6
@@ -115,7 +115,7 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,FileDescriptor
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,FileDescriptorCast.CastingProviderMap,0,83,1,9,0,21,1,9,0,5
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,FileDescriptorCast.new FileDescriptorCast.CastingProviderMap() {...},0,63,1,1,0,11,1,2,0,2
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,FileDescriptorCast.new FileDescriptorCast.CastingProviderMap() {...},7,75,0,0,1,13,1,5,1,5
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFPipe,6,71,1,1,1,17,2,7,1,7
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFPipe,2,75,1,1,0,18,1,8,0,8
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,FileDescriptorCast.new FileDescriptorCast.CastingProviderMap() {...},0,11,0,0,0,3,0,2,0,2
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,FileDescriptorCast.1.new FileDescriptorCast.CastingProvider() {...},0,9,0,0,0,2,0,2,0,2
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,NoSuchDeviceSocketException,7,0,0,0,4,0,2,0,2,0

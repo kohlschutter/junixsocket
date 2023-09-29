@@ -63,7 +63,7 @@ final class AFSelectionKey extends SelectionKey {
 
   @Override
   public boolean isValid() {
-<span class="pc bpc" id="L66" title="1 of 8 branches missed.">    return !hasOpInvalid() &amp;&amp; !cancelled.get() &amp;&amp; chann.isOpen() &amp;&amp; sel.isOpen();</span>
+<span class="pc bpc" id="L66" title="2 of 8 branches missed.">    return !hasOpInvalid() &amp;&amp; !cancelled.get() &amp;&amp; chann.isOpen() &amp;&amp; sel.isOpen();</span>
   }
 
   boolean isCancelled() {

@@ -266,9 +266,9 @@
 <a class="jxr_linenumber" name="L258" href="#L258">258</a> 
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">int</strong> runSelftest(Writer out) <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>     PipedInputStream pis = <strong class="jxr_keyword">new</strong> PipedInputStream();
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>     @SuppressWarnings(<span class="jxr_string">"resource"</span>)
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>     @SuppressWarnings(<span class="jxr_string">"all"</span>)
 <a class="jxr_linenumber" name="L262" href="#L262">262</a>     PipedOutputStream pos = <strong class="jxr_keyword">new</strong> PipedOutputStream(pis);
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>     @SuppressWarnings(<span class="jxr_string">"resource"</span>)
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>     @SuppressWarnings(<span class="jxr_string">"all"</span>)
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>     PrintStream ps = <strong class="jxr_keyword">new</strong> PrintStream(pos, false, Charset.defaultCharset().name());
 <a class="jxr_linenumber" name="L265" href="#L265">265</a> 
 <a class="jxr_linenumber" name="L266" href="#L266">266</a>     InputStreamReader isr = <strong class="jxr_keyword">new</strong> InputStreamReader(pis, Charset.defaultCharset());

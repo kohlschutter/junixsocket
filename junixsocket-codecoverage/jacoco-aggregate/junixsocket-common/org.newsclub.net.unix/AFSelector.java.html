@@ -212,24 +212,24 @@ final class AFSelector extends AbstractSelector {
 <span class="fc" id="L212">        boolean needsUpdate = false;</span>
 <span class="fc" id="L213">        int i = 1;</span>
 <span class="fc bfc" id="L214" title="All 2 branches covered.">        for (AFSelectionKey key : keysRegisteredKeySet) {</span>
-<span class="pc bpc" id="L215" title="1 of 4 branches missed.">          if (existingPollFd.keys[i] != key || !key.isValid()) { // NOPMD</span>
-<span class="fc" id="L216">            needsUpdate = true;</span>
-<span class="fc" id="L217">            break;</span>
+<span class="pc bpc" id="L215" title="2 of 4 branches missed.">          if (existingPollFd.keys[i] != key || !key.isValid()) { // NOPMD</span>
+<span class="nc" id="L216">            needsUpdate = true;</span>
+<span class="nc" id="L217">            break;</span>
           }
 <span class="fc" id="L219">          existingPollFd.ops[i] = key.interestOps();</span>
 
 <span class="fc" id="L221">          i++;</span>
 <span class="fc" id="L222">        }</span>
 
-<span class="fc bfc" id="L224" title="All 2 branches covered.">        if (!needsUpdate) {</span>
+<span class="pc bpc" id="L224" title="1 of 2 branches missed.">        if (!needsUpdate) {</span>
 <span class="fc" id="L225">          return existingPollFd;</span>
         }
       }
 
 <span class="fc" id="L229">      int keysToPoll = keysRegistered.size();</span>
 <span class="fc bfc" id="L230" title="All 2 branches covered.">      for (AFSelectionKey key : keysRegisteredKeySet) {</span>
-<span class="fc bfc" id="L231" title="All 2 branches covered.">        if (!key.isValid()) {</span>
-<span class="fc" id="L232">          keysToPoll--;</span>
+<span class="pc bpc" id="L231" title="1 of 2 branches missed.">        if (!key.isValid()) {</span>
+<span class="nc" id="L232">          keysToPoll--;</span>
         }
 <span class="fc" id="L234">      }</span>
 
@@ -243,8 +243,8 @@ final class AFSelector extends AbstractSelector {
 
 <span class="fc" id="L244">      int i = 1;</span>
 <span class="fc bfc" id="L245" title="All 2 branches covered.">      for (AFSelectionKey key : keysRegisteredKeySet) {</span>
-<span class="fc bfc" id="L246" title="All 2 branches covered.">        if (!key.isValid()) {</span>
-<span class="fc" id="L247">          continue;</span>
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">        if (!key.isValid()) {</span>
+<span class="nc" id="L247">          continue;</span>
         }
 <span class="fc" id="L249">        keys[i] = key;</span>
 <span class="fc" id="L250">        fds[i] = key.getAFCore().fd;</span>
@@ -277,8 +277,8 @@ final class AFSelector extends AbstractSelector {
 <span class="fc" id="L277">          pipeMsgWakeUp.clear();</span>
           try {
 <span class="fc" id="L279">            selectorPipe.sink().write(pipeMsgWakeUp);</span>
-<span class="nc" id="L280">          } catch (SocketException e) {</span>
-<span class="nc bnc" id="L281" title="All 2 branches missed.">            if (selectorPipe.sinkFD().valid()) {</span>
+<span class="fc" id="L280">          } catch (SocketException e) {</span>
+<span class="pc bpc" id="L281" title="1 of 2 branches missed.">            if (selectorPipe.sinkFD().valid()) {</span>
 <span class="nc" id="L282">              throw e;</span>
             } else {
               // ignore (Broken pipe, etc)

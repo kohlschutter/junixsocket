@@ -47,7 +47,7 @@ junixsocket-common,org.newsclub.net.unix,AFAddressFamily,186,281,30,24,43,80,29,
 junixsocket-common,org.newsclub.net.unix,AFSocketImpl.AFOutputStreamImpl,26,119,15,15,8,29,13,7,1,4
 junixsocket-common,org.newsclub.net.unix,SocketAddressUtil,12,13,1,1,5,4,2,2,1,2
 junixsocket-common,org.newsclub.net.unix,InvalidArgumentSocketException,3,4,0,0,2,2,1,1,1,1
-junixsocket-common,org.newsclub.net.unix,AFSelectionKey,34,116,5,17,7,29,9,18,5,11
+junixsocket-common,org.newsclub.net.unix,AFSelectionKey,34,116,6,16,7,29,10,17,5,11
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketAddress,112,451,27,49,18,96,27,51,3,36
 junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader,230,448,43,39,61,108,38,25,4,18
 junixsocket-common,org.newsclub.net.unix,AFSocketFactory,59,65,11,11,14,16,9,9,0,7
@@ -98,7 +98,7 @@ junixsocket-common,org.newsclub.net.unix,AFServerSocket,208,499,51,61,55,147,51,
 junixsocket-common,org.newsclub.net.unix,AFSocketAddress.new ThreadLocal() {...},0,6,0,0,0,2,0,2,0,2
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketAddress.new AFSocketAddressConfig() {...},2,37,1,1,0,8,1,5,0,5
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketFactory.URIScheme,5,105,1,17,1,25,1,12,0,4
-junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader.ClasspathLibraryCandidate,49,69,8,5,15,20,7,4,1,3
+junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader.ClasspathLibraryCandidate,38,69,6,5,12,20,6,4,1,3
 junixsocket-common,org.newsclub.net.unix,AFInputStream,0,3,0,0,0,2,0,1,0,1
 junixsocket-common,org.newsclub.net.unix,AFDatagramChannel,96,111,10,2,27,31,17,21,11,21
 junixsocket-common,org.newsclub.net.unix,AFSocketCore,128,63,17,8,25,21,11,10,2,6
