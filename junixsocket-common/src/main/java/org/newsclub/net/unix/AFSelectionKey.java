@@ -80,8 +80,10 @@ final class AFSelectionKey extends SelectionKey {
 
   @Override
   public void cancel() {
-    sel.remove(this);
-    cancelNoRemove();
+    if (!cancelled.compareAndSet(false, true) || !chann.isOpen()) {
+      return;
+    }
+    sel.prepareRemove(this);
   }
 
   void cancelNoRemove() {
