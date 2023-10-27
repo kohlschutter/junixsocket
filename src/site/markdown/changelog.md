@@ -10,7 +10,11 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ## Noteworthy changes
 
-**Users of junixsocket are strongly advised to upgrade to version 2.8.0 or newer**
+**Users of junixsocket are strongly advised to upgrade to version 2.8.2 or newer**
+
+### _(2023-10-27)_ **junixsocket 2.8.2**
+
+- Fix concurrency issue with AFSocketServerConnector, AFSelectionKey
 
 ### _(2023-09-29)_ **junixsocket 2.8.1**
 
@@ -106,7 +110,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
  - Fix support for very large datagrams (> 1MB)
  - Fix InetAddress-wrapping of long addresses
  - Update Xcode support script, crossclang
- - Bump postgresql version in demo code 
+ - Bump postgresql version in demo code
  - Fix dependency for custom architecture artifact
 
 ### _(2022-07-01)_ **junixsocket 2.5.1**
@@ -119,7 +123,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ### _(2022-06-06)_ **junixsocket 2.5.0**
 
- - New supported platforms: AIX 7 Power64, IBM i Power64, Windows ARM64, Windows Server 2019 & 2022 
+ - New supported platforms: AIX 7 Power64, IBM i Power64, Windows ARM64, Windows Server 2019 & 2022
  - Generic rework to support more than just Unix Domain sockets
  - Add support for AF_TIPC (on Linux)
  - Add support for using sockets passed as standard input
@@ -217,7 +221,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
  - Add support for sending and receiving file descriptors
  - Add support for the abstract namespace on Linux and Windows
  - Add AFUNIXSocketServer, a multi-threaded UNIX domain server implementation
- - Introduced AFUNIXSocketCapabilities to check which capabilities are supported on your platform  
+ - Introduced AFUNIXSocketCapabilities to check which capabilities are supported on your platform
  - AFUNIXServerSocket#setReuseAddress can now control whether reusing an existing socket is permitted
  - Exception handling: No longer wrap SocketExceptions, throw SocketTimeoutException upon EAGAIN for read
  - Improve handling of closed sockets
@@ -231,8 +235,8 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
  - Improved demo code, new demo client
 
 
-#### _(2018-12-29)_ **junixsocket 2.1.2**      
-    
+#### _(2018-12-29)_ **junixsocket 2.1.2**
+
 - Add AFUNIXSocketFactory, support for PostgreSQL
 - Add support for new MySQL Connector/J SocketFactory
 - Prevent a case of file descriptor leakage
@@ -240,7 +244,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 
 #### _(2018-12-26)_ **junixsocket 2.1.1**
-  
+
 - Support for Java 8, 9, 10 and 11
 - Building junixsocket requires Java 9 or later
 - Jigsaw module support
@@ -266,14 +270,14 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 
 #### _(2014-09-28)_ **junixsocket 2.0.0**
-  
+
 - Move from *Google Code* to *GitHub*.
 - Use Maven as the build system, code is distributed to the *Maven Central* repository.
 - Build native C code using *nar-maven-plugin*, and load JNI libraries *native-lib-loader*
 
 
-#### 
+####
 
 See the commit log for more details.
 
-The changelog for 1.x release is archived on [Google Code](https://code.google.com/archive/p/junixsocket/) 
+The changelog for 1.x release is archived on [Google Code](https://code.google.com/archive/p/junixsocket/)
