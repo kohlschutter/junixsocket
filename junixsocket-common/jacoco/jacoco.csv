@@ -47,7 +47,7 @@ junixsocket-common,org.newsclub.net.unix,AFAddressFamily,186,281,30,24,43,80,29,
 junixsocket-common,org.newsclub.net.unix,AFSocketImpl.AFOutputStreamImpl,26,119,15,15,8,29,13,7,1,4
 junixsocket-common,org.newsclub.net.unix,SocketAddressUtil,12,13,1,1,5,4,2,2,1,2
 junixsocket-common,org.newsclub.net.unix,InvalidArgumentSocketException,3,4,0,0,2,2,1,1,1,1
-junixsocket-common,org.newsclub.net.unix,AFSelectionKey,34,116,6,16,7,29,10,17,5,11
+junixsocket-common,org.newsclub.net.unix,AFSelectionKey,39,120,8,18,9,28,12,17,5,11
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketAddress,112,451,27,49,18,96,27,51,3,36
 junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader,230,448,43,39,61,108,38,25,4,18
 junixsocket-common,org.newsclub.net.unix,AFSocketFactory,59,65,11,11,14,16,9,9,0,7
@@ -80,7 +80,7 @@ junixsocket-common,org.newsclub.net.unix,DatagramSocketShim,26,4,4,0,6,2,4,1,2,1
 junixsocket-common,org.newsclub.net.unix,AFServerSocketChannel,75,49,8,2,20,14,11,9,7,8
 junixsocket-common,org.newsclub.net.unix,AFTIPCSocketAddress.Scope,0,51,0,0,0,6,0,4,0,4
 junixsocket-common,org.newsclub.net.unix,AFUNIXServerSocket,27,39,0,0,7,10,5,9,5,9
-junixsocket-common,org.newsclub.net.unix,AFSelector,93,513,30,48,27,126,23,31,0,15
+junixsocket-common,org.newsclub.net.unix,AFSelector,138,525,31,49,41,127,27,30,3,14
 junixsocket-common,org.newsclub.net.unix,AFCore,20,346,11,49,6,101,11,34,1,14
 junixsocket-common,org.newsclub.net.unix,AFUNIXDatagramSocket,40,52,5,5,9,12,10,8,5,8
 junixsocket-common,org.newsclub.net.unix,AFUNIXServerSocketChannel,3,9,0,0,1,3,1,2,1,2
@@ -94,7 +94,7 @@ junixsocket-common,org.newsclub.net.unix,AFUNIXSelectorProvider.new AFAddressFam
 junixsocket-common,org.newsclub.net.unix,AFSocketAddress,196,985,44,90,46,254,47,62,6,36
 junixsocket-common,org.newsclub.net.unix,SocketOptionsMapper.SocketOptionRef,0,9,0,0,0,4,0,1,0,1
 junixsocket-common,org.newsclub.net.unix,AFSelector.PollFd,4,53,1,1,1,15,1,3,0,3
-junixsocket-common,org.newsclub.net.unix,AFServerSocket,208,499,51,61,55,147,51,49,9,34
+junixsocket-common,org.newsclub.net.unix,AFServerSocket,208,499,49,63,55,147,49,51,9,34
 junixsocket-common,org.newsclub.net.unix,AFSocketAddress.new ThreadLocal() {...},0,6,0,0,0,2,0,2,0,2
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketAddress.new AFSocketAddressConfig() {...},2,37,1,1,0,8,1,5,0,5
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketFactory.URIScheme,5,105,1,17,1,25,1,12,0,4
@@ -110,7 +110,7 @@ junixsocket-common,org.newsclub.net.unix,AFSYSTEMSocketAddress.new AFSocketAddre
 junixsocket-common,org.newsclub.net.unix,AFUNIXSocketChannel,43,10,6,0,10,3,9,2,6,2
 junixsocket-common,org.newsclub.net.unix,AFTIPCSocketAddress,275,505,23,67,65,127,36,48,18,18
 junixsocket-common,org.newsclub.net.unix,AFTIPCSocketImplExtensions,31,0,2,0,8,0,6,0,5,0
-junixsocket-common,org.newsclub.net.unix,AFSocket,162,418,31,61,47,113,35,62,9,41
+junixsocket-common,org.newsclub.net.unix,AFSocket,164,416,33,59,47,113,37,60,9,41
 junixsocket-common,org.newsclub.net.unix,FileDescriptorCast.new FileDescriptorCast.CastingProviderMap() {...},0,46,0,0,0,9,0,4,0,4
 junixsocket-common,org.newsclub.net.unix,FileDescriptorCast.CastingProviderMap,0,83,1,9,0,21,1,9,0,5
 junixsocket-common,org.newsclub.net.unix,FileDescriptorCast.new FileDescriptorCast.CastingProviderMap() {...},0,63,1,1,0,11,1,2,0,2

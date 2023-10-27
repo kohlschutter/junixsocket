@@ -361,7 +361,7 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
 
   @Override
   public final boolean isClosed() {
-<span class="pc bpc" id="L364" title="1 of 8 branches missed.">    return super.isClosed() || (isConnected() &amp;&amp; !impl.getFD().valid()) || impl.isClosed();</span>
+<span class="pc bpc" id="L364" title="3 of 8 branches missed.">    return super.isClosed() || (isConnected() &amp;&amp; !impl.getFD().valid()) || impl.isClosed();</span>
   }
 
   @Override
