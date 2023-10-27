@@ -28,6 +28,7 @@ import java.net.SocketException;
 import java.net.SocketImpl;
 import java.nio.channels.AlreadyBoundException;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.IllegalBlockingModeException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -453,5 +454,76 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
   public <T> DatagramSocket setOption(AFSocketOption<T> name, T value) throws IOException {
     getAFImpl().getCore().setOption(name, value);
     return this;
+  }
+
+  /**
+   * Accepts a connection to this socket. Note that 1., the socket must be in {@code listen} state
+   * by calling {@link #bind(SocketAddress)}, followed by {@link #listen(int)}, and 2., the socket
+   * type must allow listen/accept. This is true for {@link AFSocketType#SOCK_SEQPACKET} AF_UNIX
+   * sockets, for example.
+   * 
+   * @return The accepted datagram socket.
+   * @throws IOException on error.
+   * @see #listen(int)
+   */
+  public AFDatagramSocket<A> accept() throws IOException {
+    return accept1(true);
+  }
+
+  /**
+   * Sets this socket into "listen" state, which allows subsequent calls to {@link #accept()}
+   * receive any connection attempt. Note that 1., the socket must be bound to a local address using
+   * {@link #bind(SocketAddress)}, and 2., the socket type must allow listen/accept. This is true
+   * for {@link AFSocketType#SOCK_SEQPACKET} AF_UNIX sockets, for example.
+   * 
+   * @param backlog The backlog, or {@code 0} for default.
+   * @throws IOException on error.
+   */
+  public final void listen(int backlog) throws IOException {
+    FileDescriptor fdesc = getAFImpl().getCore().validFdOrException();
+    if (backlog <= 0) {
+      backlog = 50;
+    }
+    NativeUnixSocket.listen(fdesc, backlog);
+  }
+
+  /**
+   * Returns a new {@link AFDatagramSocket} instance to be used for {@link #accept()}, i.e., no
+   * {@link FileDescriptor} is associated.
+   *
+   * @return The new instance.
+   * @throws IOException on error.
+   */
+  protected abstract AFDatagramSocket<A> newDatagramSocketInstance() throws IOException;
+
+  // CPD-OFF
+  AFDatagramSocket<A> accept1(boolean throwOnFail) throws IOException {
+    AFDatagramSocket<A> as = newDatagramSocketInstance();
+
+    boolean success = getAFImpl().accept0(as.getAFImpl(false));
+    if (isClosed()) {
+      // We may have connected to the socket to unblock it
+      throw new SocketClosedException("Socket is closed");
+    }
+
+    if (!success) {
+      if (throwOnFail) {
+        if (getChannel().isBlocking()) {
+          // unexpected
+          return null;
+        } else {
+          // non-blocking socket, nothing to accept
+          throw new IllegalBlockingModeException();
+        }
+      } else {
+        return null;
+      }
+    }
+
+    as.getAFImpl(true); // trigger create
+    as.connect(AFSocketAddress.INTERNAL_DUMMY_CONNECT);
+    as.getAFImpl().updatePorts(getAFImpl().getLocalPort1(), getAFImpl().getRemotePort());
+
+    return as;
   }
 }

@@ -20,7 +20,9 @@ package org.newsclub.net.unix;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -29,6 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Christian Kohlschütter
  */
 class AFSocketCore extends AFCore {
+  private final AtomicInteger pendingAccepts = new AtomicInteger(0);
   private static final int SHUT_RD_WR = 2;
 
   /**
@@ -133,5 +136,19 @@ class AFSocketCore extends AFCore {
         // ignore
       }
     }
+  }
+
+  protected void incPendingAccepts() throws SocketException {
+    if (pendingAccepts.incrementAndGet() >= Integer.MAX_VALUE) {
+      throw new SocketException("Too many pending accepts");
+    }
+  }
+
+  protected void decPendingAccepts() throws SocketException {
+    pendingAccepts.decrementAndGet();
+  }
+
+  protected boolean hasPendingAccepts() {
+    return pendingAccepts.get() > 0;
   }
 }

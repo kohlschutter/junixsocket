@@ -76,6 +76,10 @@ final class NativeUnixSocket {
   @SuppressWarnings("StaticAssignmentOfThrowable" /* errorprone */)
   private static Throwable initError = null;
 
+  static final int SHUT_RD = 0;
+  static final int SHUT_WR = 1;
+  static final int SHUT_RD_WR = 2;
+
   @ExcludeFromCodeCoverageGeneratedReport(reason = "unreachable")
   private NativeUnixSocket() {
     throw new UnsupportedOperationException("No instances");

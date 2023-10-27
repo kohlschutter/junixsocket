@@ -78,4 +78,9 @@ public final class AFVSOCKDatagramSocket extends AFDatagramSocket<AFVSOCKSocketA
   public AFVSOCKDatagramChannel getChannel() {
     return (AFVSOCKDatagramChannel) super.getChannel();
   }
+
+  @Override
+  protected AFDatagramSocket<AFVSOCKSocketAddress> newDatagramSocketInstance() throws IOException {
+    return new AFVSOCKDatagramSocket(null);
+  }
 }

@@ -108,4 +108,9 @@ public final class AFSYSTEMDatagramSocket extends AFDatagramSocket<AFSYSTEMSocke
   public int getNodeIdentity(WellKnownKernelControlNames name) throws IOException {
     return getNodeIdentity(name.getControlName());
   }
+
+  @Override
+  protected AFDatagramSocket<AFSYSTEMSocketAddress> newDatagramSocketInstance() throws IOException {
+    return new AFSYSTEMDatagramSocket(null);
+  }
 }

@@ -45,6 +45,12 @@ extern "C" {
 #define org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_BOUND 1L
 #undef org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_CONNECTED
 #define org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_CONNECTED 2L
+#undef org_newsclub_net_unix_NativeUnixSocket_SHUT_RD
+#define org_newsclub_net_unix_NativeUnixSocket_SHUT_RD 0L
+#undef org_newsclub_net_unix_NativeUnixSocket_SHUT_WR
+#define org_newsclub_net_unix_NativeUnixSocket_SHUT_WR 1L
+#undef org_newsclub_net_unix_NativeUnixSocket_SHUT_RD_WR
+#define org_newsclub_net_unix_NativeUnixSocket_SHUT_RD_WR 2L
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    init

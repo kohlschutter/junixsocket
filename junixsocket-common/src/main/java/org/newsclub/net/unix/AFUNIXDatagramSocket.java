@@ -108,4 +108,9 @@ public final class AFUNIXDatagramSocket extends AFDatagramSocket<AFUNIXSocketAdd
     }
     return ((AFUNIXDatagramSocketImpl) getAFImpl()).getPeerCredentials();
   }
+
+  @Override
+  protected AFDatagramSocket<AFUNIXSocketAddress> newDatagramSocketInstance() throws IOException {
+    return new AFUNIXDatagramSocket(null);
+  }
 }

@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix;
 
+import static org.newsclub.net.unix.NativeUnixSocket.SHUT_RD_WR;
+
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -40,6 +42,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * @param <A> The associated address type.
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
     DatagramSocketImplShim {
   private final AFSocketType socketType;
@@ -49,6 +52,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
   private final AtomicBoolean bound = new AtomicBoolean(false);
 
   private final AtomicInteger socketTimeout = new AtomicInteger(0);
+  private int localPort;
   private int remotePort = 0;
   private final AFAddressFamily<@NonNull A> addressFamily;
   private AFSocketImplExtensions<A> implExtensions = null;
@@ -400,5 +404,89 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
       implExtensions = addressFamily.initImplExtensions(ancillaryDataSupport);
     }
     return implExtensions;
+  }
+
+  // CPD-OFF
+  @SuppressWarnings("Finally" /* errorprone */)
+  final boolean accept0(AFDatagramSocketImpl<A> socket) throws IOException {
+    FileDescriptor fdesc = core.validFdOrException();
+    if (isClosed()) {
+      throw new SocketException("Socket is closed");
+    } else if (!isBound()) {
+      throw new SocketException("Socket is not bound");
+    }
+
+    AFSocketAddress socketAddress = core.socketAddress;
+    AFSocketAddress boundSocketAddress = getLocalSocketAddress();
+    if (boundSocketAddress != null) {
+      // Always resolve bound address from wildcard address, etc.
+      core.socketAddress = socketAddress = boundSocketAddress;
+    }
+
+    if (socketAddress == null) {
+      throw new SocketException("Socket is not bound");
+    }
+
+    final AFDatagramSocketImpl<A> si = socket;
+    core.incPendingAccepts();
+    try {
+      ByteBuffer ab = socketAddress.getNativeAddressDirectBuffer();
+
+      SocketException caught = null;
+      try {
+        if (!NativeUnixSocket.accept(ab, ab.limit(), fdesc, si.fd, core.inode.get(), socketTimeout
+            .get())) {
+          return false;
+        }
+      } catch (SocketException e) { // NOPMD.ExceptionAsFlowControl
+        caught = e;
+      } finally { // NOPMD.DoNotThrowExceptionInFinally
+        if (!isBound() || isClosed()) {
+          try {
+            NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
+          } catch (Exception e) {
+            // ignore
+          }
+          try {
+            NativeUnixSocket.close(si.fd);
+          } catch (Exception e) {
+            // ignore
+          }
+          if (caught != null) {
+            throw caught;
+          } else {
+            throw new SocketClosedException("Socket is closed");
+          }
+        } else if (caught != null) {
+          throw caught;
+        }
+      }
+    } finally {
+      core.decPendingAccepts();
+    }
+    si.setSocketAddress(socketAddress);
+    si.connected.set(true);
+
+    return true;
+  }
+
+  final int getLocalPort1() {
+    return localPort;
+  }
+
+  final int getRemotePort() {
+    return remotePort;
+  }
+
+  final void setSocketAddress(AFSocketAddress socketAddress) {
+    if (socketAddress == null) {
+      this.core.socketAddress = null;
+      this.localPort = -1;
+    } else {
+      this.core.socketAddress = socketAddress;
+      if (this.localPort <= 0) {
+        this.localPort = socketAddress.getPort();
+      }
+    }
   }
 }

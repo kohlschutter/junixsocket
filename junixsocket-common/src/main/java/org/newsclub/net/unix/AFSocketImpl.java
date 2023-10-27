@@ -17,6 +17,10 @@
  */
 package org.newsclub.net.unix;
 
+import static org.newsclub.net.unix.NativeUnixSocket.SHUT_RD;
+import static org.newsclub.net.unix.NativeUnixSocket.SHUT_RD_WR;
+import static org.newsclub.net.unix.NativeUnixSocket.SHUT_WR;
+
 import java.io.EOFException;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -48,9 +52,6 @@ import org.eclipse.jdt.annotation.Nullable;
     "PMD.CyclomaticComplexity", "PMD.CouplingBetweenObjects",
     "UnsafeFinalization" /* errorprone */})
 public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImplShim {
-  private static final int SHUT_RD = 0;
-  private static final int SHUT_WR = 1;
-  private static final int SHUT_RD_WR = 2;
   private static final int SHUTDOWN_RD_WR = (1 << SHUT_RD) | (1 << SHUT_WR);
 
   private final AFSocketStreamCore core;
@@ -82,21 +83,9 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
    * @author Christian Kohlschütter
    */
   static final class AFSocketStreamCore extends AFSocketCore {
-    private final AtomicInteger pendingAccepts = new AtomicInteger(0);
-
     AFSocketStreamCore(AFSocketImpl<?> observed, FileDescriptor fd,
         AncillaryDataSupport ancillaryDataSupport, AFAddressFamily<?> af) {
       super(observed, fd, ancillaryDataSupport, af, false);
-    }
-
-    private void incPendingAccepts() throws SocketException {
-      if (pendingAccepts.incrementAndGet() >= Integer.MAX_VALUE) {
-        throw new SocketException("Too many pending accepts");
-      }
-    }
-
-    private void decPendingAccepts() throws SocketException {
-      pendingAccepts.decrementAndGet();
     }
 
     void createSocket(FileDescriptor fdTarget, AFSocketType type) throws IOException {
@@ -113,7 +102,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         return;
       }
 
-      while (pendingAccepts.get() > 0) {
+      while (hasPendingAccepts()) {
         try {
           FileDescriptor tmpFd = new FileDescriptor();
 

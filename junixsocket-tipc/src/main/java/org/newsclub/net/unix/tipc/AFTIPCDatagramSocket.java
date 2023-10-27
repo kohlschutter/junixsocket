@@ -89,4 +89,9 @@ public final class AFTIPCDatagramSocket extends AFDatagramSocket<AFTIPCSocketAdd
   public AFTIPCDestName getDestName() {
     return AFTIPCDestName.of(((AFTIPCSocketImplExtensions) getImplExtensions()).getTIPCDestName());
   }
+
+  @Override
+  protected AFDatagramSocket<AFTIPCSocketAddress> newDatagramSocketInstance() throws IOException {
+    return new AFTIPCDatagramSocket(null);
+  }
 }

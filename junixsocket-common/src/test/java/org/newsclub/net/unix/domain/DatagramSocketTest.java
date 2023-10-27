@@ -18,15 +18,22 @@
 package org.newsclub.net.unix.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
+import org.newsclub.net.unix.AFDatagramSocket;
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFSocketType;
 import org.newsclub.net.unix.AFUNIXDatagramChannel;
+import org.newsclub.net.unix.AFUNIXDatagramSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketPair;
 import org.newsclub.net.unix.OperationNotSupportedSocketException;
@@ -45,7 +52,7 @@ public final class DatagramSocketTest extends
   }
 
   @Test
-  public void testSeqPacket() throws Exception {
+  public void testSeqPacketPair() throws Exception {
     AFUNIXSocketPair<AFUNIXDatagramChannel> pair;
     try {
       pair = AFUNIXSocketPair.openDatagram(AFSocketType.SOCK_SEQPACKET);
@@ -64,5 +71,45 @@ public final class DatagramSocketTest extends
     assertEquals(buf.limit(), dst.limit());
 
     assertEquals(msg, StandardCharsets.UTF_8.decode(dst).toString());
+  }
+
+  @Test
+  public void testSeqPacket() throws Exception {
+    boolean gotInstance = false;
+    try (AFUNIXDatagramSocket s1 = AFUNIXDatagramSocket.newInstance(AFSocketType.SOCK_SEQPACKET)) {
+      gotInstance = true;
+      AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
+      s1.bind(addr);
+      s1.listen(0);
+
+      CompletableFuture<Void> cf = CompletableFuture.runAsync(() -> {
+        try {
+          AFDatagramSocket<AFUNIXSocketAddress> s;
+          s = s1.accept();
+
+          ByteBuffer bb = ByteBuffer.allocate(1024).order(ByteOrder.LITTLE_ENDIAN);
+          s.getChannel().receive(bb);
+          bb.flip();
+          assertEquals(4, bb.remaining());
+          assertEquals(0x04030201, bb.getInt());
+        } catch (IOException e) {
+          fail(e);
+        }
+      });
+
+      try (AFUNIXDatagramSocket s2 = AFUNIXDatagramSocket.newInstance(
+          AFSocketType.SOCK_SEQPACKET)) {
+        s2.connect(addr);
+
+        s2.getChannel().send(ByteBuffer.wrap(new byte[] {1, 2, 3, 4}), addr);
+      }
+
+      cf.get(5, TimeUnit.SECONDS);
+
+    } catch (OperationNotSupportedSocketException e) {
+      if (!gotInstance) {
+        throw new TestAbortedNotAnIssueException("SEQPACKET not supported", e);
+      }
+    }
   }
 }
