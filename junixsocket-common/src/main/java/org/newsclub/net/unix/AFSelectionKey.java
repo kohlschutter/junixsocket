@@ -66,16 +66,8 @@ final class AFSelectionKey extends SelectionKey {
     return !hasOpInvalid() && !cancelled.get() && chann.isOpen() && sel.isOpen();
   }
 
-  boolean isCancelled() {
-    return cancelled.get();
-  }
-
   boolean hasOpInvalid() {
     return (opsReady & OP_INVALID) != 0;
-  }
-
-  boolean isSelected() {
-    return readyOps() != 0;
   }
 
   @Override
@@ -84,18 +76,6 @@ final class AFSelectionKey extends SelectionKey {
       return;
     }
     sel.prepareRemove(this);
-  }
-
-  void cancelNoRemove() {
-    if (!cancelled.compareAndSet(false, true) || !chann.isOpen()) {
-      return;
-    }
-
-    cancel1();
-  }
-
-  private void cancel1() {
-    // FIXME
   }
 
   @Override

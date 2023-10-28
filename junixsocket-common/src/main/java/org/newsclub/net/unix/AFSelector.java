@@ -28,7 +28,9 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.nio.channels.spi.AbstractSelector;
+import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -49,7 +51,8 @@ final class AFSelector extends AbstractSelector {
 
   private final Set<SelectionKey> selectedKeysSet = new HashSet<>();
   private final Set<SelectionKey> selectedKeysPublic = new UngrowableSet<>(selectedKeysSet);
-  private final Set<SelectionKey> cancelledKeysSet = new HashSet<>();
+
+  private final Deque<SelectionKey> cancelledKeys = new ArrayDeque<>();
 
   private PollFd pollFd = null;
 
@@ -187,8 +190,11 @@ final class AFSelector extends AbstractSelector {
         int rops = pfd.rops[i];
         AFSelectionKey key = pfd.keys[i];
         key.setOpsReady(rops);
-        if (rops != 0 && key.isValid()) {
+        if (rops != 0) {
           selectedKeysSet.add(key);
+        }
+        if (!key.isValid()) {
+          key.cancel();
         }
       }
     }
@@ -199,8 +205,8 @@ final class AFSelector extends AbstractSelector {
     synchronized (this) {
       for (Iterator<AFSelectionKey> it = keysRegisteredKeySet.iterator(); it.hasNext();) {
         AFSelectionKey key = it.next();
-        if (!key.getAFCore().fd.valid() || key.hasOpInvalid()) {
-          key.cancelNoRemove();
+        if (!key.getAFCore().fd.valid() || !key.isValid()) {
+          key.cancel();
           it.remove();
           existingPollFd = null;
         } else {
@@ -263,10 +269,10 @@ final class AFSelector extends AbstractSelector {
     Set<SelectionKey> keys;
     synchronized (this) {
       keys = keys();
+      for (SelectionKey key : keys) {
+        key.cancel();
+      }
       keysRegistered.clear();
-    }
-    for (SelectionKey key : keys) {
-      ((AFSelectionKey) key).cancelNoRemove();
     }
     selectorPipe.close();
   }
@@ -295,26 +301,20 @@ final class AFSelector extends AbstractSelector {
     return this;
   }
 
-  synchronized void remove(AFSelectionKey key) {
-    selectedKeysSet.remove(key);
-    deregister(key);
-    pollFd = null;
-  }
-
   void prepareRemove(AFSelectionKey key) {
-    synchronized (cancelledKeysSet) {
-      cancelledKeysSet.add(key);
+    synchronized (cancelledKeys) {
+      cancelledKeys.addLast(key);
     }
   }
 
   void performRemove() {
-    synchronized (cancelledKeysSet) {
-      for (SelectionKey key : cancelledKeysSet) {
+    synchronized (cancelledKeys) {
+      SelectionKey key;
+      while ((key = cancelledKeys.pollFirst()) != null) {
         selectedKeysSet.remove(key);
         deregister((AFSelectionKey) key);
         pollFd = null;
       }
-      cancelledKeysSet.clear();
     }
   }
 
