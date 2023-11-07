@@ -111,47 +111,51 @@ final class AFSelector extends AbstractSelector {
 
   @SuppressWarnings("PMD.CognitiveComplexity")
   private int select0(int timeout) throws IOException {
-    PollFd pfd;
     synchronized (this) {
       if (!isOpen()) {
         throw new ClosedSelectorException();
       }
-      pfd = pollFd = initPollFd(pollFd);
-      processDeregisterQueue();
-      selectedKeys.clear();
-    }
-    int num;
-    try {
-      begin();
-      num = NativeUnixSocket.poll(pfd, timeout);
-    } finally {
-      end();
-    }
-    synchronized (this) {
-      selectedKeys.clear();
-      pfd = pollFd;
-      if (pfd != null) {
-        AFSelectionKey[] keys = pfd.keys;
-        if (keys != null) {
-          for (AFSelectionKey key : keys) {
-            if (key != null && key.hasOpInvalid()) {
-              SelectableChannel ch = key.channel();
-              if (ch != null && ch.isOpen()) {
-                ch.close();
+
+      synchronized (publicSelectedKeys) {
+        PollFd pfd = pollFd = initPollFd(pollFd);
+        processDeregisterQueue();
+        publicSelectedKeys.clear();
+
+        int num;
+        try {
+          begin();
+          num = NativeUnixSocket.poll(pfd, timeout);
+        } finally {
+          end();
+        }
+
+        publicSelectedKeys.clear();
+        pfd = pollFd;
+        if (pfd != null) {
+          AFSelectionKey[] keys = pfd.keys;
+          if (keys != null) {
+            for (AFSelectionKey key : keys) {
+              if (key != null && key.hasOpInvalid()) {
+                SelectableChannel ch = key.channel();
+                if (ch != null && ch.isOpen()) {
+                  ch.close();
+                }
               }
             }
           }
         }
+        if (num > 0) {
+          consumeAllBytesAfterPoll();
+          setOpsReady(pfd); // updates keysSelected and numKeysSelected
+        }
+        return publicSelectedKeys.size();
       }
-      if (num > 0) {
-        consumeAllBytesAfterPoll();
-        setOpsReady(pfd); // updates keysSelected and numKeysSelected
-      }
-      return selectedKeys.size();
     }
   }
 
-  private synchronized void consumeAllBytesAfterPoll() throws IOException {
+  private void consumeAllBytesAfterPoll() throws IOException {
+    assert Thread.holdsLock(this);
+
     if (pollFd == null) {
       return;
     }
@@ -185,7 +189,10 @@ final class AFSelector extends AbstractSelector {
     }
   }
 
-  private synchronized void setOpsReady(PollFd pfd) {
+  private void setOpsReady(PollFd pfd) {
+    assert Thread.holdsLock(this);
+    assert Thread.holdsLock(publicSelectedKeys);
+
     if (pfd != null) {
       for (int i = 1; i < pfd.rops.length; i++) {
         int rops = pfd.rops[i];
@@ -203,65 +210,65 @@ final class AFSelector extends AbstractSelector {
 
   @SuppressWarnings({"resource", "PMD.CognitiveComplexity"})
   private PollFd initPollFd(PollFd existingPollFd) throws IOException {
-    synchronized (this) {
-      for (Iterator<AFSelectionKey> it = registeredKeys.iterator(); it.hasNext();) {
-        AFSelectionKey key = it.next();
-        if (!key.getAFCore().fd.valid() || !key.isValid()) {
-          key.cancel();
-          it.remove();
-          existingPollFd = null;
-        } else {
-          key.setOpsReady(0);
-        }
+    assert Thread.holdsLock(this);
+
+    for (Iterator<AFSelectionKey> it = registeredKeys.iterator(); it.hasNext();) {
+      AFSelectionKey key = it.next();
+      if (!key.getAFCore().fd.valid() || !key.isValid()) {
+        key.cancel();
+        it.remove();
+        existingPollFd = null;
+      } else {
+        key.setOpsReady(0);
       }
+    }
 
-      if (existingPollFd != null && //
-          existingPollFd.keys != null && //
-          (existingPollFd.keys.length - 1) == registeredKeys.size()) {
-        boolean needsUpdate = false;
-        int i = 1;
-        for (AFSelectionKey key : registeredKeys) {
-          if (existingPollFd.keys[i] != key || !key.isValid()) { // NOPMD
-            needsUpdate = true;
-            break;
-          }
-          existingPollFd.ops[i] = key.interestOps();
-
-          i++;
-        }
-
-        if (!needsUpdate) {
-          return existingPollFd;
-        }
-      }
-
-      int keysToPoll = registeredKeys.size();
-      for (AFSelectionKey key : registeredKeys) {
-        if (!key.isValid()) {
-          keysToPoll--;
-        }
-      }
-
-      int size = keysToPoll + 1;
-      FileDescriptor[] fds = new FileDescriptor[size];
-      int[] ops = new int[size];
-
-      AFSelectionKey[] keys = new AFSelectionKey[size];
-      fds[0] = selectorPipe.sourceFD();
-      ops[0] = SelectionKey.OP_READ;
-
+    if (existingPollFd != null && //
+        existingPollFd.keys != null && //
+        (existingPollFd.keys.length - 1) == registeredKeys.size()) {
+      boolean needsUpdate = false;
       int i = 1;
       for (AFSelectionKey key : registeredKeys) {
-        if (!key.isValid()) {
-          continue;
+        if (existingPollFd.keys[i] != key || !key.isValid()) { // NOPMD
+          needsUpdate = true;
+          break;
         }
-        keys[i] = key;
-        fds[i] = key.getAFCore().fd;
-        ops[i] = key.interestOps();
+        existingPollFd.ops[i] = key.interestOps();
+
         i++;
       }
-      return new PollFd(keys, fds, ops);
+
+      if (!needsUpdate) {
+        return existingPollFd;
+      }
     }
+
+    int keysToPoll = registeredKeys.size();
+    for (AFSelectionKey key : registeredKeys) {
+      if (!key.isValid()) {
+        keysToPoll--;
+      }
+    }
+
+    int size = keysToPoll + 1;
+    FileDescriptor[] fds = new FileDescriptor[size];
+    int[] ops = new int[size];
+
+    AFSelectionKey[] keys = new AFSelectionKey[size];
+    fds[0] = selectorPipe.sourceFD();
+    ops[0] = SelectionKey.OP_READ;
+
+    int i = 1;
+    for (AFSelectionKey key : registeredKeys) {
+      if (!key.isValid()) {
+        continue;
+      }
+      keys[i] = key;
+      fds[i] = key.getAFCore().fd;
+      ops[i] = key.interestOps();
+      i++;
+    }
+    return new PollFd(keys, fds, ops);
   }
 
   @Override
@@ -309,10 +316,13 @@ final class AFSelector extends AbstractSelector {
   }
 
   void processDeregisterQueue() {
+    assert Thread.holdsLock(this);
+    assert Thread.holdsLock(publicSelectedKeys);
+
     synchronized (cancelledKeys) {
       SelectionKey key;
       while ((key = cancelledKeys.pollFirst()) != null) {
-        selectedKeys.remove(key);
+        publicSelectedKeys.remove(key);
         deregister((AFSelectionKey) key);
         pollFd = null;
       }
