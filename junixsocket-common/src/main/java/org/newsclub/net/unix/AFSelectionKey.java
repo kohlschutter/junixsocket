@@ -75,7 +75,7 @@ final class AFSelectionKey extends SelectionKey {
     if (!cancelled.compareAndSet(false, true) || !chann.isOpen()) {
       return;
     }
-    sel.prepareRemove(this);
+    sel.cancel(this);
   }
 
   @Override
