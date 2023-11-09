@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -41,14 +40,19 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 final class MapValueSet<T, V> implements Set<T> {
   private final Map<T, V> map;
-  private final Supplier<@NonNull V> valueSupplier;
+  private final ValueSupplier<@NonNull V> valueSupplier;
   private final V removedSentinel;
 
   @SuppressWarnings("unchecked")
-  MapValueSet(Map<? extends T, V> map, Supplier<@NonNull V> valueSupplier, V removedSentinel) {
+  MapValueSet(Map<? extends T, V> map, ValueSupplier<@NonNull V> valueSupplier, V removedSentinel) {
     this.valueSupplier = Objects.requireNonNull(valueSupplier);
     this.removedSentinel = removedSentinel;
     this.map = (Map<T, V>) map;
+  }
+
+  @FunctionalInterface
+  interface ValueSupplier<V> {
+    V supplyValue();
   }
 
   /**
@@ -83,7 +87,7 @@ final class MapValueSet<T, V> implements Set<T> {
   }
 
   private @NonNull V getValue() {
-    return Objects.requireNonNull(valueSupplier.get());
+    return Objects.requireNonNull(valueSupplier.supplyValue());
   }
 
   @Override
@@ -220,8 +224,13 @@ final class MapValueSet<T, V> implements Set<T> {
    * 
    * @param e The entry to update.
    */
-  public void update(T e) {
-    map.computeIfPresent(e, (k, v) -> getValue());
+  public boolean update(T e) {
+    if (map.containsKey(e)) {
+      map.put(e, getValue());
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -229,13 +238,12 @@ final class MapValueSet<T, V> implements Set<T> {
    */
   @Override
   public boolean add(T e) {
-    if (!map.containsKey(e)) {
-      map.computeIfAbsent(e, (k) -> getValue());
-      return true;
-    } else if (contains(e)) {
+    if (contains(e)) {
       return false;
+    } else if (update(e)) {
+      return true;
     } else {
-      update(e);
+      map.put(e, getValue());
       return true;
     }
   }
