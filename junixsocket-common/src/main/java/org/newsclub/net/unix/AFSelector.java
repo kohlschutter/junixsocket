@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 final class AFSelector extends AbstractSelector {
   private final AFPipe selectorPipe;
@@ -41,13 +42,15 @@ final class AFSelector extends AbstractSelector {
   private final ByteBuffer pipeMsgWakeUp = ByteBuffer.allocate(1);
   private final ByteBuffer pipeMsgReceiveBuffer = ByteBuffer.allocateDirect(256);
 
-  private final Map<AFSelectionKey, Boolean> keysRegistered = new ConcurrentHashMap<>();
+  private final Map<AFSelectionKey, Integer> keysRegistered = new ConcurrentHashMap<>();
   private final Set<AFSelectionKey> keysRegisteredKeySet = keysRegistered.keySet();
   private final Set<SelectionKey> keysRegisteredPublic = Collections.unmodifiableSet(
       keysRegisteredKeySet);
 
-  private final Map<SelectionKey, SelectionKey> selectedKeysSet = new ConcurrentHashMap<>();
-  private final Set<SelectionKey> selectedKeysPublic = new UngrowableSet<>(selectedKeysSet.keySet());
+  private final AtomicInteger selectCount = new AtomicInteger(0);
+  private final MapValueSet<SelectionKey, Integer> selectedKeysSet =
+      new MapValueSet<SelectionKey, Integer>(keysRegistered, selectCount::get, 0);
+  private final Set<SelectionKey> selectedKeysPublic = new UngrowableSet<>(selectedKeysSet);
 
   private PollFd pollFd = null;
 
@@ -63,7 +66,7 @@ final class AFSelector extends AbstractSelector {
     AFSelectionKey key = new AFSelectionKey(this, ch, ops, att);
     synchronized (this) {
       pollFd = null;
-      keysRegistered.put(key, Boolean.TRUE);
+      selectedKeysSet.markRemoved(key);
     }
     return key;
   }
@@ -106,12 +109,15 @@ final class AFSelector extends AbstractSelector {
   @SuppressWarnings("PMD.CognitiveComplexity")
   private int select0(int timeout) throws IOException {
     PollFd pfd;
+
+    int selectId = updateSelectCount();
+
     synchronized (this) {
       if (!isOpen()) {
         throw new ClosedSelectorException();
       }
+
       pfd = pollFd = initPollFd(pollFd);
-      selectedKeysSet.clear();
     }
     int num;
     try {
@@ -121,7 +127,6 @@ final class AFSelector extends AbstractSelector {
       end();
     }
     synchronized (this) {
-      selectedKeysSet.clear();
       pfd = pollFd;
       if (pfd != null) {
         AFSelectionKey[] keys = pfd.keys;
@@ -138,7 +143,7 @@ final class AFSelector extends AbstractSelector {
       }
       if (num > 0) {
         consumeAllBytesAfterPoll();
-        setOpsReady(pfd); // updates keysSelected and numKeysSelected
+        setOpsReady(pfd, selectId); // updates keysSelected and numKeysSelected
       }
       return selectedKeysSet.size();
     }
@@ -178,14 +183,24 @@ final class AFSelector extends AbstractSelector {
     }
   }
 
-  private synchronized void setOpsReady(PollFd pfd) {
+  private int updateSelectCount() {
+    int selectId = selectCount.incrementAndGet();
+    if (selectId == 0) {
+      // overflow (unlikely)
+      selectedKeysSet.markAllRemoved();
+      selectId = selectCount.incrementAndGet();
+    }
+    return selectId;
+  }
+
+  private void setOpsReady(PollFd pfd, int selectId) {
     if (pfd != null) {
       for (int i = 1; i < pfd.rops.length; i++) {
         int rops = pfd.rops[i];
         AFSelectionKey key = pfd.keys[i];
         key.setOpsReady(rops);
         if (rops != 0) {
-          selectedKeysSet.put(key, key);
+          keysRegistered.computeIfPresent(key, (k, v) -> selectId);
         }
       }
     }
