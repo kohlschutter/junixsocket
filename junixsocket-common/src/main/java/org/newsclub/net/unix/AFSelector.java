@@ -29,7 +29,6 @@ import java.nio.channels.Selector;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.nio.channels.spi.AbstractSelector;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -47,8 +46,8 @@ final class AFSelector extends AbstractSelector {
   private final Set<SelectionKey> keysRegisteredPublic = Collections.unmodifiableSet(
       keysRegisteredKeySet);
 
-  private final Set<SelectionKey> selectedKeysSet = new HashSet<>();
-  private final Set<SelectionKey> selectedKeysPublic = new UngrowableSet<>(selectedKeysSet);
+  private final Map<SelectionKey, SelectionKey> selectedKeysSet = new ConcurrentHashMap<>();
+  private final Set<SelectionKey> selectedKeysPublic = new UngrowableSet<>(selectedKeysSet.keySet());
 
   private PollFd pollFd = null;
 
@@ -185,8 +184,8 @@ final class AFSelector extends AbstractSelector {
         int rops = pfd.rops[i];
         AFSelectionKey key = pfd.keys[i];
         key.setOpsReady(rops);
-        if (rops != 0 && key.isValid()) {
-          selectedKeysSet.add(key);
+        if (rops != 0) {
+          selectedKeysSet.put(key, key);
         }
       }
     }
@@ -197,7 +196,7 @@ final class AFSelector extends AbstractSelector {
     synchronized (this) {
       for (Iterator<AFSelectionKey> it = keysRegisteredKeySet.iterator(); it.hasNext();) {
         AFSelectionKey key = it.next();
-        if (!key.getAFCore().fd.valid() || key.hasOpInvalid()) {
+        if (!key.getAFCore().fd.valid() || !key.isValid()) {
           key.cancelNoRemove();
           it.remove();
           existingPollFd = null;
