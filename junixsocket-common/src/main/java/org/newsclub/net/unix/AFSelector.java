@@ -49,7 +49,6 @@ final class AFSelector extends AbstractSelector {
 
   private final Set<SelectionKey> selectedKeysSet = new HashSet<>();
   private final Set<SelectionKey> selectedKeysPublic = new UngrowableSet<>(selectedKeysSet);
-  private final Set<SelectionKey> cancelledKeysSet = new HashSet<>();
 
   private PollFd pollFd = null;
 
@@ -113,7 +112,6 @@ final class AFSelector extends AbstractSelector {
         throw new ClosedSelectorException();
       }
       pfd = pollFd = initPollFd(pollFd);
-      performRemove();
       selectedKeysSet.clear();
     }
     int num;
@@ -299,23 +297,6 @@ final class AFSelector extends AbstractSelector {
     selectedKeysSet.remove(key);
     deregister(key);
     pollFd = null;
-  }
-
-  void prepareRemove(AFSelectionKey key) {
-    synchronized (cancelledKeysSet) {
-      cancelledKeysSet.add(key);
-    }
-  }
-
-  void performRemove() {
-    synchronized (cancelledKeysSet) {
-      for (SelectionKey key : cancelledKeysSet) {
-        selectedKeysSet.remove(key);
-        deregister((AFSelectionKey) key);
-        pollFd = null;
-      }
-      cancelledKeysSet.clear();
-    }
   }
 
   private void deregister(AFSelectionKey key) {
