@@ -14,11 +14,12 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ### _(2023-11-XX)_ **junixsocket 2.9.0**
 
-- Fix regression introduced in 2.8.2 that leaked FileDescriptors
 - Fix concurrency issue with AFSocketServerConnector, AFSelectionKey; take two
+- Fix regression introduced in 2.8.2 that leaked FileDescriptors
 - Reduce allocation overhead during select
 - Add listen/accept support to AFDatagramSocket, so we can serve SEQPACKETs
 - Update build/plugin/test/demo dependencies
+- Code cleanup
 
 Backwards-incompatible change: Some AF*Socket* classes are now final or no longer declare constructor exceptions.
 
