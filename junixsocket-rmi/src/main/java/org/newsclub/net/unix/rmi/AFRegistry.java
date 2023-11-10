@@ -78,6 +78,11 @@ public abstract class AFRegistry implements Registry {
     }
   }
 
+  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+  @Override
+  protected final void finalize() {
+  }
+
   /**
    * Returns {@code true} if the wrapped Registry instance is a locally created
    * {@link RemoteServer}.

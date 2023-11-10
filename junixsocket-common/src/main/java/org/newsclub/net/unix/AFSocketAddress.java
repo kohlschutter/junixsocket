@@ -152,6 +152,12 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     this.addressFamily = null;
   }
 
+  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+  @Deprecated
+  @Override
+  protected final void finalize() {
+  }
+
   @SuppressWarnings({"cast", "this-escape"})
   private static void initAFSocketAddress(AFSocketAddress addr, int port,
       final byte[] socketAddress, ByteBuffer nativeAddress, AFAddressFamily<?> af)

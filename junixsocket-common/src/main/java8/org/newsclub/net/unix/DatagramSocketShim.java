@@ -48,4 +48,9 @@ abstract class DatagramSocketShim extends DatagramSocket {
    */
   @SuppressWarnings("PMD.LinguisticNaming")
   public abstract <T> DatagramSocket setOption(AFSocketOption<T> name, T value) throws IOException;
+
+  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+  @Override
+  protected final void finalize() {
+  }
 }

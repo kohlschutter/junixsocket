@@ -34,6 +34,11 @@ abstract class RemoteCloseableThingImpl implements RemoteCloseableThing {
   protected RemoteCloseableThingImpl() throws RemoteException {
   }
 
+  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+  @Override
+  protected final void finalize() {
+  }
+
   public void close() throws IOException {
     count.incrementAndGet();
   }

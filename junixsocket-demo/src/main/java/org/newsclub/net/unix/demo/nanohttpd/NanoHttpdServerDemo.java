@@ -38,7 +38,7 @@ import fi.iki.elonen.NanoHTTPD;
  * @author Christian Kohlschütter
  * @see OkHttpClientDemo
  */
-public class NanoHttpdServerDemo extends NanoHTTPD {
+public final class NanoHttpdServerDemo extends NanoHTTPD {
 
   public NanoHttpdServerDemo(SocketAddress socketAddress) throws IOException {
     super(0);

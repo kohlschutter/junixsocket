@@ -38,7 +38,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  *
  * @author Christian Kohlschütter
  */
-public class StreamServiceImpl implements StreamService, Closeable {
+public final class StreamServiceImpl implements StreamService, Closeable {
   private final AFUNIXRMISocketFactory socketFactory;
 
   /**

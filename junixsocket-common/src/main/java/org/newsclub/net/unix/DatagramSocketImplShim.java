@@ -64,4 +64,10 @@ abstract class DatagramSocketImplShim extends DatagramSocketImpl {
   protected Set<SocketOption<?>> supportedOptions() {
     return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;
   }
+
+  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+  @Deprecated
+  @Override
+  protected final void finalize() {
+  }
 }

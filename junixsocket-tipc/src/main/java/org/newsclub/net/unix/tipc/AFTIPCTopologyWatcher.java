@@ -65,6 +65,11 @@ public class AFTIPCTopologyWatcher implements Closeable {
     channel.configureBlocking(false);
   }
 
+  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+  @Override
+  protected final void finalize() {
+  }
+
   /**
    * Watches for all port changes.
    *

@@ -42,6 +42,11 @@ public class TestBase extends ShutdownHookTestBase {
     return AFUNIXNaming.newPrivateInstance();
   }
 
+  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+  @Override
+  protected final void finalize() {
+  }
+
   @BeforeEach
   public void setUp() throws IOException, AlreadyBoundException {
     naming = newNamingTestInstance();
