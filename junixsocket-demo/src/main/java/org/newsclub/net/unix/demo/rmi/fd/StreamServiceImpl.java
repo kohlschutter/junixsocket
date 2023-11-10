@@ -23,7 +23,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
-import java.rmi.RemoteException;
 
 import org.newsclub.net.unix.demo.rmi.services.StreamService;
 import org.newsclub.net.unix.rmi.AFUNIXRMISocketFactory;
@@ -38,17 +37,16 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  *
  * @author Christian Kohlschütter
  */
-public final class StreamServiceImpl implements StreamService, Closeable {
+public class StreamServiceImpl implements StreamService, Closeable {
   private final AFUNIXRMISocketFactory socketFactory;
 
   /**
    * Creates a new instance.
    *
    * @param socketFactory The socket factory to use.
-   * @throws RemoteException on error.
    */
   @SuppressFBWarnings("EI_EXPOSE_REP")
-  public StreamServiceImpl(AFUNIXRMISocketFactory socketFactory) throws RemoteException {
+  public StreamServiceImpl(AFUNIXRMISocketFactory socketFactory) {
     this.socketFactory = socketFactory;
   }
 

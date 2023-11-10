@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
@@ -56,10 +57,10 @@ public class SimpleTestClient {
       byte[] buf = new byte[128];
 
       int read = is.read(buf);
-      System.out.println("Server says: " + new String(buf, 0, read, "UTF-8"));
+      System.out.println("Server says: " + new String(buf, 0, read, StandardCharsets.UTF_8));
 
       System.out.println("Replying to server...");
-      os.write("Hello Server".getBytes("UTF-8"));
+      os.write("Hello Server".getBytes(StandardCharsets.UTF_8));
       os.flush();
 
       System.out.println("Now reading numbers from the server...");

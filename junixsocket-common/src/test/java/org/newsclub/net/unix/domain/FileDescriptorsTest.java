@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix.domain;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -32,7 +33,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.SocketException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Duration;
 
@@ -76,7 +76,7 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
           socket.setOutboundFileDescriptors(FileDescriptor.in, FileDescriptor.err);
           assertTrue(socket.hasOutboundFileDescriptors());
           try (OutputStream outputStream = socket.getOutputStream()) {
-            outputStream.write("HELLO".getBytes("UTF-8"));
+            outputStream.write("HELLO".getBytes(UTF_8));
           }
           assertFalse(socket.hasOutboundFileDescriptors());
 
@@ -95,7 +95,7 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
 
         numRead = in.read(buf);
         assertEquals(5, numRead, "'HELLO' is five bytes long");
-        assertEquals("HELLO", new String(buf, 0, numRead, "UTF-8"));
+        assertEquals("HELLO", new String(buf, 0, numRead, UTF_8));
 
         fds = socket.getReceivedFileDescriptors();
         assertEquals(2, fds.length, "Now, we should have two file descriptors");
@@ -294,12 +294,12 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
         @Override
         protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
-            fos.write("WORLD!".getBytes("UTF-8"));
+            fos.write("WORLD!".getBytes(UTF_8));
           }
           try (FileInputStream fin = new FileInputStream(tmpFile)) {
             socket.setOutboundFileDescriptors(fin.getFD());
             try (OutputStream outputStream = socket.getOutputStream()) {
-              outputStream.write("HELLO".getBytes("UTF-8"));
+              outputStream.write("HELLO".getBytes(UTF_8));
             }
           }
 
@@ -316,7 +316,7 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
 
         numRead = in.read(buf);
         assertEquals(5, numRead, "'HELLO' is five bytes long");
-        assertEquals("HELLO", new String(buf, 0, numRead, "UTF-8"));
+        assertEquals("HELLO", new String(buf, 0, numRead, UTF_8));
 
         fds = socket.getReceivedFileDescriptors();
         assertEquals(1, fds.length, "Now, we should have two file descriptors");
@@ -325,7 +325,7 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
         try (FileInputStream fin = new FileInputStream(fdesc)) {
           numRead = fin.read(buf);
           assertEquals(6, numRead, "'WORLD!' is six bytes long");
-          assertEquals("WORLD!", new String(buf, 0, numRead, "UTF-8"));
+          assertEquals("WORLD!", new String(buf, 0, numRead, UTF_8));
         }
       } finally {
         Files.deleteIfExists(tmpFile.toPath());
@@ -343,7 +343,7 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
         @Override
         protected void handleConnection(final AFUNIXSocket socket) throws IOException {
           try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
-            fos.write("WORLD!".getBytes("UTF-8"));
+            fos.write("WORLD!".getBytes(UTF_8));
           }
           try (FileInputStream fin = new FileInputStream(tmpFile)) {
             assertEquals('W', fin.read());
@@ -351,7 +351,7 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
             // We send the file descriptor of fin, from which we already consumed one byte.
             socket.setOutboundFileDescriptors(fin.getFD());
             try (OutputStream outputStream = socket.getOutputStream()) {
-              outputStream.write("HELLO".getBytes("UTF-8"));
+              outputStream.write("HELLO".getBytes(UTF_8));
             }
           }
 
@@ -368,7 +368,7 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
 
         numRead = in.read(buf);
         assertEquals(5, numRead, "'HELLO' is five bytes long");
-        assertEquals("HELLO", new String(buf, 0, numRead, "UTF-8"));
+        assertEquals("HELLO", new String(buf, 0, numRead, UTF_8));
 
         fds = socket.getReceivedFileDescriptors();
         assertEquals(1, fds.length, "Now, we should have two file descriptors");
@@ -377,7 +377,7 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
         try (FileInputStream fin = new FileInputStream(fdesc)) {
           numRead = fin.read(buf);
           assertEquals(5, numRead, "'ORLD!' is five bytes long");
-          assertEquals("ORLD!", new String(buf, 0, numRead, "UTF-8"));
+          assertEquals("ORLD!", new String(buf, 0, numRead, UTF_8));
         }
       } finally {
         Files.deleteIfExists(tmpFile.toPath());
@@ -414,16 +414,16 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
           assertEquals(1, fds.length);
 
           try (FileOutputStream fos2 = new FileOutputStream(fds[0])) {
-            fos2.write("Hello".getBytes(StandardCharsets.UTF_8));
+            fos2.write("Hello".getBytes(UTF_8));
             // closing the received file descriptor will not close the original one ...
           }
 
           // ... which is why we can append the data here
-          fos.write("World".getBytes(StandardCharsets.UTF_8));
+          fos.write("World".getBytes(UTF_8));
         }
 
         try (FileInputStream fin = new FileInputStream(tmpOut)) {
-          String text = new String(IOUtil.readAllBytes(fin), StandardCharsets.UTF_8);
+          String text = new String(IOUtil.readAllBytes(fin), UTF_8);
           // ... and the final output will contain both parts
           assertEquals("HelloWorld", text);
         }
