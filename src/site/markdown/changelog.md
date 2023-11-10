@@ -10,7 +10,16 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ## Noteworthy changes
 
-**Users of junixsocket are strongly advised to upgrade to version 2.8.2 or newer**
+**Users of junixsocket are strongly advised to upgrade to version 2.8.3 or newer**
+
+### _(2023-11-XX)_ **junixsocket 2.8.3**
+
+- Fix regression introduced in 2.8.2 that leaked FileDescriptors
+- Fix concurrency issue with AFSocketServerConnector, AFSelectionKey, take two
+- Reduce allocation overhead during select
+- Add listen/accept support to AFDatagramSocket, so we can serve SEQPACKETs
+- Add empty finalize methods to non-final classes that declare exceptions in their constructors
+- Update build/plugin/test/demo dependencies
 
 ### _(2023-10-27)_ **junixsocket 2.8.2**
 
