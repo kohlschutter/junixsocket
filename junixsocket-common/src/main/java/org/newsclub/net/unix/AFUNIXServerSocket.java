@@ -24,8 +24,6 @@ import java.net.ServerSocket;
 import java.net.SocketException;
 import java.nio.file.Path;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * The server part of an AF_UNIX domain socket.
  *
