@@ -461,7 +461,7 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
    * by calling {@link #bind(SocketAddress)}, followed by {@link #listen(int)}, and 2., the socket
    * type must allow listen/accept. This is true for {@link AFSocketType#SOCK_SEQPACKET} AF_UNIX
    * sockets, for example.
-   * 
+   *
    * @return The accepted datagram socket.
    * @throws IOException on error.
    * @see #listen(int)
@@ -475,7 +475,7 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
    * receive any connection attempt. Note that 1., the socket must be bound to a local address using
    * {@link #bind(SocketAddress)}, and 2., the socket type must allow listen/accept. This is true
    * for {@link AFSocketType#SOCK_SEQPACKET} AF_UNIX sockets, for example.
-   * 
+   *
    * @param backlog The backlog, or {@code 0} for default.
    * @throws IOException on error.
    */

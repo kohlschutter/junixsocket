@@ -221,7 +221,7 @@ public abstract class DatagramSocketTest<A extends SocketAddress> extends Socket
 
   @SuppressWarnings("PMD.PreserveStackTrace")
   protected void assertExpectedSocketAddressFromDatagramChannelReceive(SocketAddress expected,
-     SocketAddress received) {
+      SocketAddress received) {
     try {
       assertEquals(expected, received);
     } catch (AssertionFailedError e) {
