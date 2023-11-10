@@ -98,12 +98,6 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     getAFImpl().setOption(SocketOptions.SO_REUSEADDR, true);
   }
 
-  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
-  @Deprecated
-  @Override
-  protected final void finalize() {
-  }
-
   /**
    * Creates a new AFServerSocketChannel for this socket.
    *

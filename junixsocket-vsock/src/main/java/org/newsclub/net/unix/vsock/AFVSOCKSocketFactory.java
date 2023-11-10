@@ -58,11 +58,6 @@ public abstract class AFVSOCKSocketFactory extends AFSocketFactory<AFVSOCKSocket
     return sock;
   }
 
-  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
-  @Override
-  protected final void finalize() {
-  }
-
   /**
    * Always connects sockets to the given VSOCK type and instance.
    *

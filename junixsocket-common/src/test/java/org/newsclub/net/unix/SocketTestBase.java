@@ -86,12 +86,6 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     }
   }
 
-  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
-  @Override
-  @Deprecated
-  protected final void finalize() {
-  }
-
   private static File initSocketFile() {
     return SocketTestBase.newTempFile(System.getProperty("org.newsclub.net.unix.testsocket"));
   }
@@ -180,12 +174,6 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
       start();
       readySema.acquire();
-    }
-
-    @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
-    @Deprecated
-    @Override
-    protected final void finalize() {
     }
 
     @Override

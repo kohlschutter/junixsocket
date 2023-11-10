@@ -78,11 +78,6 @@ public abstract class AFNaming extends AFRegistryAccess {
     this.servicePort = servicePort;
   }
 
-  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
-  @Override
-  protected final void finalize() {
-  }
-
   /**
    * Creates a new {@link AFRegistry} given a {@link Registry} implementation.
    *

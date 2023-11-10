@@ -115,11 +115,6 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
         DefaultRMIServerSocketFactory.getInstance());
   }
 
-  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
-  @Override
-  protected final void finalize() {
-  }
-
   @Override
   protected AFNaming readNamingInstance(ObjectInput in) throws IOException {
     socketDir = new File(in.readUTF());

@@ -117,41 +117,47 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
           SocketAddress serverAddress = serverSock.getLocalSocketAddress();
           serverAddressCF.complete(serverAddress);
 
-          final Socket threadSocket = newSocket();
-          Thread t = new Thread(() -> {
-            int i = 0;
-            while (keepRunning.get()) {
-              i++;
-              try {
-                Thread.sleep(connectDelayMillis);
-              } catch (InterruptedException e) {
-                return;
-              }
+          new Thread() {
+            private final Socket socket = newSocket();
 
-              try {
-                connectSocket(threadSocket, serverAddress);
-                runtimeExceptionCF.complete(null);
-              } catch (SocketTimeoutException e) {
-                if (!keepRunning.get()) {
+            {
+              setDaemon(true);
+            }
+
+            @Override
+            public void run() {
+              int i = 0;
+              while (keepRunning.get()) {
+                i++;
+                try {
+                  Thread.sleep(connectDelayMillis);
+                } catch (InterruptedException e) {
                   return;
                 }
 
-                System.out.println("SocketTimeout, trying connect again (" + i + ")");
-                continue;
-              } catch (TestAbortedWithImportantMessageException e) {
-                runtimeExceptionCF.complete(e);
-              } catch (IOException e) {
-                // ignore "connection reset by peer", etc. after connection was accepted
-                if (!accepted.get()) {
-                  e.printStackTrace();
-                }
-              }
+                try {
+                  connectSocket(socket, serverAddress);
+                  runtimeExceptionCF.complete(null);
+                } catch (SocketTimeoutException e) {
+                  if (!keepRunning.get()) {
+                    return;
+                  }
 
-              break; // NOPMD.AvoidBranchingStatementAsLastInLoop
+                  System.out.println("SocketTimeout, trying connect again (" + i + ")");
+                  continue;
+                } catch (TestAbortedWithImportantMessageException e) {
+                  runtimeExceptionCF.complete(e);
+                } catch (IOException e) {
+                  // ignore "connection reset by peer", etc. after connection was accepted
+                  if (!accepted.get()) {
+                    e.printStackTrace();
+                  }
+                }
+
+                break; // NOPMD.AvoidBranchingStatementAsLastInLoop
+              }
             }
-          });
-          t.setDaemon(true);
-          t.start();
+          }.start();
 
           long time = System.currentTimeMillis();
           try (Socket socket = serverSock.accept();) {
