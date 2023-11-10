@@ -55,7 +55,7 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <version>8.1.0</version>
+            <version>8.2.0</version>
         </dependency>
         <dependency>
             <!-- Due to this dependency, maven-project-info-reports-plugin
@@ -83,12 +83,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.11.0</version>
-        </dependency>
-        <dependency><!-- Updated okio dependency for okhttp -->
-            <groupId>com.squareup.okio</groupId>
-            <artifactId>okio</artifactId>
-            <version>3.5.0</version>
+            <version>4.12.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.mina</groupId>
@@ -98,7 +93,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.98.Final</version>
+            <version>4.1.101.Final</version>
         </dependency>
     </dependencies>
     <build>
