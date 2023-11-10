@@ -42,9 +42,8 @@ public class TestBase extends ShutdownHookTestBase {
     return AFUNIXNaming.newPrivateInstance();
   }
 
-  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+  @SuppressWarnings("all")
   @Deprecated
-  @Override
   protected final void finalize() {
   }
 

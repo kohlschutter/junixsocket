@@ -86,9 +86,8 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     }
   }
 
-  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+  @SuppressWarnings("all")
   @Deprecated
-  @Override
   protected final void finalize() {
   }
 
@@ -182,9 +181,8 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
       readySema.acquire();
     }
 
-    @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+    @SuppressWarnings("all")
     @Deprecated
-    @Override
     protected final void finalize() {
     }
 

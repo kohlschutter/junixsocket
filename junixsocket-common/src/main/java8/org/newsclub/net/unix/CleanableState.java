@@ -34,8 +34,7 @@ abstract class CleanableState implements Closeable {
     }
   }
 
-  @SuppressWarnings({"all", "Finalize" /* errorprone */})
-  @Override
+  @SuppressWarnings("all")
   @Deprecated
   protected final void finalize() {
     try {

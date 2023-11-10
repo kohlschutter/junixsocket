@@ -34,9 +34,8 @@ abstract class RemoteCloseableThingImpl implements RemoteCloseableThing {
   protected RemoteCloseableThingImpl() throws RemoteException {
   }
 
-  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+  @SuppressWarnings("all")
   @Deprecated
-  @Override
   protected final void finalize() {
   }
 

@@ -220,9 +220,8 @@ public class RemoteRegistryTest {
       asyncGetRegistry();
     }
 
-    @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+    @SuppressWarnings("all")
     @Deprecated
-    @Override
     protected final void finalize() {
     }
 

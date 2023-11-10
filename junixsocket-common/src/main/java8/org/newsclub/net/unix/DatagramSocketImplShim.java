@@ -30,7 +30,6 @@ abstract class DatagramSocketImplShim extends DatagramSocketImpl {
   }
 
   @SuppressWarnings("all")
-  @Override
   @Deprecated
   protected final void finalize() {
     try {
