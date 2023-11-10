@@ -34,6 +34,7 @@ from Java.
 * Supports JPMS/Jigsaw modules. The project is modularized so you can install only what you need.
 * Supports GraalVM native-image AOT/ahead-of-time compilation (since 2.6.0)
 * Provides a selftest package with 300+ tests to ensure compatibility with any target platform.
+* No outside dependencies are necessary at runtime.
 * Apache 2.0 licensed.
 
 `*` (Tested up to Java 22; basic support for Java 7 was dropped in version 2.5.0 and reintroduced in version 2.8.0).
