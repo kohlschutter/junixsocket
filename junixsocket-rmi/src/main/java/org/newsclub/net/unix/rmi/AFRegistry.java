@@ -53,7 +53,7 @@ public abstract class AFRegistry implements Registry {
 
   private AFRMIService rmiService = null;
 
-  AFRegistry(AFNaming naming, Registry impl) throws RemoteException {
+  AFRegistry(AFNaming naming, Registry impl) {
     this.naming = naming;
     this.impl = impl;
     this.boundCloser = new RemoteCloseable<Void>() {

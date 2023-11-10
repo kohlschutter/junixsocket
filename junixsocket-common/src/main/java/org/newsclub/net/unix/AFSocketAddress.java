@@ -124,6 +124,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @param af The address family.
    * @throws SocketException on error.
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   protected AFSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress,
       AFAddressFamily<?> af) throws SocketException {
     /*

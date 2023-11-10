@@ -70,9 +70,8 @@ public abstract class AFNaming extends AFRegistryAccess {
    *
    * @param registryPort The registry port.
    * @param servicePort The port for AFRMIService.
-   * @throws IOException on error.
    */
-  protected AFNaming(final int registryPort, final int servicePort) throws IOException {
+  protected AFNaming(final int registryPort, final int servicePort) {
     super();
     this.registryPort = registryPort;
     this.servicePort = servicePort;

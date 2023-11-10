@@ -34,7 +34,7 @@ import org.newsclub.net.unix.AFTIPCSocketAddress;
  *
  * @author Christian Kohlschütter
  */
-public class AFTIPCServerSocket extends AFServerSocket<AFTIPCSocketAddress> {
+public final class AFTIPCServerSocket extends AFServerSocket<AFTIPCSocketAddress> {
   AFTIPCServerSocket(FileDescriptor fdObj) throws IOException {
     super(fdObj);
   }

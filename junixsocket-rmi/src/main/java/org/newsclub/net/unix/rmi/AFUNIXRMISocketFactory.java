@@ -74,13 +74,12 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
    *          {@code null}.
    * @param socketSuffix A string that will be added to the end of each socket filename, or
    *          {@code null}.
-   * @throws IOException on error.
    */
   @SuppressFBWarnings("EI_EXPOSE_REP2")
   public AFUNIXRMISocketFactory(final AFNaming naming, final File socketDir,
       final RMIClientSocketFactory defaultClientFactory,
       final RMIServerSocketFactory defaultServerFactory, final String socketPrefix,
-      final String socketSuffix) throws IOException {
+      final String socketSuffix) {
     super(naming, defaultClientFactory, defaultServerFactory);
     Objects.requireNonNull(socketDir);
     this.socketDir = socketDir;
@@ -95,11 +94,9 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
    * @param socketDir The directory to store the sockets in.
    * @param defaultClientFactory The default {@link RMIClientSocketFactory}.
    * @param defaultServerFactory The default {@link RMIServerSocketFactory}.
-   * @throws IOException on error.
    */
   public AFUNIXRMISocketFactory(AFNaming naming, File socketDir,
-      RMIClientSocketFactory defaultClientFactory, RMIServerSocketFactory defaultServerFactory)
-      throws IOException {
+      RMIClientSocketFactory defaultClientFactory, RMIServerSocketFactory defaultServerFactory) {
     this(naming, socketDir, defaultClientFactory, defaultServerFactory, null, null);
   }
 
@@ -108,9 +105,8 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
    *
    * @param naming The {@link AFNaming} instance to use.
    * @param socketDir The directory to store the sockets in.
-   * @throws IOException on error.
    */
-  public AFUNIXRMISocketFactory(AFNaming naming, File socketDir) throws IOException {
+  public AFUNIXRMISocketFactory(AFNaming naming, File socketDir) {
     this(naming, socketDir, DefaultRMIClientSocketFactory.getInstance(),
         DefaultRMIServerSocketFactory.getInstance());
   }

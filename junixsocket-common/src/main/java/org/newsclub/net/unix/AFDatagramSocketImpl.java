@@ -64,11 +64,10 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
    * @param addressFamily The address family.
    * @param fd The file descriptor, or {@code null}.
    * @param socketType The socket type.
-   * @throws IOException on error.
    */
   @SuppressWarnings("this-escape")
   protected AFDatagramSocketImpl(AFAddressFamily<@NonNull A> addressFamily, FileDescriptor fd,
-      AFSocketType socketType) throws IOException {
+      AFSocketType socketType) {
     super();
     this.addressFamily = addressFamily;
     // FIXME verify fd

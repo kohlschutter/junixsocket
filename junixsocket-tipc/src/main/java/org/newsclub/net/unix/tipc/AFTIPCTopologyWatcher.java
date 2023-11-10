@@ -27,11 +27,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.newsclub.net.unix.AFSocketType;
 import org.newsclub.net.unix.AFTIPCSocketAddress;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Provides access to the TIPC topology service.
  *
  * @author Christian Kohlschütter
  */
+@SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
 public class AFTIPCTopologyWatcher implements Closeable {
   private final int defaultTimeout;
   private final AFTIPCDatagramChannel channel;
@@ -63,6 +66,12 @@ public class AFTIPCTopologyWatcher implements Closeable {
     this.selector = channel.provider().openSelector();
     channel.connect(AFTIPCSocketAddress.ofTopologyService());
     channel.configureBlocking(false);
+  }
+
+  @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+  @Deprecated
+  @Override
+  protected final void finalize() {
   }
 
   /**

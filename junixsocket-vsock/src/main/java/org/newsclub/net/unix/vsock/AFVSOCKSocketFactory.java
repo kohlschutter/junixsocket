@@ -63,7 +63,7 @@ public abstract class AFVSOCKSocketFactory extends AFSocketFactory<AFVSOCKSocket
    *
    * @author Christian Kohlschütter
    */
-  public static class FixedAddress extends AFVSOCKSocketFactory {
+  public static final class FixedAddress extends AFVSOCKSocketFactory {
     private final AFVSOCKSocketAddress addr;
 
     /**
@@ -90,8 +90,7 @@ public abstract class AFVSOCKSocketFactory extends AFSocketFactory<AFVSOCKSocket
 
     @SuppressFBWarnings("EI_EXPOSE_REP")
     @Override
-    public final AFVSOCKSocketAddress addressFromHost(String host, int javaPort)
-        throws SocketException {
+    public AFVSOCKSocketAddress addressFromHost(String host, int javaPort) throws SocketException {
       return addr;
     }
   }

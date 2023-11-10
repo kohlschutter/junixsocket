@@ -17,7 +17,6 @@
  */
 package org.newsclub.net.unix.rmi;
 
-import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 
 /**
@@ -29,7 +28,7 @@ import java.rmi.registry.Registry;
  * @author Christian Kohlschütter
  */
 public class AFUNIXRegistry extends AFRegistry {
-  AFUNIXRegistry(AFNaming naming, Registry impl) throws RemoteException {
+  AFUNIXRegistry(AFNaming naming, Registry impl) {
     super(naming, impl);
   }
 }

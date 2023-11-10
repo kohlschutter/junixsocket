@@ -34,7 +34,7 @@ import org.newsclub.net.unix.AFSocketImpl;
  *
  * @author Christian Kohlschütter
  */
-public class AFSYSTEMServerSocket extends AFServerSocket<AFSYSTEMSocketAddress> {
+public final class AFSYSTEMServerSocket extends AFServerSocket<AFSYSTEMSocketAddress> {
   AFSYSTEMServerSocket(FileDescriptor fdObj) throws IOException {
     super(fdObj);
   }

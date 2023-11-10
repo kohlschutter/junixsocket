@@ -78,6 +78,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
    *
    * @throws IOException if the operation fails.
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   protected AFServerSocket() throws IOException {
     this(null);
   }
@@ -89,6 +90,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
    * @throws IOException if the operation fails.
    */
   @SuppressWarnings({"this-escape", "PMD.ConstructorCallsOverridableMethod"})
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   protected AFServerSocket(FileDescriptor fdObj) throws IOException {
     super();
 

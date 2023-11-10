@@ -220,6 +220,12 @@ public class RemoteRegistryTest {
       asyncGetRegistry();
     }
 
+    @SuppressWarnings({"NoFinalizer" /* checkstyle */, "PMD.EmptyFinalizer"})
+    @Deprecated
+    @Override
+    protected final void finalize() {
+    }
+
     void shutdown() {
       markedShutdown.set(true);
       executors.shutdownNow();

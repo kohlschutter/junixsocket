@@ -57,9 +57,8 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
    * Creates a new {@link AFDatagramSocket} instance.
    *
    * @param impl The corresponding {@link SocketImpl} class.
-   * @throws IOException on error.
    */
-  protected AFDatagramSocket(final AFDatagramSocketImpl<A> impl) throws IOException {
+  protected AFDatagramSocket(final AFDatagramSocketImpl<A> impl) {
     super(impl);
     this.impl = impl;
     this.ancillaryDataSupport = impl.ancillaryDataSupport;
