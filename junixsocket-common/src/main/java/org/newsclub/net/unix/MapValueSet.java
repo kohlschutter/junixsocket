@@ -61,7 +61,11 @@ final class MapValueSet<T, V> implements Set<T> {
    * Depending on the "removed" sentinel, the key may be added (if value is non-null but the map
    * does not yet contain the key), modified (value is non-null, and the map has a different value
    * for the key), or removed (if value is null).
+<<<<<<< HEAD
    *
+=======
+   * 
+>>>>>>> 2.8.3
    * @param elem The element to remove.
    */
   public void markRemoved(T elem) {
@@ -221,7 +225,11 @@ final class MapValueSet<T, V> implements Set<T> {
   /**
    * Updates an already-existing entry in the backing map to the current value (obtained via
    * {@link #getValue()}), thereby adding it to the set.
+<<<<<<< HEAD
    *
+=======
+   * 
+>>>>>>> 2.8.3
    * @param e The entry to update.
    */
   public boolean update(T e) {
@@ -309,7 +317,11 @@ final class MapValueSet<T, V> implements Set<T> {
   /**
    * Marks all entries in the backing map that are currently considered contained in this set as
    * removed; see {@link #markAllRemoved()} for an unoptimized version that affects all keys.
+<<<<<<< HEAD
    *
+=======
+   * 
+>>>>>>> 2.8.3
    * @see #markAllRemoved()
    */
   @Override
