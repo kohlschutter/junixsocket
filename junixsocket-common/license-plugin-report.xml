@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1698410670139">
-    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.8.2"/>
+<licensePluginReport goal="CHECK" timestamp="1699795438475">
+    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.8.3"/>
     <files>
         <file path="src/main/java-unresolved-properties/org/newsclub/net/unix/BuildProperties.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamily.java" result="PRESENT"/>
@@ -74,6 +74,7 @@
         <file path="src/main/java/org/newsclub/net/unix/InvalidArgumentSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/InvalidSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/KnownJavaBugIOException.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/MapValueSet.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NamedInteger.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NamedIntegerBitmask.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NativeLibraryLoader.java" result="PRESENT"/>

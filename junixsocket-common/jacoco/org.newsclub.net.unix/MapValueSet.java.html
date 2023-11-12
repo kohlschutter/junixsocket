@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapValueSet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">MapValueSet.java</span></div><h1>MapValueSet.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2023 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Set;
+
+import org.eclipse.jdt.annotation.NonNull;
+
+/**
+ * A {@link Set} that is a view on the keys of a {@link Map} that have a certain value.
+ * &lt;p&gt;
+ * The value is controlled by the concrete subclass ({@link #getValue()}). It can, for example, be a
+ * boolean or a counter, depending on the use case. If the value is equal to a &quot;removed&quot; sentinel
+ * value.
+ *
+ * @param &lt;T&gt; The element type.
+ * @author Christian Kohlschütter
+ */
+final class MapValueSet&lt;T, V&gt; implements Set&lt;T&gt; {
+  private final Map&lt;T, V&gt; map;
+  private final ValueSupplier&lt;@NonNull V&gt; valueSupplier;
+  private final V removedSentinel;
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+<span class="fc" id="L47">  MapValueSet(Map&lt;? extends T, V&gt; map, ValueSupplier&lt;@NonNull V&gt; valueSupplier, V removedSentinel) {</span>
+<span class="fc" id="L48">    this.valueSupplier = Objects.requireNonNull(valueSupplier);</span>
+<span class="fc" id="L49">    this.removedSentinel = removedSentinel;</span>
+<span class="fc" id="L50">    this.map = (Map&lt;T, V&gt;) map;</span>
+<span class="fc" id="L51">  }</span>
+
+  @FunctionalInterface
+  interface ValueSupplier&lt;V&gt; {
+    V supplyValue();
+  }
+
+  /**
+   * Marks the given element as &quot;removed&quot;; this may actually add an element to the underlying map.
+   * &lt;p&gt;
+   * Depending on the &quot;removed&quot; sentinel, the key may be added (if value is non-null but the map
+   * does not yet contain the key), modified (value is non-null, and the map has a different value
+   * for the key), or removed (if value is null).
+   * 
+   * @param elem The element to remove.
+   */
+  public void markRemoved(T elem) {
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">    if (removedSentinel == null) {</span>
+<span class="nc" id="L69">      map.remove(elem);</span>
+    } else {
+<span class="fc" id="L71">      map.put(elem, removedSentinel);</span>
+    }
+<span class="fc" id="L73">  }</span>
+
+  /**
+   * Sets all entries in the backing map to the &quot;removed&quot; sentinel, or removes them all if that
+   * value is {@code null}.
+   */
+  public void markAllRemoved() {
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    if (removedSentinel == null) {</span>
+<span class="nc" id="L81">      map.clear();</span>
+    } else {
+<span class="nc bnc" id="L83" title="All 2 branches missed.">      for (Map.Entry&lt;T, V&gt; en : map.entrySet()) {</span>
+<span class="nc" id="L84">        en.setValue(removedSentinel);</span>
+<span class="nc" id="L85">      }</span>
+    }
+<span class="nc" id="L87">  }</span>
+
+  private @NonNull V getValue() {
+<span class="fc" id="L90">    return Objects.requireNonNull(valueSupplier.supplyValue());</span>
+  }
+
+  @Override
+  public int size() {
+<span class="fc" id="L95">    V val = getValue();</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">    if (val.equals(removedSentinel)) {</span>
+<span class="nc" id="L97">      return 0;</span>
+    }
+
+<span class="fc" id="L100">    int size = 0;</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    for (Map.Entry&lt;T, V&gt; en : map.entrySet()) {</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">      if (val.equals(en.getValue())) {</span>
+<span class="fc" id="L103">        size++;</span>
+      }
+<span class="fc" id="L105">    }</span>
+<span class="fc" id="L106">    return size;</span>
+  }
+
+  @Override
+  public boolean isEmpty() {
+<span class="fc" id="L111">    V val = getValue();</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">    if (val.equals(removedSentinel)) {</span>
+<span class="fc" id="L113">      return true;</span>
+    }
+
+<span class="nc bnc" id="L116" title="All 2 branches missed.">    for (Map.Entry&lt;T, V&gt; en : map.entrySet()) {</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">      if (val.equals(en.getValue())) {</span>
+<span class="nc" id="L118">        return false;</span>
+      }
+<span class="nc" id="L120">    }</span>
+<span class="nc" id="L121">    return true;</span>
+  }
+
+  private boolean isDefinitelyEmpty() {
+<span class="fc" id="L125">    return getValue().equals(removedSentinel);</span>
+  }
+
+  @Override
+  public boolean contains(Object o) {
+<span class="nc bnc" id="L130" title="All 2 branches missed.">    if (isDefinitelyEmpty()) {</span>
+<span class="nc" id="L131">      return false;</span>
+    }
+<span class="nc" id="L133">    return getValue().equals(map.get(o));</span>
+  }
+
+  @Override
+  public Iterator&lt;T&gt; iterator() {
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">    if (isDefinitelyEmpty()) {</span>
+<span class="nc" id="L139">      return Collections.emptyIterator();</span>
+    }
+
+<span class="fc" id="L142">    Iterator&lt;Map.Entry&lt;T, V&gt;&gt; mapit = map.entrySet().iterator();</span>
+
+<span class="fc" id="L144">    V val = getValue();</span>
+
+<span class="fc" id="L146">    return new Iterator&lt;T&gt;() {</span>
+<span class="fc" id="L147">      Map.Entry&lt;T, V&gt; nextObj = null;</span>
+<span class="fc" id="L148">      Map.Entry&lt;T, V&gt; currentObj = null;</span>
+
+      @Override
+      public boolean hasNext() {
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">        if (nextObj != null) {</span>
+<span class="nc" id="L153">          return true;</span>
+        }
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        while (mapit.hasNext()) {</span>
+<span class="fc" id="L156">          Map.Entry&lt;T, V&gt; en = mapit.next();</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">          if (val.equals(en.getValue())) {</span>
+<span class="fc" id="L158">            nextObj = en;</span>
+<span class="fc" id="L159">            return true;</span>
+          }
+<span class="fc" id="L161">        }</span>
+<span class="fc" id="L162">        return false;</span>
+      }
+
+      @Override
+      public T next() {
+<span class="fc" id="L167">        currentObj = null;</span>
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">        if (nextObj == null) {</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">          if (!hasNext()) {</span>
+<span class="nc" id="L170">            throw new NoSuchElementException();</span>
+          }
+        }
+<span class="fc" id="L173">        T next = nextObj.getKey();</span>
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">        if (val.equals(nextObj.getValue())) {</span>
+<span class="fc" id="L175">          currentObj = nextObj;</span>
+<span class="fc" id="L176">          nextObj = null;</span>
+<span class="fc" id="L177">          return next;</span>
+        } else {
+<span class="nc" id="L179">          throw new ConcurrentModificationException();</span>
+        }
+      }
+
+      @Override
+      public void remove() {
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (currentObj == null) {</span>
+<span class="nc" id="L186">          throw new IllegalStateException();</span>
+        }
+<span class="nc" id="L188">        markRemoved(currentObj.getKey());</span>
+<span class="nc" id="L189">        currentObj = null;</span>
+<span class="nc" id="L190">      }</span>
+    };
+  }
+
+  @Override
+  @SuppressWarnings(&quot;PMD.OptimizableToArrayCall&quot;)
+  public Object[] toArray() {
+<span class="nc" id="L197">    return toArray(new Object[size()]);</span>
+  }
+
+  @SuppressWarnings({&quot;unchecked&quot;, &quot;null&quot;})
+  @Override
+  public &lt;E&gt; E[] toArray(E[] a) {
+<span class="nc" id="L203">    int size = size();</span>
+
+<span class="nc bnc" id="L205" title="All 2 branches missed.">    if (a.length &lt; size) {</span>
+<span class="nc" id="L206">      return toArray((E[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(),</span>
+          size));
+    }
+
+<span class="nc" id="L210">    int i = 0;</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">    for (T elem : this) {</span>
+<span class="nc" id="L212">      a[i++] = (E) elem;</span>
+<span class="nc" id="L213">    }</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">    if (i &lt; a.length) {</span>
+<span class="nc" id="L215">      a[i] = null;</span>
+    }
+
+<span class="nc" id="L218">    return a;</span>
+  }
+
+  /**
+   * Updates an already-existing entry in the backing map to the current value (obtained via
+   * {@link #getValue()}), thereby adding it to the set.
+   * 
+   * @param e The entry to update.
+   */
+  public boolean update(T e) {
+<span class="nc bnc" id="L228" title="All 2 branches missed.">    if (map.containsKey(e)) {</span>
+<span class="nc" id="L229">      map.put(e, getValue());</span>
+<span class="nc" id="L230">      return true;</span>
+    } else {
+<span class="nc" id="L232">      return false;</span>
+    }
+  }
+
+  /**
+   * Adds an entry to the set, adding it to the backing map if necessary.
+   */
+  @Override
+  public boolean add(T e) {
+<span class="nc bnc" id="L241" title="All 2 branches missed.">    if (contains(e)) {</span>
+<span class="nc" id="L242">      return false;</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">    } else if (update(e)) {</span>
+<span class="nc" id="L244">      return true;</span>
+    } else {
+<span class="nc" id="L246">      map.put(e, getValue());</span>
+<span class="nc" id="L247">      return true;</span>
+    }
+  }
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  @Override
+  public boolean remove(Object o) {
+<span class="pc bpc" id="L254" title="1 of 4 branches missed.">    if (isDefinitelyEmpty() || !map.containsKey(o)) {</span>
+<span class="fc" id="L255">      return false;</span>
+    }
+
+<span class="fc" id="L258">    markRemoved((T) o);</span>
+<span class="fc" id="L259">    return true;</span>
+  }
+
+  @Override
+  public boolean containsAll(Collection&lt;?&gt; c) {
+<span class="nc bnc" id="L264" title="All 2 branches missed.">    if (isDefinitelyEmpty()) {</span>
+<span class="nc" id="L265">      return c.isEmpty();</span>
+    }
+<span class="nc bnc" id="L267" title="All 2 branches missed.">    for (Object obj : c) {</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">      if (!contains(obj)) {</span>
+<span class="nc" id="L269">        return false;</span>
+      }
+<span class="nc" id="L271">    }</span>
+<span class="nc" id="L272">    return true;</span>
+  }
+
+  @Override
+  public boolean addAll(Collection&lt;? extends T&gt; c) {
+<span class="nc" id="L277">    boolean changed = false;</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">    for (T elem : c) {</span>
+<span class="nc" id="L279">      changed |= add(elem);</span>
+<span class="nc" id="L280">    }</span>
+<span class="nc" id="L281">    return changed;</span>
+  }
+
+  @Override
+  public boolean retainAll(Collection&lt;?&gt; c) {
+<span class="nc" id="L286">    boolean changed = false;</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">    for (Iterator&lt;T&gt; it = iterator(); it.hasNext();) {</span>
+<span class="nc" id="L288">      T elem = it.next();</span>
+<span class="nc bnc" id="L289" title="All 2 branches missed.">      if (!c.contains(elem)) {</span>
+<span class="nc" id="L290">        it.remove();</span>
+<span class="nc" id="L291">        changed = true;</span>
+      }
+<span class="nc" id="L293">    }</span>
+<span class="nc" id="L294">    return changed;</span>
+  }
+
+  @Override
+  public boolean removeAll(Collection&lt;?&gt; c) {
+<span class="nc bnc" id="L299" title="All 2 branches missed.">    if (isDefinitelyEmpty()) {</span>
+<span class="nc" id="L300">      return false;</span>
+    }
+<span class="nc" id="L302">    boolean changed = false;</span>
+<span class="nc bnc" id="L303" title="All 2 branches missed.">    for (Object obj : c) {</span>
+<span class="nc" id="L304">      changed |= remove(obj);</span>
+<span class="nc" id="L305">    }</span>
+<span class="nc" id="L306">    return changed;</span>
+  }
+
+  /**
+   * Marks all entries in the backing map that are currently considered contained in this set as
+   * removed; see {@link #markAllRemoved()} for an unoptimized version that affects all keys.
+   * 
+   * @see #markAllRemoved()
+   */
+  @Override
+  public void clear() {
+<span class="nc" id="L317">    V val = getValue();</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">    if (val.equals(removedSentinel)) {</span>
+<span class="nc" id="L319">      return;</span>
+    }
+
+<span class="nc bnc" id="L322" title="All 2 branches missed.">    for (Map.Entry&lt;T, V&gt; en : map.entrySet()) {</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">      if (val.equals(en.getValue())) {</span>
+<span class="nc" id="L324">        markRemoved(en.getKey());</span>
+      }
+<span class="nc" id="L326">    }</span>
+<span class="nc" id="L327">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
