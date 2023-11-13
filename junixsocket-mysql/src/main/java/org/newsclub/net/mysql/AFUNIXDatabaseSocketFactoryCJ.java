@@ -47,8 +47,8 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
   @SuppressWarnings({"unchecked"})
   @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
-  public Socket connect(String hostname, int portNumber, PropertySet props, int loginTimeout)
-      throws IOException {
+  public Socket connect(String hostname, int portNumber,
+      @SuppressWarnings("exports") PropertySet props, int loginTimeout) throws IOException {
     // Adjust the path to your MySQL socket by setting the
     // "junixsocket.file" property
     // If no socket path is given, use the default: /tmp/mysql.sock
@@ -68,8 +68,8 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
   @SuppressWarnings({"unchecked"})
   @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
-  public Socket performTlsHandshake(SocketConnection socketConnection, ServerSession serverSession)
-      throws IOException {
+  public Socket performTlsHandshake(@SuppressWarnings("exports") SocketConnection socketConnection,
+      @SuppressWarnings("exports") ServerSession serverSession) throws IOException {
     return ExportControlled.performTlsHandshake(this.rawSocket, socketConnection,
         serverSession == null ? null : serverSession.getServerVersion(), null);
   }
