@@ -17,6 +17,7 @@ module org.newsclub.net.unix.demo {
   requires io.netty.common;
   requires io.netty.buffer;
   requires io.netty.transport;
+  requires com.kohlschutter.util;
 
   requires static com.kohlschutter.annotations.compiletime;
   requires static org.eclipse.jdt.annotation;
