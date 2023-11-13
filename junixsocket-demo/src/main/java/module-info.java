@@ -3,7 +3,6 @@
  */
 @SuppressWarnings("module") //
 module org.newsclub.net.unix.demo {
-  requires com.kohlschutter.util;
   requires org.newsclub.net.unix;
   requires org.newsclub.net.unix.tipc;
   requires org.newsclub.net.unix.server;
@@ -15,11 +14,12 @@ module org.newsclub.net.unix.demo {
   requires nanohttpd;
   requires okhttp3;
   requires mina.core;
-  requires static com.kohlschutter.annotations.compiletime;
-  requires static org.eclipse.jdt.annotation;
   requires io.netty.common;
   requires io.netty.buffer;
   requires io.netty.transport;
+
+  requires static com.kohlschutter.annotations.compiletime;
+  requires static org.eclipse.jdt.annotation;
 
   exports org.newsclub.net.unix.demo.rmi.services to java.rmi;
   exports org.newsclub.net.unix.demo.rmi.fd to java.rmi;
