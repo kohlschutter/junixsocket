@@ -249,16 +249,14 @@ Backwards-incompatible change: Some AF*Socket* classes are now final or no longe
  - Introduced "crossclang": junixsocket can now be cross-compiled with clang/LLVM
  - Improved demo code, new demo client
 
-
-#### _(2018-12-29)_ **junixsocket 2.1.2**
+### _(2018-12-29)_ **junixsocket 2.1.2**
 
 - Add AFUNIXSocketFactory, support for PostgreSQL
 - Add support for new MySQL Connector/J SocketFactory
 - Prevent a case of file descriptor leakage
 - Handle EINTR errors from system calls
 
-
-#### _(2018-12-26)_ **junixsocket 2.1.1**
+### _(2018-12-26)_ **junixsocket 2.1.1**
 
 - Support for Java 8, 9, 10 and 11
 - Building junixsocket requires Java 9 or later
@@ -275,24 +273,50 @@ Backwards-incompatible change: Some AF*Socket* classes are now final or no longe
 - Documentation updates
 - Updated Maven dependencies
 
-
-#### _(2014-09-29)_ **junixsocket 2.0.1**
+### _(2014-09-29)_ **junixsocket 2.0.1**
 
 - **Bugfix:** Add byte array bounds checking to read/write methods.
 - Fix C compiler warnings
 - Remove synchronized byte[] array for single-byte reads/writes.
 
-
-
-#### _(2014-09-28)_ **junixsocket 2.0.0**
+### _(2014-09-28)_ **junixsocket 2.0.0**
 
 - Move from *Google Code* to *GitHub*.
 - Use Maven as the build system, code is distributed to the *Maven Central* repository.
 - Build native C code using *nar-maven-plugin*, and load JNI libraries *native-lib-loader*
 
+### _(2013-02-20)_ **junixsocket 1.4**
+
+- Fix InetSocketAddress.port issue with recent JDK
+- Fix setOption: SO_RCVBUF and SO_SNDBUF take integers
+- Fix native library load issue on RHEL4 32-bit
+- Fix some test failures
+
+### _(2010-08-11)_ **junixsocket 1.3**
+
+- Solaris support
+- InputStream#available() may now return values > 0
+- Added explicit mapping of java.net.SocketOptions values
+- Fixed "protocol not available" and "invalid argument" errors occuring in rare cases
+- Improved some warnings and error messages
+- Improved build process, can now skip building for 32/64 bit
+
+### _(2010-04-22)_ **junixsocket 1.2**
+
+- Bugfixes and improvements
+- MySQL unix socket factory now available as a separate jar (and with demo code)
+- Now compiles under FreeBSD
+- Initial support for Tru64
+- Improved handling of stale socket files
+
+### _(2009-12-03)_ **junixsocket 1.1**
+
+- Bugfixes and improvements
+
+### _(2009-08-28)_ **junixsocket 1.0**
+
+- Initial release
 
 ####
 
 See the commit log for more details.
-
-The changelog for 1.x release is archived on [Google Code](https://code.google.com/archive/p/junixsocket/)
