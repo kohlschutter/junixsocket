@@ -28,6 +28,8 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.demo.DemoHelper;
 import org.newsclub.net.unix.demo.nanohttpd.NanoHttpdServerDemo;
 
+import com.kohlschutter.util.IOUtil;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -60,7 +62,7 @@ public class OkHttpClientDemo {
       ResponseBody body = response.body();
       if (body != null) {
         try (InputStream in = body.byteStream()) { // NOPMD.UseTryWithResources
-          in.transferTo(System.out);
+          IOUtil.transferAllBytes(in, System.out);
         } finally {
           body.close();
         }
