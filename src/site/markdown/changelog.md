@@ -14,6 +14,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ### _(2023-XX-XX)_ **junixsocket 2.9.0**
 
+- Fix module-info.java: Don't mark requirements transient (annotations, mysql connector)
 - Add listen/accept support to AFDatagramSocket, so we can serve SEQPACKETs
 - Update build/plugin/test/demo dependencies
 - Code cleanup
