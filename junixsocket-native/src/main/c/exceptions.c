@@ -220,7 +220,7 @@ void _throwSockoptErrnumException(JNIEnv* env, int errnum, jobject fd)
     // when setsockopt returns an error with EINVAL, it may mean the socket was shut down already
     if(errnum == EINVAL) {
         int handle = _getFD(env, fd);
-        struct sockaddr addr = {};
+        struct sockaddr addr = {0};
         socklen_t len = 0;
         int ret = getsockname(handle, &addr, &len);
         if(ret == -1) {

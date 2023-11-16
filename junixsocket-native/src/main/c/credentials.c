@@ -177,7 +177,7 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_peerCreden
         ucred_free(uc);
     }
 #  elif defined(LOCAL_PEERCRED)
-    struct xucred cr = {};
+    struct xucred cr = {0};
     {
         socklen_t len = sizeof(cr);
 
