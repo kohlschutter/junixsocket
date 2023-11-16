@@ -10,6 +10,8 @@
 #ifndef _LIBCPP_SUPPORT_IBM_GETTOD_ZOS_H
 #define _LIBCPP_SUPPORT_IBM_GETTOD_ZOS_H
 
+#if __TOS_MVS__
+
 #include <time.h>
 
 static int gettimeofdayMonotonic(struct timespec* Output) {
@@ -43,5 +45,7 @@ static int gettimeofdayMonotonic(struct timespec* Output) {
 
   return 0;
 }
+
+#endif // __TOS_MVS__
 
 #endif // _LIBCPP_SUPPORT_IBM_GETTOD_ZOS_H
