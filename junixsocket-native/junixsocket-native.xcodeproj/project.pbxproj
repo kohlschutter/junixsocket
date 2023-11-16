@@ -4817,6 +4817,28 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Weverything",
+					"-Wno-reserved-id-macro",
+					"-Wno-undef",
+					"-Wno-cast-qual",
+					"-Wno-disabled-macro-expansion",
+					"-Wno-language-extension-token",
+					"-Wno-gnu-auto-type",
+					"-Wno-c++11-extensions",
+					"-Wno-c++98-compat",
+					"-Wno-empty-translation-unit",
+					"-Wno-gnu-empty-initializer",
+					"-Werror-implicit-function-declaration",
+					"-Wint-conversion",
+					"-Wno-unused-command-line-argument",
+					"-Werror-implicit-function-declaration",
+					"-Wno-declaration-after-statement",
+					"-Wno-unsafe-buffer-usage",
+					"-Qunused-arguments",
+				);
 			};
 			name = Debug;
 		};
@@ -4842,6 +4864,28 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Weverything",
+					"-Wno-reserved-id-macro",
+					"-Wno-undef",
+					"-Wno-cast-qual",
+					"-Wno-disabled-macro-expansion",
+					"-Wno-language-extension-token",
+					"-Wno-gnu-auto-type",
+					"-Wno-c++11-extensions",
+					"-Wno-c++98-compat",
+					"-Wno-empty-translation-unit",
+					"-Wno-gnu-empty-initializer",
+					"-Werror-implicit-function-declaration",
+					"-Wint-conversion",
+					"-Wno-unused-command-line-argument",
+					"-Werror-implicit-function-declaration",
+					"-Wno-declaration-after-statement",
+					"-Wno-unsafe-buffer-usage",
+					"-Qunused-arguments",
+				);
 			};
 			name = Release;
 		};
