@@ -33,11 +33,11 @@ echo
 echo "SDKs path: $sdksPath"
 for sdk in $(ls -1 | grep '\.sdk$'); do
     echo Installing "$sdk" ... 
-    ( cd "$sdksPath" ; ln -sf "$pwd/$sdk" )
+    ( set -x ; cd "$sdksPath" ; ln -sf "$pwd/$sdk" )
 done
 
 if [ $? -eq 0 ]; then
     echo Done. Now please restart XCode and run \"Clean Build Folder\".
 else
-    echo There were errors. Try running with sudo.
+    echo "There were errors. Try running with sudo (or with a shell that has \"Full Disk Access\")." >&2
 fi
