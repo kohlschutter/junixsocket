@@ -38,7 +38,7 @@ static int gettimeofdayMonotonic(struct timespec* Output) {
   uint64_t us = (Value.Hi >> 4);
   uint64_t ns = ((Value.Hi & 0x0F) << 8) + (Value.Lo >> 56);
   ns = (ns * 1000) >> 12;
-  us = us - 2208988800000000;
+  us = us - 2208988800000000LL;
 
   Output->tv_sec = us / 1000000;
   Output->tv_nsec = ns;
