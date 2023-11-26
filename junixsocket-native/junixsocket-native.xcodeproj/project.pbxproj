@@ -5482,7 +5482,10 @@
 					"-fno-common",
 					"-fvisibility=hidden",
 				);
-				OTHER_LDFLAGS = "-Xcrossclang-ignore-reproducible";
+				OTHER_LDFLAGS = (
+					"-Xcrossclang-ignore-reproducible",
+					"-Wno-unused-command-line-argument",
+				);
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
 				WARNING_CFLAGS = (
@@ -5566,7 +5569,10 @@
 					"-fno-common",
 					"-fvisibility=hidden",
 				);
-				OTHER_LDFLAGS = "-Xcrossclang-ignore-reproducible";
+				OTHER_LDFLAGS = (
+					"-Xcrossclang-ignore-reproducible",
+					"-Wno-unused-command-line-argument",
+				);
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
 				WARNING_CFLAGS = (
