@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -83,7 +84,7 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
    * @return {@code true} iff set.
    */
   public final boolean hasFlag(T flag) {
-    int v = flag.value();
+    int v = Objects.requireNonNull(flag).value();
     return (this.flags & v) == v;
   }
 
@@ -102,8 +103,9 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
    * @param other The other flag / flag set to merge.
    * @return An instance combining both.
    */
-  @SuppressWarnings("PMD.ShortMethodName")
-  protected final T combineWith(T[] allFlags, T flagsNone, Constructor<T> constr, T other) {
+  @SuppressWarnings({"PMD.ShortMethodName", "null"})
+  protected final T combineWith(T[] allFlags, T flagsNone, Constructor<@NonNull T> constr,
+      T other) {
     return resolve(allFlags, flagsNone, constr, value() | other.value());
   }
 
