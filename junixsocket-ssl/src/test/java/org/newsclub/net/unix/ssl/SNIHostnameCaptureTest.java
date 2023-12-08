@@ -194,6 +194,7 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
     TestingAFSocketServer<AFUNIXSocketAddress> server =
         new TestingAFSocketServer<AFUNIXSocketAddress>(addr) {
 
+          @SuppressWarnings("PMD.CyclomaticComplexity")
           @Override
           protected void doServeSocket(AFSocket<? extends AFUNIXSocketAddress> plainSocket)
               throws IOException {
@@ -280,7 +281,7 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
                     MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
                     "SNI support is knowingly incomplete for " + configuration);
               }
-            } catch (Exception | Error e) {
+            } catch (Exception | Error e) { // NOPMD.ExceptionAsFlowControl
               failureServer.complete(e);
             }
             if (!gotHostnameInTime.get()) {

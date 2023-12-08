@@ -81,7 +81,7 @@ import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.Messag
 import com.kohlschutter.testutil.TestResourceUtil;
 
 // CPD-OFF
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public class SSLContextBuilderTest extends SSLTestBase {
 
   @ParameterizedTest
@@ -462,7 +462,7 @@ public class SSLContextBuilderTest extends SSLTestBase {
             throw e;
           }
         }
-      } catch (Exception e) {
+      } catch (Exception e) { // NOPMD.ExceptionAsFlowControl
         caught = e;
       } finally {
         clientException.complete(caught);
@@ -974,7 +974,7 @@ public class SSLContextBuilderTest extends SSLTestBase {
     try (AFUNIXServerSocket server = AFUNIXServerSocket.bindOn(address)) {
       CompletableFuture<Exception> serverError = CompletableFuture.supplyAsync(() -> {
         while (!server.isClosed() && !stop.get()) {
-          try (AFUNIXSocket socket = server.accept()) {
+          try (AFUNIXSocket unused = server.accept()) {
             sema.acquire();
           } catch (InterruptedException | IOException e) {
             return e;

@@ -224,7 +224,9 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
     } catch (ExecutionException e) {
       // ignore socket closed etc.
       if (e.getCause() instanceof TestAbortedWithImportantMessageException) {
-        throw (TestAbortedWithImportantMessageException) e.getCause();
+        throw (TestAbortedWithImportantMessageException) e.getCause(); // NOPMD.PreserveStackTrace
+      } else {
+        throw e;
       }
     } catch (TimeoutException e) {
       triggerWithIssues = checkKnownBugFirstAcceptCallNotTerminated();

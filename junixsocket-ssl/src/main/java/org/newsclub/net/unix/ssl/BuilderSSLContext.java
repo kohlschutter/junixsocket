@@ -67,6 +67,7 @@ final class BuilderSSLContext extends SSLContext {
           // Use any strong SecureRandom instance as fallback
           sr = SecureRandom.getInstanceStrong();
         } catch (NoSuchAlgorithmException e1) {
+          e.addSuppressed(e1);
           throw e;
         }
         context.init(km, tm, sr);

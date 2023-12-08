@@ -48,6 +48,8 @@ final class AFSelector extends AbstractSelector {
       keysRegisteredKeySet);
 
   private final AtomicInteger selectCount = new AtomicInteger(0);
+
+  @SuppressWarnings("PMD.LooseCoupling")
   private final MapValueSet<SelectionKey, Integer> selectedKeysSet =
       new MapValueSet<SelectionKey, Integer>(keysRegistered, selectCount::get, 0);
   private final Set<SelectionKey> selectedKeysPublic = new UngrowableSet<>(selectedKeysSet);

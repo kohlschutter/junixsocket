@@ -297,7 +297,7 @@ public class FileDescriptorCastTest {
         if (TestUtil.isHaikuOS()) {
           throw TestUtil.haikuBug18534(e);
         } else {
-          throw e;
+          throw e; // NOPMD.AvoidThrowingNullPointerException
         }
       }
 

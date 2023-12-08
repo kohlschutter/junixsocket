@@ -218,7 +218,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
   public void testAcceptWithoutBindToService() throws Exception {
     ServerSocket ss = newServerSocket();
     assertThrows(SocketException.class, () -> {
-      try (Socket s = ss.accept()) {
+      try (Socket unused = ss.accept()) {
         fail("Should not be reached");
       }
     });

@@ -18,6 +18,7 @@
 package org.newsclub.net.unix.domain;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.BufferedReader;
@@ -109,7 +110,7 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
         }
       }
 
-      assumeTrue(Objects.requireNonNull(linesAfter).size() > 0, "lsof may fail to return anything");
+      assumeFalse(Objects.requireNonNull(linesAfter).isEmpty(), "lsof may fail to return anything");
 
       if (linesAfter != null && linesBefore != null) {
         if (linesAfter.size() >= linesBefore.size()) {

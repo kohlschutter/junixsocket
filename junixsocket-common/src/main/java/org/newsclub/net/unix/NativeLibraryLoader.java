@@ -445,7 +445,7 @@ final class NativeLibraryLoader implements Closeable {
     if (url == null) {
       return null;
     }
-    try (InputStream in = url.openStream()) {
+    try (InputStream unused = url.openStream()) {
       return url;
     } catch (IOException e) {
       return null;

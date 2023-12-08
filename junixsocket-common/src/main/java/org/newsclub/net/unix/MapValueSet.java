@@ -61,7 +61,7 @@ final class MapValueSet<T, V> implements Set<T> {
    * Depending on the "removed" sentinel, the key may be added (if value is non-null but the map
    * does not yet contain the key), modified (value is non-null, and the map has a different value
    * for the key), or removed (if value is null).
-   * 
+   *
    * @param elem The element to remove.
    */
   public void markRemoved(T elem) {

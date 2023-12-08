@@ -60,6 +60,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  *
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.CouplingBetweenObjects")
 public final class SSLContextBuilder {
   private static final Provider PROVIDER_PKCS12 = AFSocket.isRunningOnAndroid()
       ? bouncyCastleInstanceIfPossible() : null;
@@ -494,7 +495,7 @@ public final class SSLContextBuilder {
         | InvocationTargetException | NoSuchMethodException | SecurityException
         | ClassNotFoundException | NullPointerException e1) {
       e.addSuppressed(e1);
-      throw e;
+      throw e; // NOPMD.PreserveStackTrace
     }
   }
 

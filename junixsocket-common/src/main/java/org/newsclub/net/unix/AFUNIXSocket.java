@@ -204,7 +204,7 @@ public final class AFUNIXSocket extends AFSocket<AFUNIXSocketAddress> implements
       try (AFUNIXServerSocket server = addr.newBoundServerSocket()) {
         Thread t = new Thread(() -> {
           try {
-            try (AFUNIXSocket client = server.accept()) {
+            try (AFUNIXSocket client = server.accept()) { // NOPMD.UseTryWithResources
               System.out.println("Server accepted client connection");
               try (SocketChannel chann = client.getChannel()) {
                 ByteBuffer bb = ByteBuffer.allocate(64).order(ByteOrder.BIG_ENDIAN);

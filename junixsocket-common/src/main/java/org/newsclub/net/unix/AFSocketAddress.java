@@ -86,8 +86,8 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   static {
     String v = System.getProperty("org.newsclub.net.unix.AFSocketAddress.deserialize", "");
-    USE_DESERIALIZATION_FOR_INIT = v.isEmpty() ? NativeLibraryLoader.isAndroid() : Boolean.valueOf(
-        v);
+    USE_DESERIALIZATION_FOR_INIT = v.isEmpty() ? NativeLibraryLoader.isAndroid() : Boolean
+        .parseBoolean(v);
   }
 
   /**
