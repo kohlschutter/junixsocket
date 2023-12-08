@@ -1,11 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Builds the junixsocket website.
 # 
 # Copyright 2023 by Christian Kohlschütter
 # SPDX-License-Identifier: Apache-2.0
 #
-cd "$(dirname $0)"/..
+#
+set -e
+dirname=$(dirname "$0")
+cd "${dirname}/.."
 junixsocketDir=$(pwd)
 
 (

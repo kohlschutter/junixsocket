@@ -6,7 +6,9 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-cd "$(dirname $0)"/..
+set -e
+dirname=$(dirname "$0")
+cd "${dirname}/.."
 
 opts=()
 if [[ $#@ -eq 0 ]]; then

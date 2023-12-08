@@ -6,5 +6,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-cd "$(dirname $0)"/..
+set -e
+dirname=$(dirname "$0")
+cd "${dirname}/.."
 mvn process-sources -Dreformat -Dignorant -pl \!junixsocket-native,\!junixsocket-native-cross,\!junixsocket-native-common,\!junixsocket-native-custom
