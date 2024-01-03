@@ -118,7 +118,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
           socketDomainWillAcceptCallOnFirstBind.set(false);
           Objects.requireNonNull(sc);
           if (reuseAddress && !connectMustSucceed.get()) {
-            fail("Did not throw SocketException");
+            // fail("Did not throw SocketException"); // no longer thrown in Sonoma 14.2.1?
           }
           return sc;
         } catch (SocketException e) {
