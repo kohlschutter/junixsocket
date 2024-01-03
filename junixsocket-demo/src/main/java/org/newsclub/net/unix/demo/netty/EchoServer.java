@@ -87,7 +87,10 @@ public class EchoServer {
       path = new File(args[0]);
     }
 
-    new EchoServer(AFUNIXSocketAddress.of(path)).run();
+    AFUNIXSocketAddress addr = AFUNIXSocketAddress.of(path);
+    System.out.println("Binding to " + addr);
+
+    new EchoServer(addr).run();
     // new EchoServer(AFTIPCSocketAddress.ofService(Scope.SCOPE_CLUSTER, 128, 3)).run();
   }
 }
