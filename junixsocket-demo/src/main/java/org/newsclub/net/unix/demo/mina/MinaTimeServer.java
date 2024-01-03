@@ -54,7 +54,9 @@ public class MinaTimeServer {
     acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
 
     // acceptor.bind( new InetSocketAddress(PORT) ); // from original example code
-    acceptor.bind(AFUNIXSocketAddress.of(new File("/tmp/minatime")));
+    AFUNIXSocketAddress addr = AFUNIXSocketAddress.of(new File("/tmp/minatime"));
+    acceptor.bind(addr);
     // acceptor.bind(AFTIPCSocketAddress.ofService(Scope.SCOPE_CLUSTER, 128, 1));
+    System.out.println("Bound to " + addr);
   }
 }
