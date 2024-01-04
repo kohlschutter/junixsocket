@@ -140,6 +140,7 @@ while [ $# -gt 0 ]; do
       -fno-c++-static-destructors ) skipGccArg=1 ;;
       -fmacro-backtrace-limit=0 ) skipGccArg=1 ;;
       -fdiagnostics-show-note-include-stack ) skipGccArg=1 ;;
+      -fcolor-diagnostics ) skipGccArg=1 ;;
       -fno-color-diagnostics ) skipGccArg=1 ;;
       -Xclang ) skipGccArg=2 ;; # has an argument
       --analyze ) analyze=1 ;;
