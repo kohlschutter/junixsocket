@@ -4098,7 +4098,7 @@
 					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4127,7 +4127,7 @@
 					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4174,7 +4174,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4199,7 +4199,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4229,7 +4229,7 @@
 					"-Xcrossclang-output-strip-lib-prefix",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4259,7 +4259,7 @@
 					"-Xcrossclang-output-strip-lib-prefix",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4286,7 +4286,7 @@
 					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4313,7 +4313,7 @@
 					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4339,7 +4339,7 @@
 					"-fno-lto",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4365,7 +4365,7 @@
 					"-fno-lto",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4390,7 +4390,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4415,7 +4415,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4440,7 +4440,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4465,7 +4465,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4494,7 +4494,7 @@
 					llvm,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4523,7 +4523,7 @@
 					llvm,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4548,7 +4548,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4573,7 +4573,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4656,7 +4656,7 @@
 					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4683,7 +4683,7 @@
 					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4710,7 +4710,7 @@
 					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4737,7 +4737,7 @@
 					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4764,7 +4764,7 @@
 					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4791,7 +4791,7 @@
 					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4916,7 +4916,7 @@
 					"-Xcrossclang-ignore-export-dynamic",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -4947,7 +4947,7 @@
 					"-Xcrossclang-ignore-export-dynamic",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -4984,7 +4984,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = NO;
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -5020,7 +5020,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = NO;
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -5058,7 +5058,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = NO;
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -5095,7 +5095,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = NO;
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -5121,7 +5121,7 @@
 					"-Wl,--no-rosegment,--disable-new-dtags,-znognustack,-znoseparate-code,-znorelro",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -5147,7 +5147,7 @@
 					"-Wl,--no-rosegment,--disable-new-dtags,-znognustack,-znoseparate-code,-znorelro",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -5172,7 +5172,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -5197,7 +5197,7 @@
 					"$(CROSSCLANG_TARGET)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -5223,7 +5223,7 @@
 					"-Wl,--no-rosegment,--disable-new-dtags",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -5249,7 +5249,7 @@
 					"-Wl,--no-rosegment,--disable-new-dtags",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -5282,7 +5282,7 @@
 					"-lrt",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -5315,7 +5315,7 @@
 					"-lrt",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -5342,7 +5342,7 @@
 					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Debug;
 		};
@@ -5369,7 +5369,7 @@
 					"-Qunused-arguments",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 			};
 			name = Release;
 		};
@@ -5451,6 +5451,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COMPILER_INDEX_STORE_ENABLE = NO;
 				COPY_PHASE_STRIP = NO;
+				CROSSCLANG_SDKROOT = "crossclang/Xcode-Support/crossclang.sdk";
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -5540,6 +5541,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COMPILER_INDEX_STORE_ENABLE = NO;
 				COPY_PHASE_STRIP = NO;
+				CROSSCLANG_SDKROOT = "crossclang/Xcode-Support/crossclang.sdk";
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -5622,7 +5624,7 @@
 					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)$(CROSSCLANGROOT)/usr/include",
@@ -5654,7 +5656,7 @@
 					"-nostdlib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = crossclang.macosx1.0;
+				SDKROOT = "$(CROSSCLANG_SDKROOT)";
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)$(CROSSCLANGROOT)/usr/include",

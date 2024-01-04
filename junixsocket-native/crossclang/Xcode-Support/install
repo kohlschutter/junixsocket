@@ -2,23 +2,11 @@
 #
 # Installs optional Xcode helper components for crossclang
 #
-# You should run this as root, i.e.,: sudo ./install
-#
 
 cd "$(dirname $0)"
 pwd=$(pwd)
 
-developerPath=$(xcode-select -p)
-if [[ -z "$developerPath" ]]; then
-    echo "Error: Could not resolve XCode Developer path" >&2
-    exit 1
-fi
-sdksPath="$developerPath/Platforms/MacOSX.platform/Developer/SDKs"
-if [[ ! -d "$sdksPath" ]]; then
-    echo "Error: Could not find SDKs path: $sdksPath" >&2
-    exit 1
-fi
-toolchainsPath="/Library/Developer/Toolchains"
+toolchainsPath="$HOME/Library/Developer/Toolchains"
 echo "Toolchains path: $toolchainsPath"
 if [[ ! -d "$toolchainsPath" ]]; then
     mkdir -pv "$toolchainsPath"
@@ -30,14 +18,8 @@ for toolchain in $(ls -1 | grep '\.xctoolchain$'); do
 done
 echo
 
-echo "SDKs path: $sdksPath"
-for sdk in $(ls -1 | grep '\.sdk$'); do
-    echo Installing "$sdk" ... 
-    ( set -x ; cd "$sdksPath" ; ln -sf "$pwd/$sdk" )
-done
-
 if [ $? -eq 0 ]; then
-    echo Done. Now please restart XCode and run \"Clean Build Folder\".
+    echo "Done. Now please restart XCode, set the Toolchain (Xcode->Toolchains..., or via the launch window) to \"crossclang\", then run \"Clean Build Folder\"."
 else
-    echo "There were errors. Try running with sudo (or with a shell that has \"Full Disk Access\")." >&2
+    echo "There were errors." >&2
 fi
