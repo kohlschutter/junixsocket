@@ -137,3 +137,7 @@ the JNI code as follows:
 
 Right now, crossclang only supports C and C++. However, adding support other languages should
 be relatively straightforward.
+
+## See also
+
+[Developing with Xcode](xcode.html).

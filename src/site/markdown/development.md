@@ -9,6 +9,8 @@ Here are some instructions to get started.
    
    * [Developing with Eclipse](eclipse.html) 
 
+   * [Developing with Xcode](xcode.html)
+
    * [Custom architectures: Building and running](customarch.html)
 
    * [Cross-compiling junixsocket](crosscomp.html)
