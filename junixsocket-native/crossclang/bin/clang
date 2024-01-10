@@ -137,6 +137,7 @@ while [ $# -gt 0 ]; do
       -Wbool-conversion ) skipGccArg=1 ;;
       -Wconstant-conversion ) skipGccArg=1 ;;
       -Wquoted-include-in-framework-header ) skipGccArg=1 ;;
+      -Wno-unsafe-buffer-usage ) skipGccArg=1 ;;
       -fno-c++-static-destructors ) skipGccArg=1 ;;
       -fmacro-backtrace-limit=0 ) skipGccArg=1 ;;
       -fdiagnostics-show-note-include-stack ) skipGccArg=1 ;;
