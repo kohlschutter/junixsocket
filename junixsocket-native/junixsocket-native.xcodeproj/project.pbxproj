@@ -4598,7 +4598,7 @@
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-Xcrossclang-ld64-sdk-version",
-					"\"\"",
+					"\"undefined\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -4626,7 +4626,7 @@
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-Xcrossclang-ld64-sdk-version",
-					"\"\"",
+					"\"undefined\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;

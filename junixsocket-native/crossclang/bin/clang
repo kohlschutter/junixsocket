@@ -116,7 +116,7 @@ while [ $# -gt 0 ]; do
       -Xcrossclang-use-gcc=* ) gccMode=1 ; compiler="${v#-Xcrossclang-use-gcc=}" ; skipArg=1 ;;
       -Xcrossclang-use-clang=* ) compiler="${v#-Xcrossclang-use-clang=}" ; skipArg=1 ;;
       -Xcrossclang-output-strip-lib-prefix ) outputStripLibPrefix=1 ; skipArg=1 ;;
-      -Xcrossclang-ld64-sdk-version ) ld64_sdk_version="$1"; shift ; skipArg=1 ;;
+      -Xcrossclang-ld64-sdk-version ) if [[ "$1" != "undefined" ]]; then ld64_sdk_version="$1"; fi; shift ; skipArg=1 ;;
       -Xcrossclang-hide-unknown-warning-warnings ) hideUnknownWarningWarnings=1 ; skipArg=1 ;;
       -Xcrossclang-ignore-export-dynamic) ignoreExportDynamic=1 ; skipArg=1 ;;
       -Xcrossclang-ignore-reproducible) ignoreReproducible=1 ; skipArg=1 ;;
