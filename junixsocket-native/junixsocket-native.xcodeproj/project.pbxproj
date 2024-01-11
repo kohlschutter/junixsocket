@@ -4219,7 +4219,7 @@
 					"-Xcrossclang-use-gcc=x86_64-w64-mingw32-gcc",
 				);
 				OTHER_LDFLAGS = (
-					"$(inheritedx)",
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-lws2_32",
@@ -4249,7 +4249,7 @@
 					"-Xcrossclang-use-gcc=x86_64-w64-mingw32-gcc",
 				);
 				OTHER_LDFLAGS = (
-					"$(inheritedx)",
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-lWs2_32",
@@ -4905,7 +4905,7 @@
 					"-Xcrossclang-use-gcc=aarch64-w64-mingw32-gcc",
 				);
 				OTHER_LDFLAGS = (
-					"$(inheritedx)",
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-lws2_32",
@@ -4936,7 +4936,7 @@
 					"-Xcrossclang-use-gcc=aarch64-w64-mingw32-gcc",
 				);
 				OTHER_LDFLAGS = (
-					"$(inheritedx)",
+					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
 					"-lWs2_32",
