@@ -668,10 +668,10 @@ if [[ $withAndWithoutLC -eq 1 ]]; then
         clangArgsNoDeps+=($arg)
     done
 
-    "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${wwoArgs[@]} ${clangArgs[@]} ${libsArgs[@]} && \
-    "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${wwoArgsNoDeps[@]} ${clangArgsNoDeps[@]} ${libsArgs[@]}
+    ( "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${wwoArgs[@]} ${clangArgs[@]} ${libsArgs[@]} && \
+    "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${wwoArgsNoDeps[@]} ${clangArgsNoDeps[@]} ${libsArgs[@]} ) 2> >(grep -v -E "unrecognized command-line option .* may have been intended to silence")
 elif [[ $hideUnknownWarningWarnings -eq 1 ]]; then
     exec "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${output_args[@]} ${clangArgs[@]} ${libsArgs[@]} 2> >(grep -v -E "unrecognized command-line option .* may have been intended to silence")
 else
-    exec "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${output_args[@]} ${clangArgs[@]} ${libsArgs[@]}
+    exec "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${output_args[@]} ${clangArgs[@]} ${libsArgs[@]} 2> >(grep -v -E "unrecognized command-line option .* may have been intended to silence")
 fi
