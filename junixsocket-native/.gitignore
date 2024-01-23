@@ -3,3 +3,4 @@
 /target-eclipse/
 src/**/*.jar
 /build
+/*.log
