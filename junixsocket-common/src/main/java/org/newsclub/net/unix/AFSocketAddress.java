@@ -363,17 +363,18 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    *
    * @param <A> The corresponding address type.
    * @param fdesc The file descriptor.
-   * @param peerName If {@code true}, the remote peer name (instead of the local name) is retrieved.
+   * @param requestPeerName If {@code true}, the remote peer name (instead of the local name) is
+   *          retrieved.
    * @param port The port.
    * @param af The address family.
    * @return The {@link InetAddress}.
    */
   protected static final <A extends AFSocketAddress> @Nullable A getSocketAddress(
-      FileDescriptor fdesc, boolean peerName, int port, AFAddressFamily<A> af) {
+      FileDescriptor fdesc, boolean requestPeerName, int port, AFAddressFamily<A> af) {
     if (!fdesc.valid()) {
       return null;
     }
-    byte[] addr = NativeUnixSocket.sockname(af.getDomain(), fdesc, peerName);
+    byte[] addr = NativeUnixSocket.sockname(af.getDomain(), fdesc, requestPeerName);
     if (addr == null) {
       return null;
     }
