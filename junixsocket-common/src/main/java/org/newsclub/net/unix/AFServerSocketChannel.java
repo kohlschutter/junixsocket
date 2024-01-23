@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
@@ -110,7 +111,7 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
   }
 
   @Override
-  public final AFSocketAddress getLocalAddress() throws IOException {
+  public final @Nullable A getLocalAddress() throws IOException {
     return afSocket.getLocalSocketAddress();
   }
 
