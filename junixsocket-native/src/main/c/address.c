@@ -157,6 +157,23 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sockAddrLengt
     }
 }
 
+static jbyteArray sockAddrGenericToBytes(JNIEnv *env, jux_sockaddr_t *addr, socklen_t len) {
+    if(len <= 0 || addr == NULL) {
+        return NULL;
+    }
+#if defined(junixsocket_have_sun_len)
+    len = MIN(len, addr->addr.sa_len);
+    if(len <= 0) {
+        return NULL;
+    }
+#endif
+
+    jbyteArray array = (*env)->NewByteArray(env, len);
+    (*env)->SetByteArrayRegion(env, array, 0, len, (jbyte*)addr);
+
+    return array;
+}
+
 static jbyteArray sockAddrUnToBytes(JNIEnv *env, struct sockaddr_un *addr, socklen_t len) {
     if(len <= 0 || addr == NULL) {
         return NULL;
@@ -275,10 +292,12 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
 (JNIEnv * env, jclass clazz CK_UNUSED, jint domain, jobject fd, jboolean peerName) {
     int handle = _getFD(env, fd);
 
-    domain = domainToNative(domain);
-    if(domain == -1) {
-        _throwException(env, kExceptionSocketException, "Unsupported domain");
-        return NULL;
+    if(domain != org_newsclub_net_unix_NativeUnixSocket_DOMAIN_GENERIC) {
+        domain = domainToNative(domain);
+        if(domain == -1) {
+            _throwException(env, kExceptionSocketException, "Unsupported domain");
+            return NULL;
+        }
     }
 
     jux_sockaddr_t addr = {0};
@@ -316,6 +335,10 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socknam
         // hat tip: https://github.com/wahern/cqueues/blob/master/PORTING.md
         // also: Linux may return an incomplete address
         return NULL;
+    }
+
+    if(domain == org_newsclub_net_unix_NativeUnixSocket_DOMAIN_GENERIC) {
+        return sockAddrGenericToBytes(env, &addr, len);
     }
 
     if(addr.addr.sa_family != domain) {
@@ -472,8 +495,19 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAd
 (JNIEnv *env, jclass clazz CK_UNUSED, jint domain, jobject directByteBuf, jbyteArray addressBytes) {
     size_t sockAddrLen;
 
-    domain = domainToNative(domain);
+    if(domain != org_newsclub_net_unix_NativeUnixSocket_DOMAIN_GENERIC) {
+        domain = domainToNative(domain);
+        if(domain == -1) {
+            return -1;
+        }
+    }
+
+    jsize len = addressBytes == NULL ? 0 : (*env)->GetArrayLength(env, addressBytes);
+
     switch(domain) {
+        case org_newsclub_net_unix_NativeUnixSocket_DOMAIN_GENERIC: // Generic
+            sockAddrLen = len;
+            break;
         case AF_UNIX:
             sockAddrLen = sizeof(struct sockaddr_un);
             break;
@@ -504,7 +538,6 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAd
         return -1;
     }
 
-    jsize len = addressBytes == NULL ? 0 : (*env)->GetArrayLength(env, addressBytes);
     if(len > directByteBufRef.size || len > INT_MAX) {
         _throwException(env, kExceptionSocketException, "Byte array is too large");
         return -1;
@@ -519,6 +552,12 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAd
     }
 
     switch(domain) {
+        case org_newsclub_net_unix_NativeUnixSocket_DOMAIN_GENERIC:
+        {
+            (*env)->GetByteArrayRegion(env, addressBytes, 0, len, (signed char*)addr);
+            sockAddrLen = len;
+        }
+            break;
         case AF_UNIX:
         {
             struct sockaddr_un *addrUn = (struct sockaddr_un *) addr;

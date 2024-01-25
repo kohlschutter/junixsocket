@@ -34,12 +34,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
+import java.nio.channels.ServerSocketChannel;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
@@ -188,5 +193,73 @@ public class FileDescriptorCastTest {
         assertEquals(0x3322, buf.getShort());
       });
     }
+  }
+
+  @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
+  @Test
+  public void testCastGeneric() throws Exception {
+    AFUNIXServerSocketChannel ussc = AFUNIXServerSocketChannel.open();
+    ussc.bind(AFUNIXSocketAddress.ofNewTempFile());
+
+    AFGenericServerSocketChannel gssc = FileDescriptorCast.using(ussc.getFileDescriptor()).as(
+        AFGenericServerSocketChannel.class);
+
+    CompletableFuture<@Nullable ConnectionResult> cf = CompletableFuture.supplyAsync(() -> {
+      try {
+        AFGenericSocketChannel sc = gssc.accept();
+        ByteBuffer bb = ByteBuffer.allocate(64);
+        int r = sc.read(bb);
+        if (r != 1) {
+          throw new IllegalStateException("Unexpected result: " + r + " bytes read");
+        }
+
+        return new ConnectionResult(bb.get(0), sc.getLocalSocketAddress(), sc
+            .getRemoteSocketAddress());
+      } catch (IOException e) {
+        throw new IllegalStateException(e);
+      }
+    });
+
+    try (AFUNIXSocket sock = AFUNIXSocket.connectTo(ussc.getLocalAddress())) {
+      AFGenericSocket gs = FileDescriptorCast.using(sock.getFileDescriptor()).as(
+          AFGenericSocket.class);
+      gs.getOutputStream().write(123);
+
+      assertEquals(AFGenericSocketAddress.class, gs.getLocalSocketAddress().getClass());
+      assertEquals(AFGenericSocketAddress.class, gs.getRemoteSocketAddress().getClass());
+
+      ConnectionResult cr = Objects.requireNonNull(cf.get());
+      assertEquals(123, cr.firstByte);
+      assertEquals(gs.getLocalSocketAddress(), cr.remoteSocketAddress);
+      assertEquals(gs.getRemoteSocketAddress(), cr.localSocketAddress);
+    }
+  }
+
+  private static final class ConnectionResult {
+    private final int firstByte;
+    private final SocketAddress localSocketAddress;
+    private final SocketAddress remoteSocketAddress;
+
+    public ConnectionResult(int firstByte, AFGenericSocketAddress localSocketAddress,
+        AFGenericSocketAddress remoteSocketAddress) {
+      this.firstByte = firstByte;
+      this.localSocketAddress = localSocketAddress;
+      this.remoteSocketAddress = remoteSocketAddress;
+    }
+  }
+
+  @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
+  @Test
+  public void testCastToServerSocketIsSameType() throws Exception {
+    AFUNIXServerSocketChannel ussc = AFUNIXServerSocketChannel.open();
+    ussc.bind(AFUNIXSocketAddress.ofNewTempFile());
+
+    ServerSocketChannel ssc = FileDescriptorCast.using(ussc.getFileDescriptor()).as(
+        ServerSocketChannel.class);
+    assertEquals(AFUNIXServerSocketChannel.class, ssc.getClass());
+
+    AFUNIXSocket us = AFUNIXSocket.connectTo(ussc.getLocalAddress());
+    Socket s = FileDescriptorCast.using(us.getFileDescriptor()).as(Socket.class);
+    assertEquals(AFUNIXSocket.class, s.getClass());
   }
 }

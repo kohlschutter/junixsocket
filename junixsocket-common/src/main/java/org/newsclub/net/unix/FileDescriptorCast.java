@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ProcessBuilder.Redirect;
+import java.net.DatagramSocket;
 import java.net.Socket;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
@@ -173,6 +174,10 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   private static final int FD_OUT = getFdIfPossible(FileDescriptor.out);
   private static final int FD_ERR = getFdIfPossible(FileDescriptor.err);
 
+  static {
+    registerGenericSocketSupport();
+  }
+
   private final FileDescriptor fdObj;
 
   private int localPort = 0;
@@ -227,9 +232,10 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
             desiredType) -> AFServerSocket.newInstance(config.serverSocketConstructor(), fdc
                 .getFileDescriptor(), fdc.localPort, fdc.remotePort);
 
+        registerGenericSocketProviders();
+
         addProvider(socketClass, cpSocket);
         addProvider(config.serverSocketClass(), cpServerSocket);
-
         addProvider(config.socketChannelClass(), (fdc, desiredType) -> cpSocket.provideAs(fdc,
             AFSocket.class).getChannel());
         addProvider(config.serverSocketChannelClass(), (fdc, desiredType) -> cpServerSocket
@@ -248,8 +254,9 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
             desiredType) -> AFDatagramSocket.newInstance(config.datagramSocketConstructor(), fdc
                 .getFileDescriptor(), fdc.localPort, fdc.remotePort);
 
-        addProvider(datagramSocketClass, cpDatagramSocket);
+        registerGenericDatagramSocketProviders();
 
+        addProvider(datagramSocketClass, cpDatagramSocket);
         addProvider(config.datagramChannelClass(), (fdc, desiredType) -> cpDatagramSocket.provideAs(
             fdc, AFDatagramSocket.class).getChannel());
       }
@@ -265,6 +272,34 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
       addProviders();
 
       addProviders(GLOBAL_PROVIDERS_FINAL);
+    }
+
+    protected void registerGenericSocketProviders() {
+      final CastingProvider<AFSocket<AFGenericSocketAddress>> cpSocketGeneric = (fdc,
+          desiredType) -> AFSocket.newInstance(AFGenericSocket::new,
+              (AFSocketFactory<AFGenericSocketAddress>) null, fdc.getFileDescriptor(),
+              fdc.localPort, fdc.remotePort);
+      final CastingProvider<AFServerSocket<AFGenericSocketAddress>> cpServerSocketGeneric = (fdc,
+          desiredType) -> AFServerSocket.newInstance(AFGenericServerSocket::new, fdc
+              .getFileDescriptor(), fdc.localPort, fdc.remotePort);
+
+      addProvider(AFGenericSocket.class, cpSocketGeneric);
+      addProvider(AFGenericServerSocket.class, cpServerSocketGeneric);
+      addProvider(AFGenericSocketChannel.class, (fdc, desiredType) -> cpSocketGeneric.provideAs(fdc,
+          AFSocket.class).getChannel());
+      addProvider(AFGenericServerSocketChannel.class, (fdc, desiredType) -> cpServerSocketGeneric
+          .provideAs(fdc, AFServerSocket.class).getChannel());
+    }
+
+    protected void registerGenericDatagramSocketProviders() {
+      final CastingProvider<AFDatagramSocket<AFGenericSocketAddress>> cpDatagramSocketGeneric = (
+          fdc, desiredType) -> AFDatagramSocket.newInstance(AFGenericDatagramSocket::new, fdc
+              .getFileDescriptor(), fdc.localPort, fdc.remotePort);
+
+      addProvider(AFDatagramSocket.class, cpDatagramSocketGeneric);
+      addProvider(AFDatagramChannel.class, (fdc, desiredType) -> cpDatagramSocketGeneric.provideAs(
+          fdc, AFDatagramSocket.class).getChannel());
+
     }
 
     protected abstract void addProviders();
@@ -493,5 +528,31 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
         throw e;
       }
     }
+  }
+
+  /**
+   * Add support for otherwise unsupported sockets.
+   */
+  private static void registerGenericSocketSupport() {
+    registerCastingProviders(Socket.class, new CastingProviderMap() {
+
+      @SuppressWarnings("null")
+      @Override
+      protected void addProviders() {
+        addProviders(GLOBAL_PROVIDERS);
+
+        registerGenericSocketProviders();
+      }
+    });
+
+    registerCastingProviders(DatagramSocket.class, new CastingProviderMap() {
+      @SuppressWarnings("null")
+      @Override
+      protected void addProviders() {
+        addProviders(GLOBAL_PROVIDERS);
+
+        registerGenericDatagramSocketProviders();
+      }
+    });
   }
 }

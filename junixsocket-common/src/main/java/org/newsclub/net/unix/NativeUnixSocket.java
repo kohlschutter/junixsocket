@@ -44,6 +44,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 final class NativeUnixSocket {
   private static final AtomicBoolean LOADED = new AtomicBoolean(false);
 
+  static final int DOMAIN_GENERIC = -1;
   static final int DOMAIN_UNIX = 1;
   static final int DOMAIN_TIPC = 30;
   static final int DOMAIN_VSOCK = 40;
@@ -97,6 +98,8 @@ final class NativeUnixSocket {
       setLoaded(loadSuccessful);
     }
 
+    AFAddressFamily.registerAddressFamily("generic", NativeUnixSocket.DOMAIN_GENERIC,
+        "org.newsclub.net.unix.AFGenericSocketAddress");
     AFAddressFamily.registerAddressFamily("un", NativeUnixSocket.DOMAIN_UNIX,
         "org.newsclub.net.unix.AFUNIXSocketAddress");
     AFAddressFamily.registerAddressFamily("tipc", NativeUnixSocket.DOMAIN_TIPC,

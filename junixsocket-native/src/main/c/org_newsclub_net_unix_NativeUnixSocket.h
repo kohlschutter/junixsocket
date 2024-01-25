@@ -7,6 +7,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#undef org_newsclub_net_unix_NativeUnixSocket_DOMAIN_GENERIC
+#define org_newsclub_net_unix_NativeUnixSocket_DOMAIN_GENERIC -1L
 #undef org_newsclub_net_unix_NativeUnixSocket_DOMAIN_UNIX
 #define org_newsclub_net_unix_NativeUnixSocket_DOMAIN_UNIX 1L
 #undef org_newsclub_net_unix_NativeUnixSocket_DOMAIN_TIPC
