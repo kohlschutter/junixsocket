@@ -298,6 +298,15 @@ final class NativeUnixSocket {
 
   static native void configureBlocking(FileDescriptor fd, boolean blocking) throws IOException;
 
+  /**
+   * Checks if the given file descriptor describes a blocking socket.
+   * 
+   * @param fd The file descriptor to check
+   * @return 0 = non-blocking, 1 = blocking, 2 = indeterminate (needs reconfiguration)
+   * @throws IOException on error.
+   */
+  static native int checkBlocking(FileDescriptor fd) throws IOException;
+
   static native void socketPair(int domain, int type, FileDescriptor fd, FileDescriptor fd2);
 
   static native Redirect initRedirect(FileDescriptor fd);

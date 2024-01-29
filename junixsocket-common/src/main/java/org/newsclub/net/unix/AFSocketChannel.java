@@ -39,7 +39,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketChannel implements
-    AFSomeSocket, AFSocketExtensions {
+    AFSomeSocket, AFSocketExtensions, AFSomeSocketChannel {
   private final @NonNull AFSocket<A> afSocket;
   private final AtomicBoolean connectPending = new AtomicBoolean(false);
 

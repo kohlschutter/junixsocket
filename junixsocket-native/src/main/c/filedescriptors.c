@@ -340,6 +340,33 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shutdown
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    checkBlocking
+ * Signature: (Ljava/io/FileDescriptor;)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_checkBlocking
+ (JNIEnv *env, jclass clazz CK_UNUSED, jobject fd) {
+    int handle = _getFD(env, fd);
+#if defined(_WIN32)
+    CK_ARGUMENT_POTENTIALLY_UNUSED(handle);
+    // Windows doesn't provide current API to check for blocking state
+    return 2; // "indeterminate; needs re-configure"
+#else
+    int flags = fcntl(handle, F_GETFL);
+    if(flags == -1) {
+        _throwErrnumException(env, socket_errno, NULL);
+        return -1;
+    }
+
+    if((flags & O_NONBLOCK) != 0) {
+        return 0; // "non-blocking"
+    } else {
+        return 1; // "blocking"
+    }
+#endif
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    configureBlocking
  * Signature: (Ljava/io/FileDescriptor;Z)V
  */

@@ -42,7 +42,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @param <A> The supported address type.
  */
 public abstract class AFDatagramChannel<A extends AFSocketAddress> extends DatagramChannel
-    implements AFSomeSocket, AFSocketExtensions {
+    implements AFSomeSocket, AFSocketExtensions, AFSomeSocketChannel {
   private final AFDatagramSocket<A> afSocket;
 
   /**

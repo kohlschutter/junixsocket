@@ -383,6 +383,14 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_configureBloc
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    checkBlocking
+ * Signature: (Ljava/io/FileDescriptor;)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_checkBlocking
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    socketPair
  * Signature: (IILjava/io/FileDescriptor;Ljava/io/FileDescriptor;)V
  */

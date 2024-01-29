@@ -39,7 +39,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends ServerSocketChannel
-    implements FileDescriptorAccess {
+    implements FileDescriptorAccess, AFSomeSocketChannel {
   private final @NonNull AFServerSocket<A> afSocket;
 
   /**
