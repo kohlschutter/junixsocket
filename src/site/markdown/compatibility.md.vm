@@ -120,7 +120,7 @@ Please reach out if you have some feature in mind that may be supported on these
 
 Upon request, support for additional systems, platforms and architectures may be added,
 such as OpenVMS, FUJITSU BS2000/OSD, Unisys ClearPath OS 2200, QNX, VxWorks, HP-UX,
-Guardian / NonStop OSS, etc.
+Guardian / NonStop OSS, WebAssembly WASI, etc.
 
 If you are interested in using junixsocket on another platform, or willing to sponsor development
 (by providing access to such platforms, covering licensing costs, etc.), feel free to
