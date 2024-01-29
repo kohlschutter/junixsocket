@@ -63,14 +63,18 @@ Additional platforms known to work (after the JNI library has been compiled manu
 
 * Solaris SPARC64
 * IBM z/OS OS/390 64-bit
+* Haiku, recommended R1/beta5 or newer. AF_UNIX datagram support is available since Haiku hrev57155,
+  but you should use hrev57200 or newer:
+  - Thanks to junixsocket selftests, a bug related to socket addresses/connection state was found
+    and [fixed in hrev57189](https://dev.haiku-os.org/ticket/18534).
+  - A use-after-free bug in the kernel related to datagrams was found and
+    [fixed in hrev57194](https://dev.haiku-os.org/ticket/18535).
+  - An unexpected blocking situation was found and
+    [fixed in hrev57200](https://dev.haiku-os.org/ticket/18539).
 
 Additional platforms that should work (after the JNI library has been compiled manually):
 
 * Any other processor architecture with Linux, FreeBSD, OpenBSD, NetBSD, DragonFlyBSD
-* Haiku, recommended R1/beta5 or newer. AF_UNIX datagram support is available since Haiku hrev57155.
-  Thanks to junixsocket selftests, a bug related to socket addresses/connection state was found and
-  [fixed in hrev57189](https://dev.haiku-os.org/ticket/18534); a use-after-free bug in the kernel
-  related to datagrams was found and [reported here](https://dev.haiku-os.org/ticket/18535).
 
 Additional platforms known to compile (but untested):
 
