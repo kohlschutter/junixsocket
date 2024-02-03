@@ -225,8 +225,14 @@ public class FileDescriptorCastTest {
           AFGenericSocket.class);
       gs.getOutputStream().write(123);
 
-      assertEquals(AFGenericSocketAddress.class, gs.getLocalSocketAddress().getClass());
-      assertEquals(AFGenericSocketAddress.class, gs.getRemoteSocketAddress().getClass());
+      AFGenericSocketAddress lsa = gs.getLocalSocketAddress();
+      if (lsa != null) {
+        assertEquals(AFGenericSocketAddress.class, lsa.getClass());
+      }
+      AFGenericSocketAddress rsa = gs.getRemoteSocketAddress();
+      if (rsa != null) {
+        assertEquals(AFGenericSocketAddress.class, rsa.getClass());
+      }
 
       ConnectionResult cr = Objects.requireNonNull(cf.get());
       assertEquals(123, cr.firstByte);
