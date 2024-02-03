@@ -43,6 +43,8 @@ final class NativeLibraryLoader implements Closeable {
   private static final String PROP_LIBRARY_TMPDIR = "org.newsclub.net.unix.library.tmpdir";
 
   private static final File TEMP_DIR;
+  private static final String OS_NAME_SIMPLIFIED = lookupArchProperty("os.name", "UnknownOS");
+
   private static final List<String> ARCHITECTURE_AND_OS = architectureAndOS();
   private static final String LIBRARY_NAME = "junixsocket-native";
 
@@ -405,7 +407,6 @@ final class NativeLibraryLoader implements Closeable {
 
   private static List<String> architectureAndOS() {
     String arch = lookupArchProperty("os.arch", "UnknownArch");
-    String osName = lookupArchProperty("os.name", "UnknownOS");
 
     List<String> list = new ArrayList<>();
     if (IS_ANDROID) {
@@ -413,12 +414,12 @@ final class NativeLibraryLoader implements Closeable {
       // let's probe for an Android-specific library first
       list.add(arch + "-Android");
     }
-    list.add(arch + "-" + osName);
-    if (osName.startsWith("Windows") && !"Windows10".equals(osName)) {
+    list.add(arch + "-" + OS_NAME_SIMPLIFIED);
+    if (OS_NAME_SIMPLIFIED.startsWith("Windows") && !"Windows10".equals(OS_NAME_SIMPLIFIED)) {
       list.add(arch + "-" + "Windows10");
     }
 
-    if ("MacOSX".equals(osName) && "x86_64".equals(arch)) {
+    if ("MacOSX".equals(OS_NAME_SIMPLIFIED) && "x86_64".equals(arch)) {
       list.add("aarch64-MacOSX"); // Rosetta 2
     }
 
@@ -452,9 +453,28 @@ final class NativeLibraryLoader implements Closeable {
     }
   }
 
+  private static String mapLibraryName(String libraryNameAndVersion) {
+    String mappedName = System.mapLibraryName(libraryNameAndVersion);
+    if (mappedName.endsWith(".so")) {
+      // https://github.com/eclipse-openj9/openj9/issues/9788
+      // Many thanks to Fabrice Bourquin for finding this issue!
+      switch (OS_NAME_SIMPLIFIED) {
+        case "AIX":
+          mappedName = mappedName.substring(0, mappedName.length() - 3) + ".a";
+          break;
+        case "OS400":
+          mappedName = mappedName.substring(0, mappedName.length() - 3) + ".srvpgm";
+          break;
+        default:
+          break;
+      }
+    }
+    return mappedName;
+  }
+
   private List<LibraryCandidate> findLibraryCandidates(String artifactName,
       String libraryNameAndVersion, Class<?> providerClass) {
-    String mappedName = System.mapLibraryName(libraryNameAndVersion);
+    String mappedName = mapLibraryName(libraryNameAndVersion);
 
     String[] prefixes = mappedName.startsWith("lib") ? new String[] {""} : new String[] {"", "lib"};
 
