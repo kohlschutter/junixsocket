@@ -111,10 +111,22 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
       final SocketAddress sa = resolveAddressForSecondBind(sa0, ssc1);
 
       AtomicBoolean connectMustSucceed = new AtomicBoolean(false);
+      AtomicBoolean wasRebound = new AtomicBoolean(false);
 
       acceptCall = TestAsyncUtil.supplyAsync(() -> {
         try {
-          SocketChannel sc = ssc1.accept();
+          SocketChannel sc;
+          try {
+            sc = ssc1.accept();
+          } catch (SocketClosedException e) {
+            if (wasRebound.get()) {
+              // The system terminated our accept because another socket was rebound
+              // This may not occur on all systems, but we have to handle it.
+              return null;
+            } else {
+              throw e;
+            }
+          }
           socketDomainWillAcceptCallOnFirstBind.set(false);
           Objects.requireNonNull(sc);
           if (reuseAddress && !connectMustSucceed.get()) {
@@ -149,6 +161,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
         ssc2.socket().setReuseAddress(reuseAddress);
 
         try {
+          wasRebound.set(true);
           bindServerSocket(ssc2, sa, 1);
           if (!reuseAddress && !socketDomainPermitsDoubleBind()) {
             fail("Did not throw expected SocketException (Address already in use)");
