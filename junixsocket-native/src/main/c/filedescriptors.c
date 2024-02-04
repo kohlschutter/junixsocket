@@ -222,9 +222,9 @@ void _initHandle(JNIEnv * env, jobject fd, jlong handle)
 int _closeFd(JNIEnv * env, jobject fd, int handle)
 {
     int ret = 0;
+
     if(fd == NULL) {
         if(handle >= 0) {
-            shutdown(handle, SHUT_RDWR);
 #if defined(_WIN32)
             ret = closesocket(handle);
 #else
@@ -233,11 +233,18 @@ int _closeFd(JNIEnv * env, jobject fd, int handle)
         }
         return ret;
     }
+
     (*env)->MonitorEnter(env, fd);
+    int fdHandle = _getFD(env, fd);
+    _initFD(env, fd, -1);
+#if defined(_WIN32)
+    jlong handleWin = _getHandle(env, fd);
+    _initHandle(env, fd, -1);
+#endif
+    (*env)->MonitorExit(env, fd);
 
 #if defined(_WIN32)
     jboolean isSocket;
-    jlong handleWin = _getHandle(env, fd);
     if(handleWin > 0) {
         if(handle >= 0) {
             _close(handle);
@@ -250,39 +257,21 @@ int _closeFd(JNIEnv * env, jobject fd, int handle)
     }
 #else
     if(handle >= 0) {
-        shutdown(handle, SHUT_RDWR);
         ret = close(handle);
     }
-
 #endif
-
-    int fdHandle = _getFD(env, fd);
-    _initFD(env, fd, -1);
-#if defined(_WIN32)
-    _initHandle(env, fd, -1);
-#endif
-    (*env)->MonitorExit(env, fd);
-
-    if(handle >= 0) {
-        if(fdHandle >= 0 && handle != fdHandle) {
-#if DEBUG
-            fprintf(stderr, "NativeUnixSocket_closeFd inconsistency: handle %i vs fdHandle %i\n", handle, fdHandle);
-            fflush(stderr);
-#endif
-        }
-    }
 
     if(fdHandle >= 0) {
 #if defined(_WIN32)
         if(isSocket) {
-            shutdown(fdHandle, SHUT_RDWR);
             ret = closesocket(fdHandle);
         } else {
             ret = _close(fdHandle);
         }
 #else
-        shutdown(fdHandle, SHUT_RDWR);
-        ret = close(fdHandle);
+        if(fdHandle != handle) { // if they're identical, we've handled it above already
+           ret = close(fdHandle);
+        }
 #endif
     }
 
@@ -301,12 +290,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_close
         _throwException(env, kExceptionNullPointerException, "fd");
         return;
     }
-    (*env)->MonitorEnter(env, fd);
-    int handle = _getFD(env, fd);
-    _initFD(env, fd, -1);
-    (*env)->MonitorExit(env, fd);
 
-    int ret = _closeFd(env, fd, handle);
+    int ret = _closeFd(env, fd, -1);
     if(ret == -1) {
         _throwErrnumException(env, errno, NULL);
         return;
