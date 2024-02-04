@@ -57,6 +57,8 @@ import com.kohlschutter.util.IOUtil;
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public class FileDescriptorCastTest {
+  // CPD-OFF
+  
   @Test
   public void testInvalidFileDescriptor() throws IOException {
     assertThrows(IOException.class, () -> FileDescriptorCast.using(new FileDescriptor()));
