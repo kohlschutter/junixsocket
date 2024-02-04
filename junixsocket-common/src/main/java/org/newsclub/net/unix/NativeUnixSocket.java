@@ -138,10 +138,12 @@ final class NativeUnixSocket {
     tryResolveClass(AbstractSelectableChannel.class.getName());
     tryResolveClass("java.lang.ProcessBuilder$RedirectPipeImpl");
     tryResolveClass(InetSocketAddress.class.getName());
-    tryResolveClass(OperationNotSupportedSocketException.class.getName());
     tryResolveClass(InvalidArgumentSocketException.class.getName());
     tryResolveClass(AddressUnavailableSocketException.class.getName());
+    tryResolveClass(OperationNotSupportedSocketException.class.getName());
     tryResolveClass(NoSuchDeviceSocketException.class.getName());
+    tryResolveClass(BrokenPipeSocketException.class.getName());
+    tryResolveClass(ConnectionResetSocketException.class.getName());
   }
 
   private static void tryResolveClass(String className) {
