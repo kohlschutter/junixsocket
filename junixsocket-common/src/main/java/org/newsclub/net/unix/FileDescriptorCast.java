@@ -675,7 +675,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
    * <p>
    * Note that on Windows, it may be impossible to query the blocking state from an external socket,
    * so the state is always forcibly set to "blocking".
-   * 
+   *
    * @param <S> The type.
    * @param isChannel The desired cast type (socket=set to blocking, or channel=preserve state).
    * @param socketChannel The channel.

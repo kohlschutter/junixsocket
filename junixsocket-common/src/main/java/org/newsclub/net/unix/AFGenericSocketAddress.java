@@ -112,7 +112,7 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
    * <p>
    * The address contains the sa_family identifier as the first byte, and, on some platforms only,
    * the address length, as the second byte.
-   * 
+   *
    * @return A new byte array containing the system-specific representation of that address.
    */
   public byte[] toBytes() {

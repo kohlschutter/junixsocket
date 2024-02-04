@@ -305,7 +305,7 @@ final class NativeUnixSocket {
 
   /**
    * Checks if the given file descriptor describes a blocking socket.
-   * 
+   *
    * @param fd The file descriptor to check
    * @return 0 = non-blocking, 1 = blocking, 2 = indeterminate (needs reconfiguration)
    * @throws IOException on error.
