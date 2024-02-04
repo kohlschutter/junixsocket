@@ -35,6 +35,8 @@ static char *kExceptionClassnames[kExceptionMaxExcl] = {
     "org/newsclub/net/unix/AddressUnavailableSocketException", // kExceptionAddressUnavailableSocketException
     "org/newsclub/net/unix/OperationNotSupportedSocketException", // kExceptionOperationNotSupportedSocketException
     "org/newsclub/net/unix/NoSuchDeviceSocketException", // kExceptionNoSuchDeviceSocketException
+    "org/newsclub/net/unix/BrokenPipeSocketException", // kExceptionBrokenPipeSocketException
+    "org/newsclub/net/unix/ConnectionResetSocketException", // kExceptionConnectionResetSocketException
 };
 
 static jclass *kExceptionClasses;
@@ -150,9 +152,19 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
             exceptionType = kExceptionNoSuchDeviceSocketException;
             break;
         case EPIPE:
-        case EBADF:
+            exceptionType = kExceptionBrokenPipeSocketException;
+            if(fdToClose != NULL) {
+                _closeFd(env, fdToClose, -1);
+            }
+            break;
         case ECONNRESET:
-            // broken pipe, etc. -> close socket fd, so Socket#isClosed returns true
+            exceptionType = kExceptionConnectionResetSocketException;
+            if(fdToClose != NULL) {
+                _closeFd(env, fdToClose, -1);
+            }
+            break;
+        case EBADF:
+            // close socket fd, so Socket#isClosed returns true
             if(fdToClose != NULL) {
                 _closeFd(env, fdToClose, -1);
             }
