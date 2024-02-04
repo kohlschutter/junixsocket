@@ -58,7 +58,7 @@ import com.kohlschutter.util.IOUtil;
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public class FileDescriptorCastTest {
   // CPD-OFF
-  
+
   @Test
   public void testInvalidFileDescriptor() throws IOException {
     assertThrows(IOException.class, () -> FileDescriptorCast.using(new FileDescriptor()));
@@ -206,8 +206,6 @@ public class FileDescriptorCastTest {
     try (AFUNIXServerSocketChannel ussc = AFUNIXServerSocketChannel.open()) {
       ussc.bind(AFUNIXSocketAddress.ofNewTempFile());
 
-      // NOTE: We're using .duplicating instead of .using, which allows us to not keep a reference
-      // to "ussc" until the end of this method (e.g., by wrapping a try-with-resources).
       AFGenericServerSocketChannel gssc = FileDescriptorCast.using(ussc.getFileDescriptor()).as(
           AFGenericServerSocketChannel.class);
 
@@ -264,17 +262,14 @@ public class FileDescriptorCastTest {
   public void testCastGenericDuplicating() throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
     Path p = addr.getFile().toPath();
-    try {
-      AFUNIXServerSocketChannel ussc = AFUNIXServerSocketChannel.open();
+    try (AFUNIXServerSocketChannel ussc = AFUNIXServerSocketChannel.open()) {
       ussc.bind(addr);
-      ussc.setDeleteOnClose(false);
 
       FileDescriptorCast fdc = FileDescriptorCast.duplicating(ussc.getFileDescriptor());
       if (fdc == null) {
         throw new TestAbortedNotAnIssueException("FileDescriptCast.duplicating not supported");
       }
 
-      ussc.close(); // closes the original file descriptor but not the duplicate
       // also won't delete the file because we told to it not delete above, otherwise
       // we would be able to bind but not connect (this is an AF_UNIX-specific issue)
 
