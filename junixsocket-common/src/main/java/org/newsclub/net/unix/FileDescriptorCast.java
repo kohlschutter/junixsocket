@@ -96,7 +96,6 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * <li>The same restrictions as for {@link #using(FileDescriptor)} apply to
  * {@link #unsafeUsing(int)} as well.</li>
  * </ol>
- * </p>
  *
  * @author Christian Kohlschütter
  */
