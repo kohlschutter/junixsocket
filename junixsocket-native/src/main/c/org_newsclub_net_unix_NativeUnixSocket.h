@@ -151,6 +151,14 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketStatus
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    duplicate
+ * Signature: (Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;)Ljava/io/FileDescriptor;
+ */
+JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_duplicate
+  (JNIEnv *, jclass, jobject, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    primaryType
  * Signature: (Ljava/io/FileDescriptor;)Ljava/lang/Class;
  */
