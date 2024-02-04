@@ -509,11 +509,21 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
     AtomicBoolean keepRunning = new AtomicBoolean(true);
     TestAsyncUtil.runAsyncDelayed(NUM_MILLISECONDS, TimeUnit.MILLISECONDS, () -> {
       keepRunning.set(false);
-      try {
-        ds.close();
-      } catch (IOException e) {
-        // ignore
-      }
+
+      TestAsyncUtil.runAsync(() -> {
+        try {
+          ds.close();
+        } catch (IOException e) {
+          TestStackTraceUtil.printStackTrace(e);
+        }
+      });
+      TestAsyncUtil.runAsync(() -> {
+        try {
+          dc.close();
+        } catch (IOException e) {
+          TestStackTraceUtil.printStackTrace(e);
+        }
+      });
     });
 
     AtomicLong readTotal = new AtomicLong();
