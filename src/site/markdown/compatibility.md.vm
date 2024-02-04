@@ -56,7 +56,7 @@ The minimum set of supported (out of the box) platforms and processor architectu
 * NetBSD (amd64)
 * DragonFlyBSD (amd64)
 * IBM AIX 7 (POWER 64-bit)
-* IBM i 7 (POWER 64-bit)
+* IBM i 7 (POWER 64-bit) via PASE
 * Android (SDK version 26 or newer), aarch64/x86_64/i686/arm
 
 Additional platforms known to work (after the JNI library has been compiled manually):
