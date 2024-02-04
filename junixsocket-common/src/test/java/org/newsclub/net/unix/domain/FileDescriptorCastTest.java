@@ -72,33 +72,34 @@ public class FileDescriptorCastTest {
   @Test
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)
   public void testSocketPair() throws Exception {
-    AFUNIXSocketPair<AFUNIXSocketChannel> socketPair = AFUNIXSocketPair.open();
-    AFUNIXSocketChannel sock1chan = socketPair.getSocket1();
-    FileDescriptor sock2fd = socketPair.getSocket2().getFileDescriptor();
+    try (AFUNIXSocketPair<AFUNIXSocketChannel> socketPair = AFUNIXSocketPair.open()) {
+      AFUNIXSocketChannel sock1chan = socketPair.getSocket1();
+      FileDescriptor sock2fd = socketPair.getSocket2().getFileDescriptor();
 
-    assertTrue(sock1chan.isConnected());
+      assertTrue(sock1chan.isConnected());
 
-    FileDescriptorCast fdc = FileDescriptorCast.using(sock2fd);
+      FileDescriptorCast fdc = FileDescriptorCast.using(sock2fd);
 
-    // Limitation: When we emulate socket pairs through non AF_UNIX sockets, we currently do not
-    // support casting to Socket.class
-    assertEquals(AFUNIXSocket.supports(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR), fdc
-        .isAvailable(Socket.class));
+      // Limitation: When we emulate socket pairs through non AF_UNIX sockets, we currently do not
+      // support casting to Socket.class
+      assertEquals(AFUNIXSocket.supports(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR), fdc
+          .isAvailable(Socket.class));
 
-    if (!AFUNIXSocket.supports(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)) {
-      FileDescriptorCast.using(sock2fd).as(FileChannel.class);
-    } else {
-      Socket sock2 = FileDescriptorCast.using(sock2fd).as(Socket.class);
-      assertEquals(AFUNIXSocket.class, sock2.getClass());
+      if (!AFUNIXSocket.supports(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)) {
+        FileDescriptorCast.using(sock2fd).as(FileChannel.class);
+      } else {
+        Socket sock2 = FileDescriptorCast.using(sock2fd).as(Socket.class);
+        assertEquals(AFUNIXSocket.class, sock2.getClass());
 
-      assertEquals(sock2fd, ((AFUNIXSocket) sock2).getFileDescriptor());
-      try {
-        assertTrue(sock2.isConnected());
-      } catch (AssertionFailedError e) {
-        if (TestUtil.isHaikuOS()) {
-          throw TestUtil.haikuBug18534(e);
-        } else {
-          throw e;
+        assertEquals(sock2fd, ((AFUNIXSocket) sock2).getFileDescriptor());
+        try {
+          assertTrue(sock2.isConnected());
+        } catch (AssertionFailedError e) {
+          if (TestUtil.isHaikuOS()) {
+            throw TestUtil.haikuBug18534(e);
+          } else {
+            throw e;
+          }
         }
       }
     }
@@ -107,34 +108,36 @@ public class FileDescriptorCastTest {
   @Test
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)
   public void testSocketPairNative() throws Exception {
-    AFUNIXSocketPair<AFUNIXSocketChannel> socketPair = AFUNIXSocketPair.open();
-    AFUNIXSocketChannel sock1chan = socketPair.getSocket1();
-    FileDescriptor sock2fd = socketPair.getSocket2().getFileDescriptor();
+    try (AFUNIXSocketPair<AFUNIXSocketChannel> socketPair = AFUNIXSocketPair.open()) {
+      AFUNIXSocketChannel sock1chan = socketPair.getSocket1();
+      FileDescriptor sock2fd = socketPair.getSocket2().getFileDescriptor();
 
-    assertTrue(sock1chan.isConnected());
+      assertTrue(sock1chan.isConnected());
 
-    AFUNIXSocketChannel sock2chan = FileDescriptorCast.using(sock2fd).as(AFUNIXSocketChannel.class);
-    assertEquals(sock2fd, sock2chan.getFileDescriptor());
+      AFUNIXSocketChannel sock2chan = FileDescriptorCast.using(sock2fd).as(
+          AFUNIXSocketChannel.class);
+      assertEquals(sock2fd, sock2chan.getFileDescriptor());
 
-    try {
-      assertTrue(sock2chan.isConnected());
-    } catch (AssertionFailedError e) {
-      if (TestUtil.isHaikuOS()) {
-        throw TestUtil.haikuBug18534(e);
-      } else {
-        throw e;
+      try {
+        assertTrue(sock2chan.isConnected());
+      } catch (AssertionFailedError e) {
+        if (TestUtil.isHaikuOS()) {
+          throw TestUtil.haikuBug18534(e);
+        } else {
+          throw e;
+        }
       }
+
+      ByteBuffer bb = ByteBuffer.allocate(32);
+      bb.putInt(0x12345678);
+      bb.flip();
+      sock1chan.write(bb);
+      bb.clear();
+
+      assertEquals(4, sock2chan.read(bb));
+      bb.flip();
+      assertEquals(0x12345678, bb.getInt());
     }
-
-    ByteBuffer bb = ByteBuffer.allocate(32);
-    bb.putInt(0x12345678);
-    bb.flip();
-    sock1chan.write(bb);
-    bb.clear();
-
-    assertEquals(4, sock2chan.read(bb));
-    bb.flip();
-    assertEquals(0x12345678, bb.getInt());
   }
 
   @Test
@@ -288,29 +291,30 @@ public class FileDescriptorCastTest {
           .as(AFUNIXServerSocket.class);
       assertEquals(123, ass.getLocalPort());
 
-      AFUNIXSocket socket = AFUNIXSocket.connectTo(addr);
-      AFUNIXSocketAddress rsa = socket.getRemoteSocketAddress();
+      try (AFUNIXSocket socket = AFUNIXSocket.connectTo(addr)) {
+        AFUNIXSocketAddress rsa = socket.getRemoteSocketAddress();
 
-      try {
-        Objects.requireNonNull(rsa);
-      } catch (NullPointerException e) {
-        if (TestUtil.isHaikuOS()) {
-          throw TestUtil.haikuBug18534(e);
-        } else {
-          throw e; // NOPMD.AvoidThrowingNullPointerException
+        try {
+          Objects.requireNonNull(rsa);
+        } catch (NullPointerException e) {
+          if (TestUtil.isHaikuOS()) {
+            throw TestUtil.haikuBug18534(e);
+          } else {
+            throw e; // NOPMD.AvoidThrowingNullPointerException
+          }
         }
+
+        assertEquals(123, rsa.getPort());
+
+        AFUNIXSocket socket1 = FileDescriptorCast.using(socket.getFileDescriptor()).withRemotePort(
+            123).as(AFUNIXSocket.class);
+        assertEquals(socket.getRemoteSocketAddress(), socket1.getRemoteSocketAddress());
+        assertEquals(123, socket1.getRemoteSocketAddress().getPort());
+
+        AFUNIXSocket ss = ass1.accept();
+        assertEquals(123, ss.getLocalPort());
+        assertEquals(123, ss.getLocalSocketAddress().getPort());
       }
-
-      assertEquals(123, rsa.getPort());
-
-      AFUNIXSocket socket1 = FileDescriptorCast.using(socket.getFileDescriptor()).withRemotePort(
-          123).as(AFUNIXSocket.class);
-      assertEquals(socket.getRemoteSocketAddress(), socket1.getRemoteSocketAddress());
-      assertEquals(123, socket1.getRemoteSocketAddress().getPort());
-
-      AFUNIXSocket ss = ass1.accept();
-      assertEquals(123, ss.getLocalPort());
-      assertEquals(123, ss.getLocalSocketAddress().getPort());
     }
   }
 

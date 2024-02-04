@@ -165,3 +165,33 @@ Note that this functionality is only available if the environment supports it (J
 Be sure to check availability with
 
 	if (AFSocket.supports(AFSocketCapability.CAPABILITY_FD_AS_REDIRECT)) {...}
+
+## Important considerations
+
+- On some platforms (e.g., Solaris, Illumos) you may need to re-apply a read timeout (e.g.,
+  using `Socket#setSoTimeout(int)` after obtaining the socket.
+- You may lose Java port information for `AFSocketAddress` implementations that do not
+  encode this information directly (such as `AFUNIXSocketAddress` and `AFTIPCSocketAddress`)
+- The "blocking" state of a socket may be forcibly changed to "blocking" when performing the
+  cast, especially when casting to `Socket`, `DatagramSocket` or `ServerSocket`
+  and any of their subclasses where "blocking" is the expected state.
+- When calling `FileDescriptorCast#using(FileDescriptor)` for a `FileDescriptor` obtained from
+  another socket or other resource in the same JVM (i.e., not from another process), especially for
+  sockets provided by junixsocket itself, there is a chance that the garbage collector may clean up
+  the original socket at an opportune moment, thereby closing the resource underlying the shared
+  file descriptor prematurely.
+  
+  This is considered an edge-case, and deliberately not handled automatically for performance and
+  portability reasons: We would have to do additional reference counting on all FileDescriptor
+  instances, either through patching `FileCleanable` or a shared data structure.
+  
+  The issue can be prevented by keeping a reference to the original object, such as keeping it in
+  an enclosing try-with-resources block or as a member variable, for example. Alternatively, using
+  a "duplicate" file descriptor (via `FileDescriptorCast#duplicating(FileDescriptor)` circumvents this
+  problem, at the cost of using additional system resources.
+- As a consequence of the previous point: For `FileDescriptorCast#using(FileDescriptor)`: when casting file
+  descriptors that belong to a junixsocket-controlled socket, the target socket is configured in a
+  way such that garbage collection will not automatically close the target's underlying file
+  descriptor (but still potentially any file descriptors received from other processes via
+  ancillary messages).
+- The same restrictions as for `#using(FileDescriptor)` apply to `#unsafeUsing(int) as well.

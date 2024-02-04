@@ -47,13 +47,15 @@ class AFCore extends CleanableState {
   private final boolean datagramMode;
 
   private boolean blocking = true;
+  private boolean cleanFd = true;
 
   AFCore(Object observed, FileDescriptor fd, AncillaryDataSupport ancillaryDataSupport,
       boolean datagramMode) {
     super(observed);
     this.datagramMode = datagramMode;
-    this.fd = (fd == null) ? new FileDescriptor() : fd;
     this.ancillaryDataSupport = ancillaryDataSupport;
+
+    this.fd = fd == null ? new FileDescriptor() : fd;
   }
 
   AFCore(Object observed, FileDescriptor fd) {
@@ -62,7 +64,7 @@ class AFCore extends CleanableState {
 
   @Override
   protected void doClean() {
-    if (fd != null && fd.valid()) {
+    if (fd != null && fd.valid() && cleanFd) {
       try {
         doClose();
       } catch (IOException e) {
@@ -72,6 +74,10 @@ class AFCore extends CleanableState {
     if (ancillaryDataSupport != null) {
       ancillaryDataSupport.close();
     }
+  }
+
+  void disableCleanFd() {
+    this.cleanFd = false;
   }
 
   boolean isClosed() {

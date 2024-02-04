@@ -186,6 +186,9 @@ final class NativeUnixSocket {
 
   static native int socketStatus(FileDescriptor fd) throws IOException;
 
+  static native FileDescriptor duplicate(FileDescriptor fdSource, FileDescriptor fdTarget)
+      throws IOException;
+
   static native Class<?> primaryType(FileDescriptor fd) throws IOException;
 
   /**

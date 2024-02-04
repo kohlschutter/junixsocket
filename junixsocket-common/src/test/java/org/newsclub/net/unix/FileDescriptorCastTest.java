@@ -39,6 +39,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ServerSocketChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.Set;
@@ -48,6 +50,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
 import com.kohlschutter.util.IOUtil;
 
 @SuppressWarnings("PMD.CouplingBetweenObjects")
@@ -198,46 +201,130 @@ public class FileDescriptorCastTest {
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
   @Test
   public void testCastGeneric() throws Exception {
-    AFUNIXServerSocketChannel ussc = AFUNIXServerSocketChannel.open();
-    ussc.bind(AFUNIXSocketAddress.ofNewTempFile());
+    try (AFUNIXServerSocketChannel ussc = AFUNIXServerSocketChannel.open()) {
+      ussc.bind(AFUNIXSocketAddress.ofNewTempFile());
 
-    AFGenericServerSocketChannel gssc = FileDescriptorCast.using(ussc.getFileDescriptor()).as(
-        AFGenericServerSocketChannel.class);
+      // NOTE: We're using .duplicating instead of .using, which allows us to not keep a reference
+      // to "ussc" until the end of this method (e.g., by wrapping a try-with-resources).
+      AFGenericServerSocketChannel gssc = FileDescriptorCast.using(ussc.getFileDescriptor()).as(
+          AFGenericServerSocketChannel.class);
 
-    CompletableFuture<@Nullable ConnectionResult> cf = CompletableFuture.supplyAsync(() -> {
-      try {
-        AFGenericSocketChannel sc = gssc.accept();
-        ByteBuffer bb = ByteBuffer.allocate(64);
-        int r = sc.read(bb);
-        if (r != 1) {
-          throw new IllegalStateException("Unexpected result: " + r + " bytes read");
+      CompletableFuture<@Nullable ConnectionResult> cf = CompletableFuture.supplyAsync(() -> {
+        try {
+          AFGenericSocketChannel sc = gssc.accept();
+          ByteBuffer bb = ByteBuffer.allocate(64);
+          int r = sc.read(bb);
+          if (r != 1) {
+            throw new IllegalStateException("Unexpected result: " + r + " bytes read");
+          }
+
+          return new ConnectionResult(bb.get(0), sc.getLocalSocketAddress(), sc
+              .getRemoteSocketAddress());
+        } catch (IOException e) {
+          throw new IllegalStateException(e);
+        }
+      });
+
+      try (AFUNIXSocket sock = AFUNIXSocket.connectTo(ussc.getLocalAddress())) {
+        AFGenericSocket gs = FileDescriptorCast.using(sock.getFileDescriptor()).as(
+            AFGenericSocket.class);
+
+        try {
+          gs.getOutputStream().write(123);
+        } catch (BrokenPipeSocketException e) {
+          try {
+            cf.get();
+          } catch (Exception e2) {
+            e.addSuppressed(e2);
+          }
+          throw e;
         }
 
-        return new ConnectionResult(bb.get(0), sc.getLocalSocketAddress(), sc
-            .getRemoteSocketAddress());
-      } catch (IOException e) {
-        throw new IllegalStateException(e);
-      }
-    });
+        AFGenericSocketAddress lsa = gs.getLocalSocketAddress();
+        if (lsa != null) {
+          assertEquals(AFGenericSocketAddress.class, lsa.getClass());
+        }
+        AFGenericSocketAddress rsa = gs.getRemoteSocketAddress();
+        if (rsa != null) {
+          assertEquals(AFGenericSocketAddress.class, rsa.getClass());
+        }
 
-    try (AFUNIXSocket sock = AFUNIXSocket.connectTo(ussc.getLocalAddress())) {
-      AFGenericSocket gs = FileDescriptorCast.using(sock.getFileDescriptor()).as(
-          AFGenericSocket.class);
-      gs.getOutputStream().write(123);
-
-      AFGenericSocketAddress lsa = gs.getLocalSocketAddress();
-      if (lsa != null) {
-        assertEquals(AFGenericSocketAddress.class, lsa.getClass());
+        ConnectionResult cr = Objects.requireNonNull(cf.get());
+        assertEquals(123, cr.firstByte);
+        assertEquals(gs.getLocalSocketAddress(), cr.remoteSocketAddress);
+        assertEquals(gs.getRemoteSocketAddress(), cr.localSocketAddress);
       }
-      AFGenericSocketAddress rsa = gs.getRemoteSocketAddress();
-      if (rsa != null) {
-        assertEquals(AFGenericSocketAddress.class, rsa.getClass());
+    }
+  }
+
+  @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
+  @Test
+  public void testCastGenericDuplicating() throws Exception {
+    AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
+    Path p = addr.getFile().toPath();
+    try {
+      AFUNIXServerSocketChannel ussc = AFUNIXServerSocketChannel.open();
+      ussc.bind(addr);
+      ussc.setDeleteOnClose(false);
+
+      FileDescriptorCast fdc = FileDescriptorCast.duplicating(ussc.getFileDescriptor());
+      if (fdc == null) {
+        throw new TestAbortedNotAnIssueException("FileDescriptCast.duplicating not supported");
       }
 
-      ConnectionResult cr = Objects.requireNonNull(cf.get());
-      assertEquals(123, cr.firstByte);
-      assertEquals(gs.getLocalSocketAddress(), cr.remoteSocketAddress);
-      assertEquals(gs.getRemoteSocketAddress(), cr.localSocketAddress);
+      ussc.close(); // closes the original file descriptor but not the duplicate
+      // also won't delete the file because we told to it not delete above, otherwise
+      // we would be able to bind but not connect (this is an AF_UNIX-specific issue)
+
+      AFGenericServerSocketChannel gssc = fdc.as(AFGenericServerSocketChannel.class);
+
+      CompletableFuture<@Nullable ConnectionResult> cf = CompletableFuture.supplyAsync(() -> {
+        try {
+          AFGenericSocketChannel sc = gssc.accept();
+          ByteBuffer bb = ByteBuffer.allocate(64);
+          int r = sc.read(bb);
+          if (r != 1) {
+            throw new IllegalStateException("Unexpected result: " + r + " bytes read");
+          }
+
+          return new ConnectionResult(bb.get(0), sc.getLocalSocketAddress(), sc
+              .getRemoteSocketAddress());
+        } catch (IOException e) {
+          throw new IllegalStateException(e);
+        }
+      });
+
+      try (AFUNIXSocket sock = AFUNIXSocket.connectTo(ussc.getLocalAddress())) {
+        AFGenericSocket gs = FileDescriptorCast.using(sock.getFileDescriptor()).as(
+            AFGenericSocket.class);
+
+        try {
+          gs.getOutputStream().write(123);
+        } catch (BrokenPipeSocketException e) {
+          try {
+            cf.get();
+          } catch (Exception e2) {
+            e.addSuppressed(e2);
+          }
+          throw e;
+        }
+
+        AFGenericSocketAddress lsa = gs.getLocalSocketAddress();
+        if (lsa != null) {
+          assertEquals(AFGenericSocketAddress.class, lsa.getClass());
+        }
+        AFGenericSocketAddress rsa = gs.getRemoteSocketAddress();
+        if (rsa != null) {
+          assertEquals(AFGenericSocketAddress.class, rsa.getClass());
+        }
+
+        ConnectionResult cr = Objects.requireNonNull(cf.get());
+        assertEquals(123, cr.firstByte);
+        assertEquals(gs.getLocalSocketAddress(), cr.remoteSocketAddress);
+        assertEquals(gs.getRemoteSocketAddress(), cr.localSocketAddress);
+      }
+    } finally {
+      Files.deleteIfExists(p);
     }
   }
 

@@ -611,3 +611,35 @@ jboolean supportsCastAsRedirect(void) {
     return kRedirectImplConstructor != NULL;
 #endif
 }
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    duplicate
+ * Signature: (Ljava/io/FileDescriptor;Ljava/io/FileDescriptor;)Ljava/io/FileDescriptor;
+ */
+JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_duplicate
+ (JNIEnv *env, jclass  clazz CK_UNUSED, jobject source, jobject target) {
+
+    int sourceFD = _getFD(env, source);
+    if(sourceFD == -1) {
+        // invalid fd, or Windows handle (not yet supported)
+        return NULL;
+    }
+
+    int targetFD = _getFD(env, target);
+
+    if(targetFD == -1) {
+        targetFD = dup(sourceFD);
+    } else {
+        targetFD = dup2(sourceFD, targetFD);
+    }
+
+    if (targetFD >= 0) {
+#  if defined(FD_CLOEXEC)
+        fcntl(targetFD, F_SETFD, FD_CLOEXEC); // best effort
+#  endif
+    }
+
+    _initFD(env, target, targetFD);
+    return target;
+}

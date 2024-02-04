@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -63,18 +64,38 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * OutputStream in = FileDescriptorCast.using(fd).as(OutputStream.class);
  * </code></pre>
  * <p>
- * IMPORTANT: On some platforms (e.g., Solaris, Illumos) you may need to re-apply a read timeout
- * (e.g., using {@link Socket#setSoTimeout(int)}) after obtaining the socket.
- * </p>
+ * <b>Important notes</b>
+ * <ol>
+ * <li>On some platforms (e.g., Solaris, Illumos) you may need to re-apply a read timeout (e.g.,
+ * using {@link Socket#setSoTimeout(int)}) after obtaining the socket.</li>
+ * <li>You may lose Java port information for {@link AFSocketAddress} implementations that do not
+ * encode this information directly (such as {@link AFUNIXSocketAddress} and
+ * {@link AFTIPCSocketAddress}).</li>
+ * <li>The "blocking" state of a socket may be forcibly changed to "blocking" when performing the
+ * cast, especially when casting to {@link Socket}, {@link DatagramSocket} or {@link ServerSocket}
+ * and any of their subclasses where "blocking" is the expected state.</li>
+ * <li>When calling {@link #using(FileDescriptor)} for a {@link FileDescriptor} obtained from
+ * another socket or other resource in the same JVM (i.e., not from another process), especially for
+ * sockets provided by junixsocket itself, there is a chance that the garbage collector may clean up
+ * the original socket at an opportune moment, thereby closing the resource underlying the shared
+ * {@link FileDescriptor} prematurely.
  * <p>
- * Note that you may also lose Java port information for {@link AFSocketAddress} implementations
- * that do not encode this information directly (such as {@link AFUNIXSocketAddress} and
- * {@link AFTIPCSocketAddress}).
- * </p>
+ * This is considered an edge-case, and deliberately not handled automatically for performance and
+ * portability reasons: We would have to do additional reference counting on all FileDescriptor
+ * instances, either through patching {@code FileCleanable} or a shared data structure.
  * <p>
- * Also note that the "blocking" state of a socket may be forcibly changed to "blocking" when
- * performing the cast, especially when casting to {@link Socket}, {@link DatagramSocket} or
- * {@link ServerSocket} and any of their subclasses where "blocking" is the expected state.
+ * The issue can be prevented by keeping a reference to the original object, such as keeping it in
+ * an enclosing try-with-resources block or as a member variable, for example. Alternatively, using
+ * a "duplicate" file descriptor (via {@link #duplicating(FileDescriptor)}) circumvents this
+ * problem, at the cost of using additional system resources.</li>
+ * <li>As a consequence of the previous point: For {@link #using(FileDescriptor)}: when casting file
+ * descriptors that belong to a junixsocket-controlled sockets, the target socket is configured in a
+ * way such that garbage collection will not automatically close the target's underlying file
+ * descriptor (but still potentially any file descriptors received from other processes via
+ * ancillary messages).</li>
+ * <li>The same restrictions as for {@link #using(FileDescriptor)} apply to
+ * {@link #unsafeUsing(int)} as well.</li>
+ * </ol>
  * </p>
  *
  * @author Christian Kohlschütter
@@ -367,6 +388,11 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
 
   /**
    * Creates a {@link FileDescriptorCast} using the given file descriptor.
+   * <p>
+   * Note that if any resource that also references this {@link FileDescriptor} is
+   * garbage-collected, the cleanup for that object may close the referenced {@link FileDescriptor},
+   * thereby resulting in premature connection losses, etc. See {@link #duplicating(FileDescriptor)}
+   * for a solution to this problem.
    *
    * @param fdObj The file descriptor.
    * @return The {@link FileDescriptorCast} instance.
@@ -377,6 +403,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
     if (!fdObj.valid()) {
       throw new IOException("Not a valid file descriptor");
     }
+
     Class<?> primaryType = NativeUnixSocket.isLoaded() ? NativeUnixSocket.primaryType(fdObj) : null;
     if (primaryType == null) {
       primaryType = FileDescriptor.class;
@@ -386,6 +413,34 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
 
     CastingProviderMap map = PRIMARY_TYPE_PROVIDERS_MAP.get(primaryType);
     return new FileDescriptorCast(fdObj, map == null ? GLOBAL_PROVIDERS : map);
+  }
+
+  /**
+   * Creates a {@link FileDescriptorCast} using a <em>duplicate</em> of the given file descriptor.
+   * <p>
+   * Duplicating a file descriptor is performed at the system-level, which means an additional file
+   * descriptor pointing to the same resource as the original is created by the operating system.
+   * <p>
+   * The advantage of using {@link #duplicating(FileDescriptor)} over {@link #using(FileDescriptor)}
+   * is that neither implicit garbage collection nor an explicit call to {@link Closeable#close()}
+   * on a resource owning the original {@link FileDescriptor} affects the availability of the
+   * resource from the target of the cast.
+   *
+   * @param fdObj The file descriptor to duplicate.
+   * @return The {@link FileDescriptorCast} instance.
+   * @throws IOException on error, especially if the given file descriptor is invalid or
+   *           unsupported, or if duplicating fails or is unsupported.
+   */
+  public static FileDescriptorCast duplicating(FileDescriptor fdObj) throws IOException {
+    if (!fdObj.valid()) {
+      throw new IOException("Not a valid file descriptor");
+    }
+
+    FileDescriptor duplicate = NativeUnixSocket.duplicate(fdObj, new FileDescriptor());
+    if (duplicate == null) {
+      throw new IOException("Could not duplicate file descriptor");
+    }
+    return using(duplicate);
   }
 
   /**
@@ -585,6 +640,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   private static <S extends AFSocket<?>> S reconfigure(boolean isChannel, S socket)
       throws IOException {
     reconfigure(isChannel, socket.getChannel());
+    socket.getAFImpl().getCore().disableCleanFd();
     return socket;
   }
 
@@ -592,6 +648,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   private static <S extends AFServerSocket<?>> S reconfigure(boolean isChannel, S socket)
       throws IOException {
     reconfigure(isChannel, socket.getChannel());
+    socket.getAFImpl().getCore().disableCleanFd();
     return socket;
   }
 
@@ -599,6 +656,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   private static <S extends AFDatagramSocket<?>> S reconfigure(boolean isChannel, S socket)
       throws IOException {
     reconfigure(isChannel, socket.getChannel());
+    socket.getAFImpl().getCore().disableCleanFd();
     return socket;
   }
 
