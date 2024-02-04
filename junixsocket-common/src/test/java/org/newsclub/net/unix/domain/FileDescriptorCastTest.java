@@ -370,7 +370,9 @@ public class FileDescriptorCastTest {
         AFUNIXDatagramChannel dc2c = FileDescriptorCast.using(dc2.getFileDescriptor())
             .withRemotePort(123).as(AFUNIXDatagramChannel.class);
 
-        assertEquals(123, getPort(dc1c.getLocalAddress()));
+        if (dc1c.getLocalAddress() != null) { // address may be null on IBM i
+          assertEquals(123, getPort(dc1c.getLocalAddress()));
+        }
         int remotePort = getPort(dc2c.getRemoteAddress());
         if (remotePort == -1) {
           // that's acceptable, too (seen on z/OS)
