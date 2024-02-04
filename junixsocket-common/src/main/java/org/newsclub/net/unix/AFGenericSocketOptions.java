@@ -25,7 +25,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  * @author Christian Kohlschütter
  */
 @NonNullByDefault
- final class AFGenericSocketOptions {
+final class AFGenericSocketOptions {
   private AFGenericSocketOptions() {
     throw new IllegalStateException();
   }

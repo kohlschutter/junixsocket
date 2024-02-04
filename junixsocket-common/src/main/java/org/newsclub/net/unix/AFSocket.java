@@ -620,4 +620,9 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   public static boolean isRunningOnAndroid() {
     return NativeLibraryLoader.isAndroid();
   }
+
+  @Override
+  public void setShutdownOnClose(boolean enabled) {
+    getAFImpl().getCore().setShutdownOnClose(enabled);
+  }
 }

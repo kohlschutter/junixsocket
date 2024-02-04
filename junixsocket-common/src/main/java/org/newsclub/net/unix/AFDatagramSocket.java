@@ -525,4 +525,9 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
 
     return as;
   }
+
+  @Override
+  public void setShutdownOnClose(boolean enabled) {
+    getAFImpl().getCore().setShutdownOnClose(enabled);
+  }
 }

@@ -42,6 +42,7 @@ class AFSocketCore extends AFCore {
   AFSocketAddress socketAddress;
 
   private final AFAddressFamily<?> af;
+  private boolean shutdownOnClose = true;
 
   protected AFSocketCore(Object observed, FileDescriptor fd,
       AncillaryDataSupport ancillaryDataSupport, AFAddressFamily<?> af, boolean datagramMode) {
@@ -56,8 +57,10 @@ class AFSocketCore extends AFCore {
   @Override
   @SuppressWarnings("UnsafeFinalization" /* errorprone */)
   protected void doClose() throws IOException {
-    NativeUnixSocket.shutdown(fd, SHUT_RD_WR);
-    unblockAccepts();
+    if (isShutdownOnClose()) {
+      NativeUnixSocket.shutdown(fd, SHUT_RD_WR);
+      unblockAccepts();
+    }
 
     super.doClose();
   }
@@ -150,5 +153,13 @@ class AFSocketCore extends AFCore {
 
   protected boolean hasPendingAccepts() {
     return pendingAccepts.get() > 0;
+  }
+
+  boolean isShutdownOnClose() {
+    return shutdownOnClose;
+  }
+
+  void setShutdownOnClose(boolean enabled) {
+    this.shutdownOnClose = enabled;
   }
 }

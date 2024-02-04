@@ -33,11 +33,11 @@ import java.nio.channels.SocketChannel;
  * @see AFServerSocketChannel
  * @see AFDatagramChannel
  */
-public interface AFSomeSocketChannel extends Closeable, FileDescriptorAccess {
+public interface AFSomeSocketChannel extends Closeable, FileDescriptorAccess, AFSomeSocketThing {
   /**
    * Checks if the channel is configured blocking. The result may be cached, and therefore not
    * invoke native code to check if the underlying socket is actually configured that way.
-   * 
+   *
    * @return {@code true} if blocking.
    */
   boolean isBlocking();
@@ -49,7 +49,7 @@ public interface AFSomeSocketChannel extends Closeable, FileDescriptorAccess {
    * If the given blocking mode is different from the currently cached blocking mode then this
    * method native code to change it.
    * </p>
-   * 
+   *
    * @param block {@code true} if blocking is desired.
    * @return This channel.
    * @throws IOException on error.

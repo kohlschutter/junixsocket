@@ -441,10 +441,12 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
         caught = e;
       } finally { // NOPMD.DoNotThrowExceptionInFinally
         if (!isBound() || isClosed()) {
-          try {
-            NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
-          } catch (Exception e) {
-            // ignore
+          if (getCore().isShutdownOnClose()) {
+            try {
+              NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
+            } catch (Exception e) {
+              // ignore
+            }
           }
           try {
             NativeUnixSocket.close(si.fd);

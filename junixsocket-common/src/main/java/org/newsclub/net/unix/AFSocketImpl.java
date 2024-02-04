@@ -115,10 +115,12 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
             // (e.g., SocketException: No such file or directory)
             return;
           }
-          try {
-            NativeUnixSocket.shutdown(tmpFd, SHUT_RD_WR);
-          } catch (Exception e) {
-            // ignore
+          if (isShutdownOnClose()) {
+            try {
+              NativeUnixSocket.shutdown(tmpFd, SHUT_RD_WR);
+            } catch (Exception e) {
+              // ignore
+            }
           }
           try {
             NativeUnixSocket.close(tmpFd);
@@ -256,10 +258,12 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         caught = e;
       } finally { // NOPMD.DoNotThrowExceptionInFinally
         if (!isBound() || isClosed()) {
-          try {
-            NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
-          } catch (Exception e) {
-            // ignore
+          if (getCore().isShutdownOnClose()) {
+            try {
+              NativeUnixSocket.shutdown(si.fd, SHUT_RD_WR);
+            } catch (Exception e) {
+              // ignore
+            }
           }
           try {
             NativeUnixSocket.close(si.fd);
@@ -517,7 +521,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     public synchronized void close() throws IOException {
       streamClosed = true;
       FileDescriptor fdesc = core.validFd();
-      if (fdesc != null) {
+      if (fdesc != null && getCore().isShutdownOnClose()) {
         NativeUnixSocket.shutdown(fdesc, SHUT_RD);
       }
 
@@ -617,7 +621,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
       }
       streamClosed = true;
       FileDescriptor fdesc = core.validFd();
-      if (fdesc != null) {
+      if (fdesc != null && getCore().isShutdownOnClose()) {
         NativeUnixSocket.shutdown(fdesc, SHUT_WR);
       }
       closedOutputStream = true;

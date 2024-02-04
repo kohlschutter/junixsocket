@@ -45,7 +45,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  */
 @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.CouplingBetweenObjects"})
 public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSocket implements
-    FileDescriptorAccess {
+    AFSomeSocketThing {
   private final AFSocketImpl<A> implementation;
   private @Nullable A boundEndpoint;
   private final Closeables closeables = new Closeables();
@@ -655,6 +655,11 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   @SuppressWarnings("all")
   public Set<SocketOption<?>> supportedOptions() {
     return getAFImpl().supportedOptions();
+  }
+
+  @Override
+  public void setShutdownOnClose(boolean enabled) {
+    getAFImpl().getCore().setShutdownOnClose(enabled);
   }
 
   // NOTE: We shall re-implement all methods defined in ServerSocket that internally call getImpl()

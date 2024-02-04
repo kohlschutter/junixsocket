@@ -304,4 +304,9 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
   public final String toString() {
     return super.toString() + afSocket.toStringSuffix();
   }
+
+  @Override
+  public void setShutdownOnClose(boolean enabled) {
+    getAFCore().setShutdownOnClose(enabled);
+  }
 }

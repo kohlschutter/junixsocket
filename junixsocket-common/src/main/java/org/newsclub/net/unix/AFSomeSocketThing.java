@@ -17,17 +17,21 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.Closeable;
 import java.net.DatagramSocket;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Marker interface that combines junixsocket-based {@link SocketChannel}s, {@link Socket}s,
- * {@link DatagramChannel}s and {@link DatagramSocket}s.
+ * {@link DatagramChannel}s and {@link DatagramSocket}s, as well as {@link ServerSocket}s and
+ * {@link ServerSocketChannel}s.
  *
  * @author Christian Kohlschütter
  * @see AFSocketPair
@@ -35,14 +39,23 @@ import org.eclipse.jdt.annotation.Nullable;
  * @see AFSocketChannel
  * @see AFDatagramSocket
  * @see AFDatagramChannel
+ * @see AFServerSocket
+ * @see AFServerSocketChannel
  */
-public interface AFSomeSocket extends AFSomeSocketThing {
+public interface AFSomeSocketThing extends Closeable, FileDescriptorAccess {
   /**
-   * Returns the socket's remote socket address, or {@code null} if unavailable/not connected, or if
-   * there was a problem retrieving it.
+   * Returns the socket's local socket address, or {@code null} if unavailable or if there was a
+   * problem retrieving it.
    *
-   * @return The remote socket address, or {@code null}.
+   * @return The local socket address, or {@code null}.
    */
   @Nullable
-  SocketAddress getRemoteSocketAddress();
+  SocketAddress getLocalSocketAddress();
+
+  /**
+   * Configures whether the socket should be shutdown upon {@link #close()}, which is the default.
+   *
+   * @param enabled {@code true} if enabled.
+   */
+  void setShutdownOnClose(boolean enabled);
 }

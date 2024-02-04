@@ -266,4 +266,9 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
   public final void setDeleteOnClose(boolean b) {
     afSocket.setDeleteOnClose(b);
   }
+
+  @Override
+  public void setShutdownOnClose(boolean enabled) {
+    getAFCore().setShutdownOnClose(enabled);
+  }
 }

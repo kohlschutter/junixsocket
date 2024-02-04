@@ -111,7 +111,12 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
   }
 
   @Override
-  public final @Nullable A getLocalAddress() throws IOException {
+  public final @Nullable A getLocalAddress() {
+    return getLocalSocketAddress();
+  }
+
+  @Override
+  public final @Nullable A getLocalSocketAddress() {
     return afSocket.getLocalSocketAddress();
   }
 
@@ -170,4 +175,10 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
   public final void setDeleteOnClose(boolean b) {
     socket().setDeleteOnClose(b);
   }
+
+  @Override
+  public void setShutdownOnClose(boolean enabled) {
+    socket().setShutdownOnClose(enabled);
+  }
+
 }
