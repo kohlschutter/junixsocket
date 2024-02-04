@@ -618,6 +618,10 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_duplicate
     } else {
         targetFD = dup2(sourceFD, targetFD);
     }
+    if(targetFD == -1) {
+        _throwErrnumException(env, errno, NULL);
+        return NULL;
+    }
 
     if (targetFD >= 0) {
 #  if defined(FD_CLOEXEC)
