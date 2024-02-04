@@ -63,7 +63,7 @@ class AFCore extends CleanableState {
   }
 
   @Override
-  protected void doClean() {
+  protected final void doClean() {
     if (fd != null && fd.valid() && cleanFd) {
       try {
         doClose();
