@@ -41,6 +41,8 @@ import org.newsclub.net.unix.AFUNIXSocketCredentials;
 import org.newsclub.net.unix.SocketTestBase;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 import com.kohlschutter.util.ProcessUtil;
 
 /**
@@ -189,6 +191,17 @@ public final class PeerCredentialsTest extends SocketTestBase<AFUNIXSocketAddres
         if (credsDatagramSockets.isEmpty() && !credsSockets.isEmpty()) {
           System.out.println("WARNING: No peer credentials for datagram sockets");
         } else {
+          if (credsSockets != null && !credsSockets.equals(credsDatagramSockets)) {
+            if (credsDatagramSockets.getUid() == 0 && credsDatagramSockets.getGid() == 0) {
+              // seen on AIX (but not IBM i/PASE).
+              throw new TestAbortedWithImportantMessageException(
+                  MessageType.TEST_ABORTED_WITH_ISSUES,
+                  "Credentials received via AFUNIXDatagramSocket returned " + credsDatagramSockets
+                      + ", which may not be correct; expected: " + credsSockets
+                      + ". This could be a problem specific to your operating system");
+            }
+          }
+
           assertEquals(credsSockets, credsDatagramSockets,
               "The credentials received via Socket and via DatagramSocket should be the same");
         }
