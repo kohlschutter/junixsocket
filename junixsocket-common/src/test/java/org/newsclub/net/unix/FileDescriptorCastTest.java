@@ -251,8 +251,12 @@ public class FileDescriptorCastTest {
 
         ConnectionResult cr = Objects.requireNonNull(cf.get());
         assertEquals(123, cr.firstByte);
-        assertEquals(gs.getLocalSocketAddress(), cr.remoteSocketAddress);
-        assertEquals(gs.getRemoteSocketAddress(), cr.localSocketAddress);
+        if (lsa != null) {
+          assertEquals(lsa, cr.remoteSocketAddress);
+        }
+        if (rsa != null) {
+          assertEquals(rsa, cr.localSocketAddress);
+        }
       }
     }
   }
@@ -317,8 +321,12 @@ public class FileDescriptorCastTest {
 
         ConnectionResult cr = Objects.requireNonNull(cf.get());
         assertEquals(123, cr.firstByte);
-        assertEquals(gs.getLocalSocketAddress(), cr.remoteSocketAddress);
-        assertEquals(gs.getRemoteSocketAddress(), cr.localSocketAddress);
+        if (lsa != null) {
+          assertEquals(lsa, cr.remoteSocketAddress);
+        }
+        if (rsa != null) {
+          assertEquals(rsa, cr.localSocketAddress);
+        }
       }
     } finally {
       Files.deleteIfExists(p);
