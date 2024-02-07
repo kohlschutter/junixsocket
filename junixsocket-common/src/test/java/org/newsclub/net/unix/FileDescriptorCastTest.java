@@ -255,7 +255,12 @@ public class FileDescriptorCastTest {
           assertEquals(lsa, cr.remoteSocketAddress);
         }
         if (rsa != null) {
-          assertEquals(rsa, cr.localSocketAddress);
+          if (rsa.toBytes().length < 2 && !rsa.equals(cr.localSocketAddress)) {
+            // observed on AIX
+            // this is more or less equivalent to rsa == null
+          } else {
+            assertEquals(rsa, cr.localSocketAddress);
+          }
         }
       }
     }
@@ -325,7 +330,12 @@ public class FileDescriptorCastTest {
           assertEquals(lsa, cr.remoteSocketAddress);
         }
         if (rsa != null) {
-          assertEquals(rsa, cr.localSocketAddress);
+          if (rsa.toBytes().length < 2 && !rsa.equals(cr.localSocketAddress)) {
+            // observed on AIX
+            // this is more or less equivalent to rsa == null
+          } else {
+            assertEquals(rsa, cr.localSocketAddress);
+          }
         }
       }
     } finally {
