@@ -510,14 +510,14 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
     TestAsyncUtil.runAsyncDelayed(NUM_MILLISECONDS, TimeUnit.MILLISECONDS, () -> {
       keepRunning.set(false);
 
-      TestAsyncUtil.runAsync(() -> {
+      TestAsyncUtil.runAsyncDelayed(1, TimeUnit.SECONDS, () -> {
         try {
           ds.close();
         } catch (IOException e) {
           TestStackTraceUtil.printStackTrace(e);
         }
       });
-      TestAsyncUtil.runAsync(() -> {
+      TestAsyncUtil.runAsyncDelayed(1, TimeUnit.SECONDS, () -> {
         try {
           dc.close();
         } catch (IOException e) {
