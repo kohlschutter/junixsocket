@@ -404,7 +404,7 @@ public final class SSLContextBuilder {
     } else if (msg.contains("HmacPBESHA256")) {
       if ("IBM J9 VM".equals(System.getProperty("java.vm.name"))) {
         String vmVersion = System.getProperty("java.runtime.version", "");
-        if (vmVersion.startsWith("8.0.") && vmVersion.compareTo("8.0.8.") < 0) {
+        if (vmVersion.startsWith("8.0.") && vmVersion.compareTo("8.0.8.") < 0) { // NOPMD
           return new KnownJavaBugIOException(
               "Bug JDK-8267701 detected -- please upgrade your Java release to at least IBM SDK 8.0.8.0; "
                   + "details here: https://www.ibm.com/support/pages/troubleshooting-unable-open-pkcs12-keystores-due-unrecoverablekeyexception",
