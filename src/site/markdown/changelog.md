@@ -10,13 +10,28 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ## Noteworthy changes
 
-**Users of junixsocket are strongly advised to upgrade to version 2.8.3 or newer**
+**Users of junixsocket are strongly advised to upgrade to version 2.9.0 or newer**
 
-### _(2023-XX-XX)_ **junixsocket 2.9.0**
+### _(2024-02-13)_ **junixsocket 2.9.0**
 
-- Fix module-info.java: Don't mark requirements transient (annotations, mysql connector)
+- Add generic socket fallback for FileDescriptors received from other processes
+- Add "dup"/"dup2" support via FileDescriptorCast.duplicating
 - Add listen/accept support to AFDatagramSocket, so we can serve SEQPACKETs
+- Add more SocketException subclasses (such as BrokenPipe-/ConnectionResetSocketException)
+- Add support to make shutdown-upon-close configurable
+- Add support for undocumented "ECLOSED" (errno 3417) condition on IBM i PASE
+- Add test for the "close-during-accept" condition
+- Fix native library loading for AIX/IBM i on Java 15 and newer
+- Fix blocking state when using FileDescriptorCast
+- Fix module-info.java: Don't mark requirements transient (annotations, mysql connector)
+- Fix TIPC tests on some old environments (which didn't time out)
+- Fix compilation for z/OS 32-bit
+- Fix AFServerSocketChannel.getLocalAddress to return AFSocketAddress subclass
+- Fix unnecessary failures in some tests, error handling in selftest
 - Update build/plugin/test/demo dependencies
+- Update crossclang scripts; no longer requires root to install Xcode components
+- Improve error handling on broken Java VMs (e.g., IBM Semeru 8.0.7 and older)
+- Improve demo code, use slf4j-simple for logging
 - Code cleanup
 
 Backwards-incompatible change: Some AF*Socket* classes are now final or no longer declare constructor exceptions.
