@@ -342,6 +342,11 @@ typedef unsigned long socklen_t; /* 64-bits */
 CK_VISIBILITY_INTERNAL
 int jux_mangleErrno(int);
 #   define socket_errno (errno = jux_mangleErrno(errno))
+
+#  if !defined(ECLOSED)
+// IBM i PASE doesn't define "ECLOSED" but we may encounter it
+#    define ECLOSED 3417
+#  endif
 #else
 #  define socket_errno errno
 #endif

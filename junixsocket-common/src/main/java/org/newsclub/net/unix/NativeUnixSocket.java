@@ -144,6 +144,7 @@ final class NativeUnixSocket {
     tryResolveClass(NoSuchDeviceSocketException.class.getName());
     tryResolveClass(BrokenPipeSocketException.class.getName());
     tryResolveClass(ConnectionResetSocketException.class.getName());
+    tryResolveClass(SocketClosedException.class.getName());
   }
 
   private static void tryResolveClass(String className) {

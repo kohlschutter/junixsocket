@@ -35,6 +35,7 @@ typedef enum {
     kExceptionNoSuchDeviceSocketException,
     kExceptionBrokenPipeSocketException,
     kExceptionConnectionResetSocketException,
+    kExceptionSocketClosedException,
     kExceptionMaxExcl
 } ExceptionType;
 

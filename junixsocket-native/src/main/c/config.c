@@ -30,8 +30,11 @@ CK_VISIBILITY_INTERNAL int clock_gettime(int ignored CK_UNUSED, struct timespec 
 # endif
 
 #if defined(_OS400)
+// https://www.ibm.com/docs/en/i/7.5?topic=exceptions-error-conditions
 int jux_mangleErrno(int err) {
     switch(err) {
+        case 3417:
+            return ECLOSED; // just in case IBM i PASE errno.h defines a different value for ECLOSED
         case 3418: // CP3418 Possible APAR condition or hardware failure
                    // https://www.ibm.com/docs/en/i/7.5?topic=ssw_ibm_i_75/apis/gpeern.htm
             return EINVAL;
