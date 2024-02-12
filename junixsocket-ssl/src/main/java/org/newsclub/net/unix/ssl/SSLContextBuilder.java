@@ -399,23 +399,47 @@ public final class SSLContextBuilder {
     if (msg.contains("data isn't an object ID (tag = 48)")) {
       return knownJDKBug(e, "JDK-8202837", "8u312", "11.0.3");
     } else if (msg.contains("HmacPBESHA256 not available")) {
-      return knownJDKBug(e, "JDK-8267701", "8u301", "11.0.12");
+      return knownJDKBug(e, "JDK-8267701", "8u301", "11.0.12",
+          "alternatively try running Java with -Dkeystore.pkcs12.legacy");
+    } else if (msg.contains("HmacPBESHA256")) {
+      if ("IBM J9 VM".equals(System.getProperty("java.vm.name"))) {
+        String vmVersion = System.getProperty("java.runtime.version", "");
+        if (vmVersion.startsWith("8.0.") && vmVersion.compareTo("8.0.8.") < 0) {
+          return new KnownJavaBugIOException(
+              "Bug JDK-8267701 detected -- please upgrade your Java release to at least IBM SDK 8.0.8.0; "
+                  + "details here: https://www.ibm.com/support/pages/troubleshooting-unable-open-pkcs12-keystores-due-unrecoverablekeyexception",
+              e);
+        }
+      }
+      return new KnownJavaBugIOException(
+          "Bug JDK-8267701 detected -- please upgrade your Java release; "
+              + "alternatively try running Java with -Dkeystore.pkcs12.legacy", e);
     }
     return e;
   }
 
   private static KnownJavaBugIOException knownJDKBug(Exception e, String bugId, String java8Version,
       String java11Version) {
+    return knownJDKBug(e, bugId, java8Version, java11Version, null);
+  }
+
+  private static KnownJavaBugIOException knownJDKBug(Exception e, String bugId, String java8Version,
+      String java11Version, String hint) {
+    if (hint == null) {
+      hint = "";
+    } else {
+      hint = "; " + hint;
+    }
     String specVersion = System.getProperty("java.specification.version", "");
     if (specVersion.startsWith("1.")) {
       return new KnownJavaBugIOException("Bug " + bugId + " detected -- please upgrade to Java "
-          + java8Version + " or newer", e);
+          + java8Version + " or newer" + hint, e);
     } else if ("9".equals(specVersion) || "10".equals(specVersion) || "11".equals(specVersion)) {
       return new KnownJavaBugIOException("Bug " + bugId + " detected -- please upgrade to Java "
-          + java11Version + " or newer", e);
+          + java11Version + " or newer" + hint, e);
     } else {
       return new KnownJavaBugIOException("Bug " + bugId
-          + " detected -- please upgrade your Java release", e);
+          + " detected -- please upgrade your Java release" + hint, e);
     }
   }
 
@@ -555,9 +579,13 @@ public final class SSLContextBuilder {
    */
   public SSLContext buildAndDestroyBuilder() throws GeneralSecurityException, IOException,
       DestroyFailedException {
-    SSLContext context = build();
-    destroy();
-    return context;
+    try {
+      SSLContext context = build();
+      destroy();
+      return context;
+    } catch (IOException e) {
+      throw wrapIOExceptionIfJDKBug(e);
+    }
   }
 
   /**
