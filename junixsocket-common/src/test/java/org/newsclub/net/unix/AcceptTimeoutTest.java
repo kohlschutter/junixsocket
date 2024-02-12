@@ -31,6 +31,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,8 @@ import org.opentest4j.AssertionFailedError;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
+import com.kohlschutter.testutil.TestAsyncUtil;
+import com.kohlschutter.testutil.TestStackTraceUtil;
 
 /**
  * Verifies that accept properly times out when an soTimeout was specified.
@@ -221,6 +224,46 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
       try (Socket unused = ss.accept()) {
         fail("Should not be reached");
       }
+    });
+  }
+
+  @Test
+  public void testPendingAcceptCloseServerSocketImmediately() throws Exception {
+    testPendingAcceptCloseServerSocket(false);
+  }
+
+  @Test
+  public void testPendingAcceptCloseServerSocketDelayed() throws Exception {
+    testPendingAcceptCloseServerSocket(true);
+  }
+
+  private void testPendingAcceptCloseServerSocket(boolean delayed) throws Exception {
+    SocketAddress addr = newTempAddress();
+    ServerSocket ss = newServerSocketBindOn(addr);
+
+    Runnable doClose = () -> {
+      try {
+        ss.close();
+      } catch (IOException e) {
+        TestStackTraceUtil.printStackTrace(e);
+      }
+    };
+
+    if (delayed) {
+      TestAsyncUtil.runAsyncDelayed(1, TimeUnit.SECONDS, doClose);
+    } else {
+      doClose.run();
+    }
+
+    assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
+      // Should be SocketClosedException or InvalidArgumentSocketException, but no guarantee
+      assertThrows(SocketException.class, () -> {
+        try (Socket unused = ss.accept()) {
+          fail("Should not be reached");
+        } catch (SocketException e) {
+          throw e;
+        }
+      });
     });
   }
 }
