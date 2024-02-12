@@ -116,7 +116,8 @@ public final class JavaAddressSpecifics implements AddressSpecifics<InetSocketAd
   @Override
   public ServerSocket newServerSocketBindOn(SocketAddress addr) throws IOException {
     InetSocketAddress inetAddr = (InetSocketAddress) addr;
-    if (!inetAddr.getAddress().isAnyLocalAddress()) {
+    InetAddress address = inetAddr.getAddress();
+    if (!address.isAnyLocalAddress() && !address.isLoopbackAddress()) {
       throw new IllegalArgumentException("Not a local address: " + inetAddr);
     }
     return new ServerSocket(inetAddr.getPort());
@@ -132,7 +133,8 @@ public final class JavaAddressSpecifics implements AddressSpecifics<InetSocketAd
   public ServerSocket newServerSocketBindOn(SocketAddress addr, boolean deleteOnClose)
       throws IOException {
     InetSocketAddress inetAddr = (InetSocketAddress) addr;
-    if (!inetAddr.getAddress().isAnyLocalAddress()) {
+    InetAddress address = inetAddr.getAddress();
+    if (!address.isAnyLocalAddress() && !address.isLoopbackAddress()) {
       throw new IllegalArgumentException("Not a local address: " + inetAddr);
     }
     return new ServerSocket(inetAddr.getPort());
