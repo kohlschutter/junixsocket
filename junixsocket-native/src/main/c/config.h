@@ -66,13 +66,19 @@ CK_IGNORE_RESERVED_IDENTIFIER_END
 #include <strings.h>
 #include <limits.h>
 
+#if __TANDEM
+#include <cextdecs.h>
+#endif
+
 CK_IGNORE_UNUSED_MACROS_BEGIN
 #define junixsocket_have_sun_len // might be undef'ed below
 #define junixsocket_have_ancillary // might be undef'ed below
 #define junixsocket_have_pipe2 // might be undef'ed below
 CK_IGNORE_UNUSED_MACROS_END
 
-#if !defined(false)
+#if __TANDEM
+#  include <stdbool.h>
+#elif !defined(false)
 #  define false JNI_FALSE
 #  define true JNI_TRUE
 #  define bool jboolean
@@ -108,7 +114,8 @@ CK_IGNORE_UNUSED_MACROS_END
 #  undef junixsocket_have_pipe2
 #endif
 
-#if !defined(uint64_t) && !defined(_INT64_TYPE) && !defined(_UINT64_T) && !defined(_UINT64_T_DEFINED_)
+#if __TANDEM
+#elif !defined(uint64_t) && !defined(_INT64_TYPE) && !defined(_UINT64_T) && !defined(_UINT64_T_DEFINED_)
 #  ifdef _LP64
 typedef unsigned long uint64_t;
 #  else
@@ -193,6 +200,10 @@ int clock_gettime(int ignored CK_UNUSED, struct timespec *spec);
 
 #if __TOS_MVS__
 // z/OS XLC doesn't have __has_include
+#elif __TANDEM
+#  undef junixsocket_have_sun_len
+#  undef junixsocket_have_pipe2
+#  undef junixsocket_have_ancillary
 #else
 #  if __has_include(<sys/cdefs.h>)
 #    include <sys/cdefs.h>
@@ -240,6 +251,7 @@ extern "C" {
 
 #if __TOS_MVS__
 // z/OS XLC doesn't have __has_include
+#elif __TANDEM
 #else
 
 #if defined(AF_VSOCK) && __has_include(<linux/vm_sockets.h>)
@@ -312,7 +324,7 @@ typedef unsigned long socklen_t; /* 64-bits */
 #undef junixsocket_have_pipe2
 #endif
 
-#if !defined(_WIN32)
+#if !defined(_WIN32) && !defined(__TANDEM)
 #  include <poll.h>
 #endif
 #include <limits.h>

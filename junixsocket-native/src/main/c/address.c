@@ -28,7 +28,7 @@
 // Either we have sun_len (and we can skip the null byte), or we add the null byte at the end
 static const socklen_t SUN_NAME_MAX_LEN = (socklen_t)(sizeof(struct sockaddr_un) - 2);
 
-struct __attribute__((__packed__)) jux_tipc_addr {
+struct CK_STRUCT_PACKED jux_tipc_addr {
     jint addrType;
     jint scope;
     jint a;
@@ -36,13 +36,13 @@ struct __attribute__((__packed__)) jux_tipc_addr {
     jint c;
 };
 
-struct __attribute__((__packed__)) jux_vsock_addr {
+struct CK_STRUCT_PACKED jux_vsock_addr {
     jint reserved1;
     jint port;
     jint cid;
 };
 
-struct __attribute__((__packed__)) jux_system_addr {
+struct CK_STRUCT_PACKED jux_system_addr {
     jint sysaddr;
     jint id;
     jint unit;

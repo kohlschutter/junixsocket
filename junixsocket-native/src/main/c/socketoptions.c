@@ -105,6 +105,9 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
         // Unsupported on z/OS
         return -1;
 #endif
+#if __TANDEM
+        return -1;
+#else
         struct timeval optVal;
         socklen_t optLen = sizeof(optVal);
         int ret = getsockopt(handle, SOL_SOCKET, optID, &optVal, &optLen);
@@ -113,6 +116,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
             return -1;
         }
         return (jint)(optVal.tv_sec * 1000 + optVal.tv_usec / 1000);
+#endif
     } else
 #endif
         if(optID == SO_LINGER) {
@@ -167,7 +171,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
         // Unsupported on z/OS
         return;
 #endif
-
+#if __TANDEM
+#else
         // NOTE: SO_RCVTIMEO == SocketOptions.SO_TIMEOUT = 0x1006
         struct timeval optVal;
         optVal.tv_sec = value / 1000;
@@ -179,6 +184,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
             _throwSockoptErrnumException(env, socket_errno, fd);
             return;
         }
+#endif
         return;
     } else
 #endif

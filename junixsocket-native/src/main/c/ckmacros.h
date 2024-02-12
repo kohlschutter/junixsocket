@@ -142,10 +142,23 @@ _Pragma("GCC diagnostic pop")
 #endif
 
 #define CK_UNUSED __attribute__((__unused__))
+#define CK_STRUCT_PACKED __attribute__((__packed__))
+#define CK_ALIGNED_8 __attribute__((aligned(8)))
 
 #if defined(_WIN32) || defined(__TOS_MVS__)
 #  define CK_VISIBILITY_INTERNAL
 #  define CK_VISIBILITY_DEFAULT
+#elif __TANDEM
+#  define CK_VISIBILITY_INTERNAL
+#  define CK_VISIBILITY_DEFAULT
+#  undef CK_UNUSED
+#  define CK_UNUSED
+#  undef CK_STRUCT_PACKED
+#  define CK_STRUCT_PACKED
+#  undef CK_FALLTHROUGH
+#  define CK_FALLTHROUGH
+#  undef CK_ALIGNED_8
+#  define CK_ALIGNED_8
 #elif __clang
 #  define CK_VISIBILITY_INTERNAL __attribute__((visibility("internal")))
 #  define CK_VISIBILITY_DEFAULT __attribute__((visibility("default")))

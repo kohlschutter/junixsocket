@@ -35,6 +35,9 @@ typedef __int64 jlong;
 
 #if __TOS_MVS__
 #define JNIEXPORT
+#elif __TANDEM
+#define JNIEXPORT
+#define JNICALL
 #else
 #define JNIEXPORT __attribute__((visibility ("default")))
 #endif

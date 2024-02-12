@@ -28,6 +28,8 @@
 
 #if __TOS_MVS__
 #  include <sched.h>
+#elif __TANDEM
+#  include <sched.h>
 #else
 #  if __has_include(<pthread/pthread.h>)
 #    include <pthread/pthread.h>

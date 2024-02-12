@@ -74,7 +74,7 @@ void callObjectSetter(JNIEnv *env, jobject instance, char *methodName,
         return;
     }
 
-    __attribute__((aligned(8))) jobject array[] = {value};
+    CK_ALIGNED_8 jobject array[] = {value};
     (*env)->CallVoidMethodA(env, instance, methodId, (jvalue*)array);
     if ((*env)->ExceptionCheck(env)) {
         return;
