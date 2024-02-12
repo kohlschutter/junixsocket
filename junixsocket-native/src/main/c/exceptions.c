@@ -166,12 +166,15 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
             break;
 #if ECLOSED
         case ECLOSED:
+#endif
+        case ECONNABORTED:
+            // upon accept(2) either ECONNABORTED (seen on macOS) or ECLOSED (seen on IBM i OS/400)
+            // may indicate that the server socket has been closed
             exceptionType = kExceptionSocketClosedException;
             if(fdToClose != NULL) {
                 _closeFd(env, fdToClose, -1);
             }
             break;
-#endif
         case EBADF:
             // close socket fd, so Socket#isClosed returns true
             if(fdToClose != NULL) {
