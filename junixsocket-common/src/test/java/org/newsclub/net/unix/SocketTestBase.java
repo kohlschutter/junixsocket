@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +46,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.newsclub.net.unix.java.JavaAddressSpecifics;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 
 /**
  * Some base functionality for socket tests.
@@ -325,8 +327,14 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
         if (!loop.get()) {
           // ignore
         } else if (handleException(e) != ExceptionHandlingDecision.IGNORE) {
-          e.addSuppressed(caller);
-          exception = e;
+          if (e instanceof TimeoutException
+              && caller instanceof TestAbortedWithImportantMessageException) {
+            caller.addSuppressed(e);
+            exception = caller;
+          } else {
+            e.addSuppressed(caller);
+            exception = e;
+          }
         }
       } catch (Error e) {
         error = e;
