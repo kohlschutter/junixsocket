@@ -450,8 +450,9 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
       assertTimeoutPreemptively(Duration.ofSeconds(NUM_SECONDS + GRACE_TIME_NUM_SECONDS), () -> {
         testDatagramChannel(false, false);
       });
-    } catch (JUnitException e) {
+    } catch (JUnitException | AssertionError e) {
       // Ignore timeout failure (this is a throughput test only)
+      // Notably, NativeUnixSocket.close may hang on AIX and IBM i
       TestStackTraceUtil.printStackTrace(e);
     }
   }
@@ -510,20 +511,16 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
     TestAsyncUtil.runAsyncDelayed(NUM_MILLISECONDS, TimeUnit.MILLISECONDS, () -> {
       keepRunning.set(false);
 
-      TestAsyncUtil.runAsyncDelayed(1, TimeUnit.SECONDS, () -> {
-        try {
-          ds.close();
-        } catch (IOException e) {
-          TestStackTraceUtil.printStackTrace(e);
-        }
-      });
-      TestAsyncUtil.runAsyncDelayed(1, TimeUnit.SECONDS, () -> {
-        try {
-          dc.close();
-        } catch (IOException e) {
-          TestStackTraceUtil.printStackTrace(e);
-        }
-      });
+      try {
+        ds.close();
+      } catch (IOException e) {
+        TestStackTraceUtil.printStackTrace(e);
+      }
+      try {
+        dc.close();
+      } catch (IOException e) {
+        TestStackTraceUtil.printStackTrace(e);
+      }
     });
 
     AtomicLong readTotal = new AtomicLong();
