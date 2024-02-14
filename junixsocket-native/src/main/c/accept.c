@@ -72,7 +72,7 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 
     int serverHandle = _getFD(env, fdServer);
     if(serverHandle < 0) {
-        _throwException(env, kExceptionSocketException, "Socket is closed");
+        _throwException(env, kExceptionSocketClosedException, "Socket is closed");
         return false;
     }
 
