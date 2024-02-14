@@ -259,7 +259,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
               sc.write(bb);
               bb.clear();
             }
-          } catch (SocketException | SocketTimeoutException e) {
+          } catch (SocketException | ClosedChannelException | SocketTimeoutException e) {
             if (keepRunning.get()) {
               throw e;
             } else {
@@ -599,7 +599,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
           int written;
           try {
             written = dc.write(sendBuffer);
-          } catch (SocketException e) {
+          } catch (SocketException | ClosedChannelException | SocketTimeoutException e) {
             if (keepRunning.get()) {
               throw e;
             } else {
