@@ -19,6 +19,11 @@
 #include "config.h"
 #include "capabilities.h"
 
+#if defined(__linux__)
+  #include <sys/socket.h>
+  #include <sys/un.h>
+#endif
+
 #include "filedescriptors.h"
 #include "init.h"
 #include "reflection.h"
@@ -47,6 +52,30 @@ void init_capabilities(JNIEnv *env CK_UNUSED) {
 
 void destroy_capabilities(JNIEnv *env CK_UNUSED) {
 }
+
+#if defined(__linux__)
+static bool checkHasAbstractNamespace(void) {
+    bool hasAbstractNamespace = true;
+
+    struct sockaddr_un addr = {
+        .sun_family = AF_UNIX,
+        .sun_path = "\0junixsocket-capability-abstract\0"
+    };
+
+    int sockFd = socket(AF_UNIX, SOCK_STREAM, 0);
+    if(sockFd != -1) {
+        if(bind(sockFd, (struct sockaddr *)&addr, sizeof(struct sockaddr_un)) == -1) {
+            // typically, ENOENT is returned on NetBSD/FreeBSD
+            if(errno != EADDRINUSE) {
+                hasAbstractNamespace = false;
+            }
+        }
+        close(sockFd);
+    }
+
+    return hasAbstractNamespace;
+}
+#endif
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -83,7 +112,12 @@ defined(SO_PEERCRED) || defined(SO_PEERID) || defined(__NetBSD__) || defined(__s
         // despite earlier claims [1], it's not supported in Windows 10 (yet) [2]
         // [1] https://devblogs.microsoft.com/commandline/af_unix-comes-to-windows/
         // [2] https://github.com/microsoft/WSL/issues/4240
-        capabilities |= CAPABILITY_ABSTRACT_NAMESPACE;
+
+        // Some Linux emulation layers (like NetBSD, FreeBSD) don't support
+        // the abstract socket namespace
+        if(checkHasAbstractNamespace()) {
+            capabilities |= CAPABILITY_ABSTRACT_NAMESPACE;
+        }
 #endif
 
 #if !defined(_WIN32)
