@@ -334,6 +334,10 @@
   "name":"org.newsclub.lib.junixsocket.custom.NarMetadata"
 },
 {
+  "name":"org.newsclub.net.unix.AFGenericSocketAddress",
+  "methods":[{"name":"addressFamily","parameterTypes":[] }]
+},
+{
   "name":"org.newsclub.net.unix.AFSYSTEMSocketAddress",
   "methods":[{"name":"addressFamily","parameterTypes":[] }]
 },
@@ -384,7 +388,7 @@
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"testAcceptWithoutBindToService","parameterTypes":[] }, {"name":"testCatchTimeout","parameterTypes":[] }, {"name":"testTimeoutAfterDelay","parameterTypes":[] }]
+  "methods":[{"name":"testAcceptWithoutBindToService","parameterTypes":[] }, {"name":"testCatchTimeout","parameterTypes":[] }, {"name":"testPendingAcceptCloseServerSocketDelayed","parameterTypes":[] }, {"name":"testPendingAcceptCloseServerSocketImmediately","parameterTypes":[] }, {"name":"testTimeoutAfterDelay","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.AddressUnavailableSocketException"
@@ -403,6 +407,9 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "methods":[{"name":"testAvailableAtClient","parameterTypes":[] }, {"name":"testAvailableAtServer","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.BrokenPipeSocketException"
 },
 {
   "name":"org.newsclub.net.unix.BufferOverflowTest",
@@ -430,6 +437,9 @@
   "methods":[{"name":"issue6test1","parameterTypes":[] }]
 },
 {
+  "name":"org.newsclub.net.unix.ConnectionResetSocketException"
+},
+{
   "name":"org.newsclub.net.unix.DatagramSocketTest",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
@@ -452,7 +462,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testAvailableTypes","parameterTypes":[] }, {"name":"testCastAsInteger","parameterTypes":[] }, {"name":"testInvalidFileDescriptor","parameterTypes":[] }, {"name":"testPipe","parameterTypes":[] }, {"name":"testRandomAccessFile","parameterTypes":[] }, {"name":"testStdout","parameterTypes":[] }, {"name":"testUnsafeCast","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testAvailableTypes","parameterTypes":[] }, {"name":"testCastAsInteger","parameterTypes":[] }, {"name":"testCastGeneric","parameterTypes":[] }, {"name":"testCastGenericDuplicating","parameterTypes":[] }, {"name":"testCastToServerSocketIsSameType","parameterTypes":[] }, {"name":"testInvalidFileDescriptor","parameterTypes":[] }, {"name":"testPipe","parameterTypes":[] }, {"name":"testRandomAccessFile","parameterTypes":[] }, {"name":"testStdout","parameterTypes":[] }, {"name":"testUnsafeCast","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.InetAddressTest",
@@ -532,6 +542,9 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "methods":[{"name":"testByteBufferWithPositionOffset","parameterTypes":[] }, {"name":"testDoubleBindAddressNotReusable","parameterTypes":[] }, {"name":"testDoubleBindAddressReusable","parameterTypes":[] }, {"name":"testNonBlockingConnect","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.SocketClosedException"
 },
 {
   "name":"org.newsclub.net.unix.SocketOptionsTest",
@@ -660,7 +673,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testSeqPacket","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testSeqPacket","parameterTypes":[] }, {"name":"testSeqPacketPair","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.domain.EndOfFileTest",
@@ -831,6 +844,9 @@
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConvertUnixDomainSocketAddress","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.generic.AFGenericSelectorProvider"
 },
 {
   "name":"org.newsclub.net.unix.rmi.AFRMIService",

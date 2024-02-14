@@ -31,13 +31,13 @@
   }, {
     "pattern":"\\Qjunit-platform.properties\\E"
   }, {
-    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.8.0.dylib\\E"
+    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.9.0.dylib\\E"
   }, {
-    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.8.0.nodeps.dylib\\E"
+    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.9.0.nodeps.dylib\\E"
   }, {
-    "pattern":"\\Qlib/aarch64-MacOSX-gcc/jni/libjunixsocket-native-2.8.0.dylib\\E"
+    "pattern":"\\Qlib/aarch64-MacOSX-gcc/jni/libjunixsocket-native-2.9.0.dylib\\E"
   }, {
-    "pattern":"\\Qlib/aarch64-MacOSX-gcc/jni/libjunixsocket-native-2.8.0.nodeps.dylib\\E"
+    "pattern":"\\Qlib/aarch64-MacOSX-gcc/jni/libjunixsocket-native-2.9.0.nodeps.dylib\\E"
   }, {
     "pattern":"\\Qorg/newsclub/net/unix/ssl/juxclient.p12\\E"
   }, {

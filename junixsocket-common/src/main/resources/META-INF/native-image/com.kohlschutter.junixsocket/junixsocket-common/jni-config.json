@@ -94,6 +94,9 @@
   "methods":[{"name":"removeKey","parameterTypes":["java.nio.channels.SelectionKey"] }]
 },
 {
+  "name":"org.newsclub.net.unix.AFGenericServerSocket"
+},
+{
   "name":"org.newsclub.net.unix.AFSelector$PollFd",
   "fields":[
     {"name":"fds"}, 
@@ -142,6 +145,14 @@
   ]
 },
 {
+  "name":"org.newsclub.net.unix.BrokenPipeSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"org.newsclub.net.unix.ConnectionResetSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
   "name":"org.newsclub.net.unix.InvalidArgumentSocketException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
@@ -155,6 +166,10 @@
 },
 {
   "name":"org.newsclub.net.unix.OperationNotSupportedSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"org.newsclub.net.unix.SocketClosedException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {

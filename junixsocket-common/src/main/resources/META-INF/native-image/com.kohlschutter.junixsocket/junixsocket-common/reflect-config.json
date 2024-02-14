@@ -11,6 +11,10 @@
   "name":"org.newsclub.lib.junixsocket.custom.NarMetadata"
 },
 {
+  "name":"org.newsclub.net.unix.AFGenericSocketAddress",
+  "methods":[{"name":"addressFamily","parameterTypes":[] }]
+},
+{
   "name":"org.newsclub.net.unix.AFTIPCSocketAddress",
   "methods":[{"name":"addressFamily","parameterTypes":[] }]
 },
@@ -80,11 +84,20 @@
   "name":"org.newsclub.net.unix.AddressUnavailableSocketException"
 },
 {
+  "name":"org.newsclub.net.unix.BrokenPipeSocketException"
+},
+{
+  "name":"org.newsclub.net.unix.ConnectionResetSocketException"
+},
+{
   "name":"java.util.function.Consumer",
   "queryAllPublicMethods":true
 },
 {
   "name":"[J"
+},
+{
+  "name":"org.newsclub.net.unix.SocketClosedException"
 },
 {
   "name":"[Ljava.lang.StackTraceElement;"
@@ -109,6 +122,9 @@
 },
 {
   "name":"java.util.UUID"
+},
+{
+  "name":"org.newsclub.net.unix.generic.AFGenericSelectorProvider"
 },
 {
   "name":"java.util.concurrent.atomic.AtomicInteger"
