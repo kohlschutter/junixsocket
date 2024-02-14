@@ -255,15 +255,25 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
       doClose.run();
     }
 
-    assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
-      // Should be SocketClosedException or InvalidArgumentSocketException, but no guarantee
-      assertThrows(SocketException.class, () -> {
-        try (Socket unused = ss.accept()) {
-          fail("Should not be reached");
-        } catch (SocketException e) {
-          throw e;
-        }
+    try {
+      assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
+        // Should be SocketClosedException or InvalidArgumentSocketException, but no guarantee
+        assertThrows(SocketException.class, () -> {
+          try (Socket unused = ss.accept()) {
+            fail("Should not be reached");
+          } catch (SocketException e) {
+            throw e;
+          }
+        });
       });
-    });
+    } catch (AssertionFailedError e) {
+      String msg = checkKnownBugAcceptTimeout(addr);
+      if (msg == null) {
+        throw e;
+      } else {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, msg, summaryImportantMessage(msg), e);
+      }
+    }
   }
 }
