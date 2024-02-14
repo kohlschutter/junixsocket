@@ -618,6 +618,26 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_duplicate
     } else {
         targetFD = dup2(sourceFD, targetFD);
     }
+
+#if defined(_WIN32)
+    if(targetFD == -1 && errno == EBADF) {
+        WSAPROTOCOL_INFO protocolInfo;
+        if(WSADuplicateSocket(sourceFD, GetCurrentProcessId(), &protocolInfo) != 0) {
+            _throwErrnumException(env, socket_errno, NULL);
+            return NULL;
+        }
+        SOCKET targetSocket = WSASocket(protocolInfo.iAddressFamily,
+                                        protocolInfo.iSocketType,
+                                        protocolInfo.iProtocol,&protocolInfo, 0, 0);
+        if(targetSocket == INVALID_SOCKET) {
+            _throwErrnumException(env, socket_errno, NULL);
+            return NULL;
+        }
+
+        targetFD = targetSocket;
+    }
+#endif
+
     if(targetFD == -1) {
         _throwErrnumException(env, errno, NULL);
         return NULL;
