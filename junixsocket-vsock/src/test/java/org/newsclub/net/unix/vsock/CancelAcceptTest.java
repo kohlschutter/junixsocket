@@ -17,11 +17,16 @@
  */
 package org.newsclub.net.unix.vsock;
 
+import java.net.SocketTimeoutException;
+
+import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_VSOCK)
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
@@ -30,5 +35,18 @@ public final class CancelAcceptTest extends
 
   public CancelAcceptTest() {
     super(AFVSOCKAddressSpecifics.INSTANCE);
+  }
+
+  @Test
+  @Override
+  public void issue6test1() throws Exception {
+    try {
+      super.issue6test1();
+    } catch (SocketTimeoutException e) {
+      throw new TestAbortedWithImportantMessageException(
+          MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+          "Environment may not be configured for VSOCK. More information at https://kohlschutter.github.io/junixsocket/junixsocket-vsock/",
+          e);
+    }
   }
 }

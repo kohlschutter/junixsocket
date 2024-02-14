@@ -17,11 +17,16 @@
  */
 package org.newsclub.net.unix.vsock;
 
+import java.net.SocketTimeoutException;
+
+import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_VSOCK)
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
@@ -30,5 +35,31 @@ public final class TcpNoDelayTest extends
 
   public TcpNoDelayTest() {
     super(AFVSOCKAddressSpecifics.INSTANCE);
+  }
+
+  @Test
+  @Override
+  public void testStrictImpl() throws Exception {
+    try {
+      super.testStrictImpl();
+    } catch (SocketTimeoutException e) {
+      throw new TestAbortedWithImportantMessageException(
+          MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+          "Environment may not be configured for VSOCK. More information at https://kohlschutter.github.io/junixsocket/junixsocket-vsock/",
+          e);
+    }
+  }
+
+  @Test
+  @Override
+  public void testDefaultImpl() throws Exception {
+    try {
+      super.testDefaultImpl();
+    } catch (SocketTimeoutException e) {
+      throw new TestAbortedWithImportantMessageException(
+          MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+          "Environment may not be configured for VSOCK. More information at https://kohlschutter.github.io/junixsocket/junixsocket-vsock/",
+          e);
+    }
   }
 }
