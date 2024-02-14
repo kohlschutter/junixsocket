@@ -545,7 +545,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
             while (!Thread.interrupted() && keepRunning.get() && !bytesRead.isCancelled()) {
               int read;
               if (readSelector != null) {
-                int numReady = readSelector.select();
+                int numReady = readSelector.select(1000);
                 if (numReady == 0) {
                   continue;
                 }
@@ -590,7 +590,7 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
         }
         while (keepRunning.get()) {
           if (writeSelector != null) {
-            int numReady = writeSelector.select();
+            int numReady = writeSelector.select(1000);
             if (numReady == 0) {
               continue;
             }
