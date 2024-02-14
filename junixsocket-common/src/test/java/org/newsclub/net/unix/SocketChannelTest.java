@@ -205,6 +205,8 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
           connectCall = TestAsyncUtil.supplyAsync(() -> {
             try {
               newSocket().connect(sa);
+            } catch (SocketClosedException e) {
+              // ignore
             } catch (SocketException e) {
               if (connectMustSucceed.get()) {
                 fail("Connect should have succeeded", e);
