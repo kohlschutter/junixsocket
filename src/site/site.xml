@@ -38,6 +38,7 @@
       <item name="Selftest" href="selftest.html" />
       <item name="Add junixsocket to your project"
         href="dependency.html" />
+      <item name="GraalVM support" href="graalvm.html" />
       <!-- <item name="FAQ" href="faq.html" /> -->
     </menu>
 
@@ -72,6 +73,7 @@
       <item name="Cross-Compiling with crossclang"
         href="crosscomp.html" />
       <item name="Developing with Eclipse" href="eclipse.html" />
+      <item name="Developing with Xcode" href="xcode.html" />
       <item name="Release Instructions" href="release.html" />
     </menu>
 
