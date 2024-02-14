@@ -12,7 +12,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 **Users of junixsocket are strongly advised to upgrade to version 2.9.0 or newer**
 
-### _(2024-02-13)_ **junixsocket 2.9.0**
+### _(2024-02-14)_ **junixsocket 2.9.0**
 
 - Add generic socket fallback for FileDescriptors received from other processes
 - Add "dup"/"dup2" support via FileDescriptorCast.duplicating
@@ -28,6 +28,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 - Fix compilation for z/OS 32-bit
 - Fix AFServerSocketChannel.getLocalAddress to return AFSocketAddress subclass
 - Fix unnecessary failures in some tests, error handling in selftest
+- Fix "force override" path parsing for native library on Windows
 - Update build/plugin/test/demo dependencies
 - Update crossclang scripts; no longer requires root to install Xcode components
 - Improve error handling on broken Java VMs (e.g., IBM Semeru 8.0.7 and older)
