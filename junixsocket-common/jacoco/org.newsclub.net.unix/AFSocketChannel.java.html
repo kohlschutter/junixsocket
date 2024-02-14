@@ -39,7 +39,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 <span class="fc" id="L41">public abstract class AFSocketChannel&lt;A extends AFSocketAddress&gt; extends SocketChannel implements</span>
-    AFSomeSocket, AFSocketExtensions {
+    AFSomeSocket, AFSocketExtensions, AFSomeSocketChannel {
   private final @NonNull AFSocket&lt;A&gt; afSocket;
 <span class="fc" id="L44">  private final AtomicBoolean connectPending = new AtomicBoolean(false);</span>
 
@@ -304,5 +304,10 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
   public final String toString() {
 <span class="nc" id="L305">    return super.toString() + afSocket.toStringSuffix();</span>
   }
+
+  @Override
+  public void setShutdownOnClose(boolean enabled) {
+<span class="nc" id="L310">    getAFCore().setShutdownOnClose(enabled);</span>
+<span class="nc" id="L311">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

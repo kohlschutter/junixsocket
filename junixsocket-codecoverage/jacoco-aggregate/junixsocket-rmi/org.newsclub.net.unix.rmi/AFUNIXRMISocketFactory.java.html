@@ -74,19 +74,18 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
    *          {@code null}.
    * @param socketSuffix A string that will be added to the end of each socket filename, or
    *          {@code null}.
-   * @throws IOException on error.
    */
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP2&quot;)
   public AFUNIXRMISocketFactory(final AFNaming naming, final File socketDir,
       final RMIClientSocketFactory defaultClientFactory,
       final RMIServerSocketFactory defaultServerFactory, final String socketPrefix,
-      final String socketSuffix) throws IOException {
-<span class="fc" id="L84">    super(naming, defaultClientFactory, defaultServerFactory);</span>
-<span class="fc" id="L85">    Objects.requireNonNull(socketDir);</span>
-<span class="fc" id="L86">    this.socketDir = socketDir;</span>
-<span class="pc bpc" id="L87" title="1 of 2 branches missed.">    this.socketPrefix = socketPrefix == null ? DEFAULT_SOCKET_FILE_PREFIX : socketPrefix;</span>
-<span class="pc bpc" id="L88" title="1 of 2 branches missed.">    this.socketSuffix = socketSuffix == null ? DEFAULT_SOCKET_FILE_SUFFIX : socketSuffix;</span>
-<span class="fc" id="L89">  }</span>
+      final String socketSuffix) {
+<span class="fc" id="L83">    super(naming, defaultClientFactory, defaultServerFactory);</span>
+<span class="fc" id="L84">    Objects.requireNonNull(socketDir);</span>
+<span class="fc" id="L85">    this.socketDir = socketDir;</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">    this.socketPrefix = socketPrefix == null ? DEFAULT_SOCKET_FILE_PREFIX : socketPrefix;</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">    this.socketSuffix = socketSuffix == null ? DEFAULT_SOCKET_FILE_SUFFIX : socketSuffix;</span>
+<span class="fc" id="L88">  }</span>
 
   /**
    * Creates a new socket factory.
@@ -95,70 +94,67 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
    * @param socketDir The directory to store the sockets in.
    * @param defaultClientFactory The default {@link RMIClientSocketFactory}.
    * @param defaultServerFactory The default {@link RMIServerSocketFactory}.
-   * @throws IOException on error.
    */
   public AFUNIXRMISocketFactory(AFNaming naming, File socketDir,
-      RMIClientSocketFactory defaultClientFactory, RMIServerSocketFactory defaultServerFactory)
-      throws IOException {
-<span class="nc" id="L103">    this(naming, socketDir, defaultClientFactory, defaultServerFactory, null, null);</span>
-<span class="nc" id="L104">  }</span>
+      RMIClientSocketFactory defaultClientFactory, RMIServerSocketFactory defaultServerFactory) {
+<span class="nc" id="L100">    this(naming, socketDir, defaultClientFactory, defaultServerFactory, null, null);</span>
+<span class="nc" id="L101">  }</span>
 
   /**
    * Creates a new socket factory.
    *
    * @param naming The {@link AFNaming} instance to use.
    * @param socketDir The directory to store the sockets in.
-   * @throws IOException on error.
    */
-  public AFUNIXRMISocketFactory(AFNaming naming, File socketDir) throws IOException {
-<span class="nc" id="L114">    this(naming, socketDir, DefaultRMIClientSocketFactory.getInstance(),</span>
-<span class="nc" id="L115">        DefaultRMIServerSocketFactory.getInstance());</span>
-<span class="nc" id="L116">  }</span>
+  public AFUNIXRMISocketFactory(AFNaming naming, File socketDir) {
+<span class="nc" id="L110">    this(naming, socketDir, DefaultRMIClientSocketFactory.getInstance(),</span>
+<span class="nc" id="L111">        DefaultRMIServerSocketFactory.getInstance());</span>
+<span class="nc" id="L112">  }</span>
 
   @Override
   protected AFNaming readNamingInstance(ObjectInput in) throws IOException {
-<span class="fc" id="L120">    socketDir = new File(in.readUTF());</span>
-<span class="fc" id="L121">    int port = in.readInt();</span>
-<span class="fc" id="L122">    return AFUNIXNaming.getInstance(socketDir, port);</span>
+<span class="fc" id="L116">    socketDir = new File(in.readUTF());</span>
+<span class="fc" id="L117">    int port = in.readInt();</span>
+<span class="fc" id="L118">    return AFUNIXNaming.getInstance(socketDir, port);</span>
   }
 
   @Override
   protected void writeNamingInstance(ObjectOutput out, AFNaming naming) throws IOException {
-<span class="fc" id="L127">    out.writeUTF(socketDir.getAbsolutePath());</span>
-<span class="fc" id="L128">    out.writeInt(naming.getRegistryPort());</span>
-<span class="fc" id="L129">  }</span>
+<span class="fc" id="L123">    out.writeUTF(socketDir.getAbsolutePath());</span>
+<span class="fc" id="L124">    out.writeInt(naming.getRegistryPort());</span>
+<span class="fc" id="L125">  }</span>
 
   @Override
   public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-<span class="fc" id="L133">    super.readExternal(in);</span>
+<span class="fc" id="L129">    super.readExternal(in);</span>
 
-<span class="fc" id="L135">    socketPrefix = in.readUTF();</span>
-<span class="fc" id="L136">    socketSuffix = in.readUTF();</span>
-<span class="fc" id="L137">  }</span>
+<span class="fc" id="L131">    socketPrefix = in.readUTF();</span>
+<span class="fc" id="L132">    socketSuffix = in.readUTF();</span>
+<span class="fc" id="L133">  }</span>
 
   @Override
   public void writeExternal(ObjectOutput out) throws IOException {
-<span class="fc" id="L141">    super.writeExternal(out);</span>
+<span class="fc" id="L137">    super.writeExternal(out);</span>
 
-<span class="fc" id="L143">    out.writeUTF(socketPrefix);</span>
-<span class="fc" id="L144">    out.writeUTF(socketSuffix);</span>
-<span class="fc" id="L145">  }</span>
+<span class="fc" id="L139">    out.writeUTF(socketPrefix);</span>
+<span class="fc" id="L140">    out.writeUTF(socketSuffix);</span>
+<span class="fc" id="L141">  }</span>
 
   @Override
   public int hashCode() {
-<span class="pc bpc" id="L149" title="1 of 2 branches missed.">    return socketDir == null ? super.hashCode() : socketDir.hashCode();</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">    return socketDir == null ? super.hashCode() : socketDir.hashCode();</span>
   }
 
   @Override
   public boolean equals(Object other) {
-<span class="pc bpc" id="L154" title="1 of 2 branches missed.">    if (!(other instanceof AFUNIXRMISocketFactory)) {</span>
-<span class="nc" id="L155">      return false;</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">    if (!(other instanceof AFUNIXRMISocketFactory)) {</span>
+<span class="nc" id="L151">      return false;</span>
     }
-<span class="fc" id="L157">    AFUNIXRMISocketFactory sf = (AFUNIXRMISocketFactory) other;</span>
-<span class="pc bpc" id="L158" title="1 of 2 branches missed.">    if (socketDir == null) {</span>
-<span class="nc bnc" id="L159" title="All 2 branches missed.">      return sf == this;</span>
+<span class="fc" id="L153">    AFUNIXRMISocketFactory sf = (AFUNIXRMISocketFactory) other;</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">    if (socketDir == null) {</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">      return sf == this;</span>
     } else {
-<span class="fc" id="L161">      return socketDir.equals(sf.socketDir);</span>
+<span class="fc" id="L157">      return socketDir.equals(sf.socketDir);</span>
     }
   }
 
@@ -168,75 +164,75 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
    * @return The directory.
    */
   public File getSocketDir() {
-<span class="fc" id="L171">    return socketDir;</span>
+<span class="fc" id="L167">    return socketDir;</span>
   }
 
   File getFile(int port) {
-<span class="pc bpc" id="L175" title="1 of 2 branches missed.">    if (isPlainFileSocket()) {</span>
-<span class="nc" id="L176">      return getSocketDir();</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">    if (isPlainFileSocket()) {</span>
+<span class="nc" id="L172">      return getSocketDir();</span>
     } else {
-<span class="fc" id="L178">      Objects.requireNonNull(socketDir);</span>
-<span class="fc" id="L179">      return new File(socketDir, socketPrefix + port + socketSuffix);</span>
+<span class="fc" id="L174">      Objects.requireNonNull(socketDir);</span>
+<span class="fc" id="L175">      return new File(socketDir, socketPrefix + port + socketSuffix);</span>
     }
   }
 
   boolean hasSocketFile(int port) {
-<span class="fc" id="L184">    return getFile(port).exists();</span>
+<span class="fc" id="L180">    return getFile(port).exists();</span>
   }
 
   private boolean isPlainFileSocket() {
-<span class="pc bpc" id="L188" title="1 of 2 branches missed.">    return (getNaming().getRegistryPort() == RMIPorts.PLAIN_FILE_SOCKET);</span>
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">    return (getNaming().getRegistryPort() == RMIPorts.PLAIN_FILE_SOCKET);</span>
   }
 
   @Override
   protected AFUNIXSocketAddress newSocketAddress(int port) throws IOException {
-<span class="fc" id="L193">    return AFUNIXSocketAddress.of(getFile(port), port);</span>
+<span class="fc" id="L189">    return AFUNIXSocketAddress.of(getFile(port), port);</span>
   }
 
   @Override
   protected final AFSocket&lt;?&gt; newConnectedSocket(AFSocketAddress addr) throws IOException {
-<span class="fc" id="L198">    final AFUNIXSocket socket = ((AFUNIXSocketAddress) addr).newConnectedSocket();</span>
-<span class="fc" id="L199">    AFUNIXSocketCredentials creds = socket.getPeerCredentials();</span>
+<span class="fc" id="L194">    final AFUNIXSocket socket = ((AFUNIXSocketAddress) addr).newConnectedSocket();</span>
+<span class="fc" id="L195">    AFUNIXSocketCredentials creds = socket.getPeerCredentials();</span>
 
-<span class="fc" id="L201">    final HostAndPort hap = new HostAndPort(addr.getHostString(), addr.getPort());</span>
-<span class="fc" id="L202">    synchronized (credentials) {</span>
-<span class="pc bpc" id="L203" title="1 of 2 branches missed.">      if (credentials.put(hap, creds) != null) {</span>
+<span class="fc" id="L197">    final HostAndPort hap = new HostAndPort(addr.getHostString(), addr.getPort());</span>
+<span class="fc" id="L198">    synchronized (credentials) {</span>
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">      if (credentials.put(hap, creds) != null) {</span>
         // unexpected
       }
-<span class="fc" id="L206">    }</span>
-<span class="fc" id="L207">    socket.addCloseable(() -&gt; {</span>
-<span class="fc" id="L208">      synchronized (credentials) {</span>
-<span class="fc" id="L209">        credentials.remove(hap);</span>
-<span class="fc" id="L210">      }</span>
-<span class="fc" id="L211">    });</span>
-<span class="fc" id="L212">    return socket;</span>
+<span class="fc" id="L202">    }</span>
+<span class="fc" id="L203">    socket.addCloseable(() -&gt; {</span>
+<span class="fc" id="L204">      synchronized (credentials) {</span>
+<span class="fc" id="L205">        credentials.remove(hap);</span>
+<span class="fc" id="L206">      }</span>
+<span class="fc" id="L207">    });</span>
+<span class="fc" id="L208">    return socket;</span>
   }
 
   @Override
   public String toString() {
-<span class="fc" id="L217">    return super.toString() + //</span>
+<span class="fc" id="L213">    return super.toString() + //</span>
         &quot;[path=&quot; + socketDir + //
-<span class="pc bpc" id="L219" title="1 of 2 branches missed.">        (isPlainFileSocket() ? &quot;&quot; : //</span>
-<span class="fc" id="L220">            &quot;;prefix=&quot; + socketPrefix + &quot;;suffix=&quot; + socketSuffix) + &quot;]&quot;;</span>
+<span class="pc bpc" id="L215" title="1 of 2 branches missed.">        (isPlainFileSocket() ? &quot;&quot; : //</span>
+<span class="fc" id="L216">            &quot;;prefix=&quot; + socketPrefix + &quot;;suffix=&quot; + socketSuffix) + &quot;]&quot;;</span>
   }
 
   @Override
   public void close() throws IOException {
-<span class="fc" id="L225">    synchronized (credentials) {</span>
-<span class="fc" id="L226">      credentials.clear();</span>
-<span class="fc" id="L227">    }</span>
-<span class="fc" id="L228">    super.close();</span>
-<span class="fc" id="L229">  }</span>
+<span class="fc" id="L221">    synchronized (credentials) {</span>
+<span class="fc" id="L222">      credentials.clear();</span>
+<span class="fc" id="L223">    }</span>
+<span class="fc" id="L224">    super.close();</span>
+<span class="fc" id="L225">  }</span>
 
   AFUNIXSocketCredentials peerCredentialsFor(RemotePeerInfo data) {
-<span class="fc" id="L232">    synchronized (credentials) {</span>
-<span class="fc" id="L233">      return credentials.get(new HostAndPort(data.host, data.port));</span>
+<span class="fc" id="L228">    synchronized (credentials) {</span>
+<span class="fc" id="L229">      return credentials.get(new HostAndPort(data.host, data.port));</span>
     }
   }
 
   @Override
   boolean hasRegisteredPort(int port) {
-<span class="fc" id="L239">    return hasSocketFile(port);</span>
+<span class="fc" id="L235">    return hasSocketFile(port);</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

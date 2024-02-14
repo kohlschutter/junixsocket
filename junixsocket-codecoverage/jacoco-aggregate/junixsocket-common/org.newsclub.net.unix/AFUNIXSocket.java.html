@@ -204,7 +204,7 @@ public final class AFUNIXSocket extends AFSocket&lt;AFUNIXSocketAddress&gt; impl
 <span class="fc" id="L204">      try (AFUNIXServerSocket server = addr.newBoundServerSocket()) {</span>
 <span class="fc" id="L205">        Thread t = new Thread(() -&gt; {</span>
           try {
-<span class="fc" id="L207">            try (AFUNIXSocket client = server.accept()) {</span>
+<span class="fc" id="L207">            try (AFUNIXSocket client = server.accept()) { // NOPMD.UseTryWithResources</span>
 <span class="fc" id="L208">              System.out.println(&quot;Server accepted client connection&quot;);</span>
 <span class="fc" id="L209">              try (SocketChannel chann = client.getChannel()) {</span>
 <span class="fc" id="L210">                ByteBuffer bb = ByteBuffer.allocate(64).order(ByteOrder.BIG_ENDIAN);</span>
@@ -258,4 +258,4 @@ public final class AFUNIXSocket extends AFSocket&lt;AFUNIXSocketAddress&gt; impl
     }
 <span class="fc" id="L259">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

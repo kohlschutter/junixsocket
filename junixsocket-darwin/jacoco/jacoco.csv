@@ -12,6 +12,6 @@ junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMDatagramChannel,7
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMSocket,73,3,6,0,17,1,13,1,10,1
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMSocketOptions,6,0,0,0,2,0,1,0,1,0
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMServerSocket,51,0,0,0,12,0,11,0,11,0
-junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMDatagramSocket,20,33,0,0,4,8,4,6,4,6
+junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMDatagramSocket,25,33,0,0,5,8,5,6,5,6
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMSocketPair,11,0,0,0,4,0,3,0,3,0
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMSocketChannel,5,0,0,0,2,0,1,0,1,0

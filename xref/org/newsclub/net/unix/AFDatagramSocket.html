@@ -36,37 +36,37 @@
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> java.net.SocketImpl;
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> java.nio.channels.AlreadyBoundException;
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> java.nio.channels.DatagramChannel;
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.atomic.AtomicBoolean;
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> org.eclipse.jdt.annotation.Nullable;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment"> * A {@link DatagramSocket} implementation that works with junixsocket.</em>
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment"> * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.</em>
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment"> * @author Christian Kohlschütter</em>
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> AFDatagramSocket&lt;A <strong class="jxr_keyword">extends</strong> AFSocketAddress&gt; <strong class="jxr_keyword">extends</strong> <a name="DatagramSocketShim" href="../../../../org/newsclub/net/unix/DatagramSocketShim.html#DatagramSocketShim">DatagramSocketShim</a>
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>      <strong class="jxr_keyword">implements</strong> AFSomeSocket, <a name="AFSocketExtensions" href="../../../../org/newsclub/net/unix/AFSocketExtensions.html#AFSocketExtensions">AFSocketExtensions</a> {
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> InetSocketAddress WILDCARD_ADDRESS = <strong class="jxr_keyword">new</strong> InetSocketAddress(0);
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AFDatagramSocketImpl&lt;A&gt; impl;
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="AncillaryDataSupport" href="../../../../org/newsclub/net/unix/AncillaryDataSupport.html#AncillaryDataSupport">AncillaryDataSupport</a> ancillaryDataSupport;
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AtomicBoolean created = <strong class="jxr_keyword">new</strong> AtomicBoolean(false);
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AtomicBoolean deleteOnClose = <strong class="jxr_keyword">new</strong> AtomicBoolean(<strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>    @SuppressWarnings(<span class="jxr_string">"this-escape"</span>)
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AFDatagramChannel&lt;A&gt; channel = newChannel();
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>    <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">   * Creates a new {@link AFDatagramSocket} instance.</em>
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">   * @param impl The corresponding {@link SocketImpl} class.</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">   * @throws IOException on error.</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> java.nio.channels.IllegalBlockingModeException;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> java.util.concurrent.atomic.AtomicBoolean;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.eclipse.jdt.annotation.Nullable;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> * A {@link DatagramSocket} implementation that works with junixsocket.</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment"> * @param &lt;A&gt; The concrete {@link AFSocketAddress} that is supported by this type.</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment"> * @author Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> AFDatagramSocket&lt;A <strong class="jxr_keyword">extends</strong> AFSocketAddress&gt; <strong class="jxr_keyword">extends</strong> <a name="DatagramSocketShim" href="../../../../org/newsclub/net/unix/DatagramSocketShim.html#DatagramSocketShim">DatagramSocketShim</a>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">implements</strong> AFSomeSocket, <a name="AFSocketExtensions" href="../../../../org/newsclub/net/unix/AFSocketExtensions.html#AFSocketExtensions">AFSocketExtensions</a> {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> InetSocketAddress WILDCARD_ADDRESS = <strong class="jxr_keyword">new</strong> InetSocketAddress(0);
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AFDatagramSocketImpl&lt;A&gt; impl;
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="AncillaryDataSupport" href="../../../../org/newsclub/net/unix/AncillaryDataSupport.html#AncillaryDataSupport">AncillaryDataSupport</a> ancillaryDataSupport;
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AtomicBoolean created = <strong class="jxr_keyword">new</strong> AtomicBoolean(false);
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AtomicBoolean deleteOnClose = <strong class="jxr_keyword">new</strong> AtomicBoolean(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>    @SuppressWarnings(<span class="jxr_string">"this-escape"</span>)
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AFDatagramChannel&lt;A&gt; channel = newChannel();
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>    <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">   * Creates a new {@link AFDatagramSocket} instance.</em>
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">   * @param impl The corresponding {@link SocketImpl} class.</em>
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>    <strong class="jxr_keyword">protected</strong> <a name="AFDatagramSocket" href="../../../../org/newsclub/net/unix/AFDatagramSocket.html#AFDatagramSocket">AFDatagramSocket</a>(<strong class="jxr_keyword">final</strong> AFDatagramSocketImpl&lt;A&gt; impl) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>    <strong class="jxr_keyword">protected</strong> <a name="AFDatagramSocket" href="../../../../org/newsclub/net/unix/AFDatagramSocket.html#AFDatagramSocket">AFDatagramSocket</a>(<strong class="jxr_keyword">final</strong> AFDatagramSocketImpl&lt;A&gt; impl) {
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">super</strong>(impl);
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>      <strong class="jxr_keyword">this</strong>.impl = impl;
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">this</strong>.ancillaryDataSupport = impl.ancillaryDataSupport;
@@ -462,9 +462,85 @@
 <a class="jxr_linenumber" name="L454" href="#L454">454</a>     getAFImpl().getCore().setOption(name, value);
 <a class="jxr_linenumber" name="L455" href="#L455">455</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L456" href="#L456">456</a>   }
-<a class="jxr_linenumber" name="L457" href="#L457">457</a> }
+<a class="jxr_linenumber" name="L457" href="#L457">457</a> 
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L459" href="#L459">459</a> <em class="jxr_javadoccomment">   * Accepts a connection to this socket. Note that 1., the socket must be in {@code listen} state</em>
+<a class="jxr_linenumber" name="L460" href="#L460">460</a> <em class="jxr_javadoccomment">   * by calling {@link #bind(SocketAddress)}, followed by {@link #listen(int)}, and 2., the socket</em>
+<a class="jxr_linenumber" name="L461" href="#L461">461</a> <em class="jxr_javadoccomment">   * type must allow listen/accept. This is true for {@link AFSocketType#SOCK_SEQPACKET} AF_UNIX</em>
+<a class="jxr_linenumber" name="L462" href="#L462">462</a> <em class="jxr_javadoccomment">   * sockets, for example.</em>
+<a class="jxr_linenumber" name="L463" href="#L463">463</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L464" href="#L464">464</a> <em class="jxr_javadoccomment">   * @return The accepted datagram socket.</em>
+<a class="jxr_linenumber" name="L465" href="#L465">465</a> <em class="jxr_javadoccomment">   * @throws IOException on error.</em>
+<a class="jxr_linenumber" name="L466" href="#L466">466</a> <em class="jxr_javadoccomment">   * @see #listen(int)</em>
+<a class="jxr_linenumber" name="L467" href="#L467">467</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>   <strong class="jxr_keyword">public</strong> AFDatagramSocket&lt;A&gt; accept() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>     <strong class="jxr_keyword">return</strong> accept1(<strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>   }
+<a class="jxr_linenumber" name="L471" href="#L471">471</a> 
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L473" href="#L473">473</a> <em class="jxr_javadoccomment">   * Sets this socket into "listen" state, which allows subsequent calls to {@link #accept()}</em>
+<a class="jxr_linenumber" name="L474" href="#L474">474</a> <em class="jxr_javadoccomment">   * receive any connection attempt. Note that 1., the socket must be bound to a local address using</em>
+<a class="jxr_linenumber" name="L475" href="#L475">475</a> <em class="jxr_javadoccomment">   * {@link #bind(SocketAddress)}, and 2., the socket type must allow listen/accept. This is true</em>
+<a class="jxr_linenumber" name="L476" href="#L476">476</a> <em class="jxr_javadoccomment">   * for {@link AFSocketType#SOCK_SEQPACKET} AF_UNIX sockets, for example.</em>
+<a class="jxr_linenumber" name="L477" href="#L477">477</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L478" href="#L478">478</a> <em class="jxr_javadoccomment">   * @param backlog The backlog, or {@code 0} for default.</em>
+<a class="jxr_linenumber" name="L479" href="#L479">479</a> <em class="jxr_javadoccomment">   * @throws IOException on error.</em>
+<a class="jxr_linenumber" name="L480" href="#L480">480</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> listen(<strong class="jxr_keyword">int</strong> backlog) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>     FileDescriptor fdesc = getAFImpl().getCore().validFdOrException();
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>     <strong class="jxr_keyword">if</strong> (backlog &lt;= 0) {
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>       backlog = 50;
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>     }
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>     NativeUnixSocket.listen(fdesc, backlog);
+<a class="jxr_linenumber" name="L487" href="#L487">487</a>   }
+<a class="jxr_linenumber" name="L488" href="#L488">488</a> 
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L490" href="#L490">490</a> <em class="jxr_javadoccomment">   * Returns a new {@link AFDatagramSocket} instance to be used for {@link #accept()}, i.e., no</em>
+<a class="jxr_linenumber" name="L491" href="#L491">491</a> <em class="jxr_javadoccomment">   * {@link FileDescriptor} is associated.</em>
+<a class="jxr_linenumber" name="L492" href="#L492">492</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L493" href="#L493">493</a> <em class="jxr_javadoccomment">   * @return The new instance.</em>
+<a class="jxr_linenumber" name="L494" href="#L494">494</a> <em class="jxr_javadoccomment">   * @throws IOException on error.</em>
+<a class="jxr_linenumber" name="L495" href="#L495">495</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>   <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">abstract</strong> AFDatagramSocket&lt;A&gt; newDatagramSocketInstance() <strong class="jxr_keyword">throws</strong> IOException;
+<a class="jxr_linenumber" name="L497" href="#L497">497</a> 
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>   <em class="jxr_comment">// CPD-OFF</em>
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>   AFDatagramSocket&lt;A&gt; accept1(<strong class="jxr_keyword">boolean</strong> throwOnFail) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L500" href="#L500">500</a>     AFDatagramSocket&lt;A&gt; as = newDatagramSocketInstance();
+<a class="jxr_linenumber" name="L501" href="#L501">501</a> 
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>     <strong class="jxr_keyword">boolean</strong> success = getAFImpl().accept0(as.getAFImpl(false));
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>     <strong class="jxr_keyword">if</strong> (isClosed()) {
+<a class="jxr_linenumber" name="L504" href="#L504">504</a>       <em class="jxr_comment">// We may have connected to the socket to unblock it</em>
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a name="SocketClosedException" href="../../../../org/newsclub/net/unix/SocketClosedException.html#SocketClosedException">SocketClosedException</a>(<span class="jxr_string">"Socket is closed"</span>);
+<a class="jxr_linenumber" name="L506" href="#L506">506</a>     }
+<a class="jxr_linenumber" name="L507" href="#L507">507</a> 
+<a class="jxr_linenumber" name="L508" href="#L508">508</a>     <strong class="jxr_keyword">if</strong> (!success) {
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>       <strong class="jxr_keyword">if</strong> (throwOnFail) {
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>         <strong class="jxr_keyword">if</strong> (getChannel().isBlocking()) {
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>           <em class="jxr_comment">// unexpected</em>
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>           <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L513" href="#L513">513</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L514" href="#L514">514</a>           <em class="jxr_comment">// non-blocking socket, nothing to accept</em>
+<a class="jxr_linenumber" name="L515" href="#L515">515</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalBlockingModeException();
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>         }
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>       } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L518" href="#L518">518</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>       }
+<a class="jxr_linenumber" name="L520" href="#L520">520</a>     }
+<a class="jxr_linenumber" name="L521" href="#L521">521</a> 
+<a class="jxr_linenumber" name="L522" href="#L522">522</a>     as.getAFImpl(<strong class="jxr_keyword">true</strong>); <em class="jxr_comment">// trigger create</em>
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>     as.connect(AFSocketAddress.INTERNAL_DUMMY_CONNECT);
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>     as.getAFImpl().updatePorts(getAFImpl().getLocalPort1(), getAFImpl().getRemotePort());
+<a class="jxr_linenumber" name="L525" href="#L525">525</a> 
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>     <strong class="jxr_keyword">return</strong> as;
+<a class="jxr_linenumber" name="L527" href="#L527">527</a>   }
+<a class="jxr_linenumber" name="L528" href="#L528">528</a> 
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>   @Override
+<a class="jxr_linenumber" name="L530" href="#L530">530</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setShutdownOnClose(<strong class="jxr_keyword">boolean</strong> enabled) {
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>     getAFImpl().getCore().setShutdownOnClose(enabled);
+<a class="jxr_linenumber" name="L532" href="#L532">532</a>   }
+<a class="jxr_linenumber" name="L533" href="#L533">533</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2024 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>

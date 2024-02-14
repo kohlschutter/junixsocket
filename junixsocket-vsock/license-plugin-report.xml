@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1699795476891">
-    <module artifactId="junixsocket-vsock" groupId="com.kohlschutter.junixsocket" version="2.8.3"/>
+<licensePluginReport goal="CHECK" timestamp="1707933065989">
+    <module artifactId="junixsocket-vsock" groupId="com.kohlschutter.junixsocket" version="2.9.0"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKDatagramChannel.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/vsock/AFVSOCKDatagramSocket.java" result="PRESENT"/>

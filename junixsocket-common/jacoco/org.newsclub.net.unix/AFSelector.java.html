@@ -48,61 +48,63 @@ final class AFSelector extends AbstractSelector {
       keysRegisteredKeySet);
 
 <span class="fc" id="L50">  private final AtomicInteger selectCount = new AtomicInteger(0);</span>
-<span class="fc" id="L51">  private final MapValueSet&lt;SelectionKey, Integer&gt; selectedKeysSet =</span>
-<span class="fc" id="L52">      new MapValueSet&lt;SelectionKey, Integer&gt;(keysRegistered, selectCount::get, 0);</span>
-<span class="fc" id="L53">  private final Set&lt;SelectionKey&gt; selectedKeysPublic = new UngrowableSet&lt;&gt;(selectedKeysSet);</span>
 
-<span class="fc" id="L55">  private PollFd pollFd = null;</span>
+<span class="fc" id="L52">  @SuppressWarnings(&quot;PMD.LooseCoupling&quot;)</span>
+  private final MapValueSet&lt;SelectionKey, Integer&gt; selectedKeysSet =
+<span class="fc" id="L54">      new MapValueSet&lt;SelectionKey, Integer&gt;(keysRegistered, selectCount::get, 0);</span>
+<span class="fc" id="L55">  private final Set&lt;SelectionKey&gt; selectedKeysPublic = new UngrowableSet&lt;&gt;(selectedKeysSet);</span>
+
+<span class="fc" id="L57">  private PollFd pollFd = null;</span>
 
   AFSelector(AFSelectorProvider&lt;?&gt; provider) throws IOException {
-<span class="fc" id="L58">    super(provider);</span>
+<span class="fc" id="L60">    super(provider);</span>
 
-<span class="fc" id="L60">    this.selectorPipe = AFUNIXSelectorProvider.getInstance().openSelectablePipe();</span>
-<span class="fc" id="L61">    this.selectorPipePollFd = new PollFd(selectorPipe.sourceFD());</span>
-<span class="fc" id="L62">  }</span>
+<span class="fc" id="L62">    this.selectorPipe = AFUNIXSelectorProvider.getInstance().openSelectablePipe();</span>
+<span class="fc" id="L63">    this.selectorPipePollFd = new PollFd(selectorPipe.sourceFD());</span>
+<span class="fc" id="L64">  }</span>
 
   @Override
   protected SelectionKey register(AbstractSelectableChannel ch, int ops, Object att) {
-<span class="fc" id="L66">    AFSelectionKey key = new AFSelectionKey(this, ch, ops, att);</span>
-<span class="fc" id="L67">    synchronized (this) {</span>
-<span class="fc" id="L68">      pollFd = null;</span>
-<span class="fc" id="L69">      selectedKeysSet.markRemoved(key);</span>
-<span class="fc" id="L70">    }</span>
-<span class="fc" id="L71">    return key;</span>
+<span class="fc" id="L68">    AFSelectionKey key = new AFSelectionKey(this, ch, ops, att);</span>
+<span class="fc" id="L69">    synchronized (this) {</span>
+<span class="fc" id="L70">      pollFd = null;</span>
+<span class="fc" id="L71">      selectedKeysSet.markRemoved(key);</span>
+<span class="fc" id="L72">    }</span>
+<span class="fc" id="L73">    return key;</span>
   }
 
   @Override
   public Set&lt;SelectionKey&gt; keys() {
-<span class="fc" id="L76">    return keysRegisteredPublic;</span>
+<span class="fc" id="L78">    return keysRegisteredPublic;</span>
   }
 
   @Override
   public Set&lt;SelectionKey&gt; selectedKeys() {
-<span class="fc" id="L81">    return selectedKeysPublic;</span>
+<span class="fc" id="L83">    return selectedKeysPublic;</span>
   }
 
   @Override
   public int selectNow() throws IOException {
-<span class="fc" id="L86">    return select0(0);</span>
+<span class="fc" id="L88">    return select0(0);</span>
   }
 
   @Override
   public int select(long timeout) throws IOException {
-<span class="pc bpc" id="L91" title="1 of 2 branches missed.">    if (timeout &gt; Integer.MAX_VALUE) {</span>
-<span class="nc" id="L92">      timeout = Integer.MAX_VALUE;</span>
-<span class="pc bpc" id="L93" title="1 of 2 branches missed.">    } else if (timeout &lt; 0) {</span>
-<span class="nc" id="L94">      throw new IllegalArgumentException(&quot;Timeout must not be negative&quot;);</span>
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">    if (timeout &gt; Integer.MAX_VALUE) {</span>
+<span class="nc" id="L94">      timeout = Integer.MAX_VALUE;</span>
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">    } else if (timeout &lt; 0) {</span>
+<span class="nc" id="L96">      throw new IllegalArgumentException(&quot;Timeout must not be negative&quot;);</span>
     }
 
-<span class="fc" id="L97">    return select0((int) timeout);</span>
+<span class="fc" id="L99">    return select0((int) timeout);</span>
   }
 
   @Override
   public int select() throws IOException {
     try {
-<span class="fc" id="L103">      return select0(-1);</span>
-<span class="nc" id="L104">    } catch (SocketTimeoutException e) {</span>
-<span class="nc" id="L105">      return 0;</span>
+<span class="fc" id="L105">      return select0(-1);</span>
+<span class="nc" id="L106">    } catch (SocketTimeoutException e) {</span>
+<span class="nc" id="L107">      return 0;</span>
     }
   }
 
@@ -110,220 +112,220 @@ final class AFSelector extends AbstractSelector {
   private int select0(int timeout) throws IOException {
     PollFd pfd;
 
-<span class="fc" id="L113">    int selectId = updateSelectCount();</span>
+<span class="fc" id="L115">    int selectId = updateSelectCount();</span>
 
-<span class="fc" id="L115">    synchronized (this) {</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">      if (!isOpen()) {</span>
-<span class="fc" id="L117">        throw new ClosedSelectorException();</span>
+<span class="fc" id="L117">    synchronized (this) {</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">      if (!isOpen()) {</span>
+<span class="fc" id="L119">        throw new ClosedSelectorException();</span>
       }
 
-<span class="fc" id="L120">      pfd = pollFd = initPollFd(pollFd);</span>
-<span class="fc" id="L121">    }</span>
+<span class="fc" id="L122">      pfd = pollFd = initPollFd(pollFd);</span>
+<span class="fc" id="L123">    }</span>
     int num;
     try {
-<span class="fc" id="L124">      begin();</span>
-<span class="fc" id="L125">      num = NativeUnixSocket.poll(pfd, timeout);</span>
+<span class="fc" id="L126">      begin();</span>
+<span class="fc" id="L127">      num = NativeUnixSocket.poll(pfd, timeout);</span>
     } finally {
-<span class="fc" id="L127">      end();</span>
+<span class="fc" id="L129">      end();</span>
     }
-<span class="fc" id="L129">    synchronized (this) {</span>
-<span class="fc" id="L130">      pfd = pollFd;</span>
-<span class="pc bpc" id="L131" title="1 of 2 branches missed.">      if (pfd != null) {</span>
-<span class="fc" id="L132">        AFSelectionKey[] keys = pfd.keys;</span>
-<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        if (keys != null) {</span>
-<span class="fc bfc" id="L134" title="All 2 branches covered.">          for (AFSelectionKey key : keys) {</span>
-<span class="pc bpc" id="L135" title="1 of 4 branches missed.">            if (key != null &amp;&amp; key.hasOpInvalid()) {</span>
-<span class="nc" id="L136">              SelectableChannel ch = key.channel();</span>
-<span class="nc bnc" id="L137" title="All 4 branches missed.">              if (ch != null &amp;&amp; ch.isOpen()) {</span>
-<span class="nc" id="L138">                ch.close();</span>
+<span class="fc" id="L131">    synchronized (this) {</span>
+<span class="fc" id="L132">      pfd = pollFd;</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">      if (pfd != null) {</span>
+<span class="fc" id="L134">        AFSelectionKey[] keys = pfd.keys;</span>
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">        if (keys != null) {</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">          for (AFSelectionKey key : keys) {</span>
+<span class="pc bpc" id="L137" title="1 of 4 branches missed.">            if (key != null &amp;&amp; key.hasOpInvalid()) {</span>
+<span class="nc" id="L138">              SelectableChannel ch = key.channel();</span>
+<span class="nc bnc" id="L139" title="All 4 branches missed.">              if (ch != null &amp;&amp; ch.isOpen()) {</span>
+<span class="nc" id="L140">                ch.close();</span>
               }
             }
           }
         }
       }
-<span class="fc bfc" id="L144" title="All 2 branches covered.">      if (num &gt; 0) {</span>
-<span class="fc" id="L145">        consumeAllBytesAfterPoll();</span>
-<span class="fc" id="L146">        setOpsReady(pfd, selectId); // updates keysSelected and numKeysSelected</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">      if (num &gt; 0) {</span>
+<span class="fc" id="L147">        consumeAllBytesAfterPoll();</span>
+<span class="fc" id="L148">        setOpsReady(pfd, selectId); // updates keysSelected and numKeysSelected</span>
       }
-<span class="fc" id="L148">      return selectedKeysSet.size();</span>
+<span class="fc" id="L150">      return selectedKeysSet.size();</span>
     }
   }
 
   private synchronized void consumeAllBytesAfterPoll() throws IOException {
-<span class="pc bpc" id="L153" title="1 of 2 branches missed.">    if (pollFd == null) {</span>
-<span class="nc" id="L154">      return;</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">    if (pollFd == null) {</span>
+<span class="nc" id="L156">      return;</span>
     }
-<span class="fc bfc" id="L156" title="All 2 branches covered.">    if ((pollFd.rops[0] &amp; SelectionKey.OP_READ) == 0) {</span>
-<span class="fc" id="L157">      return;</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">    if ((pollFd.rops[0] &amp; SelectionKey.OP_READ) == 0) {</span>
+<span class="fc" id="L159">      return;</span>
     }
     int maxReceive;
     int bytesReceived;
 
-<span class="fc" id="L162">    int options = selectorPipe.getOptions();</span>
+<span class="fc" id="L164">    int options = selectorPipe.getOptions();</span>
 
-<span class="fc" id="L164">    synchronized (pipeMsgReceiveBuffer) {</span>
-<span class="fc" id="L165">      pipeMsgReceiveBuffer.clear();</span>
-<span class="fc" id="L166">      maxReceive = pipeMsgReceiveBuffer.remaining();</span>
-<span class="fc" id="L167">      bytesReceived = NativeUnixSocket.receive(pollFd.fds[0], pipeMsgReceiveBuffer, 0, maxReceive,</span>
+<span class="fc" id="L166">    synchronized (pipeMsgReceiveBuffer) {</span>
+<span class="fc" id="L167">      pipeMsgReceiveBuffer.clear();</span>
+<span class="fc" id="L168">      maxReceive = pipeMsgReceiveBuffer.remaining();</span>
+<span class="fc" id="L169">      bytesReceived = NativeUnixSocket.receive(pollFd.fds[0], pipeMsgReceiveBuffer, 0, maxReceive,</span>
           null, options, null, 1);
-<span class="fc" id="L169">    }</span>
+<span class="fc" id="L171">    }</span>
 
-<span class="pc bpc" id="L171" title="3 of 4 branches missed.">    if (bytesReceived == maxReceive &amp;&amp; maxReceive &gt; 0) {</span>
+<span class="pc bpc" id="L173" title="3 of 4 branches missed.">    if (bytesReceived == maxReceive &amp;&amp; maxReceive &gt; 0) {</span>
       // consume all pending bytes
       int read;
       do {
-<span class="nc bnc" id="L175" title="All 2 branches missed.">        if ((read = NativeUnixSocket.poll(selectorPipePollFd, 0)) &gt; 0) {</span>
-<span class="nc" id="L176">          synchronized (pipeMsgReceiveBuffer) {</span>
-<span class="nc" id="L177">            pipeMsgReceiveBuffer.clear();</span>
-<span class="nc" id="L178">            read = NativeUnixSocket.receive(selectorPipePollFd.fds[0], pipeMsgReceiveBuffer, 0,</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">        if ((read = NativeUnixSocket.poll(selectorPipePollFd, 0)) &gt; 0) {</span>
+<span class="nc" id="L178">          synchronized (pipeMsgReceiveBuffer) {</span>
+<span class="nc" id="L179">            pipeMsgReceiveBuffer.clear();</span>
+<span class="nc" id="L180">            read = NativeUnixSocket.receive(selectorPipePollFd.fds[0], pipeMsgReceiveBuffer, 0,</span>
                 maxReceive, null, options, null, 1);
-<span class="nc" id="L180">          }</span>
+<span class="nc" id="L182">          }</span>
         }
-<span class="nc bnc" id="L182" title="All 4 branches missed.">      } while (read == maxReceive &amp;&amp; read &gt; 0);</span>
+<span class="nc bnc" id="L184" title="All 4 branches missed.">      } while (read == maxReceive &amp;&amp; read &gt; 0);</span>
     }
-<span class="fc" id="L184">  }</span>
+<span class="fc" id="L186">  }</span>
 
   private int updateSelectCount() {
-<span class="fc" id="L187">    int selectId = selectCount.incrementAndGet();</span>
-<span class="pc bpc" id="L188" title="1 of 2 branches missed.">    if (selectId == 0) {</span>
+<span class="fc" id="L189">    int selectId = selectCount.incrementAndGet();</span>
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">    if (selectId == 0) {</span>
       // overflow (unlikely)
-<span class="nc" id="L190">      selectedKeysSet.markAllRemoved();</span>
-<span class="nc" id="L191">      selectId = selectCount.incrementAndGet();</span>
+<span class="nc" id="L192">      selectedKeysSet.markAllRemoved();</span>
+<span class="nc" id="L193">      selectId = selectCount.incrementAndGet();</span>
     }
-<span class="fc" id="L193">    return selectId;</span>
+<span class="fc" id="L195">    return selectId;</span>
   }
 
   private void setOpsReady(PollFd pfd, int selectId) {
-<span class="pc bpc" id="L197" title="1 of 2 branches missed.">    if (pfd != null) {</span>
-<span class="fc bfc" id="L198" title="All 2 branches covered.">      for (int i = 1; i &lt; pfd.rops.length; i++) {</span>
-<span class="fc" id="L199">        int rops = pfd.rops[i];</span>
-<span class="fc" id="L200">        AFSelectionKey key = pfd.keys[i];</span>
-<span class="fc" id="L201">        key.setOpsReady(rops);</span>
-<span class="pc bpc" id="L202" title="1 of 4 branches missed.">        if (rops != 0 &amp;&amp; keysRegistered.containsKey(key)) {</span>
-<span class="fc" id="L203">          keysRegistered.put(key, selectId);</span>
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">    if (pfd != null) {</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">      for (int i = 1; i &lt; pfd.rops.length; i++) {</span>
+<span class="fc" id="L201">        int rops = pfd.rops[i];</span>
+<span class="fc" id="L202">        AFSelectionKey key = pfd.keys[i];</span>
+<span class="fc" id="L203">        key.setOpsReady(rops);</span>
+<span class="pc bpc" id="L204" title="1 of 4 branches missed.">        if (rops != 0 &amp;&amp; keysRegistered.containsKey(key)) {</span>
+<span class="fc" id="L205">          keysRegistered.put(key, selectId);</span>
         }
       }
     }
-<span class="fc" id="L207">  }</span>
+<span class="fc" id="L209">  }</span>
 
   @SuppressWarnings({&quot;resource&quot;, &quot;PMD.CognitiveComplexity&quot;})
   private PollFd initPollFd(PollFd existingPollFd) throws IOException {
-<span class="fc" id="L211">    synchronized (this) {</span>
-<span class="fc bfc" id="L212" title="All 2 branches covered.">      for (Iterator&lt;AFSelectionKey&gt; it = keysRegisteredKeySet.iterator(); it.hasNext();) {</span>
-<span class="fc" id="L213">        AFSelectionKey key = it.next();</span>
-<span class="fc bfc" id="L214" title="All 4 branches covered.">        if (!key.getAFCore().fd.valid() || !key.isValid()) {</span>
-<span class="fc" id="L215">          key.cancelNoRemove();</span>
-<span class="fc" id="L216">          it.remove();</span>
-<span class="fc" id="L217">          existingPollFd = null;</span>
+<span class="fc" id="L213">    synchronized (this) {</span>
+<span class="fc bfc" id="L214" title="All 2 branches covered.">      for (Iterator&lt;AFSelectionKey&gt; it = keysRegisteredKeySet.iterator(); it.hasNext();) {</span>
+<span class="fc" id="L215">        AFSelectionKey key = it.next();</span>
+<span class="fc bfc" id="L216" title="All 4 branches covered.">        if (!key.getAFCore().fd.valid() || !key.isValid()) {</span>
+<span class="fc" id="L217">          key.cancelNoRemove();</span>
+<span class="fc" id="L218">          it.remove();</span>
+<span class="fc" id="L219">          existingPollFd = null;</span>
         } else {
-<span class="fc" id="L219">          key.setOpsReady(0);</span>
+<span class="fc" id="L221">          key.setOpsReady(0);</span>
         }
-<span class="fc" id="L221">      }</span>
+<span class="fc" id="L223">      }</span>
 
-<span class="pc bpc" id="L223" title="1 of 4 branches missed.">      if (existingPollFd != null &amp;&amp; //</span>
+<span class="pc bpc" id="L225" title="1 of 4 branches missed.">      if (existingPollFd != null &amp;&amp; //</span>
           existingPollFd.keys != null &amp;&amp; //
-<span class="pc bpc" id="L225" title="1 of 2 branches missed.">          (existingPollFd.keys.length - 1) == keysRegistered.size()) {</span>
-<span class="fc" id="L226">        boolean needsUpdate = false;</span>
-<span class="fc" id="L227">        int i = 1;</span>
-<span class="fc bfc" id="L228" title="All 2 branches covered.">        for (AFSelectionKey key : keysRegisteredKeySet) {</span>
-<span class="pc bpc" id="L229" title="2 of 4 branches missed.">          if (existingPollFd.keys[i] != key || !key.isValid()) { // NOPMD</span>
-<span class="nc" id="L230">            needsUpdate = true;</span>
-<span class="nc" id="L231">            break;</span>
+<span class="pc bpc" id="L227" title="1 of 2 branches missed.">          (existingPollFd.keys.length - 1) == keysRegistered.size()) {</span>
+<span class="fc" id="L228">        boolean needsUpdate = false;</span>
+<span class="fc" id="L229">        int i = 1;</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">        for (AFSelectionKey key : keysRegisteredKeySet) {</span>
+<span class="pc bpc" id="L231" title="2 of 4 branches missed.">          if (existingPollFd.keys[i] != key || !key.isValid()) { // NOPMD</span>
+<span class="nc" id="L232">            needsUpdate = true;</span>
+<span class="nc" id="L233">            break;</span>
           }
-<span class="fc" id="L233">          existingPollFd.ops[i] = key.interestOps();</span>
+<span class="fc" id="L235">          existingPollFd.ops[i] = key.interestOps();</span>
 
-<span class="fc" id="L235">          i++;</span>
-<span class="fc" id="L236">        }</span>
+<span class="fc" id="L237">          i++;</span>
+<span class="fc" id="L238">        }</span>
 
-<span class="pc bpc" id="L238" title="1 of 2 branches missed.">        if (!needsUpdate) {</span>
-<span class="fc" id="L239">          return existingPollFd;</span>
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">        if (!needsUpdate) {</span>
+<span class="fc" id="L241">          return existingPollFd;</span>
         }
       }
 
-<span class="fc" id="L243">      int keysToPoll = keysRegistered.size();</span>
-<span class="fc bfc" id="L244" title="All 2 branches covered.">      for (AFSelectionKey key : keysRegisteredKeySet) {</span>
-<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (!key.isValid()) {</span>
-<span class="nc" id="L246">          keysToPoll--;</span>
+<span class="fc" id="L245">      int keysToPoll = keysRegistered.size();</span>
+<span class="fc bfc" id="L246" title="All 2 branches covered.">      for (AFSelectionKey key : keysRegisteredKeySet) {</span>
+<span class="pc bpc" id="L247" title="1 of 2 branches missed.">        if (!key.isValid()) {</span>
+<span class="nc" id="L248">          keysToPoll--;</span>
         }
-<span class="fc" id="L248">      }</span>
+<span class="fc" id="L250">      }</span>
 
-<span class="fc" id="L250">      int size = keysToPoll + 1;</span>
-<span class="fc" id="L251">      FileDescriptor[] fds = new FileDescriptor[size];</span>
-<span class="fc" id="L252">      int[] ops = new int[size];</span>
+<span class="fc" id="L252">      int size = keysToPoll + 1;</span>
+<span class="fc" id="L253">      FileDescriptor[] fds = new FileDescriptor[size];</span>
+<span class="fc" id="L254">      int[] ops = new int[size];</span>
 
-<span class="fc" id="L254">      AFSelectionKey[] keys = new AFSelectionKey[size];</span>
-<span class="fc" id="L255">      fds[0] = selectorPipe.sourceFD();</span>
-<span class="fc" id="L256">      ops[0] = SelectionKey.OP_READ;</span>
+<span class="fc" id="L256">      AFSelectionKey[] keys = new AFSelectionKey[size];</span>
+<span class="fc" id="L257">      fds[0] = selectorPipe.sourceFD();</span>
+<span class="fc" id="L258">      ops[0] = SelectionKey.OP_READ;</span>
 
-<span class="fc" id="L258">      int i = 1;</span>
-<span class="fc bfc" id="L259" title="All 2 branches covered.">      for (AFSelectionKey key : keysRegisteredKeySet) {</span>
-<span class="pc bpc" id="L260" title="1 of 2 branches missed.">        if (!key.isValid()) {</span>
-<span class="nc" id="L261">          continue;</span>
+<span class="fc" id="L260">      int i = 1;</span>
+<span class="fc bfc" id="L261" title="All 2 branches covered.">      for (AFSelectionKey key : keysRegisteredKeySet) {</span>
+<span class="pc bpc" id="L262" title="1 of 2 branches missed.">        if (!key.isValid()) {</span>
+<span class="nc" id="L263">          continue;</span>
         }
-<span class="fc" id="L263">        keys[i] = key;</span>
-<span class="fc" id="L264">        fds[i] = key.getAFCore().fd;</span>
-<span class="fc" id="L265">        ops[i] = key.interestOps();</span>
-<span class="fc" id="L266">        i++;</span>
-<span class="fc" id="L267">      }</span>
-<span class="fc" id="L268">      return new PollFd(keys, fds, ops);</span>
+<span class="fc" id="L265">        keys[i] = key;</span>
+<span class="fc" id="L266">        fds[i] = key.getAFCore().fd;</span>
+<span class="fc" id="L267">        ops[i] = key.interestOps();</span>
+<span class="fc" id="L268">        i++;</span>
+<span class="fc" id="L269">      }</span>
+<span class="fc" id="L270">      return new PollFd(keys, fds, ops);</span>
     }
   }
 
   @Override
   protected void implCloseSelector() throws IOException {
-<span class="fc" id="L274">    wakeup();</span>
+<span class="fc" id="L276">    wakeup();</span>
     Set&lt;SelectionKey&gt; keys;
-<span class="fc" id="L276">    synchronized (this) {</span>
-<span class="fc" id="L277">      keys = keys();</span>
-<span class="fc" id="L278">      keysRegistered.clear();</span>
-<span class="fc" id="L279">    }</span>
-<span class="pc bpc" id="L280" title="1 of 2 branches missed.">    for (SelectionKey key : keys) {</span>
-<span class="nc" id="L281">      ((AFSelectionKey) key).cancelNoRemove();</span>
-<span class="nc" id="L282">    }</span>
-<span class="fc" id="L283">    selectorPipe.close();</span>
-<span class="fc" id="L284">  }</span>
+<span class="fc" id="L278">    synchronized (this) {</span>
+<span class="fc" id="L279">      keys = keys();</span>
+<span class="fc" id="L280">      keysRegistered.clear();</span>
+<span class="fc" id="L281">    }</span>
+<span class="pc bpc" id="L282" title="1 of 2 branches missed.">    for (SelectionKey key : keys) {</span>
+<span class="nc" id="L283">      ((AFSelectionKey) key).cancelNoRemove();</span>
+<span class="nc" id="L284">    }</span>
+<span class="fc" id="L285">    selectorPipe.close();</span>
+<span class="fc" id="L286">  }</span>
 
   @Override
   public Selector wakeup() {
-<span class="fc bfc" id="L288" title="All 2 branches covered.">    if (isOpen()) {</span>
+<span class="fc bfc" id="L290" title="All 2 branches covered.">    if (isOpen()) {</span>
       try {
-<span class="fc" id="L290">        synchronized (pipeMsgWakeUp) {</span>
-<span class="fc" id="L291">          pipeMsgWakeUp.clear();</span>
+<span class="fc" id="L292">        synchronized (pipeMsgWakeUp) {</span>
+<span class="fc" id="L293">          pipeMsgWakeUp.clear();</span>
           try {
-<span class="fc" id="L293">            selectorPipe.sink().write(pipeMsgWakeUp);</span>
-<span class="nc" id="L294">          } catch (SocketException e) {</span>
-<span class="nc bnc" id="L295" title="All 2 branches missed.">            if (selectorPipe.sinkFD().valid()) {</span>
-<span class="nc" id="L296">              throw e;</span>
+<span class="fc" id="L295">            selectorPipe.sink().write(pipeMsgWakeUp);</span>
+<span class="nc" id="L296">          } catch (SocketException e) {</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">            if (selectorPipe.sinkFD().valid()) {</span>
+<span class="nc" id="L298">              throw e;</span>
             } else {
               // ignore (Broken pipe, etc)
             }
-<span class="fc" id="L300">          }</span>
-<span class="fc" id="L301">        }</span>
-<span class="nc" id="L302">      } catch (IOException e) { // NOPMD.ExceptionAsFlowControl</span>
+<span class="fc" id="L302">          }</span>
+<span class="fc" id="L303">        }</span>
+<span class="nc" id="L304">      } catch (IOException e) { // NOPMD.ExceptionAsFlowControl</span>
         // FIXME throw as runtimeexception?
-<span class="nc" id="L304">        StackTraceUtil.printStackTrace(e);</span>
-<span class="fc" id="L305">      }</span>
+<span class="nc" id="L306">        StackTraceUtil.printStackTrace(e);</span>
+<span class="fc" id="L307">      }</span>
     }
-<span class="fc" id="L307">    return this;</span>
+<span class="fc" id="L309">    return this;</span>
   }
 
   synchronized void remove(AFSelectionKey key) {
-<span class="fc" id="L311">    selectedKeysSet.remove(key);</span>
-<span class="fc" id="L312">    deregister(key);</span>
-<span class="fc" id="L313">    pollFd = null;</span>
-<span class="fc" id="L314">  }</span>
+<span class="fc" id="L313">    selectedKeysSet.remove(key);</span>
+<span class="fc" id="L314">    deregister(key);</span>
+<span class="fc" id="L315">    pollFd = null;</span>
+<span class="fc" id="L316">  }</span>
 
   private void deregister(AFSelectionKey key) {
     // super.deregister unnecessarily casts SelectionKey to AbstractSelectionKey, and
     // ((AbstractSelectableChannel)key.channel()).removeKey(key); is not visible.
     // so we have to resort to some JNI trickery...
     try {
-<span class="nc" id="L321">      NativeUnixSocket.deregisterSelectionKey((AbstractSelectableChannel) key.channel(), key);</span>
-<span class="fc" id="L322">    } catch (ClassCastException e) {</span>
+<span class="nc" id="L323">      NativeUnixSocket.deregisterSelectionKey((AbstractSelectableChannel) key.channel(), key);</span>
+<span class="fc" id="L324">    } catch (ClassCastException e) {</span>
       // because our key isn't an AbstractSelectableKey, internal invalidation fails
       // but at that point, the key is deregistered
-<span class="nc" id="L325">    }</span>
-<span class="fc" id="L326">  }</span>
+<span class="nc" id="L327">    }</span>
+<span class="fc" id="L328">  }</span>
 
   static final class PollFd {
     // accessed from native code
@@ -336,26 +338,26 @@ final class AFSelector extends AbstractSelector {
     final AFSelectionKey[] keys;
 
     PollFd(FileDescriptor pipeSourceFd) {
-<span class="fc" id="L339">      this(pipeSourceFd, SelectionKey.OP_READ);</span>
-<span class="fc" id="L340">    }</span>
+<span class="fc" id="L341">      this(pipeSourceFd, SelectionKey.OP_READ);</span>
+<span class="fc" id="L342">    }</span>
 
-<span class="fc" id="L342">    PollFd(FileDescriptor pipeSourceFd, int op) {</span>
-<span class="fc" id="L343">      this.fds = new FileDescriptor[] {pipeSourceFd};</span>
-<span class="fc" id="L344">      this.ops = new int[] {op};</span>
-<span class="fc" id="L345">      this.rops = new int[1];</span>
-<span class="fc" id="L346">      this.keys = null;</span>
-<span class="fc" id="L347">    }</span>
+<span class="fc" id="L344">    PollFd(FileDescriptor pipeSourceFd, int op) {</span>
+<span class="fc" id="L345">      this.fds = new FileDescriptor[] {pipeSourceFd};</span>
+<span class="fc" id="L346">      this.ops = new int[] {op};</span>
+<span class="fc" id="L347">      this.rops = new int[1];</span>
+<span class="fc" id="L348">      this.keys = null;</span>
+<span class="fc" id="L349">    }</span>
 
     @SuppressWarnings(&quot;PMD.ArrayIsStoredDirectly&quot;)
-<span class="fc" id="L350">    PollFd(AFSelectionKey[] keys, FileDescriptor[] fds, int[] ops) {</span>
-<span class="fc" id="L351">      this.keys = keys;</span>
-<span class="pc bpc" id="L352" title="1 of 2 branches missed.">      if (fds.length != ops.length) {</span>
-<span class="nc" id="L353">        throw new IllegalStateException();</span>
+<span class="fc" id="L352">    PollFd(AFSelectionKey[] keys, FileDescriptor[] fds, int[] ops) {</span>
+<span class="fc" id="L353">      this.keys = keys;</span>
+<span class="pc bpc" id="L354" title="1 of 2 branches missed.">      if (fds.length != ops.length) {</span>
+<span class="nc" id="L355">        throw new IllegalStateException();</span>
       }
-<span class="fc" id="L355">      this.fds = fds;</span>
-<span class="fc" id="L356">      this.ops = ops;</span>
-<span class="fc" id="L357">      this.rops = new int[ops.length];</span>
-<span class="fc" id="L358">    }</span>
+<span class="fc" id="L357">      this.fds = fds;</span>
+<span class="fc" id="L358">      this.ops = ops;</span>
+<span class="fc" id="L359">      this.rops = new int[ops.length];</span>
+<span class="fc" id="L360">    }</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

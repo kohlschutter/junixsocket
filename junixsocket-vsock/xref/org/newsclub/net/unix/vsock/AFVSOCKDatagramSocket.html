@@ -86,9 +86,14 @@
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>    <strong class="jxr_keyword">public</strong> <a name="AFVSOCKDatagramChannel" href="../../../../../org/newsclub/net/unix/vsock/AFVSOCKDatagramChannel.html#AFVSOCKDatagramChannel">AFVSOCKDatagramChannel</a> getChannel() {
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">return</strong> (<a name="AFVSOCKDatagramChannel" href="../../../../../org/newsclub/net/unix/vsock/AFVSOCKDatagramChannel.html#AFVSOCKDatagramChannel">AFVSOCKDatagramChannel</a>) <strong class="jxr_keyword">super</strong>.getChannel();
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>    }
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>  }
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>  
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>    @Override
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>    <strong class="jxr_keyword">protected</strong> AFDatagramSocket&lt;AFVSOCKSocketAddress&gt; newDatagramSocketInstance() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="AFVSOCKDatagramSocket" href="../../../../../org/newsclub/net/unix/vsock/AFVSOCKDatagramSocket.html#AFVSOCKDatagramSocket">AFVSOCKDatagramSocket</a>(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>    }
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2024 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>

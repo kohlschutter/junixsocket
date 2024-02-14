@@ -63,7 +63,7 @@ public class CloseablePair&lt;T extends Closeable&gt; implements Closeable {
   public final void close() throws IOException {
 <span class="fc" id="L64">    first.close();</span>
 <span class="fc" id="L65">    second.close();</span>
-<span class="pc bpc" id="L66" title="1 of 2 branches missed.">    if (alsoClose != null) {</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">    if (alsoClose != null) {</span>
 <span class="fc" id="L67">      alsoClose.close();</span>
     }
 <span class="fc" id="L69">  }</span>
@@ -86,4 +86,4 @@ public class CloseablePair&lt;T extends Closeable&gt; implements Closeable {
 <span class="fc" id="L86">    return second;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -63,7 +63,7 @@ public abstract class AFVSOCKSocketFactory extends AFSocketFactory&lt;AFVSOCKSoc
    *
    * @author Christian Kohlschütter
    */
-  public static class FixedAddress extends AFVSOCKSocketFactory {
+  public static final class FixedAddress extends AFVSOCKSocketFactory {
     private final AFVSOCKSocketAddress addr;
 
     /**
@@ -90,10 +90,9 @@ public abstract class AFVSOCKSocketFactory extends AFSocketFactory&lt;AFVSOCKSoc
 
     @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
     @Override
-    public final AFVSOCKSocketAddress addressFromHost(String host, int javaPort)
-        throws SocketException {
-<span class="nc" id="L95">      return addr;</span>
+    public AFVSOCKSocketAddress addressFromHost(String host, int javaPort) throws SocketException {
+<span class="nc" id="L94">      return addr;</span>
     }
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

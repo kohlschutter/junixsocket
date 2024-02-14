@@ -63,7 +63,7 @@ final class AFSelectionKey extends SelectionKey {
 
   @Override
   public boolean isValid() {
-<span class="pc bpc" id="L66" title="2 of 8 branches missed.">    return !hasOpInvalid() &amp;&amp; !cancelled.get() &amp;&amp; chann.isOpen() &amp;&amp; sel.isOpen();</span>
+<span class="pc bpc" id="L66" title="3 of 8 branches missed.">    return !hasOpInvalid() &amp;&amp; !cancelled.get() &amp;&amp; chann.isOpen() &amp;&amp; sel.isOpen();</span>
   }
 
   boolean isCancelled() {
@@ -126,4 +126,4 @@ final class AFSelectionKey extends SelectionKey {
         + &quot;]&quot;;
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

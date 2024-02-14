@@ -45,7 +45,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  */
 @SuppressWarnings({&quot;PMD.CyclomaticComplexity&quot;, &quot;PMD.CouplingBetweenObjects&quot;})
 public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends ServerSocket implements
-    FileDescriptorAccess {
+    AFSomeSocketThing {
   private final AFSocketImpl&lt;A&gt; implementation;
   private @Nullable A boundEndpoint;
 <span class="fc" id="L51">  private final Closeables closeables = new Closeables();</span>
@@ -78,9 +78,10 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    *
    * @throws IOException if the operation fails.
    */
+  @SuppressFBWarnings(&quot;CT_CONSTRUCTOR_THROW&quot;)
   protected AFServerSocket() throws IOException {
-<span class="nc" id="L82">    this(null);</span>
-<span class="nc" id="L83">  }</span>
+<span class="nc" id="L83">    this(null);</span>
+<span class="nc" id="L84">  }</span>
 
   /**
    * Constructs a new instance, optionally associated with the given file descriptor.
@@ -89,14 +90,15 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    * @throws IOException if the operation fails.
    */
   @SuppressWarnings({&quot;this-escape&quot;, &quot;PMD.ConstructorCallsOverridableMethod&quot;})
+  @SuppressFBWarnings(&quot;CT_CONSTRUCTOR_THROW&quot;)
   protected AFServerSocket(FileDescriptor fdObj) throws IOException {
-<span class="fc" id="L93">    super();</span>
+<span class="fc" id="L95">    super();</span>
 
-<span class="fc" id="L95">    this.implementation = newImpl(fdObj);</span>
-<span class="fc" id="L96">    NativeUnixSocket.initServerImpl(this, implementation);</span>
+<span class="fc" id="L97">    this.implementation = newImpl(fdObj);</span>
+<span class="fc" id="L98">    NativeUnixSocket.initServerImpl(this, implementation);</span>
 
-<span class="fc" id="L98">    getAFImpl().setOption(SocketOptions.SO_REUSEADDR, true);</span>
-<span class="fc" id="L99">  }</span>
+<span class="fc" id="L100">    getAFImpl().setOption(SocketOptions.SO_REUSEADDR, true);</span>
+<span class="fc" id="L101">  }</span>
 
   /**
    * Creates a new AFServerSocketChannel for this socket.
@@ -124,7 +126,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    */
   protected static &lt;A extends AFSocketAddress&gt; AFServerSocket&lt;A&gt; newInstance(
       Constructor&lt;A&gt; instanceSupplier) throws IOException {
-<span class="fc" id="L127">    return instanceSupplier.newInstance(null);</span>
+<span class="fc" id="L129">    return instanceSupplier.newInstance(null);</span>
   }
 
   /**
@@ -141,34 +143,34 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
   protected static &lt;A extends AFSocketAddress&gt; AFServerSocket&lt;A&gt; newInstance(
       Constructor&lt;A&gt; instanceSupplier, FileDescriptor fdObj, int localPort, int remotePort)
       throws IOException {
-<span class="pc bpc" id="L144" title="1 of 2 branches missed.">    if (fdObj == null) {</span>
-<span class="nc" id="L145">      return instanceSupplier.newInstance(null);</span>
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">    if (fdObj == null) {</span>
+<span class="nc" id="L147">      return instanceSupplier.newInstance(null);</span>
     }
 
-<span class="fc" id="L148">    int status = NativeUnixSocket.socketStatus(fdObj);</span>
-<span class="pc bpc" id="L149" title="2 of 4 branches missed.">    if (!fdObj.valid() || status == NativeUnixSocket.SOCKETSTATUS_INVALID) {</span>
-<span class="nc" id="L150">      throw new SocketException(&quot;Not a valid socket&quot;);</span>
+<span class="fc" id="L150">    int status = NativeUnixSocket.socketStatus(fdObj);</span>
+<span class="pc bpc" id="L151" title="2 of 4 branches missed.">    if (!fdObj.valid() || status == NativeUnixSocket.SOCKETSTATUS_INVALID) {</span>
+<span class="nc" id="L152">      throw new SocketException(&quot;Not a valid socket&quot;);</span>
     }
-<span class="fc" id="L152">    AFServerSocket&lt;A&gt; socket = instanceSupplier.newInstance(fdObj);</span>
-<span class="fc" id="L153">    socket.getAFImpl().updatePorts(localPort, remotePort);</span>
+<span class="fc" id="L154">    AFServerSocket&lt;A&gt; socket = instanceSupplier.newInstance(fdObj);</span>
+<span class="fc" id="L155">    socket.getAFImpl().updatePorts(localPort, remotePort);</span>
 
-<span class="pc bpc" id="L155" title="3 of 4 branches missed.">    switch (status) {</span>
+<span class="pc bpc" id="L157" title="3 of 4 branches missed.">    switch (status) {</span>
       case NativeUnixSocket.SOCKETSTATUS_CONNECTED:
-<span class="nc" id="L157">        throw new SocketException(&quot;Not a ServerSocket&quot;);</span>
+<span class="nc" id="L159">        throw new SocketException(&quot;Not a ServerSocket&quot;);</span>
       case NativeUnixSocket.SOCKETSTATUS_BOUND:
-<span class="fc" id="L159">        socket.bind(AFSocketAddress.INTERNAL_DUMMY_BIND);</span>
+<span class="fc" id="L161">        socket.bind(AFSocketAddress.INTERNAL_DUMMY_BIND);</span>
 
-<span class="fc" id="L161">        socket.setBoundEndpoint(AFSocketAddress.getSocketAddress(fdObj, false, localPort, socket</span>
-<span class="fc" id="L162">            .addressFamily()));</span>
-<span class="fc" id="L163">        break;</span>
+<span class="fc" id="L163">        socket.setBoundEndpoint(AFSocketAddress.getSocketAddress(fdObj, false, localPort, socket</span>
+<span class="fc" id="L164">            .addressFamily()));</span>
+<span class="fc" id="L165">        break;</span>
       case NativeUnixSocket.SOCKETSTATUS_UNKNOWN:
-<span class="nc" id="L165">        break;</span>
+<span class="nc" id="L167">        break;</span>
       default:
-<span class="nc" id="L167">        throw new IllegalStateException(&quot;Invalid socketStatus response: &quot; + status);</span>
+<span class="nc" id="L169">        throw new IllegalStateException(&quot;Invalid socketStatus response: &quot; + status);</span>
     }
 
-<span class="fc" id="L170">    socket.getAFImpl().setSocketAddress(socket.getLocalSocketAddress());</span>
-<span class="fc" id="L171">    return socket;</span>
+<span class="fc" id="L172">    socket.getAFImpl().setSocketAddress(socket.getLocalSocketAddress());</span>
+<span class="fc" id="L173">    return socket;</span>
   }
 
   /**
@@ -182,9 +184,9 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    */
   protected static &lt;A extends AFSocketAddress&gt; AFServerSocket&lt;A&gt; bindOn(
       Constructor&lt;A&gt; instanceSupplier, final AFSocketAddress addr) throws IOException {
-<span class="fc" id="L185">    AFServerSocket&lt;A&gt; socket = instanceSupplier.newInstance(null);</span>
-<span class="fc" id="L186">    socket.bind(addr);</span>
-<span class="fc" id="L187">    return socket;</span>
+<span class="fc" id="L187">    AFServerSocket&lt;A&gt; socket = instanceSupplier.newInstance(null);</span>
+<span class="fc" id="L188">    socket.bind(addr);</span>
+<span class="fc" id="L189">    return socket;</span>
   }
 
   /**
@@ -200,10 +202,10 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    */
   protected static &lt;A extends AFSocketAddress&gt; AFServerSocket&lt;A&gt; bindOn(
       Constructor&lt;A&gt; instanceSupplier, final A addr, boolean deleteOnClose) throws IOException {
-<span class="fc" id="L203">    AFServerSocket&lt;A&gt; socket = instanceSupplier.newInstance(null);</span>
-<span class="fc" id="L204">    socket.bind(addr);</span>
-<span class="fc" id="L205">    socket.setDeleteOnClose(deleteOnClose);</span>
-<span class="fc" id="L206">    return socket;</span>
+<span class="fc" id="L205">    AFServerSocket&lt;A&gt; socket = instanceSupplier.newInstance(null);</span>
+<span class="fc" id="L206">    socket.bind(addr);</span>
+<span class="fc" id="L207">    socket.setDeleteOnClose(deleteOnClose);</span>
+<span class="fc" id="L208">    return socket;</span>
   }
 
   /**
@@ -218,8 +220,8 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    */
   protected static &lt;A extends AFSocketAddress&gt; AFServerSocket&lt;A&gt; forceBindOn(
       Constructor&lt;A&gt; instanceSupplier, final A forceAddr) throws IOException {
-<span class="nc" id="L221">    AFServerSocket&lt;A&gt; socket = instanceSupplier.newInstance(null);</span>
-<span class="nc" id="L222">    return socket.forceBindAddress(forceAddr);</span>
+<span class="nc" id="L223">    AFServerSocket&lt;A&gt; socket = instanceSupplier.newInstance(null);</span>
+<span class="nc" id="L224">    return socket.forceBindAddress(forceAddr);</span>
   }
 
   /**
@@ -231,104 +233,104 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    * @return This {@link AFServerSocket}.
    */
   public final AFServerSocket&lt;A&gt; forceBindAddress(SocketAddress endpoint) {
-<span class="nc" id="L234">    return bindHook((SocketAddress orig) -&gt; {</span>
-<span class="nc bnc" id="L235" title="All 2 branches missed.">      return orig == null ? null : endpoint;</span>
+<span class="nc" id="L236">    return bindHook((SocketAddress orig) -&gt; {</span>
+<span class="nc bnc" id="L237" title="All 2 branches missed.">      return orig == null ? null : endpoint;</span>
     });
   }
 
   @SuppressWarnings(&quot;unchecked&quot;)
   @Override
   public final void bind(SocketAddress endpoint, int backlog) throws IOException {
-<span class="pc bpc" id="L242" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L243">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="pc bpc" id="L244" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L245">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
 
     boolean bindErrorOk;
-<span class="pc bpc" id="L247" title="1 of 2 branches missed.">    if (bindFilter != null) {</span>
-<span class="nc" id="L248">      endpoint = bindFilter.apply(endpoint);</span>
-<span class="nc bnc" id="L249" title="All 4 branches missed.">      bindErrorOk = endpoint != null &amp;&amp; isBound();</span>
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">    if (bindFilter != null) {</span>
+<span class="nc" id="L250">      endpoint = bindFilter.apply(endpoint);</span>
+<span class="nc bnc" id="L251" title="All 4 branches missed.">      bindErrorOk = endpoint != null &amp;&amp; isBound();</span>
     } else {
-<span class="fc" id="L251">      bindErrorOk = false;</span>
+<span class="fc" id="L253">      bindErrorOk = false;</span>
     }
 
-<span class="fc bfc" id="L254" title="All 2 branches covered.">    if (!(endpoint instanceof AFSocketAddress)) {</span>
-<span class="fc" id="L255">      throw new IllegalArgumentException(&quot;Can only bind to endpoints of type &quot;</span>
-<span class="fc" id="L256">          + AFSocketAddress.class.getName() + &quot;: &quot; + endpoint);</span>
+<span class="fc bfc" id="L256" title="All 2 branches covered.">    if (!(endpoint instanceof AFSocketAddress)) {</span>
+<span class="fc" id="L257">      throw new IllegalArgumentException(&quot;Can only bind to endpoints of type &quot;</span>
+<span class="fc" id="L258">          + AFSocketAddress.class.getName() + &quot;: &quot; + endpoint);</span>
     }
 
     A endpointCast;
     try {
-<span class="fc" id="L261">      endpointCast = (A) endpoint;</span>
-<span class="nc" id="L262">    } catch (ClassCastException e) {</span>
-<span class="nc" id="L263">      throw new IllegalArgumentException(&quot;Can only bind to specific endpoints&quot;, e);</span>
-<span class="fc" id="L264">    }</span>
+<span class="fc" id="L263">      endpointCast = (A) endpoint;</span>
+<span class="nc" id="L264">    } catch (ClassCastException e) {</span>
+<span class="nc" id="L265">      throw new IllegalArgumentException(&quot;Can only bind to specific endpoints&quot;, e);</span>
+<span class="fc" id="L266">    }</span>
 
     try {
-<span class="fc bfc" id="L267" title="All 2 branches covered.">      getAFImpl().bind(endpoint, getReuseAddress() ? NativeUnixSocket.BIND_OPT_REUSE : 0);</span>
-<span class="fc" id="L268">    } catch (SocketException e) {</span>
-<span class="pc bpc" id="L269" title="1 of 2 branches missed.">      if (bindErrorOk) {</span>
+<span class="fc bfc" id="L269" title="All 2 branches covered.">      getAFImpl().bind(endpoint, getReuseAddress() ? NativeUnixSocket.BIND_OPT_REUSE : 0);</span>
+<span class="fc" id="L270">    } catch (SocketException e) {</span>
+<span class="pc bpc" id="L271" title="1 of 2 branches missed.">      if (bindErrorOk) {</span>
         // force-binding an address could mean double-binding the same address, that's OK.
-<span class="nc" id="L271">        return;</span>
+<span class="nc" id="L273">        return;</span>
       } else {
-<span class="fc" id="L273">        throw e;</span>
+<span class="fc" id="L275">        throw e;</span>
       }
-<span class="fc" id="L275">    }</span>
-<span class="fc" id="L276">    setBoundEndpoint(getAFImpl().getLocalSocketAddress());</span>
-<span class="pc bpc" id="L277" title="1 of 2 branches missed.">    if (boundEndpoint0() == null) {</span>
-<span class="nc" id="L278">      setBoundEndpoint(endpointCast);</span>
+<span class="fc" id="L277">    }</span>
+<span class="fc" id="L278">    setBoundEndpoint(getAFImpl().getLocalSocketAddress());</span>
+<span class="pc bpc" id="L279" title="1 of 2 branches missed.">    if (boundEndpoint0() == null) {</span>
+<span class="nc" id="L280">      setBoundEndpoint(endpointCast);</span>
     }
 
-<span class="fc bfc" id="L281" title="All 2 branches covered.">    if (endpoint == AFSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD</span>
-<span class="fc" id="L282">      return;</span>
+<span class="fc bfc" id="L283" title="All 2 branches covered.">    if (endpoint == AFSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD</span>
+<span class="fc" id="L284">      return;</span>
     }
 
-<span class="fc" id="L285">    implementation.listen(backlog);</span>
-<span class="fc" id="L286">  }</span>
+<span class="fc" id="L287">    implementation.listen(backlog);</span>
+<span class="fc" id="L288">  }</span>
 
   @Override
   public final boolean isBound() {
-<span class="fc bfc" id="L290" title="All 4 branches covered.">    return boundEndpoint0() != null &amp;&amp; implementation.getFD().valid();</span>
+<span class="fc bfc" id="L292" title="All 4 branches covered.">    return boundEndpoint0() != null &amp;&amp; implementation.getFD().valid();</span>
   }
 
   @Override
   public final boolean isClosed() {
-<span class="pc bpc" id="L295" title="1 of 6 branches missed.">    return super.isClosed() || (isBound() &amp;&amp; !implementation.getFD().valid()) || implementation</span>
-<span class="fc bfc" id="L296" title="All 2 branches covered.">        .isClosed();</span>
+<span class="pc bpc" id="L297" title="1 of 6 branches missed.">    return super.isClosed() || (isBound() &amp;&amp; !implementation.getFD().valid()) || implementation</span>
+<span class="fc bfc" id="L298" title="All 2 branches covered.">        .isClosed();</span>
   }
 
   @Override
   public AFSocket&lt;A&gt; accept() throws IOException {
-<span class="fc" id="L301">    return accept1(true);</span>
+<span class="fc" id="L303">    return accept1(true);</span>
   }
 
   AFSocket&lt;A&gt; accept1(boolean throwOnFail) throws IOException {
-<span class="fc" id="L305">    AFSocket&lt;A&gt; as = newSocketInstance();</span>
+<span class="fc" id="L307">    AFSocket&lt;A&gt; as = newSocketInstance();</span>
 
-<span class="fc" id="L307">    boolean success = implementation.accept0(as.getAFImpl(false));</span>
-<span class="fc bfc" id="L308" title="All 2 branches covered.">    if (isClosed()) {</span>
+<span class="fc" id="L309">    boolean success = implementation.accept0(as.getAFImpl(false));</span>
+<span class="fc bfc" id="L310" title="All 2 branches covered.">    if (isClosed()) {</span>
       // We may have connected to the socket to unblock it
-<span class="fc" id="L310">      throw new SocketClosedException(&quot;Socket is closed&quot;);</span>
+<span class="fc" id="L312">      throw new SocketClosedException(&quot;Socket is closed&quot;);</span>
     }
 
-<span class="fc bfc" id="L313" title="All 2 branches covered.">    if (!success) {</span>
-<span class="pc bpc" id="L314" title="1 of 2 branches missed.">      if (throwOnFail) {</span>
-<span class="nc bnc" id="L315" title="All 2 branches missed.">        if (getChannel().isBlocking()) {</span>
+<span class="fc bfc" id="L315" title="All 2 branches covered.">    if (!success) {</span>
+<span class="pc bpc" id="L316" title="1 of 2 branches missed.">      if (throwOnFail) {</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">        if (getChannel().isBlocking()) {</span>
           // unexpected
-<span class="nc" id="L317">          return null;</span>
+<span class="nc" id="L319">          return null;</span>
         } else {
           // non-blocking socket, nothing to accept
-<span class="nc" id="L320">          throw new IllegalBlockingModeException();</span>
+<span class="nc" id="L322">          throw new IllegalBlockingModeException();</span>
         }
       } else {
-<span class="fc" id="L323">        return null;</span>
+<span class="fc" id="L325">        return null;</span>
       }
     }
 
-<span class="fc" id="L327">    as.getAFImpl(true); // trigger create</span>
-<span class="fc" id="L328">    as.connect(AFSocketAddress.INTERNAL_DUMMY_CONNECT);</span>
-<span class="fc" id="L329">    as.getAFImpl().updatePorts(getAFImpl().getLocalPort1(), getAFImpl().getRemotePort());</span>
+<span class="fc" id="L329">    as.getAFImpl(true); // trigger create</span>
+<span class="fc" id="L330">    as.connect(AFSocketAddress.INTERNAL_DUMMY_CONNECT);</span>
+<span class="fc" id="L331">    as.getAFImpl().updatePorts(getAFImpl().getLocalPort1(), getAFImpl().getRemotePort());</span>
 
-<span class="fc" id="L331">    return as;</span>
+<span class="fc" id="L333">    return as;</span>
   }
 
   /**
@@ -341,53 +343,53 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
 
   @Override
   public String toString() {
-<span class="nc bnc" id="L344" title="All 2 branches missed.">    return getClass().getSimpleName() + &quot;[&quot; + (isBound() ? boundEndpoint0() : &quot;unbound&quot;) + &quot;]&quot;;</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">    return getClass().getSimpleName() + &quot;[&quot; + (isBound() ? boundEndpoint0() : &quot;unbound&quot;) + &quot;]&quot;;</span>
   }
 
   @Override
   public synchronized void close() throws IOException {
-<span class="fc bfc" id="L349" title="All 2 branches covered.">    if (isClosed()) {</span>
-<span class="fc" id="L350">      return;</span>
+<span class="fc bfc" id="L351" title="All 2 branches covered.">    if (isClosed()) {</span>
+<span class="fc" id="L352">      return;</span>
     }
 
-<span class="fc" id="L353">    boolean localSocketAddressValid = isLocalSocketAddressValid();</span>
+<span class="fc" id="L355">    boolean localSocketAddressValid = isLocalSocketAddressValid();</span>
 
-<span class="fc" id="L355">    AFSocketAddress endpoint = boundEndpoint;</span>
+<span class="fc" id="L357">    AFSocketAddress endpoint = boundEndpoint;</span>
 
-<span class="fc" id="L357">    IOException superException = null;</span>
+<span class="fc" id="L359">    IOException superException = null;</span>
     try {
-<span class="fc" id="L359">      super.close();</span>
-<span class="nc" id="L360">    } catch (IOException e) {</span>
-<span class="nc" id="L361">      superException = e;</span>
-<span class="fc" id="L362">    }</span>
-<span class="pc bpc" id="L363" title="1 of 2 branches missed.">    if (implementation != null) {</span>
+<span class="fc" id="L361">      super.close();</span>
+<span class="nc" id="L362">    } catch (IOException e) {</span>
+<span class="nc" id="L363">      superException = e;</span>
+<span class="fc" id="L364">    }</span>
+<span class="pc bpc" id="L365" title="1 of 2 branches missed.">    if (implementation != null) {</span>
       try {
-<span class="fc" id="L365">        implementation.close();</span>
-<span class="nc" id="L366">      } catch (IOException e) {</span>
-<span class="nc bnc" id="L367" title="All 2 branches missed.">        if (superException == null) {</span>
-<span class="nc" id="L368">          superException = e;</span>
+<span class="fc" id="L367">        implementation.close();</span>
+<span class="nc" id="L368">      } catch (IOException e) {</span>
+<span class="nc bnc" id="L369" title="All 2 branches missed.">        if (superException == null) {</span>
+<span class="nc" id="L370">          superException = e;</span>
         } else {
-<span class="nc" id="L370">          superException.addSuppressed(e);</span>
+<span class="nc" id="L372">          superException.addSuppressed(e);</span>
         }
-<span class="fc" id="L372">      }</span>
+<span class="fc" id="L374">      }</span>
     }
 
-<span class="fc" id="L375">    IOException ex = null;</span>
+<span class="fc" id="L377">    IOException ex = null;</span>
     try {
-<span class="fc" id="L377">      closeables.close(superException);</span>
+<span class="fc" id="L379">      closeables.close(superException);</span>
     } finally {
-<span class="pc bpc" id="L379" title="1 of 6 branches missed.">      if (endpoint != null &amp;&amp; endpoint.hasFilename() &amp;&amp; localSocketAddressValid</span>
-<span class="pc bpc" id="L380" title="1 of 2 branches missed.">          &amp;&amp; isDeleteOnClose()) {</span>
-<span class="fc" id="L381">        File f = endpoint.getFile();</span>
-<span class="pc bpc" id="L382" title="1 of 4 branches missed.">        if (!f.delete() &amp;&amp; f.exists()) {</span>
-<span class="nc" id="L383">          ex = new IOException(&quot;Could not delete socket file after close: &quot; + f);</span>
+<span class="pc bpc" id="L381" title="1 of 6 branches missed.">      if (endpoint != null &amp;&amp; endpoint.hasFilename() &amp;&amp; localSocketAddressValid</span>
+<span class="pc bpc" id="L382" title="1 of 2 branches missed.">          &amp;&amp; isDeleteOnClose()) {</span>
+<span class="fc" id="L383">        File f = endpoint.getFile();</span>
+<span class="pc bpc" id="L384" title="1 of 4 branches missed.">        if (!f.delete() &amp;&amp; f.exists()) {</span>
+<span class="nc" id="L385">          ex = new IOException(&quot;Could not delete socket file after close: &quot; + f);</span>
         }
       }
     }
-<span class="pc bpc" id="L387" title="1 of 2 branches missed.">    if (ex != null) {</span>
-<span class="nc" id="L388">      throw ex;</span>
+<span class="pc bpc" id="L389" title="1 of 2 branches missed.">    if (ex != null) {</span>
+<span class="nc" id="L390">      throw ex;</span>
     }
-<span class="fc" id="L390">  }</span>
+<span class="fc" id="L392">  }</span>
 
   /**
    * Registers a {@link Closeable} that should be closed when this socket is closed.
@@ -395,8 +397,8 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    * @param closeable The closeable.
    */
   public final void addCloseable(Closeable closeable) {
-<span class="fc" id="L398">    closeables.add(closeable);</span>
-<span class="fc" id="L399">  }</span>
+<span class="fc" id="L400">    closeables.add(closeable);</span>
+<span class="fc" id="L401">  }</span>
 
   /**
    * Unregisters a previously registered {@link Closeable}.
@@ -404,8 +406,8 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    * @param closeable The closeable.
    */
   public final void removeCloseable(Closeable closeable) {
-<span class="fc" id="L407">    closeables.remove(closeable);</span>
-<span class="fc" id="L408">  }</span>
+<span class="fc" id="L409">    closeables.remove(closeable);</span>
+<span class="fc" id="L410">  }</span>
 
   /**
    * Checks whether everything is setup to support junixsocket sockets.
@@ -413,23 +415,23 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    * @return {@code true} if supported.
    */
   public static boolean isSupported() {
-<span class="fc" id="L416">    return NativeUnixSocket.isLoaded();</span>
+<span class="fc" id="L418">    return NativeUnixSocket.isLoaded();</span>
   }
 
   @Override
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   public final @Nullable A getLocalSocketAddress() {
     @Nullable
-<span class="fc" id="L423">    A ep = boundEndpoint0();</span>
-<span class="fc bfc" id="L424" title="All 2 branches covered.">    if (ep == null) {</span>
-<span class="fc" id="L425">      ep = getAFImpl().getLocalSocketAddress();</span>
-<span class="fc" id="L426">      setBoundEndpoint(ep);</span>
+<span class="fc" id="L425">    A ep = boundEndpoint0();</span>
+<span class="fc bfc" id="L426" title="All 2 branches covered.">    if (ep == null) {</span>
+<span class="fc" id="L427">      ep = getAFImpl().getLocalSocketAddress();</span>
+<span class="fc" id="L428">      setBoundEndpoint(ep);</span>
     }
-<span class="fc" id="L428">    return ep;</span>
+<span class="fc" id="L430">    return ep;</span>
   }
 
   private synchronized @Nullable A boundEndpoint0() {
-<span class="fc" id="L432">    return boundEndpoint;</span>
+<span class="fc" id="L434">    return boundEndpoint;</span>
   }
 
   /**
@@ -441,37 +443,37 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    * @return {@code true} iff still valid.
    */
   public boolean isLocalSocketAddressValid() {
-<span class="pc bpc" id="L444" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L445">      return false;</span>
+<span class="pc bpc" id="L446" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L447">      return false;</span>
     }
     @Nullable
-<span class="fc" id="L448">    A addr = getLocalSocketAddress();</span>
-<span class="fc bfc" id="L449" title="All 2 branches covered.">    if (addr == null) {</span>
-<span class="fc" id="L450">      return false;</span>
+<span class="fc" id="L450">    A addr = getLocalSocketAddress();</span>
+<span class="fc bfc" id="L451" title="All 2 branches covered.">    if (addr == null) {</span>
+<span class="fc" id="L452">      return false;</span>
     }
-<span class="fc" id="L452">    return addr.equals(getAFImpl().getLocalSocketAddress());</span>
+<span class="fc" id="L454">    return addr.equals(getAFImpl().getLocalSocketAddress());</span>
   }
 
   final synchronized void setBoundEndpoint(@Nullable A addr) {
-<span class="fc" id="L456">    this.boundEndpoint = addr;</span>
+<span class="fc" id="L458">    this.boundEndpoint = addr;</span>
     int port;
-<span class="fc bfc" id="L458" title="All 2 branches covered.">    if (addr == null) {</span>
-<span class="fc" id="L459">      port = -1;</span>
+<span class="fc bfc" id="L460" title="All 2 branches covered.">    if (addr == null) {</span>
+<span class="fc" id="L461">      port = -1;</span>
     } else {
-<span class="fc" id="L461">      port = addr.getPort();</span>
+<span class="fc" id="L463">      port = addr.getPort();</span>
     }
-<span class="fc" id="L463">    getAFImpl().updatePorts(port, -1);</span>
-<span class="fc" id="L464">  }</span>
+<span class="fc" id="L465">    getAFImpl().updatePorts(port, -1);</span>
+<span class="fc" id="L466">  }</span>
 
   @Override
   public final int getLocalPort() {
-<span class="pc bpc" id="L468" title="1 of 2 branches missed.">    if (boundEndpoint0() == null) {</span>
-<span class="nc" id="L469">      setBoundEndpoint(getAFImpl().getLocalSocketAddress());</span>
+<span class="pc bpc" id="L470" title="1 of 2 branches missed.">    if (boundEndpoint0() == null) {</span>
+<span class="nc" id="L471">      setBoundEndpoint(getAFImpl().getLocalSocketAddress());</span>
     }
-<span class="pc bpc" id="L471" title="1 of 2 branches missed.">    if (boundEndpoint0() == null) {</span>
-<span class="nc" id="L472">      return -1;</span>
+<span class="pc bpc" id="L473" title="1 of 2 branches missed.">    if (boundEndpoint0() == null) {</span>
+<span class="nc" id="L474">      return -1;</span>
     } else {
-<span class="fc" id="L474">      return getAFImpl().getLocalPort1();</span>
+<span class="fc" id="L476">      return getAFImpl().getLocalPort1();</span>
     }
   }
 
@@ -484,7 +486,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
    */
   public final boolean isDeleteOnClose() {
-<span class="fc" id="L487">    return deleteOnClose.get();</span>
+<span class="fc" id="L489">    return deleteOnClose.get();</span>
   }
 
   /**
@@ -497,30 +499,30 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    * @param b Enabled if {@code true}.
    */
   public final void setDeleteOnClose(boolean b) {
-<span class="fc" id="L500">    deleteOnClose.set(b);</span>
-<span class="fc" id="L501">  }</span>
+<span class="fc" id="L502">    deleteOnClose.set(b);</span>
+<span class="fc" id="L503">  }</span>
 
   final AFSocketImpl&lt;A&gt; getAFImpl() {
-<span class="fc bfc" id="L504" title="All 2 branches covered.">    if (created.compareAndSet(false, true)) {</span>
+<span class="fc bfc" id="L506" title="All 2 branches covered.">    if (created.compareAndSet(false, true)) {</span>
       try {
-<span class="fc" id="L506">        getAFImpl().create(true);</span>
-<span class="fc" id="L507">        getSoTimeout(); // trigger create via java.net.Socket</span>
-<span class="nc" id="L508">      } catch (IOException e) {</span>
+<span class="fc" id="L508">        getAFImpl().create(true);</span>
+<span class="fc" id="L509">        getSoTimeout(); // trigger create via java.net.Socket</span>
+<span class="nc" id="L510">      } catch (IOException e) {</span>
         // ignore
-<span class="fc" id="L510">      }</span>
+<span class="fc" id="L512">      }</span>
     }
-<span class="fc" id="L512">    return implementation;</span>
+<span class="fc" id="L514">    return implementation;</span>
   }
 
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   @Override
   public AFServerSocketChannel&lt;?&gt; getChannel() {
-<span class="fc" id="L518">    return channel;</span>
+<span class="fc" id="L520">    return channel;</span>
   }
 
   @Override
   public final FileDescriptor getFileDescriptor() throws IOException {
-<span class="fc" id="L523">    return implementation.getFileDescriptor();</span>
+<span class="fc" id="L525">    return implementation.getFileDescriptor();</span>
   }
 
   /**
@@ -529,7 +531,7 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    * @return The family.
    */
   protected final AFAddressFamily&lt;A&gt; addressFamily() {
-<span class="fc" id="L532">    return getAFImpl().getAddressFamily();</span>
+<span class="fc" id="L534">    return getAFImpl().getAddressFamily();</span>
   }
 
   /**
@@ -542,121 +544,126 @@ public abstract class AFServerSocket&lt;A extends AFSocketAddress&gt; extends Se
    * @return This instance.
    */
   public final AFServerSocket&lt;A&gt; bindHook(SocketAddressFilter hook) {
-<span class="nc" id="L545">    this.bindFilter = hook;</span>
-<span class="nc" id="L546">    return this;</span>
+<span class="nc" id="L547">    this.bindFilter = hook;</span>
+<span class="nc" id="L548">    return this;</span>
   }
 
   @Override
   public void bind(SocketAddress endpoint) throws IOException {
-<span class="fc" id="L551">    bind(endpoint, 50);</span>
-<span class="fc" id="L552">  }</span>
+<span class="fc" id="L553">    bind(endpoint, 50);</span>
+<span class="fc" id="L554">  }</span>
 
   @Override
   public InetAddress getInetAddress() {
-<span class="nc bnc" id="L556" title="All 2 branches missed.">    if (!isBound()) {</span>
-<span class="nc" id="L557">      return null;</span>
+<span class="nc bnc" id="L558" title="All 2 branches missed.">    if (!isBound()) {</span>
+<span class="nc" id="L559">      return null;</span>
     } else {
-<span class="nc" id="L559">      return getAFImpl().getInetAddress();</span>
+<span class="nc" id="L561">      return getAFImpl().getInetAddress();</span>
     }
   }
 
   @Override
   public synchronized void setReceiveBufferSize(int size) throws SocketException {
-<span class="nc bnc" id="L565" title="All 2 branches missed.">    if (size &lt;= 0) {</span>
-<span class="nc" id="L566">      throw new IllegalArgumentException(&quot;receive buffer size must be a positive number&quot;);</span>
+<span class="nc bnc" id="L567" title="All 2 branches missed.">    if (size &lt;= 0) {</span>
+<span class="nc" id="L568">      throw new IllegalArgumentException(&quot;receive buffer size must be a positive number&quot;);</span>
     }
-<span class="nc bnc" id="L568" title="All 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L569">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="nc bnc" id="L570" title="All 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L571">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
-<span class="nc" id="L571">    getAFImpl().setOption(SocketOptions.SO_RCVBUF, size);</span>
-<span class="nc" id="L572">  }</span>
+<span class="nc" id="L573">    getAFImpl().setOption(SocketOptions.SO_RCVBUF, size);</span>
+<span class="nc" id="L574">  }</span>
 
   @Override
   public synchronized int getReceiveBufferSize() throws SocketException {
-<span class="pc bpc" id="L576" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L577">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="pc bpc" id="L578" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L579">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
-<span class="fc" id="L579">    int result = 0;</span>
-<span class="fc" id="L580">    Object o = getAFImpl().getOption(SocketOptions.SO_RCVBUF);</span>
-<span class="pc bpc" id="L581" title="1 of 2 branches missed.">    if (o instanceof Number) {</span>
-<span class="fc" id="L582">      result = ((Number) o).intValue();</span>
+<span class="fc" id="L581">    int result = 0;</span>
+<span class="fc" id="L582">    Object o = getAFImpl().getOption(SocketOptions.SO_RCVBUF);</span>
+<span class="pc bpc" id="L583" title="1 of 2 branches missed.">    if (o instanceof Number) {</span>
+<span class="fc" id="L584">      result = ((Number) o).intValue();</span>
     }
-<span class="fc" id="L584">    return result;</span>
+<span class="fc" id="L586">    return result;</span>
   }
 
   @Override
   @SuppressWarnings(&quot;UnsynchronizedOverridesSynchronized&quot; /* errorprone */)
   public void setSoTimeout(int timeout) throws SocketException {
-<span class="pc bpc" id="L590" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L591">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="pc bpc" id="L592" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L593">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
-<span class="pc bpc" id="L593" title="1 of 2 branches missed.">    if (timeout &lt; 0) {</span>
-<span class="nc" id="L594">      throw new IllegalArgumentException(&quot;timeout &lt; 0&quot;);</span>
+<span class="pc bpc" id="L595" title="1 of 2 branches missed.">    if (timeout &lt; 0) {</span>
+<span class="nc" id="L596">      throw new IllegalArgumentException(&quot;timeout &lt; 0&quot;);</span>
     }
-<span class="fc" id="L596">    getAFImpl().setOption(SocketOptions.SO_TIMEOUT, timeout);</span>
-<span class="fc" id="L597">  }</span>
+<span class="fc" id="L598">    getAFImpl().setOption(SocketOptions.SO_TIMEOUT, timeout);</span>
+<span class="fc" id="L599">  }</span>
 
   @Override
   @SuppressWarnings(&quot;UnsynchronizedOverridesSynchronized&quot; /* errorprone */)
   public int getSoTimeout() throws IOException {
-<span class="pc bpc" id="L602" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L603">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="pc bpc" id="L604" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L605">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
-<span class="fc" id="L605">    Object o = getAFImpl().getOption(SocketOptions.SO_TIMEOUT);</span>
+<span class="fc" id="L607">    Object o = getAFImpl().getOption(SocketOptions.SO_TIMEOUT);</span>
     /* extra type safety */
-<span class="pc bpc" id="L607" title="1 of 2 branches missed.">    if (o instanceof Number) {</span>
-<span class="fc" id="L608">      return ((Number) o).intValue();</span>
+<span class="pc bpc" id="L609" title="1 of 2 branches missed.">    if (o instanceof Number) {</span>
+<span class="fc" id="L610">      return ((Number) o).intValue();</span>
     } else {
-<span class="nc" id="L610">      return 0;</span>
+<span class="nc" id="L612">      return 0;</span>
     }
   }
 
   @Override
   public void setReuseAddress(boolean on) throws SocketException {
-<span class="pc bpc" id="L616" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L617">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="pc bpc" id="L618" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L619">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
-<span class="fc" id="L619">    getAFImpl().setOption(SocketOptions.SO_REUSEADDR, on);</span>
-<span class="fc" id="L620">  }</span>
+<span class="fc" id="L621">    getAFImpl().setOption(SocketOptions.SO_REUSEADDR, on);</span>
+<span class="fc" id="L622">  }</span>
 
   @Override
   public boolean getReuseAddress() throws SocketException {
-<span class="pc bpc" id="L624" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L625">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="pc bpc" id="L626" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L627">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
-<span class="fc" id="L627">    return ((Boolean) (getAFImpl().getOption(SocketOptions.SO_REUSEADDR)));</span>
+<span class="fc" id="L629">    return ((Boolean) (getAFImpl().getOption(SocketOptions.SO_REUSEADDR)));</span>
   }
 
   @Override
   public void setPerformancePreferences(int connectionTime, int latency, int bandwidth) {
-<span class="nc" id="L632">  }</span>
+<span class="nc" id="L634">  }</span>
 
   @SuppressWarnings({&quot;all&quot;, &quot;MissingOverride&quot; /* errorprone */})
   public &lt;T&gt; T getOption(SocketOption&lt;T&gt; name) throws IOException {
-<span class="fc" id="L636">    Objects.requireNonNull(name);</span>
-<span class="pc bpc" id="L637" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L638">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="fc" id="L638">    Objects.requireNonNull(name);</span>
+<span class="pc bpc" id="L639" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L640">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
-<span class="fc" id="L640">    return getAFImpl().getOption(name);</span>
+<span class="fc" id="L642">    return getAFImpl().getOption(name);</span>
   }
 
   @SuppressWarnings({&quot;all&quot;, &quot;MissingOverride&quot; /* errorprone */})
   public &lt;T&gt; ServerSocket setOption(SocketOption&lt;T&gt; name, T value) throws IOException {
-<span class="fc" id="L645">    Objects.requireNonNull(name);</span>
-<span class="pc bpc" id="L646" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L647">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="fc" id="L647">    Objects.requireNonNull(name);</span>
+<span class="pc bpc" id="L648" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L649">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
-<span class="fc" id="L649">    getAFImpl().setOption(name, value);</span>
-<span class="fc" id="L650">    return this;</span>
+<span class="fc" id="L651">    getAFImpl().setOption(name, value);</span>
+<span class="fc" id="L652">    return this;</span>
   }
 
   @SuppressWarnings(&quot;all&quot;)
   public Set&lt;SocketOption&lt;?&gt;&gt; supportedOptions() {
-<span class="fc" id="L655">    return getAFImpl().supportedOptions();</span>
+<span class="fc" id="L657">    return getAFImpl().supportedOptions();</span>
   }
+
+  @Override
+  public void setShutdownOnClose(boolean enabled) {
+<span class="nc" id="L662">    getAFImpl().getCore().setShutdownOnClose(enabled);</span>
+<span class="nc" id="L663">  }</span>
 
   // NOTE: We shall re-implement all methods defined in ServerSocket that internally call getImpl()
   // and call getAFImpl() here. This is not strictly necessary for environments where we can
   // override &quot;impl&quot;; however it's the right thing to do.
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

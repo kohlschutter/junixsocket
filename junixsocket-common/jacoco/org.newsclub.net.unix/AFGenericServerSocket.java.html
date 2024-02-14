@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFGenericServerSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFGenericServerSocket.java</span></div><h1>AFGenericServerSocket.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2023 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.SocketException;
+
+/**
+ * The server part of a &quot;unknown-type&quot; socket.
+ *
+ * @author Christian Kohlschütter
+ */
+final class AFGenericServerSocket extends AFServerSocket&lt;AFGenericSocketAddress&gt; {
+  AFGenericServerSocket(FileDescriptor fdObj) throws IOException {
+<span class="fc" id="L32">    super(fdObj);</span>
+<span class="fc" id="L33">  }</span>
+
+  @Override
+  protected AFServerSocketChannel&lt;AFGenericSocketAddress&gt; newChannel() {
+<span class="fc" id="L37">    return new AFGenericServerSocketChannel(this);</span>
+  }
+
+  @Override
+  public AFGenericServerSocketChannel getChannel() {
+<span class="fc" id="L42">    return (AFGenericServerSocketChannel) super.getChannel();</span>
+  }
+
+  /**
+   * Returns a new, unbound unkown-type {@link ServerSocket}.
+   *
+   * @return The new, unbound {@link AFServerSocket}.
+   * @throws IOException if the operation fails.
+   */
+  public static AFGenericServerSocket newInstance() throws IOException {
+<span class="nc" id="L52">    return (AFGenericServerSocket) AFServerSocket.newInstance(AFGenericServerSocket::new);</span>
+  }
+
+  static AFGenericServerSocket newInstance(FileDescriptor fdObj, int localPort, int remotePort)
+      throws IOException {
+<span class="nc" id="L57">    return (AFGenericServerSocket) AFServerSocket.newInstance(AFGenericServerSocket::new, fdObj,</span>
+        localPort, remotePort);
+  }
+
+  /**
+   * Returns a new unkown-type {@link ServerSocket} that is bound to the given
+   * {@link AFGenericSocketAddress}.
+   *
+   * @param addr The socket file to bind to.
+   * @return The new, bound {@link AFServerSocket}.
+   * @throws IOException if the operation fails.
+   */
+  public static AFGenericServerSocket bindOn(final AFGenericSocketAddress addr) throws IOException {
+<span class="nc" id="L70">    return (AFGenericServerSocket) AFServerSocket.bindOn(AFGenericServerSocket::new, addr);</span>
+  }
+
+  /**
+   * Returns a new unkown-type {@link ServerSocket} that is bound to the given
+   * {@link AFSocketAddress}.
+   *
+   * @param addr The socket file to bind to.
+   * @param deleteOnClose If {@code true}, the socket file (if the address points to a file) will be
+   *          deleted upon {@link #close}.
+   * @return The new, bound {@link AFServerSocket}.
+   * @throws IOException if the operation fails.
+   */
+  public static AFGenericServerSocket bindOn(final AFGenericSocketAddress addr,
+      boolean deleteOnClose) throws IOException {
+<span class="nc" id="L85">    return (AFGenericServerSocket) AFServerSocket.bindOn(AFGenericServerSocket::new, addr,</span>
+        deleteOnClose);
+  }
+
+  /**
+   * Returns a new, &lt;em&gt;unbound&lt;/em&gt; unkown-type {@link ServerSocket} that will always bind to the
+   * given address, regardless of any socket address used in a call to &lt;code&gt;bind&lt;/code&gt;.
+   *
+   * @param forceAddr The address to use.
+   * @return The new, yet unbound {@link AFServerSocket}.
+   * @throws IOException if an exception occurs.
+   */
+  public static AFGenericServerSocket forceBindOn(final AFGenericSocketAddress forceAddr)
+      throws IOException {
+<span class="nc" id="L99">    return (AFGenericServerSocket) AFServerSocket.forceBindOn(AFGenericServerSocket::new,</span>
+        forceAddr);
+  }
+
+  @Override
+  protected AFSocketImpl&lt;AFGenericSocketAddress&gt; newImpl(FileDescriptor fdObj)
+      throws SocketException {
+<span class="fc" id="L106">    return new AFGenericSocketImpl(fdObj);</span>
+  }
+
+  @Override
+  protected AFSocket&lt;AFGenericSocketAddress&gt; newSocketInstance() throws IOException {
+<span class="fc" id="L111">    return AFGenericSocket.newInstance();</span>
+  }
+
+  @Override
+  public AFGenericSocket accept() throws IOException {
+<span class="nc" id="L116">    return (AFGenericSocket) super.accept();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

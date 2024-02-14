@@ -61,7 +61,7 @@ final class MapValueSet&lt;T, V&gt; implements Set&lt;T&gt; {
    * Depending on the &quot;removed&quot; sentinel, the key may be added (if value is non-null but the map
    * does not yet contain the key), modified (value is non-null, and the map has a different value
    * for the key), or removed (if value is null).
-   * 
+   *
    * @param elem The element to remove.
    */
   public void markRemoved(T elem) {
@@ -221,7 +221,7 @@ final class MapValueSet&lt;T, V&gt; implements Set&lt;T&gt; {
   /**
    * Updates an already-existing entry in the backing map to the current value (obtained via
    * {@link #getValue()}), thereby adding it to the set.
-   * 
+   *
    * @param e The entry to update.
    */
   public boolean update(T e) {
@@ -309,7 +309,7 @@ final class MapValueSet&lt;T, V&gt; implements Set&lt;T&gt; {
   /**
    * Marks all entries in the backing map that are currently considered contained in this set as
    * removed; see {@link #markAllRemoved()} for an unoptimized version that affects all keys.
-   * 
+   *
    * @see #markAllRemoved()
    */
   @Override
@@ -326,4 +326,4 @@ final class MapValueSet&lt;T, V&gt; implements Set&lt;T&gt; {
 <span class="fc" id="L326">    }</span>
 <span class="fc" id="L327">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

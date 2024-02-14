@@ -47,7 +47,7 @@
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment"> * @author Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> AFSocketChannel&lt;A <strong class="jxr_keyword">extends</strong> AFSocketAddress&gt; <strong class="jxr_keyword">extends</strong> SocketChannel <strong class="jxr_keyword">implements</strong>
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>      AFSomeSocket, <a name="AFSocketExtensions" href="../../../../org/newsclub/net/unix/AFSocketExtensions.html#AFSocketExtensions">AFSocketExtensions</a> {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      AFSomeSocket, AFSocketExtensions, <a name="AFSomeSocketChannel" href="../../../../org/newsclub/net/unix/AFSomeSocketChannel.html#AFSomeSocketChannel">AFSomeSocketChannel</a> {
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> @NonNull AFSocket&lt;A&gt; afSocket;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>    <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> AtomicBoolean connectPending = <strong class="jxr_keyword">new</strong> AtomicBoolean(false);
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  
@@ -312,9 +312,14 @@
 <a class="jxr_linenumber" name="L304" href="#L304">304</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> String toString() {
 <a class="jxr_linenumber" name="L305" href="#L305">305</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">super</strong>.toString() + afSocket.toStringSuffix();
 <a class="jxr_linenumber" name="L306" href="#L306">306</a>   }
-<a class="jxr_linenumber" name="L307" href="#L307">307</a> }
+<a class="jxr_linenumber" name="L307" href="#L307">307</a> 
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>   @Override
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setShutdownOnClose(<strong class="jxr_keyword">boolean</strong> enabled) {
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>     getAFCore().setShutdownOnClose(enabled);
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>   }
+<a class="jxr_linenumber" name="L312" href="#L312">312</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2024 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>

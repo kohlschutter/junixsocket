@@ -36,8 +36,8 @@ public final class AFUNIXDatagramSocket extends AFDatagramSocket&lt;AFUNIXSocket
 
   private AFUNIXDatagramSocket(final FileDescriptor fd, AFSocketType socketType)
       throws IOException {
-<span class="nc" id="L39">    super(new AFUNIXDatagramSocketImpl(fd, socketType));</span>
-<span class="nc" id="L40">  }</span>
+<span class="fc" id="L39">    super(new AFUNIXDatagramSocketImpl(fd, socketType));</span>
+<span class="fc" id="L40">  }</span>
 
   @Override
   protected AFUNIXDatagramChannel newChannel() {
@@ -62,8 +62,8 @@ public final class AFUNIXDatagramSocket extends AFDatagramSocket&lt;AFUNIXSocket
    * @throws IOException on error.
    */
   public static AFUNIXDatagramSocket newInstance(AFSocketType socketType) throws IOException {
-<span class="nc" id="L65">    return (AFUNIXDatagramSocket) newInstance((fd) -&gt; {</span>
-<span class="nc" id="L66">      return new AFUNIXDatagramSocket(fd, socketType);</span>
+<span class="fc" id="L65">    return (AFUNIXDatagramSocket) newInstance((fd) -&gt; {</span>
+<span class="fc" id="L66">      return new AFUNIXDatagramSocket(fd, socketType);</span>
     });
   }
 
@@ -108,5 +108,10 @@ public final class AFUNIXDatagramSocket extends AFDatagramSocket&lt;AFUNIXSocket
     }
 <span class="fc" id="L109">    return ((AFUNIXDatagramSocketImpl) getAFImpl()).getPeerCredentials();</span>
   }
+
+  @Override
+  protected AFDatagramSocket&lt;AFUNIXSocketAddress&gt; newDatagramSocketInstance() throws IOException {
+<span class="nc" id="L114">    return new AFUNIXDatagramSocket(null);</span>
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1699795592733">
-    <module artifactId="junixsocket-jetty-12" groupId="com.kohlschutter.junixsocket" version="2.8.3"/>
+<licensePluginReport goal="CHECK" timestamp="1707933185650">
+    <module artifactId="junixsocket-jetty-12" groupId="com.kohlschutter.junixsocket" version="2.9.0"/>
     <files>
         <file path="src/test/java/org/newsclub/net/unix/jetty/AFSocketServerConnectorTest.java" result="PRESENT"/>
     </files>

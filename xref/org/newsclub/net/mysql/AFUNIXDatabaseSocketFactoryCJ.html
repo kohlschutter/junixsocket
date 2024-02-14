@@ -55,8 +55,8 @@
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>    @SuppressWarnings({<span class="jxr_string">"unchecked"</span>})
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>    @SuppressFBWarnings(<span class="jxr_string">"EI_EXPOSE_REP"</span>)
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>    @Override
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">public</strong> Socket connect(String hostname, <strong class="jxr_keyword">int</strong> portNumber, PropertySet props, <strong class="jxr_keyword">int</strong> loginTimeout)
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>        <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>    <strong class="jxr_keyword">public</strong> Socket connect(String hostname, <strong class="jxr_keyword">int</strong> portNumber,
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>        @SuppressWarnings(<span class="jxr_string">"exports"</span>) PropertySet props, <strong class="jxr_keyword">int</strong> loginTimeout) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      <em class="jxr_comment">// Adjust the path to your MySQL socket by setting the</em>
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      <em class="jxr_comment">// "junixsocket.file" property</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      <em class="jxr_comment">// If no socket path is given, use the default: /tmp/mysql.sock</em>
@@ -76,14 +76,14 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>    @SuppressWarnings({<span class="jxr_string">"unchecked"</span>})
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>    @SuppressFBWarnings(<span class="jxr_string">"EI_EXPOSE_REP"</span>)
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>    @Override
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>    <strong class="jxr_keyword">public</strong> Socket performTlsHandshake(SocketConnection socketConnection, ServerSession serverSession)
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>        <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>    <strong class="jxr_keyword">public</strong> Socket performTlsHandshake(@SuppressWarnings(<span class="jxr_string">"exports"</span>) SocketConnection socketConnection,
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>        @SuppressWarnings(<span class="jxr_string">"exports"</span>) ServerSession serverSession) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      <strong class="jxr_keyword">return</strong> ExportControlled.performTlsHandshake(<strong class="jxr_keyword">this</strong>.rawSocket, socketConnection,
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          serverSession == <strong class="jxr_keyword">null</strong> ? <strong class="jxr_keyword">null</strong> : serverSession.getServerVersion(), <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>    }
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2024 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>

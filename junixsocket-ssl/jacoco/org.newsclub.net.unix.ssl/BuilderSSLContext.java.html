@@ -67,14 +67,15 @@ final class BuilderSSLContext extends SSLContext {
           // Use any strong SecureRandom instance as fallback
 <span class="nc" id="L68">          sr = SecureRandom.getInstanceStrong();</span>
 <span class="nc" id="L69">        } catch (NoSuchAlgorithmException e1) {</span>
-<span class="nc" id="L70">          throw e;</span>
-<span class="nc" id="L71">        }</span>
-<span class="nc" id="L72">        context.init(km, tm, sr);</span>
+<span class="nc" id="L70">          e.addSuppressed(e1);</span>
+<span class="nc" id="L71">          throw e;</span>
+<span class="nc" id="L72">        }</span>
+<span class="nc" id="L73">        context.init(km, tm, sr);</span>
       } else {
-<span class="nc" id="L74">        throw e;</span>
+<span class="nc" id="L75">        throw e;</span>
       }
-<span class="fc" id="L76">    }</span>
-<span class="fc" id="L77">  }</span>
+<span class="fc" id="L77">    }</span>
+<span class="fc" id="L78">  }</span>
 
   private static final class ConfiguredSSLContextSpi extends SSLContextSpi {
     private final SSLSocketFactory socketFactory;
@@ -86,65 +87,65 @@ final class BuilderSSLContext extends SSLContext {
 
     private ConfiguredSSLContextSpi(boolean clientMode, SSLContext context,
         Function&lt;SSLParameters, SSLParameters&gt; parametersFunction, SocketFactory socketFactory) {
-<span class="fc" id="L89">      super();</span>
-<span class="fc" id="L90">      this.clientMode = clientMode;</span>
-<span class="fc" id="L91">      this.context = context;</span>
+<span class="fc" id="L90">      super();</span>
+<span class="fc" id="L91">      this.clientMode = clientMode;</span>
+<span class="fc" id="L92">      this.context = context;</span>
 
-<span class="fc" id="L93">      SSLParameters p = context.getDefaultSSLParameters();</span>
-<span class="fc bfc" id="L94" title="All 2 branches covered.">      if (parametersFunction != null) {</span>
-<span class="fc" id="L95">        p = parametersFunction.apply(p);</span>
+<span class="fc" id="L94">      SSLParameters p = context.getDefaultSSLParameters();</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">      if (parametersFunction != null) {</span>
+<span class="fc" id="L96">        p = parametersFunction.apply(p);</span>
       }
 
-<span class="fc" id="L98">      this.params = p;</span>
-<span class="fc" id="L99">      this.socketFactory = new BuilderSSLSocketFactory(clientMode, context, context</span>
-<span class="fc" id="L100">          .getSocketFactory(), p, socketFactory);</span>
-<span class="fc" id="L101">      this.serverSocketFactory = new BuilderSSLServerSocketFactory(context.getServerSocketFactory(),</span>
+<span class="fc" id="L99">      this.params = p;</span>
+<span class="fc" id="L100">      this.socketFactory = new BuilderSSLSocketFactory(clientMode, context, context</span>
+<span class="fc" id="L101">          .getSocketFactory(), p, socketFactory);</span>
+<span class="fc" id="L102">      this.serverSocketFactory = new BuilderSSLServerSocketFactory(context.getServerSocketFactory(),</span>
           p);
-<span class="fc" id="L103">    }</span>
+<span class="fc" id="L104">    }</span>
 
     @Override
     protected void engineInit(KeyManager[] km, TrustManager[] tm, SecureRandom sr)
         throws KeyManagementException {
-<span class="fc" id="L108">      initContext(context, km, tm, sr);</span>
-<span class="fc" id="L109">    }</span>
+<span class="fc" id="L109">      initContext(context, km, tm, sr);</span>
+<span class="fc" id="L110">    }</span>
 
     @Override
     protected SSLSocketFactory engineGetSocketFactory() {
-<span class="fc" id="L113">      return socketFactory;</span>
+<span class="fc" id="L114">      return socketFactory;</span>
     }
 
     @Override
     protected SSLServerSocketFactory engineGetServerSocketFactory() {
-<span class="fc" id="L118">      return serverSocketFactory;</span>
+<span class="fc" id="L119">      return serverSocketFactory;</span>
     }
 
     @Override
     protected SSLEngine engineCreateSSLEngine() {
-<span class="fc" id="L123">      return init(context.createSSLEngine());</span>
+<span class="fc" id="L124">      return init(context.createSSLEngine());</span>
     }
 
     @Override
     protected SSLEngine engineCreateSSLEngine(String host, int port) {
-<span class="fc" id="L128">      return init(context.createSSLEngine(host, port));</span>
+<span class="fc" id="L129">      return init(context.createSSLEngine(host, port));</span>
     }
 
     @Override
     protected SSLSessionContext engineGetServerSessionContext() {
-<span class="fc" id="L133">      return context.getServerSessionContext();</span>
+<span class="fc" id="L134">      return context.getServerSessionContext();</span>
     }
 
     @Override
     protected SSLSessionContext engineGetClientSessionContext() {
-<span class="fc" id="L138">      return context.getClientSessionContext();</span>
+<span class="fc" id="L139">      return context.getClientSessionContext();</span>
     }
 
     private SSLEngine init(SSLEngine engine) {
-<span class="fc" id="L142">      engine.setEnabledProtocols(params.getProtocols());</span>
-<span class="fc" id="L143">      engine.setEnabledCipherSuites(params.getCipherSuites());</span>
-<span class="fc" id="L144">      engine.setUseClientMode(clientMode);</span>
+<span class="fc" id="L143">      engine.setEnabledProtocols(params.getProtocols());</span>
+<span class="fc" id="L144">      engine.setEnabledCipherSuites(params.getCipherSuites());</span>
+<span class="fc" id="L145">      engine.setUseClientMode(clientMode);</span>
 
-<span class="fc" id="L146">      return engine;</span>
+<span class="fc" id="L147">      return engine;</span>
     }
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -95,12 +95,15 @@
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>        path = <strong class="jxr_keyword">new</strong> File(args[0]);
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">new</strong> <a name="EchoServer" href="../../../../../../org/newsclub/net/unix/demo/netty/EchoServer.html#EchoServer">EchoServer</a>(AFUNIXSocketAddress.of(path)).run();
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>      <em class="jxr_comment">// new EchoServer(AFTIPCSocketAddress.ofService(Scope.SCOPE_CLUSTER, 128, 3)).run();</em>
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>    }
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  }
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      AFUNIXSocketAddress addr = AFUNIXSocketAddress.of(path);
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>      System.out.println(<span class="jxr_string">"Binding to "</span> + addr);
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">new</strong> <a name="EchoServer" href="../../../../../../org/newsclub/net/unix/demo/netty/EchoServer.html#EchoServer">EchoServer</a>(addr).run();
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>      <em class="jxr_comment">// new EchoServer(AFTIPCSocketAddress.ofService(Scope.SCOPE_CLUSTER, 128, 3)).run();</em>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>    }
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2024 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>

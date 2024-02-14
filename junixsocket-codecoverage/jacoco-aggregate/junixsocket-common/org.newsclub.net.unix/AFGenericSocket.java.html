@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFGenericSocket.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFGenericSocket.java</span></div><h1>AFGenericSocket.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2023 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
+
+/**
+ * Implementation of an unknown-type socket.
+ *
+ * @author Christian Kohlschütter
+ */
+final class AFGenericSocket extends AFSocket&lt;AFGenericSocketAddress&gt; implements
+    AFGenericSocketExtensions {
+<span class="fc" id="L32">  private static AFGenericSocketImplExtensions staticExtensions = null;</span>
+
+  AFGenericSocket(FileDescriptor fdObj, AFSocketFactory&lt;AFGenericSocketAddress&gt; factory)
+      throws SocketException {
+<span class="fc" id="L36">    super(new AFGenericSocketImpl(fdObj), factory);</span>
+<span class="fc" id="L37">  }</span>
+
+  @SuppressWarnings(&quot;unused&quot;)
+  private static synchronized AFGenericSocketImplExtensions getStaticImplExtensions()
+      throws IOException {
+<span class="nc bnc" id="L42" title="All 2 branches missed.">    if (staticExtensions == null) {</span>
+<span class="nc" id="L43">      try (AFGenericSocket socket = new AFGenericSocket(null, null)) {</span>
+<span class="nc" id="L44">        staticExtensions = (AFGenericSocketImplExtensions) socket.getImplExtensions();</span>
+      }
+    }
+<span class="nc" id="L47">    return staticExtensions;</span>
+  }
+
+  /**
+   * Returns &lt;code&gt;true&lt;/code&gt; iff {@link AFGenericSocket}s (sockets of unknown/otherwise
+   * unsupported type) are supported by the current Java VM and the kernel.
+   *
+   * To support {@link AFGenericSocket}s, a custom JNI library must be loaded that is supplied with
+   * &lt;em&gt;junixsocket&lt;/em&gt;.
+   *
+   * This call is equivalent to checking {@link AFSocket#isSupported()}.
+   *
+   * @return {@code true} iff supported.
+   */
+  public static boolean isSupported() {
+<span class="nc" id="L62">    return AFSocket.isSupported();</span>
+  }
+
+  @Override
+  protected AFGenericSocketChannel newChannel() {
+<span class="fc" id="L67">    return new AFGenericSocketChannel(this);</span>
+  }
+
+  /**
+   * Creates a new, unbound {@link AFSocket}.
+   *
+   * This &quot;default&quot; implementation is a bit &quot;lenient&quot; with respect to the specification.
+   *
+   * In particular, we ignore calls to {@link Socket#getTcpNoDelay()} and
+   * {@link Socket#setTcpNoDelay(boolean)}.
+   *
+   * @return A new, unbound socket.
+   * @throws IOException if the operation fails.
+   */
+  public static AFGenericSocket newInstance() throws IOException {
+<span class="fc" id="L82">    return (AFGenericSocket) AFSocket.newInstance(AFGenericSocket::new,</span>
+        (AFGenericSocketFactory) null);
+  }
+
+  static AFGenericSocket newInstance(AFGenericSocketFactory factory) throws SocketException {
+<span class="nc" id="L87">    return (AFGenericSocket) AFSocket.newInstance(AFGenericSocket::new, factory);</span>
+  }
+
+  /**
+   * Creates a new, unbound, &quot;strict&quot; {@link AFSocket}.
+   *
+   * This call uses an implementation that tries to be closer to the specification than
+   * {@link #newInstance()}, at least for some cases.
+   *
+   * @return A new, unbound socket.
+   * @throws IOException if the operation fails.
+   */
+  public static AFGenericSocket newStrictInstance() throws IOException {
+<span class="nc" id="L100">    return (AFGenericSocket) AFSocket.newInstance(AFGenericSocket::new,</span>
+        (AFGenericSocketFactory) null);
+  }
+
+  /**
+   * Creates a new {@link AFSocket} and connects it to the given {@link AFGenericSocketAddress}.
+   *
+   * @param addr The address to connect to.
+   * @return A new, connected socket.
+   * @throws IOException if the operation fails.
+   */
+  public static AFGenericSocket connectTo(AFGenericSocketAddress addr) throws IOException {
+<span class="nc" id="L112">    return (AFGenericSocket) AFSocket.connectTo(AFGenericSocket::new, addr);</span>
+  }
+
+  @Override
+  public AFGenericSocketChannel getChannel() {
+<span class="fc" id="L117">    return (AFGenericSocketChannel) super.getChannel();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

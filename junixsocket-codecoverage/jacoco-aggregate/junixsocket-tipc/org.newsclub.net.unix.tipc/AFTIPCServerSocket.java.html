@@ -34,7 +34,7 @@ import org.newsclub.net.unix.AFTIPCSocketAddress;
  *
  * @author Christian Kohlschütter
  */
-public class AFTIPCServerSocket extends AFServerSocket&lt;AFTIPCSocketAddress&gt; {
+public final class AFTIPCServerSocket extends AFServerSocket&lt;AFTIPCSocketAddress&gt; {
   AFTIPCServerSocket(FileDescriptor fdObj) throws IOException {
 <span class="nc" id="L39">    super(fdObj);</span>
 <span class="nc" id="L40">  }</span>
@@ -119,4 +119,4 @@ public class AFTIPCServerSocket extends AFServerSocket&lt;AFTIPCSocketAddress&gt
 <span class="nc" id="L119">    return (AFTIPCSocket) super.accept();</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

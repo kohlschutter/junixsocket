@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
@@ -38,7 +39,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; extends ServerSocketChannel
-    implements FileDescriptorAccess {
+    implements FileDescriptorAccess, AFSomeSocketChannel {
   private final @NonNull AFServerSocket&lt;A&gt; afSocket;
 
   /**
@@ -49,69 +50,74 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
    */
   @SuppressWarnings(&quot;all&quot;) // null
   protected AFServerSocketChannel(AFServerSocket&lt;A&gt; socket, AFSelectorProvider&lt;A&gt; sp) {
-<span class="fc" id="L52">    super(sp);</span>
-<span class="fc" id="L53">    this.afSocket = Objects.requireNonNull(socket);</span>
-<span class="fc" id="L54">  }</span>
+<span class="fc" id="L53">    super(sp);</span>
+<span class="fc" id="L54">    this.afSocket = Objects.requireNonNull(socket);</span>
+<span class="fc" id="L55">  }</span>
 
   // CPD-OFF
 
   @SuppressWarnings(&quot;unchecked&quot;)
   @Override
   public &lt;T&gt; T getOption(SocketOption&lt;T&gt; name) throws IOException {
-<span class="nc bnc" id="L61" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="nc" id="L62">      return getAFCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L63">      return getAFCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
     }
-<span class="nc" id="L64">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
-<span class="nc bnc" id="L65" title="All 2 branches missed.">    if (optionId == null) {</span>
-<span class="nc" id="L66">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
+<span class="nc" id="L65">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    if (optionId == null) {</span>
+<span class="nc" id="L67">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
     } else {
-<span class="nc" id="L68">      return (T) afSocket.getAFImpl().getOption(optionId);</span>
+<span class="nc" id="L69">      return (T) afSocket.getAFImpl().getOption(optionId);</span>
     }
   }
 
   @Override
   public &lt;T&gt; AFServerSocketChannel&lt;A&gt; setOption(SocketOption&lt;T&gt; name, T value) throws IOException {
-<span class="nc bnc" id="L74" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="nc" id="L75">      getAFCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
-<span class="nc" id="L76">      return this;</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L76">      getAFCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
+<span class="nc" id="L77">      return this;</span>
     }
-<span class="nc" id="L78">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">    if (optionId == null) {</span>
-<span class="nc" id="L80">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
+<span class="nc" id="L79">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    if (optionId == null) {</span>
+<span class="nc" id="L81">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
     } else {
-<span class="nc" id="L82">      afSocket.getAFImpl().setOption(optionId, value);</span>
+<span class="nc" id="L83">      afSocket.getAFImpl().setOption(optionId, value);</span>
     }
-<span class="nc" id="L84">    return this;</span>
+<span class="nc" id="L85">    return this;</span>
   }
 
   @Override
   public final Set&lt;SocketOption&lt;?&gt;&gt; supportedOptions() {
-<span class="nc" id="L89">    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;</span>
+<span class="nc" id="L90">    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;</span>
   }
 
   // CPD-ON
 
   @Override
   public final AFServerSocketChannel&lt;A&gt; bind(SocketAddress local, int backlog) throws IOException {
-<span class="fc" id="L96">    afSocket.bind(local, backlog);</span>
-<span class="fc" id="L97">    return this;</span>
+<span class="fc" id="L97">    afSocket.bind(local, backlog);</span>
+<span class="fc" id="L98">    return this;</span>
   }
 
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   @Override
   public final AFServerSocket&lt;A&gt; socket() {
-<span class="fc" id="L103">    return afSocket;</span>
+<span class="fc" id="L104">    return afSocket;</span>
   }
 
   @Override
   public AFSocketChannel&lt;A&gt; accept() throws IOException {
-<span class="fc" id="L108">    AFSocket&lt;A&gt; socket = afSocket.accept1(false);</span>
-<span class="fc bfc" id="L109" title="All 2 branches covered.">    return socket == null ? null : socket.getChannel();</span>
+<span class="fc" id="L109">    AFSocket&lt;A&gt; socket = afSocket.accept1(false);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">    return socket == null ? null : socket.getChannel();</span>
   }
 
   @Override
-  public final AFSocketAddress getLocalAddress() throws IOException {
-<span class="fc" id="L114">    return afSocket.getLocalSocketAddress();</span>
+  public final @Nullable A getLocalAddress() {
+<span class="fc" id="L115">    return getLocalSocketAddress();</span>
+  }
+
+  @Override
+  public final @Nullable A getLocalSocketAddress() {
+<span class="fc" id="L120">    return afSocket.getLocalSocketAddress();</span>
   }
 
   /**
@@ -123,26 +129,26 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
    * @return {@code true} iff still valid.
    */
   public final boolean isLocalSocketAddressValid() {
-<span class="fc" id="L126">    return afSocket.isLocalSocketAddressValid();</span>
+<span class="fc" id="L132">    return afSocket.isLocalSocketAddressValid();</span>
   }
 
   @Override
   protected final void implCloseSelectableChannel() throws IOException {
-<span class="fc" id="L131">    afSocket.close();</span>
-<span class="fc" id="L132">  }</span>
+<span class="fc" id="L137">    afSocket.close();</span>
+<span class="fc" id="L138">  }</span>
 
   @Override
   protected final void implConfigureBlocking(boolean block) throws IOException {
-<span class="fc" id="L136">    getAFCore().implConfigureBlocking(block);</span>
-<span class="fc" id="L137">  }</span>
+<span class="fc" id="L142">    getAFCore().implConfigureBlocking(block);</span>
+<span class="fc" id="L143">  }</span>
 
   final AFSocketCore getAFCore() {
-<span class="fc" id="L140">    return afSocket.getAFImpl().getCore();</span>
+<span class="fc" id="L146">    return afSocket.getAFImpl().getCore();</span>
   }
 
   @Override
   public final FileDescriptor getFileDescriptor() throws IOException {
-<span class="nc" id="L145">    return afSocket.getFileDescriptor();</span>
+<span class="fc" id="L151">    return afSocket.getFileDescriptor();</span>
   }
 
   /**
@@ -154,7 +160,7 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
    * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
    */
   public final boolean isDeleteOnClose() {
-<span class="nc" id="L157">    return socket().isDeleteOnClose();</span>
+<span class="nc" id="L163">    return socket().isDeleteOnClose();</span>
   }
 
   /**
@@ -167,7 +173,13 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
    * @param b Enabled if {@code true}.
    */
   public final void setDeleteOnClose(boolean b) {
-<span class="nc" id="L170">    socket().setDeleteOnClose(b);</span>
-<span class="nc" id="L171">  }</span>
+<span class="nc" id="L176">    socket().setDeleteOnClose(b);</span>
+<span class="nc" id="L177">  }</span>
+
+  @Override
+  public void setShutdownOnClose(boolean enabled) {
+<span class="nc" id="L181">    socket().setShutdownOnClose(enabled);</span>
+<span class="nc" id="L182">  }</span>
+
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

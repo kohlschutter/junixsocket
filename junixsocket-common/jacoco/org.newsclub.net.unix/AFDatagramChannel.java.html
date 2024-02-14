@@ -42,7 +42,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @param &lt;A&gt; The supported address type.
  */
 public abstract class AFDatagramChannel&lt;A extends AFSocketAddress&gt; extends DatagramChannel
-    implements AFSomeSocket, AFSocketExtensions {
+    implements AFSomeSocket, AFSocketExtensions, AFSomeSocketChannel {
   private final AFDatagramSocket&lt;A&gt; afSocket;
 
   /**
@@ -266,5 +266,10 @@ public abstract class AFDatagramChannel&lt;A extends AFSocketAddress&gt; extends
   public final void setDeleteOnClose(boolean b) {
 <span class="fc" id="L267">    afSocket.setDeleteOnClose(b);</span>
 <span class="fc" id="L268">  }</span>
+
+  @Override
+  public void setShutdownOnClose(boolean enabled) {
+<span class="nc" id="L272">    getAFCore().setShutdownOnClose(enabled);</span>
+<span class="nc" id="L273">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

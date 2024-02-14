@@ -89,5 +89,10 @@ public final class AFTIPCDatagramSocket extends AFDatagramSocket&lt;AFTIPCSocket
   public AFTIPCDestName getDestName() {
 <span class="nc" id="L90">    return AFTIPCDestName.of(((AFTIPCSocketImplExtensions) getImplExtensions()).getTIPCDestName());</span>
   }
+
+  @Override
+  protected AFDatagramSocket&lt;AFTIPCSocketAddress&gt; newDatagramSocketInstance() throws IOException {
+<span class="nc" id="L95">    return new AFTIPCDatagramSocket(null);</span>
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

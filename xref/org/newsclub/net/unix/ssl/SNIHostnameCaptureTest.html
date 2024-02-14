@@ -202,285 +202,286 @@
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>     TestingAFSocketServer&lt;AFUNIXSocketAddress&gt; server =
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>         <strong class="jxr_keyword">new</strong> TestingAFSocketServer&lt;AFUNIXSocketAddress&gt;(addr) {
 <a class="jxr_linenumber" name="L196" href="#L196">196</a> 
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>           @Override
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>           <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> doServeSocket(AFSocket&lt;? <strong class="jxr_keyword">extends</strong> AFUNIXSocketAddress&gt; plainSocket)
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>               <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L200" href="#L200">200</a> 
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>             <strong class="jxr_keyword">boolean</strong> sniBroken = false;
-<a class="jxr_linenumber" name="L202" href="#L202">202</a> 
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>             <strong class="jxr_keyword">try</strong> (SSLSocket sslSocket = (SSLSocket) serverSocketFactory.createSocket(plainSocket,
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>                 <span class="jxr_string">"localhost.junixsocket"</span>, plainSocket.getPort(), false)) {
-<a class="jxr_linenumber" name="L205" href="#L205">205</a> 
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>               <a name="SNIHostnameCapture" href="../../../../../org/newsclub/net/unix/ssl/SNIHostnameCapture.html#SNIHostnameCapture">SNIHostnameCapture</a> hnc = serverNullDefaultHostname ? <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>                   SNIHostnameCapture.configure(sslSocket, SNIHostnameCapture.ACCEPT_ANY_HOSTNAME) : <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>                   SNIHostnameCapture.configure(sslSocket, SNIHostnameCapture.ACCEPT_ANY_HOSTNAME,
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>                       () -&gt; <span class="jxr_string">"defaulthost"</span>);
-<a class="jxr_linenumber" name="L210" href="#L210">210</a> 
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>               assertFalse(hnc.isComplete());
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>               assertThrows(IllegalStateException.<strong class="jxr_keyword">class</strong>, () -&gt; hnc.getHostname());
-<a class="jxr_linenumber" name="L213" href="#L213">213</a> 
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>               <em class="jxr_comment">// NOTE: starting a handshake doesn't mean it's completed before reading the 1st byte!</em>
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>               sslSocket.startHandshake();
-<a class="jxr_linenumber" name="L216" href="#L216">216</a> 
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>               hnc.isComplete(1, TimeUnit.SECONDS);
-<a class="jxr_linenumber" name="L218" href="#L218">218</a>               gotHostnameInTime.set(hnc.isComplete());
-<a class="jxr_linenumber" name="L219" href="#L219">219</a> 
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>               <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>                 <strong class="jxr_keyword">if</strong> (expectDefault) {
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>                   <strong class="jxr_keyword">if</strong> (serverNullDefaultHostname &amp;&amp; clientEmptyDefaultHostname) {
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>                     assertNull(hnc.getHostname());
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>                   } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (clientEmptyDefaultHostname) {
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>                     assertEquals(<span class="jxr_string">"defaulthost"</span>, hnc.getHostname());
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>                   } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>                     assertEquals(<span class="jxr_string">"localhost.junixsocket"</span>, hnc.getHostname());
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>                   }
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>                 } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>                   <strong class="jxr_keyword">if</strong> (<span class="jxr_string">"defaulthost"</span>.equals(hnc.getHostname()) &amp;&amp; AFSocket.isRunningOnAndroid()) {
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>                     <em class="jxr_comment">// This is a known edge case.</em>
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>                     failureServer.complete(<strong class="jxr_keyword">new</strong> TestAbortedWithImportantMessageException(
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>                         MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>                         <span class="jxr_string">"Android seems to not properly send the SNI hostname request"</span>));
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>                   } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>                     assertEquals(<span class="jxr_string">"subdomain.example.com"</span>, hnc.getHostname());
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>                   }
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>                 }
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>               } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>                 <strong class="jxr_keyword">if</strong> (configuration.isSniBroken()) {
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>                   sniBroken = <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>                 } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>                   <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>                 }
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>               }
-<a class="jxr_linenumber" name="L246" href="#L246">246</a> 
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>               <strong class="jxr_keyword">try</strong> (InputStream in = sslSocket.getInputStream();
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>                   OutputStream out = sslSocket.getOutputStream();) {
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>                 <strong class="jxr_keyword">int</strong> v = in.read();
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>                 assertEquals('?', v);
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>                 <strong class="jxr_keyword">if</strong> (!hnc.isComplete()) {
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>                   fail(<span class="jxr_string">"Handshake is not marked complete, but data can be read"</span>);
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>                 }
-<a class="jxr_linenumber" name="L254" href="#L254">254</a> 
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>                 CompletableFuture&lt;UnsupportedOperationException&gt; cf =
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>                     <strong class="jxr_keyword">new</strong> CompletableFuture&lt;UnsupportedOperationException&gt;();
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>                 <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>                   assertEquals(hnc.getHostnameFromSSLSession(sslSocket, cf::complete), hnc
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>                       .getHostname());
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>                 } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>                   <strong class="jxr_keyword">if</strong> (cf.isDone() &amp;&amp; isBouncyCastleJSSE(serverSocketFactory)) {
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>                     <em class="jxr_comment">// BouncyCastle doesn't support this</em>
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>                   } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>                     <strong class="jxr_keyword">throw</strong> e;
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>                   }
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>                 }
-<a class="jxr_linenumber" name="L267" href="#L267">267</a> 
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>                 assertEquals(expectDefault ? 1 : 0, in.read());
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>                 assertEquals(serverNullDefaultHostname ? 1 : 0, in.read());
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>                 assertEquals(clientEmptyDefaultHostname ? 1 : 0, in.read());
-<a class="jxr_linenumber" name="L271" href="#L271">271</a> 
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>                 out.write(<span class="jxr_string">"Hello World"</span>.getBytes(StandardCharsets.UTF_8));
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>                 out.flush();
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>               }
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>               <strong class="jxr_keyword">if</strong> (!gotHostnameInTime.get()) {
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>                 fail(<span class="jxr_string">"Handshake was not marked complete in time, but eventually was"</span>);
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>               }
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>               <strong class="jxr_keyword">if</strong> (sniBroken) {
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> TestAbortedWithImportantMessageException(
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>                     MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>                     <span class="jxr_string">"SNI support is knowingly incomplete for "</span> + configuration);
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>               }
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>             } <strong class="jxr_keyword">catch</strong> (Exception | Error e) {
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>               failureServer.complete(e);
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>             }
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>             <strong class="jxr_keyword">if</strong> (!gotHostnameInTime.get()) {
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>               failureServer.complete(<strong class="jxr_keyword">new</strong> AssertionFailedError(
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>                   <span class="jxr_string">"Handshake was not marked complete in time"</span>));
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>             }
-<a class="jxr_linenumber" name="L290" href="#L290">290</a> 
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>           }
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>         };
-<a class="jxr_linenumber" name="L293" href="#L293">293</a> 
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>     <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>       server.startAndWaitToBecomeReady();
-<a class="jxr_linenumber" name="L296" href="#L296">296</a> 
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>       <strong class="jxr_keyword">try</strong> (<a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> plainSocket = AFUNIXSocket.connectTo(addr);
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>           SSLSocket sslSocket = (SSLSocket) clientSocketFactory.createSocket(plainSocket,
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>               clientEmptyDefaultHostname ? <span class="jxr_string">""</span> : <span class="jxr_string">"localhost.junixsocket"</span>, plainSocket.getPort(),
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>               false)) {
-<a class="jxr_linenumber" name="L301" href="#L301">301</a> 
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>         <strong class="jxr_keyword">if</strong> (!expectDefault) {
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>           SSLParametersUtil.setSNIServerName(sslSocket, <strong class="jxr_keyword">new</strong> SNIHostName(<span class="jxr_string">"subdomain.example.com"</span>));
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>         }
-<a class="jxr_linenumber" name="L305" href="#L305">305</a> 
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>         <strong class="jxr_keyword">try</strong> (InputStream in = sslSocket.getInputStream();
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>             OutputStream out = sslSocket.getOutputStream()) {
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>           out.write('?');
-<a class="jxr_linenumber" name="L309" href="#L309">309</a> 
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>           out.write(expectDefault ? 1 : 0);
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>           out.write(serverNullDefaultHostname ? 1 : 0);
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>           out.write(clientEmptyDefaultHostname ? 1 : 0);
-<a class="jxr_linenumber" name="L313" href="#L313">313</a> 
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>           out.flush();
-<a class="jxr_linenumber" name="L315" href="#L315">315</a> 
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>           byte[] by = <strong class="jxr_keyword">new</strong> byte[11];
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>           <strong class="jxr_keyword">int</strong> offset = 0;
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>           <strong class="jxr_keyword">int</strong> r;
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>           <strong class="jxr_keyword">while</strong> (offset &lt; by.length &amp;&amp; (r = in.read(by, offset, by.length - offset)) &gt;= 0) {
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>             offset += r;
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>           }
-<a class="jxr_linenumber" name="L322" href="#L322">322</a>           assertEquals(<span class="jxr_string">"Hello World"</span>, <strong class="jxr_keyword">new</strong> String(by, 0, offset, StandardCharsets.UTF_8));
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>           failureClient.complete(e);
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>         }
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>       }
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>     } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>       server.stop();
-<a class="jxr_linenumber" name="L329" href="#L329">329</a> 
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>       TestUtil.throwMoreInterestingThrowableThanSocketException(() -&gt; failureServer.getNow(<strong class="jxr_keyword">null</strong>),
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>           () -&gt; failureClient.getNow(<strong class="jxr_keyword">null</strong>));
-<a class="jxr_linenumber" name="L332" href="#L332">332</a> 
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>       server.checkThrowable();
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>     }
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>   }
-<a class="jxr_linenumber" name="L336" href="#L336">336</a> 
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L338" href="#L338">338</a> <em class="jxr_javadoccomment">   * Test unexpected {@link SSLSocket} behavior. Mostly for code coverage.</em>
-<a class="jxr_linenumber" name="L339" href="#L339">339</a> <em class="jxr_javadoccomment">   *</em>
-<a class="jxr_linenumber" name="L340" href="#L340">340</a> <em class="jxr_javadoccomment">   * @throws Exception on error.</em>
-<a class="jxr_linenumber" name="L341" href="#L341">341</a> <em class="jxr_javadoccomment">   */</em>
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>   @Test
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testWonkySSLSocket() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>     testWonkySSLSocket(0);
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>     testWonkySSLSocket(23);
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>   }
-<a class="jxr_linenumber" name="L347" href="#L347">347</a> 
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> testWonkySSLSocket(<strong class="jxr_keyword">int</strong> matchType) <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>     SSLSocket sslSocket = <strong class="jxr_keyword">new</strong> SSLSocket() {
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>       <strong class="jxr_keyword">private</strong> HandshakeCompletedListener hcl;
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>       <strong class="jxr_keyword">private</strong> SSLParameters params = <strong class="jxr_keyword">new</strong> SSLParameters();
-<a class="jxr_linenumber" name="L352" href="#L352">352</a> 
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>       @Override
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>       @SuppressFBWarnings(<span class="jxr_string">"RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"</span>)
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> startHandshake() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>         <strong class="jxr_keyword">for</strong> (SNIMatcher sm : getSSLParameters().getSNIMatchers()) {
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>           sm.matches(<strong class="jxr_keyword">new</strong> SNIHostName(<span class="jxr_string">"hostname"</span>));
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>           sm.matches(<strong class="jxr_keyword">new</strong> SNIServerName(23, <span class="jxr_string">"WAT"</span>.getBytes(StandardCharsets.US_ASCII)) {
-<a class="jxr_linenumber" name="L359" href="#L359">359</a> 
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>           });
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>           sm.matches(<strong class="jxr_keyword">new</strong> SNIHostName(<span class="jxr_string">"hostname"</span>));
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>           sm.matches(<strong class="jxr_keyword">new</strong> SNIHostName(<span class="jxr_string">"anotherHostname"</span>));
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>         }
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>         hcl.handshakeCompleted(<strong class="jxr_keyword">new</strong> HandshakeCompletedEvent(<strong class="jxr_keyword">this</strong>, <strong class="jxr_keyword">null</strong>));
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>       }
-<a class="jxr_linenumber" name="L366" href="#L366">366</a> 
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>       @Override
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setWantClientAuth(<strong class="jxr_keyword">boolean</strong> want) {
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>       }
-<a class="jxr_linenumber" name="L370" href="#L370">370</a> 
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>       @Override
-<a class="jxr_linenumber" name="L372" href="#L372">372</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setUseClientMode(<strong class="jxr_keyword">boolean</strong> mode) {
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>       }
-<a class="jxr_linenumber" name="L374" href="#L374">374</a> 
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>       @Override
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setNeedClientAuth(<strong class="jxr_keyword">boolean</strong> need) {
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>       }
-<a class="jxr_linenumber" name="L378" href="#L378">378</a> 
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>       @Override
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setEnabledProtocols(String[] protocols) {
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>       }
-<a class="jxr_linenumber" name="L382" href="#L382">382</a> 
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>       @Override
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setEnabledCipherSuites(String[] suites) {
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>       }
-<a class="jxr_linenumber" name="L386" href="#L386">386</a> 
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>       @Override
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setEnableSessionCreation(<strong class="jxr_keyword">boolean</strong> flag) {
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>       }
-<a class="jxr_linenumber" name="L390" href="#L390">390</a> 
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>       @Override
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removeHandshakeCompletedListener(HandshakeCompletedListener listener) {
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>       }
-<a class="jxr_linenumber" name="L394" href="#L394">394</a> 
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>       @Override
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> getWantClientAuth() {
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>         <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>       }
-<a class="jxr_linenumber" name="L399" href="#L399">399</a> 
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>       @Override
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> getUseClientMode() {
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>         <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>       }
-<a class="jxr_linenumber" name="L404" href="#L404">404</a> 
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>       @Override
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>       <strong class="jxr_keyword">public</strong> String[] getSupportedProtocols() {
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>; <em class="jxr_comment">// NOPMD</em>
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>       }
-<a class="jxr_linenumber" name="L409" href="#L409">409</a> 
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>       @Override
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>       <strong class="jxr_keyword">public</strong> String[] getSupportedCipherSuites() {
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>; <em class="jxr_comment">// NOPMD</em>
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>       }
-<a class="jxr_linenumber" name="L414" href="#L414">414</a> 
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>       @Override
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>       <strong class="jxr_keyword">public</strong> SSLSession getSession() {
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>       }
-<a class="jxr_linenumber" name="L419" href="#L419">419</a> 
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>       @Override
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> getNeedClientAuth() {
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>         <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>       }
-<a class="jxr_linenumber" name="L424" href="#L424">424</a> 
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>       @Override
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>       <strong class="jxr_keyword">public</strong> String[] getEnabledProtocols() {
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>; <em class="jxr_comment">// NOPMD</em>
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>       }
-<a class="jxr_linenumber" name="L429" href="#L429">429</a> 
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>       @Override
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>       <strong class="jxr_keyword">public</strong> String[] getEnabledCipherSuites() {
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>; <em class="jxr_comment">// NOPMD</em>
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>       }
-<a class="jxr_linenumber" name="L434" href="#L434">434</a> 
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>       @Override
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> getEnableSessionCreation() {
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>         <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>       }
-<a class="jxr_linenumber" name="L439" href="#L439">439</a> 
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>       @Override
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>       <strong class="jxr_keyword">public</strong> SSLParameters getSSLParameters() {
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>         <strong class="jxr_keyword">return</strong> params;
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>       }
-<a class="jxr_linenumber" name="L444" href="#L444">444</a> 
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>       @Override
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setSSLParameters(SSLParameters params) {
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>         <strong class="jxr_keyword">this</strong>.params = params;
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>       }
-<a class="jxr_linenumber" name="L449" href="#L449">449</a> 
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>       @Override
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addHandshakeCompletedListener(HandshakeCompletedListener listener) {
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.hcl != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException();
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>         }
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>         <strong class="jxr_keyword">this</strong>.hcl = listener;
-<a class="jxr_linenumber" name="L456" href="#L456">456</a>       }
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>     };
-<a class="jxr_linenumber" name="L458" href="#L458">458</a> 
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>     <a name="SNIHostnameCapture" href="../../../../../org/newsclub/net/unix/ssl/SNIHostnameCapture.html#SNIHostnameCapture">SNIHostnameCapture</a> shc = SNIHostnameCapture.configure(sslSocket, <strong class="jxr_keyword">new</strong> SNIMatcher(matchType) {
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>       @Override
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> matches(SNIServerName serverName) {
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>         <strong class="jxr_keyword">return</strong> serverName.getType() == matchType;
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>       }
-<a class="jxr_linenumber" name="L464" href="#L464">464</a>     });
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>     sslSocket.startHandshake();
-<a class="jxr_linenumber" name="L466" href="#L466">466</a> 
-<a class="jxr_linenumber" name="L467" href="#L467">467</a>     <strong class="jxr_keyword">if</strong> (matchType == 0) {
-<a class="jxr_linenumber" name="L468" href="#L468">468</a>       assertEquals(<span class="jxr_string">"hostname"</span>, shc.getHostname());
-<a class="jxr_linenumber" name="L469" href="#L469">469</a>     } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>       assertNull(shc.getHostname());
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>     }
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>   }
-<a class="jxr_linenumber" name="L473" href="#L473">473</a> }
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>           @SuppressWarnings(<span class="jxr_string">"PMD.CyclomaticComplexity"</span>)
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>           @Override
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>           <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> doServeSocket(AFSocket&lt;? <strong class="jxr_keyword">extends</strong> AFUNIXSocketAddress&gt; plainSocket)
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>               <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L201" href="#L201">201</a> 
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>             <strong class="jxr_keyword">boolean</strong> sniBroken = false;
+<a class="jxr_linenumber" name="L203" href="#L203">203</a> 
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>             <strong class="jxr_keyword">try</strong> (SSLSocket sslSocket = (SSLSocket) serverSocketFactory.createSocket(plainSocket,
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>                 <span class="jxr_string">"localhost.junixsocket"</span>, plainSocket.getPort(), false)) {
+<a class="jxr_linenumber" name="L206" href="#L206">206</a> 
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>               <a name="SNIHostnameCapture" href="../../../../../org/newsclub/net/unix/ssl/SNIHostnameCapture.html#SNIHostnameCapture">SNIHostnameCapture</a> hnc = serverNullDefaultHostname ? <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>                   SNIHostnameCapture.configure(sslSocket, SNIHostnameCapture.ACCEPT_ANY_HOSTNAME) : <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>                   SNIHostnameCapture.configure(sslSocket, SNIHostnameCapture.ACCEPT_ANY_HOSTNAME,
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>                       () -&gt; <span class="jxr_string">"defaulthost"</span>);
+<a class="jxr_linenumber" name="L211" href="#L211">211</a> 
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>               assertFalse(hnc.isComplete());
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>               assertThrows(IllegalStateException.<strong class="jxr_keyword">class</strong>, () -&gt; hnc.getHostname());
+<a class="jxr_linenumber" name="L214" href="#L214">214</a> 
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>               <em class="jxr_comment">// NOTE: starting a handshake doesn't mean it's completed before reading the 1st byte!</em>
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>               sslSocket.startHandshake();
+<a class="jxr_linenumber" name="L217" href="#L217">217</a> 
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>               hnc.isComplete(1, TimeUnit.SECONDS);
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>               gotHostnameInTime.set(hnc.isComplete());
+<a class="jxr_linenumber" name="L220" href="#L220">220</a> 
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>               <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>                 <strong class="jxr_keyword">if</strong> (expectDefault) {
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>                   <strong class="jxr_keyword">if</strong> (serverNullDefaultHostname &amp;&amp; clientEmptyDefaultHostname) {
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>                     assertNull(hnc.getHostname());
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>                   } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (clientEmptyDefaultHostname) {
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>                     assertEquals(<span class="jxr_string">"defaulthost"</span>, hnc.getHostname());
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>                   } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>                     assertEquals(<span class="jxr_string">"localhost.junixsocket"</span>, hnc.getHostname());
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>                   }
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>                 } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>                   <strong class="jxr_keyword">if</strong> (<span class="jxr_string">"defaulthost"</span>.equals(hnc.getHostname()) &amp;&amp; AFSocket.isRunningOnAndroid()) {
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>                     <em class="jxr_comment">// This is a known edge case.</em>
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>                     failureServer.complete(<strong class="jxr_keyword">new</strong> TestAbortedWithImportantMessageException(
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>                         MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>                         <span class="jxr_string">"Android seems to not properly send the SNI hostname request"</span>));
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>                   } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>                     assertEquals(<span class="jxr_string">"subdomain.example.com"</span>, hnc.getHostname());
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>                   }
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>                 }
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>               } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>                 <strong class="jxr_keyword">if</strong> (configuration.isSniBroken()) {
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>                   sniBroken = <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>                 } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>                   <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>                 }
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>               }
+<a class="jxr_linenumber" name="L247" href="#L247">247</a> 
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>               <strong class="jxr_keyword">try</strong> (InputStream in = sslSocket.getInputStream();
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>                   OutputStream out = sslSocket.getOutputStream();) {
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>                 <strong class="jxr_keyword">int</strong> v = in.read();
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>                 assertEquals('?', v);
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>                 <strong class="jxr_keyword">if</strong> (!hnc.isComplete()) {
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>                   fail(<span class="jxr_string">"Handshake is not marked complete, but data can be read"</span>);
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>                 }
+<a class="jxr_linenumber" name="L255" href="#L255">255</a> 
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>                 CompletableFuture&lt;UnsupportedOperationException&gt; cf =
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>                     <strong class="jxr_keyword">new</strong> CompletableFuture&lt;UnsupportedOperationException&gt;();
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>                 <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>                   assertEquals(hnc.getHostnameFromSSLSession(sslSocket, cf::complete), hnc
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>                       .getHostname());
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>                 } <strong class="jxr_keyword">catch</strong> (AssertionFailedError e) {
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>                   <strong class="jxr_keyword">if</strong> (cf.isDone() &amp;&amp; isBouncyCastleJSSE(serverSocketFactory)) {
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>                     <em class="jxr_comment">// BouncyCastle doesn't support this</em>
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>                   } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>                     <strong class="jxr_keyword">throw</strong> e;
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>                   }
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>                 }
+<a class="jxr_linenumber" name="L268" href="#L268">268</a> 
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>                 assertEquals(expectDefault ? 1 : 0, in.read());
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>                 assertEquals(serverNullDefaultHostname ? 1 : 0, in.read());
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>                 assertEquals(clientEmptyDefaultHostname ? 1 : 0, in.read());
+<a class="jxr_linenumber" name="L272" href="#L272">272</a> 
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>                 out.write(<span class="jxr_string">"Hello World"</span>.getBytes(StandardCharsets.UTF_8));
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>                 out.flush();
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>               }
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>               <strong class="jxr_keyword">if</strong> (!gotHostnameInTime.get()) {
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>                 fail(<span class="jxr_string">"Handshake was not marked complete in time, but eventually was"</span>);
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>               }
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>               <strong class="jxr_keyword">if</strong> (sniBroken) {
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> TestAbortedWithImportantMessageException(
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>                     MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>                     <span class="jxr_string">"SNI support is knowingly incomplete for "</span> + configuration);
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>               }
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>             } <strong class="jxr_keyword">catch</strong> (Exception | Error e) { <em class="jxr_comment">// NOPMD.ExceptionAsFlowControl</em>
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>               failureServer.complete(e);
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>             }
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>             <strong class="jxr_keyword">if</strong> (!gotHostnameInTime.get()) {
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>               failureServer.complete(<strong class="jxr_keyword">new</strong> AssertionFailedError(
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>                   <span class="jxr_string">"Handshake was not marked complete in time"</span>));
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>             }
+<a class="jxr_linenumber" name="L291" href="#L291">291</a> 
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>           }
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>         };
+<a class="jxr_linenumber" name="L294" href="#L294">294</a> 
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>     <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>       server.startAndWaitToBecomeReady();
+<a class="jxr_linenumber" name="L297" href="#L297">297</a> 
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>       <strong class="jxr_keyword">try</strong> (<a name="AFUNIXSocket" href="../../../../../org/newsclub/net/unix/AFUNIXSocket.html#AFUNIXSocket">AFUNIXSocket</a> plainSocket = AFUNIXSocket.connectTo(addr);
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>           SSLSocket sslSocket = (SSLSocket) clientSocketFactory.createSocket(plainSocket,
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>               clientEmptyDefaultHostname ? <span class="jxr_string">""</span> : <span class="jxr_string">"localhost.junixsocket"</span>, plainSocket.getPort(),
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>               false)) {
+<a class="jxr_linenumber" name="L302" href="#L302">302</a> 
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>         <strong class="jxr_keyword">if</strong> (!expectDefault) {
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>           SSLParametersUtil.setSNIServerName(sslSocket, <strong class="jxr_keyword">new</strong> SNIHostName(<span class="jxr_string">"subdomain.example.com"</span>));
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>         }
+<a class="jxr_linenumber" name="L306" href="#L306">306</a> 
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>         <strong class="jxr_keyword">try</strong> (InputStream in = sslSocket.getInputStream();
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>             OutputStream out = sslSocket.getOutputStream()) {
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>           out.write('?');
+<a class="jxr_linenumber" name="L310" href="#L310">310</a> 
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>           out.write(expectDefault ? 1 : 0);
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>           out.write(serverNullDefaultHostname ? 1 : 0);
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>           out.write(clientEmptyDefaultHostname ? 1 : 0);
+<a class="jxr_linenumber" name="L314" href="#L314">314</a> 
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>           out.flush();
+<a class="jxr_linenumber" name="L316" href="#L316">316</a> 
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>           byte[] by = <strong class="jxr_keyword">new</strong> byte[11];
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>           <strong class="jxr_keyword">int</strong> offset = 0;
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>           <strong class="jxr_keyword">int</strong> r;
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>           <strong class="jxr_keyword">while</strong> (offset &lt; by.length &amp;&amp; (r = in.read(by, offset, by.length - offset)) &gt;= 0) {
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>             offset += r;
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>           }
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>           assertEquals(<span class="jxr_string">"Hello World"</span>, <strong class="jxr_keyword">new</strong> String(by, 0, offset, StandardCharsets.UTF_8));
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>         } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>           failureClient.complete(e);
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>         }
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>       }
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>     } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>       server.stop();
+<a class="jxr_linenumber" name="L330" href="#L330">330</a> 
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>       TestUtil.throwMoreInterestingThrowableThanSocketException(() -&gt; failureServer.getNow(<strong class="jxr_keyword">null</strong>),
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>           () -&gt; failureClient.getNow(<strong class="jxr_keyword">null</strong>));
+<a class="jxr_linenumber" name="L333" href="#L333">333</a> 
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>       server.checkThrowable();
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>     }
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>   }
+<a class="jxr_linenumber" name="L337" href="#L337">337</a> 
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L339" href="#L339">339</a> <em class="jxr_javadoccomment">   * Test unexpected {@link SSLSocket} behavior. Mostly for code coverage.</em>
+<a class="jxr_linenumber" name="L340" href="#L340">340</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L341" href="#L341">341</a> <em class="jxr_javadoccomment">   * @throws Exception on error.</em>
+<a class="jxr_linenumber" name="L342" href="#L342">342</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>   @Test
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testWonkySSLSocket() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>     testWonkySSLSocket(0);
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>     testWonkySSLSocket(23);
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>   }
+<a class="jxr_linenumber" name="L348" href="#L348">348</a> 
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> testWonkySSLSocket(<strong class="jxr_keyword">int</strong> matchType) <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>     SSLSocket sslSocket = <strong class="jxr_keyword">new</strong> SSLSocket() {
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>       <strong class="jxr_keyword">private</strong> HandshakeCompletedListener hcl;
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>       <strong class="jxr_keyword">private</strong> SSLParameters params = <strong class="jxr_keyword">new</strong> SSLParameters();
+<a class="jxr_linenumber" name="L353" href="#L353">353</a> 
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>       @Override
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>       @SuppressFBWarnings(<span class="jxr_string">"RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"</span>)
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> startHandshake() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>         <strong class="jxr_keyword">for</strong> (SNIMatcher sm : getSSLParameters().getSNIMatchers()) {
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>           sm.matches(<strong class="jxr_keyword">new</strong> SNIHostName(<span class="jxr_string">"hostname"</span>));
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>           sm.matches(<strong class="jxr_keyword">new</strong> SNIServerName(23, <span class="jxr_string">"WAT"</span>.getBytes(StandardCharsets.US_ASCII)) {
+<a class="jxr_linenumber" name="L360" href="#L360">360</a> 
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>           });
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>           sm.matches(<strong class="jxr_keyword">new</strong> SNIHostName(<span class="jxr_string">"hostname"</span>));
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>           sm.matches(<strong class="jxr_keyword">new</strong> SNIHostName(<span class="jxr_string">"anotherHostname"</span>));
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>         }
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>         hcl.handshakeCompleted(<strong class="jxr_keyword">new</strong> HandshakeCompletedEvent(<strong class="jxr_keyword">this</strong>, <strong class="jxr_keyword">null</strong>));
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>       }
+<a class="jxr_linenumber" name="L367" href="#L367">367</a> 
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>       @Override
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setWantClientAuth(<strong class="jxr_keyword">boolean</strong> want) {
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>       }
+<a class="jxr_linenumber" name="L371" href="#L371">371</a> 
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>       @Override
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setUseClientMode(<strong class="jxr_keyword">boolean</strong> mode) {
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>       }
+<a class="jxr_linenumber" name="L375" href="#L375">375</a> 
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>       @Override
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setNeedClientAuth(<strong class="jxr_keyword">boolean</strong> need) {
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>       }
+<a class="jxr_linenumber" name="L379" href="#L379">379</a> 
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>       @Override
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setEnabledProtocols(String[] protocols) {
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>       }
+<a class="jxr_linenumber" name="L383" href="#L383">383</a> 
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>       @Override
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setEnabledCipherSuites(String[] suites) {
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>       }
+<a class="jxr_linenumber" name="L387" href="#L387">387</a> 
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>       @Override
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setEnableSessionCreation(<strong class="jxr_keyword">boolean</strong> flag) {
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>       }
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> 
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>       @Override
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removeHandshakeCompletedListener(HandshakeCompletedListener listener) {
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>       }
+<a class="jxr_linenumber" name="L395" href="#L395">395</a> 
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>       @Override
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> getWantClientAuth() {
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>         <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>       }
+<a class="jxr_linenumber" name="L400" href="#L400">400</a> 
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>       @Override
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> getUseClientMode() {
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>         <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>       }
+<a class="jxr_linenumber" name="L405" href="#L405">405</a> 
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>       @Override
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>       <strong class="jxr_keyword">public</strong> String[] getSupportedProtocols() {
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>; <em class="jxr_comment">// NOPMD</em>
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>       }
+<a class="jxr_linenumber" name="L410" href="#L410">410</a> 
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>       @Override
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>       <strong class="jxr_keyword">public</strong> String[] getSupportedCipherSuites() {
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>; <em class="jxr_comment">// NOPMD</em>
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>       }
+<a class="jxr_linenumber" name="L415" href="#L415">415</a> 
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>       @Override
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>       <strong class="jxr_keyword">public</strong> SSLSession getSession() {
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>       }
+<a class="jxr_linenumber" name="L420" href="#L420">420</a> 
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>       @Override
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> getNeedClientAuth() {
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>         <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>       }
+<a class="jxr_linenumber" name="L425" href="#L425">425</a> 
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>       @Override
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>       <strong class="jxr_keyword">public</strong> String[] getEnabledProtocols() {
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>; <em class="jxr_comment">// NOPMD</em>
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>       }
+<a class="jxr_linenumber" name="L430" href="#L430">430</a> 
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>       @Override
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>       <strong class="jxr_keyword">public</strong> String[] getEnabledCipherSuites() {
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>; <em class="jxr_comment">// NOPMD</em>
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>       }
+<a class="jxr_linenumber" name="L435" href="#L435">435</a> 
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>       @Override
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> getEnableSessionCreation() {
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>         <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>       }
+<a class="jxr_linenumber" name="L440" href="#L440">440</a> 
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>       @Override
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>       <strong class="jxr_keyword">public</strong> SSLParameters getSSLParameters() {
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>         <strong class="jxr_keyword">return</strong> params;
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>       }
+<a class="jxr_linenumber" name="L445" href="#L445">445</a> 
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>       @Override
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setSSLParameters(SSLParameters params) {
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>         <strong class="jxr_keyword">this</strong>.params = params;
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>       }
+<a class="jxr_linenumber" name="L450" href="#L450">450</a> 
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>       @Override
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addHandshakeCompletedListener(HandshakeCompletedListener listener) {
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>         <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.hcl != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>           <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException();
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>         }
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>         <strong class="jxr_keyword">this</strong>.hcl = listener;
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>       }
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>     };
+<a class="jxr_linenumber" name="L459" href="#L459">459</a> 
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>     <a name="SNIHostnameCapture" href="../../../../../org/newsclub/net/unix/ssl/SNIHostnameCapture.html#SNIHostnameCapture">SNIHostnameCapture</a> shc = SNIHostnameCapture.configure(sslSocket, <strong class="jxr_keyword">new</strong> SNIMatcher(matchType) {
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>       @Override
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>       <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> matches(SNIServerName serverName) {
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>         <strong class="jxr_keyword">return</strong> serverName.getType() == matchType;
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>       }
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>     });
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>     sslSocket.startHandshake();
+<a class="jxr_linenumber" name="L467" href="#L467">467</a> 
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>     <strong class="jxr_keyword">if</strong> (matchType == 0) {
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>       assertEquals(<span class="jxr_string">"hostname"</span>, shc.getHostname());
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L471" href="#L471">471</a>       assertNull(shc.getHostname());
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>     }
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>   }
+<a class="jxr_linenumber" name="L474" href="#L474">474</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2024 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>

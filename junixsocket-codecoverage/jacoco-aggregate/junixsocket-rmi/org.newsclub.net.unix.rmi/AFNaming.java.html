@@ -70,13 +70,12 @@ public abstract class AFNaming extends AFRegistryAccess {
    *
    * @param registryPort The registry port.
    * @param servicePort The port for AFRMIService.
-   * @throws IOException on error.
    */
-  protected AFNaming(final int registryPort, final int servicePort) throws IOException {
-<span class="fc" id="L76">    super();</span>
-<span class="fc" id="L77">    this.registryPort = registryPort;</span>
-<span class="fc" id="L78">    this.servicePort = servicePort;</span>
-<span class="fc" id="L79">  }</span>
+  protected AFNaming(final int registryPort, final int servicePort) {
+<span class="fc" id="L75">    super();</span>
+<span class="fc" id="L76">    this.registryPort = registryPort;</span>
+<span class="fc" id="L77">    this.servicePort = servicePort;</span>
+<span class="fc" id="L78">  }</span>
 
   /**
    * Creates a new {@link AFRegistry} given a {@link Registry} implementation.
@@ -98,27 +97,27 @@ public abstract class AFNaming extends AFRegistryAccess {
   @SuppressWarnings(&quot;unchecked&quot;)
   static &lt;T extends AFNaming&gt; T getInstance(final int registryPort,
       @NonNull AFNamingProvider&lt;T&gt; provider) throws RemoteException {
-<span class="fc" id="L101">    Objects.requireNonNull(provider);</span>
-<span class="fc" id="L102">    final AFNamingRef sap = new AFNamingRef(provider, registryPort);</span>
+<span class="fc" id="L100">    Objects.requireNonNull(provider);</span>
+<span class="fc" id="L101">    final AFNamingRef sap = new AFNamingRef(provider, registryPort);</span>
     T instance;
-<span class="fc" id="L104">    synchronized (AFNaming.class) {</span>
-<span class="fc" id="L105">      instance = (T) INSTANCES.get(sap);</span>
-<span class="pc bpc" id="L106" title="1 of 2 branches missed.">      if (instance == null) {</span>
+<span class="fc" id="L103">    synchronized (AFNaming.class) {</span>
+<span class="fc" id="L104">      instance = (T) INSTANCES.get(sap);</span>
+<span class="pc bpc" id="L105" title="1 of 2 branches missed.">      if (instance == null) {</span>
         try {
-<span class="fc" id="L108">          instance = provider.newInstance(registryPort);</span>
-<span class="fc" id="L109">          Objects.requireNonNull(instance);</span>
-<span class="fc" id="L110">          synchronized (instance) {</span>
-<span class="fc" id="L111">            instance.socketFactory = instance.initSocketFactory();</span>
-<span class="fc" id="L112">          }</span>
-<span class="nc" id="L113">        } catch (RemoteException e) {</span>
-<span class="nc" id="L114">          throw e;</span>
-<span class="nc" id="L115">        } catch (IOException e) {</span>
-<span class="nc" id="L116">          throw new RemoteException(e.getMessage(), e);</span>
-<span class="fc" id="L117">        }</span>
-<span class="fc" id="L118">        INSTANCES.put(sap, instance);</span>
+<span class="fc" id="L107">          instance = provider.newInstance(registryPort);</span>
+<span class="fc" id="L108">          Objects.requireNonNull(instance);</span>
+<span class="fc" id="L109">          synchronized (instance) {</span>
+<span class="fc" id="L110">            instance.socketFactory = instance.initSocketFactory();</span>
+<span class="fc" id="L111">          }</span>
+<span class="nc" id="L112">        } catch (RemoteException e) {</span>
+<span class="nc" id="L113">          throw e;</span>
+<span class="nc" id="L114">        } catch (IOException e) {</span>
+<span class="nc" id="L115">          throw new RemoteException(e.getMessage(), e);</span>
+<span class="fc" id="L116">        }</span>
+<span class="fc" id="L117">        INSTANCES.put(sap, instance);</span>
       }
-<span class="fc" id="L120">    }</span>
-<span class="fc" id="L121">    return instance;</span>
+<span class="fc" id="L119">    }</span>
+<span class="fc" id="L120">    return instance;</span>
   }
 
   /**
@@ -128,7 +127,7 @@ public abstract class AFNaming extends AFRegistryAccess {
    */
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   public synchronized AFRMISocketFactory getSocketFactory() {
-<span class="fc" id="L131">    return socketFactory;</span>
+<span class="fc" id="L130">    return socketFactory;</span>
   }
 
   /**
@@ -137,51 +136,51 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @return The port.
    */
   public final int getRegistryPort() {
-<span class="fc" id="L140">    return registryPort;</span>
+<span class="fc" id="L139">    return registryPort;</span>
   }
 
   AFRMIService getRMIService() throws RemoteException, NotBoundException {
-<span class="fc" id="L144">    return getRMIService(getRegistry());</span>
+<span class="fc" id="L143">    return getRMIService(getRegistry());</span>
   }
 
   synchronized AFRMIService getRMIService(AFRegistry reg) throws RemoteException,
       NotBoundException {
-<span class="fc bfc" id="L149" title="All 2 branches covered.">    if (rmiService == null) {</span>
-<span class="fc" id="L150">      this.rmiService = getRMIServiceFromRegistry(reg);</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    if (rmiService == null) {</span>
+<span class="fc" id="L149">      this.rmiService = getRMIServiceFromRegistry(reg);</span>
     }
-<span class="fc" id="L152">    return rmiService;</span>
+<span class="fc" id="L151">    return rmiService;</span>
   }
 
   AFRMIService getRMIServiceFromRegistry(AFRegistry reg) throws RemoteException, NotBoundException {
     AFRMIService service;
-<span class="fc" id="L157">    service = (AFRMIService) reg.lookup(RMI_SERVICE_NAME, 5, TimeUnit.SECONDS);</span>
-<span class="fc" id="L158">    this.remoteShutdownAllowed.set(service.isShutdownAllowed());</span>
-<span class="fc" id="L159">    return service;</span>
+<span class="fc" id="L156">    service = (AFRMIService) reg.lookup(RMI_SERVICE_NAME, 5, TimeUnit.SECONDS);</span>
+<span class="fc" id="L157">    this.remoteShutdownAllowed.set(service.isShutdownAllowed());</span>
+<span class="fc" id="L158">    return service;</span>
   }
 
   private void closeUponRuntimeShutdown() {
-<span class="fc bfc" id="L163" title="All 2 branches covered.">    if (addedShutdownHook.compareAndSet(false, true)) {</span>
-<span class="fc" id="L164">      ShutdownHookSupport.addWeakShutdownHook(new ShutdownHook() {</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">    if (addedShutdownHook.compareAndSet(false, true)) {</span>
+<span class="fc" id="L163">      ShutdownHookSupport.addWeakShutdownHook(new ShutdownHook() {</span>
 
         @Override
         @SuppressWarnings(&quot;LockOnNonEnclosingClassLiteral&quot; /* errorprone */)
         public synchronized void onRuntimeShutdown(Thread thread) throws IOException {
-<span class="pc bpc" id="L169" title="3 of 4 branches missed.">          if (registry != null &amp;&amp; registry.isLocal()) {</span>
-<span class="nc" id="L170">            shutdownRegistry();</span>
+<span class="pc bpc" id="L168" title="3 of 4 branches missed.">          if (registry != null &amp;&amp; registry.isLocal()) {</span>
+<span class="nc" id="L169">            shutdownRegistry();</span>
           }
-<span class="fc" id="L172">        }</span>
+<span class="fc" id="L171">        }</span>
       });
     }
-<span class="fc" id="L175">  }</span>
+<span class="fc" id="L174">  }</span>
 
   private synchronized void rebindRMIService(final AFRMIService assigner) throws RemoteException {
-<span class="fc" id="L178">    rmiService = assigner;</span>
-<span class="fc" id="L179">    getRegistry().rebind(RMI_SERVICE_NAME, assigner);</span>
-<span class="fc" id="L180">  }</span>
+<span class="fc" id="L177">    rmiService = assigner;</span>
+<span class="fc" id="L178">    getRegistry().rebind(RMI_SERVICE_NAME, assigner);</span>
+<span class="fc" id="L179">  }</span>
 
   @Override
   public AFRegistry getRegistry() throws RemoteException {
-<span class="nc" id="L184">    return getRegistry(0, TimeUnit.SECONDS);</span>
+<span class="nc" id="L183">    return getRegistry(0, TimeUnit.SECONDS);</span>
   }
 
   /**
@@ -196,15 +195,15 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @throws RemoteException If there was a problem.
    */
   public AFRegistry getRegistry(long timeout, TimeUnit unit) throws RemoteException {
-<span class="pc bpc" id="L199" title="1 of 2 branches missed.">    if (shutdownInProgress.get()) {</span>
-<span class="nc" id="L200">      throw new ShutdownException();</span>
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">    if (shutdownInProgress.get()) {</span>
+<span class="nc" id="L199">      throw new ShutdownException();</span>
     }
-<span class="fc" id="L202">    synchronized (this) {</span>
-<span class="fc" id="L203">      AFRegistry reg = getRegistry(false);</span>
-<span class="fc bfc" id="L204" title="All 2 branches covered.">      if (reg == null) {</span>
-<span class="fc" id="L205">        reg = openRegistry(timeout, unit);</span>
+<span class="fc" id="L201">    synchronized (this) {</span>
+<span class="fc" id="L202">      AFRegistry reg = getRegistry(false);</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">      if (reg == null) {</span>
+<span class="fc" id="L204">        reg = openRegistry(timeout, unit);</span>
       }
-<span class="fc" id="L207">      return reg;</span>
+<span class="fc" id="L206">      return reg;</span>
     }
   }
 
@@ -229,37 +228,37 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @throws RemoteException If there was a problem.
    */
   public AFRegistry getRegistry(boolean create) throws RemoteException {
-<span class="pc bpc" id="L232" title="1 of 2 branches missed.">    if (shutdownInProgress.get()) {</span>
-<span class="nc" id="L233">      throw new ShutdownException();</span>
+<span class="pc bpc" id="L231" title="1 of 2 branches missed.">    if (shutdownInProgress.get()) {</span>
+<span class="nc" id="L232">      throw new ShutdownException();</span>
     }
-<span class="fc" id="L235">    synchronized (this) {</span>
-<span class="fc bfc" id="L236" title="All 2 branches covered.">      if (registry != null) {</span>
-<span class="fc" id="L237">        return registry;</span>
-<span class="fc bfc" id="L238" title="All 2 branches covered.">      } else if (!socketFactory.hasRegisteredPort(registryPort)) {</span>
-<span class="pc bpc" id="L239" title="1 of 2 branches missed.">        return create ? createRegistry() : null;</span>
+<span class="fc" id="L234">    synchronized (this) {</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">      if (registry != null) {</span>
+<span class="fc" id="L236">        return registry;</span>
+<span class="fc bfc" id="L237" title="All 2 branches covered.">      } else if (!socketFactory.hasRegisteredPort(registryPort)) {</span>
+<span class="pc bpc" id="L238" title="1 of 2 branches missed.">        return create ? createRegistry() : null;</span>
       }
 
-<span class="fc" id="L242">      AFRegistry reg = locateRegistry();</span>
-<span class="fc" id="L243">      setRegistry(reg);</span>
+<span class="fc" id="L241">      AFRegistry reg = locateRegistry();</span>
+<span class="fc" id="L242">      setRegistry(reg);</span>
 
       try {
-<span class="fc" id="L246">        getRMIService(reg);</span>
-<span class="nc" id="L247">      } catch (NotBoundException | NoSuchObjectException | ConnectIOException e) {</span>
-<span class="nc bnc" id="L248" title="All 2 branches missed.">        if (create) {</span>
-<span class="nc" id="L249">          setRegistry(null);</span>
-<span class="nc" id="L250">          return createRegistry();</span>
+<span class="fc" id="L245">        getRMIService(reg);</span>
+<span class="nc" id="L246">      } catch (NotBoundException | NoSuchObjectException | ConnectIOException e) {</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">        if (create) {</span>
+<span class="nc" id="L248">          setRegistry(null);</span>
+<span class="nc" id="L249">          return createRegistry();</span>
         } else {
-<span class="nc" id="L252">          throw new ServerException(&quot;Could not access &quot; + AFRMIService.class.getName(), e);</span>
+<span class="nc" id="L251">          throw new ServerException(&quot;Could not access &quot; + AFRMIService.class.getName(), e);</span>
         }
-<span class="fc" id="L254">      }</span>
+<span class="fc" id="L253">      }</span>
 
-<span class="fc" id="L256">      return registry;</span>
+<span class="fc" id="L255">      return registry;</span>
     }
   }
 
   private AFRegistry locateRegistry() throws RemoteException {
-<span class="fc" id="L261">    Registry regImpl = LocateRegistry.getRegistry(null, registryPort, socketFactory);</span>
-<span class="pc bpc" id="L262" title="1 of 2 branches missed.">    return regImpl == null ? null : newAFRegistry(regImpl);</span>
+<span class="fc" id="L260">    Registry regImpl = LocateRegistry.getRegistry(null, registryPort, socketFactory);</span>
+<span class="pc bpc" id="L261" title="1 of 2 branches missed.">    return regImpl == null ? null : newAFRegistry(regImpl);</span>
   }
 
   /**
@@ -268,43 +267,43 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @throws RemoteException if the operation fails.
    */
   public void shutdownRegistry() throws RemoteException {
-<span class="fc" id="L271">    synchronized (this) {</span>
-<span class="pc bpc" id="L272" title="1 of 2 branches missed.">      if (registry == null) {</span>
-<span class="nc" id="L273">        return;</span>
+<span class="fc" id="L270">    synchronized (this) {</span>
+<span class="pc bpc" id="L271" title="1 of 2 branches missed.">      if (registry == null) {</span>
+<span class="nc" id="L272">        return;</span>
       }
 
-<span class="fc" id="L276">      AFRegistry registryToBeClosed = registry;</span>
-<span class="fc" id="L277">      AFRMIService rmiServiceToBeClosed = rmiService;</span>
+<span class="fc" id="L275">      AFRegistry registryToBeClosed = registry;</span>
+<span class="fc" id="L276">      AFRMIService rmiServiceToBeClosed = rmiService;</span>
 
-<span class="fc bfc" id="L279" title="All 2 branches covered.">      if (!registryToBeClosed.isLocal()) {</span>
-<span class="fc bfc" id="L280" title="All 2 branches covered.">        if (!isRemoteShutdownAllowed()) {</span>
-<span class="fc" id="L281">          throw new ServerException(&quot;The server refuses to be shutdown remotely&quot;);</span>
+<span class="fc bfc" id="L278" title="All 2 branches covered.">      if (!registryToBeClosed.isLocal()) {</span>
+<span class="fc bfc" id="L279" title="All 2 branches covered.">        if (!isRemoteShutdownAllowed()) {</span>
+<span class="fc" id="L280">          throw new ServerException(&quot;The server refuses to be shutdown remotely&quot;);</span>
         }
-<span class="fc" id="L283">        setRegistry(null);</span>
+<span class="fc" id="L282">        setRegistry(null);</span>
 
         try {
-<span class="fc" id="L286">          shutdownViaRMIService(registryToBeClosed, rmiServiceToBeClosed);</span>
-<span class="nc" id="L287">        } catch (Exception e) {</span>
+<span class="fc" id="L285">          shutdownViaRMIService(registryToBeClosed, rmiServiceToBeClosed);</span>
+<span class="nc" id="L286">        } catch (Exception e) {</span>
           // ignore
-<span class="fc" id="L289">        }</span>
-<span class="fc" id="L290">        return;</span>
+<span class="fc" id="L288">        }</span>
+<span class="fc" id="L289">        return;</span>
       }
 
-<span class="fc" id="L293">      setRegistry(null);</span>
+<span class="fc" id="L292">      setRegistry(null);</span>
 
-<span class="pc bpc" id="L295" title="1 of 2 branches missed.">      if (!shutdownInProgress.compareAndSet(false, true)) {</span>
-<span class="nc" id="L296">        return;</span>
+<span class="pc bpc" id="L294" title="1 of 2 branches missed.">      if (!shutdownInProgress.compareAndSet(false, true)) {</span>
+<span class="nc" id="L295">        return;</span>
       }
       try {
-<span class="fc" id="L299">        unexportRMIService(registryToBeClosed, (AFRMIServiceImpl) rmiServiceToBeClosed);</span>
-<span class="fc" id="L300">        forceUnexportBound(registryToBeClosed);</span>
-<span class="fc" id="L301">        closeSocketFactory();</span>
-<span class="fc" id="L302">        shutdownRegistryFinishingTouches();</span>
+<span class="fc" id="L298">        unexportRMIService(registryToBeClosed, (AFRMIServiceImpl) rmiServiceToBeClosed);</span>
+<span class="fc" id="L299">        forceUnexportBound(registryToBeClosed);</span>
+<span class="fc" id="L300">        closeSocketFactory();</span>
+<span class="fc" id="L301">        shutdownRegistryFinishingTouches();</span>
       } finally {
-<span class="fc" id="L304">        shutdownInProgress.set(false);</span>
+<span class="fc" id="L303">        shutdownInProgress.set(false);</span>
       }
-<span class="fc" id="L306">    }</span>
-<span class="fc" id="L307">  }</span>
+<span class="fc" id="L305">    }</span>
+<span class="fc" id="L306">  }</span>
 
   /**
    * Called by {@link #shutdownRegistry()} as the final step.
@@ -313,51 +312,51 @@ public abstract class AFNaming extends AFRegistryAccess {
 
   private synchronized void unexportRMIService(AFRegistry reg, AFRMIServiceImpl serv)
       throws AccessException, RemoteException {
-<span class="pc bpc" id="L316" title="1 of 2 branches missed.">    if (serv != null) {</span>
-<span class="fc" id="L317">      serv.shutdownRegisteredCloseables();</span>
+<span class="pc bpc" id="L315" title="1 of 2 branches missed.">    if (serv != null) {</span>
+<span class="fc" id="L316">      serv.shutdownRegisteredCloseables();</span>
     }
 
     try {
-<span class="pc bpc" id="L321" title="1 of 2 branches missed.">      if (serv != null) {</span>
-<span class="fc" id="L322">        unexportObject(serv);</span>
+<span class="pc bpc" id="L320" title="1 of 2 branches missed.">      if (serv != null) {</span>
+<span class="fc" id="L321">        unexportObject(serv);</span>
       }
-<span class="fc" id="L324">      reg.unbind(RMI_SERVICE_NAME);</span>
-<span class="nc" id="L325">    } catch (ShutdownException | NotBoundException e) {</span>
+<span class="fc" id="L323">      reg.unbind(RMI_SERVICE_NAME);</span>
+<span class="nc" id="L324">    } catch (ShutdownException | NotBoundException e) {</span>
       // ignore
-<span class="fc" id="L327">    }</span>
-<span class="fc" id="L328">    this.rmiService = null;</span>
-<span class="fc" id="L329">  }</span>
+<span class="fc" id="L326">    }</span>
+<span class="fc" id="L327">    this.rmiService = null;</span>
+<span class="fc" id="L328">  }</span>
 
   private void forceUnexportBound(AFRegistry reg) {
     try {
-<span class="fc" id="L333">      reg.forceUnexportBound();</span>
-<span class="nc" id="L334">    } catch (Exception e) {</span>
+<span class="fc" id="L332">      reg.forceUnexportBound();</span>
+<span class="nc" id="L333">    } catch (Exception e) {</span>
       // ignore
-<span class="fc" id="L336">    }</span>
-<span class="fc" id="L337">  }</span>
+<span class="fc" id="L335">    }</span>
+<span class="fc" id="L336">  }</span>
 
   private void closeSocketFactory() {
-<span class="pc bpc" id="L340" title="1 of 2 branches missed.">    if (socketFactory != null) {</span>
+<span class="pc bpc" id="L339" title="1 of 2 branches missed.">    if (socketFactory != null) {</span>
       try {
-<span class="fc" id="L342">        socketFactory.close();</span>
-<span class="nc" id="L343">      } catch (IOException e) {</span>
+<span class="fc" id="L341">        socketFactory.close();</span>
+<span class="nc" id="L342">      } catch (IOException e) {</span>
         // ignore
-<span class="fc" id="L345">      }</span>
+<span class="fc" id="L344">      }</span>
     }
-<span class="fc" id="L347">  }</span>
+<span class="fc" id="L346">  }</span>
 
   private void shutdownViaRMIService(AFRegistry reg, AFRMIService serv) throws RemoteException {
     try {
-<span class="pc bpc" id="L351" title="1 of 2 branches missed.">      if (serv == null) {</span>
-<span class="nc" id="L352">        serv = getRMIService(reg);</span>
+<span class="pc bpc" id="L350" title="1 of 2 branches missed.">      if (serv == null) {</span>
+<span class="nc" id="L351">        serv = getRMIService(reg);</span>
       }
-<span class="pc bpc" id="L354" title="1 of 2 branches missed.">      if (serv.isShutdownAllowed()) {</span>
-<span class="fc" id="L355">        serv.shutdown();</span>
+<span class="pc bpc" id="L353" title="1 of 2 branches missed.">      if (serv.isShutdownAllowed()) {</span>
+<span class="fc" id="L354">        serv.shutdown();</span>
       }
-<span class="nc" id="L357">    } catch (ServerException | ConnectIOException | NotBoundException e) {</span>
+<span class="nc" id="L356">    } catch (ServerException | ConnectIOException | NotBoundException e) {</span>
       // ignore
-<span class="fc" id="L359">    }</span>
-<span class="fc" id="L360">  }</span>
+<span class="fc" id="L358">    }</span>
+<span class="fc" id="L359">  }</span>
 
   /**
    * Creates a new RMI {@link Registry}.
@@ -372,37 +371,37 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @see #getRegistry()
    */
   public synchronized AFRegistry createRegistry() throws RemoteException {
-<span class="fc" id="L375">    AFRegistry existingRegistry = registry;</span>
-<span class="fc bfc" id="L376" title="All 2 branches covered.">    if (existingRegistry == null) {</span>
+<span class="fc" id="L374">    AFRegistry existingRegistry = registry;</span>
+<span class="fc bfc" id="L375" title="All 2 branches covered.">    if (existingRegistry == null) {</span>
       try {
-<span class="fc" id="L378">        existingRegistry = getRegistry(false);</span>
-<span class="nc" id="L379">      } catch (ServerException e) {</span>
-<span class="nc" id="L380">        Throwable cause = e.getCause();</span>
-<span class="nc bnc" id="L381" title="All 4 branches missed.">        if (cause instanceof NotBoundException || cause instanceof ConnectIOException) {</span>
-<span class="nc" id="L382">          existingRegistry = null;</span>
+<span class="fc" id="L377">        existingRegistry = getRegistry(false);</span>
+<span class="nc" id="L378">      } catch (ServerException e) {</span>
+<span class="nc" id="L379">        Throwable cause = e.getCause();</span>
+<span class="nc bnc" id="L380" title="All 4 branches missed.">        if (cause instanceof NotBoundException || cause instanceof ConnectIOException) {</span>
+<span class="nc" id="L381">          existingRegistry = null;</span>
         } else {
-<span class="nc" id="L384">          throw e;</span>
+<span class="nc" id="L383">          throw e;</span>
         }
-<span class="fc" id="L386">      }</span>
+<span class="fc" id="L385">      }</span>
     }
-<span class="fc bfc" id="L388" title="All 2 branches covered.">    if (existingRegistry != null) {</span>
-<span class="pc bpc" id="L389" title="1 of 2 branches missed.">      if (!isRemoteShutdownAllowed()) {</span>
-<span class="nc" id="L390">        throw new ServerException(&quot;The server refuses to be shutdown remotely&quot;);</span>
+<span class="fc bfc" id="L387" title="All 2 branches covered.">    if (existingRegistry != null) {</span>
+<span class="pc bpc" id="L388" title="1 of 2 branches missed.">      if (!isRemoteShutdownAllowed()) {</span>
+<span class="nc" id="L389">        throw new ServerException(&quot;The server refuses to be shutdown remotely&quot;);</span>
       }
-<span class="fc" id="L392">      shutdownRegistry();</span>
+<span class="fc" id="L391">      shutdownRegistry();</span>
     }
 
-<span class="fc" id="L395">    initRegistryPrerequisites();</span>
-<span class="fc" id="L396">    AFRegistry newAFRegistry = newAFRegistry(LocateRegistry.createRegistry(registryPort,</span>
+<span class="fc" id="L394">    initRegistryPrerequisites();</span>
+<span class="fc" id="L395">    AFRegistry newAFRegistry = newAFRegistry(LocateRegistry.createRegistry(registryPort,</span>
         socketFactory, socketFactory));
-<span class="fc" id="L398">    setRegistry(newAFRegistry);</span>
+<span class="fc" id="L397">    setRegistry(newAFRegistry);</span>
 
-<span class="fc" id="L400">    final AFRMIService service = new AFRMIServiceImpl(this);</span>
-<span class="fc" id="L401">    UnicastRemoteObject.exportObject(service, servicePort, socketFactory, socketFactory);</span>
+<span class="fc" id="L399">    final AFRMIService service = new AFRMIServiceImpl(this);</span>
+<span class="fc" id="L400">    UnicastRemoteObject.exportObject(service, servicePort, socketFactory, socketFactory);</span>
 
-<span class="fc" id="L403">    rebindRMIService(service);</span>
+<span class="fc" id="L402">    rebindRMIService(service);</span>
 
-<span class="fc" id="L405">    return registry;</span>
+<span class="fc" id="L404">    return registry;</span>
   }
 
   /**
@@ -418,7 +417,7 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @return {@code true} if remote shutdown is allowed.
    */
   public boolean isRemoteShutdownAllowed() {
-<span class="fc" id="L421">    return remoteShutdownAllowed.get();</span>
+<span class="fc" id="L420">    return remoteShutdownAllowed.get();</span>
   }
 
   /**
@@ -427,8 +426,8 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @param remoteShutdownAllowed {@code true} if remote shutdown is allowed.
    */
   public void setRemoteShutdownAllowed(boolean remoteShutdownAllowed) {
-<span class="fc" id="L430">    this.remoteShutdownAllowed.set(remoteShutdownAllowed);</span>
-<span class="fc" id="L431">  }</span>
+<span class="fc" id="L429">    this.remoteShutdownAllowed.set(remoteShutdownAllowed);</span>
+<span class="fc" id="L430">  }</span>
 
   /**
    * Exports and binds the given Remote object to the given name, using the given {@link AFNaming}
@@ -440,10 +439,10 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @throws AlreadyBoundException if there already was something bound at that name
    */
   public void exportAndBind(String name, Remote obj) throws RemoteException, AlreadyBoundException {
-<span class="fc" id="L443">    exportObject(obj, getSocketFactory());</span>
+<span class="fc" id="L442">    exportObject(obj, getSocketFactory());</span>
 
-<span class="fc" id="L445">    getRegistry().bind(name, obj);</span>
-<span class="fc" id="L446">  }</span>
+<span class="fc" id="L444">    getRegistry().bind(name, obj);</span>
+<span class="fc" id="L445">  }</span>
 
   /**
    * Exports and re-binds the given Remote object to the given name, using the given
@@ -454,10 +453,10 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @throws RemoteException if the operation fails.
    */
   public void exportAndRebind(String name, Remote obj) throws RemoteException {
-<span class="fc" id="L457">    exportObject(obj, getSocketFactory());</span>
+<span class="fc" id="L456">    exportObject(obj, getSocketFactory());</span>
 
-<span class="fc" id="L459">    getRegistry().rebind(name, obj);</span>
-<span class="fc" id="L460">  }</span>
+<span class="fc" id="L458">    getRegistry().rebind(name, obj);</span>
+<span class="fc" id="L459">  }</span>
 
   /**
    * Forcibly un-exports the given object, if it exists, and unbinds the object from the registry
@@ -468,13 +467,13 @@ public abstract class AFNaming extends AFRegistryAccess {
    * @throws RemoteException if the operation fails.
    */
   public void unexportAndUnbind(String name, Remote obj) throws RemoteException {
-<span class="fc" id="L471">    unexportObject(obj);</span>
+<span class="fc" id="L470">    unexportObject(obj);</span>
     try {
-<span class="fc" id="L473">      unbind(name);</span>
-<span class="nc" id="L474">    } catch (MalformedURLException | NotBoundException e) {</span>
+<span class="fc" id="L472">      unbind(name);</span>
+<span class="nc" id="L473">    } catch (MalformedURLException | NotBoundException e) {</span>
       // ignore
-<span class="fc" id="L476">    }</span>
-<span class="fc" id="L477">  }</span>
+<span class="fc" id="L475">    }</span>
+<span class="fc" id="L476">  }</span>
 
   /**
    * Exports the given Remote object, using the given socket factory and a randomly assigned port.
@@ -488,7 +487,7 @@ public abstract class AFNaming extends AFRegistryAccess {
    */
   public static Remote exportObject(Remote obj, RMISocketFactory socketFactory)
       throws RemoteException {
-<span class="fc" id="L491">    return UnicastRemoteObject.exportObject(obj, 0, socketFactory, socketFactory);</span>
+<span class="fc" id="L490">    return UnicastRemoteObject.exportObject(obj, 0, socketFactory, socketFactory);</span>
   }
 
   /**
@@ -501,19 +500,19 @@ public abstract class AFNaming extends AFRegistryAccess {
    */
   public static void unexportObject(Remote obj) {
     try {
-<span class="fc" id="L504">      UnicastRemoteObject.unexportObject(obj, true);</span>
-<span class="fc" id="L505">    } catch (NoSuchObjectException e) {</span>
+<span class="fc" id="L503">      UnicastRemoteObject.unexportObject(obj, true);</span>
+<span class="fc" id="L504">    } catch (NoSuchObjectException e) {</span>
       // ignore
-<span class="fc" id="L507">    }</span>
-<span class="fc" id="L508">  }</span>
+<span class="fc" id="L506">    }</span>
+<span class="fc" id="L507">  }</span>
 
   private synchronized void setRegistry(AFRegistry registry) {
-<span class="fc" id="L511">    this.registry = registry;</span>
-<span class="fc bfc" id="L512" title="All 2 branches covered.">    if (registry == null) {</span>
-<span class="fc" id="L513">      rmiService = null;</span>
-<span class="fc bfc" id="L514" title="All 2 branches covered.">    } else if (registry.isLocal()) {</span>
-<span class="fc" id="L515">      closeUponRuntimeShutdown();</span>
+<span class="fc" id="L510">    this.registry = registry;</span>
+<span class="fc bfc" id="L511" title="All 2 branches covered.">    if (registry == null) {</span>
+<span class="fc" id="L512">      rmiService = null;</span>
+<span class="fc bfc" id="L513" title="All 2 branches covered.">    } else if (registry.isLocal()) {</span>
+<span class="fc" id="L514">      closeUponRuntimeShutdown();</span>
     }
-<span class="fc" id="L517">  }</span>
+<span class="fc" id="L516">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -89,8 +89,8 @@
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  <strong class="jxr_keyword">import</strong> com.kohlschutter.testutil.TestResourceUtil;
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>  
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_comment">// CPD-OFF</em>
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>  @SuppressWarnings(<span class="jxr_string">"PMD.ExcessiveImports"</span>)
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="SSLContextBuilderTest" href="../../../../../org/newsclub/net/unix/ssl/SSLContextBuilderTest.html#SSLContextBuilderTest">SSLContextBuilderTest</a> <strong class="jxr_keyword">extends</strong> <a name="SSLTestBase" href="../../../../../org/newsclub/net/unix/ssl/SSLTestBase.html#SSLTestBase">SSLTestBase</a> {
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  @SuppressWarnings({<span class="jxr_string">"PMD.ExcessiveImports"</span>, <span class="jxr_string">"PMD.CouplingBetweenObjects"</span>})
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> SSLContextBuilderTest <strong class="jxr_keyword">extends</strong> <a name="SSLTestBase" href="../../../../../org/newsclub/net/unix/ssl/SSLTestBase.html#SSLTestBase">SSLTestBase</a> {
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>    @ParameterizedTest
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>    @EnumSource(TestSSLConfiguration.<strong class="jxr_keyword">class</strong>)
@@ -470,7 +470,7 @@
 <a class="jxr_linenumber" name="L462" href="#L462">462</a>             <strong class="jxr_keyword">throw</strong> e;
 <a class="jxr_linenumber" name="L463" href="#L463">463</a>           }
 <a class="jxr_linenumber" name="L464" href="#L464">464</a>         }
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>       } <strong class="jxr_keyword">catch</strong> (Exception e) {
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>       } <strong class="jxr_keyword">catch</strong> (Exception e) { <em class="jxr_comment">// NOPMD.ExceptionAsFlowControl</em>
 <a class="jxr_linenumber" name="L466" href="#L466">466</a>         caught = e;
 <a class="jxr_linenumber" name="L467" href="#L467">467</a>       } <strong class="jxr_keyword">finally</strong> {
 <a class="jxr_linenumber" name="L468" href="#L468">468</a>         clientException.complete(caught);
@@ -982,7 +982,7 @@
 <a class="jxr_linenumber" name="L974" href="#L974">974</a>     <strong class="jxr_keyword">try</strong> (AFUNIXServerSocket server = AFUNIXServerSocket.bindOn(address)) {
 <a class="jxr_linenumber" name="L975" href="#L975">975</a>       CompletableFuture&lt;Exception&gt; serverError = CompletableFuture.supplyAsync(() -&gt; {
 <a class="jxr_linenumber" name="L976" href="#L976">976</a>         <strong class="jxr_keyword">while</strong> (!server.isClosed() &amp;&amp; !stop.get()) {
-<a class="jxr_linenumber" name="L977" href="#L977">977</a>           <strong class="jxr_keyword">try</strong> (AFUNIXSocket socket = server.accept()) {
+<a class="jxr_linenumber" name="L977" href="#L977">977</a>           <strong class="jxr_keyword">try</strong> (AFUNIXSocket unused = server.accept()) {
 <a class="jxr_linenumber" name="L978" href="#L978">978</a>             sema.acquire();
 <a class="jxr_linenumber" name="L979" href="#L979">979</a>           } <strong class="jxr_keyword">catch</strong> (InterruptedException | IOException e) {
 <a class="jxr_linenumber" name="L980" href="#L980">980</a>             <strong class="jxr_keyword">return</strong> e;
@@ -1108,6 +1108,6 @@
 <a class="jxr_linenumber" name="L1100" href="#L1100">1100</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2023 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2009&#x2013;2024 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
 </body>
 </html>
