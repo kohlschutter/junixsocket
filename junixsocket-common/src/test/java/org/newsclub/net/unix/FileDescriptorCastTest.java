@@ -252,16 +252,40 @@ public class FileDescriptorCastTest {
         ConnectionResult cr = Objects.requireNonNull(cf.get());
         assertEquals(123, cr.firstByte);
         if (lsa != null) {
-          assertEquals(lsa, cr.remoteSocketAddress);
+          compareGenericAddresses(lsa, cr.remoteSocketAddress);
         }
         if (rsa != null) {
-          if (rsa.toBytes().length < 2 && !rsa.equals(cr.localSocketAddress)) {
-            // observed on AIX
-            // this is more or less equivalent to rsa == null
-          } else {
-            assertEquals(rsa, cr.localSocketAddress);
+          compareGenericAddresses(rsa, cr.localSocketAddress);
+        }
+      }
+    }
+  }
+
+  private void compareGenericAddresses(AFGenericSocketAddress rsa, SocketAddress lsa) {
+    if (rsa.toBytes().length < 2 && !rsa.equals(lsa)) {
+      // observed on AIX
+      // this is more or less equivalent to rsa == null
+    } else {
+      if (!rsa.equals(lsa) && lsa instanceof AFGenericSocketAddress) {
+        // On Windows, we may get the same address back but padding bytes
+        // may be omitted. Therefore, just compare the common prefix.
+
+        byte[] bytesRemote = rsa.getBytes();
+        byte[] bytesLocal = ((AFGenericSocketAddress) lsa).getBytes();
+        int minLength = Math.min(bytesRemote.length, bytesLocal.length);
+
+        boolean ok = true;
+        for (int i = 0; i < minLength; i++) {
+          if (bytesRemote[i] != bytesLocal[i]) {
+            ok = false;
+            break;
           }
         }
+        if (!ok) {
+          assertEquals(rsa, lsa);
+        }
+      } else {
+        assertEquals(rsa, lsa);
       }
     }
   }
@@ -327,15 +351,10 @@ public class FileDescriptorCastTest {
         ConnectionResult cr = Objects.requireNonNull(cf.get());
         assertEquals(123, cr.firstByte);
         if (lsa != null) {
-          assertEquals(lsa, cr.remoteSocketAddress);
+          compareGenericAddresses(lsa, cr.remoteSocketAddress);
         }
         if (rsa != null) {
-          if (rsa.toBytes().length < 2 && !rsa.equals(cr.localSocketAddress)) {
-            // observed on AIX
-            // this is more or less equivalent to rsa == null
-          } else {
-            assertEquals(rsa, cr.localSocketAddress);
-          }
+          compareGenericAddresses(rsa, cr.localSocketAddress);
         }
       }
     } finally {
