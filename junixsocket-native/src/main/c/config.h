@@ -247,6 +247,12 @@ extern "C" {
 #  include <linux/tipc.h>
 #  include <arpa/inet.h>
 #  define junixsocket_have_tipc 1
+
+// This is not strictly necessary for Linux proper,
+// but this feature unbreaks Linux emulation on FreeBSD
+// We assume the overhead of another syscall is acceptable in this case.
+#  define junixsocket_use_poll_for_accept
+
 #endif // __linux__
 
 #if __TOS_MVS__
