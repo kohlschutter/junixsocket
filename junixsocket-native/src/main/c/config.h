@@ -230,9 +230,12 @@ int clock_gettime(int ignored CK_UNUSED, struct timespec *spec);
 extern "C" {
 #endif
 
-#if defined(SOCK_CLOEXEC)
-#define junixsocket_have_accept4
-#define junixsocket_have_socket_cloexec
+#if defined(__minix)
+// Minix may have SOCKET_CLOEXEC, but no accept4
+#  define junixsocket_have_socket_cloexec
+#elif defined(SOCK_CLOEXEC)
+#  define junixsocket_have_accept4
+#  define junixsocket_have_socket_cloexec
 #endif
 
 // Linux
