@@ -379,6 +379,18 @@
   "name":"org.newsclub.net.unix.AFUNIXSocketCredentials"
 },
 {
+  "name":"org.newsclub.net.unix.AFUNIXSocketFactory$FactoryArg",
+  "methods":[{"name":"<init>","parameterTypes":["java.io.File"] }, {"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"org.newsclub.net.unix.AFUNIXSocketFactory$SystemProperty",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.AFUNIXSocketFactory$URIScheme",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"org.newsclub.net.unix.AFVSOCKSocketAddress",
   "methods":[{"name":"addressFamily","parameterTypes":[] }]
 },
@@ -781,7 +793,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testFactoryArg","parameterTypes":[] }, {"name":"testSystemProperty","parameterTypes":[] }, {"name":"testURISchemeCeateSocketThenConnect","parameterTypes":[] }, {"name":"testURISchemeCeateSocketWithHostnameValidCases","parameterTypes":[] }, {"name":"testURISchemeCeateSocketWithIllegalArguments","parameterTypes":[] }, {"name":"testURISchemeCeateSocketWithInvalidHostname","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testFactoryArg","parameterTypes":[] }, {"name":"testReflection","parameterTypes":[] }, {"name":"testSystemProperty","parameterTypes":[] }, {"name":"testURISchemeCeateSocketThenConnect","parameterTypes":[] }, {"name":"testURISchemeCeateSocketWithHostnameValidCases","parameterTypes":[] }, {"name":"testURISchemeCeateSocketWithIllegalArguments","parameterTypes":[] }, {"name":"testURISchemeCeateSocketWithInvalidHostname","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.domain.SocketPairTest",

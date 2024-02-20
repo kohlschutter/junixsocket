@@ -17,7 +17,9 @@
  */
 package org.newsclub.net.unix.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
@@ -25,6 +27,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+
+import javax.net.SocketFactory;
 
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketCapability;
@@ -259,5 +263,34 @@ public final class SocketFactoryTest extends SocketTestBase<AFUNIXSocketAddress>
         // not reached
       }
     });
+  }
+
+  @Test
+  public void testReflection() throws Exception {
+    assertEquals(AFUNIXSocketFactory.SystemProperty.class.getName(), Class.forName(
+        "org.newsclub.net.unix.AFUNIXSocketFactory$SystemProperty").getName());
+    assertEquals(AFUNIXSocketFactory.URIScheme.class.getName(), Class.forName(
+        "org.newsclub.net.unix.AFUNIXSocketFactory$URIScheme").getName());
+    assertEquals(AFUNIXSocketFactory.FactoryArg.class.getName(), Class.forName(
+        "org.newsclub.net.unix.AFUNIXSocketFactory$FactoryArg").getName());
+
+    newInstance("org.newsclub.net.unix.AFUNIXSocketFactory$SystemProperty", null);
+    newInstance("org.newsclub.net.unix.AFUNIXSocketFactory$URIScheme", null);
+    newInstance("org.newsclub.net.unix.AFUNIXSocketFactory$FactoryArg", "/");
+    newInstance("org.newsclub.net.unix.AFUNIXSocketFactory$FactoryArg", new File("/"));
+  }
+
+  private static SocketFactory newInstance(String className, Object arg) throws Exception {
+    Class<?> klazz = Class.forName(className);
+    assertTrue(SocketFactory.class.isAssignableFrom(klazz));
+
+    Object instance;
+    if (arg == null) {
+      instance = klazz.getConstructor().newInstance();
+    } else {
+      instance = klazz.getConstructor(arg.getClass()).newInstance(arg);
+    }
+
+    return (SocketFactory) instance;
   }
 }
