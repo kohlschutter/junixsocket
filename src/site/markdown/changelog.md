@@ -12,6 +12,12 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 **Users of junixsocket are strongly advised to upgrade to version 2.9.0 or newer**
 
+### _(2024-XX-XX)_ **junixsocket 2.9.1**
+
+- Fix GraalVM configuration, support AFUNIXSocketFactory for native-image
+- Fix unnecessary failures in some tests, error handling in selftest
+- Improve SocketException handling (throw SocketClosedException subclass upon accept error)
+
 ### _(2024-02-14)_ **junixsocket 2.9.0**
 
 - Add generic socket fallback for FileDescriptors received from other processes
