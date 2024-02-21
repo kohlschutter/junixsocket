@@ -252,9 +252,9 @@ extern "C" {
 #  define junixsocket_have_tipc 1
 
 // This is not strictly necessary for Linux proper,
-// but this feature unbreaks Linux emulation on FreeBSD
-// We assume the overhead of another syscall is acceptable in this case.
-#  define junixsocket_use_poll_for_accept
+// but enabling this feature unbreaks Linux emulation on FreeBSD
+// (disabled until we can figure out how to avoid the overhead unless we're in Linuxulator)
+// #  define junixsocket_use_poll_for_accept
 
 #endif // __linux__
 
