@@ -142,7 +142,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
 
   @Override
   public int hashCode() {
-    return socketDir == null ? super.hashCode() : socketDir.hashCode();
+    return socketDir == null ? System.identityHashCode(this) : socketDir.hashCode();
   }
 
   @Override
