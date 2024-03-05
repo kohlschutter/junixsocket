@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>junixsocket-demo-jpackagejlink</artifactId>
+    <packaging>jar</packaging>
+    <parent>
+        <groupId>com.kohlschutter.junixsocket</groupId>
+        <artifactId>junixsocket</artifactId>
+        <version>2.9.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <name>junixsocket-demo-jpackagejlink</name>
+    <properties>
+        <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+        <mainClass>org.newsclub.net.unix.demo.jpackagejlink.DemoMainClass</mainClass>
+    </properties>
+
+    <description>junixsocket jpackage/jlink demo setup</description>
+
+    <profiles>
+        <profile>
+            <id>jpackage</id>
+            <activation>
+                <property>
+                    <name>jpackage</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jpackage-copy-main-jar</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>
+                                        ${project.build.directory}/jpackage-app</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>
+                                                ${project.build.directory}</directory>
+                                            <includes>
+                                                <include>
+                                                    ${project.name}-${project.version}.jar</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.github.akman</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jpackage</goal>
+                                </goals>
+                                <configuration>
+                                    <mainclass>
+                                        ${mainClass}</mainclass>
+                                    <type>PLATFORM</type>
+                                    <modulepath>
+                                        <dependencysets>
+                                            <dependencyset>
+                                                <!-- add project output (module)
+                                                to modulepath -->
+                                                <includeoutput>true</includeoutput>
+                                                <excludeautomatic>false</excludeautomatic>
+                                                <includes>
+                                                    <include>glob:**/*.jar</include>
+                                                </includes>
+                                            </dependencyset>
+                                        </dependencysets>
+                                    </modulepath>
+                                    <addmodules>
+                                        <addmodule>java.base</addmodule>
+                                        <!-- junixsocket-common -->
+                                        <addmodule>org.newsclub.net.unix</addmodule>
+                                        <!-- junixsocket-native-common -->
+                                        <addmodule>
+                                            com.kohlschutter.junixsocket.nativecommon</addmodule>
+                                        <!-- this module -->
+                                        <addmodule>
+                                            org.newsclub.net.unix.demo.jpackagejlink</addmodule>
+                                    </addmodules>
+                                    <input>
+                                        ${project.build.directory}/jpackage-app</input>
+                                    <mainjar>
+                                        ${project.name}-${project.version}.jar</mainjar>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.github.akman</groupId>
+                            <artifactId>jpackage-maven-plugin</artifactId>
+                            <version>0.1.5</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+        <profile>
+            <id>jlink</id>
+            <activation>
+                <property>
+                    <name>jlink</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.akman</groupId>
+                        <artifactId>jlink-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jlink</goal>
+                                </goals>
+                                <configuration>
+                                    <launcher>
+                                        <command>junixsocket-jlink-demo</command>
+                                        <mainmodule>
+                                            org.newsclub.net.unix.demo.jpackagejlink</mainmodule>
+                                        <mainclass>
+                                            ${mainClass}</mainclass>
+                                    </launcher>
+                                    <modulepath>
+                                        <dependencysets>
+                                            <dependencyset>
+                                                <!-- add project output (module)
+                                                to modulepath -->
+                                                <includeoutput>true</includeoutput>
+                                                <excludeautomatic>false</excludeautomatic>
+                                                <includes>
+                                                    <include>glob:**/*.jar</include>
+                                                </includes>
+                                            </dependencyset>
+                                        </dependencysets>
+                                    </modulepath>
+                                    <addmodules>
+                                        <addmodule>java.base</addmodule>
+                                        <!-- junixsocket-common -->
+                                        <addmodule>org.newsclub.net.unix</addmodule>
+                                        <!-- junixsocket-native-common -->
+                                        <addmodule>
+                                            com.kohlschutter.junixsocket.nativecommon</addmodule>
+                                        <!-- this module -->
+                                        <addmodule>
+                                            org.newsclub.net.unix.demo.jpackagejlink</addmodule>
+                                    </addmodules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.github.akman</groupId>
+                            <artifactId>jlink-maven-plugin</artifactId>
+                            <version>0.1.11</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
+
+    <repositories>
+        <repository>
+            <id>sonatype.snapshots</id>
+            <name>Sonatype snapshot repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-core</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+</project>
