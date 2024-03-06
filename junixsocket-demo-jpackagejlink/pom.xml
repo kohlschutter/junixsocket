@@ -181,6 +181,59 @@
                 </pluginManagement>
             </build>
         </profile>
+
+        <profile>
+            <id>maven-jlink</id>
+            <activation>
+                <property>
+                    <name>maven-jlink</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jlink-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jlink</goal>
+                                </goals>
+                                <configuration>
+                                    <classifier>jlink</classifier>
+                                    <launcher>
+                                        junixsocket-jlink-demo=org.newsclub.net.unix.demo.jpackagejlink/${mainClass}
+                                    </launcher>
+                                    <addModules>
+                                        <addModule>java.base</addModule>
+                                        <!-- junixsocket-common -->
+                                        <addModule>org.newsclub.net.unix</addModule>
+                                        <!-- junixsocket-native-common -->
+                                        <addModule>
+                                            com.kohlschutter.junixsocket.nativecommon</addModule>
+                                        <!-- this module -->
+                                        <addModule>
+                                            org.newsclub.net.unix.demo.jpackagejlink</addModule>
+                                    </addModules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-jlink-plugin</artifactId>
+                            <version>3.2.0</version><!-- broken -->
+                            <!--<version>3.2.1-SNAPSHOT</version>--><!-- see MJLINK-82 -->
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
     </profiles>
 
     <repositories>
