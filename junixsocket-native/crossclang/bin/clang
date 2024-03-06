@@ -175,6 +175,9 @@ while [ $# -gt 0 ]; do
                 hasExportDynamic=1
             elif [[ "$1" == "-reproducible" ]]; then
                 hasReproducible=1
+            elif [[ "$1" == "-no_adhoc_codesign" ]]; then
+                # ignore
+                skipArg=1
             elif [[ -n "$1" ]]; then
                 clangArgs+=("-Xlinker" "$1")
                 gccArgs+=("-Xlinker" "$1")
