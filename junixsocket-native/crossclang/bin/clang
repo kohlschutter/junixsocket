@@ -100,7 +100,17 @@ while [ $# -gt 0 ]; do
       --serialize-diagnostics ) serializeDiagnosticsOut="$v" ;;
   esac
 
-  case "$v" in 
+  case "$v" in
+       @* )
+            argFile=${v:1}
+            if [[ -f "$argFile" ]]; then
+                OLDIFS=$IFS
+                IFS=$'\n'
+                set -- $(cat -- "$argFile" | xargs -n1) $@
+                IFS=$OLDIFS
+                continue
+            fi
+            ;;
       -E ) needLinker=0 ;;
       -fsyntax-only ) needLinker=0 ;;
       -c ) needLinker=0 ;;
