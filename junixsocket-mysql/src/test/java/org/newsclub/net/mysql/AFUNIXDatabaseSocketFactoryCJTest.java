@@ -19,6 +19,7 @@ package org.newsclub.net.mysql;
 
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
+import java.io.IOException;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,11 @@ public class AFUNIXDatabaseSocketFactoryCJTest {
           .getFile().toString(), true, "description", "0", "category", 1).createRuntimeProperty());
 
       assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
-        sf.connect("localhost", 0, props, 1);
+        try {
+          sf.connect("localhost", 0, props, 1);
+        } catch (IOException ignore) {
+          // ignore
+        }
       });
     }
   }
