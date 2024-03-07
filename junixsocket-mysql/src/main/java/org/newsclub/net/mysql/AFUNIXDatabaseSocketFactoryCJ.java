@@ -25,6 +25,7 @@ import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.mysql.cj.conf.PropertyKey;
 import com.mysql.cj.conf.PropertySet;
 import com.mysql.cj.conf.RuntimeProperty;
 import com.mysql.cj.protocol.ExportControlled;
@@ -61,8 +62,14 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
     }
     final File socketFile = new File(sock);
 
-    this.rawSocket = AFUNIXSocket.connectTo(AFUNIXSocketAddress.of(socketFile));
-    return rawSocket;
+    AFUNIXSocket socket = AFUNIXSocket.newInstance();
+
+    int connectTimeout = props.getIntegerProperty(PropertyKey.connectTimeout).getValue();
+    int timeout = MysqlHelper.shorterTimeout(connectTimeout, loginTimeout);
+
+    socket.connect(AFUNIXSocketAddress.of(socketFile), timeout);
+
+    return (this.rawSocket = socket);
   }
 
   @SuppressWarnings({"unchecked"})
