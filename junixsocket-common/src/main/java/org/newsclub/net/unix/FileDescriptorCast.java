@@ -309,6 +309,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
       addProviders(GLOBAL_PROVIDERS_FINAL);
     }
 
+    @SuppressWarnings("null")
     protected void registerGenericSocketProviders() {
       final CastingProviderSocketOrChannel<AFSocket<AFGenericSocketAddress>> cpSocketOrChannelGeneric =
           (fdc, desiredType, isChannel) -> reconfigure(isChannel, AFSocket.newInstance(
@@ -329,6 +330,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
               .getChannel());
     }
 
+    @SuppressWarnings("null")
     protected void registerGenericDatagramSocketProviders() {
       final CastingProviderSocketOrChannel<AFDatagramSocket<AFGenericSocketAddress>> cpDatagramSocketOrChannelGeneric =
           (fdc, desiredType, isChannel) -> reconfigure(isChannel, AFDatagramSocket.newInstance(
@@ -615,7 +617,6 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
   private static void registerGenericSocketSupport() {
     registerCastingProviders(Socket.class, new CastingProviderMap() {
 
-      @SuppressWarnings("null")
       @Override
       protected void addProviders() {
         addProviders(GLOBAL_PROVIDERS);
@@ -625,7 +626,6 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
     });
 
     registerCastingProviders(DatagramSocket.class, new CastingProviderMap() {
-      @SuppressWarnings("null")
       @Override
       protected void addProviders() {
         addProviders(GLOBAL_PROVIDERS);
