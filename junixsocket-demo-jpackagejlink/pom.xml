@@ -252,7 +252,6 @@
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-core</artifactId>
-            <version>${project.version}</version>
             <type>pom</type>
         </dependency>
     </dependencies>

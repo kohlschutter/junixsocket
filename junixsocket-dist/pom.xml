@@ -22,18 +22,15 @@
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-core</artifactId>
-            <version>${project.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-rmi</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-mysql</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
@@ -43,17 +40,14 @@
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-tipc</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-jetty</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-selftest</artifactId>
-            <version>${project.version}</version>
             <classifier>jar-with-dependencies</classifier>
         </dependency>
     </dependencies>

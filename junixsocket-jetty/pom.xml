@@ -14,7 +14,7 @@
     <name>junixsocket-jetty</name>
     <properties>
         <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
-        <jetty.version>11.0.20</jetty.version>
+        <jetty11.version>11.0.20</jetty11.version>
     </properties>
 
     <description>junixsocket for Jetty</description>
@@ -38,20 +38,18 @@
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-core</artifactId>
-            <version>${project.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>${jetty.version}</version>
+            <version>${jetty11.version}</version><!--$NO-MVN-MAN-VER$-->
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>2.0.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -63,21 +61,20 @@
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-common</artifactId>
-            <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-client</artifactId>
-            <version>${jetty.version}</version>
+            <version>${jetty11.version}</version><!--$NO-MVN-MAN-VER$-->
             <scope>test</scope>
         </dependency>
         <!--
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-unixdomain-server</artifactId>
-            <version>${jetty.version}</version>
+            <version>${jetty11.version}</version>--><!--$NO-MVN-MAN-VER$--><!--
             <scope>test</scope>
         </dependency>
         -->

@@ -18,39 +18,30 @@
     </properties>
     <description>Some example code to demo junixsocket's features</description>
     <dependencies>
-        <!-- <dependency> <groupId>com.kohlschutter.junixsocket</groupId>
-        <artifactId>junixsocket-native-common</artifactId>
-      <version>${project.version}</version> </dependency> -->
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-core</artifactId>
-            <version>${project.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-tipc</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-mysql</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-server</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-rmi</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-ssl</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.mysql</groupId>
@@ -104,7 +95,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>2.0.12</version>
         </dependency>
     </dependencies>
     <build>
