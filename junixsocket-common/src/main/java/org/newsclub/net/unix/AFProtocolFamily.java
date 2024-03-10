@@ -1,7 +1,7 @@
 /*
  * junixsocket
  *
- * Copyright 2009-2023 Christian Kohlschütter
+ * Copyright 2009-2024 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,14 @@ import java.net.ProtocolFamily;
 
 /**
  * A junixsocket-based protocol family.
- * 
+ *
  * @author Christian Kohlschütter
  */
 public interface AFProtocolFamily extends ProtocolFamily {
 
   /**
    * Creates a new datagram channel compatible with this protocol family.
-   * 
+   *
    * @return A new datagram channel.
    * @throws IOException on error.
    */
@@ -37,7 +37,7 @@ public interface AFProtocolFamily extends ProtocolFamily {
 
   /**
    * Creates a new server socket channel compatible with this protocol family.
-   * 
+   *
    * @return A new server socket channel.
    * @throws IOException on error.
    */
@@ -45,7 +45,7 @@ public interface AFProtocolFamily extends ProtocolFamily {
 
   /**
    * Creates a new socket channel compatible with this protocol family.
-   * 
+   *
    * @return A new socket channel.
    * @throws IOException on error.
    */
