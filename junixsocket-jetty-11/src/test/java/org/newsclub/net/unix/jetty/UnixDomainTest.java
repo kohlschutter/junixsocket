@@ -1,7 +1,7 @@
 /*
  * junixsocket
  *
- * Copyright 2009-2022 Christian Kohlschütter
+ * Copyright 2009-2024 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@
 // ========================================================================
 //
 
-package org.eclipse.jetty.unixdomain.server;
+package org.newsclub.net.unix.jetty;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -43,34 +43,29 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketAddress;
 import java.net.SocketException;
-import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.jetty.client.ContentResponse;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.HttpProxy;
-import org.eclipse.jetty.client.Origin;
 import org.eclipse.jetty.client.ProxyProtocolClientConnectionFactory.V1;
 import org.eclipse.jetty.client.ProxyProtocolClientConnectionFactory.V2;
-import org.eclipse.jetty.client.transport.HttpClientTransportDynamic;
-import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.client.api.ContentResponse;
+import org.eclipse.jetty.client.dynamic.HttpClientTransportDynamic;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.http.HttpURI;
 import org.eclipse.jetty.io.ClientConnector;
+import org.eclipse.jetty.io.EndPoint;
 import org.eclipse.jetty.server.ConnectionFactory;
-import org.eclipse.jetty.server.ConnectionMetaData;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.ProxyConnectionFactory;
 import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.Callback;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -79,9 +74,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
-import org.newsclub.net.unix.jetty.AFSocketClientConnector;
-import org.newsclub.net.unix.jetty.AFSocketServerConnector;
-import org.newsclub.net.unix.jetty.AFSocketTransport;
+
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class UnixDomainTest {
   private static final Class<?> unixDomainSocketAddressClass = probe();
@@ -130,31 +126,36 @@ public class UnixDomainTest {
   @Test
   public void testHTTPOverUnixDomain() throws Exception {
     String uri = "http://localhost:1234/path";
-    start(new Handler.Abstract() {
-
+    start(new AbstractHandler() {
       @Override
-      public boolean handle(Request request, Response response, Callback callback)
-          throws Exception {
+      @SuppressWarnings("deprecation")
+      public void handle(String target, Request jettyRequest, HttpServletRequest request,
+          HttpServletResponse response) {
+        jettyRequest.setHandled(true);
+
         // Verify the URI is preserved.
-        assertEquals(uri, request.getHttpURI().toString());
+        assertEquals(uri, request.getRequestURL().toString());
+
+        EndPoint endPoint = jettyRequest.getHttpChannel().getEndPoint();
 
         // Verify the SocketAddresses.
-        ConnectionMetaData connectionMetaData = request.getConnectionMetaData();
-        SocketAddress local = connectionMetaData.getLocalSocketAddress();
-        SocketAddress remote = connectionMetaData.getRemoteSocketAddress();
-
+        SocketAddress local = endPoint.getLocalSocketAddress();
         assertThat(local, Matchers.instanceOf(AFSocketAddress.class));
+        SocketAddress remote = endPoint.getRemoteSocketAddress();
         if (remote != null) {
           // remote should be null if not connected
           assertThat(remote, Matchers.instanceOf(AFSocketAddress.class));
         }
 
-        assertDoesNotThrow(connectionMetaData::toString);
+        // Verify that other address methods don't throw.
+        SocketAddress inetLocal = assertDoesNotThrow(endPoint::getLocalAddress);
+        // assertNull(local); // junixsocket's addresses extend InetSocketAddress
+        assertEquals(local, inetLocal);
+        SocketAddress inetRemote = assertDoesNotThrow(endPoint::getRemoteAddress);
+        // assertNull(remote); // junixsocket's addresses extend InetSocketAddress
+        assertEquals(remote, inetRemote);
 
-        response.write(true, ByteBuffer.allocate(0), new Callback() {
-        });
-
-        return true;
+        assertDoesNotThrow(endPoint::toString);
       }
     });
 
@@ -176,34 +177,24 @@ public class UnixDomainTest {
   public void testHTTPOverUnixDomainWithHTTPProxy() throws Exception {
     int fakeProxyPort = 4567;
     int fakeServerPort = 5678;
-    start(new Handler.Abstract() {
+    start(new AbstractHandler() {
       @Override
-      public boolean handle(Request request, Response response, Callback callback)
-          throws Exception {
+      public void handle(String target, Request jettyRequest, HttpServletRequest request,
+          HttpServletResponse response) {
+        jettyRequest.setHandled(true);
         // Proxied requests must have an absolute URI.
-        HttpURI uri = request.getHttpURI();
+        HttpURI uri = jettyRequest.getMetaData().getURI();
         assertNotNull(uri.getScheme());
         assertEquals(fakeServerPort, uri.getPort());
-
-        response.write(true, ByteBuffer.allocate(0), new Callback() {
-        });
-
-        return true;
       }
     });
 
     // ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
-
-    AFUNIXSocketAddress unixDomainAddress = AFUNIXSocketAddress.of(unixDomainPath);
-    ClientConnector clientConnector = AFSocketClientConnector.withSocketAddress(unixDomainAddress);
-
-    // HttpProxy proxy = new HttpProxy("localhost", fakeProxyPort); // this worked until 12.0.6
-    HttpProxy proxy = new HttpProxy(new Origin("http", new Origin.Address("localhost",
-        fakeProxyPort), null, new Origin.Protocol(List.of("http/1.1"), false), AFSocketTransport
-            .withSocketChannel(unixDomainAddress)), null);
+    ClientConnector clientConnector = AFSocketClientConnector.withSocketAddress(AFUNIXSocketAddress
+        .of(unixDomainPath));
 
     HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
-    httpClient.getProxyConfiguration().addProxy(proxy);
+    httpClient.getProxyConfiguration().addProxy(new HttpProxy("localhost", fakeProxyPort));
     httpClient.start();
     try {
       ContentResponse response = httpClient.newRequest("localhost", fakeServerPort).timeout(5,
@@ -220,25 +211,28 @@ public class UnixDomainTest {
     String srcAddr = "/proxySrcAddr";
     String dstAddr = "/proxyDstAddr";
     factories = new ConnectionFactory[] {new ProxyConnectionFactory(), new HttpConnectionFactory()};
-    start(new Handler.Abstract() {
+    start(new AbstractHandler() {
       @Override
-      public boolean handle(Request request, Response response, Callback callback)
-          throws Exception {
-        ConnectionMetaData connectionMetaData = request.getConnectionMetaData();
-
-        String target = request.getHttpURI().getPath();
-
+      public void handle(String target, Request jettyRequest, HttpServletRequest request,
+          HttpServletResponse response) {
+        jettyRequest.setHandled(true);
+        EndPoint endPoint = jettyRequest.getHttpChannel().getEndPoint();
+        assertThat(endPoint, Matchers.instanceOf(ProxyConnectionFactory.ProxyEndPoint.class));
+        // assertThat(endPoint.getLocalSocketAddress(),
+        // Matchers.instanceOf(unixDomainSocketAddressClass));
+        // assertThat(endPoint.getRemoteSocketAddress(),
+        // Matchers.instanceOf(unixDomainSocketAddressClass));
         if ("/v1".equals(target)) {
           // As PROXYv1 does not support UNIX, the wrapped EndPoint data is used.
-          Path localPath = toUnixDomainPath(connectionMetaData.getLocalSocketAddress());
+          Path localPath = toUnixDomainPath(endPoint.getLocalSocketAddress());
           assertThat(localPath, Matchers.equalTo(unixDomainPath));
         } else if ("/v2".equals(target)) {
-          SocketAddress localSocketAddress = connectionMetaData.getLocalSocketAddress();
+          SocketAddress localSocketAddress = endPoint.getLocalSocketAddress();
           if (localSocketAddress != null) {
             assertThat(toUnixDomainPath(localSocketAddress).toString(), Matchers.equalTo(separators(
                 dstAddr)));
           }
-          SocketAddress remoteSocketAddress = connectionMetaData.getRemoteSocketAddress();
+          SocketAddress remoteSocketAddress = endPoint.getRemoteSocketAddress();
           if (remoteSocketAddress != null) {
             assertThat(toUnixDomainPath(remoteSocketAddress).toString(), Matchers.equalTo(
                 separators(srcAddr)));
@@ -246,11 +240,6 @@ public class UnixDomainTest {
         } else {
           Assertions.fail("Invalid PROXY protocol version " + target);
         }
-
-        response.write(true, ByteBuffer.allocate(0), new Callback() {
-        });
-
-        return true;
       }
     });
 
@@ -338,16 +327,16 @@ public class UnixDomainTest {
     byte[] payload = new byte[512 * 1024]; // 512k
     new Random().nextBytes(payload);
 
-    start(new Handler.Abstract() {
+    start(new AbstractHandler() {
       @Override
-      public boolean handle(Request request, Response response, Callback callback)
-          throws Exception {
-        response.getHeaders().put(HttpHeader.CONTENT_TYPE, "application/octet-stream");
+      public void handle(String target, Request jettyRequest, HttpServletRequest request,
+          HttpServletResponse response) throws IOException {
+        jettyRequest.setHandled(true);
 
-        response.write(true, ByteBuffer.wrap(payload), new Callback() {
-        });
-
-        return true;
+        response.setContentType(" application/octet-stream");
+        try (ServletOutputStream out = response.getOutputStream()) {
+          out.write(payload);
+        }
       }
     });
 
