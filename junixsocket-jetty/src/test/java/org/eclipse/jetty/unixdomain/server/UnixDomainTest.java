@@ -147,8 +147,9 @@ public class UnixDomainTest {
         }
 
         assertDoesNotThrow(connectionMetaData::toString);
-        
-        response.write(true, ByteBuffer.allocate(0), new Callback() {});
+
+        response.write(true, ByteBuffer.allocate(0), new Callback() {
+        });
 
         return true;
       }
@@ -160,7 +161,6 @@ public class UnixDomainTest {
     HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
     httpClient.start();
     try {
-      System.out.println(httpClient.newRequest(uri).getTransport());
       ContentResponse response = httpClient.newRequest(uri).timeout(5, TimeUnit.SECONDS).send();
 
       assertEquals(HttpStatus.OK_200, response.getStatus());
@@ -182,7 +182,8 @@ public class UnixDomainTest {
         assertNotNull(uri.getScheme());
         assertEquals(fakeServerPort, uri.getPort());
 
-        response.write(true, ByteBuffer.allocate(0), new Callback() {});
+        response.write(true, ByteBuffer.allocate(0), new Callback() {
+        });
 
         return true;
       }
@@ -215,9 +216,9 @@ public class UnixDomainTest {
       public boolean handle(Request request, Response response, Callback callback)
           throws Exception {
         ConnectionMetaData connectionMetaData = request.getConnectionMetaData();
-        
+
         String target = request.getHttpURI().getPath();
-        
+
         if ("/v1".equals(target)) {
           // As PROXYv1 does not support UNIX, the wrapped EndPoint data is used.
           Path localPath = toUnixDomainPath(connectionMetaData.getLocalSocketAddress());
@@ -236,8 +237,9 @@ public class UnixDomainTest {
         } else {
           Assertions.fail("Invalid PROXY protocol version " + target);
         }
-        
-        response.write(true, ByteBuffer.allocate(0), new Callback() {});
+
+        response.write(true, ByteBuffer.allocate(0), new Callback() {
+        });
 
         return true;
       }
@@ -332,9 +334,10 @@ public class UnixDomainTest {
       public boolean handle(Request request, Response response, Callback callback)
           throws Exception {
         response.getHeaders().put(HttpHeader.CONTENT_TYPE, "application/octet-stream");
-        
-        response.write(true, ByteBuffer.wrap(payload), new Callback() {});
-        
+
+        response.write(true, ByteBuffer.wrap(payload), new Callback() {
+        });
+
         return true;
       }
     });
