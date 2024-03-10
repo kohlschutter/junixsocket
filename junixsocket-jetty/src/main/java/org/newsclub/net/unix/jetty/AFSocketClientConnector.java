@@ -39,6 +39,7 @@ import org.newsclub.net.unix.AFSocketAddress;
 public final class AFSocketClientConnector extends ClientConnector {
   private final AFAddressFamily<?> addressFamily;
 
+  @SuppressWarnings("removal")
   private AFSocketClientConnector(AFSocketAddress addr) {
     super(configuratorFor(addr));
     this.addressFamily = addr.getAddressFamily();
@@ -66,6 +67,7 @@ public final class AFSocketClientConnector extends ClientConnector {
     };
   }
 
+  @SuppressWarnings({"removal", "deprecation"})
   private static Configurator configuratorFor(AFSocketAddress addr) {
     if (JettyCompat.hasTransportClass()) {
       return new AFSocketConfiguratorWithTransport(addr);
