@@ -14,9 +14,15 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ### _(2024-XX-XX)_ **junixsocket 2.9.1**
 
+- Fix ignored timeouts for Mysql-specific AFUNIXDatabaseSocketFactoryCJ
 - Fix GraalVM configuration, support AFUNIXSocketFactory for native-image
+- Fix compatibility with jetty 12.0.7
 - Fix unnecessary failures in some tests, error handling in selftest
 - Improve SocketException handling (throw SocketClosedException subclass upon accept error)
+- Make native library code compile on Minix
+- Add availability check of abstract namespace on emulated Linux environments (BSD)
+- Add junixsocket-demo-jpackagejlink artifact to show how to use jpackage/jlink with junixsocket
+- Update crossclang scripts, fix compatibility with Xcode 15.3
 
 ### _(2024-02-14)_ **junixsocket 2.9.0**
 
@@ -341,4 +347,4 @@ Backwards-incompatible change: Some AF*Socket* classes are now final or no longe
 
 ####
 
-See the commit log for more details.
+See the [commit log](https://github.com/kohlschutter/junixsocket/commits/main/) for more details.
