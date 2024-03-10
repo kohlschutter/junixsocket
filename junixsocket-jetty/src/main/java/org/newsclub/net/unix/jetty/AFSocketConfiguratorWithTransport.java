@@ -1,0 +1,42 @@
+/*
+ * junixsocket
+ *
+ * Copyright 2009-2023 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.jetty;
+
+import java.nio.channels.SocketChannel;
+
+import org.eclipse.jetty.io.ClientConnector;
+import org.eclipse.jetty.io.Transport;
+import org.newsclub.net.unix.AFSocketAddress;
+
+/**
+ * A {@link ClientConnector.Configurator} for junixsocket {@link SocketChannel}s, as required by
+ * jetty 12.0.7.
+ *
+ * @author Christian Kohlschütter
+ */
+@Deprecated
+final class AFSocketConfiguratorWithTransport extends AFSocketConfigurator {
+  AFSocketConfiguratorWithTransport(AFSocketAddress addr) {
+    super(addr);
+  }
+
+  @Override
+  public Transport newTransport() {
+    return new AFSocketTransport.WithSocketChannel(addr);
+  }
+}

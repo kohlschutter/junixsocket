@@ -18,11 +18,8 @@
 package org.newsclub.net.unix.jetty;
 
 import java.io.IOException;
-import java.net.SocketAddress;
 import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
-import java.util.Map;
 
 import org.eclipse.jetty.io.ClientConnector;
 import org.eclipse.jetty.io.SelectorManager;
@@ -70,13 +67,10 @@ public final class AFSocketClientConnector extends ClientConnector {
   }
 
   private static Configurator configuratorFor(AFSocketAddress addr) {
-    return new Configurator() {
-      @Override
-      public ChannelWithAddress newChannelWithAddress(ClientConnector clientConnector,
-          SocketAddress address, Map<String, Object> context) throws IOException {
-        SocketChannel socketChannel = addr.getAddressFamily().newSocketChannel();
-        return new ChannelWithAddress(socketChannel, addr);
-      }
-    };
+    if (JettyCompat.hasTransportClass()) {
+      return new AFSocketConfiguratorWithTransport(addr);
+    } else {
+      return new AFSocketConfigurator(addr);
+    }
   }
 }

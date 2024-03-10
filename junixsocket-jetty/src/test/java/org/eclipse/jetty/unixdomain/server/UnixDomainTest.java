@@ -46,6 +46,7 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +54,7 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.jetty.client.ContentResponse;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.HttpProxy;
+import org.eclipse.jetty.client.Origin;
 import org.eclipse.jetty.client.ProxyProtocolClientConnectionFactory.V1;
 import org.eclipse.jetty.client.ProxyProtocolClientConnectionFactory.V2;
 import org.eclipse.jetty.client.transport.HttpClientTransportDynamic;
@@ -79,6 +81,7 @@ import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.jetty.AFSocketClientConnector;
 import org.newsclub.net.unix.jetty.AFSocketServerConnector;
+import org.newsclub.net.unix.jetty.AFSocketTransport;
 
 public class UnixDomainTest {
   private static final Class<?> unixDomainSocketAddressClass = probe();
@@ -190,11 +193,17 @@ public class UnixDomainTest {
     });
 
     // ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
-    ClientConnector clientConnector = AFSocketClientConnector.withSocketAddress(AFUNIXSocketAddress
-        .of(unixDomainPath));
+
+    AFUNIXSocketAddress unixDomainAddress = AFUNIXSocketAddress.of(unixDomainPath);
+    ClientConnector clientConnector = AFSocketClientConnector.withSocketAddress(unixDomainAddress);
+
+    // HttpProxy proxy = new HttpProxy("localhost", fakeProxyPort); // this worked until 12.0.6
+    HttpProxy proxy = new HttpProxy(new Origin("http", new Origin.Address("localhost",
+        fakeProxyPort), null, new Origin.Protocol(List.of("http/1.1"), false), AFSocketTransport
+            .withSocketChannel(unixDomainAddress)), null);
 
     HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
-    httpClient.getProxyConfiguration().addProxy(new HttpProxy("localhost", fakeProxyPort));
+    httpClient.getProxyConfiguration().addProxy(proxy);
     httpClient.start();
     try {
       ContentResponse response = httpClient.newRequest("localhost", fakeServerPort).timeout(5,
