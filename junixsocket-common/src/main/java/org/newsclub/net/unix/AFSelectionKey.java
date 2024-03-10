@@ -45,7 +45,7 @@ final class AFSelectionKey extends SelectionKey {
     } else if (ch instanceof AFServerSocketChannel<?>) {
       this.core = ((AFServerSocketChannel<?>) ch).getAFCore();
     } else {
-      throw new UnsupportedOperationException();
+      throw new UnsupportedOperationException("Unsupported channel: " + ch);
     }
 
     attach(att);
