@@ -19,5 +19,5 @@ package org.newsclub.net.unix;
 
 import java.nio.channels.spi.SelectorProvider;
 
-abstract class SelectorProviderShim extends SelectorProvider {
+abstract class SelectorProviderShim extends SelectorProvider { // NOPMD.AbstractClassWithoutAnyMethod
 }

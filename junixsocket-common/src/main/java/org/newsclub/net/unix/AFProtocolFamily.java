@@ -20,12 +20,34 @@ package org.newsclub.net.unix;
 import java.io.IOException;
 import java.net.ProtocolFamily;
 
+/**
+ * A junixsocket-based protocol family.
+ * 
+ * @author Christian Kohlschütter
+ */
 public interface AFProtocolFamily extends ProtocolFamily {
 
+  /**
+   * Creates a new datagram channel compatible with this protocol family.
+   * 
+   * @return A new datagram channel.
+   * @throws IOException on error.
+   */
   AFDatagramChannel<?> openDatagramChannel() throws IOException;
 
+  /**
+   * Creates a new server socket channel compatible with this protocol family.
+   * 
+   * @return A new server socket channel.
+   * @throws IOException on error.
+   */
   AFServerSocketChannel<?> openServerSocketChannel() throws IOException;
 
+  /**
+   * Creates a new socket channel compatible with this protocol family.
+   * 
+   * @return A new socket channel.
+   * @throws IOException on error.
+   */
   AFSocketChannel<?> openSocketChannel() throws IOException;
-
 }

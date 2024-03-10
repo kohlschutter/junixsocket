@@ -275,8 +275,8 @@ public abstract class AFSelectorProvider<A extends AFSocketAddress> extends Sele
     Objects.requireNonNull(family);
 
     // Workaround for StandardProtocolFamily.UNIX check on older Java versions
-    if (family == protocolFamily() || (family instanceof StandardProtocolFamily && protocolFamily()
-        .name().equals(family.name()))) {
+    if (protocolFamily().equals(family) || (family instanceof StandardProtocolFamily
+        && protocolFamily().name().equals(family.name()))) {
       return openSocketChannel();
     }
 
@@ -289,8 +289,8 @@ public abstract class AFSelectorProvider<A extends AFSocketAddress> extends Sele
     Objects.requireNonNull(family);
 
     // Workaround for StandardProtocolFamily.UNIX check on older Java versions
-    if (family == protocolFamily() || (family instanceof StandardProtocolFamily && protocolFamily()
-        .name().equals(family.name()))) {
+    if (protocolFamily().equals(family) || (family instanceof StandardProtocolFamily
+        && protocolFamily().name().equals(family.name()))) {
       return openServerSocketChannel();
     }
 
@@ -302,8 +302,8 @@ public abstract class AFSelectorProvider<A extends AFSocketAddress> extends Sele
     Objects.requireNonNull(family);
 
     // Workaround for StandardProtocolFamily.UNIX check on older Java versions
-    if (family == protocolFamily() || (family instanceof StandardProtocolFamily && protocolFamily()
-        .name().equals(family.name()))) {
+    if (protocolFamily().equals(family) || (family instanceof StandardProtocolFamily
+        && protocolFamily().name().equals(family.name()))) {
       return openDatagramChannel();
     }
 
