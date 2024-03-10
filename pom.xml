@@ -173,7 +173,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
             </activation>
             <modules>
                 <module>junixsocket-jetty</module>
-                <module>junixsocket-jetty-12</module>
+                <module>junixsocket-jetty-11</module>
                 <module>junixsocket-selftest</module>
                 <module>junixsocket-selftest-native-image</module>
             </modules>
@@ -426,7 +426,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
             </dependency>
             <dependency>
                 <groupId>com.kohlschutter.junixsocket</groupId>
-                <artifactId>junixsocket-jetty-12</artifactId>
+                <artifactId>junixsocket-jetty-11</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

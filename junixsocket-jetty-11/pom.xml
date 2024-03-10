@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>junixsocket-jetty-12</artifactId>
+    <artifactId>junixsocket-jetty-11</artifactId>
     <packaging>jar</packaging>
     <parent>
         <groupId>com.kohlschutter.junixsocket</groupId>
@@ -11,12 +11,14 @@
         <version>2.9.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <name>junixsocket-jetty</name>
+    <name>junixsocket-jetty-11</name>
     <properties>
         <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
+
+        <jetty11.version>11.0.20</jetty11.version>
     </properties>
 
-    <description>junixsocket for Jetty 12 (currently test-only; use
+    <description>junixsocket for Jetty 11 (currently test-only; use
         junixsocket-jetty as a dependency)</description>
 
     <dependencies>
@@ -41,8 +43,24 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
+            <version>${jetty11.version}</version><!--$NO-MVN-MAN-VER$-->
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-client</artifactId>
+            <version>${jetty11.version}</version><!--$NO-MVN-MAN-VER$-->
+            <scope>test</scope>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-unixdomain-server</artifactId>
+            <version>${jetty11.version}</version>--><!--$NO-MVN-MAN-VER$--><!--
+            <scope>test</scope>
+        </dependency>
+        -->
+
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -61,18 +79,7 @@
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-client</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-unixdomain-server</artifactId>
-            <scope>test</scope>
-        </dependency>
-        -->
+
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>

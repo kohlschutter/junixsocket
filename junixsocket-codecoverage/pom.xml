@@ -90,7 +90,7 @@
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
-            <artifactId>junixsocket-jetty-12</artifactId>
+            <artifactId>junixsocket-jetty-11</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
