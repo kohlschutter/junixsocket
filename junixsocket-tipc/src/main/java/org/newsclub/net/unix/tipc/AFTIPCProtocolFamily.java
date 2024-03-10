@@ -17,16 +17,33 @@
  */
 package org.newsclub.net.unix.tipc;
 
-import java.net.ProtocolFamily;
+import java.io.IOException;
+
+import org.newsclub.net.unix.AFProtocolFamily;
 
 /**
  * Describes the protocol families supported by junixsocket-tipc.
  *
  * @author Christian Kohlschütter
  */
-public enum AFTIPCProtocolFamily implements ProtocolFamily {
+public enum AFTIPCProtocolFamily implements AFProtocolFamily {
   /**
    * TIPC.
    */
   TIPC;
+
+  @Override
+  public AFTIPCDatagramChannel openDatagramChannel() throws IOException {
+    return AFTIPCDatagramChannel.open();
+  }
+
+  @Override
+  public AFTIPCServerSocketChannel openServerSocketChannel() throws IOException {
+    return AFTIPCServerSocketChannel.open();
+  }
+
+  @Override
+  public AFTIPCSocketChannel openSocketChannel() throws IOException {
+    return AFTIPCSocketChannel.open();
+  }
 }

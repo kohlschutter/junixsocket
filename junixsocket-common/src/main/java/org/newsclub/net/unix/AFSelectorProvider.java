@@ -20,9 +20,14 @@ package org.newsclub.net.unix;
 import java.io.IOException;
 import java.net.ProtocolFamily;
 import java.net.SocketAddress;
+import java.net.StandardProtocolFamily;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.Pipe;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.AbstractSelector;
 import java.nio.channels.spi.SelectorProvider;
+import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -31,7 +36,66 @@ import org.eclipse.jdt.annotation.NonNull;
  *
  * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
  */
-public abstract class AFSelectorProvider<A extends AFSocketAddress> extends SelectorProvider {
+public abstract class AFSelectorProvider<A extends AFSocketAddress> extends SelectorProviderShim {
+  private static final SelectorProvider AF_PROVIDER = new SelectorProviderShim() {
+    @Override
+    public SocketChannel openSocketChannel() throws IOException {
+      throw new UnsupportedOperationException(
+          "Use openSocketChannel(ProtocolFamily) or a specific AFSelectorProvider subclass");
+    }
+
+    @Override
+    public ServerSocketChannel openServerSocketChannel() throws IOException {
+      throw new UnsupportedOperationException(
+          "Use openServerSocketChannel(ProtocolFamily) or a specific AFSelectorProvider subclass");
+    }
+
+    @Override
+    public DatagramChannel openDatagramChannel() throws IOException {
+      throw new UnsupportedOperationException(
+          "Use openDatagramChannel(ProtocolFamily) or a specific AFSelectorProvider subclass");
+    }
+
+    @Override
+    public AbstractSelector openSelector() throws IOException {
+      throw new UnsupportedOperationException("Use a specific AFSelectorProvider subclass");
+    }
+
+    @Override
+    public Pipe openPipe() throws IOException {
+      throw new UnsupportedOperationException("Use a specific AFSelectorProvider subclass");
+    }
+
+    @Override
+    public DatagramChannel openDatagramChannel(ProtocolFamily family) throws IOException {
+      Objects.requireNonNull(family);
+      if (family instanceof AFProtocolFamily) {
+        return ((AFProtocolFamily) family).openDatagramChannel();
+      } else {
+        throw new UnsupportedOperationException("Unsupported protocol family");
+      }
+    }
+
+    @Override
+    public SocketChannel openSocketChannel(ProtocolFamily family) throws IOException {
+      Objects.requireNonNull(family);
+      if (family instanceof AFProtocolFamily) {
+        return ((AFProtocolFamily) family).openSocketChannel();
+      } else {
+        throw new UnsupportedOperationException("Unsupported protocol family");
+      }
+    }
+
+    @Override
+    public ServerSocketChannel openServerSocketChannel(ProtocolFamily family) throws IOException {
+      Objects.requireNonNull(family);
+      if (family instanceof AFProtocolFamily) {
+        return ((AFProtocolFamily) family).openServerSocketChannel();
+      } else {
+        throw new UnsupportedOperationException("Unsupported protocol family");
+      }
+    }
+  };
 
   /**
    * Constructs a new {@link AFSelectorProvider}.
@@ -160,14 +224,6 @@ public abstract class AFSelectorProvider<A extends AFSocketAddress> extends Sele
   public abstract AFDatagramChannel<A> openDatagramChannel(AFSocketType type) throws IOException;
 
   @Override
-  public AFDatagramChannel<A> openDatagramChannel(ProtocolFamily family) throws IOException {
-    if (!protocolFamily().name().equals(family.name())) {
-      throw new UnsupportedOperationException("Unsupported protocol family");
-    }
-    return openDatagramChannel();
-  }
-
-  @Override
   public final AFPipe openPipe() throws IOException {
     return newPipe(false);
   }
@@ -213,4 +269,54 @@ public abstract class AFSelectorProvider<A extends AFSocketAddress> extends Sele
    * @throws IOException on error.
    */
   public abstract AFSocketChannel<A> openSocketChannel(SocketAddress sa) throws IOException;
+
+  @Override
+  public AFSocketChannel<A> openSocketChannel(ProtocolFamily family) throws IOException {
+    Objects.requireNonNull(family);
+
+    // Workaround for StandardProtocolFamily.UNIX check on older Java versions
+    if (family == protocolFamily() || (family instanceof StandardProtocolFamily && protocolFamily()
+        .name().equals(family.name()))) {
+      return openSocketChannel();
+    }
+
+    throw new UnsupportedOperationException("Protocol family not supported");
+  }
+
+  @Override
+  public AFServerSocketChannel<A> openServerSocketChannel(ProtocolFamily family)
+      throws IOException {
+    Objects.requireNonNull(family);
+
+    // Workaround for StandardProtocolFamily.UNIX check on older Java versions
+    if (family == protocolFamily() || (family instanceof StandardProtocolFamily && protocolFamily()
+        .name().equals(family.name()))) {
+      return openServerSocketChannel();
+    }
+
+    throw new UnsupportedOperationException("Protocol family not supported");
+  }
+
+  @Override
+  public AFDatagramChannel<A> openDatagramChannel(ProtocolFamily family) throws IOException {
+    Objects.requireNonNull(family);
+
+    // Workaround for StandardProtocolFamily.UNIX check on older Java versions
+    if (family == protocolFamily() || (family instanceof StandardProtocolFamily && protocolFamily()
+        .name().equals(family.name()))) {
+      return openDatagramChannel();
+    }
+
+    throw new UnsupportedOperationException("Protocol family not supported");
+  }
+
+  /**
+   * Returns the singleton instance for an "fallback" provider that supports the methods taking
+   * {@link ProtocolFamily}, as long as a junixsocket-specific {@link AFProtocolFamily} is used.
+   *
+   * @return The instance.
+   */
+  public static SelectorProvider provider() {
+    return AF_PROVIDER;
+  }
 }

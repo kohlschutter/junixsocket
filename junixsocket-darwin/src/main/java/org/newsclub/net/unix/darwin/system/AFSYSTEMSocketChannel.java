@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix.darwin.system;
 
+import java.io.IOException;
+
 import org.newsclub.net.unix.AFSYSTEMSocketAddress;
 import org.newsclub.net.unix.AFSocketChannel;
 
@@ -29,5 +31,15 @@ public final class AFSYSTEMSocketChannel extends AFSocketChannel<AFSYSTEMSocketA
     AFSYSTEMSocketExtensions {
   AFSYSTEMSocketChannel(AFSYSTEMSocket socket) {
     super(socket, AFSYSTEMSelectorProvider.getInstance());
+  }
+
+  /**
+   * Opens a socket channel.
+   *
+   * @return The new channel
+   * @throws IOException on error.
+   */
+  public static AFSYSTEMSocketChannel open() throws IOException {
+    return AFSYSTEMSocket.newInstance().getChannel();
   }
 }

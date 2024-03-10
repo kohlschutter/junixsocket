@@ -17,16 +17,33 @@
  */
 package org.newsclub.net.unix.vsock;
 
-import java.net.ProtocolFamily;
+import java.io.IOException;
+
+import org.newsclub.net.unix.AFProtocolFamily;
 
 /**
  * Describes the protocol families supported by junixsocket-vsock.
  *
  * @author Christian Kohlschütter
  */
-public enum AFVSOCKProtocolFamily implements ProtocolFamily {
+public enum AFVSOCKProtocolFamily implements AFProtocolFamily {
   /**
    * VSOCK.
    */
   VSOCK;
+
+  @Override
+  public AFVSOCKDatagramChannel openDatagramChannel() throws IOException {
+    return AFVSOCKDatagramChannel.open();
+  }
+
+  @Override
+  public AFVSOCKServerSocketChannel openServerSocketChannel() throws IOException {
+    return AFVSOCKServerSocketChannel.open();
+  }
+
+  @Override
+  public AFVSOCKSocketChannel openSocketChannel() throws IOException {
+    return AFVSOCKSocketChannel.open();
+  }
 }

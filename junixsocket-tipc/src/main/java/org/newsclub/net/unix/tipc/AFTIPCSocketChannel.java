@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix.tipc;
 
+import java.io.IOException;
+
 import org.newsclub.net.unix.AFSocketChannel;
 import org.newsclub.net.unix.AFTIPCSocketAddress;
 
@@ -39,5 +41,15 @@ public final class AFTIPCSocketChannel extends AFSocketChannel<AFTIPCSocketAddre
   @Override
   public AFTIPCDestName getDestName() {
     return ((AFTIPCSocketExtensions) getAFSocket()).getDestName();
+  }
+
+  /**
+   * Opens a datagram channel.
+   *
+   * @return The new channel
+   * @throws IOException if an I/O error occurs
+   */
+  public static AFTIPCSocketChannel open() throws IOException {
+    return AFTIPCSelectorProvider.provider().openSocketChannel();
   }
 }

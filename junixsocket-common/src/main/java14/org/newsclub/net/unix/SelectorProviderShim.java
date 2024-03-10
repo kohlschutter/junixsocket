@@ -18,30 +18,20 @@
 package org.newsclub.net.unix;
 
 import java.io.IOException;
+import java.net.ProtocolFamily;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.SelectorProvider;
+import java.util.Objects;
 
-/**
- * Describes the protocol family supported by {@link AFUNIXSocketAddress} etc.
- *
- * @author Christian Kohlschütter
- */
-public enum AFUNIXProtocolFamily implements AFProtocolFamily {
-  /**
-   * UNIX domain.
-   */
-  UNIX;
-
-  @Override
-  public AFDatagramChannel<?> openDatagramChannel() throws IOException {
-    return AFUNIXDatagramChannel.open();
+abstract class SelectorProviderShim extends SelectorProvider {
+  public SocketChannel openSocketChannel(ProtocolFamily family) throws IOException {
+    Objects.requireNonNull(family);
+    throw new UnsupportedOperationException("Protocol family not supported");
   }
 
-  @Override
-  public AFServerSocketChannel<?> openServerSocketChannel() throws IOException {
-    return AFUNIXServerSocketChannel.open();
-  }
-
-  @Override
-  public AFSocketChannel<?> openSocketChannel() throws IOException {
-    return AFUNIXSocketChannel.open();
+  public ServerSocketChannel openServerSocketChannel(ProtocolFamily family) throws IOException {
+    Objects.requireNonNull(family);
+    throw new UnsupportedOperationException("Protocol family not supported");
   }
 }

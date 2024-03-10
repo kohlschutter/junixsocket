@@ -18,30 +18,14 @@
 package org.newsclub.net.unix;
 
 import java.io.IOException;
+import java.net.ProtocolFamily;
 
-/**
- * Describes the protocol family supported by {@link AFUNIXSocketAddress} etc.
- *
- * @author Christian Kohlschütter
- */
-public enum AFUNIXProtocolFamily implements AFProtocolFamily {
-  /**
-   * UNIX domain.
-   */
-  UNIX;
+public interface AFProtocolFamily extends ProtocolFamily {
 
-  @Override
-  public AFDatagramChannel<?> openDatagramChannel() throws IOException {
-    return AFUNIXDatagramChannel.open();
-  }
+  AFDatagramChannel<?> openDatagramChannel() throws IOException;
 
-  @Override
-  public AFServerSocketChannel<?> openServerSocketChannel() throws IOException {
-    return AFUNIXServerSocketChannel.open();
-  }
+  AFServerSocketChannel<?> openServerSocketChannel() throws IOException;
 
-  @Override
-  public AFSocketChannel<?> openSocketChannel() throws IOException {
-    return AFUNIXSocketChannel.open();
-  }
+  AFSocketChannel<?> openSocketChannel() throws IOException;
+
 }

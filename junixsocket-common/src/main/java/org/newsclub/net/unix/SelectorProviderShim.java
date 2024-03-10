@@ -17,31 +17,7 @@
  */
 package org.newsclub.net.unix;
 
-import java.io.IOException;
+import java.nio.channels.spi.SelectorProvider;
 
-/**
- * Describes the protocol family supported by {@link AFUNIXSocketAddress} etc.
- *
- * @author Christian Kohlschütter
- */
-public enum AFUNIXProtocolFamily implements AFProtocolFamily {
-  /**
-   * UNIX domain.
-   */
-  UNIX;
-
-  @Override
-  public AFDatagramChannel<?> openDatagramChannel() throws IOException {
-    return AFUNIXDatagramChannel.open();
-  }
-
-  @Override
-  public AFServerSocketChannel<?> openServerSocketChannel() throws IOException {
-    return AFUNIXServerSocketChannel.open();
-  }
-
-  @Override
-  public AFSocketChannel<?> openSocketChannel() throws IOException {
-    return AFUNIXSocketChannel.open();
-  }
+abstract class SelectorProviderShim extends SelectorProvider {
 }

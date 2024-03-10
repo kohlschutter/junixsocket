@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix.vsock;
 
+import java.io.IOException;
+
 import org.newsclub.net.unix.AFSocketChannel;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
@@ -29,5 +31,15 @@ public final class AFVSOCKSocketChannel extends AFSocketChannel<AFVSOCKSocketAdd
     AFVSOCKSocketExtensions {
   AFVSOCKSocketChannel(AFVSOCKSocket socket) {
     super(socket, AFVSOCKSelectorProvider.getInstance());
+  }
+
+  /**
+   * Opens a socket channel.
+   *
+   * @return The new channel
+   * @throws IOException on error.
+   */
+  public static AFVSOCKSocketChannel open() throws IOException {
+    return AFVSOCKSocket.newInstance().getChannel();
   }
 }

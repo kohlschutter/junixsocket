@@ -17,16 +17,33 @@
  */
 package org.newsclub.net.unix.darwin.system;
 
-import java.net.ProtocolFamily;
+import java.io.IOException;
+
+import org.newsclub.net.unix.AFProtocolFamily;
 
 /**
  * Describes the protocol families supported by junixsocket-afsystem.
  *
  * @author Christian Kohlschütter
  */
-public enum AFSYSTEMProtocolFamily implements ProtocolFamily {
+public enum AFSYSTEMProtocolFamily implements AFProtocolFamily {
   /**
    * SYSTEM.
    */
   SYSTEM;
+
+  @Override
+  public AFSYSTEMDatagramChannel openDatagramChannel() throws IOException {
+    return AFSYSTEMDatagramChannel.open();
+  }
+
+  @Override
+  public AFSYSTEMServerSocketChannel openServerSocketChannel() throws IOException {
+    return AFSYSTEMServerSocketChannel.open();
+  }
+
+  @Override
+  public AFSYSTEMSocketChannel openSocketChannel() throws IOException {
+    return AFSYSTEMSocketChannel.open();
+  }
 }

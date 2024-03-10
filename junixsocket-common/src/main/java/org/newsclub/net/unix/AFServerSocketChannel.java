@@ -180,5 +180,4 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
   public void setShutdownOnClose(boolean enabled) {
     socket().setShutdownOnClose(enabled);
   }
-
 }
