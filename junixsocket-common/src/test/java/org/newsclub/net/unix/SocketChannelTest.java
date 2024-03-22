@@ -133,7 +133,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
             // fail("Did not throw SocketException"); // no longer thrown in Sonoma 14.2.1?
           }
           return sc;
-        } catch (SocketException e) {
+        } catch (SocketException e) { // NOPMD.ExceptionAsFlowControl
           String msg = checkKnownBugAcceptFailure(e);
           if (msg != null) {
             throw new TestAbortedWithImportantMessageException(
