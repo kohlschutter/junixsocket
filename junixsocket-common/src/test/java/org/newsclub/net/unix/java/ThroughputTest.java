@@ -64,10 +64,10 @@ public final class ThroughputTest extends org.newsclub.net.unix.ThroughputTest<I
   private void runTestTCPLoopback(boolean direct) throws Exception {
     final SocketAddress sa = new InetSocketAddress(InetAddress.getLoopbackAddress(), 0);
 
-    ServerSocketChannel ssc = ServerSocketChannel.open();
-
-    runTestSocketChannel("TCP-Loopback", sa, ssc, () -> SocketChannel.open(ssc.getLocalAddress()),
-        direct);
+    try (ServerSocketChannel ssc = ServerSocketChannel.open();
+        SocketChannel sc = SocketChannel.open(ssc.getLocalAddress())) {
+      runTestSocketChannel("TCP-Loopback", sa, ssc, () -> sc, direct);
+    }
   }
 
   @Test
