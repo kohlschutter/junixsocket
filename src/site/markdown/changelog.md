@@ -12,7 +12,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 **Users of junixsocket are strongly advised to upgrade to version 2.9.0 or newer**
 
-### _(2024-XX-XX)_ **junixsocket 2.9.1**
+### _(2024-04-05)_ **junixsocket 2.9.1**
 
 - Fix ignored timeouts for Mysql-specific AFUNIXDatabaseSocketFactoryCJ
 - Fix GraalVM configuration, support AFUNIXSocketFactory for native-image
@@ -23,6 +23,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 - Add availability check of abstract namespace on emulated Linux environments (BSD)
 - Add junixsocket-demo-jpackagejlink artifact to show how to use jpackage/jlink with junixsocket
 - Update crossclang scripts, fix compatibility with Xcode 15.3
+- Code cleanup
 
 ### _(2024-02-14)_ **junixsocket 2.9.0**
 
