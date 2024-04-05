@@ -11,6 +11,8 @@ org.newsclub.net.unix.darwin.system
 module:org.newsclub.net.unix.demo
 org.newsclub.net.unix.demo.rmi.fd
 org.newsclub.net.unix.demo.rmi.services
+module:org.newsclub.net.unix.demo.jpackagejlink
+org.newsclub.net.unix.demo.jpackagejlink
 module:org.newsclub.net.unix.rmi
 org.newsclub.net.unix.rmi
 module:org.newsclub.net.unix.server

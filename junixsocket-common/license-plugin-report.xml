@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1707933022517">
-    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.9.0"/>
+<licensePluginReport goal="CHECK" timestamp="1712329976617">
+    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.9.1"/>
     <files>
         <file path="src/main/java-unresolved-properties/org/newsclub/net/unix/BuildProperties.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamily.java" result="PRESENT"/>
@@ -30,6 +30,7 @@
         <file path="src/main/java/org/newsclub/net/unix/AFInputStream.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFOutputStream.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFPipe.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/AFProtocolFamily.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSYSTEMSocketAddress.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSYSTEMSocketImplExtensions.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFSelectionKey.java" result="PRESENT"/>
@@ -102,6 +103,7 @@
         <file path="src/main/java/org/newsclub/net/unix/OperationNotSupportedSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/PathUtil.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/RAFChannelProvider.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/SelectorProviderShim.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SentinelSocketAddress.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SocketAddressFilter.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SocketAddressUtil.java" result="PRESENT"/>
@@ -111,6 +113,7 @@
         <file path="src/main/java/org/newsclub/net/unix/StackTraceUtil.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/UngrowableSet.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/Unsafe.java" result="PRESENT"/>
+        <file path="src/main/java14/org/newsclub/net/unix/SelectorProviderShim.java" result="PRESENT"/>
         <file path="src/main/java15/org/newsclub/net/unix/SocketAddressUtil.java" result="PRESENT"/>
         <file path="src/main/java8/org/newsclub/net/unix/AFInputStream.java" result="PRESENT"/>
         <file path="src/main/java8/org/newsclub/net/unix/AFOutputStream.java" result="PRESENT"/>

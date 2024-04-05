@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFSocketTransport.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-jetty</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.jetty</a> &gt; <span class="el_source">AFSocketTransport.java</span></div><h1>AFSocketTransport.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2024 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.jetty;
+
+import java.io.IOException;
+import java.nio.channels.DatagramChannel;
+import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
+import java.util.Objects;
+
+import org.eclipse.jetty.io.DatagramChannelEndPoint;
+import org.eclipse.jetty.io.EndPoint;
+import org.eclipse.jetty.io.ManagedSelector;
+import org.eclipse.jetty.io.SocketChannelEndPoint;
+import org.eclipse.jetty.io.Transport;
+import org.eclipse.jetty.util.thread.Scheduler;
+import org.newsclub.net.unix.AFSocketAddress;
+
+/**
+ * A {@link Transport} implementation for junixsocket socket and datagram channels (Unix domains
+ * etc.)
+ * &lt;p&gt;
+ * This implementation should work with jetty version 12.0.7 or newer.
+ *
+ * @author Christian Kohlschütter
+ */
+public class AFSocketTransport extends Transport.Socket {
+  private final AFSocketAddress socketAddress;
+
+  private AFSocketTransport(AFSocketAddress socketAddress) {
+<span class="fc" id="L47">    super();</span>
+<span class="fc" id="L48">    this.socketAddress = socketAddress;</span>
+<span class="fc" id="L49">  }</span>
+
+  /**
+   * Constructs an {@link AFSocketTransport} that establishes a {@link SocketChannel} to the given
+   * address.
+   *
+   * @param addr The target address.
+   * @return The {@link Transport} instance.
+   */
+  public static AFSocketTransport withSocketChannel(AFSocketAddress addr) {
+<span class="fc" id="L59">    return new WithSocketChannel(addr);</span>
+  }
+
+  /**
+   * Constructs an {@link AFSocketTransport} that establishes a {@link DatagramChannel} to the given
+   * address.
+   *
+   * @param addr The target address.
+   * @return The {@link Transport} instance.
+   */
+  public static AFSocketTransport withDatagramChannel(AFSocketAddress addr) {
+<span class="nc" id="L70">    return new WithDatagramChannel(addr);</span>
+  }
+
+  @Override
+  public AFSocketAddress getSocketAddress() {
+<span class="fc" id="L75">    return socketAddress;</span>
+  }
+
+  @Override
+  public int hashCode() {
+<span class="fc" id="L80">    return Objects.hash(socketAddress);</span>
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (this == obj) {</span>
+<span class="nc" id="L86">      return true;</span>
+    }
+<span class="nc bnc" id="L88" title="All 2 branches missed.">    if (obj instanceof AFSocketTransport) {</span>
+<span class="nc" id="L89">      return Objects.equals(socketAddress, ((AFSocketTransport) obj).socketAddress);</span>
+    }
+<span class="nc" id="L91">    return false;</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L96">    return super.toString() + &quot;[&quot; + socketAddress.toString() + &quot;]&quot;;</span>
+  }
+
+  static class WithSocketChannel extends AFSocketTransport {
+    public WithSocketChannel(AFSocketAddress address) {
+<span class="fc" id="L101">      super(address);</span>
+<span class="fc" id="L102">    }</span>
+
+    @Override
+    public SelectableChannel newSelectableChannel() throws IOException {
+<span class="fc" id="L106">      return getSocketAddress().getAddressFamily().getSelectorProvider().openSocketChannel();</span>
+    }
+
+    @Override
+    public EndPoint newEndPoint(Scheduler scheduler, ManagedSelector selector,
+        SelectableChannel selectable, SelectionKey selectionKey) {
+<span class="fc" id="L112">      return new SocketChannelEndPoint((SocketChannel) selectable, selector, selectionKey,</span>
+          scheduler);
+    }
+  }
+
+  static class WithDatagramChannel extends AFSocketTransport {
+    public WithDatagramChannel(AFSocketAddress address) {
+<span class="nc" id="L119">      super(address);</span>
+<span class="nc" id="L120">    }</span>
+
+    @Override
+    public SelectableChannel newSelectableChannel() throws IOException {
+<span class="nc" id="L124">      return getSocketAddress().getAddressFamily().getSelectorProvider().openDatagramChannel();</span>
+    }
+
+    @Override
+    public EndPoint newEndPoint(Scheduler scheduler, ManagedSelector selector,
+        SelectableChannel selectable, SelectionKey selectionKey) {
+<span class="nc" id="L130">      return new DatagramChannelEndPoint((DatagramChannel) selectable, selector, selectionKey,</span>
+          scheduler);
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"org.newsclub.net.unix.demo.jpackagejlink","c":"DemoMainClass","l":"main(String[])","u":"main(java.lang.String[])"}];updateSearchResults();

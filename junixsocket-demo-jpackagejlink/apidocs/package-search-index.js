@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"org.newsclub.net.unix.demo.jpackagejlink","l":"org.newsclub.net.unix.demo.jpackagejlink"}];updateSearchResults();

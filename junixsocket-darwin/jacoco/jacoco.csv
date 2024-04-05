@@ -3,7 +3,7 @@ junixsocket-darwin,org.newsclub.net.unix.darwin.system,WellKnownKernelControlNam
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMSelectorProvider.new AFAddressFamilyConfig() {...},2,19,0,0,1,9,1,9,1,9
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMSocketFactory,15,0,0,0,5,0,4,0,4,0
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMServerSocketChannel,8,0,0,0,3,0,2,0,2,0
-junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMProtocolFamily,9,0,0,0,2,0,1,0,1,0
+junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMProtocolFamily,15,0,0,0,5,0,4,0,4,0
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,IPUtil,87,65,1,5,22,14,5,4,4,2
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMSelectorProvider,56,14,0,0,15,4,15,2,15,2
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMDatagramSocketImpl,0,6,0,0,0,2,0,1,0,1
@@ -14,4 +14,4 @@ junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMSocketOptions,6,0
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMServerSocket,51,0,0,0,12,0,11,0,11,0
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMDatagramSocket,25,33,0,0,5,8,5,6,5,6
 junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMSocketPair,11,0,0,0,4,0,3,0,3,0
-junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMSocketChannel,5,0,0,0,2,0,1,0,1,0
+junixsocket-darwin,org.newsclub.net.unix.darwin.system,AFSYSTEMSocketChannel,8,0,0,0,3,0,2,0,2,0

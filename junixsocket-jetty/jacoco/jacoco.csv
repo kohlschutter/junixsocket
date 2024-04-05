@@ -1,6 +1,11 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+junixsocket-jetty,org.newsclub.net.unix.jetty,AFSocketConfiguratorWithTransport,0,10,0,0,0,3,0,2,0,2
 junixsocket-jetty,org.newsclub.net.unix.jetty,AFSocketServerConnector,165,373,38,24,52,93,36,30,9,26
 junixsocket-jetty,org.newsclub.net.unix.jetty,AFSocketClientConnector.new ClientConnector.ClientSelectorManager() {...},0,18,0,0,0,3,0,2,0,2
-junixsocket-jetty,org.newsclub.net.unix.jetty,AFSocketClientConnector.new ClientConnector.Configurator() {...},0,18,0,0,0,3,0,2,0,2
+junixsocket-jetty,org.newsclub.net.unix.jetty,AFSocketTransport.WithDatagramChannel,19,0,0,0,4,0,3,0,3,0
 junixsocket-jetty,org.newsclub.net.unix.jetty,AFSocketServerConnector.AFSocketSelectorManager,6,59,0,0,2,16,1,6,1,6
-junixsocket-jetty,org.newsclub.net.unix.jetty,AFSocketClientConnector,0,30,0,0,0,6,0,4,0,4
+junixsocket-jetty,org.newsclub.net.unix.jetty,AFSocketConfigurator,12,6,0,0,2,3,1,1,1,1
+junixsocket-jetty,org.newsclub.net.unix.jetty,JettyCompat,10,11,0,0,4,6,1,2,1,2
+junixsocket-jetty,org.newsclub.net.unix.jetty,AFSocketClientConnector,5,32,1,1,1,7,1,4,0,4
+junixsocket-jetty,org.newsclub.net.unix.jetty,AFSocketTransport,29,23,4,0,7,6,5,4,3,4
+junixsocket-jetty,org.newsclub.net.unix.jetty,AFSocketTransport.WithSocketChannel,0,19,0,0,0,4,0,3,0,3

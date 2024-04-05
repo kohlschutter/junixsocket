@@ -1,0 +1,4 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+junixsocket-mysql,org.newsclub.net.mysql,AFUNIXDatabaseSocketFactoryCJ,14,44,4,2,3,11,4,2,1,2
+junixsocket-mysql,org.newsclub.net.mysql,AFUNIXDatabaseSocketFactory,28,0,0,0,8,0,4,0,4,0
+junixsocket-mysql,org.newsclub.net.mysql,MysqlHelper,7,4,5,1,1,2,3,1,0,1

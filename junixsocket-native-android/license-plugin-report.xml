@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1707933188893">
-    <module artifactId="junixsocket-native-android" groupId="com.kohlschutter.junixsocket" version="2.9.0"/>
+<licensePluginReport goal="CHECK" timestamp="1712330151478">
+    <module artifactId="junixsocket-native-android" groupId="com.kohlschutter.junixsocket" version="2.9.1"/>
     <files/>
 </licensePluginReport>

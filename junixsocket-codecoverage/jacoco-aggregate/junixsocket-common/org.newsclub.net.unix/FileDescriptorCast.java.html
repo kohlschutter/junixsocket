@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>FileDescriptorCast.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">FileDescriptorCast.java</span></div><h1>FileDescriptorCast.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2023 Christian Kohlschütter
+ * Copyright 2009-2024 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -309,68 +309,70 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
 <span class="fc" id="L309">      addProviders(GLOBAL_PROVIDERS_FINAL);</span>
 <span class="fc" id="L310">    }</span>
 
+    @SuppressWarnings(&quot;null&quot;)
     protected void registerGenericSocketProviders() {
-<span class="fc" id="L313">      final CastingProviderSocketOrChannel&lt;AFSocket&lt;AFGenericSocketAddress&gt;&gt; cpSocketOrChannelGeneric =</span>
-<span class="fc" id="L314">          (fdc, desiredType, isChannel) -&gt; reconfigure(isChannel, AFSocket.newInstance(</span>
+<span class="fc" id="L314">      final CastingProviderSocketOrChannel&lt;AFSocket&lt;AFGenericSocketAddress&gt;&gt; cpSocketOrChannelGeneric =</span>
+<span class="fc" id="L315">          (fdc, desiredType, isChannel) -&gt; reconfigure(isChannel, AFSocket.newInstance(</span>
               AFGenericSocket::new, (AFSocketFactory&lt;AFGenericSocketAddress&gt;) null, fdc
-<span class="fc" id="L316">                  .getFileDescriptor(), fdc.localPort, fdc.remotePort));</span>
-<span class="fc" id="L317">      final CastingProviderSocketOrChannel&lt;AFServerSocket&lt;AFGenericSocketAddress&gt;&gt; cpServerSocketOrChannelGeneric =</span>
-<span class="fc" id="L318">          (fdc, desiredType, isChannel) -&gt; reconfigure(isChannel, AFServerSocket.newInstance(</span>
-<span class="fc" id="L319">              AFGenericServerSocket::new, fdc.getFileDescriptor(), fdc.localPort, fdc.remotePort));</span>
+<span class="fc" id="L317">                  .getFileDescriptor(), fdc.localPort, fdc.remotePort));</span>
+<span class="fc" id="L318">      final CastingProviderSocketOrChannel&lt;AFServerSocket&lt;AFGenericSocketAddress&gt;&gt; cpServerSocketOrChannelGeneric =</span>
+<span class="fc" id="L319">          (fdc, desiredType, isChannel) -&gt; reconfigure(isChannel, AFServerSocket.newInstance(</span>
+<span class="fc" id="L320">              AFGenericServerSocket::new, fdc.getFileDescriptor(), fdc.localPort, fdc.remotePort));</span>
 
-<span class="fc" id="L321">      addProvider(AFGenericSocket.class, (fdc, desiredType) -&gt; cpSocketOrChannelGeneric.provideAs(</span>
+<span class="fc" id="L322">      addProvider(AFGenericSocket.class, (fdc, desiredType) -&gt; cpSocketOrChannelGeneric.provideAs(</span>
           fdc, desiredType, false));
-<span class="pc" id="L323">      addProvider(AFGenericServerSocket.class, (fdc, desiredType) -&gt; cpServerSocketOrChannelGeneric</span>
-<span class="nc" id="L324">          .provideAs(fdc, desiredType, false));</span>
-<span class="fc" id="L325">      addProvider(AFGenericSocketChannel.class, (fdc, desiredType) -&gt; cpSocketOrChannelGeneric</span>
-<span class="nc" id="L326">          .provideAs(fdc, AFSocket.class, true).getChannel());</span>
-<span class="fc" id="L327">      addProvider(AFGenericServerSocketChannel.class, (fdc,</span>
-<span class="fc" id="L328">          desiredType) -&gt; cpServerSocketOrChannelGeneric.provideAs(fdc, AFServerSocket.class, true)</span>
-<span class="fc" id="L329">              .getChannel());</span>
-<span class="fc" id="L330">    }</span>
+<span class="pc" id="L324">      addProvider(AFGenericServerSocket.class, (fdc, desiredType) -&gt; cpServerSocketOrChannelGeneric</span>
+<span class="nc" id="L325">          .provideAs(fdc, desiredType, false));</span>
+<span class="fc" id="L326">      addProvider(AFGenericSocketChannel.class, (fdc, desiredType) -&gt; cpSocketOrChannelGeneric</span>
+<span class="nc" id="L327">          .provideAs(fdc, AFSocket.class, true).getChannel());</span>
+<span class="fc" id="L328">      addProvider(AFGenericServerSocketChannel.class, (fdc,</span>
+<span class="fc" id="L329">          desiredType) -&gt; cpServerSocketOrChannelGeneric.provideAs(fdc, AFServerSocket.class, true)</span>
+<span class="fc" id="L330">              .getChannel());</span>
+<span class="fc" id="L331">    }</span>
 
+    @SuppressWarnings(&quot;null&quot;)
     protected void registerGenericDatagramSocketProviders() {
-<span class="fc" id="L333">      final CastingProviderSocketOrChannel&lt;AFDatagramSocket&lt;AFGenericSocketAddress&gt;&gt; cpDatagramSocketOrChannelGeneric =</span>
-<span class="nc" id="L334">          (fdc, desiredType, isChannel) -&gt; reconfigure(isChannel, AFDatagramSocket.newInstance(</span>
-<span class="nc" id="L335">              AFGenericDatagramSocket::new, fdc.getFileDescriptor(), fdc.localPort,</span>
+<span class="fc" id="L335">      final CastingProviderSocketOrChannel&lt;AFDatagramSocket&lt;AFGenericSocketAddress&gt;&gt; cpDatagramSocketOrChannelGeneric =</span>
+<span class="nc" id="L336">          (fdc, desiredType, isChannel) -&gt; reconfigure(isChannel, AFDatagramSocket.newInstance(</span>
+<span class="nc" id="L337">              AFGenericDatagramSocket::new, fdc.getFileDescriptor(), fdc.localPort,</span>
               fdc.remotePort));
 
-<span class="pc" id="L338">      addProvider(AFDatagramSocket.class, (fdc, desiredType) -&gt; cpDatagramSocketOrChannelGeneric</span>
-<span class="nc" id="L339">          .provideAs(fdc, desiredType, false));</span>
-<span class="fc" id="L340">      addProvider(AFDatagramChannel.class, (fdc, desiredType) -&gt; cpDatagramSocketOrChannelGeneric</span>
-<span class="nc" id="L341">          .provideAs(fdc, AFDatagramSocket.class, true).getChannel());</span>
-<span class="fc" id="L342">    }</span>
+<span class="pc" id="L340">      addProvider(AFDatagramSocket.class, (fdc, desiredType) -&gt; cpDatagramSocketOrChannelGeneric</span>
+<span class="nc" id="L341">          .provideAs(fdc, desiredType, false));</span>
+<span class="fc" id="L342">      addProvider(AFDatagramChannel.class, (fdc, desiredType) -&gt; cpDatagramSocketOrChannelGeneric</span>
+<span class="nc" id="L343">          .provideAs(fdc, AFDatagramSocket.class, true).getChannel());</span>
+<span class="fc" id="L344">    }</span>
 
     protected abstract void addProviders();
 
     protected final &lt;T&gt; void addProvider(Class&lt;T&gt; type, CastingProvider&lt;?&gt; cp) {
-<span class="fc" id="L347">      Objects.requireNonNull(type);</span>
+<span class="fc" id="L349">      Objects.requireNonNull(type);</span>
 
-<span class="fc" id="L349">      addProvider0(type, cp);</span>
-<span class="fc" id="L350">    }</span>
+<span class="fc" id="L351">      addProvider0(type, cp);</span>
+<span class="fc" id="L352">    }</span>
 
     private void addProvider0(Class&lt;?&gt; type, CastingProvider&lt;?&gt; cp) {
-<span class="fc bfc" id="L353" title="All 2 branches covered.">      if (providers.put(type, cp) != cp) { // NOPMD</span>
-<span class="fc bfc" id="L354" title="All 2 branches covered.">        for (Class&lt;?&gt; cl : type.getInterfaces()) {</span>
-<span class="fc" id="L355">          addProvider0(cl, cp);</span>
+<span class="fc bfc" id="L355" title="All 2 branches covered.">      if (providers.put(type, cp) != cp) { // NOPMD</span>
+<span class="fc bfc" id="L356" title="All 2 branches covered.">        for (Class&lt;?&gt; cl : type.getInterfaces()) {</span>
+<span class="fc" id="L357">          addProvider0(cl, cp);</span>
         }
-<span class="fc" id="L357">        Class&lt;?&gt; scl = type.getSuperclass();</span>
-<span class="fc bfc" id="L358" title="All 2 branches covered.">        if (scl != null) {</span>
-<span class="fc" id="L359">          addProvider0(scl, cp);</span>
+<span class="fc" id="L359">        Class&lt;?&gt; scl = type.getSuperclass();</span>
+<span class="fc bfc" id="L360" title="All 2 branches covered.">        if (scl != null) {</span>
+<span class="fc" id="L361">          addProvider0(scl, cp);</span>
         }
       }
-<span class="fc" id="L362">    }</span>
+<span class="fc" id="L364">    }</span>
 
     protected final void addProviders(CastingProviderMap other) {
-<span class="pc bpc" id="L365" title="1 of 4 branches missed.">      if (other == null || other == this) { // NOPMD</span>
-<span class="fc" id="L366">        return;</span>
+<span class="pc bpc" id="L367" title="1 of 4 branches missed.">      if (other == null || other == this) { // NOPMD</span>
+<span class="fc" id="L368">        return;</span>
       }
-<span class="fc" id="L368">      this.providers.putAll(other.providers);</span>
-<span class="fc" id="L369">    }</span>
+<span class="fc" id="L370">      this.providers.putAll(other.providers);</span>
+<span class="fc" id="L371">    }</span>
 
     @SuppressWarnings(&quot;unchecked&quot;)
     public &lt;T&gt; CastingProvider&lt;? extends T&gt; get(Class&lt;T&gt; desiredType) {
-<span class="fc" id="L373">      return (CastingProvider&lt;? extends T&gt;) providers.get(desiredType);</span>
+<span class="fc" id="L375">      return (CastingProvider&lt;? extends T&gt;) providers.get(desiredType);</span>
     }
   }
 
@@ -399,19 +401,19 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
    *           unsupported.
    */
   public static FileDescriptorCast using(FileDescriptor fdObj) throws IOException {
-<span class="fc bfc" id="L402" title="All 2 branches covered.">    if (!fdObj.valid()) {</span>
-<span class="fc" id="L403">      throw new IOException(&quot;Not a valid file descriptor&quot;);</span>
+<span class="fc bfc" id="L404" title="All 2 branches covered.">    if (!fdObj.valid()) {</span>
+<span class="fc" id="L405">      throw new IOException(&quot;Not a valid file descriptor&quot;);</span>
     }
 
-<span class="pc bpc" id="L406" title="1 of 2 branches missed.">    Class&lt;?&gt; primaryType = NativeUnixSocket.isLoaded() ? NativeUnixSocket.primaryType(fdObj) : null;</span>
-<span class="fc bfc" id="L407" title="All 2 branches covered.">    if (primaryType == null) {</span>
-<span class="fc" id="L408">      primaryType = FileDescriptor.class;</span>
+<span class="pc bpc" id="L408" title="1 of 2 branches missed.">    Class&lt;?&gt; primaryType = NativeUnixSocket.isLoaded() ? NativeUnixSocket.primaryType(fdObj) : null;</span>
+<span class="fc bfc" id="L409" title="All 2 branches covered.">    if (primaryType == null) {</span>
+<span class="fc" id="L410">      primaryType = FileDescriptor.class;</span>
     }
 
-<span class="fc" id="L411">    triggerInit();</span>
+<span class="fc" id="L413">    triggerInit();</span>
 
-<span class="fc" id="L413">    CastingProviderMap map = PRIMARY_TYPE_PROVIDERS_MAP.get(primaryType);</span>
-<span class="fc bfc" id="L414" title="All 2 branches covered.">    return new FileDescriptorCast(fdObj, map == null ? GLOBAL_PROVIDERS : map);</span>
+<span class="fc" id="L415">    CastingProviderMap map = PRIMARY_TYPE_PROVIDERS_MAP.get(primaryType);</span>
+<span class="fc bfc" id="L416" title="All 2 branches covered.">    return new FileDescriptorCast(fdObj, map == null ? GLOBAL_PROVIDERS : map);</span>
   }
 
   /**
@@ -431,15 +433,15 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
    *           unsupported, or if duplicating fails or is unsupported.
    */
   public static FileDescriptorCast duplicating(FileDescriptor fdObj) throws IOException {
-<span class="pc bpc" id="L434" title="1 of 2 branches missed.">    if (!fdObj.valid()) {</span>
-<span class="nc" id="L435">      throw new IOException(&quot;Not a valid file descriptor&quot;);</span>
+<span class="pc bpc" id="L436" title="1 of 2 branches missed.">    if (!fdObj.valid()) {</span>
+<span class="nc" id="L437">      throw new IOException(&quot;Not a valid file descriptor&quot;);</span>
     }
 
-<span class="fc" id="L438">    FileDescriptor duplicate = NativeUnixSocket.duplicate(fdObj, new FileDescriptor());</span>
-<span class="pc bpc" id="L439" title="1 of 2 branches missed.">    if (duplicate == null) {</span>
-<span class="nc" id="L440">      throw new IOException(&quot;Could not duplicate file descriptor&quot;);</span>
+<span class="fc" id="L440">    FileDescriptor duplicate = NativeUnixSocket.duplicate(fdObj, new FileDescriptor());</span>
+<span class="pc bpc" id="L441" title="1 of 2 branches missed.">    if (duplicate == null) {</span>
+<span class="nc" id="L442">      throw new IOException(&quot;Could not duplicate file descriptor&quot;);</span>
     }
-<span class="fc" id="L442">    return using(duplicate);</span>
+<span class="fc" id="L444">    return using(duplicate);</span>
   }
 
   /**
@@ -463,44 +465,44 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
    */
   @Unsafe
   public static FileDescriptorCast unsafeUsing(int fd) throws IOException {
-<span class="fc" id="L466">    AFSocket.ensureUnsafeSupported();</span>
+<span class="fc" id="L468">    AFSocket.ensureUnsafeSupported();</span>
 
     FileDescriptor fdObj;
-<span class="fc bfc" id="L469" title="All 2 branches covered.">    if (fd == -1) {</span>
-<span class="fc" id="L470">      throw new IOException(&quot;Not a valid file descriptor&quot;);</span>
-<span class="pc bpc" id="L471" title="1 of 2 branches missed.">    } else if (fd == FD_IN) {</span>
-<span class="nc" id="L472">      fdObj = FileDescriptor.in;</span>
-<span class="fc bfc" id="L473" title="All 2 branches covered.">    } else if (fd == FD_OUT) {</span>
-<span class="fc" id="L474">      fdObj = FileDescriptor.out;</span>
-<span class="pc bpc" id="L475" title="1 of 2 branches missed.">    } else if (fd == FD_ERR) {</span>
-<span class="nc" id="L476">      fdObj = FileDescriptor.err;</span>
+<span class="fc bfc" id="L471" title="All 2 branches covered.">    if (fd == -1) {</span>
+<span class="fc" id="L472">      throw new IOException(&quot;Not a valid file descriptor&quot;);</span>
+<span class="pc bpc" id="L473" title="1 of 2 branches missed.">    } else if (fd == FD_IN) {</span>
+<span class="nc" id="L474">      fdObj = FileDescriptor.in;</span>
+<span class="fc bfc" id="L475" title="All 2 branches covered.">    } else if (fd == FD_OUT) {</span>
+<span class="fc" id="L476">      fdObj = FileDescriptor.out;</span>
+<span class="pc bpc" id="L477" title="1 of 2 branches missed.">    } else if (fd == FD_ERR) {</span>
+<span class="nc" id="L478">      fdObj = FileDescriptor.err;</span>
     } else {
-<span class="fc" id="L478">      fdObj = null;</span>
+<span class="fc" id="L480">      fdObj = null;</span>
     }
 
-<span class="fc bfc" id="L481" title="All 2 branches covered.">    if (fdObj != null) {</span>
-<span class="fc" id="L482">      int check = getFdIfPossible(fdObj);</span>
-<span class="pc bpc" id="L483" title="1 of 2 branches missed.">      if (fd == check) {</span>
-<span class="fc" id="L484">        return using(fdObj);</span>
+<span class="fc bfc" id="L483" title="All 2 branches covered.">    if (fdObj != null) {</span>
+<span class="fc" id="L484">      int check = getFdIfPossible(fdObj);</span>
+<span class="pc bpc" id="L485" title="1 of 2 branches missed.">      if (fd == check) {</span>
+<span class="fc" id="L486">        return using(fdObj);</span>
       }
     }
 
-<span class="fc" id="L488">    fdObj = new FileDescriptor();</span>
-<span class="fc" id="L489">    NativeUnixSocket.initFD(fdObj, fd);</span>
+<span class="fc" id="L490">    fdObj = new FileDescriptor();</span>
+<span class="fc" id="L491">    NativeUnixSocket.initFD(fdObj, fd);</span>
 
-<span class="fc" id="L491">    return using(fdObj);</span>
+<span class="fc" id="L493">    return using(fdObj);</span>
   }
 
   private static void triggerInit() {
-<span class="fc bfc" id="L495" title="All 2 branches covered.">    for (AFAddressFamily&lt;?&gt; family : new AFAddressFamily&lt;?&gt;[] {</span>
-<span class="fc" id="L496">        AFUNIXSocketAddress.addressFamily(), //</span>
-<span class="fc" id="L497">        AFTIPCSocketAddress.addressFamily(), //</span>
-<span class="fc" id="L498">        AFVSOCKSocketAddress.addressFamily(), //</span>
-<span class="fc" id="L499">        AFSYSTEMSocketAddress.addressFamily(), //</span>
+<span class="fc bfc" id="L497" title="All 2 branches covered.">    for (AFAddressFamily&lt;?&gt; family : new AFAddressFamily&lt;?&gt;[] {</span>
+<span class="fc" id="L498">        AFUNIXSocketAddress.addressFamily(), //</span>
+<span class="fc" id="L499">        AFTIPCSocketAddress.addressFamily(), //</span>
+<span class="fc" id="L500">        AFVSOCKSocketAddress.addressFamily(), //</span>
+<span class="fc" id="L501">        AFSYSTEMSocketAddress.addressFamily(), //</span>
     }) {
-<span class="fc" id="L501">      Objects.requireNonNull(family.getClass()); // trigger init</span>
+<span class="fc" id="L503">      Objects.requireNonNull(family.getClass()); // trigger init</span>
     }
-<span class="fc" id="L503">  }</span>
+<span class="fc" id="L505">  }</span>
 
   /**
    * Registers the given port number as the &quot;local port&quot; for this file descriptor.
@@ -512,11 +514,11 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
    * @return This instance.
    */
   public FileDescriptorCast withLocalPort(int port) {
-<span class="pc bpc" id="L515" title="1 of 2 branches missed.">    if (port &lt; 0) {</span>
-<span class="nc" id="L516">      throw new IllegalArgumentException();</span>
+<span class="pc bpc" id="L517" title="1 of 2 branches missed.">    if (port &lt; 0) {</span>
+<span class="nc" id="L518">      throw new IllegalArgumentException();</span>
     }
-<span class="fc" id="L518">    this.localPort = port;</span>
-<span class="fc" id="L519">    return this;</span>
+<span class="fc" id="L520">    this.localPort = port;</span>
+<span class="fc" id="L521">    return this;</span>
   }
 
   /**
@@ -529,11 +531,11 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
    * @return This instance.
    */
   public FileDescriptorCast withRemotePort(int port) {
-<span class="pc bpc" id="L532" title="1 of 2 branches missed.">    if (port &lt; 0) {</span>
-<span class="nc" id="L533">      throw new IllegalArgumentException();</span>
+<span class="pc bpc" id="L534" title="1 of 2 branches missed.">    if (port &lt; 0) {</span>
+<span class="nc" id="L535">      throw new IllegalArgumentException();</span>
     }
-<span class="fc" id="L535">    this.remotePort = port;</span>
-<span class="fc" id="L536">    return this;</span>
+<span class="fc" id="L537">    this.remotePort = port;</span>
+<span class="fc" id="L538">    return this;</span>
   }
 
   /**
@@ -549,15 +551,15 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
    */
   @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   public @NonNull &lt;K&gt; K as(Class&lt;K&gt; desiredType) throws IOException {
-<span class="fc" id="L552">    Objects.requireNonNull(desiredType);</span>
+<span class="fc" id="L554">    Objects.requireNonNull(desiredType);</span>
 
-<span class="fc" id="L554">    CastingProvider&lt;? extends K&gt; provider = cpm.get(desiredType);</span>
-<span class="fc bfc" id="L555" title="All 2 branches covered.">    if (provider != null) {</span>
-<span class="fc" id="L556">      K obj = desiredType.cast(provider.provideAs(this, desiredType));</span>
-<span class="fc" id="L557">      Objects.requireNonNull(obj);</span>
-<span class="fc" id="L558">      return obj;</span>
+<span class="fc" id="L556">    CastingProvider&lt;? extends K&gt; provider = cpm.get(desiredType);</span>
+<span class="fc bfc" id="L557" title="All 2 branches covered.">    if (provider != null) {</span>
+<span class="fc" id="L558">      K obj = desiredType.cast(provider.provideAs(this, desiredType));</span>
+<span class="fc" id="L559">      Objects.requireNonNull(obj);</span>
+<span class="fc" id="L560">      return obj;</span>
     } else {
-<span class="fc" id="L560">      throw new ClassCastException(&quot;Cannot access file descriptor as &quot; + desiredType);</span>
+<span class="fc" id="L562">      throw new ClassCastException(&quot;Cannot access file descriptor as &quot; + desiredType);</span>
     }
   }
 
@@ -570,7 +572,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
    * @see #as(Class)
    */
   public boolean isAvailable(Class&lt;?&gt; desiredType) throws IOException {
-<span class="fc" id="L573">    return cpm.providers.containsKey(desiredType);</span>
+<span class="fc" id="L575">    return cpm.providers.containsKey(desiredType);</span>
   }
 
   /**
@@ -580,31 +582,31 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
    * @return The collection of available types.
    */
   public Set&lt;Class&lt;?&gt;&gt; availableTypes() {
-<span class="fc" id="L583">    return cpm.classes;</span>
+<span class="fc" id="L585">    return cpm.classes;</span>
   }
 
   @Override
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   public FileDescriptor getFileDescriptor() {
-<span class="fc" id="L589">    return fdObj;</span>
+<span class="fc" id="L591">    return fdObj;</span>
   }
 
   private static final class LenientFileInputStream extends FileInputStream {
     private LenientFileInputStream(FileDescriptor fdObj) {
-<span class="nc" id="L594">      super(fdObj);</span>
-<span class="nc" id="L595">    }</span>
+<span class="nc" id="L596">      super(fdObj);</span>
+<span class="nc" id="L597">    }</span>
 
     @Override
     public int available() throws IOException {
       try {
-<span class="nc" id="L600">        return super.available();</span>
-<span class="nc" id="L601">      } catch (IOException e) {</span>
-<span class="nc" id="L602">        String msg = e.getMessage();</span>
-<span class="nc bnc" id="L603" title="All 2 branches missed.">        if (&quot;Invalid seek&quot;.equals(msg)) {</span>
+<span class="nc" id="L602">        return super.available();</span>
+<span class="nc" id="L603">      } catch (IOException e) {</span>
+<span class="nc" id="L604">        String msg = e.getMessage();</span>
+<span class="nc bnc" id="L605" title="All 2 branches missed.">        if (&quot;Invalid seek&quot;.equals(msg)) {</span>
           // OSv may not like FileInputStream#availabe() on pipe fds.
-<span class="nc" id="L605">          return 0;</span>
+<span class="nc" id="L607">          return 0;</span>
         }
-<span class="nc" id="L607">        throw e;</span>
+<span class="nc" id="L609">        throw e;</span>
       }
     }
   }
@@ -613,19 +615,17 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
    * Add support for otherwise unsupported sockets.
    */
   private static void registerGenericSocketSupport() {
-<span class="fc" id="L616">    registerCastingProviders(Socket.class, new CastingProviderMap() {</span>
+<span class="fc" id="L618">    registerCastingProviders(Socket.class, new CastingProviderMap() {</span>
 
-      @SuppressWarnings(&quot;null&quot;)
       @Override
       protected void addProviders() {
-<span class="fc" id="L621">        addProviders(GLOBAL_PROVIDERS);</span>
+<span class="fc" id="L622">        addProviders(GLOBAL_PROVIDERS);</span>
 
-<span class="fc" id="L623">        registerGenericSocketProviders();</span>
-<span class="fc" id="L624">      }</span>
+<span class="fc" id="L624">        registerGenericSocketProviders();</span>
+<span class="fc" id="L625">      }</span>
     });
 
-<span class="fc" id="L627">    registerCastingProviders(DatagramSocket.class, new CastingProviderMap() {</span>
-      @SuppressWarnings(&quot;null&quot;)
+<span class="fc" id="L628">    registerCastingProviders(DatagramSocket.class, new CastingProviderMap() {</span>
       @Override
       protected void addProviders() {
 <span class="fc" id="L631">        addProviders(GLOBAL_PROVIDERS);</span>
