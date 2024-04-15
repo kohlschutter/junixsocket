@@ -19,15 +19,14 @@ package org.newsclub.net.unix.pool;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 public final class ConcurrentQueueObjectPool<O> implements ObjectPool<O> {
   private final Queue<O> queue = new ConcurrentLinkedQueue<>();
-  private final Supplier<O> supplier;
+  private final ObjectSupplier<O> supplier;
 
-  public ConcurrentQueueObjectPool(Supplier<O> supplier) {
+  public ConcurrentQueueObjectPool(ObjectSupplier<O> supplier) {
     this.supplier = supplier;
   }
 

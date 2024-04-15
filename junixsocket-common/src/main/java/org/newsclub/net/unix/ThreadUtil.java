@@ -20,11 +20,14 @@ package org.newsclub.net.unix;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+
 /**
  * Helper class to support certain Thread-specific features.
  * 
  * @author Christian Kohlschütter
  */
+@IgnoreJRERequirement // see src/main/java20
 public final class ThreadUtil {
   private static final boolean VIRTUAL_THREADS_SUPPORTED = Boolean.parseBoolean(System.getProperty(
       "org.newsclub.net.unix.virtual-threads", "true"));

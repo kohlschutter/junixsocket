@@ -17,8 +17,6 @@
  */
 package org.newsclub.net.unix.pool;
 
-import java.util.function.Supplier;
-
 public final class ThreadLocalObjectPool<O> implements ObjectPool<O> {
   private final ThreadLocal<O> tl;
 
@@ -34,7 +32,7 @@ public final class ThreadLocalObjectPool<O> implements ObjectPool<O> {
     }
   };
 
-  public ThreadLocalObjectPool(Supplier<O> supplier) {
+  public ThreadLocalObjectPool(ObjectSupplier<O> supplier) {
     tl = new ThreadLocal<O>() {
 
       @Override

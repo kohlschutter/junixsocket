@@ -17,15 +17,13 @@
  */
 package org.newsclub.net.unix.pool;
 
-import java.util.function.Supplier;
-
 import org.newsclub.net.unix.ThreadUtil;
 
 public final class VirtualAwareThreadLocalObjectPool<O> implements ObjectPool<O> {
   private final ThreadLocalObjectPool<O> tlPool;
   private final ConcurrentQueueObjectPool<O> cqPool;
 
-  public VirtualAwareThreadLocalObjectPool(Supplier<O> supplier) {
+  public VirtualAwareThreadLocalObjectPool(ObjectSupplier<O> supplier) {
     this.tlPool = new ThreadLocalObjectPool<>(supplier);
     this.cqPool = new ConcurrentQueueObjectPool<>(supplier);
   }

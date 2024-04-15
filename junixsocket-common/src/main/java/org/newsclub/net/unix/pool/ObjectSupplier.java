@@ -17,35 +17,21 @@
  */
 package org.newsclub.net.unix.pool;
 
-import java.io.Closeable;
+// CPD:OFF
 
-public interface ObjectPool<O> {
-  Lease<O> take();
+/**
+ * Variant of {@code java.util.Supplier}, to allow compiling junixsocket-common with retrolambda for
+ * Java 1.7.
+ *
+ * @param <T> the type of results supplied by this supplier
+ */
+@FunctionalInterface
+public interface ObjectSupplier<T> {
 
-  static <O> ObjectPool<O> newThreadLocalPool(ObjectSupplier<O> supplier) {
-    // return new ThreadLocalObjectPool<>(supplier);
-    // return new ConcurrentQueueObjectPool<>(supplier);
-    return new VirtualAwareThreadLocalObjectPool<>(supplier);
-  }
-
-  interface Lease<O> extends Closeable {
-    O get();
-
-    @Override
-    void close();
-  }
-
-  static <O> Lease<O> unpooledLease(O obj) {
-    return new Lease<O>() {
-
-      @Override
-      public O get() {
-        return obj;
-      }
-
-      @Override
-      public void close() {
-      }
-    };
-  }
+  /**
+   * Gets a result.
+   *
+   * @return a result
+   */
+  T get();
 }
