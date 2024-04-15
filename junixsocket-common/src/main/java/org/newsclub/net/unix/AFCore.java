@@ -22,7 +22,12 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.newsclub.net.unix.pool.MutableHolder;
+import org.newsclub.net.unix.pool.ObjectPool;
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
 /**
  * The core functionality of file descriptor based I/O.
@@ -30,7 +35,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Christian Kohlschütter
  */
 class AFCore extends CleanableState {
-  private static final ThreadLocal<ByteBuffer> TL_BUFFER = new ThreadLocal<>();
+  private static final ObjectPool<MutableHolder<ByteBuffer>> TL_BUFFER = ObjectPool
+      .newThreadLocalPool(() -> {
+        return new MutableHolder<>(null);
+      });
 
   private static final String PROP_TL_BUFFER_MAX_CAPACITY =
       "org.newsclub.net.unix.thread-local-buffer.max-capacity"; // 0 means "no limit" (discouraged)
@@ -129,46 +137,49 @@ class AFCore extends CleanableState {
     int pos;
 
     boolean direct = dst.isDirect();
-    if (direct) {
-      buf = dst;
-      pos = dstPos;
-    } else {
-      buf = getThreadLocalDirectByteBuffer(remaining);
-      remaining = Math.min(remaining, buf.remaining());
-      pos = buf.position();
-    }
+    try (Lease<MutableHolder<ByteBuffer>> lease = direct ? null : getPrivateDirectByteBuffer(
+        remaining)) {
+      if (direct) {
+        buf = dst;
+        pos = dstPos;
+      } else {
+        buf = Objects.requireNonNull(lease).get().get();
+        remaining = Math.min(remaining, buf.remaining());
+        pos = buf.position();
+      }
 
-    if (!blocking) {
-      options |= NativeUnixSocket.OPT_NON_BLOCKING;
-    }
+      if (!blocking) {
+        options |= NativeUnixSocket.OPT_NON_BLOCKING;
+      }
 
-    int count = NativeUnixSocket.receive(fdesc, buf, pos, remaining, socketAddressBuffer, options,
-        ancillaryDataSupport, 0);
-    if (count == -1) {
+      int count = NativeUnixSocket.receive(fdesc, buf, pos, remaining, socketAddressBuffer, options,
+          ancillaryDataSupport, 0);
+      if (count == -1) {
+        return count;
+      }
+
+      if (direct) {
+        if (count < 0) {
+          throw new IllegalStateException();
+        }
+        dst.position(pos + count);
+      } else {
+        int oldLimit = buf.limit();
+        if (count < oldLimit) {
+          buf.limit(count);
+        }
+        try {
+          while (buf.hasRemaining()) {
+            dst.put(buf);
+          }
+        } finally {
+          if (count < oldLimit) {
+            buf.limit(oldLimit);
+          }
+        }
+      }
       return count;
     }
-
-    if (direct) {
-      if (count < 0) {
-        throw new IllegalStateException();
-      }
-      dst.position(pos + count);
-    } else {
-      int oldLimit = buf.limit();
-      if (count < oldLimit) {
-        buf.limit(count);
-      }
-      try {
-        while (buf.hasRemaining()) {
-          dst.put(buf);
-        }
-      } finally {
-        if (count < oldLimit) {
-          buf.limit(oldLimit);
-        }
-      }
-    }
-    return count;
   }
 
   int write(ByteBuffer src) throws IOException {
@@ -185,48 +196,54 @@ class AFCore extends CleanableState {
     FileDescriptor fdesc = validFdOrException();
     final ByteBuffer addressTo;
     final int addressToLen;
-    if (target == null) {
-      addressTo = null;
-      addressToLen = 0;
-    } else {
-      addressTo = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();
-      addressToLen = AFSocketAddress.unwrapAddressDirectBufferInternal(addressTo, target);
-    }
-
-    // accept "send buffer overflow" as packet loss
-    // and don't retry (which may slow things down quite a bit)
-    if (!blocking) {
-      options |= NativeUnixSocket.OPT_NON_BLOCKING;
-    }
-
-    int pos = src.position();
-    boolean isDirect = src.isDirect();
-    ByteBuffer buf;
-    int bufPos;
-    if (isDirect) {
-      buf = src;
-      bufPos = pos;
-    } else {
-      buf = getThreadLocalDirectByteBuffer(remaining);
-      remaining = Math.min(remaining, buf.remaining());
-
-      bufPos = buf.position();
-
-      while (src.hasRemaining() && buf.hasRemaining()) {
-        buf.put(src);
+    try (Lease<ByteBuffer> addressToLease = target == null ? null
+        : AFSocketAddress.SOCKETADDRESS_BUFFER_TL.take()) {
+      if (addressToLease == null) {
+        addressTo = null;
+        addressToLen = 0;
+      } else {
+        addressTo = addressToLease.get();
+        addressToLen = AFSocketAddress.unwrapAddressDirectBufferInternal(addressTo, target);
       }
 
-      buf.position(bufPos);
-    }
-    if (datagramMode) {
-      options |= NativeUnixSocket.OPT_DGRAM_MODE;
-    }
+      // accept "send buffer overflow" as packet loss
+      // and don't retry (which may slow things down quite a bit)
+      if (!blocking) {
+        options |= NativeUnixSocket.OPT_NON_BLOCKING;
+      }
 
-    int written = NativeUnixSocket.send(fdesc, buf, bufPos, remaining, addressTo, addressToLen,
-        options, ancillaryDataSupport);
-    src.position(pos + written);
+      int pos = src.position();
+      boolean isDirect = src.isDirect();
+      ByteBuffer buf;
+      int bufPos;
 
-    return written;
+      try (Lease<MutableHolder<ByteBuffer>> lease = isDirect ? null : getPrivateDirectByteBuffer(
+          remaining)) {
+        if (isDirect) {
+          buf = src;
+          bufPos = pos;
+        } else {
+          buf = Objects.requireNonNull(lease).get().get();
+          remaining = Math.min(remaining, buf.remaining());
+
+          bufPos = buf.position();
+
+          while (src.hasRemaining() && buf.hasRemaining()) {
+            buf.put(src);
+          }
+
+          buf.position(bufPos);
+        }
+        if (datagramMode) {
+          options |= NativeUnixSocket.OPT_DGRAM_MODE;
+        }
+
+        int written = NativeUnixSocket.send(fdesc, buf, bufPos, remaining, addressTo, addressToLen,
+            options, ancillaryDataSupport);
+        src.position(pos + written);
+        return written;
+      }
+    }
   }
 
   /**
@@ -239,23 +256,25 @@ class AFCore extends CleanableState {
    * @param capacity The desired capacity.
    * @return A byte buffer satisfying the requested capacity.
    */
-  ByteBuffer getThreadLocalDirectByteBuffer(int capacity) {
+  Lease<MutableHolder<ByteBuffer>> getPrivateDirectByteBuffer(int capacity) {
     if (capacity > TL_BUFFER_MAX_CAPACITY && TL_BUFFER_MAX_CAPACITY > 0) {
       // Capacity exceeds configurable maximum limit;
       // allocate but do not cache direct buffer.
       // This may incur a performance penalty at the cost of correctness when using such capacities.
-      return ByteBuffer.allocateDirect(capacity);
+      return ObjectPool.unpooledLease(new MutableHolder<>(ByteBuffer.allocateDirect(capacity)));
     }
     if (capacity < TL_BUFFER_MIN_CAPACITY) {
       capacity = TL_BUFFER_MIN_CAPACITY;
     }
-    ByteBuffer buffer = TL_BUFFER.get();
+    Lease<MutableHolder<ByteBuffer>> lease = TL_BUFFER.take();
+    MutableHolder<ByteBuffer> holder = lease.get();
+    ByteBuffer buffer = holder.get();
     if (buffer == null || capacity > buffer.capacity()) {
       buffer = ByteBuffer.allocateDirect(capacity);
-      TL_BUFFER.set(buffer);
+      holder.set(buffer);
     }
     buffer.clear();
-    return buffer;
+    return lease;
   }
 
   void implConfigureBlocking(boolean block) throws IOException {

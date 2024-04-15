@@ -30,6 +30,8 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
+
 /**
  * An {@link AFSocketAddress} for unknown socket types.
  *
@@ -42,13 +44,13 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
   private static final String SELECTOR_PROVIDER_CLASS =
       "org.newsclub.net.unix.generic.AFGenericSelectorProvider";
 
-  private AFGenericSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress)
-      throws SocketException {
+  private AFGenericSocketAddress(int port, final byte[] socketAddress,
+      Lease<ByteBuffer> nativeAddress) throws SocketException {
     super(port, socketAddress, nativeAddress, addressFamily());
   }
 
   private static AFGenericSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
-      ByteBuffer nativeAddress) throws SocketException {
+      Lease<ByteBuffer> nativeAddress) throws SocketException {
     return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),
         AFGenericSocketAddress::new);
   }

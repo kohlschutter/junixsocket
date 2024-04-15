@@ -48,6 +48,7 @@ final class SocketAddressUtil {
         try {
           return AFUNIXSocketAddress.of(udsa.getPath());
         } catch (SocketException e) {
+          e.printStackTrace();
           return null;
         }
       };

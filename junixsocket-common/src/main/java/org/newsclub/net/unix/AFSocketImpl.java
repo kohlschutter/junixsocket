@@ -41,6 +41,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.newsclub.net.unix.pool.MutableHolder;
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
 /**
  * junixsocket-based {@link SocketImpl}.
@@ -106,9 +108,9 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         try {
           FileDescriptor tmpFd = new FileDescriptor();
 
-          try {
+          try (Lease<ByteBuffer> abLease = socketAddress.getNativeAddressDirectBuffer()) {
             createSocket(tmpFd, AFSocketType.SOCK_STREAM);
-            ByteBuffer ab = socketAddress.getNativeAddressDirectBuffer();
+            ByteBuffer ab = abLease.get();
             NativeUnixSocket.connect(ab, ab.limit(), tmpFd, inode.get());
           } catch (IOException e) {
             // there's nothing more we can do to unlock these accepts
@@ -245,8 +247,8 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     @SuppressWarnings("unchecked")
     final AFSocketImpl<A> si = (AFSocketImpl<A>) socket;
     core.incPendingAccepts();
-    try {
-      ByteBuffer ab = socketAddress.getNativeAddressDirectBuffer();
+    try (Lease<ByteBuffer> abLease = socketAddress.getNativeAddressDirectBuffer()) {
+      ByteBuffer ab = abLease.get();
 
       SocketException caught = null;
       try {
@@ -305,7 +307,9 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   @Override
   protected final int available() throws IOException {
     FileDescriptor fdesc = core.validFdOrException();
-    return NativeUnixSocket.available(fdesc, core.getThreadLocalDirectByteBuffer(0));
+    try (Lease<MutableHolder<ByteBuffer>> lease = core.getPrivateDirectByteBuffer(0)) {
+      return NativeUnixSocket.available(fdesc, lease.get().get());
+    }
   }
 
   final void bind(SocketAddress addr, int options) throws IOException {
@@ -326,8 +330,10 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     AFSocketAddress socketAddress = (AFSocketAddress) addr;
 
     this.setSocketAddress(socketAddress);
-    ByteBuffer ab = socketAddress.getNativeAddressDirectBuffer();
-    core.inode.set(NativeUnixSocket.bind(ab, ab.limit(), fd, options));
+    try (Lease<ByteBuffer> abLease = socketAddress.getNativeAddressDirectBuffer()) {
+      ByteBuffer ab = abLease.get();
+      core.inode.set(NativeUnixSocket.bind(ab, ab.limit(), fd, options));
+    }
     core.validFdOrException();
   }
 
@@ -379,37 +385,39 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     }
 
     AFSocketAddress socketAddress = (AFSocketAddress) addr;
-    ByteBuffer ab = socketAddress.getNativeAddressDirectBuffer();
-    boolean success = false;
-    boolean ignoreSpuriousTimeout = true;
-    do {
-      try {
-        success = NativeUnixSocket.connect(ab, ab.limit(), fd, -1);
-        break;
-      } catch (SocketTimeoutException e) {
-        // Ignore spurious timeout once when SO_TIMEOUT==0
-        // seen on older Linux kernels with AF_VSOCK running in qemu
-        if (ignoreSpuriousTimeout) {
-          Object o = getOption(SocketOptions.SO_TIMEOUT);
-          if (o instanceof Integer) {
-            if (((Integer) o) == 0) {
+    try (Lease<ByteBuffer> abLease = socketAddress.getNativeAddressDirectBuffer()) {
+      ByteBuffer ab = abLease.get();
+      boolean success = false;
+      boolean ignoreSpuriousTimeout = true;
+      do {
+        try {
+          success = NativeUnixSocket.connect(ab, ab.limit(), fd, -1);
+          break;
+        } catch (SocketTimeoutException e) {
+          // Ignore spurious timeout once when SO_TIMEOUT==0
+          // seen on older Linux kernels with AF_VSOCK running in qemu
+          if (ignoreSpuriousTimeout) {
+            Object o = getOption(SocketOptions.SO_TIMEOUT);
+            if (o instanceof Integer) {
+              if (((Integer) o) == 0) {
+                ignoreSpuriousTimeout = false;
+                continue;
+              }
+            } else if (o == null) {
               ignoreSpuriousTimeout = false;
               continue;
             }
-          } else if (o == null) {
-            ignoreSpuriousTimeout = false;
-            continue;
           }
+          throw e;
         }
-        throw e;
+      } while (!Thread.interrupted());
+      if (success) {
+        setSocketAddress(socketAddress);
+        this.connected.set(true);
       }
-    } while (!Thread.interrupted());
-    if (success) {
-      setSocketAddress(socketAddress);
-      this.connected.set(true);
+      core.validFdOrException();
+      return success;
     }
-    core.validFdOrException();
-    return success;
   }
 
   @Override

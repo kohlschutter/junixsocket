@@ -144,6 +144,7 @@ public class SelftestProvider {
 
   public void printAdditionalProperties(PrintWriter out) {
     out.println("Native architecture: " + NativeLibraryLoader.getArchitectureAndOS());
+    out.println("Virtual threads supported: " + ThreadUtil.isVirtualThreadSupported());
   }
 
   public static void main(String[] args) {

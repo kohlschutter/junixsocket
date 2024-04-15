@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
 /**
  * An {@link AFSocketAddress} for AF_SYSTEM sockets.
@@ -82,13 +83,13 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
     }
   }
 
-  private AFSYSTEMSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress)
-      throws SocketException {
+  private AFSYSTEMSocketAddress(int port, final byte[] socketAddress,
+      Lease<ByteBuffer> nativeAddress) throws SocketException {
     super(port, socketAddress, nativeAddress, addressFamily());
   }
 
   private static AFSYSTEMSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
-      ByteBuffer nativeAddress) throws SocketException {
+      Lease<ByteBuffer> nativeAddress) throws SocketException {
     return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),
         AFSYSTEMSocketAddress::new);
   }

@@ -37,6 +37,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
 /**
  * Describes an {@link InetSocketAddress} that actually uses AF_UNIX sockets instead of AF_INET.
@@ -82,7 +83,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
             }
           });
 
-  private AFUNIXSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress)
+  private AFUNIXSocketAddress(int port, final byte[] socketAddress, Lease<ByteBuffer> nativeAddress)
       throws SocketException {
     super(port, socketAddress, nativeAddress, AF_UNIX);
   }
@@ -118,7 +119,7 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   }
 
   static AFUNIXSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
-      ByteBuffer nativeAddress) throws SocketException {
+      Lease<ByteBuffer> nativeAddress) throws SocketException {
     return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, AF_UNIX,
         AFUNIXSocketAddress::new);
   }

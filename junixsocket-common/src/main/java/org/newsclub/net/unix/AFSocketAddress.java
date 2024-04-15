@@ -40,6 +40,8 @@ import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.newsclub.net.unix.pool.ObjectPool;
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
 import com.google.errorprone.annotations.Immutable;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
@@ -74,13 +76,10 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   private static final Map<AFAddressFamily<?>, Map<Integer, Map<ByteBuffer, AFSocketAddress>>> ADDRESS_CACHE =
       new HashMap<>();
 
-  static final ThreadLocal<ByteBuffer> SOCKETADDRESS_BUFFER_TL = new ThreadLocal<ByteBuffer>() {
-
-    @Override
-    protected ByteBuffer initialValue() {
-      return AFSocketAddress.newSockAddrDirectBuffer(SOCKADDR_MAX_LEN);
-    }
-  };
+  static final ObjectPool<ByteBuffer> SOCKETADDRESS_BUFFER_TL = ObjectPool.newThreadLocalPool(
+      () -> {
+        return AFSocketAddress.newSockAddrDirectBuffer(SOCKADDR_MAX_LEN);
+      });
 
   private static final boolean USE_DESERIALIZATION_FOR_INIT;
 
@@ -125,7 +124,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @throws SocketException on error.
    */
   @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
-  protected AFSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress,
+  protected AFSocketAddress(int port, final byte[] socketAddress, Lease<ByteBuffer> nativeAddress,
       AFAddressFamily<?> af) throws SocketException {
     /*
      * Initializing the superclass with an unresolved hostname helps us pass the #equals and
@@ -155,13 +154,13 @@ public abstract class AFSocketAddress extends InetSocketAddress {
 
   @SuppressWarnings({"cast", "this-escape"})
   private static void initAFSocketAddress(AFSocketAddress addr, int port,
-      final byte[] socketAddress, ByteBuffer nativeAddress, AFAddressFamily<?> af)
+      final byte[] socketAddress, Lease<ByteBuffer> nativeAddress, AFAddressFamily<?> af)
       throws SocketException {
     if (socketAddress.length == 0) {
       throw new SocketException("Illegal address length: " + socketAddress.length);
     }
 
-    addr.nativeAddress = nativeAddress == null ? null : (ByteBuffer) (Object) nativeAddress
+    addr.nativeAddress = nativeAddress == null ? null : (ByteBuffer) (Object) nativeAddress.get()
         .duplicate().rewind();
     if (port < -1) {
       throw new IllegalArgumentException("port out of range");
@@ -193,7 +192,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @throws SocketException on error.
    */
   protected static <A extends AFSocketAddress> A newDeserializedAFSocketAddress(int port,
-      final byte[] socketAddress, ByteBuffer nativeAddress, AFAddressFamily<A> af,
+      final byte[] socketAddress, Lease<ByteBuffer> nativeAddress, AFAddressFamily<A> af,
       AFSocketAddressConstructor<A> constructor) throws SocketException {
     String hostname = AFInetAddress.createUnresolvedHostname(socketAddress, af);
     if (hostname == null || hostname.isEmpty()) {
@@ -304,7 +303,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * Checks if {@link AFSocketAddress} instantiation should be performed via deserialization.
    *
    * @return {@code true} if so.
-   * @see #newDeserializedAFSocketAddress(int, byte[], ByteBuffer, AFAddressFamily,
+   * @see #newDeserializedAFSocketAddress(int, byte[], Lease, AFAddressFamily,
    *      AFSocketAddressConstructor)
    */
   protected static boolean isUseDeserializationForInit() {
@@ -463,7 +462,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
      * @throws SocketException on error.
      */
     @NonNull
-    T newAFSocketAddress(int port, byte[] socketAddress, ByteBuffer nativeAddress)
+    T newAFSocketAddress(int port, byte[] socketAddress, Lease<ByteBuffer> nativeAddress)
         throws SocketException;
   }
 
@@ -489,51 +488,53 @@ public abstract class AFSocketAddress extends InetSocketAddress {
       port = 0;
     }
 
-    ByteBuffer direct = SOCKETADDRESS_BUFFER_TL.get();
-    int limit = NativeUnixSocket.isLoaded() ? NativeUnixSocket.bytesToSockAddr(af.getDomain(),
-        direct, socketAddress) : -1;
-    if (limit == -1) {
-      // not supported, but we can still create an address
-      return af.getAddressConstructor().newAFSocketAddress(port, socketAddress, null);
-    } else if (limit > SOCKADDR_MAX_LEN) {
-      throw new IllegalStateException("Unexpected address length");
-    }
-    direct.rewind();
-    direct.limit(limit);
+    try (Lease<ByteBuffer> lease = SOCKETADDRESS_BUFFER_TL.take()) {
+      ByteBuffer direct = lease.get();
+      int limit = NativeUnixSocket.isLoaded() ? NativeUnixSocket.bytesToSockAddr(af.getDomain(),
+          direct, socketAddress) : -1;
+      if (limit == -1) {
+        // not supported, but we can still create an address
+        return af.getAddressConstructor().newAFSocketAddress(port, socketAddress, null);
+      } else if (limit > SOCKADDR_MAX_LEN) {
+        throw new IllegalStateException("Unexpected address length");
+      }
+      direct.rewind();
+      direct.limit(limit);
 
-    A instance;
-    synchronized (AFSocketAddress.class) {
-      Map<ByteBuffer, AFSocketAddress> map;
-      Map<Integer, Map<ByteBuffer, AFSocketAddress>> mapPorts = ADDRESS_CACHE.get(af);
-      if (mapPorts == null) {
-        instance = null;
-        mapPorts = new HashMap<>();
-        map = new HashMap<>();
-        mapPorts.put(port, map);
-        ADDRESS_CACHE.put(af, mapPorts);
-      } else {
-        map = mapPorts.get(port);
-        if (map == null) {
+      A instance;
+      synchronized (AFSocketAddress.class) {
+        Map<ByteBuffer, AFSocketAddress> map;
+        Map<Integer, Map<ByteBuffer, AFSocketAddress>> mapPorts = ADDRESS_CACHE.get(af);
+        if (mapPorts == null) {
           instance = null;
+          mapPorts = new HashMap<>();
           map = new HashMap<>();
           mapPorts.put(port, map);
+          ADDRESS_CACHE.put(af, mapPorts);
         } else {
-          instance = (A) map.get(direct);
+          map = mapPorts.get(port);
+          if (map == null) {
+            instance = null;
+            map = new HashMap<>();
+            mapPorts.put(port, map);
+          } else {
+            instance = (A) map.get(direct);
+          }
+        }
+
+        if (instance == null) {
+          ByteBuffer key = newSockAddrKeyBuffer(limit);
+          key.put(direct);
+          key = key.asReadOnlyBuffer();
+
+          instance = af.getAddressConstructor().newAFSocketAddress(port, socketAddress, ObjectPool
+              .unpooledLease(key));
+
+          map.put(key, instance);
         }
       }
-
-      if (instance == null) {
-        ByteBuffer key = newSockAddrKeyBuffer(limit);
-        key.put(direct);
-        key = key.asReadOnlyBuffer();
-
-        instance = af.getAddressConstructor().newAFSocketAddress(port, socketAddress, key);
-
-        map.put(key, instance);
-      }
+      return instance;
     }
-
-    return instance;
   }
 
   @SuppressWarnings("null")
@@ -555,19 +556,21 @@ public abstract class AFSocketAddress extends InetSocketAddress {
         }
       }
 
-      if (!socketAddressBuffer.isDirect()) {
-        ByteBuffer buf = getNativeAddressDirectBuffer(Math.min(socketAddressBuffer.limit(),
-            SOCKADDR_MAX_LEN));
-        buf.put(socketAddressBuffer);
-        socketAddressBuffer = buf;
-      }
+      try (Lease<ByteBuffer> leasedBuffer = socketAddressBuffer.isDirect() ? null
+          : getNativeAddressDirectBuffer(Math.min(socketAddressBuffer.limit(), SOCKADDR_MAX_LEN))) {
+        if (leasedBuffer != null) {
+          ByteBuffer buf = leasedBuffer.get();
+          buf.put(socketAddressBuffer);
+          socketAddressBuffer = buf;
+        }
 
-      byte[] sockAddrToBytes = NativeUnixSocket.sockAddrToBytes(af.getDomain(),
-          socketAddressBuffer);
-      if (sockAddrToBytes == null) {
-        return null;
-      } else {
-        return AFSocketAddress.resolveAddress(sockAddrToBytes, 0, af);
+        byte[] sockAddrToBytes = NativeUnixSocket.sockAddrToBytes(af.getDomain(),
+            socketAddressBuffer);
+        if (sockAddrToBytes == null) {
+          return null;
+        } else {
+          return AFSocketAddress.resolveAddress(sockAddrToBytes, 0, af);
+        }
       }
     }
   }
@@ -677,7 +680,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    *
    * @return The direct {@link ByteBuffer}.
    */
-  final ByteBuffer getNativeAddressDirectBuffer() throws SocketException {
+  final Lease<ByteBuffer> getNativeAddressDirectBuffer() throws SocketException {
     ByteBuffer address = nativeAddress;
     if (address == null) {
       throw (SocketException) new SocketException("Cannot access native address").initCause(
@@ -685,18 +688,20 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     }
     address = address.duplicate();
 
-    ByteBuffer direct = getNativeAddressDirectBuffer(address.limit());
+    Lease<ByteBuffer> lease = getNativeAddressDirectBuffer(address.limit());
+    ByteBuffer direct = lease.get();
     address.position(0);
     direct.put(address);
 
-    return direct;
+    return lease;
   }
 
-  static final ByteBuffer getNativeAddressDirectBuffer(int limit) {
-    ByteBuffer direct = SOCKETADDRESS_BUFFER_TL.get();
+  static final Lease<ByteBuffer> getNativeAddressDirectBuffer(int limit) {
+    Lease<ByteBuffer> lease = SOCKETADDRESS_BUFFER_TL.take();
+    ByteBuffer direct = lease.get();
     direct.position(0);
     direct.limit(limit);
-    return direct;
+    return lease;
   }
 
   /**

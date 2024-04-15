@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
+
 /**
  * An {@link AFSocketAddress} for VSOCK sockets.
  *
@@ -71,13 +73,13 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    */
   public static final int VMADDR_PORT_ANY = -1;
 
-  private AFVSOCKSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress)
-      throws SocketException {
+  private AFVSOCKSocketAddress(int port, final byte[] socketAddress,
+      Lease<ByteBuffer> nativeAddress) throws SocketException {
     super(port, socketAddress, nativeAddress, addressFamily());
   }
 
   private static AFVSOCKSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
-      ByteBuffer nativeAddress) throws SocketException {
+      Lease<ByteBuffer> nativeAddress) throws SocketException {
     return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),
         AFVSOCKSocketAddress::new);
   }

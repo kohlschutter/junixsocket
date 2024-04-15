@@ -25,6 +25,8 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
+
 /**
  * A shared core that is common for all AF* sockets (datagrams, streams).
  *
@@ -69,12 +71,16 @@ class AFSocketCore extends AFCore {
   }
 
   AFSocketAddress receive(ByteBuffer dst) throws IOException {
-    ByteBuffer socketAddressBuffer = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();
-    int read = read(dst, socketAddressBuffer, 0);
-    if (read > 0) {
-      return AFSocketAddress.ofInternal(socketAddressBuffer, af);
-    } else {
-      return null;
+    try (Lease<ByteBuffer> socketAddressBufferLease = AFSocketAddress.SOCKETADDRESS_BUFFER_TL
+        .take()) {
+      ByteBuffer socketAddressBuffer = socketAddressBufferLease.get();
+
+      int read = read(dst, socketAddressBuffer, 0);
+      if (read > 0) {
+        return AFSocketAddress.ofInternal(socketAddressBuffer, af);
+      } else {
+        return null;
+      }
     }
   }
 

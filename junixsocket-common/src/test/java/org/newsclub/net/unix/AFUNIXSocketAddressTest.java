@@ -33,6 +33,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.AssertUtil;
@@ -162,12 +163,13 @@ public class AFUNIXSocketAddressTest {
   public void testCraftDeserialization() throws Exception {
     AFUNIXSocketAddress sa1 = AFUNIXSocketAddress.ofNewTempFile();
     byte[] socketAddress = sa1.getBytes();
-    ByteBuffer nativeAddress = sa1.getNativeAddressDirectBuffer();
-    int port = sa1.getPort();
+    try (Lease<ByteBuffer> nativeAddressLease = sa1.getNativeAddressDirectBuffer()) {
+      int port = sa1.getPort();
 
-    AFUNIXSocketAddress sa2 = AFUNIXSocketAddress.newAFSocketAddress(port, socketAddress,
-        nativeAddress);
-    assertEquals(sa1, sa2);
-    assertNotEquals(AFUNIXSocketAddress.ofNewTempFile(), sa2);
+      AFUNIXSocketAddress sa2 = AFUNIXSocketAddress.newAFSocketAddress(port, socketAddress,
+          nativeAddressLease);
+      assertEquals(sa1, sa2);
+      assertNotEquals(AFUNIXSocketAddress.ofNewTempFile(), sa2);
+    }
   }
 }

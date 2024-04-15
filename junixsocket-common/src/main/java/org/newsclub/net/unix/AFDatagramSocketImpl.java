@@ -35,6 +35,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.newsclub.net.unix.pool.MutableHolder;
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
 /**
  * A {@link DatagramSocketImpl} implemented by junixsocket.
@@ -106,8 +108,10 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
     if (socketAddress == AFSocketAddress.INTERNAL_DUMMY_CONNECT) { // NOPMD
       return;
     }
-    ByteBuffer ab = socketAddress.getNativeAddressDirectBuffer();
-    NativeUnixSocket.connect(ab, ab.limit(), fd, -1);
+    try (Lease<ByteBuffer> abLease = socketAddress.getNativeAddressDirectBuffer()) {
+      ByteBuffer ab = abLease.get();
+      NativeUnixSocket.connect(ab, ab.limit(), fd, -1);
+    }
     this.remotePort = socketAddress.getPort();
   }
 
@@ -144,13 +148,9 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
     if (socketAddress == AFSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD
       return;
     }
-    try {
-      ByteBuffer ab;
-      if (socketAddress == null) {
-        ab = AFSocketAddress.getNativeAddressDirectBuffer(0);
-      } else {
-        ab = socketAddress.getNativeAddressDirectBuffer();
-      }
+    try (Lease<ByteBuffer> abLease = socketAddress == null ? AFSocketAddress
+        .getNativeAddressDirectBuffer(0) : socketAddress.getNativeAddressDirectBuffer()) {
+      ByteBuffer ab = abLease.get();
       NativeUnixSocket.bind(ab, ab.limit(), fd, NativeUnixSocket.OPT_DGRAM_MODE);
       if (socketAddress == null) {
         this.localPort = 0;
@@ -174,30 +174,35 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
     int len = p.getLength();
     FileDescriptor fdesc = core.validFdOrException();
 
-    ByteBuffer datagramPacketBuffer = core.getThreadLocalDirectByteBuffer(len);
-    len = Math.min(len, datagramPacketBuffer.capacity());
+    try (Lease<MutableHolder<ByteBuffer>> lease = core.getPrivateDirectByteBuffer(len)) {
+      ByteBuffer datagramPacketBuffer = lease.get().get();
+      len = Math.min(len, datagramPacketBuffer.capacity());
 
-    options |= core.isBlocking() ? 0 : NativeUnixSocket.OPT_NON_BLOCKING;
+      options |= core.isBlocking() ? 0 : NativeUnixSocket.OPT_NON_BLOCKING;
 
-    ByteBuffer socketAddressBuffer = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();
-    int count = NativeUnixSocket.receive(fdesc, datagramPacketBuffer, 0, len, socketAddressBuffer,
-        options, ancillaryDataSupport, socketTimeout.get());
-    if (count > len) {
-      throw new IllegalStateException("count > len: " + count + " > " + len);
-    } else if (count == -1) {
-      throw new SocketTimeoutException();
-    } else if (count < 0) {
-      throw new IllegalStateException("count: " + count + " < 0");
+      try (Lease<ByteBuffer> socketAddressBufferLease = AFSocketAddress.SOCKETADDRESS_BUFFER_TL
+          .take()) {
+        ByteBuffer socketAddressBuffer = socketAddressBufferLease.get();
+        int count = NativeUnixSocket.receive(fdesc, datagramPacketBuffer, 0, len,
+            socketAddressBuffer, options, ancillaryDataSupport, socketTimeout.get());
+        if (count > len) {
+          throw new IllegalStateException("count > len: " + count + " > " + len);
+        } else if (count == -1) {
+          throw new SocketTimeoutException();
+        } else if (count < 0) {
+          throw new IllegalStateException("count: " + count + " < 0");
+        }
+        datagramPacketBuffer.limit(count);
+        datagramPacketBuffer.rewind();
+        datagramPacketBuffer.get(p.getData(), p.getOffset(), count);
+
+        p.setLength(count);
+
+        A addr = AFSocketAddress.ofInternal(socketAddressBuffer, getAddressFamily());
+        p.setAddress(addr == null ? null : addr.getInetAddress());
+        p.setPort(remotePort);
+      }
     }
-    datagramPacketBuffer.limit(count);
-    datagramPacketBuffer.rewind();
-    datagramPacketBuffer.get(p.getData(), p.getOffset(), count);
-
-    p.setLength(count);
-
-    A addr = AFSocketAddress.ofInternal(socketAddressBuffer, getAddressFamily());
-    p.setAddress(addr == null ? null : addr.getInetAddress());
-    p.setPort(remotePort);
   }
 
   @Override
@@ -205,10 +210,18 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
     InetAddress addr = p.getAddress();
     ByteBuffer sendToBuf = null;
     int sendToBufLen = 0;
+
+    byte[] addrBytes;
     if (addr != null) {
-      byte[] addrBytes = AFInetAddress.unwrapAddress(addr, getAddressFamily());
-      if (addrBytes != null) {
-        sendToBuf = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();
+      addrBytes = AFInetAddress.unwrapAddress(addr, getAddressFamily());
+    } else {
+      addrBytes = null;
+    }
+
+    try (Lease<ByteBuffer> sendToBufLease = addrBytes == null ? null
+        : AFSocketAddress.SOCKETADDRESS_BUFFER_TL.take()) {
+      if (sendToBufLease != null) {
+        sendToBuf = sendToBufLease.get();
         sendToBufLen = NativeUnixSocket.bytesToSockAddr(getAddressFamily().getDomain(), sendToBuf,
             addrBytes);
         sendToBuf.position(0);
@@ -221,14 +234,16 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
 
     int len = p.getLength();
 
-    ByteBuffer datagramPacketBuffer = core.getThreadLocalDirectByteBuffer(len);
-    datagramPacketBuffer.clear();
-    datagramPacketBuffer.put(p.getData(), p.getOffset(), p.getLength());
-    datagramPacketBuffer.flip();
+    try (Lease<MutableHolder<ByteBuffer>> lease = core.getPrivateDirectByteBuffer(len)) {
+      ByteBuffer datagramPacketBuffer = lease.get().get();
+      datagramPacketBuffer.clear();
+      datagramPacketBuffer.put(p.getData(), p.getOffset(), p.getLength());
+      datagramPacketBuffer.flip();
 
-    NativeUnixSocket.send(fdesc, datagramPacketBuffer, 0, len, sendToBuf, sendToBufLen,
-        /* NativeUnixSocket.OPT_NON_BLOCKING | */
-        NativeUnixSocket.OPT_DGRAM_MODE, ancillaryDataSupport);
+      NativeUnixSocket.send(fdesc, datagramPacketBuffer, 0, len, sendToBuf, sendToBufLen,
+          /* NativeUnixSocket.OPT_NON_BLOCKING | */
+          NativeUnixSocket.OPT_DGRAM_MODE, ancillaryDataSupport);
+    }
   }
 
   @Override
@@ -428,8 +443,8 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
 
     final AFDatagramSocketImpl<A> si = socket;
     core.incPendingAccepts();
-    try {
-      ByteBuffer ab = socketAddress.getNativeAddressDirectBuffer();
+    try (Lease<ByteBuffer> abLease = socketAddress.getNativeAddressDirectBuffer()) {
+      ByteBuffer ab = abLease.get();
 
       SocketException caught = null;
       try {
