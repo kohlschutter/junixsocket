@@ -76,6 +76,8 @@ public class SelftestProvider {
 
     registerTest(InetAddressTest.class);
 
+    registerTest(org.newsclub.net.unix.domain.MassiveParallelTest.class);
+
     // peer credential passing is AF_UNIX specific
     registerTest(org.newsclub.net.unix.domain.PeerCredentialsTest.class);
 
@@ -144,7 +146,16 @@ public class SelftestProvider {
 
   public void printAdditionalProperties(PrintWriter out) {
     out.println("Native architecture: " + NativeLibraryLoader.getArchitectureAndOS());
-    out.println("Virtual threads supported: " + ThreadUtil.isVirtualThreadSupported());
+    out.println("Virtual threads support enabled: " + ThreadUtil.isVirtualThreadSupported());
+    if (System.getProperty("org.newsclub.net.unix.virtual-threads") == null) {
+      if (ThreadUtil.isVirtualThreadSupported()) {
+        out.println("   ... disable with -Dorg.newsclub.net.unix.virtual-threads=false");
+      }
+    } else {
+      if (!ThreadUtil.isVirtualThreadSupported()) {
+        out.println("   ... remove -Dorg.newsclub.net.unix.virtual-threads=false to re-enable");
+      }
+    }
   }
 
   public static void main(String[] args) {
