@@ -33,7 +33,7 @@ public final class ThreadUtil {
     return false;
   }
 
-  public static ExecutorService newVirtualThreadPerTaskExecutorIfPossible() {
+  public static ExecutorService newVirtualThreadOrCachedThreadPoolExecutor() {
     return Executors.newCachedThreadPool();
   }
 }

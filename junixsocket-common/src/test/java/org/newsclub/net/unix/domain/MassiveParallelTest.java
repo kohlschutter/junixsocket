@@ -62,7 +62,7 @@ public class MassiveParallelTest extends
       serverSocket.bind(listenAddr, numServerThreads);
 
       ExecutorService esServers = Executors.newFixedThreadPool(numServerThreads);
-      ExecutorService esClients = ThreadUtil.newVirtualThreadPerTaskExecutorIfPossible();
+      ExecutorService esClients = ThreadUtil.newVirtualThreadOrCachedThreadPoolExecutor();
 
       CountDownLatch cl = new CountDownLatch(numConnections);
 

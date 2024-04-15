@@ -58,7 +58,7 @@ public final class ThreadUtil {
    * 
    * @return The new executor service.
    */
-  public static ExecutorService newVirtualThreadPerTaskExecutorIfPossible() {
+  public static ExecutorService newVirtualThreadOrCachedThreadPoolExecutor() {
     if (isVirtualThreadSupported()) {
       return Executors.newVirtualThreadPerTaskExecutor();
     } else {
