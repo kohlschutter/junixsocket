@@ -15,7 +15,8 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 ### _(2024-XX-XX)_ **junixsocket 2.10.0**
 
 - Fix compatibility with Java 7
-- Improve performance with Virtual Threads in Java 21 or newer (JEP 444)
+- Fix error handling for non-blocking operations on Windows
+- Improve compatibility and performance with Virtual Threads in Java 21 or newer (JEP 444)
 - Building now requires Java 21 or newer
 
 ### _(2024-04-05)_ **junixsocket 2.9.1**
