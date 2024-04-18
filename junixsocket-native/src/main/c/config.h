@@ -345,7 +345,8 @@ typedef unsigned long socklen_t; /* 64-bits */
 
 // Windows requires us fetching errno for socket-related errors
 #if defined(_WIN32)
-#  define socket_errno (errno = WSAGetLastError())
+int jux_mangleErrno(int);
+#  define socket_errno (errno = jux_mangleErrno(WSAGetLastError()))
 #  define ssize_t int
 #elif defined(_OS400)
 CK_VISIBILITY_INTERNAL

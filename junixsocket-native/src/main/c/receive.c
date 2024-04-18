@@ -370,7 +370,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
          // no data on non-blocking socket, or terminated connection?
         if(count == 0 && theError != 0) {
             _throwException(env, kExceptionClosedChannelException, NULL);
-        } else if(theError == 0 || theError == EAGAIN || theError == ETIMEDOUT
+        } else if(theError == 0 || theError == EAGAIN || theError == EWOULDBLOCK || theError == ETIMEDOUT
 #if defined(_WIN32)
                   || theError == WSAETIMEDOUT
 #endif

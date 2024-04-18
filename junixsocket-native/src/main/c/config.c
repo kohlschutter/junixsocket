@@ -43,3 +43,20 @@ int jux_mangleErrno(int err) {
     }
 }
 #endif
+
+#if defined(_WIN32)
+int jux_mangleErrno(int err) {
+    switch(err) {
+        case WSAEWOULDBLOCK:
+            return EWOULDBLOCK;
+        case WSAEINPROGRESS:
+            return EINPROGRESS;
+        case WSAEALREADY:
+            return EALREADY;
+        case WSAECONNRESET:
+            return ECONNRESET;
+        default:
+            return err;
+    }
+}
+#endif
