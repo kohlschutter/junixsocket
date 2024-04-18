@@ -55,6 +55,8 @@ int jux_mangleErrno(int err) {
             return EALREADY;
         case WSAECONNRESET:
             return ECONNRESET;
+        case WSAECONNABORTED:
+            return ECONNABORTED;
         default:
             return err;
     }
