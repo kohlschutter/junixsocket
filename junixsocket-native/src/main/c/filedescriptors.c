@@ -361,7 +361,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_configureBloc
 #if defined(_WIN32)
      u_long mode = blocking ? 0 : 1;
      if(ioctlsocket(handle, FIONBIO, &mode) != NO_ERROR) {
-         if(socket_errno == WSAENOTSOCK) {
+         if(socket_errno == ENOTSOCK) {
              CK_IGNORE_CAST_BEGIN
              HANDLE h = (HANDLE)_get_osfhandle(handle);
              CK_IGNORE_CAST_END
@@ -402,7 +402,7 @@ jboolean checkNonBlocking0(int handle, int errnum, int options) {
 #if defined(_WIN32)
     CK_ARGUMENT_POTENTIALLY_UNUSED(handle);
     return ((options & org_newsclub_net_unix_NativeUnixSocket_OPT_NON_BLOCKING) != 0)
-    && (errnum == 0 || errnum == WSAEWOULDBLOCK || errnum == 232 /* named pipes may return this? */);
+    && (errnum == 0 || errnum == EWOULDBLOCK || errnum == 232 /* named pipes may return this? */);
 #else
     if (errnum == EWOULDBLOCK || errnum == EAGAIN || errnum == EINPROGRESS) {
         CK_ARGUMENT_POTENTIALLY_UNUSED(options);

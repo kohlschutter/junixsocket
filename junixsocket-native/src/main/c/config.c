@@ -53,10 +53,17 @@ int jux_mangleErrno(int err) {
             return EINPROGRESS;
         case WSAEALREADY:
             return EALREADY;
+        case 232: // Windows may throw this error code. "Connection reset by peer"
         case WSAECONNRESET:
             return ECONNRESET;
         case WSAECONNABORTED:
             return ECONNABORTED;
+        case WSAEISCONN:
+            return EISCONN;
+        case WSAENOTSOCK:
+            return ENOTSOCK;
+        case WSAETIMEDOUT:
+            return ETIMEDOUT;
         default:
             return err;
     }
