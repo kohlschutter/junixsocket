@@ -35,6 +35,14 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
  JNIEnv * env, jclass clazz CK_UNUSED, jobject ab, jint abLen, jobject fd,
  jlong expectedInode)
 {
+    jboolean existingConnectOK;
+    if(expectedInode == -2) {
+        expectedInode = -1;
+        existingConnectOK = true;
+    } else {
+        existingConnectOK = false;
+    }
+
     jux_sockaddr_t *addr = (*env)->GetDirectBufferAddress(env, ab);
     socklen_t addrLength = (socklen_t)abLen;
     if(addrLength == 0) {
@@ -80,7 +88,9 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_connect
     } while(ret == -1 && myErr == EINTR);
 
     if(ret == -1) {
-        if(checkNonBlocking(socketHandle, myErr)) {
+        if(myErr == EISCONN && existingConnectOK) {
+            return true;
+        } else if(checkNonBlocking(socketHandle, myErr)) {
             // non-blocking connect
             return false;
         } else {

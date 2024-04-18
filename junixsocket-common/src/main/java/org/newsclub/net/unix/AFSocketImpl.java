@@ -484,7 +484,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
               core.configureVirtualBlocking(true);
             }
             try {
-              success = NativeUnixSocket.connect(ab, ab.limit(), fd, -1);
+              success = NativeUnixSocket.connect(ab, ab.limit(), fd, -2);
               if (!success && virtualBlocking) {
                 // try again (non-blocking timeout)
                 if (virtualConnectTimeout == null) {
@@ -627,6 +627,8 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         opt = defaultOpt;
       }
 
+      int read;
+
       boolean park = false;
       virtualThreadLoop : do {
         if (virtualBlocking) {
@@ -638,8 +640,17 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         }
 
         try {
-          return NativeUnixSocket.read(fdesc, buf, off, len, opt, ancillaryDataSupport,
+          read = NativeUnixSocket.read(fdesc, buf, off, len, opt, ancillaryDataSupport,
               socketTimeout.get());
+          if (read == -2) {
+            if (virtualBlocking) {
+              // sleep again
+              park = true;
+              continue virtualThreadLoop;
+            } else {
+              read = 0;
+            }
+          }
         } catch (SocketTimeoutException e) {
           if (virtualBlocking) {
             // sleep again
@@ -656,7 +667,10 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
             core.configureVirtualBlocking(false);
           }
         }
+        break; // NOPMD.AvoidBranchingStatementAsLastInLoop virtualThreadLoop
       } while (true); // NOPMD.WhileLoopWithLiteralBoolean
+
+      return read;
     }
 
     @SuppressWarnings("PMD.CognitiveComplexity")
@@ -695,6 +709,15 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
           int byteRead = NativeUnixSocket.read(fdesc, null, 0, 1, opt, ancillaryDataSupport,
               socketTimeout.get());
           if (byteRead < 0) {
+            if (byteRead == -2) {
+              if (virtualBlocking) {
+                // sleep again
+                park = true;
+                continue virtualThreadLoop;
+              } else {
+                byteRead = -1;
+              }
+            }
             eofReached.set(true);
             return -1;
           } else {
