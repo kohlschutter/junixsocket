@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix.domain;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -180,11 +182,10 @@ public class MassiveParallelTest extends
       float timePerItem = elapsed / (float) completed;
       System.out.println("time per completed connection: " + timePerItem + " ms");
 
-      System.out.println("processors=" + nProc + "; serverThreads=" + server.serverThreads
-          + "; connectAttempts=" + connectAttempts + "; connected=" + connected + "; accepted="
-          + server.accepted + " -- " + server.toString());
+      if (completed <= nProc && completed < numConnections / 10.0) {
+        fail("Not enough jobs were completed: " + completed + "; expected:" + numConnections);
+      }
     }
-
   }
 
   private static final class Server implements Closeable {
