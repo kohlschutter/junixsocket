@@ -17,55 +17,90 @@
  */
 package org.newsclub.net.unix;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.LockSupport;
 
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
 
 /**
  * Helper class to support certain Thread-specific features.
- * 
+ *
  * @author Christian Kohlschütter
  */
 @IgnoreJRERequirement // see src/main/java20
 public final class ThreadUtil {
-  private static final boolean VIRTUAL_THREADS_SUPPORTED = Boolean.parseBoolean(System.getProperty(
-      "org.newsclub.net.unix.virtual-threads", "true"));
-
   private ThreadUtil() {
     throw new IllegalStateException("No instances");
   }
 
   /**
    * Checks if the current {@link Thread} is to be considered a virtual thread.
-   * 
+   *
    * @return {@code true} if so.
    */
   public static boolean isVirtualThread() {
-    return VIRTUAL_THREADS_SUPPORTED && Thread.currentThread().isVirtual();
+    return Thread.currentThread().isVirtual();
   }
 
   /**
    * Checks if virtual threads are considered to be supported (and therefore if special support
    * should be enabled).
-   * 
+   *
    * @return {@code true} if so.
    */
   public static boolean isVirtualThreadSupported() {
-    return VIRTUAL_THREADS_SUPPORTED;
+    return true;
   }
 
   /**
-   * Returns a new "virtual thread per task executor" if possible, otherwise a new "cached thread
-   * pool".
-   * 
+   * Returns a new "virtual thread per task executor".
+   *
    * @return The new executor service.
+   * @throws UnsupportedOperationException if not possible
    */
-  public static ExecutorService newVirtualThreadOrCachedThreadPoolExecutor() {
-    if (isVirtualThreadSupported()) {
-      return Executors.newVirtualThreadPerTaskExecutor();
+  public static ExecutorService newVirtualThreadPerTaskExecutor() {
+    return Executors.newVirtualThreadPerTaskExecutor();
+  }
+
+  /**
+   * Ensures that the given operation is being executed on a system thread. If the current thread is
+   * a virtual thread, the operation is executed <em>synchronously</em> via
+   * {@link CompletableFuture#runAsync(Runnable)}: the virtual thread is suspended during that
+   * operation, and subsequently resumed.
+   *
+   * @param op The operation to run.
+   * @throws InterruptedException on interrupt.
+   */
+  public static void runOnSystemThread(Runnable op) throws InterruptedException {
+    if (isVirtualThread()) {
+      Thread vt = Thread.currentThread();
+
+      CompletableFuture<Void> cf = CompletableFuture.runAsync(() -> {
+        try {
+          op.run();
+        } finally {
+          LockSupport.unpark(vt);
+        }
+      });
+
+      LockSupport.park();
+      try {
+        cf.get();
+      } catch (ExecutionException e) {
+        Throwable t = e.getCause();
+        if (t instanceof Error) {
+          throw (Error) t; // NOPMD.PreserveStackTrace
+        } else if (t instanceof RuntimeException) {
+          throw (RuntimeException) t; // NOPMD.PreserveStackTrace
+        } else {
+          throw new IllegalStateException(e);
+        }
+      }
     } else {
-      return Executors.newCachedThreadPool();
+      op.run();
     }
   }
 }

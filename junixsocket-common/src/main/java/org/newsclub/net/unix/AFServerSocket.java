@@ -56,6 +56,8 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   private final AFServerSocketChannel<?> channel = newChannel();
   private @Nullable SocketAddressFilter bindFilter;
 
+  private final AtomicBoolean closed = new AtomicBoolean(false);
+
   /**
    * The constructor of the concrete subclass.
    *
@@ -347,7 +349,10 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   }
 
   @Override
-  public synchronized void close() throws IOException {
+  public void close() throws IOException {
+    if (!closed.compareAndSet(false, true)) {
+      return;
+    }
     if (isClosed()) {
       return;
     }

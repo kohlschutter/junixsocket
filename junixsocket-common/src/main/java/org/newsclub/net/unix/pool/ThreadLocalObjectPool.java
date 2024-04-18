@@ -17,22 +17,37 @@
  */
 package org.newsclub.net.unix.pool;
 
-public final class ThreadLocalObjectPool<O> implements ObjectPool<O> {
+import org.eclipse.jdt.annotation.NonNull;
+
+final class ThreadLocalObjectPool<O> implements ObjectPool<O> {
   private final ThreadLocal<O> tl;
+  private final ObjectSanitizer<O> sanitizer;
 
   private final Lease<O> leaseImpl = new Lease<O>() {
+    private boolean discarded = false;
 
     @Override
     public void close() {
+      if (!discarded && !sanitizer.sanitize(tl.get())) {
+        tl.remove();
+      }
     }
 
     @Override
     public O get() {
       return tl.get();
     }
+
+    @Override
+    public void discard() {
+      discarded = true;
+      tl.remove();
+    }
   };
 
-  public ThreadLocalObjectPool(ObjectSupplier<O> supplier) {
+  ThreadLocalObjectPool(ObjectSupplier<@NonNull O> supplier,
+      ObjectSanitizer<@NonNull O> sanitizer) {
+    this.sanitizer = sanitizer;
     tl = new ThreadLocal<O>() {
 
       @Override

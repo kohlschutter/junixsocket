@@ -32,6 +32,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 public final class AFPipe extends Pipe implements Closeable {
+  static final AFSupplier<Integer> DUMMY_TIMEOUT = () -> 0; // wait forever
   private final AFCore sourceCore;
   private final AFCore sinkCore;
   private final SourceChannel sourceChannel;
@@ -107,7 +108,7 @@ public final class AFPipe extends Pipe implements Closeable {
 
     @Override
     public int read(ByteBuffer dst) throws IOException {
-      return sourceCore.read(dst, null, options);
+      return sourceCore.read(dst, DUMMY_TIMEOUT, null, options);
     }
 
     @Override
@@ -151,7 +152,7 @@ public final class AFPipe extends Pipe implements Closeable {
 
     @Override
     public int write(ByteBuffer src) throws IOException {
-      return sinkCore.write(src, null, options);
+      return sinkCore.write(src, DUMMY_TIMEOUT, null, options);
     }
 
     @Override

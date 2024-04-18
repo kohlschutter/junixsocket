@@ -79,6 +79,9 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   static final ObjectPool<ByteBuffer> SOCKETADDRESS_BUFFER_TL = ObjectPool.newThreadLocalPool(
       () -> {
         return AFSocketAddress.newSockAddrDirectBuffer(SOCKADDR_MAX_LEN);
+      }, (o) -> {
+        o.clear();
+        return true;
       });
 
   private static final boolean USE_DESERIALIZATION_FOR_INIT;
@@ -597,11 +600,13 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     return getInetAddress(getAddressFamily());
   }
 
-  static final ByteBuffer newSockAddrDirectBuffer(int length) {
+  @SuppressWarnings("null")
+  static final @NonNull ByteBuffer newSockAddrDirectBuffer(int length) {
     return ByteBuffer.allocateDirect(length);
   }
 
-  static final ByteBuffer newSockAddrKeyBuffer(int length) {
+  @SuppressWarnings("null")
+  static final @NonNull ByteBuffer newSockAddrKeyBuffer(int length) {
     return ByteBuffer.allocate(length);
   }
 

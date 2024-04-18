@@ -17,18 +17,41 @@
  */
 package org.newsclub.net.unix.pool;
 
-public final class MutableHolder<O> {
-  private O obj;
+import org.eclipse.jdt.annotation.Nullable;
 
-  public MutableHolder(O obj) {
+/**
+ * Holds an object.
+ * 
+ * @param <O> The object type.
+ * @author Christian Kohlschütter
+ */
+public final class MutableHolder<O> {
+  private @Nullable O obj;
+
+  /**
+   * Creates a new {@link MutableHolder} object, holding the given object.
+   * 
+   * @param obj The object to hold, or {@code null}.
+   */
+  public MutableHolder(@Nullable O obj) {
     this.obj = obj;
   }
 
-  public O get() {
+  /**
+   * Returns the current object.
+   * 
+   * @return The object.
+   */
+  public @Nullable O get() {
     return obj;
   }
 
-  public void set(O obj) {
+  /**
+   * Sets the object.
+   * 
+   * @param obj The object.
+   */
+  public void set(@Nullable O obj) {
     this.obj = obj;
   }
 }

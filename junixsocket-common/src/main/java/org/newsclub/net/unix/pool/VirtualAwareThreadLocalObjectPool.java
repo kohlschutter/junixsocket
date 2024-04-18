@@ -17,15 +17,17 @@
  */
 package org.newsclub.net.unix.pool;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.newsclub.net.unix.ThreadUtil;
 
-public final class VirtualAwareThreadLocalObjectPool<O> implements ObjectPool<O> {
+final class VirtualAwareThreadLocalObjectPool<O> implements ObjectPool<O> {
   private final ThreadLocalObjectPool<O> tlPool;
   private final ConcurrentQueueObjectPool<O> cqPool;
 
-  public VirtualAwareThreadLocalObjectPool(ObjectSupplier<O> supplier) {
-    this.tlPool = new ThreadLocalObjectPool<>(supplier);
-    this.cqPool = new ConcurrentQueueObjectPool<>(supplier);
+  public VirtualAwareThreadLocalObjectPool(ObjectSupplier<@NonNull O> supplier, ObjectSanitizer<@NonNull O> sanitizer) {
+    this.tlPool = new ThreadLocalObjectPool<>(supplier, sanitizer);
+    this.cqPool = new ConcurrentQueueObjectPool<>(supplier, sanitizer, Runtime.getRuntime()
+        .availableProcessors() * 2);
   }
 
   @Override

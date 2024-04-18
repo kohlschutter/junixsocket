@@ -68,14 +68,15 @@ class AFSocketCore extends AFCore {
   }
 
   protected void unblockAccepts() {
+    // see AFSocketImpl
   }
 
-  AFSocketAddress receive(ByteBuffer dst) throws IOException {
+  AFSocketAddress receive(ByteBuffer dst, AFSupplier<Integer> socketTimeout) throws IOException {
     try (Lease<ByteBuffer> socketAddressBufferLease = AFSocketAddress.SOCKETADDRESS_BUFFER_TL
         .take()) {
       ByteBuffer socketAddressBuffer = socketAddressBufferLease.get();
 
-      int read = read(dst, socketAddressBuffer, 0);
+      int read = read(dst, socketTimeout, socketAddressBuffer, 0);
       if (read > 0) {
         return AFSocketAddress.ofInternal(socketAddressBuffer, af);
       } else {
@@ -149,11 +150,12 @@ class AFSocketCore extends AFCore {
 
   protected void incPendingAccepts() throws SocketException {
     if (pendingAccepts.incrementAndGet() >= Integer.MAX_VALUE) {
+      pendingAccepts.decrementAndGet();
       throw new SocketException("Too many pending accepts");
     }
   }
 
-  protected void decPendingAccepts() throws SocketException {
+  protected void decPendingAccepts() {
     pendingAccepts.decrementAndGet();
   }
 
