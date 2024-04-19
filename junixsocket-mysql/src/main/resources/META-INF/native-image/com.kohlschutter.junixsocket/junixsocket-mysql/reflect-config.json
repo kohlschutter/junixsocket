@@ -4,5 +4,13 @@
 },
 {
   "name":"com.mysql.jdbc.SocketFactory"
+},
+{
+  "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryCJ",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 }
 ]
