@@ -90,6 +90,7 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
     return linesBefore;
   }
 
+  @SuppressFBWarnings("DM_GC")
   @Override
   protected void postRunCheck(Process process, Object linesBeforeObj) throws TestAbortedException,
       IOException, InterruptedException {
@@ -103,6 +104,9 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
         Thread.sleep(100);
         if (!process.isAlive()) {
           break;
+        }
+        if (i == 20) {
+          System.gc(); // NOPMD
         }
         linesAfter = lsofUnixSockets(process.pid());
         if (linesBefore == null || linesAfter.size() < linesBefore.size()) {
