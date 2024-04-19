@@ -153,6 +153,14 @@
   "allDeclaredConstructors":true
 },
 {
+  "name":"org.newsclub.net.unix.MassiveParallelTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
   "name":"org.newsclub.net.unix.PipeTest",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
@@ -339,6 +347,14 @@
 },
 {
   "name":"org.newsclub.net.unix.domain.FileDescriptorsTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.domain.MassiveParallelTest",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
