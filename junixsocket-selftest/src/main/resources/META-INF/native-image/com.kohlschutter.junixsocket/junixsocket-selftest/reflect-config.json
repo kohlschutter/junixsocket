@@ -972,6 +972,12 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.junit.platform.launcher.listeners.UniqueIdTrackingListener"
+},
+{
+  "name":"org.junit.platform.reporting.open.xml.OpenTestReportGeneratingListener"
+},
+{
   "name":"org.openjsse.net.ssl.OpenJSSE"
 },
 {
