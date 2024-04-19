@@ -46,6 +46,28 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"com.mysql.cj.conf.url.SingleConnectionUrl",
+  "methods":[{"name":"<init>","parameterTypes":["com.mysql.cj.conf.ConnectionUrlParser","java.util.Properties"] }]
+},
+{
+  "name":"com.mysql.cj.exceptions.CJCommunicationsException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"com.mysql.cj.exceptions.WrongArgumentException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"com.mysql.cj.jdbc.AbandonedConnectionCleanupThread"
+},
+{
+  "name":"com.mysql.cj.jdbc.Driver"
+},
+{
+  "name":"com.mysql.cj.log.StandardLogger",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
   "name":"com.mysql.cj.protocol.SocketFactory"
 },
 {
@@ -208,6 +230,10 @@
   "name":"java.security.interfaces.RSAPublicKey"
 },
 {
+  "name":"java.sql.SQLException",
+  "fields":[{"name":"next"}]
+},
+{
   "name":"java.util.Collections$EmptyList"
 },
 {
@@ -334,10 +360,24 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.junit.platform.launcher.listeners.UniqueIdTrackingListener"
+},
+{
+  "name":"org.junit.platform.reporting.open.xml.OpenTestReportGeneratingListener"
+},
+{
   "name":"org.newsclub.lib.junixsocket.common.NarMetadata"
 },
 {
   "name":"org.newsclub.lib.junixsocket.custom.NarMetadata"
+},
+{
+  "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryCJ",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryCJTest",
@@ -346,7 +386,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConnectTimeout","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConnectTimeout","parameterTypes":[] }, {"name":"testDriverManagerConnectionToMissingServer","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryTest",
@@ -355,7 +395,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConnectTimeout","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConnectTimeout","parameterTypes":[] }, {"name":"testDriverManagerConnectionToMissingServer","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.AFGenericSocketAddress",
