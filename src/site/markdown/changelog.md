@@ -16,7 +16,10 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 - Fix compatibility with Java 7
 - Fix error handling for non-blocking operations on Windows
+- Fix interoperability of junixsocket-mysql and GraalVM native-image
 - Improve compatibility and performance with Virtual Threads in Java 21 or newer (JEP 444)
+- Improve selftest stability and logging
+- Add more tests for mysql interoperability, optionally include mysql tests in selftest
 - Building now requires Java 21 or newer
 
 ### _(2024-04-05)_ **junixsocket 2.9.1**
