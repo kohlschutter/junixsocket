@@ -44,7 +44,10 @@ For example:
 #### Build the native image
 ```
 # Build the platform-native executable:
+
 cd junixsocket/junixsocket-selftest-native-image
+
+# (Also specify -Dmysql to include junixsocket-mysql tests)
 mvn -Dnative clean package
 
 # Run the platform-native executable:
@@ -98,6 +101,29 @@ Caused by: java.lang.NoSuchMethodException: org.newsclub.net.unix.vsock.AFVSOCKD
 	... 15 more
 ```
 
+### MassiveParallelTest.testAcceptConnect()... java.lang.ArrayIndexOutOfBoundsException: Index 7 out of bounds for length 4
+
+When you see this or a similar message, you're hitting [GraalVM bug 7599](https://github.com/oracle/graal/issues/7599):
+
+```
+Testing "junixsocket-common"... MassiveParallelTest.testAcceptConnect()... java.lang.ArrayIndexOutOfBoundsException: Index 7 out of bounds for length 4
+    at org.graalvm.nativeimage.builder/com.oracle.svm.core.handles.ThreadLocalHandles.popFramesIncluding(ThreadLocalHandles.java:136)
+    at org.graalvm.nativeimage.builder/com.oracle.svm.core.jni.JNIObjectHandles.popLocalFramesIncluding(JNIObjectHandles.java:229)
+    at org.graalvm.nativeimage.builder/com.oracle.svm.core.jni.JNIGeneratedMethodSupport.nativeCallEpilogue(JNIGeneratedMethodSupport.java:62)
+    at org.newsclub.net.unix.NativeUnixSocket.configureBlocking(Native Method)
+    at org.newsclub.net.unix.AFCore.configureVirtualBlocking(AFCore.java:410)
+    at org.newsclub.net.unix.AFSocketImpl.accept0(AFSocketImpl.java:284)
+    at org.newsclub.net.unix.AFServerSocket.accept1(AFServerSocket.java:311)
+    at org.newsclub.net.unix.AFServerSocket.accept(AFServerSocket.java:305)
+    at org.newsclub.net.unix.AFUNIXServerSocket.accept(AFUNIXServerSocket.java:162)
+    at org.newsclub.net.unix.domain.MassiveParallelTest$Server.acceptJob(MassiveParallelTest.java:237)
+    at java.base@21.0.1/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+    at java.base@21.0.1/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+    at java.base@21.0.1/java.lang.Thread.runWith(Thread.java:1596)
+    at java.base@21.0.1/java.lang.VirtualThread.run(VirtualThread.java:309)
+    at java.base@21.0.1/java.lang.VirtualThread$VThreadContinuation$1.run(VirtualThread.java:190)
+Restarting failed server job
+```
 
 ## Building and Maintaining junixsocket's Reachability Metadata
 
