@@ -1,0 +1,8 @@
+[
+{
+  "name":"com.mysql.cj.protocol.SocketFactory"
+},
+{
+  "name":"com.mysql.jdbc.SocketFactory"
+}
+]

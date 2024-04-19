@@ -1,0 +1,7 @@
+{
+ "bundles":[{
+    "name":"com.mysql.cj.LocalizedErrorMessages",
+    "locales":["und"]
+  }
+ ]
+}
