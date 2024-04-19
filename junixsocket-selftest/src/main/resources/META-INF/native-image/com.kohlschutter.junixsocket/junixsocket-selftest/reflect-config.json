@@ -1110,18 +1110,24 @@
 },
 {
   "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryCJTest",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
-  "allPublicMethods":true,
-  "allDeclaredConstructors":true
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
 },
 {
   "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryTest",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
-  "allPublicMethods":true,
-  "allDeclaredConstructors":true
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
 }
 ]
