@@ -46,6 +46,12 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"com.mysql.cj.protocol.SocketFactory"
+},
+{
+  "name":"com.mysql.jdbc.SocketFactory"
+},
+{
   "name":"com.sun.crypto.provider.AESCipher$General",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -334,6 +340,24 @@
   "name":"org.newsclub.lib.junixsocket.custom.NarMetadata"
 },
 {
+  "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryCJTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConnectTimeout","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConnectTimeout","parameterTypes":[] }]
+},
+{
   "name":"org.newsclub.net.unix.AFGenericSocketAddress",
   "methods":[{"name":"addressFamily","parameterTypes":[] }]
 },
@@ -487,6 +511,13 @@
 },
 {
   "name":"org.newsclub.net.unix.InvalidArgumentSocketException"
+},
+{
+  "name":"org.newsclub.net.unix.MassiveParallelTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
 },
 {
   "name":"org.newsclub.net.unix.NoSuchDeviceSocketException"
@@ -713,6 +744,15 @@
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testAncillaryReceiveBufferTooSmall","parameterTypes":[] }, {"name":"testBadFileDescriptor","parameterTypes":[] }, {"name":"testDatagramSocket","parameterTypes":[] }, {"name":"testEmptyFileDescriptorArray","parameterTypes":[] }, {"name":"testFileInputStream","parameterTypes":[] }, {"name":"testFileInputStreamPartiallyConsumed","parameterTypes":[] }, {"name":"testNoAncillaryReceiveBuffer","parameterTypes":[] }, {"name":"testNullFileDescriptorArray","parameterTypes":[] }, {"name":"testSendRecvFileDescriptors","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.domain.MassiveParallelTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testAcceptConnect","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.domain.PeerCredentialsTest",
