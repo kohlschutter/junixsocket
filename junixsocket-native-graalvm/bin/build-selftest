@@ -126,7 +126,8 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
-nativeBinary="$(pwd)/${$(basename "$jar")%%.jar}"
+#nativeBinary="$(pwd)/${$(basename "$jar")%%.jar}"
+nativeBinary="$(pwd)/org.newsclub.net.unix.selftest.selftest"
 if [[ ! -e "$nativeBinary" ]]; then
     echo "Error: Native binary expected but not found at: $nativeBinary" >&2
     exit 1
