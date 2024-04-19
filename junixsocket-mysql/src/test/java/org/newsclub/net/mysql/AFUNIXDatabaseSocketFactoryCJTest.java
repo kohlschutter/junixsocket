@@ -38,7 +38,7 @@ public class AFUNIXDatabaseSocketFactoryCJTest {
   @Test
   public void testDriverManagerConnectionToMissingServer() throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
-    try (Connection conn = DriverManager.getConnection(
+    try (Connection unused = DriverManager.getConnection(
         "jdbc:mysql://localhost/db?socketFactory=org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryCJ&junixsocket.file="
             + addr.getPath())) {
       fail(
