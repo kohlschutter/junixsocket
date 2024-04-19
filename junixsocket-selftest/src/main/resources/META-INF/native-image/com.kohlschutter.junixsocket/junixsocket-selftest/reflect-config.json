@@ -1101,5 +1101,21 @@
 },
 {
   "name":"org.newsclub.net.unix.rmi.TestServiceImpl_Stub"
+},
+{
+  "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryCJTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
 }
 ]

@@ -94,6 +94,19 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>add-sources-from-junixsocket-mysql</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>
+                                            ${project.parent.basedir}/junixsocket-mysql/src/test/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>add-sources-from-junixsocket-rmi</id>
                                 <phase>generate-sources</phase>
                                 <goals>
@@ -354,6 +367,26 @@
                                         </resource>
                                         <resource>
                                             <directory>
+                                                ${project.parent.basedir}/junixsocket-mysql/src/test/java</directory>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
+                                        </resource>
+                                        <resource>
+                                            <directory>
+                                                ${project.parent.basedir}/junixsocket-mysql/src/test/java8</directory>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                            <excludes>
+                                                <exclude>module-info.java</exclude>
+                                            </excludes>
+                                        </resource>
+                                        <resource>
+                                            <directory>
                                                 ${project.parent.basedir}/junixsocket-rmi/src/test/java</directory>
                                             <includes>
                                                 <include>**</include>
@@ -534,6 +567,13 @@
                                         </resource>
                                         <resource>
                                             <directory>
+                                                ${project.parent.basedir}/junixsocket-mysql/src/test/java</directory>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                        </resource>
+                                        <resource>
+                                            <directory>
                                                 ${project.parent.basedir}/junixsocket-rmi/src/test/java</directory>
                                             <includes>
                                                 <include>**</include>
@@ -675,6 +715,15 @@
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-vsock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-mysql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
