@@ -27,7 +27,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <!-- Starting with 8.0.31, the artifact mysql:mysql-connector-java has been relocated to com.mysql:mysql-connector-j -->
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>8.3.0</version>
