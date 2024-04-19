@@ -23,6 +23,9 @@
     }, 
     {
       "pattern":"\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
+    },
+    {
+      "pattern":"\\QMETA-INF/services/java.util.spi.ResourceBundleControlProvider\\E"
     }
   ]},
   "bundles":[]
