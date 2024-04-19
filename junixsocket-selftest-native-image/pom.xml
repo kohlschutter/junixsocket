@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>junixsocket-selftest-native-image</artifactId>
     <packaging>jar</packaging>
@@ -14,7 +16,12 @@
         <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
     </properties>
 
-    <description>junixsocket's selftest as a GraalVM native-image; run "mvn clean package -Pnative" to create a native binary in target/junixsocket-selftest-native-image</description>
+    <description>
+        junixsocket's selftest as a GraalVM native-image; run "mvn
+        clean package -Dnative" to create a native binary in
+        target/junixsocket-selftest-native-image; specify -Dmysql to include the
+        mysql tests
+    </description>
 
     <profiles>
         <profile>
@@ -38,7 +45,8 @@
                                     <goal>compile-no-fork</goal>
                                 </goals>
                                 <configuration>
-                                    <mainClass>org.newsclub.net.unix.selftest.Selftest</mainClass>
+                                    <mainClass>
+                                        org.newsclub.net.unix.selftest.Selftest</mainClass>
                                 </configuration>
                             </execution>
                         </executions>
@@ -61,6 +69,25 @@
                     </plugins>
                 </pluginManagement>
             </build>
+        </profile>
+
+        <profile>
+            <id>mysql</id>
+            <activation>
+                <property>
+                    <name>mysql</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.kohlschutter.junixsocket</groupId>
+                    <artifactId>junixsocket-mysql</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>com.mysql</groupId>
+                    <artifactId>mysql-connector-j</artifactId>
+                </dependency>
+            </dependencies>
         </profile>
     </profiles>
 
