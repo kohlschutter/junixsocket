@@ -7,6 +7,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 cd "$(dirname $0)/../"
+nativeGraalVmDir="$(pwd)"
 
 [[ -n "$GRAALVM_HOME" ]] && export PATH="$GRAALVM_HOME"/bin:$PATH
 
@@ -75,8 +76,30 @@ jar=$(cd $(dirname "$jar"); pwd)/$(basename "$jar")
 echo jar: $jar
 
 echo
+echo Checking availability of additional dependencies required for coverage
+
+mysqlDepVersion=$(grep -A2 mysql-connector "${nativeGraalVmDir}/../pom.xml" | grep '<version>' | grep '</version>' | tr -d ' ' | sed -E 's|</?version>||g')
+if [[ -n "$mysqlDepVersion" ]]; then
+  echo "Detected version for mysql-connector-j dependency: $mysqlDepVersion"
+else
+  mysqlDepVersion=8.3.0
+  echo "[WARNING] could not detect version for mysql-connector-j dependency, using ${mysqlDepVersion}"
+fi
+
+mysqlDep="$HOME/.m2/repository/com/mysql/mysql-connector-j/8.3.0/mysql-connector-j-8.3.0.jar"
+if [[ -f "$mysqlDep" ]]; then
+  echo "Using mysql-connector-j dependency from: $mysqlDep"
+else
+  echo "[WARNING] mysql-connector-j dependency is missing: $mysqlDep" >&2
+fi
+
+echo
 echo Running junixsocket-selftest with GraalVM native-image-agent...
-( set -x ; java -agentlib:native-image-agent=config-output-dir=${tmpDir}/native-image.{pid} -jar "$jar" >/dev/null )
+(
+  set -x
+  java -agentlib:native-image-agent=config-output-dir=${tmpDir}/native-image.{pid} \
+	  -cp "$jar":"$mysqlDep" org.newsclub.net.unix.selftest.Selftest >/dev/null
+)
 
 if [[ $? -ne 0 ]]; then
     echo "Error: junixsocket-selftest failed" >&2
@@ -93,7 +116,11 @@ cd bin
 
 echo
 echo Running native-image...
-( set -x ; native-image -cp "$tmpDir" --initialize-at-build-time=sun.rmi.transport.GC --report-unsupported-elements-at-runtime --no-fallback -jar "$jar" )
+(
+  set -x
+  native-image -cp "$tmpDir" --initialize-at-build-time=sun.rmi.transport.GC --report-unsupported-elements-at-runtime --no-fallback \
+	  -cp "$jar":"$mysqlDep" org.newsclub.net.unix.selftest.Selftest
+)
 if [[ $? -ne 0 ]]; then
     echo "Error: Failed to run native-image" >&2
     exit 1
