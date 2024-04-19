@@ -334,11 +334,13 @@ public class Selftest {
       if (disabledModules.contains(module)) {
         if (SystemPropertyUtil.getBooleanSystemProperty("selftest.enable-module." + module,
             false)) {
-          // System.out.println("Enabled optional module: " + module);
+          out.println("Enabling optional module: " + module
+              + " (consult documentation for errors)");
           st.modified = true;
         } else {
           messagesAtEnd.add("Skipping optional module: " + module
-              + "; enable by launching with -Dselftest.enable-module." + module + "=true");
+              + "; enable by launching with -Dselftest.enable-module." + module
+              + "=true (consult documentation first)");
           continue;
         }
       } else if (SystemPropertyUtil.getBooleanSystemProperty("selftest.disable-module." + module,
