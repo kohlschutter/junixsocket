@@ -60,6 +60,7 @@ import org.opentest4j.AssertionFailedError;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.ForkedVM;
+import com.kohlschutter.testutil.ForkedVMRequirement;
 import com.kohlschutter.testutil.ProcessUtilRequirement;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
@@ -428,6 +429,7 @@ public class FileDescriptorCastTest {
   @Test
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_FD_AS_REDIRECT)
   @ProcessUtilRequirement(canGetJavaCommandArguments = true)
+  @ForkedVMRequirement(forkSupported = true)
   public void testForkedVMRedirectStdin() throws Exception {
     AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
     try (AFUNIXServerSocket serverSocket = AFUNIXServerSocket.bindOn(addr);
