@@ -15,31 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.newsclub.net.unix;
+package org.newsclub.net.unix.java;
 
-import java.net.SocketException;
+import java.net.InetSocketAddress;
 
-/**
- * A {@link SocketException} indicating that a socket was closed or is not open for other reasons.
- *
- * @author Christian Kohlschütter
- */
-public class SocketClosedException extends SocketException {
-  private static final long serialVersionUID = 1L;
+import org.newsclub.net.unix.AFSocketCapability;
+import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 
-  /**
-   * Constructs a new {@link SocketClosedException}.
-   */
-  public SocketClosedException() {
-    super();
-  }
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
-  /**
-   * Constructs a new {@link SocketClosedException}.
-   *
-   * @param msg The error message.
-   */
-  public SocketClosedException(String msg) {
-    super(msg);
+@AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
+public final class SoTimeoutTest extends org.newsclub.net.unix.SoTimeoutTest<InetSocketAddress> {
+
+  public SoTimeoutTest() {
+    super(JavaAddressSpecifics.INSTANCE);
   }
 }

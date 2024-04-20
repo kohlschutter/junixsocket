@@ -76,6 +76,9 @@ public class SelftestProvider {
 
     registerTest(InetAddressTest.class);
 
+    registerTest(org.newsclub.net.unix.domain.InterruptTest.class);
+    registerTestJavaInet(org.newsclub.net.unix.java.InterruptTest.class);
+
     registerTest(org.newsclub.net.unix.domain.MassiveParallelTest.class);
 
     // peer credential passing is AF_UNIX specific

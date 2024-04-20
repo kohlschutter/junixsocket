@@ -202,7 +202,7 @@ final class AFSelector extends AbstractSelector {
       if (virtualBlocking) {
         if (park) {
           VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_WRITE, now,
-              AFPipe.DUMMY_TIMEOUT);
+              AFPipe.DUMMY_TIMEOUT, this::close);
         }
         NativeUnixSocket.configureBlocking(fdesc, false);
       }

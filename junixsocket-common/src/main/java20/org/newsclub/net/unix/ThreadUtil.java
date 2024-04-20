@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.InterruptedIOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -62,6 +63,20 @@ public final class ThreadUtil {
    */
   public static ExecutorService newVirtualThreadPerTaskExecutor() {
     throw new UnsupportedOperationException("Virtual threads are not supported by this JVM");
+  }
+
+  /**
+   * Checks if the current Thread has been interrupted, without clearing the flag; if interrupted,
+   * an {@link InterruptedIOException} is thrown, otherwise {@code true} is returned.
+   *
+   * @return {@code true}.
+   * @throws InterruptedIOException if interrupted.
+   */
+  public static boolean checkNotInterruptedOrThrow() throws InterruptedIOException {
+    if (Thread.currentThread().isInterrupted()) {
+      throw new InterruptedIOException();
+    }
+    return true;
   }
 
   /**

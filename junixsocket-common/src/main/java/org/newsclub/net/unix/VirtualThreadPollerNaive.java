@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -43,6 +44,9 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
 
   private static final Map<FileDescriptor, PollJob> POLL_JOBS = new ConcurrentHashMap<>();
 
+  private static final InterruptedIOException POLL_INTERRUPTED_SENTINEL =
+      new InterruptedIOException();
+
   private static final class PollJob {
     private final List<Thread> waitingThreads = new LinkedList<>();
     private final FileDescriptor fd;
@@ -64,6 +68,7 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
       }
       return AFFuture.supplyAsync(() -> {
         try {
+          Thread thread = Thread.currentThread();
           PollFd pfd = new PollFd(new FileDescriptor[] {fd}, new int[] {mode});
           do {
             try {
@@ -71,8 +76,8 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
             } catch (IOException e) {
               return e;
             }
-            if (Thread.interrupted()) {
-              return new InterruptedIOException();
+            if (thread.isInterrupted()) {
+              return POLL_INTERRUPTED_SENTINEL;
             }
             if (pfd.rops[0] != 0) {
               break;
@@ -109,7 +114,7 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
 
   @Override
   public void parkThreadUntilReady(FileDescriptor fd, int mode, long now,
-      AFSupplier<Integer> timeout) throws IOException {
+      AFSupplier<Integer> timeout, Closeable closeOnInterrupt) throws IOException {
     Thread virtualThread = Thread.currentThread();
 
     PollJob job = Java7Util.computeIfAbsent(POLL_JOBS, fd, (k) -> new PollJob(fd, mode, now,
@@ -118,16 +123,19 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
 
     LockSupport.park();
     if (virtualThread.isInterrupted()) {
-      throw new InterruptedIOException("interrupted");
+      throw SocketClosedByInterruptException.newInstanceAndClose(closeOnInterrupt);
     }
 
     try {
       IOException ex = future.get();
       if (ex != null) {
+        if (ex == POLL_INTERRUPTED_SENTINEL) {
+          throw SocketClosedByInterruptException.newInstanceAndClose(closeOnInterrupt);
+        }
         throw ex;
       }
     } catch (InterruptedException | ExecutionException e) {
-      throw (InterruptedIOException) new InterruptedIOException().initCause(e);
+      throw SocketClosedByInterruptException.newInstanceAndClose(closeOnInterrupt); // NOPMD.PreserveStackTrace
     }
 
     int timeoutSecs = timeout.get();

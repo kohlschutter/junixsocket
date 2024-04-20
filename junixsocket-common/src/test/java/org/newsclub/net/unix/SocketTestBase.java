@@ -421,6 +421,17 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     return asp.newServerSocket();
   }
 
+  protected ServerSocketChannel newServerSocketChannel() throws IOException {
+    return asp.newServerSocketChannel();
+  }
+
+  protected ServerSocketChannel newServerSocketChannelBindOn(SocketAddress addr)
+      throws IOException {
+    ServerSocketChannel ssc = asp.newServerSocketChannel();
+    ssc.bind(addr);
+    return ssc;
+  }
+
   protected final ServerSocket newServerSocketBindOn(SocketAddress addr) throws IOException {
     return asp.newServerSocketBindOn(addr);
   }

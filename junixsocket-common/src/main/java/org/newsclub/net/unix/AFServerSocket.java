@@ -53,7 +53,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   private final AtomicBoolean deleteOnClose = new AtomicBoolean(true);
 
   @SuppressWarnings("this-escape")
-  private final AFServerSocketChannel<?> channel = newChannel();
+  private final AFServerSocketChannel<A> channel = newChannel();
   private @Nullable SocketAddressFilter bindFilter;
 
   private final AtomicBoolean closed = new AtomicBoolean(false);
@@ -107,7 +107,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
    *
    * @return The new instance.
    */
-  protected abstract AFServerSocketChannel<?> newChannel();
+  protected abstract AFServerSocketChannel<A> newChannel();
 
   /**
    * Creates a new AFSocketImpl.
@@ -521,7 +521,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
 
   @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
-  public AFServerSocketChannel<?> getChannel() {
+  public AFServerSocketChannel<A> getChannel() {
     return channel;
   }
 

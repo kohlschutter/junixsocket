@@ -85,6 +85,11 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
   }
 
   @Override
+  public ServerSocketChannel newServerSocketChannel() throws IOException {
+    return AFVSOCKServerSocketChannel.open();
+  }
+
+  @Override
   public AFServerSocket<?> newServerSocket() throws IOException {
     return AFVSOCKServerSocket.newInstance();
   }

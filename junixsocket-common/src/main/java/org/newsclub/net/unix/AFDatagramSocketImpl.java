@@ -199,7 +199,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
       if (virtualBlocking) {
         if (park) {
           VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_WRITE, now,
-              socketTimeout::get);
+              socketTimeout::get, this::close);
         }
         core.configureVirtualBlocking(true);
       }
@@ -301,7 +301,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
       if (virtualBlocking) {
         if (park) {
           VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_WRITE, now,
-              socketTimeout::get);
+              socketTimeout::get, this::close);
         }
         core.configureVirtualBlocking(true);
       }

@@ -270,7 +270,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
       if (virtualBlocking) {
         if (park) {
           VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_ACCEPT, now,
-              socketTimeout::get);
+              socketTimeout::get, this::close);
         }
       }
 
@@ -473,7 +473,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
               if (virtualConnectTimeout != null) {
                 if (park) {
                   VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fd, SelectionKey.OP_CONNECT,
-                      now, virtualConnectTimeout);
+                      now, virtualConnectTimeout, this::close);
                 }
               } else {
                 Thread.yield();
@@ -520,7 +520,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
                 core.configureVirtualBlocking(false);
               }
             }
-          } while (!Thread.interrupted());
+          } while (ThreadUtil.checkNotInterruptedOrThrow());
           if (success) {
             setSocketAddress(socketAddress);
             this.connected.set(true);
@@ -634,7 +634,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         if (virtualBlocking) {
           if (park) {
             VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_READ, now,
-                socketTimeout::get);
+                socketTimeout::get, this::close);
           }
           core.configureVirtualBlocking(true);
         }
@@ -700,7 +700,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         if (virtualBlocking) {
           if (park) {
             VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_READ, now,
-                socketTimeout::get);
+                socketTimeout::get, this::close);
           }
           core.configureVirtualBlocking(true);
         }
@@ -766,14 +766,14 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     public FileDescriptor getFileDescriptor() throws IOException {
       return getFD();
     }
+
   }
 
   private static boolean checkWriteInterruptedException(int bytesTransferred)
       throws InterruptedIOException {
-    if (Thread.interrupted()) {
-      InterruptedIOException ex = new InterruptedIOException("Thread interrupted during write");
+    if (Thread.currentThread().isInterrupted()) {
+      InterruptedIOException ex = new InterruptedIOException("write");
       ex.bytesTransferred = bytesTransferred;
-      Thread.currentThread().interrupt();
       throw ex;
     }
     return true;
@@ -806,7 +806,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         if (virtualBlocking) {
           if (park) {
             VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_WRITE, now,
-                socketTimeout::get);
+                socketTimeout::get, this::close);
           }
           core.configureVirtualBlocking(true);
         }
@@ -876,7 +876,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
           if (virtualBlocking) {
             if (park) {
               VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_WRITE, now,
-                  socketTimeout::get);
+                  socketTimeout::get, this::close);
             }
             core.configureVirtualBlocking(true);
           }
@@ -891,7 +891,8 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
             }
             if (written < 0) {
               if (len == 0) {
-                // This exception is only useful to detect OS-level bugs that we need to work-around
+                // This exception is only useful to detect OS-level bugs that we need to
+                // work-around
                 // in native code.
                 // throw new IOException("Error while writing zero-length byte array; try -D"
                 // + AFSocket.PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX

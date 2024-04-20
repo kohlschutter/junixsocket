@@ -17,9 +17,9 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.net.SocketTimeoutException;
 import java.nio.channels.SelectionKey;
 
@@ -43,10 +43,12 @@ interface VirtualThreadPoller {
    *          {@link SelectionKey#OP_ACCEPT}, {@link SelectionKey#OP_CONNECT})
    * @param now The refence time (in millis) for the timeout
    * @param timeout (in seconds), or 0 for infinite
+   * @param closeOnInterrupt Callback to call upon interrupt (usually to close the resource working
+   *          on the file descriptor)
    * @throws SocketTimeoutException on timeout
-   * @throws InterruptedIOException on interrupt.
+   * @throws SocketClosedByInterruptException on interrupt.
    * @throws IOException on other error
    */
   void parkThreadUntilReady(FileDescriptor fd, /* SelectionKey.OP_ */ int mode, long now,
-      AFSupplier<Integer> timeout) throws IOException;
+      AFSupplier<Integer> timeout, Closeable closeOnInterrupt) throws IOException;
 }

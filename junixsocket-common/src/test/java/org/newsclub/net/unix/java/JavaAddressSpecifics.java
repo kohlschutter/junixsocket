@@ -27,6 +27,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 
@@ -148,5 +149,10 @@ public final class JavaAddressSpecifics implements AddressSpecifics<InetSocketAd
   @Override
   public String summaryImportantMessage(String message) {
     return message;
+  }
+
+  @Override
+  public ServerSocketChannel newServerSocketChannel() throws IOException {
+    return SelectorProvider.provider().openServerSocketChannel();
   }
 }

@@ -15,31 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.newsclub.net.unix;
+package org.newsclub.net.unix.domain;
 
-import java.net.SocketException;
+import org.newsclub.net.unix.AFSocketCapability;
+import org.newsclub.net.unix.AFSocketCapabilityRequirement;
+import org.newsclub.net.unix.AFUNIXSocketAddress;
 
-/**
- * A {@link SocketException} indicating that a socket was closed or is not open for other reasons.
- *
- * @author Christian Kohlschütter
- */
-public class SocketClosedException extends SocketException {
-  private static final long serialVersionUID = 1L;
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
-  /**
-   * Constructs a new {@link SocketClosedException}.
-   */
-  public SocketClosedException() {
-    super();
-  }
-
-  /**
-   * Constructs a new {@link SocketClosedException}.
-   *
-   * @param msg The error message.
-   */
-  public SocketClosedException(String msg) {
-    super(msg);
+@AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
+public class InterruptTest extends org.newsclub.net.unix.InterruptTest<AFUNIXSocketAddress> {
+  protected InterruptTest() {
+    super(AFUNIXAddressSpecifics.INSTANCE);
   }
 }

@@ -106,8 +106,12 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
 
   @Override
   public AFSocketChannel<A> accept() throws IOException {
-    AFSocket<A> socket = afSocket.accept1(false);
-    return socket == null ? null : socket.getChannel();
+    try {
+      AFSocket<A> socket = afSocket.accept1(false);
+      return socket == null ? null : socket.getChannel();
+    } catch (SocketClosedByInterruptException e) {
+      throw e.asClosedByInterruptException(); // NOPMD.PreserveStackTrace
+    }
   }
 
   @Override

@@ -17,29 +17,21 @@
  */
 package org.newsclub.net.unix;
 
-import java.net.SocketException;
+import java.io.IOException;
 
 /**
- * A {@link SocketException} indicating that a socket was closed or is not open for other reasons.
+ * A supplier that can throw an IOException.
  *
- * @author Christian Kohlschütter
+ * @param <T> the type of results supplied by this supplier
  */
-public class SocketClosedException extends SocketException {
-  private static final long serialVersionUID = 1L;
+@FunctionalInterface
+public interface AFIOSupplier<T> {
 
   /**
-   * Constructs a new {@link SocketClosedException}.
-   */
-  public SocketClosedException() {
-    super();
-  }
-
-  /**
-   * Constructs a new {@link SocketClosedException}.
+   * Gets a result.
    *
-   * @param msg The error message.
+   * @return a result
+   * @throws IOException on error.
    */
-  public SocketClosedException(String msg) {
-    super(msg);
-  }
+  T get() throws IOException;
 }

@@ -175,7 +175,7 @@ class AFCore extends CleanableState {
       if (virtualBlocking) {
         if (park) {
           VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_WRITE, now,
-              timeout);
+              timeout, this::close);
         }
         configureVirtualBlocking(true);
       }
@@ -239,7 +239,6 @@ class AFCore extends CleanableState {
           configureVirtualBlocking(false);
         }
       }
-
       break; // NOPMD.AvoidBranchingStatementAsLastInLoop virtualThreadLoop
     } while (true); // NOPMD.WhileLoopWithLiteralBoolean
 
@@ -305,7 +304,7 @@ class AFCore extends CleanableState {
         if (virtualBlocking) {
           if (park) {
             VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_WRITE, now,
-                timeout);
+                timeout, this::close);
           }
           configureVirtualBlocking(true);
         }
@@ -365,6 +364,7 @@ class AFCore extends CleanableState {
    * @param capacity The desired capacity.
    * @return A byte buffer satisfying the requested capacity.
    */
+  @SuppressWarnings("null")
   Lease<MutableHolder<@NonNull ByteBuffer>> getPrivateDirectByteBuffer(int capacity) {
     if (capacity > TL_BUFFER_MAX_CAPACITY && TL_BUFFER_MAX_CAPACITY > 0) {
       // Capacity exceeds configurable maximum limit;

@@ -195,11 +195,15 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
 
   @Override
   public final boolean connect(SocketAddress remote) throws IOException {
-    boolean connected = afSocket.connect0(remote, 0);
-    if (!connected) {
-      connectPending.set(true);
+    try {
+      boolean connected = afSocket.connect0(remote, 0);
+      if (!connected) {
+        connectPending.set(true);
+      }
+      return connected;
+    } catch (SocketClosedByInterruptException e) {
+      throw e.asClosedByInterruptException(); // NOPMD.PreserveStackTrace
     }
-    return connected;
   }
 
   @Override
@@ -230,7 +234,11 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
 
   @Override
   public final int read(ByteBuffer dst) throws IOException {
-    return afSocket.getAFImpl().read(dst, null);
+    try {
+      return afSocket.getAFImpl().read(dst, null);
+    } catch (SocketClosedByInterruptException e) {
+      throw e.asClosedByInterruptException(); // NOPMD.PreserveStackTrace
+    }
   }
 
   @Override
@@ -253,7 +261,11 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
 
   @Override
   public final int write(ByteBuffer src) throws IOException {
-    return afSocket.getAFImpl().write(src);
+    try {
+      return afSocket.getAFImpl().write(src);
+    } catch (SocketClosedByInterruptException e) {
+      throw e.asClosedByInterruptException(); // NOPMD.PreserveStackTrace
+    }
   }
 
   @Override

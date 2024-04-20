@@ -23,6 +23,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -134,5 +135,10 @@ public final class AFTIPCAddressSpecifics implements AddressSpecifics<AFTIPCSock
   @Override
   public String summaryImportantMessage(String message) {
     return message;
+  }
+
+  @Override
+  public ServerSocketChannel newServerSocketChannel() throws IOException {
+    return AFTIPCServerSocketChannel.open();
   }
 }

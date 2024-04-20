@@ -106,10 +106,12 @@ public interface AddressSpecifics<A extends SocketAddress> {
     ServerSocket server = newServerSocketBindOn(address);
     Socket client = connectTo(server.getLocalSocketAddress());
     final Socket socket = server.accept();
-    return new CloseablePair<>((AFSocket<?>) client, (AFSocket<?>) socket, server);
+    return new CloseablePair<>(client, socket, server);
   }
 
   DatagramChannel newDatagramChannel() throws IOException;
+
+  ServerSocketChannel newServerSocketChannel() throws IOException;
 
   String summaryImportantMessage(String message);
 }
