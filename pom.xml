@@ -56,6 +56,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <url>https://github.com/kohlschutter/junixsocket/issues</url>
     </issueManagement>
     <properties>
+        <kohlschutter.maven.version.min>3.8.8</kohlschutter.maven.version.min>
         <kohlschutter.project.base.directory>${project.basedir}</kohlschutter.project.base.directory>
         <kohlschutter.project.notice.file>${kohlschutter.project.base.directory}/NOTICE</kohlschutter.project.notice.file>
 
