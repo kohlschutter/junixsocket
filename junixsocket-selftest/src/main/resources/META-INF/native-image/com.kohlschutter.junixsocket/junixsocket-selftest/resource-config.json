@@ -39,6 +39,12 @@
     },
     {
       "pattern":"^lib/aarch64-MacOSX-clang/jni/libjunixsocket-native-.*\\.dylib$"
+    },
+    {
+      "pattern":"\\QMETA-INF/services/java.sql.Driver\\E"
+    },
+    {
+      "pattern":"\\Qcom/mysql/cj/LocalizedErrorMessages.properties\\E"
     }
   ]},
   "bundles":[]

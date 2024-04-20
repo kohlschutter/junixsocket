@@ -8,6 +8,22 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"com.kohlschutter.testutil.ExecutionEnvironmentExecutionCondition",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.kohlschutter.testutil.ExecutionEnvironmentRequirement",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.kohlschutter.testutil.ForkedVMExecutionCondition",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.kohlschutter.testutil.ForkedVMRequirement",
+  "queryAllPublicMethods":true
+},
+{
   "name":"com.kohlschutter.testutil.ProcessUtilCondition",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -1129,5 +1145,42 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.mysql.MysqlSocketFactoryTestBase",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"com.mysql.cj.conf.url.SingleConnectionUrl",
+  "methods":[{"name":"<init>","parameterTypes":["com.mysql.cj.conf.ConnectionUrlParser","java.util.Properties"] }]
+},
+{
+  "name":"com.mysql.cj.exceptions.CJCommunicationsException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"com.mysql.cj.exceptions.WrongArgumentException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"com.mysql.cj.jdbc.AbandonedConnectionCleanupThread"
+},
+{
+  "name":"com.mysql.cj.jdbc.Driver"
+},
+{
+  "name":"com.mysql.cj.log.StandardLogger",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.sql.SQLException",
+  "fields":[{"name":"next"}]
 }
 ]
