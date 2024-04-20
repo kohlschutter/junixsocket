@@ -98,6 +98,7 @@ echo Running junixsocket-selftest with GraalVM native-image-agent...
 (
   set -x
   java -agentlib:native-image-agent=config-output-dir=${tmpDir}/native-image.{pid} \
+	  -Dselftest.enable-module.junixsocket-common.JavaInet=true \
 	  -cp "$jar":"$mysqlDep" org.newsclub.net.unix.selftest.Selftest >/dev/null
 )
 
@@ -119,6 +120,7 @@ echo Running native-image...
 (
   set -x
   native-image -cp "$tmpDir" --initialize-at-build-time=sun.rmi.transport.GC --report-unsupported-elements-at-runtime --no-fallback \
+	  -Dselftest.enable-module.junixsocket-common.JavaInet=true \
 	  -cp "$jar":"$mysqlDep" org.newsclub.net.unix.selftest.Selftest
 )
 if [[ $? -ne 0 ]]; then
