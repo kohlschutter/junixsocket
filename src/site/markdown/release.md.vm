@@ -166,8 +166,8 @@ If you need to make a revision afterwards, retag with `git tag -f TAG` and `git 
     mvn clean install -Dstrict -Drelease
 
     # after gpgkeyname, specify the key you want to use for signing
-    mvn deploy -Dstrict -Drelease -Dsigned -Dgpgkeyname=$(git config --get user.email) -Dgpg.executable=$(which gpg)
-    
+    mvn clean deploy -Dignorant -DskipTests -Drelease -Dsigned -Dgpgkeyname=$(git config --get user.email) -Dgpg.executable=$(which gpg)
+
 #[[#####]]# Notes
 
 `-Dstrict` enforces code quality checks to succeed (e.g., *spotbugs*, *checkstyle*). 
