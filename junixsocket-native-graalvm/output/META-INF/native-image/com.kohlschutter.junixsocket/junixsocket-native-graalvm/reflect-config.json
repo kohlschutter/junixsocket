@@ -38,6 +38,14 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"com.kohlschutter.testutil.ForkedVMExecutionCondition",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.kohlschutter.testutil.ForkedVMRequirement",
+  "queryAllPublicMethods":true
+},
+{
   "name":"com.kohlschutter.testutil.ProcessUtilCondition",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -386,7 +394,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConnectTimeout","parameterTypes":[] }, {"name":"testDriverManagerConnectionToMissingServer","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConnectTimeout","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryTest",
@@ -395,7 +403,15 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConnectTimeout","parameterTypes":[] }, {"name":"testDriverManagerConnectionToMissingServer","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConnectTimeout","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.mysql.MysqlSocketFactoryTestBase",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"testDriverManagerConnectionToMissingServer","parameterTypes":[] }, {"name":"testDriverManagerConnectionToMysqlSock","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.AFGenericSocketAddress",
