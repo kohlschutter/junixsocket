@@ -163,18 +163,25 @@ If you need to make a revision afterwards, retag with `git tag -f TAG` and `git 
 #[[####]]# Deploy to staging
   
     cd junixsocket
-    mvn clean install -Dstrict -Drelease
+    mvn clean install -Drelease -Dstrict
 
-    # after gpgkeyname, specify the key you want to use for signing
-    mvn clean deploy -Dignorant -DskipTests -Drelease -Dsigned -Dgpgkeyname=$(git config --get user.email) -Dgpg.executable=$(which gpg)
+    mvn clean deploy -Drelease -Dignorant -DskipTests -Dsigned -Dgpgkeyname=$(git config --get user.email) -Dgpg.executable=$(which gpg) -Pjavadoc -Psources
 
 #[[#####]]# Notes
 
-`-Dstrict` enforces code quality checks to succeed (e.g., *spotbugs*, *checkstyle*). 
-
 `-Drelease` makes sure we include all common native binaries in junixsocket-native-common.
 
-`-Dsigned` enables signing the artifacts with our GPG key. 
+`-Dstrict` enforces code quality checks to succeed (e.g., *spotbugs*, *checkstyle*).
+
+`-Dignorant` disables linters, code quality checks, javadoc, source jars, etc.
+
+`-DskipTests` skips unit testing.
+
+`-Dsigned` enables signing the artifacts with our GPG key (using the key name specified with `-Dgpgkeyname=` and the gpg executable specified with `-Dgpg.executable=`).
+
+`-Pjavadoc` enables javadoc even with `-Dignorant` set.
+
+`-Psources` enables attach-sources even with `-Dignorant` set.
 
 #[[#####]]# In case of failures while staging:
 
