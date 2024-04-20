@@ -18,11 +18,8 @@
 package org.newsclub.net.mysql;
 
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.time.Duration;
 import java.util.Properties;
 
@@ -30,22 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
-import com.mysql.cj.jdbc.exceptions.CommunicationsException;
-
-public class AFUNIXDatabaseSocketFactoryTest {
-
-  @Test
-  public void testDriverManagerConnectionToMissingServer() throws Exception {
-    AFUNIXSocketAddress addr = AFUNIXSocketAddress.ofNewTempFile();
-    try (Connection unused = DriverManager.getConnection(
-        "jdbc:mysql://localhost/db?socketFactory=org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory&junixsocket.file="
-            + addr.getPath())) {
-      fail(
-          "Should have thrown an exception since we're trying to connect to a non-existing database server");
-    } catch (CommunicationsException e) {
-      // expected
-    }
-  }
+public class AFUNIXDatabaseSocketFactoryTest extends MysqlSocketFactoryTestBase {
 
   @Test
   public void testConnectTimeout() throws Exception {
@@ -65,4 +47,8 @@ public class AFUNIXDatabaseSocketFactoryTest {
     }
   }
 
+  @Override
+  protected String socketFactory() {
+    return "org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory";
+  }
 }
