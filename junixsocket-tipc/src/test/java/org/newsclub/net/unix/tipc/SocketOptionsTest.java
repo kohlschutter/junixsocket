@@ -72,6 +72,7 @@ public final class SocketOptionsTest extends
     assertEquals(timeout, socket.getOption(AFTIPCSocketOptions.TIPC_CONN_TIMEOUT));
   }
 
+  @SuppressWarnings("resource")
   @Test
   public void testTIPCImportance() throws Exception {
     Socket socket = newSocket();
