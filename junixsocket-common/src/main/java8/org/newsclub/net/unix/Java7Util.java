@@ -29,7 +29,7 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * Helper class to allow codebase to remain compatible with Java 7 (via retrolambda,
  * animal-sniffer).
- * 
+ *
  * @author Christian Kohlschütter
  */
 @IgnoreJRERequirement // see src/main/java8

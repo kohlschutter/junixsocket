@@ -24,7 +24,7 @@ import org.newsclub.net.unix.ThreadUtil;
 
 /**
  * A pool of objects.
- * 
+ *
  * @param <O> The object type.
  * @author Christian Kohlschütter
  */
@@ -33,7 +33,7 @@ public interface ObjectPool<O> {
   /**
    * Creates a new {@link ObjectPool} that is used within a single thread; this may or may not be
    * implemented using {@link ThreadLocal}, however the behavior should be comparable.
-   * 
+   *
    * @param <O> The object type.
    * @param supplier The object supplier.
    * @param sanitizer The object sanitizer.
@@ -50,7 +50,7 @@ public interface ObjectPool<O> {
 
   /**
    * Returns a {@link Lease} that is not backed by any object pool.
-   * 
+   *
    * @param <O> The object type.
    * @param obj The object.
    * @return The lease; closing/discarding has no effect.
@@ -76,7 +76,7 @@ public interface ObjectPool<O> {
   /**
    * Takes an exclusive lease of an object from the pool. If no existing object is available from
    * the pool, a new one may be provided.
-   * 
+   *
    * @return The object.
    */
   Lease<O> take();
@@ -107,7 +107,7 @@ public interface ObjectPool<O> {
     /**
      * Sanitizes a previously leased object so it can be reused by the pool; if the object should
      * not be reused, {@code false} is returned.
-     * 
+     *
      * @param obj The object to sanitize.
      * @return {@code true} if sanitization was successful, {@code false} if the object should not
      *         be reused.
@@ -118,13 +118,13 @@ public interface ObjectPool<O> {
   /**
    * A lease for an object (obtained via {@link #get()}); working with the object is only permitted
    * before {@link #close()}.
-   * 
+   *
    * @param <O> The object type.
    */
   interface Lease<O> extends Closeable {
     /**
      * Returns the leased object, potentially {@code null} when discarded/closed.
-     * 
+     *
      * @return The object, or {@code null}.
      */
     O get();

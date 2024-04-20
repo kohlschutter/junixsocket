@@ -27,7 +27,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * An {@link ObjectPool} implemented using {@link ConcurrentLinkedQueue}.
- * 
+ *
  * @param <O> The object type.
  * @author Christian Kohlschütter
  */
@@ -40,7 +40,7 @@ public final class ConcurrentQueueObjectPool<O> implements ObjectPool<O> {
 
   /**
    * Constructs a {@link ConcurrentQueueObjectPool} with the given capacity, supplier and sanitizer.
-   * 
+   *
    * @param supplier The supplier.
    * @param sanitizer The sanitizer.
    * @param maxCapacity The maximum capacity.

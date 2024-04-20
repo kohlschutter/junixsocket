@@ -21,7 +21,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Holds an object.
- * 
+ *
  * @param <O> The object type.
  * @author Christian Kohlschütter
  */
@@ -30,7 +30,7 @@ public final class MutableHolder<O> {
 
   /**
    * Creates a new {@link MutableHolder} object, holding the given object.
-   * 
+   *
    * @param obj The object to hold, or {@code null}.
    */
   public MutableHolder(@Nullable O obj) {
@@ -39,7 +39,7 @@ public final class MutableHolder<O> {
 
   /**
    * Returns the current object.
-   * 
+   *
    * @return The object.
    */
   public @Nullable O get() {
@@ -48,7 +48,7 @@ public final class MutableHolder<O> {
 
   /**
    * Sets the object.
-   * 
+   *
    * @param obj The object.
    */
   public void set(@Nullable O obj) {

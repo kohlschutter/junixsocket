@@ -24,7 +24,8 @@ final class VirtualAwareThreadLocalObjectPool<O> implements ObjectPool<O> {
   private final ThreadLocalObjectPool<O> tlPool;
   private final ConcurrentQueueObjectPool<O> cqPool;
 
-  public VirtualAwareThreadLocalObjectPool(ObjectSupplier<@NonNull O> supplier, ObjectSanitizer<@NonNull O> sanitizer) {
+  public VirtualAwareThreadLocalObjectPool(ObjectSupplier<@NonNull O> supplier,
+      ObjectSanitizer<@NonNull O> sanitizer) {
     this.tlPool = new ThreadLocalObjectPool<>(supplier, sanitizer);
     this.cqPool = new ConcurrentQueueObjectPool<>(supplier, sanitizer, Runtime.getRuntime()
         .availableProcessors() * 2);
