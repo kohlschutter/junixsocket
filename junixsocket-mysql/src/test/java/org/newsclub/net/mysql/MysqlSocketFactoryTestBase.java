@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -58,7 +59,8 @@ abstract class MysqlSocketFactoryTestBase {
             .getPassword())) {
       connected = true;
 
-      try (ResultSet rs = conn.prepareStatement("SHOW TABLES").executeQuery()) {
+      try (PreparedStatement pstmt = conn.prepareStatement("SHOW TABLES");
+          ResultSet rs = pstmt.executeQuery()) {
         if (rs.next()) {
           assertNotNull(rs.getString(1));
         }
@@ -69,7 +71,7 @@ abstract class MysqlSocketFactoryTestBase {
       } else {
         throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
             "Could not connect to MySQL database for testing. Please correct the following definitions: "
-                + creds.toString());
+                + creds.toString(), e);
       }
     }
   }
