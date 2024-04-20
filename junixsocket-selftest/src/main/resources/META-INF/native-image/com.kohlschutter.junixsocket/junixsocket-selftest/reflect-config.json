@@ -32,6 +32,14 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"com.kohlschutter.testutil.SystemPropertyExecutionCondition",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.kohlschutter.testutil.SystemPropertyRequirement",
+  "queryAllPublicMethods":true
+},
+{
   "name":"java.lang.ProcessBuilder$RedirectPipeImpl"
 },
 {
@@ -162,6 +170,14 @@
 },
 {
   "name":"org.newsclub.net.unix.InetAddressTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.InterruptTest",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
@@ -370,6 +386,14 @@
   "allDeclaredConstructors":true
 },
 {
+  "name":"org.newsclub.net.unix.domain.InterruptTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
   "name":"org.newsclub.net.unix.domain.MassiveParallelTest",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
@@ -489,6 +513,38 @@
   "queryAllDeclaredMethods":true,
   "allPublicMethods":true,
   "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.java.InterruptTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.java.SelectorTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.java.ThroughputTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.java.JavaInetStackCondition",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.java.JavaInetStackRequirement",
+  "queryAllPublicMethods":true
 },
 {
   "name":"org.newsclub.net.unix.tipc.AFTIPCTopologyWatcherTest",

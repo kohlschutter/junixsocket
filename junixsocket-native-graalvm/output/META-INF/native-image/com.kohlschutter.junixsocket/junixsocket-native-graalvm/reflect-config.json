@@ -54,6 +54,14 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"com.kohlschutter.testutil.SystemPropertyExecutionCondition",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.kohlschutter.testutil.SystemPropertyRequirement",
+  "queryAllPublicMethods":true
+},
+{
   "name":"com.mysql.cj.conf.url.SingleConnectionUrl",
   "methods":[{"name":"<init>","parameterTypes":["com.mysql.cj.conf.ConnectionUrlParser","java.util.Properties"] }]
 },
@@ -566,6 +574,14 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testFromToBytes","parameterTypes":[] }, {"name":"testHostnameString","parameterTypes":[] }, {"name":"testHostnameStringEndsWithJunixSocket","parameterTypes":[] }, {"name":"testIsLoopbackAddress","parameterTypes":[] }]
 },
 {
+  "name":"org.newsclub.net.unix.InterruptTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"testInterruptSocketChannelVirtualThread","parameterTypes":[] }, {"name":"testInterruptSocketVirtualThread","parameterTypes":[] }]
+},
+{
   "name":"org.newsclub.net.unix.InvalidArgumentSocketException"
 },
 {
@@ -802,6 +818,15 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testAncillaryReceiveBufferTooSmall","parameterTypes":[] }, {"name":"testBadFileDescriptor","parameterTypes":[] }, {"name":"testDatagramSocket","parameterTypes":[] }, {"name":"testEmptyFileDescriptorArray","parameterTypes":[] }, {"name":"testFileInputStream","parameterTypes":[] }, {"name":"testFileInputStreamPartiallyConsumed","parameterTypes":[] }, {"name":"testNoAncillaryReceiveBuffer","parameterTypes":[] }, {"name":"testNullFileDescriptorArray","parameterTypes":[] }, {"name":"testSendRecvFileDescriptors","parameterTypes":[] }]
 },
 {
+  "name":"org.newsclub.net.unix.domain.InterruptTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"org.newsclub.net.unix.domain.MassiveParallelTest",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
@@ -955,6 +980,41 @@
 },
 {
   "name":"org.newsclub.net.unix.generic.AFGenericSelectorProvider"
+},
+{
+  "name":"org.newsclub.net.unix.java.InterruptTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.java.JavaInetStackCondition",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.java.JavaInetStackRequirement",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.newsclub.net.unix.java.SelectorTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.java.ThroughputTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.rmi.AFRMIService",
