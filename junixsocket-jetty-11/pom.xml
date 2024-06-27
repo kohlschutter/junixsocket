@@ -15,7 +15,7 @@
     <properties>
         <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
 
-        <jetty11.version>11.0.20</jetty11.version>
+        <jetty11.version>11.0.21</jetty11.version>
     </properties>
 
     <description>junixsocket for Jetty 11 (currently test-only; use
