@@ -64,7 +64,8 @@ abstract class CleanableState implements Closeable {
    *          {@link CleanableState}).
    */
   protected CleanableState(Object observed) {
-    this.cleanable = CLEANER.register(observed, () -> doClean());
+    this.cleanable = CLEANER.register(observed, () -> doClean()); // NOPMD.LambdaCanBeMethodReference
+                                                                  // (Retrolambda)
   }
 
   /**
