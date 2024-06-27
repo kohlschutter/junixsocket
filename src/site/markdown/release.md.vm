@@ -165,7 +165,7 @@ If you need to make a revision afterwards, retag with `git tag -f TAG` and `git 
     cd junixsocket
     mvn clean install -Drelease -Dstrict
 
-    mvn clean deploy -Drelease -Dignorant -DskipTests -Dsigned -Dgpgkeyname=$(git config --get user.email) -Dgpg.executable=$(which gpg) -Pjavadoc -Psources
+    mvn clean deploy -Drelease -Ddeploy -Dignorant -D -DskipTests -Dsigned -Dgpgkeyname=$(git config --get user.email) -Dgpg.executable=$(which gpg)
 
 #[[#####]]# Notes
 
@@ -175,13 +175,11 @@ If you need to make a revision afterwards, retag with `git tag -f TAG` and `git 
 
 `-Dignorant` disables linters, code quality checks, javadoc, source jars, etc.
 
+`-Ddeploy` re-enable javadoc/attach-sources even with `-Dignorant` set.
+
 `-DskipTests` skips unit testing.
 
 `-Dsigned` enables signing the artifacts with our GPG key (using the key name specified with `-Dgpgkeyname=` and the gpg executable specified with `-Dgpg.executable=`).
-
-`-Pjavadoc` enables javadoc even with `-Dignorant` set.
-
-`-Psources` enables attach-sources even with `-Dignorant` set.
 
 #[[#####]]# In case of failures while staging:
 
