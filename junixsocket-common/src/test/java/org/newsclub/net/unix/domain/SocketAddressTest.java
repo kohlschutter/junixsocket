@@ -119,7 +119,7 @@ public final class SocketAddressTest extends SocketTestBase<AFUNIXSocketAddress>
     }
     assertTrue(address.isInAbstractNamespace());
     assertFalse(address.hasFilename());
-    assertThrows(FileNotFoundException.class, () -> address.getFile());
+    assertThrows(FileNotFoundException.class, address::getFile);
   }
 
   @Test
