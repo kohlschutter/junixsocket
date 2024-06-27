@@ -899,6 +899,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @throws ClassNotFoundException on error.
    * @throws IOException on error.
    */
+  @SuppressFBWarnings("MC_OVERRIDABLE_METHOD_CALL_IN_READ_OBJECT") // https://github.com/spotbugs/spotbugs/issues/2957
   private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
     in.defaultReadObject();
 
