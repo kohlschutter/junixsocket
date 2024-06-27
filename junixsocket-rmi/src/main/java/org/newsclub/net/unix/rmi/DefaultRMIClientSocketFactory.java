@@ -22,13 +22,17 @@ import java.io.Serializable;
 import java.net.Socket;
 import java.rmi.server.RMIClientSocketFactory;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * An implementation of {@link RMIClientSocketFactory}.
  *
  * @see AFRMISocketFactory
  */
+@SuppressFBWarnings("SING_SINGLETON_IMPLEMENTS_SERIALIZABLE")
 public final class DefaultRMIClientSocketFactory implements RMIClientSocketFactory, Serializable {
   private static final long serialVersionUID = 1L;
+
   private static final DefaultRMIClientSocketFactory INSTANCE = new DefaultRMIClientSocketFactory();
 
   private DefaultRMIClientSocketFactory() {

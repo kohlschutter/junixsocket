@@ -22,11 +22,15 @@ import java.io.Serializable;
 import java.net.ServerSocket;
 import java.rmi.server.RMIServerSocketFactory;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * An implementation of {@link RMIServerSocketFactory}.
  *
  * @see AFRMISocketFactory
  */
+@SuppressFBWarnings({
+    "SING_SINGLETON_IMPLEMENTS_SERIALIZABLE", "SING_SINGLETON_HAS_NONPRIVATE_CONSTRUCTOR"})
 public class DefaultRMIServerSocketFactory implements RMIServerSocketFactory, Serializable {
   private static final long serialVersionUID = 1L;
   private static final DefaultRMIServerSocketFactory INSTANCE = new DefaultRMIServerSocketFactory();
