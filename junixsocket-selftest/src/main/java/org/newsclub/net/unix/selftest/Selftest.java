@@ -898,8 +898,7 @@ public class Selftest {
   }
 
   private Map<String, String> retrieveBuildProperties() {
-    return callStaticMethod(diagnosticsHelperClass, "buildProperties", () -> Collections
-        .emptyMap());
+    return callStaticMethod(diagnosticsHelperClass, "buildProperties", Collections::emptyMap);
   }
 
   private static Class<?> resolveOptionalClass(String name) {

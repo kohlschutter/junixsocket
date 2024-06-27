@@ -74,7 +74,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     try {
       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+              "juxserver.p12"), "serverpass"::toCharArray) //
           .buildAndDestroyBuilder().getSocketFactory();
 
       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
@@ -139,7 +139,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     try {
       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxclient.p12"), () -> "clientpass".toCharArray()) //
+              "juxclient.p12"), "clientpass"::toCharArray) //
           .buildAndDestroyBuilder().getSocketFactory();
 
       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
@@ -193,7 +193,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     try {
       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+              "juxserver.p12"), "serverpass"::toCharArray) //
           .buildAndDestroyBuilder().getSocketFactory();
 
       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
@@ -258,7 +258,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     try {
       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+              "juxserver.p12"), "serverpass"::toCharArray) //
           .buildAndDestroyBuilder().getSocketFactory();
 
       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
@@ -326,7 +326,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     try {
       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+              "juxserver.p12"), "serverpass"::toCharArray) //
           .withDefaultSSLParameters((p) -> {
             p.setNeedClientAuth(true);
           }) //
@@ -349,9 +349,9 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
 
       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxclient.p12"), () -> "clientpass".toCharArray()) //
+              "juxclient.p12"), "clientpass"::toCharArray) //
           .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
+              "juxclient.truststore"), "clienttrustpass"::toCharArray) //
           .buildAndDestroyBuilder().getSocketFactory();
     } catch (KnownJavaBugIOException e) {
       throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
@@ -388,7 +388,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     try {
       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxclient.p12"), () -> "clientpass".toCharArray()) //
+              "juxclient.p12"), "clientpass"::toCharArray) //
           .withDefaultSSLParameters((p) -> {
             p.setNeedClientAuth(true);
           }) //
@@ -411,9 +411,9 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
 
       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+              "juxserver.p12"), "serverpass"::toCharArray) //
           .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxserver.truststore"), () -> "servertrustpass".toCharArray()) //
+              "juxserver.truststore"), "servertrustpass"::toCharArray) //
           .buildAndDestroyBuilder().getSocketFactory();
     } catch (KnownJavaBugIOException e) {
       throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
@@ -458,7 +458,7 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
     try {
       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxclient.p12"), () -> "clientpass".toCharArray()) //
+              "juxclient.p12"), "clientpass"::toCharArray) //
           .withDefaultSSLParameters((p) -> {
             p.setNeedClientAuth(true);
           }) //
@@ -496,9 +496,9 @@ public class ValidatingX509TrustManagerTest extends SSLTestBase {
 
       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) //
           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+              "juxserver.p12"), "serverpass"::toCharArray) //
           .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.class,
-              "juxserver.truststore"), () -> "servertrustpass".toCharArray()) //
+              "juxserver.truststore"), "servertrustpass"::toCharArray) //
           .buildAndDestroyBuilder().getSocketFactory();
     } catch (KnownJavaBugIOException e) {
       throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,

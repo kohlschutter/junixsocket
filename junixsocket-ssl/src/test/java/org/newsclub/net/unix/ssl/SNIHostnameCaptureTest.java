@@ -47,6 +47,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.newsclub.net.unix.AFSocket;
@@ -66,7 +67,7 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
     try {
       return configuration.configure(SSLContextBuilder.forClient()) //
           .withTrustStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-              "juxclient.truststore"), () -> "clienttrustpass".toCharArray()) //
+              "juxclient.truststore"), "clienttrustpass"::toCharArray) //
           .buildAndDestroyBuilder().getSocketFactory();
     } catch (KnownJavaBugIOException e) {
       throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
@@ -145,7 +146,7 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
     try {
       SSLSocketFactory serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) //
           .withKeyStore(TestResourceUtil.getRequiredResource(SSLContextBuilderTest.class,
-              "juxserver.p12"), () -> "serverpass".toCharArray()) //
+              "juxserver.p12"), "serverpass"::toCharArray) //
           .buildAndDestroyBuilder().getSocketFactory();
 
       assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
@@ -210,7 +211,7 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
                       () -> "defaulthost");
 
               assertFalse(hnc.isComplete());
-              assertThrows(IllegalStateException.class, () -> hnc.getHostname());
+              assertThrows(IllegalStateException.class, hnc::getHostname);
 
               // NOTE: starting a handshake doesn't mean it's completed before reading the 1st byte!
               sslSocket.startHandshake();

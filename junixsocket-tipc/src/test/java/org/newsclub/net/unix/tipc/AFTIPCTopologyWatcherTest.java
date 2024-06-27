@@ -74,7 +74,7 @@ public final class AFTIPCTopologyWatcherTest extends
         @Override
         protected void onEvent(AFTIPCTopologyEvent event) throws IOException {
           assertTrue(isRunning());
-          assertThrows(IllegalStateException.class, () -> runLoop());
+          assertThrows(IllegalStateException.class, this::runLoop);
 
           if (event.isPublished()) {
             if (event.isPort()) {
