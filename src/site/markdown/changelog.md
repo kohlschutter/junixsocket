@@ -10,17 +10,21 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ## Noteworthy changes
 
-**Users of junixsocket are strongly advised to upgrade to version 2.9.1 or newer**
+**Users of junixsocket are strongly advised to upgrade to version 2.10.0 or newer**
 
 ### _(2024-XX-XX)_ **junixsocket 2.10.0**
 
 - Fix compatibility with Java 7
 - Fix error handling for non-blocking operations on Windows
 - Fix interoperability of junixsocket-mysql and GraalVM native-image
+- Fix socket-closed state upon exceptions indicating a closed socket descriptor
 - Improve compatibility and performance with Virtual Threads in Java 21 or newer (JEP 444)
 - Improve selftest stability and logging
 - Add more tests for mysql interoperability, optionally include mysql tests in selftest
-- Building now requires Java 21 or newer
+- Add NotConnectedSocketException
+- Building now requires Java 21, Maven 3.8.8 or newer
+- Update build-time dependencies
+- Code cleanup
 
 ### _(2024-04-05)_ **junixsocket 2.9.1**
 
