@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.net.SocketOption;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedByInterruptException;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Objects;
@@ -193,16 +195,37 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
     return connectPending.get();
   }
 
+  @SuppressWarnings("null")
   @Override
   public final boolean connect(SocketAddress remote) throws IOException {
+    boolean complete = false;
     try {
+      begin();
       boolean connected = afSocket.connect0(remote, 0);
       if (!connected) {
         connectPending.set(true);
       }
+      complete = true;
       return connected;
     } catch (SocketClosedByInterruptException e) {
-      throw e.asClosedByInterruptException(); // NOPMD.PreserveStackTrace
+      throw closeAndThrow(e.asClosedByInterruptException()); // NOPMD.PreserveStackTrace
+    } catch (BrokenPipeSocketException | ClosedChannelException e) { // NOPMD.ExceptionAsFlowControl
+      if (Thread.currentThread().isInterrupted()) {
+        throw closeAndThrow((ClosedByInterruptException) new ClosedByInterruptException().initCause(
+            e));
+      } else if (e instanceof BrokenPipeSocketException) { // NOPMD.AvoidInstanceofChecksInCatchClause
+        throw closeAndThrow((ClosedChannelException) new ClosedChannelException().initCause(e));
+      } else {
+        throw closeAndThrow(e);
+      }
+    } catch (SocketClosedException e) {
+      throw closeAndThrow(e);
+    } finally { // NOPMD.DoNotThrowExceptionInFinally
+      try {
+        end(complete);
+      } catch (ClosedByInterruptException e) {
+        throw closeAndThrow(e);
+      }
     }
   }
 
@@ -232,13 +255,45 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
     return afSocket.getRemoteSocketAddress();
   }
 
+  @SuppressWarnings("null")
   @Override
   public final int read(ByteBuffer dst) throws IOException {
+    boolean completed = false;
     try {
-      return afSocket.getAFImpl().read(dst, null);
+      begin();
+      int read = afSocket.getAFImpl().read(dst, null);
+      completed = true;
+      return read;
     } catch (SocketClosedByInterruptException e) {
-      throw e.asClosedByInterruptException(); // NOPMD.PreserveStackTrace
+      throw closeAndThrow(e.asClosedByInterruptException()); // NOPMD.PreserveStackTrace
+    } catch (BrokenPipeSocketException | ClosedChannelException e) {
+      if (Thread.currentThread().isInterrupted()) {
+        throw closeAndThrow((ClosedByInterruptException) new ClosedByInterruptException().initCause(
+            e));
+      } else if (e instanceof BrokenPipeSocketException) { // NOPMD.AvoidInstanceofChecksInCatchClause
+        throw closeAndThrow((ClosedChannelException) new ClosedChannelException().initCause(e));
+      } else {
+        throw closeAndThrow(e);
+      }
+    } finally {
+      end(completed);
     }
+  }
+
+  private <T extends Exception> T closeAndThrow(@NonNull T exc) {
+    if (isOpen()) {
+      try {
+        close();
+      } catch (IOException e2) {
+        exc.addSuppressed(e2);
+      }
+      try {
+        getAFSocket().close();
+      } catch (IOException e2) {
+        exc.addSuppressed(e2);
+      }
+    }
+    return exc;
   }
 
   @Override
@@ -259,12 +314,28 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
     return write(srcs[offset]);
   }
 
+  @SuppressWarnings("null")
   @Override
   public final int write(ByteBuffer src) throws IOException {
+    boolean completed = false;
     try {
-      return afSocket.getAFImpl().write(src);
+      begin();
+      int written = afSocket.getAFImpl().write(src);
+      completed = true;
+      return written;
     } catch (SocketClosedByInterruptException e) {
-      throw e.asClosedByInterruptException(); // NOPMD.PreserveStackTrace
+      throw closeAndThrow(e.asClosedByInterruptException()); // NOPMD.PreserveStackTrace
+    } catch (BrokenPipeSocketException | ClosedChannelException e) {
+      if (Thread.currentThread().isInterrupted()) {
+        throw closeAndThrow((ClosedByInterruptException) new ClosedByInterruptException().initCause(
+            e));
+      } else if (e instanceof BrokenPipeSocketException) { // NOPMD.AvoidInstanceofChecksInCatchClause
+        throw closeAndThrow((ClosedChannelException) new ClosedChannelException().initCause(e));
+      } else {
+        throw closeAndThrow(e);
+      }
+    } finally {
+      end(completed);
     }
   }
 

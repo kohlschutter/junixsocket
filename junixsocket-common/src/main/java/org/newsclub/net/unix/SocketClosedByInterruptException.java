@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.nio.channels.ClosedByInterruptException;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * A {@link SocketException} indicating that a socket was closed by interrupt.
  *
@@ -53,7 +55,7 @@ final class SocketClosedByInterruptException extends SocketClosedException {
     return exc;
   }
 
-  public ClosedByInterruptException asClosedByInterruptException() {
+  public @NonNull ClosedByInterruptException asClosedByInterruptException() {
     ClosedByInterruptException exc = new ClosedByInterruptException();
     exc.initCause(this);
     return exc;

@@ -79,6 +79,8 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
   private AFSocketImplExtensions<A> implExtensions = null;
 
+  private final AtomicBoolean closed = new AtomicBoolean(false);
+
   /**
    * When the {@link AFSocketImpl} becomes unreachable (but not yet closed), we must ensure that the
    * underlying socket and all related file descriptors are closed.
@@ -226,7 +228,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   }
 
   boolean isClosed() {
-    return core.isClosed();
+    return closed.get() || core.isClosed();
   }
   // CPD-ON
 
@@ -310,6 +312,14 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
               continue virtualThreadLoop;
             }
           }
+        } catch (NotConnectedSocketException | SocketClosedException // NOPMD.ExceptionAsFlowControl
+            | BrokenPipeSocketException e) {
+          try {
+            close();
+          } catch (Exception e2) {
+            e.addSuppressed(e2);
+          }
+          throw e;
         } catch (SocketException e) { // NOPMD.ExceptionAsFlowControl
           caught = e;
         } finally { // NOPMD.DoNotThrowExceptionInFinally
@@ -413,7 +423,12 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
   @Override
   protected final void close() throws IOException {
-    shutdown();
+    this.closed.set(true);
+    try {
+      shutdown();
+    } catch (NotConnectedSocketException | SocketClosedException e) {
+      // ignore
+    }
 
     core.runCleaner();
   }
@@ -510,6 +525,14 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
                 }
               }
               throw e;
+            } catch (NotConnectedSocketException | SocketClosedException
+                | BrokenPipeSocketException e) {
+              try {
+                close();
+              } catch (Exception e2) {
+                e.addSuppressed(e2);
+              }
+              throw e;
             } catch (SocketException e) {
               if (virtualBlocking) {
                 Thread.yield();
@@ -558,6 +581,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   @Override
   protected final AFInputStream getInputStream() throws IOException {
     if (!isConnected() && !isBound()) {
+      close();
       throw new SocketClosedException("Not connected/not bound");
     }
     core.validFdOrException();
@@ -567,6 +591,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   @Override
   protected final AFOutputStream getOutputStream() throws IOException {
     if (!isClosed() && !isBound()) {
+      close();
       throw new SocketClosedException("Not connected/not bound");
     }
     core.validFdOrException();
@@ -634,7 +659,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         if (virtualBlocking) {
           if (park) {
             VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_READ, now,
-                socketTimeout::get, this::close);
+                socketTimeout::get, this::forceCloseSocket);
           }
           core.configureVirtualBlocking(true);
         }
@@ -700,7 +725,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         if (virtualBlocking) {
           if (park) {
             VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_READ, now,
-                socketTimeout::get, this::close);
+                socketTimeout::get, this::forceCloseSocket);
           }
           core.configureVirtualBlocking(true);
         }
@@ -741,8 +766,16 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
       // CPD-ON
     }
 
+    private void forceCloseSocket() throws IOException {
+      closedOutputStream = true;
+      close();
+    }
+
     @Override
     public synchronized void close() throws IOException {
+      if (streamClosed || isClosed()) {
+        return;
+      }
       streamClosed = true;
       FileDescriptor fdesc = core.validFd();
       if (fdesc != null && getCore().isShutdownOnClose()) {
@@ -806,7 +839,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         if (virtualBlocking) {
           if (park) {
             VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_WRITE, now,
-                socketTimeout::get, this::close);
+                socketTimeout::get, this::forceCloseSocket);
           }
           core.configureVirtualBlocking(true);
         }
@@ -823,6 +856,14 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
               continue virtualThreadLoop;
             }
           } while (checkWriteInterruptedException(0));
+        } catch (NotConnectedSocketException | SocketClosedException
+            | BrokenPipeSocketException e) {
+          try {
+            forceCloseSocket();
+          } catch (Exception e2) {
+            e.addSuppressed(e2);
+          }
+          throw e;
         } catch (SocketTimeoutException e) {
           if (virtualBlocking) {
             // try again
@@ -876,7 +917,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
           if (virtualBlocking) {
             if (park) {
               VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_WRITE, now,
-                  socketTimeout::get, this::close);
+                  socketTimeout::get, this::forceCloseSocket);
             }
             core.configureVirtualBlocking(true);
           }
@@ -904,6 +945,14 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
                 throw new IOException("Unspecific error while writing");
               }
             }
+          } catch (NotConnectedSocketException | SocketClosedException
+              | BrokenPipeSocketException e) {
+            try {
+              forceCloseSocket();
+            } catch (Exception e2) {
+              e.addSuppressed(e2);
+            }
+            throw e;
           } catch (SocketTimeoutException e) {
             if (virtualBlocking) {
               // try again
@@ -927,9 +976,14 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
       } while (len > 0 && checkWriteInterruptedException(writtenTotal));
     }
 
+    private void forceCloseSocket() throws IOException {
+      closedInputStream = true;
+      close();
+    }
+
     @Override
     public synchronized void close() throws IOException {
-      if (streamClosed) {
+      if (streamClosed || isClosed()) {
         return;
       }
       streamClosed = true;
