@@ -16,6 +16,13 @@ On Mac, run the following command.
     
 If you don't have Homebrew, obtain it from [here](https://brew.sh/) first.
 
+Note that there currently is an incompatibility with mingw 12.0. To use mingw 11.0, run the
+following commands:
+
+    brew remove mingw-w64
+    wget https://raw.githubusercontent.com/Homebrew/homebrew-core/0247512f8a852f36f14b11809ac08a402de1f9e5/Formula/m/mingw-w64.rb
+    brew install ./mingw-w64.rb
+
 #[[###]]# github.com credentials
 
 1. On github.com, create an OAuth token with write permissions to the repo.
