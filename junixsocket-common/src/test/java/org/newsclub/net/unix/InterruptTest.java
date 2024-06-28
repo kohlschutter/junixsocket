@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix;
 
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.ServerSocketChannel;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -88,39 +90,42 @@ public abstract class InterruptTest<A extends SocketAddress> extends SocketTestB
       throw new TestAbortedNotAnIssueException("Virtual Threads are not supported by this JVM");
     }
 
-    try (ServerSocketChannel serverSocketChannel = newServerSocketChannelBindOn(newTempAddress())) {
-      serverSocketChannel.configureBlocking(true);
+    assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+      try (ServerSocketChannel serverSocketChannel = newServerSocketChannelBindOn(
+          newTempAddress())) {
+        serverSocketChannel.configureBlocking(true);
 
-      CompletableFuture<Thread> myThread = new CompletableFuture<>();
-      CompletableFuture<Boolean> result = new CompletableFuture<>();
+        CompletableFuture<Thread> myThread = new CompletableFuture<>();
+        CompletableFuture<Boolean> result = new CompletableFuture<>();
 
-      ExecutorService executor = ThreadUtil.newVirtualThreadPerTaskExecutor();
-      executor.submit(() -> {
-        myThread.complete(Thread.currentThread());
-        boolean closedByInterrupt = false;
-        try {
-          serverSocketChannel.accept();
-        } catch (ClosedByInterruptException e) {
-          if (Thread.interrupted()) {
-            closedByInterrupt = true;
-          } else {
+        ExecutorService executor = ThreadUtil.newVirtualThreadPerTaskExecutor();
+        executor.submit(() -> {
+          myThread.complete(Thread.currentThread());
+          boolean closedByInterrupt = false;
+          try {
+            serverSocketChannel.accept();
+          } catch (ClosedByInterruptException e) {
+            if (Thread.currentThread().isInterrupted()) {
+              closedByInterrupt = true;
+            } else {
+              e.printStackTrace();
+            }
+          } catch (IOException e) {
             e.printStackTrace();
+          } finally {
+            result.complete(closedByInterrupt);
           }
-        } catch (IOException e) {
-          e.printStackTrace();
-        } finally {
-          result.complete(closedByInterrupt);
-        }
-      });
+        });
 
-      Thread t = myThread.get();
-      t.interrupt();
-      // assertTrue(result.get(),
-      // "Thread should have thrown a \"Closed by interrupt\" SocketException, and the interrupt
-      // state should be set");
+        Thread t = myThread.get();
+        t.interrupt();
+        // assertTrue(result.get(),
+        // "Thread should have thrown a \"Closed by interrupt\" SocketException, and the interrupt
+        // state should be set");
 
-      executor.shutdownNow();
-      assertTrue(executor.awaitTermination(1, TimeUnit.SECONDS));
-    }
+        executor.shutdownNow();
+        assertTrue(executor.awaitTermination(1, TimeUnit.SECONDS));
+      }
+    });
   }
 }
