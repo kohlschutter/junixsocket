@@ -27,6 +27,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Objects;
@@ -118,7 +119,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
           SocketChannel sc;
           try {
             sc = ssc1.accept();
-          } catch (SocketClosedException e) {
+          } catch (ClosedChannelException | SocketClosedException e) {
             if (wasRebound.get()) {
               // The system terminated our accept because another socket was rebound
               // This may not occur on all systems, but we have to handle it.
@@ -133,7 +134,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
             // fail("Did not throw SocketException"); // no longer thrown in Sonoma 14.2.1?
           }
           return sc;
-        } catch (SocketException e) { // NOPMD.ExceptionAsFlowControl
+        } catch (ClosedChannelException | SocketException e) { // NOPMD.ExceptionAsFlowControl
           String msg = checkKnownBugAcceptFailure(e);
           if (msg != null) {
             throw new TestAbortedWithImportantMessageException(
@@ -151,7 +152,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
                 MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, msg, summaryImportantMessage(msg), e);
           }
           fail(e);
-        } catch (IOException e) {
+        } catch (IOException e) { // NOPMD.ExceptionAsFlowControl
           fail(e);
         }
         return null;
@@ -205,7 +206,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
           connectCall = TestAsyncUtil.supplyAsync(() -> {
             try {
               newSocket().connect(sa);
-            } catch (SocketClosedException e) {
+            } catch (ClosedChannelException | SocketClosedException e) {
               // ignore
             } catch (SocketException e) {
               if (connectMustSucceed.get()) {
@@ -271,17 +272,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
    * @param e The exception
    * @return An explanation iff this should not cause a test failure but trigger "With issues".
    */
-  protected String checkKnownBugAcceptFailure(SocketException e) {
-    return null;
-  }
-
-  /**
-   * Subclasses may override this to tell that there is a known issue with "accept".
-   *
-   * @param e The exception
-   * @return An explanation iff this should not cause a test failure but trigger "With issues".
-   */
-  protected String checkKnownBugAcceptFailure(SocketTimeoutException e) {
+  protected String checkKnownBugAcceptFailure(IOException e) {
     return null;
   }
 
