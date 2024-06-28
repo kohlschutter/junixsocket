@@ -80,6 +80,26 @@ public final class ThreadUtil {
   }
 
   /**
+   * Starts a new daemon thread.
+   *
+   * @param virtual If {@code true}, start a virtual Thread instead of a platform Thread; if
+   *          {@code false}, a "daemon" platform thread is started.
+   * @param run The runnable.
+   * @return The thread.
+   * @throws UnsupportedOperationException if not possible
+   */
+  public static Thread startNewDaemonThread(boolean virtual, Runnable run) {
+    if (virtual) {
+      throw new UnsupportedOperationException("Virtual threads are not supported by this JVM");
+    } else {
+      Thread t = new Thread(run);
+      t.setDaemon(true);
+      t.start();
+      return t;
+    }
+  }
+
+  /**
    * Ensures that the given operation is being executed on a system thread. If the current thread is
    * a virtual thread, the operation is executed <em>synchronously</em> via
    * {@link CompletableFuture#runAsync(Runnable)}: the virtual thread is suspended during that
