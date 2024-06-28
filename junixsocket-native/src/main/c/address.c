@@ -627,6 +627,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bytesToSockAd
         }
             break;
 #endif
+        default:
+            return -1; // unexpected; unsupported
     }
 
     return (jint)sockAddrLen;
