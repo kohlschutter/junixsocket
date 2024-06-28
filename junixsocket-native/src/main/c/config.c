@@ -27,7 +27,22 @@ CK_VISIBILITY_INTERNAL int clock_gettime(int ignored CK_UNUSED, struct timespec 
     spec->tv_nsec = time % 10000000LL * 100;
     return 0;
 }
-# endif
+#endif
+
+#if defined(_WIN32)
+// There's a problem with a missing symbol using mingw 12.0 from Homebrew
+// Use mingw 11 for the time being:
+//
+// brew remove mingw-w64
+// wget https://raw.githubusercontent.com/Homebrew/homebrew-core/0247512f8a852f36f14b11809ac08a402de1f9e5/Formula/m/mingw-w64.rb
+// brew install ./mingw-w64.rb
+//
+// Temporary fix for mingw 12:
+//FILE * __cdecl __imp___iob_func() {
+//    return NULL;
+//}
+
+#endif
 
 #if defined(_OS400)
 // https://www.ibm.com/docs/en/i/7.5?topic=exceptions-error-conditions
