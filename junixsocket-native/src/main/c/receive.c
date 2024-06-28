@@ -276,7 +276,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_read(
     jint returnValue;
     if(count < 0) {
         // read(2) returns -1 on error. Java throws an Exception.
-        if(errno == EWOULDBLOCK) {
+        if(errno == EWOULDBLOCK && checkNonBlocking(handle, socket_errno)) {
             returnValue = -2;
         } else {
             _throwErrnumException(env, errno, fd);
