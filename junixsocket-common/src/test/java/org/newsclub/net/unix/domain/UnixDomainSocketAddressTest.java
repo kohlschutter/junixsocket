@@ -41,10 +41,10 @@ public class UnixDomainSocketAddressTest extends SocketTestBase<AFUNIXSocketAddr
   public void testConvertUnixDomainSocketAddress() throws Exception {
     File f = new File("/tmp/hello");
     UnixDomainSocketAddress addr = UnixDomainSocketAddress.of(f.getPath());
-    
+
     AFUNIXSocketAddress usa = AFUNIXSocketAddress.of(addr);
     assertEquals(f, usa.getFile());
-    
+
     assertTrue(AFSocketAddress.canMap(addr));
     assertEquals(usa, AFSocketAddress.mapOrFail(addr));
   }
