@@ -17,12 +17,16 @@
  */
 package org.newsclub.net.unix;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.net.ProtocolFamily;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
 import java.net.SocketOption;
 import java.nio.channels.ClosedByInterruptException;
+import java.net.StandardProtocolFamily;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.spi.SelectorProvider;
@@ -215,5 +219,31 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
   @Override
   public void setShutdownOnClose(boolean enabled) {
     socket().setShutdownOnClose(enabled);
+  }
+
+  /**
+   * Opens a server-socket channel. The {@code family} parameter specifies the {@link ProtocolFamily
+   * protocol family} of the channel's socket.
+   * <p>
+   * If the {@link ProtocolFamily} is of an {@link AFProtocolFamily}, or {@code UNIX}, the
+   * corresponding junixsocket implementation is used. In all other cases, the call is delegated to
+   * {@link ServerSocketChannel#open()}.
+   *
+   * @param family The protocol family.
+   * @return The new {@link ServerSocketChannel}.
+   * @throws IOException on error.
+   */
+  public static ServerSocketChannel open(ProtocolFamily family) throws IOException {
+    requireNonNull(family);
+
+    if (family instanceof AFProtocolFamily) {
+      return ((AFProtocolFamily) family).openServerSocketChannel();
+    } else if ("UNIX".equals(family.name())) {
+      return AFUNIXServerSocketChannel.open();
+    } else if (family instanceof StandardProtocolFamily) {
+      return ServerSocketChannel.open();
+    } else {
+      throw new UnsupportedOperationException("Protocol family not supported");
+    }
   }
 }

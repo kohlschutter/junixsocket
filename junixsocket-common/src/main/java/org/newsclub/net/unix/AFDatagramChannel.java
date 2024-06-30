@@ -17,14 +17,18 @@
  */
 package org.newsclub.net.unix;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.ProtocolFamily;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketOption;
+import java.net.StandardProtocolFamily;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.MembershipKey;
@@ -270,5 +274,31 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
   @Override
   public void setShutdownOnClose(boolean enabled) {
     getAFCore().setShutdownOnClose(enabled);
+  }
+
+  /**
+   * Opens a datagram channel. The {@code family} parameter specifies the {@link ProtocolFamily
+   * protocol family} of the channel's socket.
+   * <p>
+   * If the {@link ProtocolFamily} is of an {@link AFProtocolFamily}, or {@code UNIX}, the
+   * corresponding junixsocket implementation is used. In all other cases, the call is delegated to
+   * {@link DatagramChannel#open()}.
+   *
+   * @param family The protocol family.
+   * @return The new {@link DatagramChannel}.
+   * @throws IOException on error.
+   */
+  public static DatagramChannel open(ProtocolFamily family) throws IOException {
+    requireNonNull(family);
+
+    if (family instanceof AFProtocolFamily) {
+      return ((AFProtocolFamily) family).openDatagramChannel();
+    } else if ("UNIX".equals(family.name())) {
+      return AFUNIXDatagramChannel.open();
+    } else if (family instanceof StandardProtocolFamily) {
+      return DatagramChannel.open();
+    } else {
+      throw new UnsupportedOperationException("Protocol family not supported");
+    }
   }
 }
