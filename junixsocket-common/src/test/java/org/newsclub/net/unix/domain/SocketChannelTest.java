@@ -67,9 +67,10 @@ public final class SocketChannelTest extends
     }
 
     // Java 16+: We can create JVM-specific AF_UNIX channels
-    try (SocketChannel ch = SocketChannel.open(unix)) {
-      assertNotEquals(AFUNIXSocketChannel.class, ch.getClass());
-    }
+    // (omitted here for compatibilty with Java 14 and lower)
+    // try (SocketChannel ch = SocketChannel.open(unix)) {
+    // assertNotEquals(AFUNIXSocketChannel.class, ch.getClass());
+    // }
 
     // When we call AF*Channel#open with StandardProtocolFamily.UNIX,
     // we will get our implementations
