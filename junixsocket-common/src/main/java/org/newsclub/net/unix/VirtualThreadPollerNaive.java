@@ -71,21 +71,24 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
           Thread thread = Thread.currentThread();
           PollFd pfd = new PollFd(new FileDescriptor[] {fd}, new int[] {mode});
           do {
+            if (thread.isInterrupted() || !fd.valid()) {
+              return POLL_INTERRUPTED_SENTINEL;
+            }
             try {
               NativeUnixSocket.poll(pfd, POLL_INTERVAL_MILLIS);
             } catch (IOException e) {
               return e;
             }
-            if (thread.isInterrupted()) {
+            if (thread.isInterrupted() || !fd.valid()) {
               return POLL_INTERRUPTED_SENTINEL;
             }
             if (pfd.rops[0] != 0) {
               break;
             }
 
-            int timeoutSecs = timeout.get();
-            if (timeoutSecs > 0) {
-              if (((System.currentTimeMillis() - now) / 1_000) >= timeoutSecs) {
+            int timeoutMillis = timeout.get();
+            if (timeoutMillis > 0) {
+              if ((System.currentTimeMillis() - now) >= timeoutMillis) {
                 // handle in calling thread
                 break;
               }
@@ -138,9 +141,9 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
       throw SocketClosedByInterruptException.newInstanceAndClose(closeOnInterrupt); // NOPMD.PreserveStackTrace
     }
 
-    int timeoutSecs = timeout.get();
-    if (timeoutSecs > 0) {
-      if (((System.currentTimeMillis() - now) / 1_000) >= timeoutSecs) {
+    int timeoutMillis = timeout.get();
+    if (timeoutMillis > 0) {
+      if ((System.currentTimeMillis() - now) >= timeoutMillis) {
         throw new SocketTimeoutException();
       }
     }
