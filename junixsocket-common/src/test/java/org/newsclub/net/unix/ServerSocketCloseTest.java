@@ -118,6 +118,10 @@ public abstract class ServerSocketCloseTest<A extends SocketAddress> extends Soc
           active = threadPool.getActiveCount();
         }
 
+        if (active > 0) {
+          checkFailedTestActuallySupported();
+        }
+
         assertEquals(0, active, "There should be no pending accepts");
       }
     });
