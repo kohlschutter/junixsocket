@@ -167,7 +167,7 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
           if (!reuseAddress && !socketDomainPermitsDoubleBind()) {
             fail("Did not throw expected SocketException (Address already in use)");
           }
-        } catch (SocketException e) {
+        } catch (ClosedChannelException | SocketException e) {
           if (!reuseAddress) {
             // expected
           } else {

@@ -339,8 +339,9 @@ public class AFSocketServerConnector extends AbstractConnector {
       try {
         SocketChannel channel = sc.accept();
         accepted(channel);
-      } catch (SocketException e) {
+      } catch (IOException e) {
         boolean takenOver = !sc.isOpen() || sc.getLocalAddress() == null;
+
         if (!takenOver && sc instanceof AFServerSocketChannel<?>) {
           takenOver = !((AFServerSocketChannel<?>) sc).isLocalSocketAddressValid();
         }
@@ -349,6 +350,8 @@ public class AFSocketServerConnector extends AbstractConnector {
           LOG.warn("Another server has taken over our address");
           ForkJoinPool.commonPool().execute(this::checkServerStop);
         }
+
+        Thread.currentThread().interrupt();
         throw (ClosedByInterruptException) new ClosedByInterruptException().initCause(e);
       }
     }
