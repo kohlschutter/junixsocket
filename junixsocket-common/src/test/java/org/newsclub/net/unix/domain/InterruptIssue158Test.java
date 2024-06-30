@@ -72,28 +72,32 @@ public class InterruptIssue158Test {
   }
 
   private static List<Arguments> clientProvider() {
-    return Arrays.asList(socket(false, AFUNIXSocket::newInstance, s -> s.connect(SOCKET_ADDR),
-        SocketException.class, AFUNIXSocket::isClosed), socket(true, () -> AFUNIXSocket.connectTo(
-            SOCKET_ADDR), s -> s.getInputStream().read(), SocketException.class,
-            AFUNIXSocket::isClosed), socket(true, () -> AFUNIXSocket.connectTo(SOCKET_ADDR), s -> s
-                .getOutputStream().write(10), SocketException.class, AFUNIXSocket::isClosed),
-
-        socket(false, AFUNIXSocketChannel::open, s -> s.connect(SOCKET_ADDR),
-            ClosedChannelException.class, s -> !s.isOpen()), socket(true,
-                InterruptIssue158Test::connectSocketChannel, s -> s.read(ByteBuffer.allocate(1)),
-                ClosedChannelException.class, s -> !s.isOpen()), socket(true,
-                    InterruptIssue158Test::connectSocketChannel, s -> s.write(ByteBuffer.allocate(
-                        1)), ClosedChannelException.class, s -> !s.isOpen()));
+    return Arrays.asList( //
+        // variants
+        socket(false, AFUNIXSocket::newInstance, s -> s.connect(SOCKET_ADDR), SocketException.class,
+            AFUNIXSocket::isClosed), //
+        socket(true, () -> AFUNIXSocket.connectTo(SOCKET_ADDR), s -> s.getInputStream().read(),
+            SocketException.class, AFUNIXSocket::isClosed), //
+        socket(true, () -> AFUNIXSocket.connectTo(SOCKET_ADDR), s -> s.getOutputStream().write(10),
+            SocketException.class, AFUNIXSocket::isClosed), socket(false, AFUNIXSocketChannel::open,
+                s -> s.connect(SOCKET_ADDR), ClosedChannelException.class, s -> !s.isOpen()), //
+        socket(true, InterruptIssue158Test::connectSocketChannel, s -> s.read(ByteBuffer.allocate(
+            1)), ClosedChannelException.class, s -> !s.isOpen()), //
+        socket(true, InterruptIssue158Test::connectSocketChannel, s -> s.write(ByteBuffer.allocate(
+            1)), ClosedChannelException.class, s -> !s.isOpen()) //
+    );
   }
 
   private static List<Arguments> serverProvider() {
-    return Arrays.asList(serverSocket(() -> AFUNIXServerSocket.bindOn(SOCKET_ADDR),
-        AFUNIXServerSocket::accept, SocketException.class, AFUNIXServerSocket::isClosed),
+    return Arrays.asList( //
+        serverSocket(() -> AFUNIXServerSocket.bindOn(SOCKET_ADDR), AFUNIXServerSocket::accept,
+            SocketException.class, AFUNIXServerSocket::isClosed), //
         serverSocket(InterruptIssue158Test::bindServerSocketChannel,
-            AFUNIXServerSocketChannel::accept, ClosedChannelException.class, s -> !s.isOpen()));
+            AFUNIXServerSocketChannel::accept, ClosedChannelException.class, s -> !s.isOpen())//
+    );
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "variant {index}")
   @MethodSource("clientProvider")
   <T extends AutoCloseable> void testClientInterruption(boolean acceptConnections,
       IOSupplier<T> socket, IOConsumer<T> blockingOp, Class<?> expectedException,
@@ -102,7 +106,7 @@ public class InterruptIssue158Test {
         expectedException, closeCheck));
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "variant {index}")
   @MethodSource("clientProvider")
   <T extends AutoCloseable> void testClientInterruptionWithDelay(boolean acceptConnections,
       IOSupplier<T> socket, IOConsumer<T> blockingOp, Class<?> expectedException,
@@ -111,7 +115,7 @@ public class InterruptIssue158Test {
         expectedException, closeCheck));
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "variant {index}")
   @MethodSource("serverProvider")
   <T extends AutoCloseable> void testServerInterruption(IOSupplier<T> socket,
       IOConsumer<T> blockingOp, Class<?> expectedException, Predicate<T> closeCheck)
@@ -123,7 +127,7 @@ public class InterruptIssue158Test {
     }
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "variant {index}")
   @MethodSource("serverProvider")
   <T extends AutoCloseable> void testServerInterruptionWithDelay(IOSupplier<T> socket,
       IOConsumer<T> blockingOp, Class<?> expectedException, Predicate<T> closeCheck)
