@@ -59,6 +59,7 @@ public abstract class ServerSocketCloseTest<A extends SocketAddress> extends Soc
     testUnblockAccepts(0);
   }
 
+  @SuppressWarnings("PMD.CognitiveComplexity")
   private void testUnblockAccepts(int timeout) throws Exception {
     assertTimeoutPreemptively(Duration.ofSeconds(30), () -> {
       try (ServerSocket serverSocket = newServerSocketBindOn(getServerBindAddress())) {
@@ -110,6 +111,13 @@ public abstract class ServerSocketCloseTest<A extends SocketAddress> extends Soc
         if (active == numThreads) {
           checkFailedTestActuallySupported();
         }
+
+        int attemptsLeft = 50;
+        while (active > 0 && attemptsLeft-- > 0) {
+          Thread.sleep(100);
+          active = threadPool.getActiveCount();
+        }
+
         assertEquals(0, active, "There should be no pending accepts");
       }
     });
