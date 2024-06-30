@@ -21,6 +21,10 @@ import java.io.InterruptedIOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
@@ -32,8 +36,32 @@ import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
  */
 @IgnoreJRERequirement // see src/main/java20
 public final class ThreadUtil {
+  private static final ThreadLocal<Boolean> TREAT_AS_VIRTUAL_THREAD = new ThreadLocal<>();
+
   private ThreadUtil() {
     throw new IllegalStateException("No instances");
+  }
+
+  /**
+   * Checks if the current platform Thread is treated as a virtual one.
+   *
+   * @return {@code true} if so.
+   */
+  private static boolean isTreatAsVirtualThread() {
+    return Boolean.TRUE.equals(TREAT_AS_VIRTUAL_THREAD.get());
+  }
+
+  /**
+   * Marks the current platform {@link Thread} to be treated as a virtual thread, if possible. Has
+   * no effect if the current Thread already is a virtual thread.
+   *
+   * @param b {@code true} to enable treatment of a platform thread as a virtual thread.
+   */
+  public static void setTreatAsVirtualThread(boolean b) {
+    if (isVirtualThread()) {
+      return;
+    }
+    TREAT_AS_VIRTUAL_THREAD.set(b);
   }
 
   /**
@@ -42,7 +70,7 @@ public final class ThreadUtil {
    * @return {@code true} if so.
    */
   public static boolean isVirtualThread() {
-    return false;
+    return isTreatAsVirtualThread();
   }
 
   /**
@@ -56,13 +84,15 @@ public final class ThreadUtil {
   }
 
   /**
-   * Returns a new "virtual thread per task executor".
+   * Returns a new "virtual thread per task executor". If virtual threads are not supported by this
+   * JVM, a new platform thread are created for each task, and such threads are marked to be treated
+   * as virtual threads.
    *
    * @return The new executor service.
-   * @throws UnsupportedOperationException if not possible
    */
   public static ExecutorService newVirtualThreadPerTaskExecutor() {
-    throw new UnsupportedOperationException("Virtual threads are not supported by this JVM");
+    return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 0L, TimeUnit.SECONDS,
+        new SynchronousQueue<Runnable>(), (r) -> startNewDaemonThread(true, r));
   }
 
   /**
@@ -82,21 +112,24 @@ public final class ThreadUtil {
   /**
    * Starts a new daemon thread.
    *
-   * @param virtual If {@code true}, start a virtual Thread instead of a platform Thread; if
+   * @param virtual If {@code true}, try to start a virtual Thread instead of a platform Thread (or
+   *          at least pretend it's a virtual thread if they're not supported natively); if
    *          {@code false}, a "daemon" platform thread is started.
    * @param run The runnable.
    * @return The thread.
-   * @throws UnsupportedOperationException if not possible
    */
   public static Thread startNewDaemonThread(boolean virtual, Runnable run) {
     if (virtual) {
-      throw new UnsupportedOperationException("Virtual threads are not supported by this JVM");
-    } else {
-      Thread t = new Thread(run);
-      t.setDaemon(true);
-      t.start();
-      return t;
+      final Runnable run0 = run;
+      run = () -> {
+        setTreatAsVirtualThread(true);
+        run0.run();
+      };
     }
+    Thread t = new Thread(run);
+    t.setDaemon(true);
+    t.start();
+    return t;
   }
 
   /**
@@ -109,6 +142,16 @@ public final class ThreadUtil {
    * @throws InterruptedException on interrupt.
    */
   public static void runOnSystemThread(Runnable op) throws InterruptedException {
-    op.run();
+    boolean treatAsVirtual = isTreatAsVirtualThread();
+    if (treatAsVirtual) {
+      setTreatAsVirtualThread(false);
+    }
+    try {
+      op.run();
+    } finally {
+      if (treatAsVirtual) {
+        setTreatAsVirtualThread(treatAsVirtual);
+      }
+    }
   }
 }
