@@ -19,6 +19,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 - Fix interoperability of junixsocket-mysql and GraalVM native-image
 - Fix socket-closed state upon exceptions indicating a closed socket descriptor
 - Fix exceptions for channels: Throw ClosedChannelException instead of SocketClosedException
+- Fix a flaky selftest when VSOCK is not supported
 - Improve compatibility and performance with Virtual Threads in Java 21 or newer (JEP 444)
 - Improve interopability with Java 15 UnixDomainSocketAddress and StandardProtocolFamily.UNIX
 - Improve selftest stability and logging
