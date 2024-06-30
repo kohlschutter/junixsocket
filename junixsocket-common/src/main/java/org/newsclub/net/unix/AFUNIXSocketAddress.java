@@ -329,7 +329,6 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFUNIXSocketAddress unwrap(SocketAddress address) throws SocketException {
-    // FIXME: add support for UnixDomainSocketAddress
     Objects.requireNonNull(address);
     AFSupplier<AFUNIXSocketAddress> supplier = supportedAddressSupplier(address);
     if (supplier == null) {

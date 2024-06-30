@@ -411,6 +411,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
           }
         }
       }
+      endpoint = mapOrFail(endpoint, supportedAddressClass);
     }
 
     Objects.requireNonNull(endpoint);
@@ -658,15 +659,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     }
     Objects.requireNonNull(address);
 
-    if (!(address instanceof AFSocketAddress)) {
-      AFSupplier<? extends AFSocketAddress> supp = AFUNIXSocketAddress.supportedAddressSupplier(
-          address);
-      address = supp == null ? null : supp.get();
-      if (address == null) {
-        throw new SocketException("Unsupported address");
-      }
-    }
-
+    address = AFSocketAddress.mapOrFail(address, AFSocketAddress.class);
     AFSocketAddress socketAddress = (AFSocketAddress) address;
 
     byte[] addr = socketAddress.getBytes();
@@ -981,5 +974,90 @@ public abstract class AFSocketAddress extends InetSocketAddress {
         throw new NumberFormatException("String value exceeds " + "range of unsigned int: " + s);
       }
     }
+  }
+
+  /**
+   * Checks if the given {@link SocketAddress} can be mapped to an {@link AFSocketAddress}. This is
+   * the case if the address either already is an {@link AFSocketAddress}, {@code null}, or
+   * something that has an equivalent representation, such as {@code UnixDomainSocketAddress}.
+   *
+   * @param addr The address.
+   * @return {@code true} if mappable.
+   */
+  public static boolean canMap(SocketAddress addr) {
+    return canMap(addr, AFSocketAddress.class);
+  }
+
+  /**
+   * Checks if the given {@link SocketAddress} can be mapped to a specific {@link AFSocketAddress}
+   * subclass. This is the case if the address either already is such an {@link AFSocketAddress},
+   * {@code null}, or something that has an equivalent representation, such as
+   * {@code UnixDomainSocketAddress}.
+   *
+   * @param addr The address.
+   * @param targetAddressClass The target address class to map to.
+   * @return {@code true} if mappable.
+   */
+  public static boolean canMap(SocketAddress addr,
+      Class<? extends AFSocketAddress> targetAddressClass) {
+    if (addr == null) {
+      return true;
+    } else if (targetAddressClass.isAssignableFrom(addr.getClass())) {
+      return true;
+    }
+    AFSupplier<? extends AFSocketAddress> supplier = SocketAddressUtil.supplyAFSocketAddress(addr);
+    if (supplier == null) {
+      return false;
+    }
+    AFSocketAddress afAddr = supplier.get();
+    if (afAddr == null) {
+      return false;
+    }
+    return (targetAddressClass.isAssignableFrom(afAddr.getClass()));
+  }
+
+  /**
+   * Maps the given address to an {@link AFSocketAddress}.
+   *
+   * @param addr The address.
+   * @return The {@link AFSocketAddress}.
+   * @throws IllegalArgumentException if the address could not be mapped.
+   * @see #canMap(SocketAddress,Class)
+   */
+  public static AFSocketAddress mapOrFail(SocketAddress addr) {
+    return mapOrFail(addr, AFSocketAddress.class);
+  }
+
+  /**
+   * Maps the given address to a specific {@link AFSocketAddress} type.
+   *
+   * @param addr The address.
+   * @param targetAddressClass The target address class.
+   * @param <A> The target address type.
+   * @return The {@link AFSocketAddress}.
+   * @throws IllegalArgumentException if the address could not be mapped.
+   * @see #canMap(SocketAddress,Class)
+   */
+  @SuppressWarnings("null")
+  public static <A extends AFSocketAddress> A mapOrFail(SocketAddress addr,
+      Class<A> targetAddressClass) {
+    if (addr == null) {
+      return null;
+    } else if (targetAddressClass.isAssignableFrom(addr.getClass())) {
+      return targetAddressClass.cast(addr);
+    }
+
+    AFSupplier<? extends AFSocketAddress> supplier = SocketAddressUtil.supplyAFSocketAddress(addr);
+    if (supplier == null) {
+      throw new IllegalArgumentException("Can only bind to endpoints of type "
+          + AFSocketAddress.class.getName() + ": " + addr);
+    }
+    AFSocketAddress afAddr = supplier.get();
+    if (afAddr == null || !targetAddressClass.isAssignableFrom(afAddr.getClass())) {
+      throw new IllegalArgumentException("Can only bind to endpoints of type "
+          + AFSocketAddress.class.getName() + ", and this specific address is unsupported: "
+          + addr);
+    }
+    return targetAddressClass.cast(afAddr);
   }
 }

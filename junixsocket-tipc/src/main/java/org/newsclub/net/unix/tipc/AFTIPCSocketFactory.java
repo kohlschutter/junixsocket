@@ -36,7 +36,7 @@ public abstract class AFTIPCSocketFactory extends AFSocketFactory<AFTIPCSocketAd
    * Creates a {@link AFTIPCSocketFactory}.
    */
   protected AFTIPCSocketFactory() {
-    super();
+    super(AFTIPCSocketAddress.class);
   }
 
   @Override

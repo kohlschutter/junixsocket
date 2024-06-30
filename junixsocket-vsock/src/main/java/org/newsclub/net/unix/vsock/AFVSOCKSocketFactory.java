@@ -34,7 +34,7 @@ public abstract class AFVSOCKSocketFactory extends AFSocketFactory<AFVSOCKSocket
    * Creates a {@link AFVSOCKSocketFactory}.
    */
   protected AFVSOCKSocketFactory() {
-    super();
+    super(AFVSOCKSocketAddress.class);
   }
 
   @Override

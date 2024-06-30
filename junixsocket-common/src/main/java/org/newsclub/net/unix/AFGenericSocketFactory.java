@@ -29,7 +29,7 @@ abstract class AFGenericSocketFactory extends AFSocketFactory<AFGenericSocketAdd
    * Creates a {@link AFGenericSocketFactory}.
    */
   protected AFGenericSocketFactory() {
-    super();
+    super(AFGenericSocketAddress.class);
   }
 
   @Override

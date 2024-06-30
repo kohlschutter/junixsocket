@@ -255,10 +255,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
       bindErrorOk = false;
     }
 
-    if (!(endpoint instanceof AFSocketAddress)) {
-      throw new IllegalArgumentException("Can only bind to endpoints of type "
-          + AFSocketAddress.class.getName() + ": " + endpoint);
-    }
+    endpoint = AFSocketAddress.mapOrFail(endpoint);
 
     A endpointCast;
     try {

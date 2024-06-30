@@ -36,6 +36,7 @@ import java.net.SocketOptions;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -387,18 +388,17 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     if (addr == null) {
       throw new IllegalArgumentException("Cannot bind to null address");
     }
-    if (!(addr instanceof AFSocketAddress)) {
-      throw new SocketException("Cannot bind to this type of address: " + addr.getClass());
-    }
-
-    bound.set(true);
 
     if (addr == AFSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD
+      bound.set(true);
       core.inode.set(0);
       return;
     }
 
-    AFSocketAddress socketAddress = (AFSocketAddress) addr;
+    addr = AFSocketAddress.mapOrFail(addr, addressFamily.getSocketAddressClass());
+    bound.set(true);
+
+    AFSocketAddress socketAddress = Objects.requireNonNull((AFSocketAddress) addr);
 
     this.setSocketAddress(socketAddress);
     try (Lease<ByteBuffer> abLease = socketAddress.getNativeAddressDirectBuffer()) {
@@ -459,10 +459,8 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
       return false;
     }
 
-    if (!(addr instanceof AFSocketAddress)) {
-      throw new SocketException("Cannot connect to this type of address: " + addr.getClass());
-    }
-    AFSocketAddress socketAddress = (AFSocketAddress) addr;
+    addr = AFSocketAddress.mapOrFail(addr, addressFamily.getSocketAddressClass());
+    AFSocketAddress socketAddress = Objects.requireNonNull((AFSocketAddress) addr);
 
     final boolean virtualBlocking = (ThreadUtil.isVirtualThread() && core.isBlocking()) || core
         .isVirtualBlocking();

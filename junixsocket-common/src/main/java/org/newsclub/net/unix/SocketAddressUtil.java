@@ -40,6 +40,17 @@ final class SocketAddressUtil {
    * @param address The address.
    * @return A supplier for the given address, or {@code null}.
    */
+  static AFSupplier<? extends AFSocketAddress> supplyAFSocketAddress(SocketAddress address) {
+    return supplyAFUNIXSocketAddress(address);
+  }
+
+  /**
+   * Try to convert a {@link SocketAddress} that is not a {@link AFUNIXSocketAddress} to one that
+   * is.
+   *
+   * @param address The address.
+   * @return A supplier for the given address, or {@code null}.
+   */
   static AFSupplier<AFUNIXSocketAddress> supplyAFUNIXSocketAddress(SocketAddress address) {
     if (address instanceof UnixDomainSocketAddress) {
       UnixDomainSocketAddress udsa = (UnixDomainSocketAddress) address;

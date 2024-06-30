@@ -41,7 +41,7 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory<AFUNIXSocketAd
    * Creates a {@link AFUNIXSocketFactory}.
    */
   protected AFUNIXSocketFactory() {
-    super();
+    super(AFUNIXSocketAddress.class);
   }
 
   @Override

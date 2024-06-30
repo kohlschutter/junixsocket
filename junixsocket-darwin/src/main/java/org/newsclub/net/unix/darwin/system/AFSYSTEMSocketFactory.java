@@ -32,7 +32,7 @@ public abstract class AFSYSTEMSocketFactory extends AFSocketFactory<AFSYSTEMSock
    * Creates a {@link AFSYSTEMSocketFactory}.
    */
   protected AFSYSTEMSocketFactory() {
-    super();
+    super(AFSYSTEMSocketAddress.class);
   }
 
   @Override

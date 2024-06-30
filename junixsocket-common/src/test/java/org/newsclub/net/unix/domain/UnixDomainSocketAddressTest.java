@@ -18,11 +18,13 @@
 package org.newsclub.net.unix.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.net.UnixDomainSocketAddress;
 
 import org.junit.jupiter.api.Test;
+import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.SocketTestBase;
 
@@ -39,8 +41,11 @@ public class UnixDomainSocketAddressTest extends SocketTestBase<AFUNIXSocketAddr
   public void testConvertUnixDomainSocketAddress() throws Exception {
     File f = new File("/tmp/hello");
     UnixDomainSocketAddress addr = UnixDomainSocketAddress.of(f.getPath());
+    
     AFUNIXSocketAddress usa = AFUNIXSocketAddress.of(addr);
-
     assertEquals(f, usa.getFile());
+    
+    assertTrue(AFSocketAddress.canMap(addr));
+    assertEquals(usa, AFSocketAddress.mapOrFail(addr));
   }
 }
