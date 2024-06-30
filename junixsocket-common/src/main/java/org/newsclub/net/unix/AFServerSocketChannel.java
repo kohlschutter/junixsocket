@@ -25,9 +25,7 @@ import java.net.ProtocolFamily;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
 import java.net.SocketOption;
-import java.nio.channels.ClosedByInterruptException;
 import java.net.StandardProtocolFamily;
-import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Objects;
@@ -110,7 +108,6 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
     return afSocket;
   }
 
-  @SuppressWarnings("null")
   @Override
   public AFSocketChannel<A> accept() throws IOException {
     boolean complete = false;
@@ -119,35 +116,11 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
       AFSocket<A> socket = afSocket.accept1(false);
       complete = true;
       return socket == null ? null : socket.getChannel();
-    } catch (SocketClosedByInterruptException e) {
-      throw closeAndThrow(e.asClosedByInterruptException()); // NOPMD.PreserveStackTrace
-    } catch (BrokenPipeSocketException | ClosedChannelException e) { // NOPMD.ExceptionAsFlowControl
-      if (Thread.currentThread().isInterrupted()) {
-        throw closeAndThrow((ClosedByInterruptException) new ClosedByInterruptException().initCause(
-            e));
-      } else if (e instanceof BrokenPipeSocketException) { // NOPMD.AvoidInstanceofChecksInCatchClause
-        throw closeAndThrow((ClosedChannelException) new ClosedChannelException().initCause(e));
-      } else {
-        throw closeAndThrow(e);
-      }
-    } finally { // NOPMD.DoNotThrowExceptionInFinally
-      try {
-        end(complete);
-      } catch (ClosedByInterruptException e) {
-        throw closeAndThrow(e);
-      }
+    } catch (IOException e) {
+      throw InterruptibleChannelUtil.handleException(this, e);
+    } finally {
+      InterruptibleChannelUtil.endInterruptable(this, this::end, complete);
     }
-  }
-
-  private <T extends Exception> T closeAndThrow(@NonNull T exc) {
-    if (isOpen()) {
-      try {
-        close();
-      } catch (IOException e2) {
-        exc.addSuppressed(e2);
-      }
-    }
-    return exc;
   }
 
   @Override
