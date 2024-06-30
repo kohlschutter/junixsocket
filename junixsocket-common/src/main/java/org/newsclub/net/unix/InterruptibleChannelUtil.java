@@ -48,10 +48,17 @@ final class InterruptibleChannelUtil {
    *          method.
    * @param complete {@code true} if the block started with {@code begin} succeeded without an
    *          exception.
+   * @param exception An optional exception that was caught in the try-catch-finally block.
    * @throws AsynchronousCloseException on error.
    */
   static void endInterruptable(AbstractInterruptibleChannel channel, EndMethod end,
-      boolean complete) throws AsynchronousCloseException {
+      boolean complete, IOException exception) throws AsynchronousCloseException {
+    if (!complete) {
+      if (exception instanceof ClosedChannelException) {
+        // we already have caught a valid exception; we don't need to throw one from within "end"
+        complete = true;
+      }
+    }
     try {
       end.end(complete);
     } catch (AsynchronousCloseException e) {
@@ -80,6 +87,7 @@ final class InterruptibleChannelUtil {
    * @param e The exception
    * @return The exception.
    */
+  @SuppressWarnings("null")
   static IOException handleException(AbstractInterruptibleChannel channel, IOException e) {
     if (e instanceof SocketClosedException || e instanceof ClosedChannelException
         || e instanceof BrokenPipeSocketException) {
@@ -89,6 +97,11 @@ final class InterruptibleChannelUtil {
         if (!t.isInterrupted()) {
           t.interrupt();
         }
+      }
+
+      if (!(e instanceof ClosedChannelException)) {
+        // Make sure the caught exception is transformed into the expected exception
+        e = (ClosedChannelException) new ClosedChannelException().initCause(e);
       }
       return closeAndThrow(channel, e);
     } else {

@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ServerSocketChannel;
@@ -52,8 +51,8 @@ import org.newsclub.net.unix.ThreadUtil;
 
 /**
  * Test interrupt-related behavior, as discussed in
- * <a href="https://github.com/kohlschutter/junixsocket/issues/158">issue 158.</a>
- * 
+ * <a href="https://github.com/kohlschutter/junixsocket/issues/158">issue 158</a>.
+ *
  * @author https://github.com/cenodis
  * @author Christian Kohlschütter
  */
@@ -80,18 +79,18 @@ public class InterruptIssue158Test {
                 .getOutputStream().write(10), SocketException.class, AFUNIXSocket::isClosed),
 
         socket(false, AFUNIXSocketChannel::open, s -> s.connect(SOCKET_ADDR),
-            AsynchronousCloseException.class, s -> !s.isOpen()), socket(true,
+            ClosedChannelException.class, s -> !s.isOpen()), socket(true,
                 InterruptIssue158Test::connectSocketChannel, s -> s.read(ByteBuffer.allocate(1)),
-                AsynchronousCloseException.class, s -> !s.isOpen()), socket(true,
+                ClosedChannelException.class, s -> !s.isOpen()), socket(true,
                     InterruptIssue158Test::connectSocketChannel, s -> s.write(ByteBuffer.allocate(
-                        1)), AsynchronousCloseException.class, s -> !s.isOpen()));
+                        1)), ClosedChannelException.class, s -> !s.isOpen()));
   }
 
   private static List<Arguments> serverProvider() {
     return Arrays.asList(serverSocket(() -> AFUNIXServerSocket.bindOn(SOCKET_ADDR),
         AFUNIXServerSocket::accept, SocketException.class, AFUNIXServerSocket::isClosed),
         serverSocket(InterruptIssue158Test::bindServerSocketChannel,
-            AFUNIXServerSocketChannel::accept, AsynchronousCloseException.class, s -> !s.isOpen()));
+            AFUNIXServerSocketChannel::accept, ClosedChannelException.class, s -> !s.isOpen()));
   }
 
   @ParameterizedTest
@@ -212,10 +211,10 @@ public class InterruptIssue158Test {
         // These tests usually expect the "Thread interrupted" state to be set.
         // However, when we accept any SocketException to be thrown, that state is not
         // deterministic.
-        // Also, when we expect any kind of AsynchronousCloseException, it is only expected to be
+        // Also, when we expect any kind of ClosedChannelException, it is only expected to be
         // set when the actual exception thrown is from the ClosedByInterruptException subclass.
         boolean ignoreInterruptState = SocketException.class.equals(expectedException);
-        boolean interruptStateOK = Thread.interrupted() || (AsynchronousCloseException.class.equals(
+        boolean interruptStateOK = Thread.interrupted() || (ClosedChannelException.class.equals(
             expectedException) && !(e instanceof ClosedByInterruptException));
 
         assertAll(() -> assertInstanceOf(expectedException, e, "Socket exception"),

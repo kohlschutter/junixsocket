@@ -200,6 +200,7 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
   @Override
   public final boolean connect(SocketAddress remote) throws IOException {
     boolean complete = false;
+    IOException exception = null;
     try {
       begin();
       boolean connected = afSocket.connect0(remote, 0);
@@ -209,9 +210,9 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
       complete = true;
       return connected;
     } catch (IOException e) {
-      throw InterruptibleChannelUtil.handleException(this, e);
-    } finally { // NOPMD.DoNotThrowExceptionInFinally
-      InterruptibleChannelUtil.endInterruptable(this, this::end, complete);
+      throw (exception = InterruptibleChannelUtil.handleException(this, e)); // NOPMD.PreserveStackTrace
+    } finally {
+      InterruptibleChannelUtil.endInterruptable(this, this::end, complete, exception);
     }
   }
 
@@ -224,6 +225,7 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
     }
 
     boolean complete = false;
+    IOException exception = null;
     try {
       begin();
       boolean connected = NativeUnixSocket.finishConnect(afSocket.getFileDescriptor())
@@ -234,9 +236,9 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
       complete = true;
       return connected;
     } catch (IOException e) {
-      throw InterruptibleChannelUtil.handleException(this, e);
+      throw (exception = InterruptibleChannelUtil.handleException(this, e)); // NOPMD.PreserveStackTrace
     } finally {
-      InterruptibleChannelUtil.endInterruptable(this, this::end, complete);
+      InterruptibleChannelUtil.endInterruptable(this, this::end, complete, exception);
     }
   }
 
@@ -253,15 +255,16 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
   @Override
   public final int read(ByteBuffer dst) throws IOException {
     boolean complete = false;
+    IOException exception = null;
     try {
       begin();
       int read = afSocket.getAFImpl().read(dst, null);
       complete = true;
       return read;
     } catch (IOException e) {
-      throw InterruptibleChannelUtil.handleException(this, e);
-    } finally { // NOPMD.DoNotThrowExceptionInFinally
-      InterruptibleChannelUtil.endInterruptable(this, this::end, complete);
+      throw (exception = InterruptibleChannelUtil.handleException(this, e)); // NOPMD.PreserveStackTrace
+    } finally {
+      InterruptibleChannelUtil.endInterruptable(this, this::end, complete, exception);
     }
   }
 
@@ -286,15 +289,16 @@ public abstract class AFSocketChannel<A extends AFSocketAddress> extends SocketC
   @Override
   public final int write(ByteBuffer src) throws IOException {
     boolean complete = false;
+    IOException exception = null;
     try {
       begin();
       int written = afSocket.getAFImpl().write(src);
       complete = true;
       return written;
     } catch (IOException e) {
-      throw InterruptibleChannelUtil.handleException(this, e);
-    } finally { // NOPMD.DoNotThrowExceptionInFinally
-      InterruptibleChannelUtil.endInterruptable(this, this::end, complete);
+      throw (exception = InterruptibleChannelUtil.handleException(this, e)); // NOPMD.PreserveStackTrace
+    } finally {
+      InterruptibleChannelUtil.endInterruptable(this, this::end, complete, exception);
     }
   }
 
