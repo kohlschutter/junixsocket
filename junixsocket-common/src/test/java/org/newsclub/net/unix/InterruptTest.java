@@ -59,6 +59,12 @@ public abstract class InterruptTest<A extends SocketAddress> extends SocketTestB
         boolean closedByInterrupt = false;
         try {
           serverSocket.accept();
+        } catch (SocketClosedByInterruptException e) {
+          if (Thread.interrupted()) {
+            closedByInterrupt = true;
+          } else {
+            e.printStackTrace();
+          }
         } catch (SocketException e) {
           if ("Closed by interrupt".equals(e.getMessage()) && Thread.interrupted() && serverSocket
               .isClosed()) {
