@@ -27,6 +27,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.newsclub.net.unix.domain.InterruptIssue158Test;
+
 /**
  * Provides references to all "junixsocket-common" tests that should be included in
  * junixsocket-selftest.
@@ -77,6 +79,8 @@ public class SelftestProvider {
     registerTest(InetAddressTest.class);
 
     registerTest(org.newsclub.net.unix.domain.InterruptTest.class);
+    registerTest(COMMON, InterruptIssue158Test.class);
+
     registerTestJavaInet(org.newsclub.net.unix.java.InterruptTest.class);
 
     registerTest(org.newsclub.net.unix.domain.MassiveParallelTest.class);
