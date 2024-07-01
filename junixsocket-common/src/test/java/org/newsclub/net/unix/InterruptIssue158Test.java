@@ -71,7 +71,7 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
       && SystemPropertyUtil.getBooleanSystemProperty("selftest.issue.158.debug.verbose", true);
 
   private static boolean DELAY_CLOSE = SystemPropertyUtil.getBooleanSystemProperty(
-      "selftest.issue.158.delay-close", false);
+      "selftest.issue.158.delay-close", true);
 
   private final A address;
   private TestInfo testInfo;
