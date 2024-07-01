@@ -70,6 +70,9 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
   private static boolean DEBUG_VERBOSE = (System.getProperty("com.kohlschutter.selftest") == null)
       && SystemPropertyUtil.getBooleanSystemProperty("selftest.issue.158.debug.verbose", true);
 
+  private static boolean DELAY_CLOSE = SystemPropertyUtil.getBooleanSystemProperty(
+      "selftest.issue.158.delay-close", false);
+
   private final A address;
   private TestInfo testInfo;
 
@@ -198,19 +201,28 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
             } finally {
               if (socket != null) {
                 final SocketChannel socketToClose = socket;
-                CompletableFuture.runAsync(() -> {
-                  try {
-                    done.tryAcquire(1, TimeUnit.SECONDS);
-                  } catch (InterruptedException e) {
-                    // ignore
-                  }
+                if (DELAY_CLOSE) {
+                  CompletableFuture.runAsync(() -> {
+                    try {
+                      done.tryAcquire(1, TimeUnit.SECONDS);
+                    } catch (InterruptedException e) {
+                      // ignore
+                    }
+                    try {
+                      socketToClose.close();
+                    } catch (IOException e) {
+                      // TODO Auto-generated catch block
+                      e.printStackTrace();
+                    }
+                  });
+                } else {
                   try {
                     socketToClose.close();
                   } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                   }
-                });
+                }
               }
             }
           }
@@ -251,6 +263,11 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
         boolean ignoreInterruptState = SocketException.class.equals(expectedException);
         boolean interruptStateOK = Thread.interrupted() || (ClosedChannelException.class
             .isAssignableFrom(expectedException) && !(e instanceof ClosedByInterruptException));
+
+        if (!expectedException.isAssignableFrom(e.getClass())) {
+          // log unexpected exception stack trace
+          e.printStackTrace();
+        }
 
         assertAll(() -> assertInstanceOf(expectedException, e, "Socket exception"),
             () -> assertTrue(ignoreInterruptState || interruptStateOK, "Thread interrupted"),
