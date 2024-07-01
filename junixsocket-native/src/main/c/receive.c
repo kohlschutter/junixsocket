@@ -370,18 +370,14 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
     }
 
     if(checkNonBlocking0(handle, theError, opt)) {
-        theError = errno;
-         // no data on non-blocking socket, or terminated connection?
-        if(count == 0 && theError != 0) {
-            _throwException(env, kExceptionClosedChannelException, NULL);
-        } else if(theError == 0 || theError == EAGAIN || theError == EWOULDBLOCK || theError == ETIMEDOUT
+        if(theError == 0 || theError == EAGAIN || theError == EWOULDBLOCK || theError == ETIMEDOUT
 #if defined(_WIN32)
                   || theError == WSAETIMEDOUT
 #endif
-                  || theError == EINTR) {
+           || theError == EINTR) {
             // just return 0
         } else {
-            _throwErrnumException(env, errno, fd);
+            _throwErrnumException(env, theError, fd);
         }
         return 0;
     } else if(theError == EWOULDBLOCK) {
@@ -395,7 +391,6 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
             _throwErrnumException(env, theError, fd);
         }
     }
-    count = 0;
 
-    return (jint)count;
+    return 0;
 }
