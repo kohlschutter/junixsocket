@@ -204,7 +204,9 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
                 if (DELAY_CLOSE) {
                   CompletableFuture.runAsync(() -> {
                     try {
-                      done.tryAcquire(1, TimeUnit.SECONDS);
+                      if (!done.tryAcquire(1, TimeUnit.SECONDS)) {
+                        // ignore
+                      }
                     } catch (InterruptedException e) {
                       // ignore
                     }
