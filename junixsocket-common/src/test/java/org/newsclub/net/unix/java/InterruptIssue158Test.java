@@ -15,13 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.newsclub.net.unix.domain;
+package org.newsclub.net.unix.java;
 
-import java.io.FileNotFoundException;
-
-import org.newsclub.net.unix.AFSocketCapability;
-import org.newsclub.net.unix.AFSocketCapabilityRequirement;
-import org.newsclub.net.unix.AFUNIXSocketAddress;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
@@ -32,21 +30,23 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author https://github.com/cenodis
  * @author Christian Kohlschütter
  */
-@AFSocketCapabilityRequirement({AFSocketCapability.CAPABILITY_UNIX_DOMAIN})
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
 public class InterruptIssue158Test extends
-    org.newsclub.net.unix.InterruptIssue158Test<AFUNIXSocketAddress> {
+    org.newsclub.net.unix.InterruptIssue158Test<InetSocketAddress> {
 
   public InterruptIssue158Test() {
-    super(AFUNIXAddressSpecifics.INSTANCE);
+    super(JavaAddressSpecifics.INSTANCE);
   }
 
   @Override
-  protected void deleteSocketFile(AFUNIXSocketAddress sa) {
-    try {
-      sa.getFile().delete();
-    } catch (FileNotFoundException e) {
-      // ignore
+  protected void deleteSocketFile(InetSocketAddress sa) {
+
+  }
+
+  @Override
+  protected InetSocketAddress newTempAddress() throws IOException {
+    try (ServerSocket ss = newServerSocketBindOn(super.newTempAddress())) {
+      return (InetSocketAddress) ss.getLocalSocketAddress();
     }
   }
 }

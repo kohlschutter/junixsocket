@@ -101,7 +101,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     return SOCKET_FILE;
   }
 
-  protected final SocketAddress newTempAddress() throws IOException {
+  protected SocketAddress newTempAddress() throws IOException {
     return asp.newTempAddress();
   }
 
@@ -403,6 +403,16 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
   protected final Socket newSocket() throws IOException {
     return asp.newSocket();
+  }
+
+  protected final Socket newConnectedSocket(SocketAddress addr) throws IOException {
+    Socket s = asp.newSocket();
+    s.connect(addr);
+    return s;
+  }
+
+  protected final SocketChannel newSocketChannel() throws IOException {
+    return asp.newSocketChannel();
   }
 
   protected final Socket newStrictSocket() throws IOException {

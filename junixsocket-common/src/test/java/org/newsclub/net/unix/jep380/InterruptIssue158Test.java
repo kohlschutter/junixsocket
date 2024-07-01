@@ -15,15 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.newsclub.net.unix.domain;
+package org.newsclub.net.unix.jep380;
 
 import java.io.FileNotFoundException;
+import java.net.SocketAddress;
+import java.net.SocketException;
 
-import org.newsclub.net.unix.AFSocketCapability;
-import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.AvailabilityRequirement;
 
 /**
  * Test interrupt-related behavior, as discussed in
@@ -32,21 +33,24 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author https://github.com/cenodis
  * @author Christian Kohlschütter
  */
-@AFSocketCapabilityRequirement({AFSocketCapability.CAPABILITY_UNIX_DOMAIN})
+@AvailabilityRequirement(classes = "java.net.UnixDomainSocketAddress", //
+    message = "This test requires Java 16 or later")
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
 public class InterruptIssue158Test extends
-    org.newsclub.net.unix.InterruptIssue158Test<AFUNIXSocketAddress> {
+    org.newsclub.net.unix.InterruptIssue158Test<SocketAddress> {
 
   public InterruptIssue158Test() {
-    super(AFUNIXAddressSpecifics.INSTANCE);
+    super(JEP380AddressSpecifics.INSTANCE);
   }
 
   @Override
-  protected void deleteSocketFile(AFUNIXSocketAddress sa) {
+  protected void deleteSocketFile(SocketAddress sa) {
     try {
-      sa.getFile().delete();
-    } catch (FileNotFoundException e) {
+      AFUNIXSocketAddress.unwrap(sa).getFile().delete();
+    } catch (FileNotFoundException ignore) {
       // ignore
+    } catch (SocketException e) {
+      e.printStackTrace();
     }
   }
 }

@@ -18,10 +18,8 @@
 package org.newsclub.net.unix.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.net.ProtocolFamily;
-import java.net.StandardProtocolFamily;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
@@ -36,6 +34,7 @@ import org.newsclub.net.unix.AFUNIXDatagramChannel;
 import org.newsclub.net.unix.AFUNIXServerSocketChannel;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketChannel;
+import org.newsclub.net.unix.jep380.JEP380AddressSpecifics;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
@@ -49,18 +48,9 @@ public final class SocketChannelTest extends
     super(AFUNIXAddressSpecifics.INSTANCE);
   }
 
-  private static ProtocolFamily unixProtocolFamilyIfAvailable() {
-    for (ProtocolFamily pf : StandardProtocolFamily.values()) {
-      if ("UNIX".equals(pf.name())) {
-        return pf;
-      }
-    }
-    return null;
-  }
-
   @Test
   public void testUnixDomainProtocolFamily() throws Exception {
-    ProtocolFamily unix = unixProtocolFamilyIfAvailable();
+    ProtocolFamily unix = JEP380AddressSpecifics.unixProtocolFamilyIfAvailable();
     if (unix == null) {
       throw new TestAbortedNotAnIssueException(
           "StandardProtocolFamily.UNIX is not supported by this VM");

@@ -21,13 +21,12 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.newsclub.net.unix.domain.InterruptIssue158Test;
 
 /**
  * Provides references to all "junixsocket-common" tests that should be included in
@@ -39,6 +38,7 @@ import org.newsclub.net.unix.domain.InterruptIssue158Test;
 public class SelftestProvider {
   private static final String COMMON = "junixsocket-common";
   private static final String COMMON_JAVA_INET = "junixsocket-common.JavaInet";
+  private static final String COMMON_JEP380 = "junixsocket-common.JEP380";
 
   final Map<String, LinkedHashSet<Class<?>>> testMap = new LinkedHashMap<>(); // NOPMD.LooseCoupling
 
@@ -79,7 +79,9 @@ public class SelftestProvider {
     registerTest(InetAddressTest.class);
 
     registerTest(org.newsclub.net.unix.domain.InterruptTest.class);
-    registerTest(COMMON, InterruptIssue158Test.class);
+    registerTest(COMMON, org.newsclub.net.unix.domain.InterruptIssue158Test.class);
+    registerTest(COMMON_JEP380, org.newsclub.net.unix.jep380.InterruptIssue158Test.class);
+    registerTest(COMMON_JAVA_INET, org.newsclub.net.unix.java.InterruptIssue158Test.class);
 
     registerTestJavaInet(org.newsclub.net.unix.java.InterruptTest.class);
 
@@ -123,7 +125,7 @@ public class SelftestProvider {
   }
 
   public Set<String> modulesDisabledByDefault() {
-    return Collections.singleton(COMMON_JAVA_INET);
+    return new HashSet<>(Arrays.asList(COMMON_JAVA_INET, COMMON_JEP380));
   }
 
   private void registerTest( //
