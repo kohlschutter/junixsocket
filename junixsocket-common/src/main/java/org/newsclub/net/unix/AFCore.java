@@ -24,6 +24,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousCloseException;
+import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.util.Objects;
@@ -207,6 +208,8 @@ class AFCore extends CleanableState {
         } catch (ClosedChannelException e) {
           if (isClosed()) {
             throw e;
+          } else if (Thread.currentThread().isInterrupted()) {
+            throw (ClosedByInterruptException) new ClosedByInterruptException().initCause(e);
           } else {
             throw (AsynchronousCloseException) new AsynchronousCloseException().initCause(e);
           }
