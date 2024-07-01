@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ServerSocketChannel;
@@ -79,12 +80,13 @@ public class InterruptIssue158Test {
         socket(true, () -> AFUNIXSocket.connectTo(SOCKET_ADDR), s -> s.getInputStream().read(),
             SocketException.class, AFUNIXSocket::isClosed), //
         socket(true, () -> AFUNIXSocket.connectTo(SOCKET_ADDR), s -> s.getOutputStream().write(10),
-            SocketException.class, AFUNIXSocket::isClosed), socket(false, AFUNIXSocketChannel::open,
-                s -> s.connect(SOCKET_ADDR), ClosedChannelException.class, s -> !s.isOpen()), //
+            SocketException.class, AFUNIXSocket::isClosed), //
+        socket(false, AFUNIXSocketChannel::open, s -> s.connect(SOCKET_ADDR),
+            AsynchronousCloseException.class, s -> !s.isOpen()), //
         socket(true, InterruptIssue158Test::connectSocketChannel, s -> s.read(ByteBuffer.allocate(
-            1)), ClosedChannelException.class, s -> !s.isOpen()), //
+            1)), AsynchronousCloseException.class, s -> !s.isOpen()), //
         socket(true, InterruptIssue158Test::connectSocketChannel, s -> s.write(ByteBuffer.allocate(
-            1)), ClosedChannelException.class, s -> !s.isOpen()) //
+            1)), AsynchronousCloseException.class, s -> !s.isOpen()) //
     );
   }
 
@@ -93,7 +95,7 @@ public class InterruptIssue158Test {
         serverSocket(() -> AFUNIXServerSocket.bindOn(SOCKET_ADDR), AFUNIXServerSocket::accept,
             SocketException.class, AFUNIXServerSocket::isClosed), //
         serverSocket(InterruptIssue158Test::bindServerSocketChannel,
-            AFUNIXServerSocketChannel::accept, ClosedChannelException.class, s -> !s.isOpen())//
+            AFUNIXServerSocketChannel::accept, AsynchronousCloseException.class, s -> !s.isOpen())//
     );
   }
 
@@ -218,7 +220,7 @@ public class InterruptIssue158Test {
         // Also, when we expect any kind of ClosedChannelException, it is only expected to be
         // set when the actual exception thrown is from the ClosedByInterruptException subclass.
         boolean ignoreInterruptState = SocketException.class.equals(expectedException);
-        boolean interruptStateOK = Thread.interrupted() || (ClosedChannelException.class.equals(
+        boolean interruptStateOK = Thread.interrupted() || (AsynchronousCloseException.class.equals(
             expectedException) && !(e instanceof ClosedByInterruptException));
 
         assertAll(() -> assertInstanceOf(expectedException, e, "Socket exception"),

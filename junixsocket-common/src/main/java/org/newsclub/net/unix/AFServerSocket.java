@@ -308,7 +308,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     boolean success = implementation.accept0(as.getAFImpl(false));
     if (isClosed()) {
       // We may have connected to the socket to unblock it
-      throw new SocketClosedException("Socket is closed");
+      throw new BrokenPipeSocketException("Socket is closed");
     }
 
     if (!success) {

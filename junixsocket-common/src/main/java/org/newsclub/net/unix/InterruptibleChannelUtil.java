@@ -91,9 +91,10 @@ final class InterruptibleChannelUtil {
   static IOException handleException(AbstractInterruptibleChannel channel, IOException e) {
     if (e instanceof SocketClosedException || e instanceof ClosedChannelException
         || e instanceof BrokenPipeSocketException) {
+      Thread t = Thread.currentThread();
+
       if (e instanceof SocketClosedByInterruptException
           || e instanceof ClosedByInterruptException) {
-        Thread t = Thread.currentThread();
         if (!t.isInterrupted()) {
           t.interrupt();
         }
@@ -101,8 +102,15 @@ final class InterruptibleChannelUtil {
 
       if (!(e instanceof ClosedChannelException)) {
         // Make sure the caught exception is transformed into the expected exception
-        e = (ClosedChannelException) new ClosedChannelException().initCause(e);
+        if (t.isInterrupted()) {
+          e = (ClosedByInterruptException) new ClosedByInterruptException().initCause(e);
+        } else if (e instanceof BrokenPipeSocketException) {
+          e = (AsynchronousCloseException) new AsynchronousCloseException().initCause(e);
+        } else {
+          e = (ClosedChannelException) new ClosedChannelException().initCause(e);
+        }
       }
+
       return closeAndThrow(channel, e);
     } else {
       return e;
