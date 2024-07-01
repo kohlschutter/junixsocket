@@ -115,9 +115,20 @@ class SelftestExecutor {
           public void executionStarted(TestIdentifier tid) {
             tids.put(tid.getUniqueId(), tid);
             Optional<String> pid = tid.getParentId();
+
+            // parameterized test
             if (tid.getType().isTest() && pid.isPresent()) {
-              out0.update(prefix + tids.get(pid.get()).getDisplayName() + "." + tid.getDisplayName()
-                  + "... ");
+
+              String displayName1 = tids.get(pid.get()).getDisplayName();
+              if (displayName1.endsWith(")")) {
+                int i = displayName1.indexOf('(');
+                if (i > 0) {
+                  // strip parameters from test method
+                  displayName1 = displayName1.substring(0, i);
+                }
+              }
+
+              out0.update(prefix + displayName1 + "." + tid.getDisplayName() + "... ");
             }
           }
 
