@@ -37,6 +37,7 @@ import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXServerSocketChannel;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.AFUNIXSocketChannel;
 import org.newsclub.net.unix.AFUNIXSocketPair;
 import org.newsclub.net.unix.AddressSpecifics;
 import org.newsclub.net.unix.CloseablePair;
@@ -66,6 +67,11 @@ public final class AFUNIXAddressSpecifics implements AddressSpecifics<AFUNIXSock
   @Override
   public AFDatagramSocket<?> newDatagramSocket() throws IOException {
     return AFUNIXDatagramSocket.newInstance();
+  }
+
+  @Override
+  public SocketChannel newSocketChannel() throws IOException {
+    return AFUNIXSocketChannel.open();
   }
 
   @Override

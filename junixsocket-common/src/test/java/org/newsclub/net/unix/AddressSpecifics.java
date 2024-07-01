@@ -50,6 +50,8 @@ public interface AddressSpecifics<A extends SocketAddress> {
 
   Socket newSocket() throws IOException;
 
+  SocketChannel newSocketChannel() throws IOException;
+
   DatagramSocket newDatagramSocket() throws IOException;
 
   ServerSocket newServerSocket() throws IOException;

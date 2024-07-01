@@ -72,6 +72,11 @@ public final class JavaAddressSpecifics implements AddressSpecifics<InetSocketAd
   }
 
   @Override
+  public SocketChannel newSocketChannel() throws IOException {
+    return selectorProvider().openSocketChannel();
+  }
+
+  @Override
   public DatagramChannel newDatagramChannel() throws IOException {
     return selectorProvider().openDatagramChannel();
   }

@@ -65,6 +65,11 @@ public final class AFTIPCAddressSpecifics implements AddressSpecifics<AFTIPCSock
   }
 
   @Override
+  public SocketChannel newSocketChannel() throws IOException {
+    return AFTIPCSocketChannel.open();
+  }
+
+  @Override
   public AFDatagramSocket<?> newDatagramSocket() throws IOException {
     return AFTIPCDatagramSocket.newInstance();
   }

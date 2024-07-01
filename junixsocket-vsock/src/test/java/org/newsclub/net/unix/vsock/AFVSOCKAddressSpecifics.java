@@ -80,6 +80,11 @@ public final class AFVSOCKAddressSpecifics implements AddressSpecifics<AFVSOCKSo
   }
 
   @Override
+  public SocketChannel newSocketChannel() throws IOException {
+    return AFVSOCKSocketChannel.open();
+  }
+
+  @Override
   public DatagramChannel newDatagramChannel() throws IOException {
     return AFVSOCKDatagramSocket.newInstance().getChannel();
   }
