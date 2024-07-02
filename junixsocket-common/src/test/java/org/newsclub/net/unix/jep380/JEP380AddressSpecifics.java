@@ -28,8 +28,10 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.StandardProtocolFamily;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.Pipe;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.AbstractSelector;
 import java.nio.channels.spi.SelectorProvider;
 import java.nio.file.Path;
 
@@ -48,6 +50,8 @@ public final class JEP380AddressSpecifics implements AddressSpecifics<SocketAddr
   private final Method serverSocketChannelOpenMethod;
   private final Method datagramChannelOpenMethod;
 
+  private final SelectorProvider sp;
+
   private JEP380AddressSpecifics() {
     this.pf = unixProtocolFamilyIfAvailable();
     this.addressOfMethod = tryResolve("java.net.UnixDomainSocketAddress", "of", Path.class);
@@ -57,6 +61,40 @@ public final class JEP380AddressSpecifics implements AddressSpecifics<SocketAddr
         ProtocolFamily.class);
     this.datagramChannelOpenMethod = tryResolve("java.nio.channels.DatagramChannel", "open",
         ProtocolFamily.class);
+
+    this.sp = new SelectorProvider() {
+      private final SelectorProvider upstream = SelectorProvider.provider();
+
+      @Override
+      public SocketChannel openSocketChannel() throws IOException {
+        return newSocketChannel();
+      }
+
+      @Override
+      public ServerSocketChannel openServerSocketChannel() throws IOException {
+        return newServerSocketChannel();
+      }
+
+      @Override
+      public AbstractSelector openSelector() throws IOException {
+        return upstream.openSelector();
+      }
+
+      @Override
+      public Pipe openPipe() throws IOException {
+        return upstream.openPipe();
+      }
+
+      @Override
+      public DatagramChannel openDatagramChannel(ProtocolFamily family) throws IOException {
+        return upstream.openDatagramChannel(family);
+      }
+
+      @Override
+      public DatagramChannel openDatagramChannel() throws IOException {
+        return newDatagramChannel();
+      }
+    };
   }
 
   private static Method tryResolve(String className, String methodName, Class<?>... argType) {
@@ -137,7 +175,7 @@ public final class JEP380AddressSpecifics implements AddressSpecifics<SocketAddr
 
   @Override
   public SelectorProvider selectorProvider() {
-    return SelectorProvider.provider();
+    return sp;
   }
 
   @Override
