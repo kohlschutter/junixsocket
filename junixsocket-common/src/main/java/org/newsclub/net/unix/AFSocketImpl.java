@@ -244,9 +244,9 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   final boolean accept0(SocketImpl socket) throws IOException {
     FileDescriptor fdesc = core.validFdOrException();
     if (isClosed()) {
-      throw new SocketException("Socket is closed");
+      throw new SocketClosedException();
     } else if (!isBound()) {
-      throw new SocketException("Socket is not bound");
+      throw new NotBoundSocketException();
     }
 
     AFSocketAddress socketAddress = core.socketAddress;
@@ -257,7 +257,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     }
 
     if (socketAddress == null) {
-      throw new SocketException("Socket is not bound");
+      throw new NotBoundSocketException();
     }
 
     @SuppressWarnings("unchecked")
