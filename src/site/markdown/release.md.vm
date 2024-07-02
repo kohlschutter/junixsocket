@@ -22,6 +22,7 @@ following commands:
     brew remove mingw-w64
     wget https://raw.githubusercontent.com/Homebrew/homebrew-core/0247512f8a852f36f14b11809ac08a402de1f9e5/Formula/m/mingw-w64.rb
     brew install ./mingw-w64.rb
+    brew pin mingw-w64
 
 #[[###]]# github.com credentials
 
