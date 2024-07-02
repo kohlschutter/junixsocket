@@ -20,6 +20,7 @@ package org.newsclub.net.unix;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -79,9 +80,9 @@ public class SelftestProvider {
     registerTest(InetAddressTest.class);
 
     registerTest(org.newsclub.net.unix.domain.InterruptTest.class);
-    registerTest(COMMON, org.newsclub.net.unix.domain.InterruptIssue158Test.class);
-    registerTest(COMMON_JEP380, org.newsclub.net.unix.jep380.InterruptIssue158Test.class);
-    registerTest(COMMON_JAVA_INET, org.newsclub.net.unix.java.InterruptIssue158Test.class);
+    registerTest(org.newsclub.net.unix.domain.InterruptIssue158Test.class);
+    registerTestJavaInet(org.newsclub.net.unix.java.InterruptIssue158Test.class);
+    registerTestJEP380(org.newsclub.net.unix.jep380.InterruptIssue158Test.class);
 
     registerTestJavaInet(org.newsclub.net.unix.java.InterruptTest.class);
 
@@ -103,6 +104,8 @@ public class SelftestProvider {
     registerTest(org.newsclub.net.unix.domain.SocketAddressTest.class);
 
     registerTest(org.newsclub.net.unix.domain.SocketChannelTest.class);
+    registerTestJavaInet(org.newsclub.net.unix.java.SocketChannelTest.class);
+    registerTestJEP380(org.newsclub.net.unix.jep380.SocketChannelTest.class);
 
     registerTest(org.newsclub.net.unix.domain.SocketFactoryTest.class);
 
@@ -136,6 +139,11 @@ public class SelftestProvider {
   private void registerTestJavaInet( //
       Class<? extends SocketTestBase<InetSocketAddress>> testJava) {
     registerTest(COMMON_JAVA_INET, testJava);
+  }
+
+  private void registerTestJEP380( //
+      Class<? extends SocketTestBase<SocketAddress>> testJava) {
+    registerTest(COMMON_JEP380, testJava);
   }
 
   private void registerTest(String group, Class<?> test) {

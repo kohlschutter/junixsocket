@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -26,8 +27,11 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
+import java.nio.channels.NotYetBoundException;
+import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Objects;
@@ -159,7 +163,11 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
       });
 
       try (ServerSocketChannel ssc2 = selectorProvider().openServerSocketChannel()) {
-        ssc2.socket().setReuseAddress(reuseAddress);
+        try {
+          ssc2.setOption(StandardSocketOptions.SO_REUSEADDR, reuseAddress);
+        } catch (UnsupportedOperationException e) {
+          // ignore
+        }
 
         try {
           wasRebound.set(true);
@@ -405,5 +413,23 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
    */
   protected boolean socketDomainPermitsDoubleBind() {
     return false;
+  }
+
+  @Test
+  public void testReadNotConnectedYet() throws Exception {
+    SocketChannel sc = newSocketChannel();
+    assertThrows(NotYetConnectedException.class, () -> sc.read(ByteBuffer.allocate(1)));
+  }
+
+  @Test
+  public void testWriteNotConnectedYet() throws Exception {
+    SocketChannel sc = newSocketChannel();
+    assertThrows(NotYetConnectedException.class, () -> sc.write(ByteBuffer.allocate(1)));
+  }
+
+  @Test
+  public void testAcceptNotBoundYet() throws Exception {
+    ServerSocketChannel sc = newServerSocketChannel();
+    assertThrows(NotYetBoundException.class, sc::accept);
   }
 }
