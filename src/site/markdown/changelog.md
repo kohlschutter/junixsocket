@@ -18,13 +18,13 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 - Fix error handling for non-blocking operations on Windows
 - Fix interoperability of junixsocket-mysql and GraalVM native-image
 - Fix socket-closed state upon exceptions indicating a closed socket descriptor
-- Fix exceptions for channels: Throw ClosedChannelException instead of SocketClosedException
+- Fix exceptions for channels: Throw ClosedChannelException instead of SocketClosedException, etc.
 - Fix a flaky selftest when VSOCK is not supported
 - Improve compatibility and performance with Virtual Threads in Java 21 or newer (JEP 444)
 - Improve interopability with Java 15 UnixDomainSocketAddress and StandardProtocolFamily.UNIX
-- Improve selftest stability and logging
+- Improve selftest stability and logging, more tests
 - Add more tests for mysql interoperability, optionally include mysql tests in selftest
-- Add NotConnectedSocketException
+- Add NotConnectedSocketException, NotBoundSocketException
 - Building now requires Java 21, Maven 3.8.8 or newer
 - Update build-time dependencies
 - Code cleanup
