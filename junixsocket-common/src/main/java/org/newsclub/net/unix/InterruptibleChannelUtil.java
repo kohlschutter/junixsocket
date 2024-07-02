@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.ClosedChannelException;
+import java.nio.channels.NotYetBoundException;
+import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.spi.AbstractInterruptibleChannel;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -52,7 +54,7 @@ final class InterruptibleChannelUtil {
    * @throws AsynchronousCloseException on error.
    */
   static void endInterruptable(AbstractInterruptibleChannel channel, EndMethod end,
-      boolean complete, IOException exception) throws AsynchronousCloseException {
+      boolean complete, Exception exception) throws AsynchronousCloseException {
     if (!complete) {
       if (exception instanceof ClosedChannelException) {
         // we already have caught a valid exception; we don't need to throw one from within "end"
@@ -78,6 +80,16 @@ final class InterruptibleChannelUtil {
     return exc;
   }
 
+  static IOException ioExceptionOrThrowRuntimeException(Exception exception) {
+    if (exception instanceof IOException) {
+      return (IOException) exception;
+    } else if (exception instanceof RuntimeException) {
+      throw (RuntimeException) exception;
+    } else {
+      throw new IllegalStateException(exception);
+    }
+  }
+
   /**
    * Makes sure that upon an exception that is documented to have the channel be closed the channel
    * is indeed closed before throwing that exception. If the exception is also documented to have
@@ -88,7 +100,13 @@ final class InterruptibleChannelUtil {
    * @return The exception.
    */
   @SuppressWarnings("null")
-  static IOException handleException(AbstractInterruptibleChannel channel, IOException e) {
+  static Exception handleException(AbstractInterruptibleChannel channel, IOException e) {
+    if (e instanceof NotConnectedSocketException) {
+      return (NotYetConnectedException) new NotYetConnectedException().initCause(e);
+    } else if (e instanceof NotBoundSocketException) {
+      return (NotYetBoundException) new NotYetBoundException().initCause(e);
+    }
+
     if (e instanceof SocketClosedException || e instanceof ClosedChannelException
         || e instanceof BrokenPipeSocketException) {
       Thread t = Thread.currentThread();

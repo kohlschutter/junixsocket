@@ -143,14 +143,15 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
   @Override
   public final A receive(ByteBuffer dst) throws IOException {
     boolean complete = false;
-    IOException exception = null;
+    Exception exception = null;
     try {
       begin();
       A ret = afSocket.getAFImpl().receive(dst);
       complete = true;
       return ret;
     } catch (IOException e) {
-      throw (exception = InterruptibleChannelUtil.handleException(this, e)); // NOPMD.PreserveStackTrace
+      throw InterruptibleChannelUtil.ioExceptionOrThrowRuntimeException( // NOPMD.PreserveStackTrace
+          (exception = InterruptibleChannelUtil.handleException(this, e)));
     } finally {
       InterruptibleChannelUtil.endInterruptable(this, this::end, complete, exception);
     }
@@ -159,14 +160,15 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
   @Override
   public final int send(ByteBuffer src, SocketAddress target) throws IOException {
     boolean complete = false;
-    IOException exception = null;
+    Exception exception = null;
     try {
       begin();
       int ret = afSocket.getAFImpl().send(src, target);
       complete = true;
       return ret;
     } catch (IOException e) {
-      throw (exception = InterruptibleChannelUtil.handleException(this, e)); // NOPMD.PreserveStackTrace
+      throw InterruptibleChannelUtil.ioExceptionOrThrowRuntimeException( // NOPMD.PreserveStackTrace
+          (exception = InterruptibleChannelUtil.handleException(this, e)));
     } finally {
       InterruptibleChannelUtil.endInterruptable(this, this::end, complete, exception);
     }
@@ -175,14 +177,15 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
   @Override
   public final int read(ByteBuffer dst) throws IOException {
     boolean complete = false;
-    IOException exception = null;
+    Exception exception = null;
     try {
       begin();
       int ret = afSocket.getAFImpl().read(dst, null);
       complete = true;
       return ret;
     } catch (IOException e) {
-      throw (exception = InterruptibleChannelUtil.handleException(this, e)); // NOPMD.PreserveStackTrace
+      throw InterruptibleChannelUtil.ioExceptionOrThrowRuntimeException( // NOPMD.PreserveStackTrace
+          (exception = InterruptibleChannelUtil.handleException(this, e)));
     } finally {
       InterruptibleChannelUtil.endInterruptable(this, this::end, complete, exception);
     }
@@ -200,14 +203,15 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
   @Override
   public final int write(ByteBuffer src) throws IOException {
     boolean complete = false;
-    IOException exception = null;
+    Exception exception = null;
     try {
       begin();
       int ret = afSocket.getAFImpl().write(src);
       complete = true;
       return ret;
     } catch (IOException e) {
-      throw (exception = InterruptibleChannelUtil.handleException(this, e)); // NOPMD.PreserveStackTrace
+      throw InterruptibleChannelUtil.ioExceptionOrThrowRuntimeException( // NOPMD.PreserveStackTrace
+          (exception = InterruptibleChannelUtil.handleException(this, e)));
     } finally {
       InterruptibleChannelUtil.endInterruptable(this, this::end, complete, exception);
     }

@@ -111,14 +111,15 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
   @Override
   public AFSocketChannel<A> accept() throws IOException {
     boolean complete = false;
-    IOException exception = null;
+    Exception exception = null;
     try {
       begin();
       AFSocket<A> socket = afSocket.accept1(false);
       complete = true;
       return socket == null ? null : socket.getChannel();
     } catch (IOException e) {
-      throw (exception = InterruptibleChannelUtil.handleException(this, e)); // NOPMD.PreserveStackTrace
+      throw InterruptibleChannelUtil.ioExceptionOrThrowRuntimeException( // NOPMD.PreserveStackTrace
+          (exception = InterruptibleChannelUtil.handleException(this, e)));
     } finally {
       InterruptibleChannelUtil.endInterruptable(this, this::end, complete, exception);
     }
