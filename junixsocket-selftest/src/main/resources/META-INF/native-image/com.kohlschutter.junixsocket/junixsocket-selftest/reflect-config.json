@@ -61,6 +61,10 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.junit.jupiter.api.TestInstance",
+  "queryAllPublicMethods":true
+},
+{
   "name":"org.junit.jupiter.api.TestMethodOrder",
   "queryAllPublicMethods":true
 },
@@ -531,7 +535,25 @@
   "allDeclaredConstructors":true
 },
 {
+  "name":"org.newsclub.net.unix.java.SocketChannelTest",
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
   "name":"org.newsclub.net.unix.java.ThroughputTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.jep380.SocketChannelTest",
+  "allDeclaredMethods":true,
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
@@ -1040,6 +1062,16 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.junit.jupiter.params.provider.MethodArgumentsProvider",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.junit.jupiter.params.provider.MethodSource",
+  "queryAllPublicMethods":true
+},
+{
   "name":"org.junit.jupiter.params.support.AnnotationConsumer",
   "queryAllPublicMethods":true
 },
@@ -1062,6 +1094,39 @@
 },
 {
   "name":"org.newsclub.net.unix.rmi.JunixsocketVersionTest",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.InterruptIssue158Test",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.domain.InterruptIssue158Test",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.jep380.InterruptIssue158Test",
   "allDeclaredConstructors" : true,
   "allPublicConstructors" : true,
   "allDeclaredMethods":true,

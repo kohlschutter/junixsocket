@@ -65,7 +65,20 @@
   "name":"java.net.InetSocketAddress"
 },
 {
-  "name":"java.net.UnixDomainSocketAddress"
+  "name":"java.net.UnixDomainSocketAddress",
+  "methods":[{"name":"of","parameterTypes":["java.nio.file.Path"] }]
+},
+{
+  "name":"java.nio.channels.DatagramChannel",
+  "methods":[{"name":"open","parameterTypes":["java.net.ProtocolFamily"] }]
+},
+{
+  "name":"java.nio.channels.ServerSocketChannel",
+  "methods":[{"name":"open","parameterTypes":["java.net.ProtocolFamily"] }]
+},
+{
+  "name":"java.nio.channels.SocketChannel",
+  "methods":[{"name":"open","parameterTypes":["java.net.ProtocolFamily"] }]
 },
 {
   "name":"org.newsclub.net.unix.AFSYSTEMSocketAddress",

@@ -93,13 +93,18 @@ else
   echo "[WARNING] mysql-connector-j dependency is missing: $mysqlDep" >&2
 fi
 
+selftestArgs=(
+  -Dselftest.enable-module.junixsocket-common.JavaInet=true
+  -Dselftest.enable-module.junixsocket-common.JEP380=true
+  -cp "$jar":"$mysqlDep"
+)
+
 echo
 echo Running junixsocket-selftest with GraalVM native-image-agent...
 (
   set -x
   java -agentlib:native-image-agent=config-output-dir=${tmpDir}/native-image.{pid} \
-	  -Dselftest.enable-module.junixsocket-common.JavaInet=true \
-	  -cp "$jar":"$mysqlDep" org.newsclub.net.unix.selftest.Selftest >/dev/null
+	  ${selftestArgs[@]} org.newsclub.net.unix.selftest.Selftest >/dev/null
 )
 
 if [[ $? -ne 0 ]]; then
@@ -120,8 +125,7 @@ echo Running native-image...
 (
   set -x
   native-image -cp "$tmpDir" --initialize-at-build-time=sun.rmi.transport.GC --report-unsupported-elements-at-runtime --no-fallback \
-	  -Dselftest.enable-module.junixsocket-common.JavaInet=true \
-	  -cp "$jar":"$mysqlDep" org.newsclub.net.unix.selftest.Selftest
+	  ${selftestArgs[@]} org.newsclub.net.unix.selftest.Selftest
 )
 if [[ $? -ne 0 ]]; then
     echo "Error: Failed to run native-image" >&2
