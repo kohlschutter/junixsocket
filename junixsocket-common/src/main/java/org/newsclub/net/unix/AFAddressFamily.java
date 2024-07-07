@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.URI;
 import java.nio.channels.ServerSocketChannel;
@@ -366,5 +367,15 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
           + addressClassname, e);
     }
     return selectorProvider;
+  }
+
+  /**
+   * Returns an appropriate SocketAddress to be used when calling bind with a null argument.
+   *
+   * @return The new socket address, or {@code null}.
+   * @throws IOException on error.
+   */
+  public SocketAddress nullBindAddress() throws IOException {
+    return addressConfig.nullBindAddress();
   }
 }

@@ -81,6 +81,11 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
             protected Set<String> uriSchemes() {
               return new HashSet<>(Arrays.asList("unix", "http+unix", "https+unix"));
             }
+
+            @Override
+            protected SocketAddress nullBindAddress() throws IOException {
+              return AFUNIXSocketAddress.ofNewTempFile();
+            }
           });
 
   private AFUNIXSocketAddress(int port, final byte[] socketAddress, Lease<ByteBuffer> nativeAddress)

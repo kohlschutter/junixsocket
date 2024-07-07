@@ -240,6 +240,11 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     });
   }
 
+  @Override
+  public final void bind(SocketAddress endpoint) throws IOException {
+    bind(endpoint, 50);
+  }
+
   @SuppressWarnings("unchecked")
   @Override
   public final void bind(SocketAddress endpoint, int backlog) throws IOException {
@@ -548,11 +553,6 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   public final AFServerSocket<A> bindHook(SocketAddressFilter hook) {
     this.bindFilter = hook;
     return this;
-  }
-
-  @Override
-  public void bind(SocketAddress endpoint) throws IOException {
-    bind(endpoint, 50);
   }
 
   @Override

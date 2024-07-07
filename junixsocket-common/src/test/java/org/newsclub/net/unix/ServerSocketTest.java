@@ -80,10 +80,12 @@ public abstract class ServerSocketTest<A extends SocketAddress> extends SocketTe
   public void testBindBadArguments() throws Exception {
     try (ServerSocket sock = newServerSocket()) {
       assertFalse(sock.isBound());
-      assertThrows(IllegalArgumentException.class, () -> {
+
+      try {
         sock.bind(null);
-      });
-      assertFalse(sock.isBound());
+      } catch (UnsupportedOperationException e) {
+        assertFalse(sock.isBound());
+      }
     }
     try (ServerSocket sock = newServerSocket()) {
       assertFalse(sock.isBound());

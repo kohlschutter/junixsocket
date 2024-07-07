@@ -386,7 +386,10 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
   final void bind(SocketAddress addr, int options) throws IOException {
     if (addr == null) {
-      throw new IllegalArgumentException("Cannot bind to null address");
+      addr = addressFamily.nullBindAddress();
+      if (addr == null) {
+        throw new UnsupportedOperationException("Cannot bind to null address");
+      }
     }
 
     if (addr == AFSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD

@@ -19,11 +19,13 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -431,5 +433,50 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
   public void testAcceptNotBoundYet() throws Exception {
     ServerSocketChannel sc = newServerSocketChannel();
     assertThrows(NotYetBoundException.class, sc::accept);
+  }
+
+  protected boolean mayTestBindNullThrowUnsupportedOperationException() {
+    return true;
+  }
+
+  protected boolean mayTestBindNullHaveNullLocalSocketAddress() {
+    return true;
+  }
+
+  protected void cleanupTestBindNull(ServerSocketChannel sc, SocketAddress addr) throws Exception {
+  }
+
+  protected ServerSocket socketIfPossible(ServerSocketChannel channel) {
+    try {
+      return channel.socket();
+    } catch (UnsupportedOperationException e) {
+      return null;
+    }
+  }
+
+  @Test
+  public void testBindNull() throws Exception {
+    try (ServerSocketChannel sc = newServerSocketChannel()) {
+      ServerSocket s = socketIfPossible(sc);
+      assertTrue(s == null || !s.isBound());
+      try {
+        sc.bind(null);
+      } catch (UnsupportedOperationException e) {
+        if (mayTestBindNullThrowUnsupportedOperationException()) {
+          // OK
+          return;
+        } else {
+          throw e;
+        }
+      }
+      assertTrue(s == null || s.isBound());
+
+      SocketAddress addr = sc.getLocalAddress();
+      if (!mayTestBindNullHaveNullLocalSocketAddress()) {
+        assertNotNull(addr);
+      }
+
+      cleanupTestBindNull(sc, addr);
+    }
   }
 }

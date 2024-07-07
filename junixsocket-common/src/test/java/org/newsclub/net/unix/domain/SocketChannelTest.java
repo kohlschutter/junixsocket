@@ -20,6 +20,7 @@ package org.newsclub.net.unix.domain;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.ProtocolFamily;
+import java.net.SocketAddress;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
@@ -74,5 +75,20 @@ public final class SocketChannelTest extends
     try (DatagramChannel ch = AFDatagramChannel.open(unix)) {
       assertEquals(AFUNIXDatagramChannel.class, ch.getClass());
     }
+  }
+
+  @Override
+  protected boolean mayTestBindNullThrowUnsupportedOperationException() {
+    return false;
+  }
+
+  @Override
+  protected boolean mayTestBindNullHaveNullLocalSocketAddress() {
+    return false;
+  }
+
+  @Override
+  protected void cleanupTestBindNull(ServerSocketChannel sc, SocketAddress addr) throws Exception {
+    // nothing to do, as -- unlike JEP380 -- junixsocket cleans up its mess
   }
 }

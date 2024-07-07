@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.IOException;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.URI;
 import java.util.Set;
@@ -70,4 +72,14 @@ public abstract class AFSocketAddressConfig<A extends AFSocketAddress> {
    * @return The set of supported URI schemes.
    */
   protected abstract Set<String> uriSchemes();
+
+  /**
+   * Returns an appropriate SocketAddress to be used when calling bind with a null argument.
+   *
+   * @return The new socket address, or {@code null}.
+   * @throws IOException on error.
+   */
+  protected SocketAddress nullBindAddress() throws IOException {
+    return null;
+  }
 }

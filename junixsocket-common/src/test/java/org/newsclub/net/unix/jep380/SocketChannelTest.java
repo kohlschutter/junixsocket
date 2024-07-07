@@ -17,14 +17,22 @@
  */
 package org.newsclub.net.unix.jep380;
 
+import java.io.IOException;
 import java.net.SocketAddress;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.AvailabilityRequirement;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
+@AvailabilityRequirement(classes = "java.net.UnixDomainSocketAddress", //
+    message = "This test requires Java 16 or later")
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
 public final class SocketChannelTest extends
     org.newsclub.net.unix.SocketChannelTest<SocketAddress> {
@@ -32,4 +40,27 @@ public final class SocketChannelTest extends
   public SocketChannelTest() {
     super(JEP380AddressSpecifics.INSTANCE);
   }
+
+  @Override
+  protected boolean mayTestBindNullThrowUnsupportedOperationException() {
+    return false;
+  }
+
+  @Override
+  protected boolean mayTestBindNullHaveNullLocalSocketAddress() {
+    return false;
+  }
+
+  @Override
+  protected void cleanupTestBindNull(ServerSocketChannel sc, SocketAddress addr)
+      throws ClassNotFoundException, IOException {
+    if (!Class.forName("java.net.UnixDomainSocketAddress").isAssignableFrom(addr.getClass())) {
+      return;
+    }
+
+    // JEP380 doesn't clean up socket files
+    Path p = Paths.get(addr.toString());
+    Files.delete(p);
+  }
+
 }
