@@ -23,6 +23,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 - Improve compatibility and performance with Virtual Threads in Java 21 or newer (JEP 444)
 - Improve interopability with Java 15 UnixDomainSocketAddress and StandardProtocolFamily.UNIX
 - Improve selftest stability and logging, more tests
+- Add support for ServerSocketChannel.bind(null) for AF_UNIX socket addresses.
 - Add more tests for mysql interoperability, optionally include mysql tests in selftest
 - Add NotConnectedSocketException, NotBoundSocketException
 - Building now requires Java 21, Maven 3.8.8 or newer
