@@ -234,6 +234,13 @@ int _closeFd(JNIEnv * env, jobject fd, int handle)
         return ret;
     }
 
+    // Android doesn't like it when we call MonitorEnter on a pending exception.
+    // Temporarily hold on to that exception, and throw again afterwards.
+    jthrowable throwable = (*env)->ExceptionOccurred(env);
+    if(throwable != NULL) {
+        (*env)->ExceptionClear(env);
+    }
+
     (*env)->MonitorEnter(env, fd);
     int fdHandle = _getFD(env, fd);
     _initFD(env, fd, -1);
@@ -242,6 +249,10 @@ int _closeFd(JNIEnv * env, jobject fd, int handle)
     _initHandle(env, fd, -1);
 #endif
     (*env)->MonitorExit(env, fd);
+
+    if(throwable != NULL) {
+        (*env)->Throw(env, throwable);
+    }
 
 #if defined(_WIN32)
     jboolean isSocket;
