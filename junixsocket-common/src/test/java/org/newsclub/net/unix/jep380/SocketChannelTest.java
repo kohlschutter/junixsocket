@@ -62,5 +62,4 @@ public final class SocketChannelTest extends
     Path p = Paths.get(addr.toString());
     Files.delete(p);
   }
-
 }

@@ -24,8 +24,7 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.NotYetBoundException;
 import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.spi.AbstractInterruptibleChannel;
-
-import org.eclipse.jdt.annotation.NonNull;
+import java.util.Objects;
 
 /**
  * Helper methods when working with {@link AbstractInterruptibleChannel} subclasses.
@@ -53,8 +52,8 @@ final class InterruptibleChannelUtil {
    * @param exception An optional exception that was caught in the try-catch-finally block.
    * @throws AsynchronousCloseException on error.
    */
-  static void endInterruptable(AbstractInterruptibleChannel channel, EndMethod end,
-      boolean complete, Exception exception) throws AsynchronousCloseException {
+  static void endInterruptable(AFSomeSocketChannel channel, EndMethod end, boolean complete,
+      Exception exception) throws AsynchronousCloseException {
     if (!complete) {
       if (exception instanceof ClosedChannelException) {
         // we already have caught a valid exception; we don't need to throw one from within "end"
@@ -68,8 +67,8 @@ final class InterruptibleChannelUtil {
     }
   }
 
-  private static <T extends Exception> T closeAndThrow(AbstractInterruptibleChannel channel,
-      @NonNull T exc) {
+  private static <T extends Exception> T closeAndThrow(AFSomeSocketChannel channel, T exc) {
+    Objects.requireNonNull(exc);
     if (channel.isOpen()) {
       try {
         channel.close();
@@ -99,12 +98,25 @@ final class InterruptibleChannelUtil {
    * @param e The exception
    * @return The exception.
    */
-  @SuppressWarnings("null")
-  static Exception handleException(AbstractInterruptibleChannel channel, IOException e) {
+  @SuppressWarnings("PMD.CognitiveComplexity")
+  static Exception handleException(AFSomeSocketChannel channel, IOException e) {
     if (e instanceof NotConnectedSocketException) {
       return (NotYetConnectedException) new NotYetConnectedException().initCause(e);
     } else if (e instanceof NotBoundSocketException) {
       return (NotYetBoundException) new NotYetBoundException().initCause(e);
+    }
+
+    if (e instanceof InvalidArgumentSocketException) {
+      if (channel instanceof AFServerSocketChannel<?>) {
+        AFServerSocketChannel<?> sc = (AFServerSocketChannel<?>) channel;
+        if (!sc.socket().isBound()) {
+          return (NotYetBoundException) new NotYetBoundException().initCause(e);
+        }
+      } else if (channel instanceof AFSocketChannel<?>) {
+        if (!((AFSocketChannel<?>) channel).socket().isConnected()) {
+          return (NotYetConnectedException) new NotYetConnectedException().initCause(e);
+        }
+      }
     }
 
     if (e instanceof SocketClosedException || e instanceof ClosedChannelException

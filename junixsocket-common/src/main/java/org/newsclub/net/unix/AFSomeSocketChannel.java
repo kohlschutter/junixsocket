@@ -17,9 +17,9 @@
  */
 package org.newsclub.net.unix;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.nio.channels.DatagramChannel;
+import java.nio.channels.InterruptibleChannel;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
@@ -33,7 +33,8 @@ import java.nio.channels.SocketChannel;
  * @see AFServerSocketChannel
  * @see AFDatagramChannel
  */
-public interface AFSomeSocketChannel extends Closeable, FileDescriptorAccess, AFSomeSocketThing {
+public interface AFSomeSocketChannel extends InterruptibleChannel, FileDescriptorAccess,
+    AFSomeSocketThing {
   /**
    * Checks if the channel is configured blocking. The result may be cached, and therefore not
    * invoke native code to check if the underlying socket is actually configured that way.
