@@ -12,7 +12,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 **Users of junixsocket are strongly advised to upgrade to version 2.10.0 or newer**
 
-### _(2024-XX-XX)_ **junixsocket 2.10.0**
+### _(2024-07-08)_ **junixsocket 2.10.0**
 
 - Fix compatibility with Java 7
 - Fix error handling for non-blocking operations on Windows
