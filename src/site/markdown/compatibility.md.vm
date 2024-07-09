@@ -79,6 +79,7 @@ Additional platforms that should work (after the JNI library has been compiled m
 Additional platforms known to compile (but untested):
 
 * IBM z/TPF OS/390 with s390x-ibm-tpf-gcc version tpf-17r1-6
+* Minix
 
 #[[###]]# Remarks
 
