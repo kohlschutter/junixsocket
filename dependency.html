@@ -30,7 +30,7 @@
           <ul class="breadcrumb">
         <li id="publishDate">Last Published: 2024-07-09<span class="divider">|</span>
 </li>
-          <li id="projectVersion">Version: 2.10.0</li>
+          <li id="projectVersion">Version: 2.10.1-SNAPSHOT</li>
           </ul>
         </div>
       </header>
@@ -70,6 +70,7 @@
     <li><a href="crosscomp.html">Cross-Compiling with crossclang</a></li>
     <li><a href="eclipse.html">Developing with Eclipse</a></li>
     <li><a href="xcode.html">Developing with Xcode</a></li>
+    <li><a href="otherbugs.html">Bugs in other places</a></li>
     <li><a href="release.html">Release Instructions</a></li>
    <li class="nav-header">Modules</li>
     <li><a href="junixsocket-common/index.html">junixsocket-common</a></li>
@@ -119,7 +120,7 @@ database via unix sockets.</p><section>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.kohlschutter.junixsocket&lt;/groupId&gt;
   &lt;artifactId&gt;junixsocket-core&lt;/artifactId&gt;
-  &lt;version&gt;2.10.0&lt;/version&gt;
+  &lt;version&gt;2.10.1-SNAPSHOT&lt;/version&gt;
   &lt;type&gt;pom&lt;/type&gt;
 &lt;/dependency&gt;
 </code></pre></div>
@@ -134,7 +135,7 @@ following two dependencies instead:</p>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.kohlschutter.junixsocket&lt;/groupId&gt;
   &lt;artifactId&gt;junixsocket-common&lt;/artifactId&gt;
-  &lt;version&gt;2.10.0&lt;/version&gt;
+  &lt;version&gt;2.10.1-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre></div>
 <p>and</p>
@@ -143,7 +144,7 @@ following two dependencies instead:</p>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.kohlschutter.junixsocket&lt;/groupId&gt;
   &lt;artifactId&gt;junixsocket-native-common&lt;/artifactId&gt;
-  &lt;version&gt;2.10.0&lt;/version&gt;
+  &lt;version&gt;2.10.1-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre></div></section><section>
 <h3>Optional dependencies</h3>
@@ -153,7 +154,7 @@ following two dependencies instead:</p>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.kohlschutter.junixsocket&lt;/groupId&gt;
   &lt;artifactId&gt;junixsocket-server&lt;/artifactId&gt;
-  &lt;version&gt;2.10.0&lt;/version&gt;
+  &lt;version&gt;2.10.1-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre></div>
 <p>If you're going to use RMI over Unix sockets, add the following dependency:</p>
@@ -162,7 +163,7 @@ following two dependencies instead:</p>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.kohlschutter.junixsocket&lt;/groupId&gt;
   &lt;artifactId&gt;junixsocket-rmi&lt;/artifactId&gt;
-  &lt;version&gt;2.10.0&lt;/version&gt;
+  &lt;version&gt;2.10.1-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre></div>
 <p>If you're going to use the mySQL Connector for Unix sockets, add the following dependency:</p>
@@ -171,7 +172,7 @@ following two dependencies instead:</p>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.kohlschutter.junixsocket&lt;/groupId&gt;
   &lt;artifactId&gt;junixsocket-mysql&lt;/artifactId&gt;
-  &lt;version&gt;2.10.0&lt;/version&gt;
+  &lt;version&gt;2.10.1-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre></div>
 <p>If you're going to use TIPC, add the following dependency:</p>
@@ -180,7 +181,7 @@ following two dependencies instead:</p>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.kohlschutter.junixsocket&lt;/groupId&gt;
   &lt;artifactId&gt;junixsocket-tipc&lt;/artifactId&gt;
-  &lt;version&gt;2.10.0&lt;/version&gt;
+  &lt;version&gt;2.10.1-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre></div>
 <p>If you're going to use VSOCK, add the following dependency:</p>
@@ -189,7 +190,7 @@ following two dependencies instead:</p>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.kohlschutter.junixsocket&lt;/groupId&gt;
   &lt;artifactId&gt;junixsocket-vsock&lt;/artifactId&gt;
-  &lt;version&gt;2.10.0&lt;/version&gt;
+  &lt;version&gt;2.10.1-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre></div>
 <p>If you're going to use the Jetty connectors, add the following dependency:</p>
@@ -198,7 +199,7 @@ following two dependencies instead:</p>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.kohlschutter.junixsocket&lt;/groupId&gt;
   &lt;artifactId&gt;junixsocket-jetty&lt;/artifactId&gt;
-  &lt;version&gt;2.10.0&lt;/version&gt;
+  &lt;version&gt;2.10.1-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre></div>
 <p>If you're going to use the SSL extension, add the following dependency:</p>
@@ -207,7 +208,7 @@ following two dependencies instead:</p>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.kohlschutter.junixsocket&lt;/groupId&gt;
   &lt;artifactId&gt;junixsocket-ssl&lt;/artifactId&gt;
-  &lt;version&gt;2.10.0&lt;/version&gt;
+  &lt;version&gt;2.10.1-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre></div>
 <p>(On Android, you may also want to add <code>org.bouncycastle:bcprov-jdk18on</code> and
@@ -218,7 +219,7 @@ following two dependencies instead:</p>
 <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;com.kohlschutter.junixsocket&lt;/groupId&gt;
   &lt;artifactId&gt;junixsocket-darwin&lt;/artifactId&gt;
-  &lt;version&gt;2.10.0&lt;/version&gt;
+  &lt;version&gt;2.10.1-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;
 </code></pre></div></section><section>
 <h3>Custom architectures (usually not required)</h3>
@@ -247,53 +248,53 @@ in your POM:</p>
 
 <div class="verbatim">
 <pre><code>dependencies {
-    implementation 'com.kohlschutter.junixsocket:junixsocket-core:2.10.0'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-core:2.10.1-SNAPSHOT'
 }
 </code></pre></div>
 <p>Some older Gradle versions require <code>compile</code> instead of <code>implementation</code>, and some older versions have trouble resolving the <code>junixsocket-core</code> POM artifact. If you're running into problems (and only then), try the following:</p>
 
 <div class="verbatim">
 <pre><code>dependencies {
-    implementation 'com.kohlschutter.junixsocket:junixsocket-common:2.10.0'
-    implementation 'com.kohlschutter.junixsocket:junixsocket-native-scommon:2.10.0'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-common:2.10.1-SNAPSHOT'
+    implementation 'com.kohlschutter.junixsocket:junixsocket-native-scommon:2.10.1-SNAPSHOT'
 }
 </code></pre></div>
 <p>For RMI support, add:</p>
 
 <div class="verbatim">
-<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.10.0'
+<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-rmi:2.10.1-SNAPSHOT'
 </code></pre></div>
 <p>For MySQL support, add:</p>
 
 <div class="verbatim">
-<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-mysql:2.10.0'
+<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-mysql:2.10.1-SNAPSHOT'
 </code></pre></div>
 <p>For TIPC support, add:</p>
 
 <div class="verbatim">
-<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.10.0'
+<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-tipc:2.10.1-SNAPSHOT'
 </code></pre></div>
 <p>For VSOCK support, add:</p>
 
 <div class="verbatim">
-<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.10.0'
+<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-vsock:2.10.1-SNAPSHOT'
 </code></pre></div>
 <p>For Jetty support, add:</p>
 
 <div class="verbatim">
-<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-jetty:2.10.0'
+<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-jetty:2.10.1-SNAPSHOT'
 </code></pre></div>
 <p>For SSL support, add:</p>
 
 <div class="verbatim">
-<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-ssl:2.10.0'
+<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-ssl:2.10.1-SNAPSHOT'
 </code></pre></div>
 <p>(On Android, you may also want to add <code>org.bouncycastle:bcprov-jdk18on</code> and
 <code>org.bouncycastle:bctls-jdk18on</code>, since the default SSL implementation is incomplete)</p>
 <p>For Darwin socket support, add:</p>
 
 <div class="verbatim">
-<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-darwin:2.10.0'
+<pre><code>    implementation 'com.kohlschutter.junixsocket:junixsocket-darwin:2.10.1-SNAPSHOT'
 </code></pre></div><section>
 <h3>Snapshot versions</h3>
 <p>Add the following &#x201c;maven&#x201d; line to <code>settings.gradle</code>, or update accordingly:</p>
@@ -322,11 +323,11 @@ databases such as PostgreSQL.</p><section>
 <p>If you can't use Maven (instructions above), make sure that the following jars are on your classpath:</p>
 <ul>
 
-<li>junixsocket-common-2.10.0.jar</li>
-<li>junixsocket-mysql-2.10.0.jar</li>
+<li>junixsocket-common-2.10.1-SNAPSHOT.jar</li>
+<li>junixsocket-mysql-2.10.1-SNAPSHOT.jar</li>
 <li>mysql-connector-j-8.0.31.jar (or newer)</li>
-<li>(typically required; can be skipped if you use the custom library below) junixsocket-native-common-2.10.0.jar</li>
-<li>(optionally, if you have a custom architecture) junixsocket-native-custom-2.10.0.jar</li>
+<li>(typically required; can be skipped if you use the custom library below) junixsocket-native-common-2.10.1-SNAPSHOT.jar</li>
+<li>(optionally, if you have a custom architecture) junixsocket-native-custom-2.10.1-SNAPSHOT.jar</li>
 </ul>
 <p>Use the following connection properties (along with <code>user</code>, <code>password</code>, and other properties you may
 have).</p>
@@ -364,10 +365,10 @@ to disable SSL with older versions of Connector/J.</p></section><section>
 <p>Make sure that the following jars are on your classpath:</p>
 <ul>
 
-<li>junixsocket-common-2.10.0.jar</li>
+<li>junixsocket-common-2.10.1-SNAPSHOT.jar</li>
 <li>postgresql-42.2.5.jar (or newer; earlier versions should work, too)</li>
-<li>(typically, omit if you use the custom library below) junixsocket-native-common-2.10.0.jar</li>
-<li>(optionally, if you have a custom architecture) junixsocket-native-custom-2.10.0.jar</li>
+<li>(typically, omit if you use the custom library below) junixsocket-native-common-2.10.1-SNAPSHOT.jar</li>
+<li>(optionally, if you have a custom architecture) junixsocket-native-custom-2.10.1-SNAPSHOT.jar</li>
 </ul>
 <p>Use the following connection properties (along with <code>user</code>, <code>password</code>, and other properties you may
 have).</p>

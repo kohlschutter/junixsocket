@@ -75,7 +75,7 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,NamedInteger,5
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,InvalidSocketException,3,4,0,0,2,2,1,1,1,1
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXSocketChannel,39,14,6,0,9,4,8,3,5,3
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFTIPCSocketAddress,275,505,23,67,65,127,36,48,18,18
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocket,117,469,29,63,36,126,28,70,3,48
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocket,112,474,27,65,35,127,26,72,3,48
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericSocketAddress.new AFSocketAddressConfig() {...},6,15,1,1,1,7,2,4,1,4
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,NoSuchDeviceSocketException,7,0,0,0,4,0,2,0,2,0
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AncillaryDataSupport.new Closeable() {...},0,17,0,0,0,3,0,2,0,2
@@ -107,7 +107,7 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFVSOCKSocketI
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFDatagramSocket,202,305,36,46,57,97,36,43,10,27
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericSocket,32,26,2,0,8,6,6,5,5,5
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,SocketAddressUtil,12,18,0,2,5,6,1,4,1,3
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSelectionKey,29,124,6,16,4,32,8,19,3,13
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSelectionKey,29,124,5,17,4,32,7,20,3,13
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXSocketAddress,106,457,27,49,17,97,26,52,2,37
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericSocketChannel,0,5,0,0,0,2,0,1,0,1
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,VirtualThreadPollerNaive.PollJob,23,125,8,10,7,30,6,6,0,3
@@ -115,7 +115,7 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,SocketClosedBy
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocketFactory,24,107,5,17,6,25,5,13,0,7
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader.LibraryCandidate,6,6,0,0,1,3,1,1,1,1
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,Closeables.HardReference,0,10,0,0,0,4,0,2,0,2
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocketImpl,402,1021,78,142,108,296,74,105,13,50
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocketImpl,402,1021,77,143,108,296,73,106,13,50
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXSocketCapability,58,0,0,0,11,0,3,0,3,0
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericSelectorProvider,56,14,0,0,15,4,15,2,15,2
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericServerSocket,31,20,0,0,6,6,6,5,6,5
@@ -130,7 +130,7 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericProto
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,NotConnectedSocketException,3,4,0,0,2,2,1,1,1,1
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFFuture,0,3,0,0,0,1,0,1,0,1
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,SocketOptionsMapper,3,86,0,6,1,21,1,6,1,3
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,InterruptibleChannelUtil,56,113,16,26,14,32,13,13,1,4
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,InterruptibleChannelUtil,54,115,15,27,13,33,12,14,1,4
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericSelectorProvider.new AFAddressFamilyConfig() {...},2,19,0,0,1,9,1,9,1,9
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,KnownJavaBugIOException,16,0,0,0,8,0,4,0,4,0
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,DatagramSocketShim,26,4,4,0,6,2,4,1,2,1

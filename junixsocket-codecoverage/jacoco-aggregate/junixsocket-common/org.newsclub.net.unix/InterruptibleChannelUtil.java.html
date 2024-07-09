@@ -119,7 +119,7 @@ import java.util.Objects;
       }
     }
 
-<span class="pc bpc" id="L122" title="2 of 6 branches missed.">    if (e instanceof SocketClosedException || e instanceof ClosedChannelException</span>
+<span class="pc bpc" id="L122" title="1 of 6 branches missed.">    if (e instanceof SocketClosedException || e instanceof ClosedChannelException</span>
         || e instanceof BrokenPipeSocketException) {
 <span class="fc" id="L124">      Thread t = Thread.currentThread();</span>
 
@@ -143,7 +143,7 @@ import java.util.Objects;
 
 <span class="fc" id="L144">      return closeAndThrow(channel, e);</span>
     } else {
-<span class="nc" id="L146">      return e;</span>
+<span class="fc" id="L146">      return e;</span>
     }
   }
 }

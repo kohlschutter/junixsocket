@@ -30,7 +30,7 @@
           <ul class="breadcrumb">
         <li id="publishDate">Last Published: 2024-07-09<span class="divider">|</span>
 </li>
-          <li id="projectVersion">Version: 2.10.0</li>
+          <li id="projectVersion">Version: 2.10.1-SNAPSHOT</li>
           </ul>
         </div>
       </header>
@@ -70,6 +70,7 @@
     <li><a href="crosscomp.html">Cross-Compiling with crossclang</a></li>
     <li><a href="eclipse.html">Developing with Eclipse</a></li>
     <li><a href="xcode.html">Developing with Xcode</a></li>
+    <li><a href="otherbugs.html">Bugs in other places</a></li>
     <li class="active"><a>Release Instructions</a></li>
    <li class="nav-header">Modules</li>
     <li><a href="junixsocket-common/index.html">junixsocket-common</a></li>
@@ -263,7 +264,7 @@ mvn clean install -Dstrict -Drelease
 <p>Also run the selftest with Java 8, e.g.:</p>
 
 <div class="verbatim">
-<pre><code>/Library/Java/JavaVirtualMachines/1.8.0.jdk/Contents/Home/bin/java -jar junixsocket-selftest/target/junixsocket-selftest-2.10.0-jar-with-dependencies.jar
+<pre><code>/Library/Java/JavaVirtualMachines/1.8.0.jdk/Contents/Home/bin/java -jar junixsocket-selftest/target/junixsocket-selftest-2.10.1-SNAPSHOT-jar-with-dependencies.jar
 </code></pre></div>
 <p>Run <code>junixsocket-native-graalvm/bin/with-graalvm mvn package -pl junixsocket-selftest-native-image -Dnative</code>
 (on all native-image supported platforms) to build the GraalVM native-image.  Test the native-image
@@ -357,6 +358,10 @@ library binaries (macOS, Linux 64-bit, etc.).</p></section></section><section>
 <p><strong>NOTE:</strong> (Replace X.Y.Z with the actual version)</p>
 </blockquote></section><section>
 <h3>Publish website</h3>
+<blockquote>
+
+<p><strong>NOTE:</strong> Maven 3.9.7 and 3.9.8 contain a bug (<a href="https://issues.apache.org/jira/browse/MNG-8178" class="externalLink">MNG-8178</a>) that prevents building the site. Use Maven 3.9.6 instead.</p>
+</blockquote>
 <p>This builds the Maven site</p>
 
 <div class="verbatim">

@@ -30,7 +30,7 @@
           <ul class="breadcrumb">
         <li id="publishDate">Last Published: 2024-07-09<span class="divider">|</span>
 </li>
-          <li id="projectVersion">Version: 2.10.0</li>
+          <li id="projectVersion">Version: 2.10.1-SNAPSHOT</li>
           </ul>
         </div>
       </header>
@@ -70,6 +70,7 @@
     <li><a href="crosscomp.html">Cross-Compiling with crossclang</a></li>
     <li><a href="eclipse.html">Developing with Eclipse</a></li>
     <li><a href="xcode.html">Developing with Xcode</a></li>
+    <li><a href="otherbugs.html">Bugs in other places</a></li>
     <li><a href="release.html">Release Instructions</a></li>
    <li class="nav-header">Modules</li>
     <li><a href="junixsocket-common/index.html">junixsocket-common</a></li>
@@ -147,13 +148,13 @@
 <td>1</td></tr>
 <tr class="a">
 <th>Number of SNAPSHOT artifacts (NOS):</th>
-<td>0</td></tr>
+<td>2</td></tr>
 <tr class="b">
 <th>Convergence (NOD/NOA):</th>
 <td><img src="images/icon_error_sml.gif" alt="[Error]" />&#160;<b>91 %</b></td></tr>
 <tr class="a">
 <th>Ready for release (100% convergence and no SNAPSHOTS):</th>
-<td><img src="images/icon_error_sml.gif" alt="[Error]" />&#160;<b>Error</b><br />You do not have 100% convergence.</td></tr></table></section><section>
+<td><img src="images/icon_error_sml.gif" alt="[Error]" />&#160;<b>Error</b><br />You do not have 100% convergence.<br />You have SNAPSHOT dependencies.</td></tr></table></section><section>
 <h2>Dependencies used in modules</h2><section>
 <h3>org.jetbrains.kotlin:kotlin-stdlib-jdk8</h3>
 <table class="table table-striped">
@@ -165,18 +166,40 @@
 <td>1.8.21</td>
 <td>
 <ol style="list-style-type: decimal;">
-<li>com.kohlschutter.junixsocket:junixsocket-demo:jar:2.10.0<br />\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:compile<br />&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.8.21:compile<br /></li><br />
-<li>com.kohlschutter.junixsocket:junixsocket-dist:pom:2.10.0<br />\-&#160;com.kohlschutter.junixsocket:junixsocket-demo:jar:2.10.0:compile<br />&#160;&#160;&#160;\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.8.21:compile<br /></li><br />
-<li>com.kohlschutter.junixsocket:junixsocket-jetty-11:jar:2.10.0<br />\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:test<br />&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.8.21:test<br /></li><br />
-<li>com.kohlschutter.junixsocket:junixsocket-jetty:jar:2.10.0<br />\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:test<br />&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.8.21:test<br /></li><br /></ol></td></tr>
+<li>com.kohlschutter.junixsocket:junixsocket-demo:jar:2.10.1-SNAPSHOT<br />\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:compile<br />&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.8.21:compile<br /></li><br />
+<li>com.kohlschutter.junixsocket:junixsocket-dist:pom:2.10.1-SNAPSHOT<br />\-&#160;com.kohlschutter.junixsocket:junixsocket-demo:jar:2.10.1-SNAPSHOT:compile<br />&#160;&#160;&#160;\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.8.21:compile<br /></li><br />
+<li>com.kohlschutter.junixsocket:junixsocket-jetty-11:jar:2.10.1-SNAPSHOT<br />\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:test<br />&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.8.21:test<br /></li><br />
+<li>com.kohlschutter.junixsocket:junixsocket-jetty:jar:2.10.1-SNAPSHOT<br />\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:test<br />&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.8.21:test<br /></li><br /></ol></td></tr>
 <tr class="a">
 <td>1.9.10</td>
 <td>
 <ol style="list-style-type: decimal;">
-<li>com.kohlschutter.junixsocket:junixsocket-demo:jar:2.10.0<br />\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:compile<br />&#160;&#160;&#160;\-&#160;com.squareup.okio:okio:jar:3.6.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.squareup.okio:okio-jvm:jar:3.6.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.9.10:compile<br /></li><br />
-<li>com.kohlschutter.junixsocket:junixsocket-dist:pom:2.10.0<br />\-&#160;com.kohlschutter.junixsocket:junixsocket-demo:jar:2.10.0:compile<br />&#160;&#160;&#160;\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.squareup.okio:okio:jar:3.6.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.squareup.okio:okio-jvm:jar:3.6.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.9.10:compile<br /></li><br />
-<li>com.kohlschutter.junixsocket:junixsocket-jetty-11:jar:2.10.0<br />\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:test<br />&#160;&#160;&#160;\-&#160;com.squareup.okio:okio:jar:3.6.0:test<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.squareup.okio:okio-jvm:jar:3.6.0:test<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.9.10:test<br /></li><br />
-<li>com.kohlschutter.junixsocket:junixsocket-jetty:jar:2.10.0<br />\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:test<br />&#160;&#160;&#160;\-&#160;com.squareup.okio:okio:jar:3.6.0:test<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.squareup.okio:okio-jvm:jar:3.6.0:test<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.9.10:test<br /></li><br /></ol></td></tr></table></td></tr></table></section></section>
+<li>com.kohlschutter.junixsocket:junixsocket-demo:jar:2.10.1-SNAPSHOT<br />\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:compile<br />&#160;&#160;&#160;\-&#160;com.squareup.okio:okio:jar:3.6.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.squareup.okio:okio-jvm:jar:3.6.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.9.10:compile<br /></li><br />
+<li>com.kohlschutter.junixsocket:junixsocket-dist:pom:2.10.1-SNAPSHOT<br />\-&#160;com.kohlschutter.junixsocket:junixsocket-demo:jar:2.10.1-SNAPSHOT:compile<br />&#160;&#160;&#160;\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.squareup.okio:okio:jar:3.6.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.squareup.okio:okio-jvm:jar:3.6.0:compile<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.9.10:compile<br /></li><br />
+<li>com.kohlschutter.junixsocket:junixsocket-jetty-11:jar:2.10.1-SNAPSHOT<br />\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:test<br />&#160;&#160;&#160;\-&#160;com.squareup.okio:okio:jar:3.6.0:test<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.squareup.okio:okio-jvm:jar:3.6.0:test<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.9.10:test<br /></li><br />
+<li>com.kohlschutter.junixsocket:junixsocket-jetty:jar:2.10.1-SNAPSHOT<br />\-&#160;com.squareup.okhttp3:okhttp:jar:4.12.0:test<br />&#160;&#160;&#160;\-&#160;com.squareup.okio:okio:jar:3.6.0:test<br />&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;com.squareup.okio:okio-jvm:jar:3.6.0:test<br />&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\-&#160;org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.9.10:test<br /></li><br /></ol></td></tr></table></td></tr></table></section><section>
+<h3>com.kohlschutter.junixsocket:junixsocket-native</h3>
+<table class="table table-striped">
+<tr class="a">
+<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
+<td>
+<table class="table table-striped">
+<tr class="b">
+<td>2.10.1-SNAPSHOT</td>
+<td>
+<ol style="list-style-type: decimal;">
+<li></li><br /></ol></td></tr></table></td></tr></table></section><section>
+<h3>com.kohlschutter.junixsocket:junixsocket-native-common</h3>
+<table class="table table-striped">
+<tr class="a">
+<td><img src="images/icon_error_sml.gif" alt="[Error]" /></td>
+<td>
+<table class="table table-striped">
+<tr class="b">
+<td>2.10.1-SNAPSHOT</td>
+<td>
+<ol style="list-style-type: decimal;">
+<li>com.kohlschutter.junixsocket:junixsocket-common:jar:2.10.1-SNAPSHOT<br />\-&#160;com.kohlschutter.junixsocket:junixsocket-native-common:jar:2.10.1-SNAPSHOT:test<br /></li><br /></ol></td></tr></table></td></tr></table></section></section>
         </main>
       </div>
     </div>

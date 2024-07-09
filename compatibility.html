@@ -30,7 +30,7 @@
           <ul class="breadcrumb">
         <li id="publishDate">Last Published: 2024-07-09<span class="divider">|</span>
 </li>
-          <li id="projectVersion">Version: 2.10.0</li>
+          <li id="projectVersion">Version: 2.10.1-SNAPSHOT</li>
           </ul>
         </div>
       </header>
@@ -70,6 +70,7 @@
     <li><a href="crosscomp.html">Cross-Compiling with crossclang</a></li>
     <li><a href="eclipse.html">Developing with Eclipse</a></li>
     <li><a href="xcode.html">Developing with Xcode</a></li>
+    <li><a href="otherbugs.html">Bugs in other places</a></li>
     <li><a href="release.html">Release Instructions</a></li>
    <li class="nav-header">Modules</li>
     <li><a href="junixsocket-common/index.html">junixsocket-common</a></li>
@@ -122,7 +123,7 @@ earlier).</p>
 <p>If you have certain business reasons to not upgrade but still need something fixed, please
 <a href="mailto:christian@kohlschutter.com" class="externalLink">ask for an enterprise support plan</a>.</p></section><section>
 <h2>Supported Java versions</h2>
-<p>junixsocket 2.10.0 is fully compatible with Java 8 and newer (tested up to Java 20).</p></section><section>
+<p>junixsocket 2.10.1-SNAPSHOT is fully compatible with Java 8 and newer (tested up to Java 20).</p></section><section>
 <h2>Supported Java VMs</h2>
 <p>junixsocket has been tested to work with Oracle's Java 8 JDK, and OpenJDK (and its flavors, as well
 as IBM Semeru) for newer versions, and other platform-specific VMs listed below.</p>
@@ -180,6 +181,7 @@ and <a href="https://dev.haiku-os.org/ticket/18534" class="externalLink">fixed i
 <ul>
 
 <li>IBM z/TPF OS/390 with s390x-ibm-tpf-gcc version tpf-17r1-6</li>
+<li>Minix</li>
 </ul><section>
 <h3>Remarks</h3>
 <p>Linux builds should be compatible with all major distributions, including the
@@ -223,7 +225,7 @@ or <a href="mailto:christian@kohlschutter.com" class="externalLink">contact Chri
 <p>A reliable way to ensure that junixsocket works in your environment is to run the &#x201c;<a href="selftest.html">selftest</a>&#x201d;.</p>
 
 <div class="verbatim">
-<pre><code>java -jar junixsocket-selftest-2.10.0-jar-with-dependencies.jar
+<pre><code>java -jar junixsocket-selftest-2.10.1-SNAPSHOT-jar-with-dependencies.jar
 </code></pre></div>
 <p>The last line should say &#x201c;Selftest PASSED&#x201d; (or &#x201c;Selftest PASSED WITH ISSUES&#x201d;), then you're good to go.</p>
 <p>If not, please <a href="https://github.com/kohlschutter/junixsocket/issues" class="externalLink">file a bug report</a> with the
@@ -254,7 +256,10 @@ specify:</p>
 <div class="verbatim">
 <pre><code>-Dorg.newsclub.net.unix.library.disable.CAPABILITY_FILE_DESCRIPTORS=true
 </code></pre></div>
-<p>The set of available capabilities is enumerated in the <a href="https://kohlschutter.github.io/junixsocket/apidocs/org.newsclub.net.unix/org/newsclub/net/unix/AFSocketCapability.html" class="externalLink">AFSocketCapability</a> enum.</p></section></section>
+<p>The set of available capabilities is enumerated in the <a href="https://kohlschutter.github.io/junixsocket/apidocs/org.newsclub.net.unix/org/newsclub/net/unix/AFSocketCapability.html" class="externalLink">AFSocketCapability</a> enum.</p></section><section>
+<h2>Bugs in other systems</h2>
+<p>If you're curious about bugs in other systems we could find thanks to junixsocket, take a look
+<a href="otherbugs.html">here</a>.</p></section></section>
         </main>
       </div>
     </div>

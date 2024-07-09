@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1720522085769">
-    <module artifactId="junixsocket-darwin" groupId="com.kohlschutter.junixsocket" version="2.10.0"/>
+<licensePluginReport goal="CHECK" timestamp="1720562854187">
+    <module artifactId="junixsocket-darwin" groupId="com.kohlschutter.junixsocket" version="2.10.1-SNAPSHOT"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMDatagramChannel.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/darwin/system/AFSYSTEMDatagramSocket.java" result="PRESENT"/>
