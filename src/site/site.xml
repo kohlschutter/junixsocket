@@ -75,6 +75,7 @@
         href="crosscomp.html" />
       <item name="Developing with Eclipse" href="eclipse.html" />
       <item name="Developing with Xcode" href="xcode.html" />
+      <item name="Bugs in other places" href="otherbugs.html" />
       <item name="Release Instructions" href="release.html" />
     </menu>
 

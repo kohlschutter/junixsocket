@@ -168,3 +168,8 @@ specify:
     -Dorg.newsclub.net.unix.library.disable.CAPABILITY_FILE_DESCRIPTORS=true
 
 The set of available capabilities is enumerated in the [AFSocketCapability](https://kohlschutter.github.io/junixsocket/apidocs/org.newsclub.net.unix/org/newsclub/net/unix/AFSocketCapability.html) enum.
+
+#[[##]]# Bugs in other systems
+
+If you're curious about bugs in other systems we could find thanks to junixsocket, take a look
+[here](otherbugs.html).
