@@ -15,11 +15,11 @@ version.
 If you depend on an outdated version of junixsocket or need other commercial support, please reach
 out to directly to Christian Kohlschütter (email is in `pom.xml`).
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 2.9.x   | :white_check_mark: |
-| < 2.9.x | Commercial support available |
-| < 2.0   | :x:                |
+| Versioni | Supported          |
+| -------- | ------------------ |
+| 2.10.x   | :white_check_mark: |
+| < 2.10.x | Commercial support available |
+| < 2.0    | :x:                |
 
 ## Reporting a Vulnerability
 
