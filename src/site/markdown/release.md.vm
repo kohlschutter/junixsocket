@@ -262,7 +262,9 @@ NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in
 
 #[[###]]# Publish website
 
-This builds the Maven site 
+> **NOTE:** Maven 3.9.7 and 3.9.8 contain a bug ([MNG-8178](https://issues.apache.org/jira/browse/MNG-8178)) that prevents building the site. Use Maven 3.9.6 instead.
+
+This builds the Maven site
 
     cd junixsocket
     ./scripts/build-site
