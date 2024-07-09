@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
 /**
  * An {@link AFSocketAddress} for AF_SYSTEM sockets.
@@ -59,17 +60,17 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
      */
     public static final SysAddr AF_SYS_CONTROL;
 
-<span class="fc" id="L62">    private static final @NonNull SysAddr[] VALUES = init(new @NonNull SysAddr[] {</span>
+<span class="fc" id="L63">    private static final @NonNull SysAddr[] VALUES = init(new @NonNull SysAddr[] {</span>
         AF_SYS_CONTROL = new SysAddr(&quot;AF_SYS_CONTROL&quot;, 2) //
     });
 
     private SysAddr(int id) {
-<span class="nc" id="L67">      super(id);</span>
-<span class="nc" id="L68">    }</span>
+<span class="nc" id="L68">      super(id);</span>
+<span class="nc" id="L69">    }</span>
 
     private SysAddr(String name, int id) {
-<span class="fc" id="L71">      super(name, id);</span>
-<span class="fc" id="L72">    }</span>
+<span class="fc" id="L72">      super(name, id);</span>
+<span class="fc" id="L73">    }</span>
 
     /**
      * Returns a {@link SysAddr} for the given custom value.
@@ -78,18 +79,18 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
      * @return The {@link SysAddr} object.
      */
     public static SysAddr ofValue(int v) {
-<span class="fc" id="L81">      return ofValue(VALUES, SysAddr::new, v);</span>
+<span class="fc" id="L82">      return ofValue(VALUES, SysAddr::new, v);</span>
     }
   }
 
-  private AFSYSTEMSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress)
-      throws SocketException {
-<span class="fc" id="L87">    super(port, socketAddress, nativeAddress, addressFamily());</span>
-<span class="fc" id="L88">  }</span>
+  private AFSYSTEMSocketAddress(int port, final byte[] socketAddress,
+      Lease&lt;ByteBuffer&gt; nativeAddress) throws SocketException {
+<span class="fc" id="L88">    super(port, socketAddress, nativeAddress, addressFamily());</span>
+<span class="fc" id="L89">  }</span>
 
   private static AFSYSTEMSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
-      ByteBuffer nativeAddress) throws SocketException {
-<span class="nc" id="L92">    return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),</span>
+      Lease&lt;ByteBuffer&gt; nativeAddress) throws SocketException {
+<span class="nc" id="L93">    return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),</span>
         AFSYSTEMSocketAddress::new);
   }
 
@@ -107,7 +108,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    */
   public static AFSYSTEMSocketAddress ofSysAddrIdUnit(int javaPort, SysAddr sysAddr, int id,
       int unit) throws SocketException {
-<span class="fc" id="L110">    return resolveAddress(toBytes(sysAddr, id, unit), javaPort, addressFamily());</span>
+<span class="fc" id="L111">    return resolveAddress(toBytes(sysAddr, id, unit), javaPort, addressFamily());</span>
   }
 
   /**
@@ -122,7 +123,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    */
   public static AFSYSTEMSocketAddress ofSysAddrIdUnit(SysAddr sysAddr, int id, int unit)
       throws SocketException {
-<span class="fc" id="L125">    return ofSysAddrIdUnit(0, sysAddr, id, unit);</span>
+<span class="fc" id="L126">    return ofSysAddrIdUnit(0, sysAddr, id, unit);</span>
   }
 
   /**
@@ -136,7 +137,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFSYSTEMSocketAddress unwrap(InetAddress address, int port) throws SocketException {
-<span class="nc" id="L139">    return AFSocketAddress.unwrap(address, port, addressFamily());</span>
+<span class="nc" id="L140">    return AFSocketAddress.unwrap(address, port, addressFamily());</span>
   }
 
   /**
@@ -151,7 +152,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFSYSTEMSocketAddress unwrap(String hostname, int port) throws SocketException {
-<span class="nc" id="L154">    return AFSocketAddress.unwrap(hostname, port, addressFamily());</span>
+<span class="nc" id="L155">    return AFSocketAddress.unwrap(hostname, port, addressFamily());</span>
   }
 
   /**
@@ -163,28 +164,28 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFSYSTEMSocketAddress unwrap(SocketAddress address) throws SocketException {
-<span class="nc" id="L166">    Objects.requireNonNull(address);</span>
-<span class="nc bnc" id="L167" title="All 2 branches missed.">    if (!isSupportedAddress(address)) {</span>
-<span class="nc" id="L168">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+<span class="nc" id="L167">    Objects.requireNonNull(address);</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">    if (!isSupportedAddress(address)) {</span>
+<span class="nc" id="L169">      throw new SocketException(&quot;Unsupported address&quot;);</span>
     }
-<span class="nc" id="L170">    return (AFSYSTEMSocketAddress) address;</span>
+<span class="nc" id="L171">    return (AFSYSTEMSocketAddress) address;</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L175">    int port = getPort();</span>
+<span class="nc" id="L176">    int port = getPort();</span>
 
-<span class="nc" id="L177">    byte[] bytes = getBytes();</span>
-<span class="nc bnc" id="L178" title="All 2 branches missed.">    if (bytes.length != (8 * 4)) {</span>
-<span class="nc bnc" id="L179" title="All 2 branches missed.">      return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port) + &quot;;UNKNOWN&quot; + &quot;]&quot;;</span>
+<span class="nc" id="L178">    byte[] bytes = getBytes();</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">    if (bytes.length != (8 * 4)) {</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">      return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port) + &quot;;UNKNOWN&quot; + &quot;]&quot;;</span>
     }
 
-<span class="nc" id="L182">    ByteBuffer bb = ByteBuffer.wrap(bytes);</span>
-<span class="nc" id="L183">    SysAddr sysAddr = SysAddr.ofValue(bb.getInt());</span>
-<span class="nc" id="L184">    int id = bb.getInt();</span>
-<span class="nc" id="L185">    int unit = bb.getInt();</span>
+<span class="nc" id="L183">    ByteBuffer bb = ByteBuffer.wrap(bytes);</span>
+<span class="nc" id="L184">    SysAddr sysAddr = SysAddr.ofValue(bb.getInt());</span>
+<span class="nc" id="L185">    int id = bb.getInt();</span>
+<span class="nc" id="L186">    int unit = bb.getInt();</span>
 
-<span class="nc bnc" id="L187" title="All 2 branches missed.">    return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port + &quot;;&quot;) + sysAddr + &quot;;id=&quot;</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">    return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port + &quot;;&quot;) + sysAddr + &quot;;id=&quot;</span>
         + id + &quot;;unit=&quot; + unit + &quot;]&quot;;
   }
 
@@ -194,8 +195,8 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    * @return The SysAddr part.
    */
   public @NonNull SysAddr getSysAddr() {
-<span class="nc" id="L197">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L198">    return SysAddr.ofValue(bb.getInt(0));</span>
+<span class="nc" id="L198">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="nc" id="L199">    return SysAddr.ofValue(bb.getInt(0));</span>
   }
 
   /**
@@ -204,8 +205,8 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    * @return The id part.
    */
   public int getId() {
-<span class="nc" id="L207">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L208">    return bb.getInt(4);</span>
+<span class="nc" id="L208">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="nc" id="L209">    return bb.getInt(4);</span>
   }
 
   /**
@@ -214,18 +215,18 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    * @return The unit part.
    */
   public int getUnit() {
-<span class="nc" id="L217">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L218">    return bb.getInt(8);</span>
+<span class="nc" id="L218">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="nc" id="L219">    return bb.getInt(8);</span>
   }
 
   @Override
   public boolean hasFilename() {
-<span class="nc" id="L223">    return false;</span>
+<span class="nc" id="L224">    return false;</span>
   }
 
   @Override
   public File getFile() throws FileNotFoundException {
-<span class="nc" id="L228">    throw new FileNotFoundException(&quot;no file&quot;);</span>
+<span class="nc" id="L229">    throw new FileNotFoundException(&quot;no file&quot;);</span>
   }
 
   /**
@@ -237,7 +238,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    * @see #unwrap(InetAddress, int)
    */
   public static boolean isSupportedAddress(InetAddress addr) {
-<span class="nc" id="L240">    return AFSocketAddress.isSupportedAddress(addr, addressFamily());</span>
+<span class="nc" id="L241">    return AFSocketAddress.isSupportedAddress(addr, addressFamily());</span>
   }
 
   /**
@@ -248,21 +249,21 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    * @see #unwrap(InetAddress, int)
    */
   public static boolean isSupportedAddress(SocketAddress addr) {
-<span class="nc" id="L251">    return (addr instanceof AFSYSTEMSocketAddress);</span>
+<span class="nc" id="L252">    return (addr instanceof AFSYSTEMSocketAddress);</span>
   }
 
   @SuppressWarnings(&quot;cast&quot;)
   private static byte[] toBytes(SysAddr sysAddr, int id, int unit) {
-<span class="fc" id="L256">    ByteBuffer bb = ByteBuffer.allocate(8 * 4);</span>
-<span class="fc" id="L257">    bb.putInt(sysAddr.value());</span>
-<span class="fc" id="L258">    bb.putInt(id);</span>
-<span class="fc" id="L259">    bb.putInt(unit);</span>
-<span class="fc" id="L260">    bb.putInt(0);</span>
+<span class="fc" id="L257">    ByteBuffer bb = ByteBuffer.allocate(8 * 4);</span>
+<span class="fc" id="L258">    bb.putInt(sysAddr.value());</span>
+<span class="fc" id="L259">    bb.putInt(id);</span>
+<span class="fc" id="L260">    bb.putInt(unit);</span>
 <span class="fc" id="L261">    bb.putInt(0);</span>
 <span class="fc" id="L262">    bb.putInt(0);</span>
 <span class="fc" id="L263">    bb.putInt(0);</span>
 <span class="fc" id="L264">    bb.putInt(0);</span>
-<span class="fc" id="L265">    return (byte[]) bb.flip().array();</span>
+<span class="fc" id="L265">    bb.putInt(0);</span>
+<span class="fc" id="L266">    return (byte[]) bb.flip().array();</span>
   }
 
   /**
@@ -272,41 +273,41 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    */
   @SuppressWarnings(&quot;null&quot;)
   public static synchronized AFAddressFamily&lt;AFSYSTEMSocketAddress&gt; addressFamily() {
-<span class="fc bfc" id="L275" title="All 2 branches covered.">    if (afSystem == null) {</span>
-<span class="fc" id="L276">      afSystem = AFAddressFamily.registerAddressFamily(&quot;system&quot;, //</span>
-<span class="fc" id="L277">          AFSYSTEMSocketAddress.class, new AFSocketAddressConfig&lt;AFSYSTEMSocketAddress&gt;() {</span>
+<span class="fc bfc" id="L276" title="All 2 branches covered.">    if (afSystem == null) {</span>
+<span class="fc" id="L277">      afSystem = AFAddressFamily.registerAddressFamily(&quot;system&quot;, //</span>
+<span class="fc" id="L278">          AFSYSTEMSocketAddress.class, new AFSocketAddressConfig&lt;AFSYSTEMSocketAddress&gt;() {</span>
 
-<span class="fc" id="L279">            private final AFSocketAddressConstructor&lt;AFSYSTEMSocketAddress&gt; addrConstr =</span>
-<span class="pc bpc" id="L280" title="1 of 2 branches missed.">                isUseDeserializationForInit() ? AFSYSTEMSocketAddress::newAFSocketAddress</span>
-<span class="fc" id="L281">                    : AFSYSTEMSocketAddress::new;</span>
+<span class="fc" id="L280">            private final AFSocketAddressConstructor&lt;AFSYSTEMSocketAddress&gt; addrConstr =</span>
+<span class="pc bpc" id="L281" title="1 of 2 branches missed.">                isUseDeserializationForInit() ? AFSYSTEMSocketAddress::newAFSocketAddress</span>
+<span class="fc" id="L282">                    : AFSYSTEMSocketAddress::new;</span>
 
             @Override
             protected AFSYSTEMSocketAddress parseURI(URI u, int port) throws SocketException {
-<span class="nc" id="L285">              return AFSYSTEMSocketAddress.of(u, port);</span>
+<span class="nc" id="L286">              return AFSYSTEMSocketAddress.of(u, port);</span>
             }
 
             @Override
             protected AFSocketAddressConstructor&lt;AFSYSTEMSocketAddress&gt; addressConstructor() {
-<span class="fc" id="L290">              return addrConstr;</span>
+<span class="fc" id="L291">              return addrConstr;</span>
             }
 
             @Override
             protected String selectorProviderClassname() {
-<span class="fc" id="L295">              return SELECTOR_PROVIDER_CLASS;</span>
+<span class="fc" id="L296">              return SELECTOR_PROVIDER_CLASS;</span>
             }
 
             @Override
             protected Set&lt;String&gt; uriSchemes() {
-<span class="fc" id="L300">              return new HashSet&lt;&gt;(Arrays.asList(&quot;afsystem&quot;));</span>
+<span class="fc" id="L301">              return new HashSet&lt;&gt;(Arrays.asList(&quot;afsystem&quot;));</span>
             }
           });
       try {
-<span class="fc" id="L304">        Class.forName(SELECTOR_PROVIDER_CLASS);</span>
-<span class="fc" id="L305">      } catch (ClassNotFoundException e) {</span>
+<span class="fc" id="L305">        Class.forName(SELECTOR_PROVIDER_CLASS);</span>
+<span class="fc" id="L306">      } catch (ClassNotFoundException e) {</span>
         // ignore
-<span class="fc" id="L307">      }</span>
+<span class="fc" id="L308">      }</span>
     }
-<span class="fc" id="L309">    return afSystem;</span>
+<span class="fc" id="L310">    return afSystem;</span>
   }
 
   /**
@@ -318,7 +319,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    */
   @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   public static AFSYSTEMSocketAddress of(URI uri) throws SocketException {
-<span class="fc" id="L321">    return of(uri, -1);</span>
+<span class="fc" id="L322">    return of(uri, -1);</span>
   }
 
   /**
@@ -333,76 +334,76 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
       &quot;PMD.CognitiveComplexity&quot;, &quot;PMD.CyclomaticComplexity&quot;, &quot;PMD.ExcessiveMethodLength&quot;,
       &quot;PMD.NcssCount&quot;, &quot;PMD.NPathComplexity&quot;, &quot;PMD.ShortMethodName&quot;})
   public static AFSYSTEMSocketAddress of(URI uri, int overridePort) throws SocketException {
-<span class="pc bpc" id="L336" title="1 of 2 branches missed.">    switch (uri.getScheme()) {</span>
+<span class="pc bpc" id="L337" title="1 of 2 branches missed.">    switch (uri.getScheme()) {</span>
       case &quot;afsystem&quot;:
-<span class="fc" id="L338">        break;</span>
+<span class="fc" id="L339">        break;</span>
       default:
-<span class="nc" id="L340">        throw new SocketException(&quot;Unsupported URI scheme: &quot; + uri.getScheme());</span>
+<span class="nc" id="L341">        throw new SocketException(&quot;Unsupported URI scheme: &quot; + uri.getScheme());</span>
     }
 
     String host;
-<span class="pc bpc" id="L344" title="1 of 4 branches missed.">    if ((host = uri.getHost()) == null || host.isEmpty()) {</span>
-<span class="fc" id="L345">      String ssp = uri.getSchemeSpecificPart();</span>
-<span class="pc bpc" id="L346" title="2 of 4 branches missed.">      if (ssp == null || !ssp.startsWith(&quot;//&quot;)) {</span>
-<span class="nc" id="L347">        throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
+<span class="pc bpc" id="L345" title="1 of 4 branches missed.">    if ((host = uri.getHost()) == null || host.isEmpty()) {</span>
+<span class="fc" id="L346">      String ssp = uri.getSchemeSpecificPart();</span>
+<span class="pc bpc" id="L347" title="2 of 4 branches missed.">      if (ssp == null || !ssp.startsWith(&quot;//&quot;)) {</span>
+<span class="nc" id="L348">        throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
       }
-<span class="fc" id="L349">      ssp = ssp.substring(2);</span>
-<span class="fc" id="L350">      int i = ssp.indexOf('/');</span>
-<span class="fc bfc" id="L351" title="All 2 branches covered.">      host = i == -1 ? ssp : ssp.substring(0, i);</span>
-<span class="pc bpc" id="L352" title="1 of 2 branches missed.">      if (host.isEmpty()) {</span>
-<span class="nc" id="L353">        throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
+<span class="fc" id="L350">      ssp = ssp.substring(2);</span>
+<span class="fc" id="L351">      int i = ssp.indexOf('/');</span>
+<span class="fc bfc" id="L352" title="All 2 branches covered.">      host = i == -1 ? ssp : ssp.substring(0, i);</span>
+<span class="pc bpc" id="L353" title="1 of 2 branches missed.">      if (host.isEmpty()) {</span>
+<span class="nc" id="L354">        throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
       }
     }
 
-<span class="fc" id="L357">    ByteBuffer bb = ByteBuffer.allocate(8 * 4);</span>
-<span class="fc bfc" id="L358" title="All 2 branches covered.">    for (String p : host.split(&quot;\\.&quot;)) {</span>
+<span class="fc" id="L358">    ByteBuffer bb = ByteBuffer.allocate(8 * 4);</span>
+<span class="fc bfc" id="L359" title="All 2 branches covered.">    for (String p : host.split(&quot;\\.&quot;)) {</span>
       int v;
       try {
-<span class="fc" id="L361">        v = parseUnsignedInt(p, 10);</span>
-<span class="fc" id="L362">      } catch (NumberFormatException e) {</span>
-<span class="fc" id="L363">        throw (SocketException) new SocketException(&quot;Unsupported URI: &quot; + uri).initCause(e);</span>
-<span class="fc" id="L364">      }</span>
-<span class="fc" id="L365">      bb.putInt(v);</span>
+<span class="fc" id="L362">        v = parseUnsignedInt(p, 10);</span>
+<span class="fc" id="L363">      } catch (NumberFormatException e) {</span>
+<span class="fc" id="L364">        throw (SocketException) new SocketException(&quot;Unsupported URI: &quot; + uri).initCause(e);</span>
+<span class="fc" id="L365">      }</span>
+<span class="fc" id="L366">      bb.putInt(v);</span>
     }
-<span class="fc" id="L367">    bb.flip();</span>
-<span class="pc bpc" id="L368" title="1 of 2 branches missed.">    if (bb.remaining() &gt; 8 * 4) {</span>
-<span class="nc" id="L369">      throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
+<span class="fc" id="L368">    bb.flip();</span>
+<span class="pc bpc" id="L369" title="1 of 2 branches missed.">    if (bb.remaining() &gt; 8 * 4) {</span>
+<span class="nc" id="L370">      throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
     }
-<span class="fc" id="L371">    /* SysAddr sa = */ SysAddr.ofValue(bb.getInt());</span>
-<span class="fc" id="L372">    /* int id = */ bb.getInt();</span>
-<span class="fc" id="L373">    /* int unit = */ bb.getInt();</span>
+<span class="fc" id="L372">    /* SysAddr sa = */ SysAddr.ofValue(bb.getInt());</span>
+<span class="fc" id="L373">    /* int id = */ bb.getInt();</span>
+<span class="fc" id="L374">    /* int unit = */ bb.getInt();</span>
 
-<span class="fc bfc" id="L375" title="All 2 branches covered.">    while (bb.remaining() &gt; 0) {</span>
-<span class="pc bpc" id="L376" title="1 of 2 branches missed.">      if (bb.getInt() != 0) {</span>
-<span class="nc" id="L377">        throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
+<span class="fc bfc" id="L376" title="All 2 branches covered.">    while (bb.remaining() &gt; 0) {</span>
+<span class="pc bpc" id="L377" title="1 of 2 branches missed.">      if (bb.getInt() != 0) {</span>
+<span class="nc" id="L378">        throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
       }
     }
 
-<span class="fc" id="L381">    return</span>
+<span class="fc" id="L382">    return</span>
 
-<span class="fc" id="L383">    resolveAddress(bb.array(), uri.getPort(), addressFamily());</span>
+<span class="fc" id="L384">    resolveAddress(bb.array(), uri.getPort(), addressFamily());</span>
   }
 
   @Override
   @SuppressWarnings({&quot;PMD.CognitiveComplexity&quot;, &quot;PMD.CompareObjectsWithEquals&quot;})
   public URI toURI(String scheme, URI template) throws IOException {
-<span class="pc bpc" id="L389" title="1 of 2 branches missed.">    switch (scheme) {</span>
+<span class="pc bpc" id="L390" title="1 of 2 branches missed.">    switch (scheme) {</span>
       case &quot;afsystem&quot;:
-<span class="fc" id="L391">        break;</span>
+<span class="fc" id="L392">        break;</span>
       default:
-<span class="nc" id="L393">        return super.toURI(scheme, template);</span>
+<span class="nc" id="L394">        return super.toURI(scheme, template);</span>
     }
 
-<span class="fc" id="L396">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="fc" id="L397">    StringBuilder sb = new StringBuilder();</span>
-<span class="fc bfc" id="L398" title="All 2 branches covered.">    while (bb.remaining() &gt; 0) {</span>
-<span class="fc" id="L399">      sb.append(toUnsignedString(bb.getInt()));</span>
-<span class="fc bfc" id="L400" title="All 2 branches covered.">      if (bb.remaining() &gt; 0) {</span>
-<span class="fc" id="L401">        sb.append('.');</span>
+<span class="fc" id="L397">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="fc" id="L398">    StringBuilder sb = new StringBuilder();</span>
+<span class="fc bfc" id="L399" title="All 2 branches covered.">    while (bb.remaining() &gt; 0) {</span>
+<span class="fc" id="L400">      sb.append(toUnsignedString(bb.getInt()));</span>
+<span class="fc bfc" id="L401" title="All 2 branches covered.">      if (bb.remaining() &gt; 0) {</span>
+<span class="fc" id="L402">        sb.append('.');</span>
       }
     }
 
-<span class="fc" id="L405">    return new HostAndPort(sb.toString(), getPort()).toURI(scheme, template);</span>
+<span class="fc" id="L406">    return new HostAndPort(sb.toString(), getPort()).toURI(scheme, template);</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -32,6 +32,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 public final class AFPipe extends Pipe implements Closeable {
+<span class="pc" id="L35">  static final AFSupplier&lt;Integer&gt; DUMMY_TIMEOUT = () -&gt; 0; // wait forever</span>
   private final AFCore sourceCore;
   private final AFCore sinkCore;
   private final SourceChannel sourceChannel;
@@ -39,48 +40,48 @@ public final class AFPipe extends Pipe implements Closeable {
   private final int options;
 
   AFPipe(AFSelectorProvider&lt;?&gt; provider, boolean selectable) throws IOException {
-<span class="fc" id="L42">    super();</span>
+<span class="fc" id="L43">    super();</span>
 
-<span class="fc" id="L44">    NativeUnixSocket.ensureSupported();</span>
+<span class="fc" id="L45">    NativeUnixSocket.ensureSupported();</span>
 
-<span class="fc" id="L46">    this.sourceCore = new AFCore(this, (FileDescriptor) null);</span>
-<span class="fc" id="L47">    this.sinkCore = new AFCore(this, (FileDescriptor) null);</span>
+<span class="fc" id="L47">    this.sourceCore = new AFCore(this, (FileDescriptor) null);</span>
+<span class="fc" id="L48">    this.sinkCore = new AFCore(this, (FileDescriptor) null);</span>
 
-<span class="fc" id="L49">    boolean isSocket = NativeUnixSocket.initPipe(sourceCore.fd, sinkCore.fd, selectable);</span>
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">    this.options = isSocket ? 0 : NativeUnixSocket.OPT_NON_SOCKET;</span>
+<span class="fc" id="L50">    boolean isSocket = NativeUnixSocket.initPipe(sourceCore.fd, sinkCore.fd, selectable);</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">    this.options = isSocket ? 0 : NativeUnixSocket.OPT_NON_SOCKET;</span>
 
-<span class="fc" id="L52">    this.sourceChannel = new SourceChannel(provider);</span>
-<span class="fc" id="L53">    this.sinkChannel = new SinkChannel(provider);</span>
-<span class="fc" id="L54">  }</span>
+<span class="fc" id="L53">    this.sourceChannel = new SourceChannel(provider);</span>
+<span class="fc" id="L54">    this.sinkChannel = new SinkChannel(provider);</span>
+<span class="fc" id="L55">  }</span>
 
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   @Override
   public SourceChannel source() {
-<span class="fc" id="L59">    return sourceChannel;</span>
+<span class="fc" id="L60">    return sourceChannel;</span>
   }
 
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   @Override
   public SinkChannel sink() {
-<span class="fc" id="L65">    return sinkChannel;</span>
+<span class="fc" id="L66">    return sinkChannel;</span>
   }
 
   FileDescriptor sourceFD() {
-<span class="fc" id="L69">    return sourceCore.fd;</span>
+<span class="fc" id="L70">    return sourceCore.fd;</span>
   }
 
   FileDescriptor sinkFD() {
-<span class="nc" id="L73">    return sinkCore.fd;</span>
+<span class="nc" id="L74">    return sinkCore.fd;</span>
   }
 
   @Override
   public void close() throws IOException {
     try { // NOPMD.UseTryWithResources
-<span class="fc" id="L79">      source().close();</span>
+<span class="fc" id="L80">      source().close();</span>
     } finally {
-<span class="fc" id="L81">      sink().close();</span>
+<span class="fc" id="L82">      sink().close();</span>
     }
-<span class="fc" id="L83">  }</span>
+<span class="fc" id="L84">  }</span>
 
   /**
    * A channel representing the readable end of a {@link Pipe}, with access to the
@@ -88,41 +89,41 @@ public final class AFPipe extends Pipe implements Closeable {
    */
   public final class SourceChannel extends java.nio.channels.Pipe.SourceChannel implements
       FileDescriptorAccess {
-<span class="fc" id="L91">    SourceChannel(SelectorProvider provider) {</span>
-<span class="fc" id="L92">      super(provider);</span>
-<span class="fc" id="L93">    }</span>
+<span class="fc" id="L92">    SourceChannel(SelectorProvider provider) {</span>
+<span class="fc" id="L93">      super(provider);</span>
+<span class="fc" id="L94">    }</span>
 
     @Override
     public long read(ByteBuffer[] dsts, int offset, int length) throws IOException {
-<span class="nc bnc" id="L97" title="All 2 branches missed.">      if (length == 0) {</span>
-<span class="nc" id="L98">        return 0;</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">      if (length == 0) {</span>
+<span class="nc" id="L99">        return 0;</span>
       }
-<span class="nc" id="L100">      return read(dsts[offset]);</span>
+<span class="nc" id="L101">      return read(dsts[offset]);</span>
     }
 
     @Override
     public long read(ByteBuffer[] dsts) throws IOException {
-<span class="nc" id="L105">      return read(dsts, 0, dsts.length);</span>
+<span class="nc" id="L106">      return read(dsts, 0, dsts.length);</span>
     }
 
     @Override
     public int read(ByteBuffer dst) throws IOException {
-<span class="fc" id="L110">      return sourceCore.read(dst, null, options);</span>
+<span class="fc" id="L111">      return sourceCore.read(dst, DUMMY_TIMEOUT, null, options);</span>
     }
 
     @Override
     protected void implConfigureBlocking(boolean block) throws IOException {
-<span class="nc" id="L115">      sourceCore.implConfigureBlocking(block);</span>
-<span class="nc" id="L116">    }</span>
+<span class="nc" id="L116">      sourceCore.implConfigureBlocking(block);</span>
+<span class="nc" id="L117">    }</span>
 
     @Override
     protected void implCloseSelectableChannel() throws IOException {
-<span class="fc" id="L120">      sourceCore.close();</span>
-<span class="fc" id="L121">    }</span>
+<span class="fc" id="L121">      sourceCore.close();</span>
+<span class="fc" id="L122">    }</span>
 
     @Override
     public FileDescriptor getFileDescriptor() throws IOException {
-<span class="fc" id="L125">      return sourceCore.fd;</span>
+<span class="fc" id="L126">      return sourceCore.fd;</span>
     }
   }
 
@@ -132,41 +133,41 @@ public final class AFPipe extends Pipe implements Closeable {
    */
   public final class SinkChannel extends java.nio.channels.Pipe.SinkChannel implements
       FileDescriptorAccess {
-<span class="fc" id="L135">    SinkChannel(SelectorProvider provider) {</span>
-<span class="fc" id="L136">      super(provider);</span>
-<span class="fc" id="L137">    }</span>
+<span class="fc" id="L136">    SinkChannel(SelectorProvider provider) {</span>
+<span class="fc" id="L137">      super(provider);</span>
+<span class="fc" id="L138">    }</span>
 
     @Override
     public long write(ByteBuffer[] srcs, int offset, int length) throws IOException {
-<span class="nc bnc" id="L141" title="All 2 branches missed.">      if (length == 0) {</span>
-<span class="nc" id="L142">        return 0;</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">      if (length == 0) {</span>
+<span class="nc" id="L143">        return 0;</span>
       }
-<span class="nc" id="L144">      return write(srcs[offset]);</span>
+<span class="nc" id="L145">      return write(srcs[offset]);</span>
     }
 
     @Override
     public long write(ByteBuffer[] srcs) throws IOException {
-<span class="nc" id="L149">      return write(srcs, 0, srcs.length);</span>
+<span class="nc" id="L150">      return write(srcs, 0, srcs.length);</span>
     }
 
     @Override
     public int write(ByteBuffer src) throws IOException {
-<span class="fc" id="L154">      return sinkCore.write(src, null, options);</span>
+<span class="fc" id="L155">      return sinkCore.write(src, DUMMY_TIMEOUT, null, options);</span>
     }
 
     @Override
     protected void implConfigureBlocking(boolean block) throws IOException {
-<span class="nc" id="L159">      sinkCore.implConfigureBlocking(block);</span>
-<span class="nc" id="L160">    }</span>
+<span class="nc" id="L160">      sinkCore.implConfigureBlocking(block);</span>
+<span class="nc" id="L161">    }</span>
 
     @Override
     protected void implCloseSelectableChannel() throws IOException {
-<span class="fc" id="L164">      sinkCore.close();</span>
-<span class="fc" id="L165">    }</span>
+<span class="fc" id="L165">      sinkCore.close();</span>
+<span class="fc" id="L166">    }</span>
 
     @Override
     public FileDescriptor getFileDescriptor() throws IOException {
-<span class="fc" id="L169">      return sinkCore.fd;</span>
+<span class="fc" id="L170">      return sinkCore.fd;</span>
     }
   }
 
@@ -176,7 +177,7 @@ public final class AFPipe extends Pipe implements Closeable {
    * @return The options.
    */
   int getOptions() {
-<span class="fc" id="L179">    return options;</span>
+<span class="fc" id="L180">    return options;</span>
   }
 
   /**
@@ -186,7 +187,7 @@ public final class AFPipe extends Pipe implements Closeable {
    * @throws IOException on error.
    */
   public static AFPipe open() throws IOException {
-<span class="fc" id="L189">    return AFUNIXSelectorProvider.provider().openPipe();</span>
+<span class="fc" id="L190">    return AFUNIXSelectorProvider.provider().openPipe();</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

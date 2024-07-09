@@ -149,14 +149,14 @@
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         assertThrows(ServerException.<strong class="jxr_keyword">class</strong>, () -&gt; sra.getRegistry().getNaming().shutdownRegistry());
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> 
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>         sra.shutdownAndWait(false);
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>         <strong class="jxr_keyword">if</strong> (!awaitNoRMIFiles(socketDir, 5)) {
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>         <strong class="jxr_keyword">if</strong> (!awaitNoRMIFiles(socketDir)) {
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>           sra.shutdownAndWait(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>         }
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>       } <strong class="jxr_keyword">catch</strong> (Exception e) {
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>         <strong class="jxr_keyword">throw</strong> e;
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>       }
 <a class="jxr_linenumber" name="L150" href="#L150">150</a> 
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>       assertTrue(awaitNoRMIFiles(socketDir, 5), <span class="jxr_string">"There shouldn't be any RMI socket files in "</span>
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>       assertTrue(awaitNoRMIFiles(socketDir), <span class="jxr_string">"There shouldn't be any RMI socket files in "</span>
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>           + socketDir);
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>     } <strong class="jxr_keyword">finally</strong> {
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>       assertTrue(deleteDirectory(socketDir), <span class="jxr_string">"Should be able to delete temporary directory: "</span>
@@ -164,9 +164,9 @@
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>     }
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>   }
 <a class="jxr_linenumber" name="L158" href="#L158">158</a> 
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> awaitNoRMIFiles(File socketDir, <strong class="jxr_keyword">int</strong> loops) <strong class="jxr_keyword">throws</strong> InterruptedException {
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>   <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> awaitNoRMIFiles(File socketDir) <strong class="jxr_keyword">throws</strong> InterruptedException {
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>     <strong class="jxr_keyword">int</strong> count = 0;
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>     <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; loops; i++) {
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>     <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; 50; i++) {
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>       count = countRMIFiles(socketDir);
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>       <strong class="jxr_keyword">if</strong> (count == 0) {
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;

@@ -30,6 +30,8 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
+
 /**
  * An {@link AFSocketAddress} for unknown socket types.
  *
@@ -42,14 +44,14 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
   private static final String SELECTOR_PROVIDER_CLASS =
       &quot;org.newsclub.net.unix.generic.AFGenericSelectorProvider&quot;;
 
-  private AFGenericSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress)
-      throws SocketException {
-<span class="fc" id="L47">    super(port, socketAddress, nativeAddress, addressFamily());</span>
-<span class="fc" id="L48">  }</span>
+  private AFGenericSocketAddress(int port, final byte[] socketAddress,
+      Lease&lt;ByteBuffer&gt; nativeAddress) throws SocketException {
+<span class="fc" id="L49">    super(port, socketAddress, nativeAddress, addressFamily());</span>
+<span class="fc" id="L50">  }</span>
 
   private static AFGenericSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
-      ByteBuffer nativeAddress) throws SocketException {
-<span class="nc" id="L52">    return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),</span>
+      Lease&lt;ByteBuffer&gt; nativeAddress) throws SocketException {
+<span class="nc" id="L54">    return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),</span>
         AFGenericSocketAddress::new);
   }
 
@@ -65,7 +67,7 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
    */
   public static AFGenericSocketAddress unwrap(InetAddress address, int port)
       throws SocketException {
-<span class="nc" id="L68">    return AFSocketAddress.unwrap(address, port, addressFamily());</span>
+<span class="nc" id="L70">    return AFSocketAddress.unwrap(address, port, addressFamily());</span>
   }
 
   /**
@@ -80,7 +82,7 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFGenericSocketAddress unwrap(String hostname, int port) throws SocketException {
-<span class="nc" id="L83">    return AFSocketAddress.unwrap(hostname, port, addressFamily());</span>
+<span class="nc" id="L85">    return AFSocketAddress.unwrap(hostname, port, addressFamily());</span>
   }
 
   /**
@@ -92,19 +94,19 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFGenericSocketAddress unwrap(SocketAddress address) throws SocketException {
-<span class="nc" id="L95">    Objects.requireNonNull(address);</span>
-<span class="nc bnc" id="L96" title="All 2 branches missed.">    if (!isSupportedAddress(address)) {</span>
-<span class="nc" id="L97">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+<span class="nc" id="L97">    Objects.requireNonNull(address);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">    if (!isSupportedAddress(address)) {</span>
+<span class="nc" id="L99">      throw new SocketException(&quot;Unsupported address&quot;);</span>
     }
-<span class="nc" id="L99">    return (AFGenericSocketAddress) address;</span>
+<span class="nc" id="L101">    return (AFGenericSocketAddress) address;</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L104">    int port = getPort();</span>
+<span class="nc" id="L106">    int port = getPort();</span>
 
-<span class="nc bnc" id="L106" title="All 2 branches missed.">    return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port + &quot;;&quot;) + &quot;bytes=&quot; + Arrays</span>
-<span class="nc" id="L107">        .toString(getBytes()) + &quot;]&quot;;</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">    return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port + &quot;;&quot;) + &quot;bytes=&quot; + Arrays</span>
+<span class="nc" id="L109">        .toString(getBytes()) + &quot;]&quot;;</span>
   }
 
   /**
@@ -116,18 +118,18 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
    * @return A new byte array containing the system-specific representation of that address.
    */
   public byte[] toBytes() {
-<span class="fc" id="L119">    byte[] bytes = getBytes();</span>
-<span class="fc" id="L120">    return Arrays.copyOf(bytes, bytes.length);</span>
+<span class="fc" id="L121">    byte[] bytes = getBytes();</span>
+<span class="fc" id="L122">    return Arrays.copyOf(bytes, bytes.length);</span>
   }
 
   @Override
   public boolean hasFilename() {
-<span class="nc" id="L125">    return false;</span>
+<span class="nc" id="L127">    return false;</span>
   }
 
   @Override
   public File getFile() throws FileNotFoundException {
-<span class="nc" id="L130">    throw new FileNotFoundException(&quot;no file&quot;);</span>
+<span class="nc" id="L132">    throw new FileNotFoundException(&quot;no file&quot;);</span>
   }
 
   /**
@@ -139,7 +141,7 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
    * @see #unwrap(InetAddress, int)
    */
   public static boolean isSupportedAddress(InetAddress addr) {
-<span class="nc" id="L142">    return AFSocketAddress.isSupportedAddress(addr, addressFamily());</span>
+<span class="nc" id="L144">    return AFSocketAddress.isSupportedAddress(addr, addressFamily());</span>
   }
 
   /**
@@ -150,7 +152,7 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
    * @see #unwrap(InetAddress, int)
    */
   public static boolean isSupportedAddress(SocketAddress addr) {
-<span class="nc" id="L153">    return (addr instanceof AFGenericSocketAddress);</span>
+<span class="nc" id="L155">    return (addr instanceof AFGenericSocketAddress);</span>
   }
 
   /**
@@ -160,41 +162,41 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
    */
   @SuppressWarnings(&quot;null&quot;)
   public static synchronized AFAddressFamily&lt;AFGenericSocketAddress&gt; addressFamily() {
-<span class="fc bfc" id="L163" title="All 2 branches covered.">    if (family == null) {</span>
-<span class="fc" id="L164">      family = AFAddressFamily.registerAddressFamily(&quot;generic&quot;, //</span>
-<span class="fc" id="L165">          AFGenericSocketAddress.class, new AFSocketAddressConfig&lt;AFGenericSocketAddress&gt;() {</span>
+<span class="fc bfc" id="L165" title="All 2 branches covered.">    if (family == null) {</span>
+<span class="fc" id="L166">      family = AFAddressFamily.registerAddressFamily(&quot;generic&quot;, //</span>
+<span class="fc" id="L167">          AFGenericSocketAddress.class, new AFSocketAddressConfig&lt;AFGenericSocketAddress&gt;() {</span>
 
-<span class="fc" id="L167">            private final AFSocketAddressConstructor&lt;AFGenericSocketAddress&gt; addrConstr =</span>
-<span class="pc bpc" id="L168" title="1 of 2 branches missed.">                isUseDeserializationForInit() ? AFGenericSocketAddress::newAFSocketAddress</span>
-<span class="fc" id="L169">                    : AFGenericSocketAddress::new;</span>
+<span class="fc" id="L169">            private final AFSocketAddressConstructor&lt;AFGenericSocketAddress&gt; addrConstr =</span>
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">                isUseDeserializationForInit() ? AFGenericSocketAddress::newAFSocketAddress</span>
+<span class="fc" id="L171">                    : AFGenericSocketAddress::new;</span>
 
             @Override
             protected AFGenericSocketAddress parseURI(URI u, int port) throws SocketException {
-<span class="nc" id="L173">              return AFGenericSocketAddress.of(u, port);</span>
+<span class="nc" id="L175">              return AFGenericSocketAddress.of(u, port);</span>
             }
 
             @Override
             protected AFSocketAddressConstructor&lt;AFGenericSocketAddress&gt; addressConstructor() {
-<span class="fc" id="L178">              return addrConstr;</span>
+<span class="fc" id="L180">              return addrConstr;</span>
             }
 
             @Override
             protected String selectorProviderClassname() {
-<span class="fc" id="L183">              return SELECTOR_PROVIDER_CLASS;</span>
+<span class="fc" id="L185">              return SELECTOR_PROVIDER_CLASS;</span>
             }
 
             @Override
             protected Set&lt;String&gt; uriSchemes() {
-<span class="fc" id="L188">              return Collections.emptySet();</span>
+<span class="fc" id="L190">              return Collections.emptySet();</span>
             }
           });
       try {
-<span class="nc" id="L192">        Class.forName(SELECTOR_PROVIDER_CLASS);</span>
-<span class="fc" id="L193">      } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L194">        Class.forName(SELECTOR_PROVIDER_CLASS);</span>
+<span class="fc" id="L195">      } catch (ClassNotFoundException e) {</span>
         // ignore
-<span class="nc" id="L195">      }</span>
+<span class="nc" id="L197">      }</span>
     }
-<span class="fc" id="L197">    return family;</span>
+<span class="fc" id="L199">    return family;</span>
   }
 
   /**
@@ -206,7 +208,7 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
    */
   @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   public static AFGenericSocketAddress of(URI uri) throws SocketException {
-<span class="nc" id="L209">    return of(uri, -1);</span>
+<span class="nc" id="L211">    return of(uri, -1);</span>
   }
 
   /**
@@ -221,13 +223,13 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
       &quot;PMD.CognitiveComplexity&quot;, &quot;PMD.CyclomaticComplexity&quot;, &quot;PMD.ExcessiveMethodLength&quot;,
       &quot;PMD.NcssCount&quot;, &quot;PMD.NPathComplexity&quot;, &quot;PMD.ShortMethodName&quot;})
   public static AFGenericSocketAddress of(URI uri, int overridePort) throws SocketException {
-<span class="nc" id="L224">    throw new SocketException(&quot;Unsupported&quot;);</span>
+<span class="nc" id="L226">    throw new SocketException(&quot;Unsupported&quot;);</span>
   }
 
   @Override
   @SuppressWarnings({&quot;PMD.CognitiveComplexity&quot;, &quot;PMD.CompareObjectsWithEquals&quot;})
   public URI toURI(String scheme, URI template) throws IOException {
-<span class="nc" id="L230">    return super.toURI(scheme, template);</span>
+<span class="nc" id="L232">    return super.toURI(scheme, template);</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

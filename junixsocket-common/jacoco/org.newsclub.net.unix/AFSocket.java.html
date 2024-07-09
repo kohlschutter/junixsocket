@@ -362,7 +362,7 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
 
   @Override
   public final boolean isClosed() {
-<span class="pc bpc" id="L365" title="3 of 8 branches missed.">    return super.isClosed() || (isConnected() &amp;&amp; !impl.getFD().valid()) || impl.isClosed();</span>
+<span class="pc bpc" id="L365" title="2 of 8 branches missed.">    return super.isClosed() || (isConnected() &amp;&amp; !impl.getFD().valid()) || impl.isClosed();</span>
   }
 
   @Override
@@ -626,4 +626,4 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
 <span class="nc" id="L626">    getAFImpl().getCore().setShutdownOnClose(enabled);</span>
 <span class="nc" id="L627">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

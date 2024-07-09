@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ThreadLocalObjectPool.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.pool</a> &gt; <span class="el_source">ThreadLocalObjectPool.java</span></div><h1>ThreadLocalObjectPool.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2024 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.pool;
+
+import org.eclipse.jdt.annotation.NonNull;
+
+final class ThreadLocalObjectPool&lt;O&gt; implements ObjectPool&lt;O&gt; {
+  private final ThreadLocal&lt;O&gt; tl;
+  private final ObjectSanitizer&lt;O&gt; sanitizer;
+
+<span class="fc" id="L26">  private final Lease&lt;O&gt; leaseImpl = new Lease&lt;O&gt;() {</span>
+<span class="fc" id="L27">    private boolean discarded = false;</span>
+
+    @Override
+    public void close() {
+<span class="pc bpc" id="L31" title="2 of 4 branches missed.">      if (!discarded &amp;&amp; !sanitizer.sanitize(tl.get())) {</span>
+<span class="nc" id="L32">        tl.remove();</span>
+      }
+<span class="fc" id="L34">    }</span>
+
+    @Override
+    public O get() {
+<span class="fc" id="L38">      return tl.get();</span>
+    }
+
+    @Override
+    public void discard() {
+<span class="nc" id="L43">      discarded = true;</span>
+<span class="nc" id="L44">      tl.remove();</span>
+<span class="nc" id="L45">    }</span>
+  };
+
+  ThreadLocalObjectPool(ObjectSupplier&lt;@NonNull O&gt; supplier,
+<span class="fc" id="L49">      ObjectSanitizer&lt;@NonNull O&gt; sanitizer) {</span>
+<span class="fc" id="L50">    this.sanitizer = sanitizer;</span>
+<span class="fc" id="L51">    tl = new ThreadLocal&lt;O&gt;() {</span>
+
+      @Override
+      protected O initialValue() {
+<span class="fc" id="L55">        return supplier.get();</span>
+      }
+    };
+<span class="fc" id="L58">  }</span>
+
+  @Override
+  public Lease&lt;O&gt; take() {
+<span class="fc" id="L62">    return leaseImpl;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -40,7 +40,7 @@ public final class AFUNIXSocketChannel extends AFSocketChannel&lt;AFUNIXSocketAd
    * @throws IOException on error.
    */
   public static AFUNIXSocketChannel open() throws IOException {
-<span class="nc" id="L43">    return (AFUNIXSocketChannel) AFSocketChannel.open(AFUNIXSocket::newLenientInstance);</span>
+<span class="fc" id="L43">    return (AFUNIXSocketChannel) AFSocketChannel.open(AFUNIXSocket::newLenientInstance);</span>
   }
 
   /**
@@ -82,4 +82,4 @@ public final class AFUNIXSocketChannel extends AFSocketChannel&lt;AFUNIXSocketAd
 <span class="fc" id="L82">    return ((AFUNIXSocketExtensions) getAFSocket()).getPeerCredentials();</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -25,142 +25,150 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
+
 /**
  * A shared core that is common for all AF* sockets (datagrams, streams).
  *
  * @author Christian Kohlschütter
  */
 class AFSocketCore extends AFCore {
-<span class="fc" id="L34">  private final AtomicInteger pendingAccepts = new AtomicInteger(0);</span>
+<span class="fc" id="L36">  private final AtomicInteger pendingAccepts = new AtomicInteger(0);</span>
   private static final int SHUT_RD_WR = 2;
 
   /**
    * We keep track of the server's inode to detect when another server connects to our address.
    */
-<span class="fc" id="L40">  final AtomicLong inode = new AtomicLong(-1);</span>
+<span class="fc" id="L42">  final AtomicLong inode = new AtomicLong(-1);</span>
 
   AFSocketAddress socketAddress;
 
   private final AFAddressFamily&lt;?&gt; af;
-<span class="fc" id="L45">  private boolean shutdownOnClose = true;</span>
+<span class="fc" id="L47">  private boolean shutdownOnClose = true;</span>
 
   protected AFSocketCore(Object observed, FileDescriptor fd,
       AncillaryDataSupport ancillaryDataSupport, AFAddressFamily&lt;?&gt; af, boolean datagramMode) {
-<span class="fc" id="L49">    super(observed, fd, ancillaryDataSupport, datagramMode);</span>
-<span class="fc" id="L50">    this.af = af;</span>
-<span class="fc" id="L51">  }</span>
+<span class="fc" id="L51">    super(observed, fd, ancillaryDataSupport, datagramMode);</span>
+<span class="fc" id="L52">    this.af = af;</span>
+<span class="fc" id="L53">  }</span>
 
   protected AFAddressFamily&lt;?&gt; addressFamily() {
-<span class="fc" id="L54">    return af;</span>
+<span class="fc" id="L56">    return af;</span>
   }
 
   @Override
   @SuppressWarnings(&quot;UnsafeFinalization&quot; /* errorprone */)
   protected void doClose() throws IOException {
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">    if (isShutdownOnClose()) {</span>
-<span class="fc" id="L61">      NativeUnixSocket.shutdown(fd, SHUT_RD_WR);</span>
-<span class="fc" id="L62">      unblockAccepts();</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">    if (isShutdownOnClose()) {</span>
+<span class="fc" id="L63">      NativeUnixSocket.shutdown(fd, SHUT_RD_WR);</span>
+<span class="fc" id="L64">      unblockAccepts();</span>
     }
 
-<span class="fc" id="L65">    super.doClose();</span>
-<span class="fc" id="L66">  }</span>
+<span class="fc" id="L67">    super.doClose();</span>
+<span class="fc" id="L68">  }</span>
 
   protected void unblockAccepts() {
-<span class="fc" id="L69">  }</span>
+    // see AFSocketImpl
+<span class="fc" id="L72">  }</span>
 
-  AFSocketAddress receive(ByteBuffer dst) throws IOException {
-<span class="fc" id="L72">    ByteBuffer socketAddressBuffer = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();</span>
-<span class="fc" id="L73">    int read = read(dst, socketAddressBuffer, 0);</span>
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">    if (read &gt; 0) {</span>
-<span class="fc" id="L75">      return AFSocketAddress.ofInternal(socketAddressBuffer, af);</span>
-    } else {
-<span class="nc" id="L77">      return null;</span>
-    }
+  AFSocketAddress receive(ByteBuffer dst, AFSupplier&lt;Integer&gt; socketTimeout) throws IOException {
+<span class="fc" id="L75">    try (Lease&lt;ByteBuffer&gt; socketAddressBufferLease = AFSocketAddress.SOCKETADDRESS_BUFFER_TL</span>
+<span class="fc" id="L76">        .take()) {</span>
+<span class="fc" id="L77">      ByteBuffer socketAddressBuffer = socketAddressBufferLease.get();</span>
+
+<span class="fc" id="L79">      int read = read(dst, socketTimeout, socketAddressBuffer, 0);</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">      if (read &gt; 0) {</span>
+<span class="fc" id="L81">        return AFSocketAddress.ofInternal(socketAddressBuffer, af);</span>
+      } else {
+<span class="nc" id="L83">        return null;</span>
+      }
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">    }</span>
   }
 
   boolean isConnected(boolean boundOk) {
     try {
-<span class="fc bfc" id="L83" title="All 2 branches covered.">      if (fd.valid()) {</span>
-<span class="fc bfc" id="L84" title="All 3 branches covered.">        switch (NativeUnixSocket.socketStatus(fd)) {</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">      if (fd.valid()) {</span>
+<span class="fc bfc" id="L91" title="All 3 branches covered.">        switch (NativeUnixSocket.socketStatus(fd)) {</span>
           case NativeUnixSocket.SOCKETSTATUS_CONNECTED:
-<span class="fc" id="L86">            return true;</span>
+<span class="fc" id="L93">            return true;</span>
           case NativeUnixSocket.SOCKETSTATUS_BOUND:
-<span class="fc bfc" id="L88" title="All 2 branches covered.">            if (boundOk) {</span>
-<span class="fc" id="L89">              return true;</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">            if (boundOk) {</span>
+<span class="fc" id="L96">              return true;</span>
             }
             break;
           default:
         }
       }
-<span class="nc" id="L95">    } catch (IOException e) {</span>
-<span class="nc" id="L96">      throw new IllegalStateException(e);</span>
-<span class="fc" id="L97">    }</span>
-<span class="fc" id="L98">    return false;</span>
+<span class="nc" id="L102">    } catch (IOException e) {</span>
+<span class="nc" id="L103">      throw new IllegalStateException(e);</span>
+<span class="fc" id="L104">    }</span>
+<span class="fc" id="L105">    return false;</span>
   }
 
   @SuppressWarnings({&quot;unchecked&quot;})
   &lt;T&gt; T getOption(AFSocketOption&lt;T&gt; name) throws IOException {
-<span class="nc" id="L103">    Class&lt;T&gt; type = name.type();</span>
-<span class="nc bnc" id="L104" title="All 2 branches missed.">    if (Boolean.class.isAssignableFrom(type)) {</span>
-<span class="nc bnc" id="L105" title="All 2 branches missed.">      return (T) (Object) (NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(),</span>
+<span class="nc" id="L110">    Class&lt;T&gt; type = name.type();</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (Boolean.class.isAssignableFrom(type)) {</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">      return (T) (Object) (NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(),</span>
           Integer.class) != 0);
-<span class="nc bnc" id="L107" title="All 2 branches missed.">    } else if (NamedInteger.HasOfValue.class.isAssignableFrom(type)) {</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">    } else if (NamedInteger.HasOfValue.class.isAssignableFrom(type)) {</span>
       @SuppressWarnings(&quot;all&quot;) // &quot;null&quot; creates another warning
-<span class="nc" id="L109">      int v = NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), Integer.class);</span>
+<span class="nc" id="L116">      int v = NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), Integer.class);</span>
       try {
-<span class="nc" id="L111">        return (T) type.getMethod(&quot;ofValue&quot;, int.class).invoke(null, v);</span>
-<span class="nc" id="L112">      } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException</span>
+<span class="nc" id="L118">        return (T) type.getMethod(&quot;ofValue&quot;, int.class).invoke(null, v);</span>
+<span class="nc" id="L119">      } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException</span>
           | NoSuchMethodException | SecurityException e) {
-<span class="nc" id="L114">        throw new IOException(&quot;Value casting problem&quot;, e);</span>
+<span class="nc" id="L121">        throw new IOException(&quot;Value casting problem&quot;, e);</span>
       }
     } else {
-<span class="nc" id="L117">      return NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), type);</span>
+<span class="nc" id="L124">      return NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), type);</span>
     }
   }
 
   &lt;T&gt; void setOption(AFSocketOption&lt;T&gt; name, T value) throws IOException {
     final Object val;
-<span class="nc bnc" id="L123" title="All 2 branches missed.">    if (value instanceof Boolean) {</span>
-<span class="nc bnc" id="L124" title="All 2 branches missed.">      val = (((Boolean) value) ? 1 : 0);</span>
-<span class="nc bnc" id="L125" title="All 2 branches missed.">    } else if (value instanceof NamedInteger) {</span>
-<span class="nc" id="L126">      val = ((NamedInteger) value).value();</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">    if (value instanceof Boolean) {</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">      val = (((Boolean) value) ? 1 : 0);</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">    } else if (value instanceof NamedInteger) {</span>
+<span class="nc" id="L133">      val = ((NamedInteger) value).value();</span>
     } else {
-<span class="nc" id="L128">      val = value;</span>
+<span class="nc" id="L135">      val = value;</span>
     }
-<span class="nc" id="L130">    int level = name.level();</span>
-<span class="nc" id="L131">    int optionName = name.optionName();</span>
-<span class="nc" id="L132">    NativeUnixSocket.setSocketOption(fd, level, optionName, val);</span>
-<span class="nc bnc" id="L133" title="All 4 branches missed.">    if (level == 271 &amp;&amp; optionName == 135) {</span>
+<span class="nc" id="L137">    int level = name.level();</span>
+<span class="nc" id="L138">    int optionName = name.optionName();</span>
+<span class="nc" id="L139">    NativeUnixSocket.setSocketOption(fd, level, optionName, val);</span>
+<span class="nc bnc" id="L140" title="All 4 branches missed.">    if (level == 271 &amp;&amp; optionName == 135) {</span>
       // AFTIPCSocketOptions.TIPC_GROUP_JOIN
       // unclear why, but sleeping for at least 1ms prevents issues with GROUP_JOIN
       try {
-<span class="nc" id="L137">        Thread.sleep(1);</span>
-<span class="nc" id="L138">      } catch (InterruptedException e) {</span>
+<span class="nc" id="L144">        Thread.sleep(1);</span>
+<span class="nc" id="L145">      } catch (InterruptedException e) {</span>
         // ignore
-<span class="nc" id="L140">      }</span>
+<span class="nc" id="L147">      }</span>
     }
-<span class="nc" id="L142">  }</span>
+<span class="nc" id="L149">  }</span>
 
   protected void incPendingAccepts() throws SocketException {
-<span class="pc bpc" id="L145" title="1 of 2 branches missed.">    if (pendingAccepts.incrementAndGet() &gt;= Integer.MAX_VALUE) {</span>
-<span class="nc" id="L146">      throw new SocketException(&quot;Too many pending accepts&quot;);</span>
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">    if (pendingAccepts.incrementAndGet() &gt;= Integer.MAX_VALUE) {</span>
+<span class="nc" id="L153">      pendingAccepts.decrementAndGet();</span>
+<span class="nc" id="L154">      throw new SocketException(&quot;Too many pending accepts&quot;);</span>
     }
-<span class="fc" id="L148">  }</span>
+<span class="fc" id="L156">  }</span>
 
-  protected void decPendingAccepts() throws SocketException {
-<span class="fc" id="L151">    pendingAccepts.decrementAndGet();</span>
-<span class="fc" id="L152">  }</span>
+  protected void decPendingAccepts() {
+<span class="fc" id="L159">    pendingAccepts.decrementAndGet();</span>
+<span class="fc" id="L160">  }</span>
 
   protected boolean hasPendingAccepts() {
-<span class="fc bfc" id="L155" title="All 2 branches covered.">    return pendingAccepts.get() &gt; 0;</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">    return pendingAccepts.get() &gt; 0;</span>
   }
 
   boolean isShutdownOnClose() {
-<span class="fc" id="L159">    return shutdownOnClose;</span>
+<span class="fc" id="L167">    return shutdownOnClose;</span>
   }
 
   void setShutdownOnClose(boolean enabled) {
-<span class="nc" id="L163">    this.shutdownOnClose = enabled;</span>
-<span class="nc" id="L164">  }</span>
+<span class="nc" id="L171">    this.shutdownOnClose = enabled;</span>
+<span class="nc" id="L172">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

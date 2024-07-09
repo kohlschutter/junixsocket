@@ -5,7 +5,7 @@ junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocketFactory.ServiceAddress,1
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCDestName,82,0,10,0,19,0,12,0,7,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCGroupRequest,75,24,10,0,13,7,15,2,10,2
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocketOptions,106,0,0,0,15,0,2,0,2,0
-junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocketFactory,15,0,0,0,5,0,4,0,4,0
+junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocketFactory,16,0,0,0,5,0,4,0,4,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSelectorProvider.new AFAddressFamilyConfig() {...},21,0,0,0,10,0,10,0,10,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCTopologyEvent.Type,61,0,0,0,6,0,4,0,4,0
 junixsocket-tipc,org.newsclub.net.unix.tipc,AFTIPCSocketPair,11,0,0,0,4,0,3,0,3,0

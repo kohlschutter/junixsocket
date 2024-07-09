@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
 /**
  * An {@link AFSocketAddress} for TIPC sockets.
@@ -112,7 +113,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 public final class AFTIPCSocketAddress extends AFSocketAddress {
   private static final long serialVersionUID = 1L; // do not change!
 
-<span class="fc" id="L115">  private static final Pattern PAT_TIPC_URI_HOST_AND_PORT = Pattern.compile(</span>
+<span class="fc" id="L116">  private static final Pattern PAT_TIPC_URI_HOST_AND_PORT = Pattern.compile(</span>
       &quot;^((?:(?:(?&lt;scope&gt;cluster|node|default|[0-9a-fx]+)\\-)?(?&lt;type&gt;service|service-range|socket)\\.)|&quot;
           + &quot;(?&lt;scope2&gt;cluster|node|default|[0-9a-fx]+)\\-(?&lt;type2&gt;[0-9a-fx]+)\\.)?&quot;
           + &quot;(?&lt;a&gt;[0-9a-fx]+)\\.(?&lt;b&gt;[0-9a-fx]+)(?:\\.(?&lt;c&gt;[0-9a-fx]+))?(?:\\:(?&lt;javaPort&gt;[0-9]+))?$&quot;);
@@ -153,15 +154,15 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
      */
     public static final AddressType SOCKET_ADDR;
 
-<span class="fc" id="L156">    private static final @NonNull AddressType[] VALUES = init(new @NonNull AddressType[] {</span>
+<span class="fc" id="L157">    private static final @NonNull AddressType[] VALUES = init(new @NonNull AddressType[] {</span>
         SERVICE_RANGE = new AddressType(&quot;SERVICE_RANGE&quot;, 1, //
-<span class="nc" id="L158">            (a, b, c) -&gt; formatTIPCInt(a) + &quot;@&quot; + formatTIPCInt(b) + &quot;-&quot; + formatTIPCInt(c)), //</span>
+<span class="nc" id="L159">            (a, b, c) -&gt; formatTIPCInt(a) + &quot;@&quot; + formatTIPCInt(b) + &quot;-&quot; + formatTIPCInt(c)), //</span>
         SERVICE_ADDR = new AddressType(&quot;SERVICE_ADDR&quot;, 2, //
-<span class="nc bnc" id="L160" title="All 2 branches missed.">            (a, b, c) -&gt; formatTIPCInt(a) + &quot;@&quot; + formatTIPCInt(b) + (c == 0 ? &quot;&quot; : &quot;:&quot;</span>
-<span class="nc" id="L161">                + formatTIPCInt(c))), //</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">            (a, b, c) -&gt; formatTIPCInt(a) + &quot;@&quot; + formatTIPCInt(b) + (c == 0 ? &quot;&quot; : &quot;:&quot;</span>
+<span class="nc" id="L162">                + formatTIPCInt(c))), //</span>
         SOCKET_ADDR = new AddressType(&quot;SOCKET_ADDR&quot;, 3, //
-<span class="nc bnc" id="L163" title="All 2 branches missed.">            (a, b, c) -&gt; formatTIPCInt(a) + &quot;@&quot; + formatTIPCInt(b) + (c == 0 ? &quot;&quot; : &quot;:&quot;</span>
-<span class="nc" id="L164">                + formatTIPCInt(c))), //</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">            (a, b, c) -&gt; formatTIPCInt(a) + &quot;@&quot; + formatTIPCInt(b) + (c == 0 ? &quot;&quot; : &quot;:&quot;</span>
+<span class="nc" id="L165">                + formatTIPCInt(c))), //</span>
     });
 
     /**
@@ -170,18 +171,18 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
     private final DebugStringProvider ds;
 
     private AddressType(int id) {
-<span class="nc" id="L173">      super(id);</span>
-<span class="nc" id="L174">      this.ds = (a, b, c) -&gt; &quot;:&quot; + toUnsignedString(a) + &quot;:&quot; + toUnsignedString(b) + &quot;:&quot;</span>
-<span class="nc" id="L175">          + toUnsignedString(c);</span>
-<span class="nc" id="L176">    }</span>
+<span class="nc" id="L174">      super(id);</span>
+<span class="nc" id="L175">      this.ds = (a, b, c) -&gt; &quot;:&quot; + toUnsignedString(a) + &quot;:&quot; + toUnsignedString(b) + &quot;:&quot;</span>
+<span class="nc" id="L176">          + toUnsignedString(c);</span>
+<span class="nc" id="L177">    }</span>
 
     private AddressType(String name, int id, DebugStringProvider ds) {
-<span class="fc" id="L179">      super(name, id);</span>
-<span class="fc" id="L180">      this.ds = ds;</span>
-<span class="fc" id="L181">    }</span>
+<span class="fc" id="L180">      super(name, id);</span>
+<span class="fc" id="L181">      this.ds = ds;</span>
+<span class="fc" id="L182">    }</span>
 
     static AddressType ofValue(int v) {
-<span class="fc" id="L184">      return ofValue(VALUES, AddressType::new, v);</span>
+<span class="fc" id="L185">      return ofValue(VALUES, AddressType::new, v);</span>
     }
 
     @FunctionalInterface
@@ -197,14 +198,14 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
      */
     @SuppressWarnings(&quot;null&quot;)
     public static String formatTIPCInt(int i) {
-<span class="nc" id="L200">      return String.format(Locale.ENGLISH, &quot;0x%08x&quot;, (i &amp; 0xFFFFFFFFL));</span>
+<span class="nc" id="L201">      return String.format(Locale.ENGLISH, &quot;0x%08x&quot;, (i &amp; 0xFFFFFFFFL));</span>
     }
 
     private String toDebugString(Scope scope, int a, int b, int c) {
-<span class="nc bnc" id="L204" title="All 4 branches missed.">      if (this == SOCKET_ADDR &amp;&amp; scope.equals(Scope.SCOPE_NOT_SPECIFIED)) {</span>
-<span class="nc" id="L205">        return name() + &quot;(&quot; + value() + &quot;);&quot; + ds.toDebugString(a, b, c);</span>
+<span class="nc bnc" id="L205" title="All 4 branches missed.">      if (this == SOCKET_ADDR &amp;&amp; scope.equals(Scope.SCOPE_NOT_SPECIFIED)) {</span>
+<span class="nc" id="L206">        return name() + &quot;(&quot; + value() + &quot;);&quot; + ds.toDebugString(a, b, c);</span>
       } else {
-<span class="nc" id="L207">        return name() + &quot;(&quot; + value() + &quot;);&quot; + scope + &quot;:&quot; + ds.toDebugString(a, b, c);</span>
+<span class="nc" id="L208">        return name() + &quot;(&quot; + value() + &quot;);&quot; + scope + &quot;:&quot; + ds.toDebugString(a, b, c);</span>
       }
     }
   }
@@ -233,19 +234,19 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
      */
     public static final Scope SCOPE_NOT_SPECIFIED;
 
-<span class="fc" id="L236">    private static final @NonNull Scope[] VALUES = init(new @NonNull Scope[] {</span>
+<span class="fc" id="L237">    private static final @NonNull Scope[] VALUES = init(new @NonNull Scope[] {</span>
         SCOPE_NOT_SPECIFIED = new Scope(&quot;SCOPE_NOT_SPECIFIED&quot;, 0), //
         SCOPE_CLUSTER = new Scope(&quot;SCOPE_CLUSTER&quot;, 2), //
         SCOPE_NODE = new Scope(&quot;SCOPE_NODE&quot;, 3), //
     });
 
     private Scope(int id) {
-<span class="fc" id="L243">      super(id);</span>
-<span class="fc" id="L244">    }</span>
+<span class="fc" id="L244">      super(id);</span>
+<span class="fc" id="L245">    }</span>
 
     private Scope(String name, int id) {
-<span class="fc" id="L247">      super(name, id);</span>
-<span class="fc" id="L248">    }</span>
+<span class="fc" id="L248">      super(name, id);</span>
+<span class="fc" id="L249">    }</span>
 
     /**
      * Returns a {@link Scope} instance given an integer value.
@@ -254,18 +255,18 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
      * @return The {@link Scope} instance.
      */
     public static Scope ofValue(int v) {
-<span class="fc" id="L257">      return ofValue(VALUES, Scope::new, v);</span>
+<span class="fc" id="L258">      return ofValue(VALUES, Scope::new, v);</span>
     }
   }
 
-  private AFTIPCSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress)
+  private AFTIPCSocketAddress(int port, final byte[] socketAddress, Lease&lt;ByteBuffer&gt; nativeAddress)
       throws SocketException {
-<span class="fc" id="L263">    super(port, socketAddress, nativeAddress, addressFamily());</span>
-<span class="fc" id="L264">  }</span>
+<span class="fc" id="L264">    super(port, socketAddress, nativeAddress, addressFamily());</span>
+<span class="fc" id="L265">  }</span>
 
   private static AFTIPCSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
-      ByteBuffer nativeAddress) throws SocketException {
-<span class="nc" id="L268">    return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),</span>
+      Lease&lt;ByteBuffer&gt; nativeAddress) throws SocketException {
+<span class="nc" id="L269">    return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),</span>
         AFTIPCSocketAddress::new);
   }
 
@@ -281,7 +282,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public static AFTIPCSocketAddress ofService(Scope scope, int type, int instance)
       throws SocketException {
-<span class="fc" id="L284">    return ofService(scope, type, instance, 0);</span>
+<span class="fc" id="L285">    return ofService(scope, type, instance, 0);</span>
   }
 
   /**
@@ -294,7 +295,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFTIPCSocketAddress ofService(int type, int instance) throws SocketException {
-<span class="fc" id="L297">    return ofService(Scope.SCOPE_CLUSTER, type, instance, 0);</span>
+<span class="fc" id="L298">    return ofService(Scope.SCOPE_CLUSTER, type, instance, 0);</span>
   }
 
   /**
@@ -311,7 +312,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public static AFTIPCSocketAddress ofService(Scope scope, int type, int instance, int domain)
       throws SocketException {
-<span class="fc" id="L314">    return ofService(0, scope, type, instance, domain);</span>
+<span class="fc" id="L315">    return ofService(0, scope, type, instance, domain);</span>
   }
 
   /**
@@ -330,8 +331,8 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public static AFTIPCSocketAddress ofService(int javaPort, Scope scope, int type, int instance,
       int domain) throws SocketException {
-<span class="fc" id="L333">    return resolveAddress(toBytes(AddressType.SERVICE_ADDR, scope, type, instance, domain),</span>
-<span class="fc" id="L334">        javaPort, addressFamily());</span>
+<span class="fc" id="L334">    return resolveAddress(toBytes(AddressType.SERVICE_ADDR, scope, type, instance, domain),</span>
+<span class="fc" id="L335">        javaPort, addressFamily());</span>
   }
 
   /**
@@ -347,7 +348,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public static AFTIPCSocketAddress ofServiceRange(Scope scope, int type, int lower, int upper)
       throws SocketException {
-<span class="fc" id="L350">    return ofServiceRange(0, scope, type, lower, upper);</span>
+<span class="fc" id="L351">    return ofServiceRange(0, scope, type, lower, upper);</span>
   }
 
   /**
@@ -362,7 +363,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public static AFTIPCSocketAddress ofServiceRange(int type, int lower, int upper)
       throws SocketException {
-<span class="fc" id="L365">    return ofServiceRange(0, Scope.SCOPE_CLUSTER, type, lower, upper);</span>
+<span class="fc" id="L366">    return ofServiceRange(0, Scope.SCOPE_CLUSTER, type, lower, upper);</span>
   }
 
   /**
@@ -380,8 +381,8 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public static AFTIPCSocketAddress ofServiceRange(int javaPort, Scope scope, int type, int lower,
       int upper) throws SocketException {
-<span class="fc" id="L383">    return resolveAddress(toBytes(AddressType.SERVICE_RANGE, scope, type, lower, upper), javaPort,</span>
-<span class="fc" id="L384">        addressFamily());</span>
+<span class="fc" id="L384">    return resolveAddress(toBytes(AddressType.SERVICE_RANGE, scope, type, lower, upper), javaPort,</span>
+<span class="fc" id="L385">        addressFamily());</span>
   }
 
   /**
@@ -396,7 +397,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFTIPCSocketAddress ofSocket(int ref, int node) throws SocketException {
-<span class="fc" id="L399">    return ofSocket(0, ref, node);</span>
+<span class="fc" id="L400">    return ofSocket(0, ref, node);</span>
   }
 
   /**
@@ -414,8 +415,8 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public static AFTIPCSocketAddress ofSocket(int javaPort, int ref, int node)
       throws SocketException {
-<span class="fc" id="L417">    return resolveAddress(toBytes(AddressType.SOCKET_ADDR, Scope.SCOPE_NOT_SPECIFIED, ref, node, 0),</span>
-<span class="fc" id="L418">        javaPort, addressFamily());</span>
+<span class="fc" id="L418">    return resolveAddress(toBytes(AddressType.SOCKET_ADDR, Scope.SCOPE_NOT_SPECIFIED, ref, node, 0),</span>
+<span class="fc" id="L419">        javaPort, addressFamily());</span>
   }
 
   /**
@@ -425,15 +426,15 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFTIPCSocketAddress ofTopologyService() throws SocketException {
-<span class="nc" id="L428">    return resolveAddress(toBytes(AddressType.SERVICE_ADDR, Scope.SCOPE_NOT_SPECIFIED, TIPC_TOP_SRV,</span>
-<span class="nc" id="L429">        TIPC_TOP_SRV, 0), 0, addressFamily());</span>
+<span class="nc" id="L429">    return resolveAddress(toBytes(AddressType.SERVICE_ADDR, Scope.SCOPE_NOT_SPECIFIED, TIPC_TOP_SRV,</span>
+<span class="nc" id="L430">        TIPC_TOP_SRV, 0), 0, addressFamily());</span>
   }
 
   private static int parseUnsignedInt(String v) {
-<span class="fc bfc" id="L433" title="All 2 branches covered.">    if (v.startsWith(&quot;0x&quot;)) {</span>
-<span class="fc" id="L434">      return parseUnsignedInt(v.substring(2), 16);</span>
+<span class="fc bfc" id="L434" title="All 2 branches covered.">    if (v.startsWith(&quot;0x&quot;)) {</span>
+<span class="fc" id="L435">      return parseUnsignedInt(v.substring(2), 16);</span>
     } else {
-<span class="fc" id="L436">      return parseUnsignedInt(v, 10);</span>
+<span class="fc" id="L437">      return parseUnsignedInt(v, 10);</span>
     }
   }
 
@@ -448,7 +449,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFTIPCSocketAddress unwrap(InetAddress address, int port) throws SocketException {
-<span class="nc" id="L451">    return AFSocketAddress.unwrap(address, port, addressFamily());</span>
+<span class="nc" id="L452">    return AFSocketAddress.unwrap(address, port, addressFamily());</span>
   }
 
   /**
@@ -463,7 +464,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFTIPCSocketAddress unwrap(String hostname, int port) throws SocketException {
-<span class="nc" id="L466">    return AFSocketAddress.unwrap(hostname, port, addressFamily());</span>
+<span class="nc" id="L467">    return AFSocketAddress.unwrap(hostname, port, addressFamily());</span>
   }
 
   /**
@@ -475,11 +476,11 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFTIPCSocketAddress unwrap(SocketAddress address) throws SocketException {
-<span class="nc" id="L478">    Objects.requireNonNull(address);</span>
-<span class="nc bnc" id="L479" title="All 2 branches missed.">    if (!isSupportedAddress(address)) {</span>
-<span class="nc" id="L480">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+<span class="nc" id="L479">    Objects.requireNonNull(address);</span>
+<span class="nc bnc" id="L480" title="All 2 branches missed.">    if (!isSupportedAddress(address)) {</span>
+<span class="nc" id="L481">      throw new SocketException(&quot;Unsupported address&quot;);</span>
     }
-<span class="nc" id="L482">    return (AFTIPCSocketAddress) address;</span>
+<span class="nc" id="L483">    return (AFTIPCSocketAddress) address;</span>
   }
 
   /**
@@ -488,11 +489,11 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @return The scope.
    */
   public Scope getScope() {
-<span class="nc" id="L491">    byte[] bytes = getBytes();</span>
-<span class="nc bnc" id="L492" title="All 2 branches missed.">    if (bytes.length != (5 * 4)) {</span>
-<span class="nc" id="L493">      return Scope.SCOPE_NOT_SPECIFIED;</span>
+<span class="nc" id="L492">    byte[] bytes = getBytes();</span>
+<span class="nc bnc" id="L493" title="All 2 branches missed.">    if (bytes.length != (5 * 4)) {</span>
+<span class="nc" id="L494">      return Scope.SCOPE_NOT_SPECIFIED;</span>
     }
-<span class="nc" id="L495">    return Scope.ofValue(ByteBuffer.wrap(bytes, 4, 4).getInt());</span>
+<span class="nc" id="L496">    return Scope.ofValue(ByteBuffer.wrap(bytes, 4, 4).getInt());</span>
   }
 
   /**
@@ -501,9 +502,9 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @return The type identifier
    */
   public int getTIPCType() {
-<span class="nc" id="L504">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L505">    int a = bb.getInt(2 * 4);</span>
-<span class="nc" id="L506">    return a;</span>
+<span class="nc" id="L505">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="nc" id="L506">    int a = bb.getInt(2 * 4);</span>
+<span class="nc" id="L507">    return a;</span>
   }
 
   /**
@@ -512,9 +513,9 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @return The instance identifier.
    */
   public int getTIPCInstance() {
-<span class="nc" id="L515">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L516">    int a = bb.getInt(3 * 4);</span>
-<span class="nc" id="L517">    return a;</span>
+<span class="nc" id="L516">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="nc" id="L517">    int a = bb.getInt(3 * 4);</span>
+<span class="nc" id="L518">    return a;</span>
   }
 
   /**
@@ -523,9 +524,9 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @return The domain identifier.
    */
   public int getTIPCDomain() {
-<span class="nc" id="L526">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L527">    int a = bb.getInt(4 * 4);</span>
-<span class="nc" id="L528">    return a;</span>
+<span class="nc" id="L527">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="nc" id="L528">    int a = bb.getInt(4 * 4);</span>
+<span class="nc" id="L529">    return a;</span>
   }
 
   /**
@@ -534,9 +535,9 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @return The lower instance identifier.
    */
   public int getTIPCLower() {
-<span class="nc" id="L537">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L538">    int a = bb.getInt(2 * 4);</span>
-<span class="nc" id="L539">    return a;</span>
+<span class="nc" id="L538">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="nc" id="L539">    int a = bb.getInt(2 * 4);</span>
+<span class="nc" id="L540">    return a;</span>
   }
 
   /**
@@ -545,9 +546,9 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @return The lower instance identifier.
    */
   public int getTIPCUpper() {
-<span class="nc" id="L548">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L549">    int a = bb.getInt(3 * 4);</span>
-<span class="nc" id="L550">    return a;</span>
+<span class="nc" id="L549">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="nc" id="L550">    int a = bb.getInt(3 * 4);</span>
+<span class="nc" id="L551">    return a;</span>
   }
 
   /**
@@ -556,9 +557,9 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @return The ref identifier.
    */
   public int getTIPCRef() {
-<span class="nc" id="L559">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L560">    int a = bb.getInt(2 * 4);</span>
-<span class="nc" id="L561">    return a;</span>
+<span class="nc" id="L560">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="nc" id="L561">    int a = bb.getInt(2 * 4);</span>
+<span class="nc" id="L562">    return a;</span>
   }
 
   /**
@@ -567,43 +568,43 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @return The node hash.
    */
   public int getTIPCNodeHash() {
-<span class="nc" id="L570">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L571">    int a = bb.getInt(3 * 4);</span>
-<span class="nc" id="L572">    return a;</span>
+<span class="nc" id="L571">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="nc" id="L572">    int a = bb.getInt(3 * 4);</span>
+<span class="nc" id="L573">    return a;</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L577">    int port = getPort();</span>
+<span class="nc" id="L578">    int port = getPort();</span>
 
-<span class="nc" id="L579">    byte[] bytes = getBytes();</span>
-<span class="nc bnc" id="L580" title="All 2 branches missed.">    if (bytes.length != (5 * 4)) {</span>
-<span class="nc bnc" id="L581" title="All 2 branches missed.">      return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port) + &quot;;UNKNOWN&quot; + &quot;]&quot;;</span>
+<span class="nc" id="L580">    byte[] bytes = getBytes();</span>
+<span class="nc bnc" id="L581" title="All 2 branches missed.">    if (bytes.length != (5 * 4)) {</span>
+<span class="nc bnc" id="L582" title="All 2 branches missed.">      return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port) + &quot;;UNKNOWN&quot; + &quot;]&quot;;</span>
     }
 
-<span class="nc" id="L584">    ByteBuffer bb = ByteBuffer.wrap(bytes);</span>
-<span class="nc" id="L585">    int typeId = bb.getInt();</span>
-<span class="nc" id="L586">    int scopeId = bb.getInt();</span>
-<span class="nc" id="L587">    int a = bb.getInt();</span>
-<span class="nc" id="L588">    int b = bb.getInt();</span>
-<span class="nc" id="L589">    int c = bb.getInt();</span>
+<span class="nc" id="L585">    ByteBuffer bb = ByteBuffer.wrap(bytes);</span>
+<span class="nc" id="L586">    int typeId = bb.getInt();</span>
+<span class="nc" id="L587">    int scopeId = bb.getInt();</span>
+<span class="nc" id="L588">    int a = bb.getInt();</span>
+<span class="nc" id="L589">    int b = bb.getInt();</span>
+<span class="nc" id="L590">    int c = bb.getInt();</span>
 
-<span class="nc" id="L591">    Scope scope = Scope.ofValue((byte) scopeId);</span>
+<span class="nc" id="L592">    Scope scope = Scope.ofValue((byte) scopeId);</span>
 
-<span class="nc" id="L593">    AddressType type = AddressType.ofValue(typeId);</span>
-<span class="nc" id="L594">    String typeString = type.toDebugString(scope, a, b, c);</span>
+<span class="nc" id="L594">    AddressType type = AddressType.ofValue(typeId);</span>
+<span class="nc" id="L595">    String typeString = type.toDebugString(scope, a, b, c);</span>
 
-<span class="nc bnc" id="L596" title="All 2 branches missed.">    return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port + &quot;;&quot;) + typeString + &quot;]&quot;;</span>
+<span class="nc bnc" id="L597" title="All 2 branches missed.">    return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port + &quot;;&quot;) + typeString + &quot;]&quot;;</span>
   }
 
   @Override
   public boolean hasFilename() {
-<span class="nc" id="L601">    return false;</span>
+<span class="nc" id="L602">    return false;</span>
   }
 
   @Override
   public File getFile() throws FileNotFoundException {
-<span class="nc" id="L606">    throw new FileNotFoundException(&quot;no file&quot;);</span>
+<span class="nc" id="L607">    throw new FileNotFoundException(&quot;no file&quot;);</span>
   }
 
   /**
@@ -615,7 +616,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @see #unwrap(InetAddress, int)
    */
   public static boolean isSupportedAddress(InetAddress addr) {
-<span class="nc" id="L618">    return AFSocketAddress.isSupportedAddress(addr, addressFamily());</span>
+<span class="nc" id="L619">    return AFSocketAddress.isSupportedAddress(addr, addressFamily());</span>
   }
 
   /**
@@ -626,18 +627,18 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @see #unwrap(InetAddress, int)
    */
   public static boolean isSupportedAddress(SocketAddress addr) {
-<span class="nc" id="L629">    return (addr instanceof AFTIPCSocketAddress);</span>
+<span class="nc" id="L630">    return (addr instanceof AFTIPCSocketAddress);</span>
   }
 
   @SuppressWarnings(&quot;cast&quot;)
   private static byte[] toBytes(AddressType addrType, Scope scope, int a, int b, int c) {
-<span class="fc" id="L634">    ByteBuffer bb = ByteBuffer.allocate(5 * 4);</span>
-<span class="fc" id="L635">    bb.putInt(addrType.value());</span>
-<span class="fc" id="L636">    bb.putInt(scope.value());</span>
-<span class="fc" id="L637">    bb.putInt(a);</span>
-<span class="fc" id="L638">    bb.putInt(b);</span>
-<span class="fc" id="L639">    bb.putInt(c);</span>
-<span class="fc" id="L640">    return (byte[]) bb.flip().array();</span>
+<span class="fc" id="L635">    ByteBuffer bb = ByteBuffer.allocate(5 * 4);</span>
+<span class="fc" id="L636">    bb.putInt(addrType.value());</span>
+<span class="fc" id="L637">    bb.putInt(scope.value());</span>
+<span class="fc" id="L638">    bb.putInt(a);</span>
+<span class="fc" id="L639">    bb.putInt(b);</span>
+<span class="fc" id="L640">    bb.putInt(c);</span>
+<span class="fc" id="L641">    return (byte[]) bb.flip().array();</span>
   }
 
   /**
@@ -647,48 +648,48 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   @SuppressWarnings(&quot;null&quot;)
   public static synchronized AFAddressFamily&lt;AFTIPCSocketAddress&gt; addressFamily() {
-<span class="fc bfc" id="L650" title="All 2 branches covered.">    if (afTipc == null) {</span>
-<span class="fc" id="L651">      afTipc = AFAddressFamily.registerAddressFamily(&quot;tipc&quot;, //</span>
-<span class="fc" id="L652">          AFTIPCSocketAddress.class, new AFSocketAddressConfig&lt;AFTIPCSocketAddress&gt;() {</span>
+<span class="fc bfc" id="L651" title="All 2 branches covered.">    if (afTipc == null) {</span>
+<span class="fc" id="L652">      afTipc = AFAddressFamily.registerAddressFamily(&quot;tipc&quot;, //</span>
+<span class="fc" id="L653">          AFTIPCSocketAddress.class, new AFSocketAddressConfig&lt;AFTIPCSocketAddress&gt;() {</span>
 
-<span class="fc" id="L654">            private final AFSocketAddressConstructor&lt;AFTIPCSocketAddress&gt; addrConstr =</span>
-<span class="pc bpc" id="L655" title="1 of 2 branches missed.">                isUseDeserializationForInit() ? AFTIPCSocketAddress::newAFSocketAddress</span>
-<span class="fc" id="L656">                    : AFTIPCSocketAddress::new;</span>
+<span class="fc" id="L655">            private final AFSocketAddressConstructor&lt;AFTIPCSocketAddress&gt; addrConstr =</span>
+<span class="pc bpc" id="L656" title="1 of 2 branches missed.">                isUseDeserializationForInit() ? AFTIPCSocketAddress::newAFSocketAddress</span>
+<span class="fc" id="L657">                    : AFTIPCSocketAddress::new;</span>
 
             @Override
             protected AFTIPCSocketAddress parseURI(URI u, int port) throws SocketException {
-<span class="nc" id="L660">              return AFTIPCSocketAddress.of(u, port);</span>
+<span class="nc" id="L661">              return AFTIPCSocketAddress.of(u, port);</span>
             }
 
             @Override
             protected AFSocketAddressConstructor&lt;AFTIPCSocketAddress&gt; addressConstructor() {
-<span class="fc" id="L665">              return addrConstr;</span>
+<span class="fc" id="L666">              return addrConstr;</span>
             }
 
             @Override
             protected String selectorProviderClassname() {
-<span class="fc" id="L670">              return &quot;org.newsclub.net.unix.tipc.AFTIPCSelectorProvider&quot;;</span>
+<span class="fc" id="L671">              return &quot;org.newsclub.net.unix.tipc.AFTIPCSelectorProvider&quot;;</span>
             }
 
             @Override
             protected Set&lt;String&gt; uriSchemes() {
-<span class="fc" id="L675">              return new HashSet&lt;&gt;(Arrays.asList(&quot;tipc&quot;, &quot;http+tipc&quot;, &quot;https+tipc&quot;));</span>
+<span class="fc" id="L676">              return new HashSet&lt;&gt;(Arrays.asList(&quot;tipc&quot;, &quot;http+tipc&quot;, &quot;https+tipc&quot;));</span>
             }
           });
       try {
-<span class="nc" id="L679">        Class.forName(&quot;org.newsclub.net.unix.tipc.AFTIPCSelectorProvider&quot;);</span>
-<span class="fc" id="L680">      } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L680">        Class.forName(&quot;org.newsclub.net.unix.tipc.AFTIPCSelectorProvider&quot;);</span>
+<span class="fc" id="L681">      } catch (ClassNotFoundException e) {</span>
         // ignore
-<span class="nc" id="L682">      }</span>
+<span class="nc" id="L683">      }</span>
     }
-<span class="fc" id="L684">    return afTipc;</span>
+<span class="fc" id="L685">    return afTipc;</span>
   }
 
   private String toTipcInt(int v) {
-<span class="fc bfc" id="L688" title="All 2 branches covered.">    if (v &lt; 0) {</span>
-<span class="fc" id="L689">      return &quot;0x&quot; + toUnsignedString(v, 16);</span>
+<span class="fc bfc" id="L689" title="All 2 branches covered.">    if (v &lt; 0) {</span>
+<span class="fc" id="L690">      return &quot;0x&quot; + toUnsignedString(v, 16);</span>
     } else {
-<span class="fc" id="L691">      return toUnsignedString(v);</span>
+<span class="fc" id="L692">      return toUnsignedString(v);</span>
     }
   }
 
@@ -701,7 +702,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   public static AFTIPCSocketAddress of(URI uri) throws SocketException {
-<span class="fc" id="L704">    return of(uri, -1);</span>
+<span class="fc" id="L705">    return of(uri, -1);</span>
   }
 
   /**
@@ -716,188 +717,188 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
       &quot;PMD.CognitiveComplexity&quot;, &quot;PMD.CyclomaticComplexity&quot;, &quot;PMD.ExcessiveMethodLength&quot;,
       &quot;PMD.NcssCount&quot;, &quot;PMD.NPathComplexity&quot;, &quot;PMD.ShortMethodName&quot;})
   public static AFTIPCSocketAddress of(URI uri, int overridePort) throws SocketException {
-<span class="pc bpc" id="L719" title="1 of 2 branches missed.">    switch (uri.getScheme()) {</span>
+<span class="pc bpc" id="L720" title="1 of 2 branches missed.">    switch (uri.getScheme()) {</span>
       case &quot;tipc&quot;:
       case &quot;http+tipc&quot;:
       case &quot;https+tipc&quot;:
-<span class="fc" id="L723">        break;</span>
+<span class="fc" id="L724">        break;</span>
       default:
-<span class="nc" id="L725">        throw new SocketException(&quot;Unsupported URI scheme: &quot; + uri.getScheme());</span>
+<span class="nc" id="L726">        throw new SocketException(&quot;Unsupported URI scheme: &quot; + uri.getScheme());</span>
     }
 
-<span class="fc" id="L728">    String host = uri.getHost();</span>
-<span class="fc bfc" id="L729" title="All 2 branches covered.">    if (host == null) {</span>
-<span class="fc" id="L730">      host = uri.getAuthority();</span>
-<span class="pc bpc" id="L731" title="1 of 2 branches missed.">      if (host != null) {</span>
-<span class="fc" id="L732">        int at = host.indexOf('@');</span>
-<span class="pc bpc" id="L733" title="1 of 2 branches missed.">        if (at &gt;= 0) {</span>
-<span class="nc" id="L734">          host = host.substring(at + 1);</span>
+<span class="fc" id="L729">    String host = uri.getHost();</span>
+<span class="fc bfc" id="L730" title="All 2 branches covered.">    if (host == null) {</span>
+<span class="fc" id="L731">      host = uri.getAuthority();</span>
+<span class="pc bpc" id="L732" title="1 of 2 branches missed.">      if (host != null) {</span>
+<span class="fc" id="L733">        int at = host.indexOf('@');</span>
+<span class="pc bpc" id="L734" title="1 of 2 branches missed.">        if (at &gt;= 0) {</span>
+<span class="nc" id="L735">          host = host.substring(at + 1);</span>
         }
       }
     }
-<span class="pc bpc" id="L738" title="1 of 2 branches missed.">    if (host == null) {</span>
-<span class="nc" id="L739">      throw new SocketException(&quot;Cannot get hostname from URI: &quot; + uri);</span>
+<span class="pc bpc" id="L739" title="1 of 2 branches missed.">    if (host == null) {</span>
+<span class="nc" id="L740">      throw new SocketException(&quot;Cannot get hostname from URI: &quot; + uri);</span>
     }
-<span class="pc bpc" id="L741" title="1 of 2 branches missed.">    int port = overridePort != -1 ? overridePort : uri.getPort();</span>
-<span class="pc bpc" id="L742" title="1 of 2 branches missed.">    if (port != -1) {</span>
-<span class="nc" id="L743">      host += &quot;:&quot; + port;</span>
+<span class="pc bpc" id="L742" title="1 of 2 branches missed.">    int port = overridePort != -1 ? overridePort : uri.getPort();</span>
+<span class="pc bpc" id="L743" title="1 of 2 branches missed.">    if (port != -1) {</span>
+<span class="nc" id="L744">      host += &quot;:&quot; + port;</span>
     }
     try {
-<span class="fc" id="L746">      Matcher m = PAT_TIPC_URI_HOST_AND_PORT.matcher(host);</span>
-<span class="fc bfc" id="L747" title="All 2 branches covered.">      if (!m.matches()) {</span>
-<span class="fc" id="L748">        throw new SocketException(&quot;Invalid TIPC URI: &quot; + uri);</span>
+<span class="fc" id="L747">      Matcher m = PAT_TIPC_URI_HOST_AND_PORT.matcher(host);</span>
+<span class="fc bfc" id="L748" title="All 2 branches covered.">      if (!m.matches()) {</span>
+<span class="fc" id="L749">        throw new SocketException(&quot;Invalid TIPC URI: &quot; + uri);</span>
       }
 
-<span class="fc" id="L751">      String typeStr = m.group(&quot;type&quot;);</span>
-<span class="fc" id="L752">      String scopeStr = m.group(&quot;scope&quot;);</span>
-<span class="fc bfc" id="L753" title="All 2 branches covered.">      if (typeStr == null) {</span>
-<span class="fc" id="L754">        typeStr = m.group(&quot;type2&quot;);</span>
-<span class="fc" id="L755">        scopeStr = m.group(&quot;scope2&quot;);</span>
+<span class="fc" id="L752">      String typeStr = m.group(&quot;type&quot;);</span>
+<span class="fc" id="L753">      String scopeStr = m.group(&quot;scope&quot;);</span>
+<span class="fc bfc" id="L754" title="All 2 branches covered.">      if (typeStr == null) {</span>
+<span class="fc" id="L755">        typeStr = m.group(&quot;type2&quot;);</span>
+<span class="fc" id="L756">        scopeStr = m.group(&quot;scope2&quot;);</span>
       }
-<span class="fc" id="L757">      String strA = m.group(&quot;a&quot;);</span>
-<span class="fc" id="L758">      String strB = m.group(&quot;b&quot;);</span>
-<span class="fc" id="L759">      String strC = m.group(&quot;c&quot;);</span>
-<span class="fc" id="L760">      String javaPortStr = m.group(&quot;javaPort&quot;);</span>
+<span class="fc" id="L758">      String strA = m.group(&quot;a&quot;);</span>
+<span class="fc" id="L759">      String strB = m.group(&quot;b&quot;);</span>
+<span class="fc" id="L760">      String strC = m.group(&quot;c&quot;);</span>
+<span class="fc" id="L761">      String javaPortStr = m.group(&quot;javaPort&quot;);</span>
 
       final AddressType addrType;
-<span class="fc bfc" id="L763" title="All 7 branches covered.">      switch (typeStr == null ? &quot;&quot; : typeStr) {</span>
+<span class="fc bfc" id="L764" title="All 7 branches covered.">      switch (typeStr == null ? &quot;&quot; : typeStr) {</span>
         case &quot;service&quot;:
-<span class="fc" id="L765">          addrType = AddressType.SERVICE_ADDR;</span>
-<span class="fc" id="L766">          break;</span>
+<span class="fc" id="L766">          addrType = AddressType.SERVICE_ADDR;</span>
+<span class="fc" id="L767">          break;</span>
         case &quot;service-range&quot;:
-<span class="fc" id="L768">          addrType = AddressType.SERVICE_RANGE;</span>
-<span class="fc" id="L769">          break;</span>
+<span class="fc" id="L769">          addrType = AddressType.SERVICE_RANGE;</span>
+<span class="fc" id="L770">          break;</span>
         case &quot;socket&quot;:
-<span class="fc" id="L771">          addrType = AddressType.SOCKET_ADDR;</span>
-<span class="fc" id="L772">          break;</span>
+<span class="fc" id="L772">          addrType = AddressType.SOCKET_ADDR;</span>
+<span class="fc" id="L773">          break;</span>
         case &quot;&quot;:
-<span class="fc" id="L774">          addrType = AddressType.SERVICE_ADDR;</span>
-<span class="fc" id="L775">          break;</span>
+<span class="fc" id="L775">          addrType = AddressType.SERVICE_ADDR;</span>
+<span class="fc" id="L776">          break;</span>
         default:
-<span class="fc" id="L777">          addrType = AddressType.ofValue(parseUnsignedInt(typeStr));</span>
+<span class="fc" id="L778">          addrType = AddressType.ofValue(parseUnsignedInt(typeStr));</span>
           break;
       }
 
       final Scope scope;
-<span class="fc bfc" id="L782" title="All 7 branches covered.">      switch (scopeStr == null ? &quot;&quot; : scopeStr) {</span>
+<span class="fc bfc" id="L783" title="All 7 branches covered.">      switch (scopeStr == null ? &quot;&quot; : scopeStr) {</span>
         case &quot;cluster&quot;:
-<span class="fc" id="L784">          scope = Scope.SCOPE_CLUSTER;</span>
-<span class="fc" id="L785">          break;</span>
+<span class="fc" id="L785">          scope = Scope.SCOPE_CLUSTER;</span>
+<span class="fc" id="L786">          break;</span>
         case &quot;node&quot;:
-<span class="fc" id="L787">          scope = Scope.SCOPE_NODE;</span>
-<span class="fc" id="L788">          break;</span>
+<span class="fc" id="L788">          scope = Scope.SCOPE_NODE;</span>
+<span class="fc" id="L789">          break;</span>
         case &quot;default&quot;:
-<span class="fc" id="L790">          scope = Scope.SCOPE_NOT_SPECIFIED;</span>
-<span class="fc" id="L791">          break;</span>
+<span class="fc" id="L791">          scope = Scope.SCOPE_NOT_SPECIFIED;</span>
+<span class="fc" id="L792">          break;</span>
         case &quot;&quot;:
-<span class="fc bfc" id="L793" title="All 4 branches covered.">          if (addrType == AddressType.SERVICE_ADDR || addrType == AddressType.SERVICE_RANGE) { // NOPMD</span>
-<span class="fc" id="L794">            scope = Scope.SCOPE_CLUSTER;</span>
+<span class="fc bfc" id="L794" title="All 4 branches covered.">          if (addrType == AddressType.SERVICE_ADDR || addrType == AddressType.SERVICE_RANGE) { // NOPMD</span>
+<span class="fc" id="L795">            scope = Scope.SCOPE_CLUSTER;</span>
           } else {
-<span class="fc" id="L796">            scope = Scope.SCOPE_NOT_SPECIFIED;</span>
+<span class="fc" id="L797">            scope = Scope.SCOPE_NOT_SPECIFIED;</span>
           }
-<span class="fc" id="L798">          break;</span>
+<span class="fc" id="L799">          break;</span>
         default:
-<span class="fc" id="L800">          scope = Scope.ofValue(parseUnsignedInt(scopeStr));</span>
+<span class="fc" id="L801">          scope = Scope.ofValue(parseUnsignedInt(scopeStr));</span>
           break;
       }
 
-<span class="fc" id="L804">      int a = parseUnsignedInt(strA);</span>
-<span class="fc" id="L805">      int b = parseUnsignedInt(strB);</span>
+<span class="fc" id="L805">      int a = parseUnsignedInt(strA);</span>
+<span class="fc" id="L806">      int b = parseUnsignedInt(strB);</span>
 
       int c;
-<span class="pc bpc" id="L808" title="1 of 4 branches missed.">      if (strC == null || strC.isEmpty()) {</span>
-<span class="fc bfc" id="L809" title="All 2 branches covered.">        if (addrType == AddressType.SERVICE_RANGE) { // NOPMD</span>
-<span class="fc" id="L810">          c = b;</span>
+<span class="pc bpc" id="L809" title="1 of 4 branches missed.">      if (strC == null || strC.isEmpty()) {</span>
+<span class="fc bfc" id="L810" title="All 2 branches covered.">        if (addrType == AddressType.SERVICE_RANGE) { // NOPMD</span>
+<span class="fc" id="L811">          c = b;</span>
         } else {
-<span class="fc" id="L812">          c = 0;</span>
+<span class="fc" id="L813">          c = 0;</span>
         }
       } else {
-<span class="fc" id="L815">        c = parseUnsignedInt(strC);</span>
+<span class="fc" id="L816">        c = parseUnsignedInt(strC);</span>
       }
 
-<span class="pc bpc" id="L818" title="1 of 4 branches missed.">      int javaPort = javaPortStr == null || javaPortStr.isEmpty() ? port : Integer.parseInt(</span>
+<span class="pc bpc" id="L819" title="1 of 4 branches missed.">      int javaPort = javaPortStr == null || javaPortStr.isEmpty() ? port : Integer.parseInt(</span>
           javaPortStr);
-<span class="pc bpc" id="L820" title="1 of 2 branches missed.">      if (overridePort != -1) {</span>
-<span class="nc" id="L821">        javaPort = overridePort;</span>
+<span class="pc bpc" id="L821" title="1 of 2 branches missed.">      if (overridePort != -1) {</span>
+<span class="nc" id="L822">        javaPort = overridePort;</span>
       }
 
-<span class="fc" id="L824">      return resolveAddress(toBytes(addrType, scope, a, b, c), javaPort, addressFamily());</span>
-<span class="nc" id="L825">    } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L826">      throw (SocketException) new SocketException(&quot;Invalid TIPC URI: &quot; + uri).initCause(e);</span>
+<span class="fc" id="L825">      return resolveAddress(toBytes(addrType, scope, a, b, c), javaPort, addressFamily());</span>
+<span class="nc" id="L826">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L827">      throw (SocketException) new SocketException(&quot;Invalid TIPC URI: &quot; + uri).initCause(e);</span>
     }
   }
 
   @Override
   @SuppressWarnings({&quot;PMD.CognitiveComplexity&quot;, &quot;PMD.CompareObjectsWithEquals&quot;})
   public URI toURI(String scheme, URI template) throws IOException {
-<span class="pc bpc" id="L833" title="1 of 2 branches missed.">    switch (scheme) {</span>
+<span class="pc bpc" id="L834" title="1 of 2 branches missed.">    switch (scheme) {</span>
       case &quot;tipc&quot;:
       case &quot;http+tipc&quot;:
       case &quot;https+tipc&quot;:
-<span class="fc" id="L837">        break;</span>
+<span class="fc" id="L838">        break;</span>
       default:
-<span class="nc" id="L839">        return super.toURI(scheme, template);</span>
+<span class="nc" id="L840">        return super.toURI(scheme, template);</span>
     }
 
-<span class="fc" id="L842">    byte[] bytes = getBytes();</span>
-<span class="pc bpc" id="L843" title="1 of 2 branches missed.">    if (bytes.length != (5 * 4)) {</span>
-<span class="nc" id="L844">      return super.toURI(scheme, template);</span>
+<span class="fc" id="L843">    byte[] bytes = getBytes();</span>
+<span class="pc bpc" id="L844" title="1 of 2 branches missed.">    if (bytes.length != (5 * 4)) {</span>
+<span class="nc" id="L845">      return super.toURI(scheme, template);</span>
     }
 
-<span class="fc" id="L847">    ByteBuffer bb = ByteBuffer.wrap(bytes);</span>
-<span class="fc" id="L848">    AddressType addrType = AddressType.ofValue(bb.getInt());</span>
-<span class="fc" id="L849">    Scope scope = Scope.ofValue(bb.getInt());</span>
+<span class="fc" id="L848">    ByteBuffer bb = ByteBuffer.wrap(bytes);</span>
+<span class="fc" id="L849">    AddressType addrType = AddressType.ofValue(bb.getInt());</span>
+<span class="fc" id="L850">    Scope scope = Scope.ofValue(bb.getInt());</span>
 
-<span class="fc" id="L851">    StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L852">    StringBuilder sb = new StringBuilder();</span>
 
-<span class="fc" id="L853">    boolean haveScope = true;</span>
-<span class="fc bfc" id="L854" title="All 2 branches covered.">    if (scope == Scope.SCOPE_NOT_SPECIFIED) {</span>
-<span class="fc" id="L855">      sb.append(&quot;default-&quot;);</span>
-<span class="fc bfc" id="L856" title="All 2 branches covered.">    } else if (scope == Scope.SCOPE_CLUSTER) {</span>
-<span class="pc bpc" id="L857" title="1 of 4 branches missed.">      if (addrType == AddressType.SERVICE_ADDR || addrType == AddressType.SERVICE_RANGE) { // NOPMD</span>
+<span class="fc" id="L854">    boolean haveScope = true;</span>
+<span class="fc bfc" id="L855" title="All 2 branches covered.">    if (scope == Scope.SCOPE_NOT_SPECIFIED) {</span>
+<span class="fc" id="L856">      sb.append(&quot;default-&quot;);</span>
+<span class="fc bfc" id="L857" title="All 2 branches covered.">    } else if (scope == Scope.SCOPE_CLUSTER) {</span>
+<span class="pc bpc" id="L858" title="1 of 4 branches missed.">      if (addrType == AddressType.SERVICE_ADDR || addrType == AddressType.SERVICE_RANGE) { // NOPMD</span>
         // implied
-<span class="fc" id="L859">        haveScope = false;</span>
+<span class="fc" id="L860">        haveScope = false;</span>
       } else {
-<span class="nc" id="L861">        sb.append(&quot;cluster-&quot;);</span>
+<span class="nc" id="L862">        sb.append(&quot;cluster-&quot;);</span>
       }
-<span class="fc bfc" id="L863" title="All 2 branches covered.">    } else if (scope == Scope.SCOPE_NODE) {</span>
-<span class="fc" id="L864">      sb.append(&quot;node-&quot;);</span>
+<span class="fc bfc" id="L864" title="All 2 branches covered.">    } else if (scope == Scope.SCOPE_NODE) {</span>
+<span class="fc" id="L865">      sb.append(&quot;node-&quot;);</span>
     } else {
-<span class="fc" id="L866">      sb.append(toTipcInt(scope.value()));</span>
-<span class="fc" id="L867">      sb.append('-');</span>
+<span class="fc" id="L867">      sb.append(toTipcInt(scope.value()));</span>
+<span class="fc" id="L868">      sb.append('-');</span>
     }
 
-<span class="fc" id="L870">    boolean addrTypeImplied = false;</span>
-<span class="fc bfc" id="L871" title="All 2 branches covered.">    if (addrType == AddressType.SERVICE_ADDR) {</span>
-<span class="fc bfc" id="L872" title="All 2 branches covered.">      if (!haveScope) {</span>
-<span class="fc" id="L873">        addrTypeImplied = true;</span>
+<span class="fc" id="L871">    boolean addrTypeImplied = false;</span>
+<span class="fc bfc" id="L872" title="All 2 branches covered.">    if (addrType == AddressType.SERVICE_ADDR) {</span>
+<span class="fc bfc" id="L873" title="All 2 branches covered.">      if (!haveScope) {</span>
+<span class="fc" id="L874">        addrTypeImplied = true;</span>
       } else {
-<span class="fc" id="L875">        sb.append(&quot;service&quot;);</span>
+<span class="fc" id="L876">        sb.append(&quot;service&quot;);</span>
       }
-<span class="fc bfc" id="L877" title="All 2 branches covered.">    } else if (addrType == AddressType.SERVICE_RANGE) {</span>
-<span class="fc" id="L878">      sb.append(&quot;service-range&quot;);</span>
-<span class="pc bpc" id="L879" title="1 of 2 branches missed.">    } else if (addrType == AddressType.SOCKET_ADDR) {</span>
-<span class="fc" id="L880">      sb.append(&quot;socket&quot;);</span>
+<span class="fc bfc" id="L878" title="All 2 branches covered.">    } else if (addrType == AddressType.SERVICE_RANGE) {</span>
+<span class="fc" id="L879">      sb.append(&quot;service-range&quot;);</span>
+<span class="pc bpc" id="L880" title="1 of 2 branches missed.">    } else if (addrType == AddressType.SOCKET_ADDR) {</span>
+<span class="fc" id="L881">      sb.append(&quot;socket&quot;);</span>
     } else {
-<span class="nc" id="L882">      sb.append(toTipcInt(addrType.value()));</span>
+<span class="nc" id="L883">      sb.append(toTipcInt(addrType.value()));</span>
     }
-<span class="fc bfc" id="L884" title="All 2 branches covered.">    if (!addrTypeImplied) {</span>
-<span class="fc" id="L885">      sb.append('.');</span>
-    }
-
-<span class="fc" id="L888">    int a = bb.getInt();</span>
-<span class="fc" id="L889">    int b = bb.getInt();</span>
-<span class="fc" id="L890">    int c = bb.getInt();</span>
-
-<span class="fc" id="L892">    sb.append(toTipcInt(a));</span>
-<span class="fc" id="L893">    sb.append('.');</span>
-<span class="fc" id="L894">    sb.append(toTipcInt(b));</span>
-<span class="fc bfc" id="L895" title="All 2 branches covered.">    if (c != 0) {</span>
-<span class="fc" id="L896">      sb.append('.');</span>
-<span class="fc" id="L897">      sb.append(toTipcInt(c));</span>
+<span class="fc bfc" id="L885" title="All 2 branches covered.">    if (!addrTypeImplied) {</span>
+<span class="fc" id="L886">      sb.append('.');</span>
     }
 
-<span class="fc" id="L900">    return new HostAndPort(sb.toString(), getPort()).toURI(scheme, template);</span>
+<span class="fc" id="L889">    int a = bb.getInt();</span>
+<span class="fc" id="L890">    int b = bb.getInt();</span>
+<span class="fc" id="L891">    int c = bb.getInt();</span>
+
+<span class="fc" id="L893">    sb.append(toTipcInt(a));</span>
+<span class="fc" id="L894">    sb.append('.');</span>
+<span class="fc" id="L895">    sb.append(toTipcInt(b));</span>
+<span class="fc bfc" id="L896" title="All 2 branches covered.">    if (c != 0) {</span>
+<span class="fc" id="L897">      sb.append('.');</span>
+<span class="fc" id="L898">      sb.append(toTipcInt(c));</span>
+    }
+
+<span class="fc" id="L901">    return new HostAndPort(sb.toString(), getPort()).toURI(scheme, template);</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

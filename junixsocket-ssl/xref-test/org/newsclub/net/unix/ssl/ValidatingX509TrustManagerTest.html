@@ -82,7 +82,7 @@
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>        serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>            .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>                <span class="jxr_string">"juxserver.p12"</span>), () -&gt; <span class="jxr_string">"serverpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>                <span class="jxr_string">"juxserver.p12"</span>), <span class="jxr_string">"serverpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>            .buildAndDestroyBuilder().getSocketFactory();
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>        clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) <em class="jxr_comment">//</em>
@@ -147,7 +147,7 @@
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>               <span class="jxr_string">"juxclient.p12"</span>), () -&gt; <span class="jxr_string">"clientpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>               <span class="jxr_string">"juxclient.p12"</span>), <span class="jxr_string">"clientpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>           .buildAndDestroyBuilder().getSocketFactory();
 <a class="jxr_linenumber" name="L144" href="#L144">144</a> 
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) <em class="jxr_comment">//</em>
@@ -201,7 +201,7 @@
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>               <span class="jxr_string">"juxserver.p12"</span>), () -&gt; <span class="jxr_string">"serverpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>               <span class="jxr_string">"juxserver.p12"</span>), <span class="jxr_string">"serverpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>           .buildAndDestroyBuilder().getSocketFactory();
 <a class="jxr_linenumber" name="L198" href="#L198">198</a> 
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) <em class="jxr_comment">//</em>
@@ -266,7 +266,7 @@
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>               <span class="jxr_string">"juxserver.p12"</span>), () -&gt; <span class="jxr_string">"serverpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>               <span class="jxr_string">"juxserver.p12"</span>), <span class="jxr_string">"serverpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L262" href="#L262">262</a>           .buildAndDestroyBuilder().getSocketFactory();
 <a class="jxr_linenumber" name="L263" href="#L263">263</a> 
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) <em class="jxr_comment">//</em>
@@ -334,7 +334,7 @@
 <a class="jxr_linenumber" name="L326" href="#L326">326</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L327" href="#L327">327</a>       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L328" href="#L328">328</a>           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>               <span class="jxr_string">"juxserver.p12"</span>), () -&gt; <span class="jxr_string">"serverpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>               <span class="jxr_string">"juxserver.p12"</span>), <span class="jxr_string">"serverpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L330" href="#L330">330</a>           .withDefaultSSLParameters((p) -&gt; {
 <a class="jxr_linenumber" name="L331" href="#L331">331</a>             p.setNeedClientAuth(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L332" href="#L332">332</a>           }) <em class="jxr_comment">//</em>
@@ -357,9 +357,9 @@
 <a class="jxr_linenumber" name="L349" href="#L349">349</a> 
 <a class="jxr_linenumber" name="L350" href="#L350">350</a>       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L351" href="#L351">351</a>           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>               <span class="jxr_string">"juxclient.p12"</span>), () -&gt; <span class="jxr_string">"clientpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>               <span class="jxr_string">"juxclient.p12"</span>), <span class="jxr_string">"clientpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>           .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>               <span class="jxr_string">"juxclient.truststore"</span>), () -&gt; <span class="jxr_string">"clienttrustpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>               <span class="jxr_string">"juxclient.truststore"</span>), <span class="jxr_string">"clienttrustpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L355" href="#L355">355</a>           .buildAndDestroyBuilder().getSocketFactory();
 <a class="jxr_linenumber" name="L356" href="#L356">356</a>     } <strong class="jxr_keyword">catch</strong> (KnownJavaBugIOException e) {
 <a class="jxr_linenumber" name="L357" href="#L357">357</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
@@ -396,7 +396,7 @@
 <a class="jxr_linenumber" name="L388" href="#L388">388</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L389" href="#L389">389</a>       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L390" href="#L390">390</a>           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>               <span class="jxr_string">"juxclient.p12"</span>), () -&gt; <span class="jxr_string">"clientpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L391" href="#L391">391</a>               <span class="jxr_string">"juxclient.p12"</span>), <span class="jxr_string">"clientpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L392" href="#L392">392</a>           .withDefaultSSLParameters((p) -&gt; {
 <a class="jxr_linenumber" name="L393" href="#L393">393</a>             p.setNeedClientAuth(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L394" href="#L394">394</a>           }) <em class="jxr_comment">//</em>
@@ -419,9 +419,9 @@
 <a class="jxr_linenumber" name="L411" href="#L411">411</a> 
 <a class="jxr_linenumber" name="L412" href="#L412">412</a>       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L413" href="#L413">413</a>           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>               <span class="jxr_string">"juxserver.p12"</span>), () -&gt; <span class="jxr_string">"serverpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>               <span class="jxr_string">"juxserver.p12"</span>), <span class="jxr_string">"serverpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L415" href="#L415">415</a>           .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>               <span class="jxr_string">"juxserver.truststore"</span>), () -&gt; <span class="jxr_string">"servertrustpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>               <span class="jxr_string">"juxserver.truststore"</span>), <span class="jxr_string">"servertrustpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L417" href="#L417">417</a>           .buildAndDestroyBuilder().getSocketFactory();
 <a class="jxr_linenumber" name="L418" href="#L418">418</a>     } <strong class="jxr_keyword">catch</strong> (KnownJavaBugIOException e) {
 <a class="jxr_linenumber" name="L419" href="#L419">419</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
@@ -466,7 +466,7 @@
 <a class="jxr_linenumber" name="L458" href="#L458">458</a>     <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L459" href="#L459">459</a>       serverSocketFactory = configuration.configure(SSLContextBuilder.forServer()) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L460" href="#L460">460</a>           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>               <span class="jxr_string">"juxclient.p12"</span>), () -&gt; <span class="jxr_string">"clientpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>               <span class="jxr_string">"juxclient.p12"</span>), <span class="jxr_string">"clientpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L462" href="#L462">462</a>           .withDefaultSSLParameters((p) -&gt; {
 <a class="jxr_linenumber" name="L463" href="#L463">463</a>             p.setNeedClientAuth(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L464" href="#L464">464</a>           }) <em class="jxr_comment">//</em>
@@ -504,9 +504,9 @@
 <a class="jxr_linenumber" name="L496" href="#L496">496</a> 
 <a class="jxr_linenumber" name="L497" href="#L497">497</a>       clientSocketFactory = configuration.configure(SSLContextBuilder.forClient()) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L498" href="#L498">498</a>           .withKeyStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L499" href="#L499">499</a>               <span class="jxr_string">"juxserver.p12"</span>), () -&gt; <span class="jxr_string">"serverpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>               <span class="jxr_string">"juxserver.p12"</span>), <span class="jxr_string">"serverpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L500" href="#L500">500</a>           .withTrustStore(TestResourceUtil.getRequiredResource(ValidatingX509TrustManagerTest.<strong class="jxr_keyword">class</strong>,
-<a class="jxr_linenumber" name="L501" href="#L501">501</a>               <span class="jxr_string">"juxserver.truststore"</span>), () -&gt; <span class="jxr_string">"servertrustpass"</span>.toCharArray()) <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>               <span class="jxr_string">"juxserver.truststore"</span>), <span class="jxr_string">"servertrustpass"</span>::toCharArray) <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L502" href="#L502">502</a>           .buildAndDestroyBuilder().getSocketFactory();
 <a class="jxr_linenumber" name="L503" href="#L503">503</a>     } <strong class="jxr_keyword">catch</strong> (KnownJavaBugIOException e) {
 <a class="jxr_linenumber" name="L504" href="#L504">504</a>       <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,

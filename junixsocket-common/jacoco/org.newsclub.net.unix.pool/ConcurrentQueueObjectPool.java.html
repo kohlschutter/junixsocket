@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConcurrentQueueObjectPool.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.pool</a> &gt; <span class="el_source">ConcurrentQueueObjectPool.java</span></div><h1>ConcurrentQueueObjectPool.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2024 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.pool;
+
+import java.util.Objects;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
+/**
+ * An {@link ObjectPool} implemented using {@link ConcurrentLinkedQueue}.
+ *
+ * @param &lt;O&gt; The object type.
+ * @author Christian Kohlschütter
+ */
+public final class ConcurrentQueueObjectPool&lt;O&gt; implements ObjectPool&lt;O&gt; {
+<span class="fc" id="L35">  private final AtomicInteger count = new AtomicInteger(0);</span>
+<span class="fc" id="L36">  private final Queue&lt;O&gt; queue = new ConcurrentLinkedQueue&lt;&gt;();</span>
+  private final ObjectSupplier&lt;O&gt; supplier;
+  private final int maxCapacity;
+  private final ObjectSanitizer&lt;O&gt; sanitizer;
+
+  /**
+   * Constructs a {@link ConcurrentQueueObjectPool} with the given capacity, supplier and sanitizer.
+   *
+   * @param supplier The supplier.
+   * @param sanitizer The sanitizer.
+   * @param maxCapacity The maximum capacity.
+   */
+  public ConcurrentQueueObjectPool(ObjectSupplier&lt;@NonNull O&gt; supplier,
+<span class="fc" id="L49">      ObjectSanitizer&lt;@NonNull O&gt; sanitizer, final int maxCapacity) {</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">    if (maxCapacity &lt; 0) {</span>
+<span class="nc" id="L51">      throw new IllegalArgumentException(&quot;maxCapacity&quot;);</span>
+    }
+<span class="fc" id="L53">    this.supplier = Objects.requireNonNull(supplier);</span>
+<span class="fc" id="L54">    this.sanitizer = Objects.requireNonNull(sanitizer);</span>
+<span class="fc" id="L55">    this.maxCapacity = maxCapacity;</span>
+<span class="fc" id="L56">  }</span>
+
+  @Override
+  public Lease&lt;O&gt; take() {
+<span class="fc" id="L60">    O obj = queue.poll();</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    if (obj == null) {</span>
+<span class="fc" id="L62">      obj = Objects.requireNonNull(supplier.get());</span>
+    } else {
+<span class="fc" id="L64">      count.decrementAndGet();</span>
+    }
+<span class="fc" id="L66">    return new LeaseImpl(obj);</span>
+  }
+
+  private final class LeaseImpl implements Lease&lt;O&gt; {
+    private @Nullable O obj;
+
+<span class="fc" id="L72">    public LeaseImpl(O obj) {</span>
+<span class="fc" id="L73">      this.obj = obj;</span>
+<span class="fc" id="L74">    }</span>
+
+    @SuppressWarnings(&quot;null&quot;)
+    @Override
+    public O get() {
+<span class="fc" id="L79">      return obj;</span>
+    }
+
+    @Override
+    public synchronized void close() {
+      @Nullable
+<span class="fc" id="L85">      O theObject = obj;</span>
+<span class="fc" id="L86">      obj = null;</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">      if (theObject != null) {</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        if (count.get() &gt;= maxCapacity) {</span>
+          // enough objects
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        } else if (!sanitizer.sanitize(theObject)) {</span>
+          // decided not to reuse
+        } else {
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">          if (queue.offer(theObject)) {</span>
+<span class="fc" id="L94">            count.incrementAndGet();</span>
+          }
+        }
+      }
+<span class="fc" id="L98">    }</span>
+
+    @Override
+    public void discard() {
+<span class="nc" id="L102">      obj = null;</span>
+<span class="nc" id="L103">    }</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

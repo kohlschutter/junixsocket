@@ -88,27 +88,29 @@
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testBindBadArguments() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>      <strong class="jxr_keyword">try</strong> (ServerSocket sock = newServerSocket()) {
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>        assertFalse(sock.isBound());
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>        assertThrows(IllegalArgumentException.<strong class="jxr_keyword">class</strong>, () -&gt; {
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>          sock.bind(<strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>        });
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>        assertFalse(sock.isBound());
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>      }
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>      <strong class="jxr_keyword">try</strong> (ServerSocket sock = newServerSocket()) {
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>        assertFalse(sock.isBound());
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>        assertThrows(IllegalArgumentException.<strong class="jxr_keyword">class</strong>, () -&gt; {
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>          sock.bind(<strong class="jxr_keyword">new</strong> InetSocketAddress(<span class="jxr_string">""</span>, 0));
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>        });
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>        assertFalse(sock.isBound());
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>      }
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>    }
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>    @Test
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUnboundServerSocket() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>      <strong class="jxr_keyword">try</strong> (ServerSocket socket = newServerSocket()) {
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>       assertTrue(socket.getReceiveBufferSize() &gt; 0);
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>     }
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>   }
-<a class="jxr_linenumber" name="L103" href="#L103">103</a> }
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>        <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          sock.bind(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>        } <strong class="jxr_keyword">catch</strong> (UnsupportedOperationException e) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          assertFalse(sock.isBound());
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>        }
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      }
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">try</strong> (ServerSocket sock = newServerSocket()) {
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>        assertFalse(sock.isBound());
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>        assertThrows(IllegalArgumentException.<strong class="jxr_keyword">class</strong>, () -&gt; {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          sock.bind(<strong class="jxr_keyword">new</strong> InetSocketAddress(<span class="jxr_string">""</span>, 0));
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>        });
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>        assertFalse(sock.isBound());
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>      }
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>    }
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>    @Test
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUnboundServerSocket() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>     <strong class="jxr_keyword">try</strong> (ServerSocket socket = newServerSocket()) {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>       assertTrue(socket.getReceiveBufferSize() &gt; 0);
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>     }
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>   }
+<a class="jxr_linenumber" name="L105" href="#L105">105</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2009&#x2013;2024 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>

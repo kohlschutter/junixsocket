@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.IOException;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.URI;
 import java.util.Set;
@@ -35,8 +37,8 @@ public abstract class AFSocketAddressConfig&lt;A extends AFSocketAddress&gt; {
   /**
    * Constructor.
    */
-<span class="fc" id="L38">  protected AFSocketAddressConfig() {</span>
-<span class="fc" id="L39">  }</span>
+<span class="fc" id="L40">  protected AFSocketAddressConfig() {</span>
+<span class="fc" id="L41">  }</span>
 
   /**
    * Tries to parse the given address-specific URI.
@@ -70,5 +72,15 @@ public abstract class AFSocketAddressConfig&lt;A extends AFSocketAddress&gt; {
    * @return The set of supported URI schemes.
    */
   protected abstract Set&lt;String&gt; uriSchemes();
+
+  /**
+   * Returns an appropriate SocketAddress to be used when calling bind with a null argument.
+   *
+   * @return The new socket address, or {@code null}.
+   * @throws IOException on error.
+   */
+  protected SocketAddress nullBindAddress() throws IOException {
+<span class="nc" id="L83">    return null;</span>
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

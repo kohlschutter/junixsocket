@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VirtualThreadPollerNaive.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">VirtualThreadPollerNaive.java</span></div><h1>VirtualThreadPollerNaive.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2024 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.Closeable;
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.SocketTimeoutException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.locks.LockSupport;
+
+import org.eclipse.jdt.annotation.Nullable;
+import org.newsclub.net.unix.AFSelector.PollFd;
+
+/**
+ * &quot;Naive&quot; implementation of {@link VirtualThreadPoller}, using
+ * {@link NativeUnixSocket#poll(PollFd, int)} on non-virtual threads.
+ *
+ * @author Christian Kohlschütter
+ */
+<span class="fc" id="L41">final class VirtualThreadPollerNaive implements VirtualThreadPoller {</span>
+  private static final int POLL_INTERVAL_MILLIS = 1_000; // should remain at 1 second to simplify
+                                                         // socket timeout handling
+
+<span class="fc" id="L45">  private static final Map&lt;FileDescriptor, PollJob&gt; POLL_JOBS = new ConcurrentHashMap&lt;&gt;();</span>
+
+<span class="fc" id="L47">  private static final InterruptedIOException POLL_INTERRUPTED_SENTINEL =</span>
+      new InterruptedIOException();
+
+  private static final class PollJob {
+<span class="fc" id="L51">    private final List&lt;Thread&gt; waitingThreads = new LinkedList&lt;&gt;();</span>
+    private final FileDescriptor fd;
+    private final int mode;
+    private final long now;
+    private final AFSupplier&lt;Integer&gt; timeout;
+
+<span class="fc" id="L57">    PollJob(FileDescriptor fd, int mode, long now, AFSupplier&lt;Integer&gt; timeout) {</span>
+<span class="fc" id="L58">      this.fd = fd;</span>
+<span class="fc" id="L59">      this.mode = mode;</span>
+<span class="fc" id="L60">      this.now = now;</span>
+<span class="fc" id="L61">      this.timeout = timeout;</span>
+<span class="fc" id="L62">    }</span>
+
+    @SuppressWarnings(&quot;PMD.CognitiveComplexity&quot;)
+    AFFuture&lt;@Nullable IOException&gt; trigger(Thread waitingThread) {
+<span class="fc" id="L66">      synchronized (fd) {</span>
+<span class="fc" id="L67">        waitingThreads.add(waitingThread);</span>
+<span class="fc" id="L68">      }</span>
+<span class="fc" id="L69">      return AFFuture.supplyAsync(() -&gt; {</span>
+        try {
+<span class="fc" id="L71">          Thread thread = Thread.currentThread();</span>
+<span class="fc" id="L72">          PollFd pfd = new PollFd(new FileDescriptor[] {fd}, new int[] {mode});</span>
+          do {
+<span class="pc bpc" id="L74" title="1 of 4 branches missed.">            if (thread.isInterrupted() || !fd.valid()) {</span>
+<span class="fc" id="L75">              return POLL_INTERRUPTED_SENTINEL;</span>
+            }
+            try {
+<span class="fc" id="L78">              NativeUnixSocket.poll(pfd, POLL_INTERVAL_MILLIS);</span>
+<span class="nc" id="L79">            } catch (IOException e) {</span>
+<span class="nc" id="L80">              return e;</span>
+<span class="fc" id="L81">            }</span>
+<span class="pc bpc" id="L82" title="1 of 4 branches missed.">            if (thread.isInterrupted() || !fd.valid()) {</span>
+<span class="fc" id="L83">              return POLL_INTERRUPTED_SENTINEL;</span>
+            }
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">            if (pfd.rops[0] != 0) {</span>
+<span class="fc" id="L86">              break;</span>
+            }
+
+<span class="nc" id="L89">            int timeoutMillis = timeout.get();</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">            if (timeoutMillis &gt; 0) {</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">              if ((System.currentTimeMillis() - now) &gt;= timeoutMillis) {</span>
+                // handle in calling thread
+<span class="nc" id="L93">                break;</span>
+              }
+            }
+<span class="nc" id="L96">          } while (true); // NOPMD.WhileLoopWithLiteralBoolean</span>
+        } finally {
+<span class="fc" id="L98">          Thread threadToWake = null;</span>
+          try {
+<span class="fc" id="L100">            synchronized (fd) {</span>
+<span class="fc" id="L101">              threadToWake = waitingThreads.remove(0);</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">              if (waitingThreads.isEmpty()) {</span>
+<span class="fc" id="L103">                POLL_JOBS.remove(fd);</span>
+              }
+<span class="fc" id="L105">            }</span>
+          } finally {
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">            if (threadToWake != null) {</span>
+<span class="fc" id="L108">              LockSupport.unpark(threadToWake);</span>
+            }
+          }
+        }
+
+<span class="fc" id="L113">        return null;</span>
+      })::get;
+    }
+  }
+
+  @Override
+  public void parkThreadUntilReady(FileDescriptor fd, int mode, long now,
+      AFSupplier&lt;Integer&gt; timeout, Closeable closeOnInterrupt) throws IOException {
+<span class="fc" id="L121">    Thread virtualThread = Thread.currentThread();</span>
+
+<span class="fc" id="L123">    PollJob job = Java7Util.computeIfAbsent(POLL_JOBS, fd, (k) -&gt; new PollJob(fd, mode, now,</span>
+        timeout));
+<span class="fc" id="L125">    AFFuture&lt;@Nullable IOException&gt; future = job.trigger(virtualThread);</span>
+
+<span class="fc" id="L127">    LockSupport.park();</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">    if (virtualThread.isInterrupted()) {</span>
+<span class="fc" id="L129">      throw SocketClosedByInterruptException.newInstanceAndClose(closeOnInterrupt);</span>
+    }
+
+    try {
+<span class="fc" id="L133">      IOException ex = future.get();</span>
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">      if (ex != null) {</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        if (ex == POLL_INTERRUPTED_SENTINEL) {</span>
+<span class="nc" id="L136">          throw SocketClosedByInterruptException.newInstanceAndClose(closeOnInterrupt);</span>
+        }
+<span class="nc" id="L138">        throw ex;</span>
+      }
+<span class="nc" id="L140">    } catch (InterruptedException | ExecutionException e) {</span>
+<span class="nc" id="L141">      throw SocketClosedByInterruptException.newInstanceAndClose(closeOnInterrupt); // NOPMD.PreserveStackTrace</span>
+<span class="fc" id="L142">    }</span>
+
+<span class="fc" id="L144">    int timeoutMillis = timeout.get();</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">    if (timeoutMillis &gt; 0) {</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">      if ((System.currentTimeMillis() - now) &gt;= timeoutMillis) {</span>
+<span class="nc" id="L147">        throw new SocketTimeoutException();</span>
+      }
+    }
+<span class="fc" id="L150">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -17,11 +17,15 @@
  */
 package org.newsclub.net.unix;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.net.ProtocolFamily;
 import java.net.ServerSocket;
 import java.net.SocketAddress;
 import java.net.SocketOption;
+import java.net.StandardProtocolFamily;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Objects;
@@ -50,74 +54,85 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
    */
   @SuppressWarnings(&quot;all&quot;) // null
   protected AFServerSocketChannel(AFServerSocket&lt;A&gt; socket, AFSelectorProvider&lt;A&gt; sp) {
-<span class="fc" id="L53">    super(sp);</span>
-<span class="fc" id="L54">    this.afSocket = Objects.requireNonNull(socket);</span>
-<span class="fc" id="L55">  }</span>
+<span class="fc" id="L57">    super(sp);</span>
+<span class="fc" id="L58">    this.afSocket = Objects.requireNonNull(socket);</span>
+<span class="fc" id="L59">  }</span>
 
   // CPD-OFF
 
   @SuppressWarnings(&quot;unchecked&quot;)
   @Override
   public &lt;T&gt; T getOption(SocketOption&lt;T&gt; name) throws IOException {
-<span class="nc bnc" id="L62" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="nc" id="L63">      return getAFCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L67">      return getAFCore().getOption((AFSocketOption&lt;T&gt;) name);</span>
     }
-<span class="nc" id="L65">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
-<span class="nc bnc" id="L66" title="All 2 branches missed.">    if (optionId == null) {</span>
-<span class="nc" id="L67">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
+<span class="nc" id="L69">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">    if (optionId == null) {</span>
+<span class="nc" id="L71">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
     } else {
-<span class="nc" id="L69">      return (T) afSocket.getAFImpl().getOption(optionId);</span>
+<span class="nc" id="L73">      return (T) afSocket.getAFImpl().getOption(optionId);</span>
     }
   }
 
   @Override
   public &lt;T&gt; AFServerSocketChannel&lt;A&gt; setOption(SocketOption&lt;T&gt; name, T value) throws IOException {
-<span class="nc bnc" id="L75" title="All 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
-<span class="nc" id="L76">      getAFCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
-<span class="nc" id="L77">      return this;</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">    if (name instanceof AFSocketOption&lt;?&gt;) {</span>
+<span class="nc" id="L80">      getAFCore().setOption((AFSocketOption&lt;T&gt;) name, value);</span>
+<span class="nc" id="L81">      return this;</span>
     }
-<span class="nc" id="L79">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
-<span class="nc bnc" id="L80" title="All 2 branches missed.">    if (optionId == null) {</span>
-<span class="nc" id="L81">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
+<span class="fc" id="L83">    Integer optionId = SocketOptionsMapper.resolve(name);</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">    if (optionId == null) {</span>
+<span class="nc" id="L85">      throw new UnsupportedOperationException(&quot;unsupported option&quot;);</span>
     } else {
-<span class="nc" id="L83">      afSocket.getAFImpl().setOption(optionId, value);</span>
+<span class="fc" id="L87">      afSocket.getAFImpl().setOption(optionId, value);</span>
     }
-<span class="nc" id="L85">    return this;</span>
+<span class="fc" id="L89">    return this;</span>
   }
 
   @Override
   public final Set&lt;SocketOption&lt;?&gt;&gt; supportedOptions() {
-<span class="nc" id="L90">    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;</span>
+<span class="nc" id="L94">    return SocketOptionsMapper.SUPPORTED_SOCKET_OPTIONS;</span>
   }
 
   // CPD-ON
 
   @Override
   public final AFServerSocketChannel&lt;A&gt; bind(SocketAddress local, int backlog) throws IOException {
-<span class="fc" id="L97">    afSocket.bind(local, backlog);</span>
-<span class="fc" id="L98">    return this;</span>
+<span class="fc" id="L101">    afSocket.bind(local, backlog);</span>
+<span class="fc" id="L102">    return this;</span>
   }
 
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   @Override
   public final AFServerSocket&lt;A&gt; socket() {
-<span class="fc" id="L104">    return afSocket;</span>
+<span class="fc" id="L108">    return afSocket;</span>
   }
 
   @Override
   public AFSocketChannel&lt;A&gt; accept() throws IOException {
-<span class="fc" id="L109">    AFSocket&lt;A&gt; socket = afSocket.accept1(false);</span>
-<span class="fc bfc" id="L110" title="All 2 branches covered.">    return socket == null ? null : socket.getChannel();</span>
+<span class="fc" id="L113">    boolean complete = false;</span>
+<span class="fc" id="L114">    Exception exception = null;</span>
+    try {
+<span class="fc" id="L116">      begin();</span>
+<span class="fc" id="L117">      AFSocket&lt;A&gt; socket = afSocket.accept1(false);</span>
+<span class="fc" id="L118">      complete = true;</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">      return socket == null ? null : socket.getChannel();</span>
+<span class="fc" id="L120">    } catch (IOException e) {</span>
+<span class="fc" id="L121">      throw InterruptibleChannelUtil.ioExceptionOrThrowRuntimeException( // NOPMD.PreserveStackTrace</span>
+<span class="fc" id="L122">          (exception = InterruptibleChannelUtil.handleException(this, e)));</span>
+    } finally {
+<span class="fc" id="L124">      InterruptibleChannelUtil.endInterruptable(this, this::end, complete, exception);</span>
+    }
   }
 
   @Override
   public final @Nullable A getLocalAddress() {
-<span class="fc" id="L115">    return getLocalSocketAddress();</span>
+<span class="fc" id="L130">    return getLocalSocketAddress();</span>
   }
 
   @Override
   public final @Nullable A getLocalSocketAddress() {
-<span class="fc" id="L120">    return afSocket.getLocalSocketAddress();</span>
+<span class="fc" id="L135">    return afSocket.getLocalSocketAddress();</span>
   }
 
   /**
@@ -129,26 +144,26 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
    * @return {@code true} iff still valid.
    */
   public final boolean isLocalSocketAddressValid() {
-<span class="fc" id="L132">    return afSocket.isLocalSocketAddressValid();</span>
+<span class="nc" id="L147">    return afSocket.isLocalSocketAddressValid();</span>
   }
 
   @Override
   protected final void implCloseSelectableChannel() throws IOException {
-<span class="fc" id="L137">    afSocket.close();</span>
-<span class="fc" id="L138">  }</span>
+<span class="fc" id="L152">    afSocket.close();</span>
+<span class="fc" id="L153">  }</span>
 
   @Override
   protected final void implConfigureBlocking(boolean block) throws IOException {
-<span class="fc" id="L142">    getAFCore().implConfigureBlocking(block);</span>
-<span class="fc" id="L143">  }</span>
+<span class="fc" id="L157">    getAFCore().implConfigureBlocking(block);</span>
+<span class="fc" id="L158">  }</span>
 
   final AFSocketCore getAFCore() {
-<span class="fc" id="L146">    return afSocket.getAFImpl().getCore();</span>
+<span class="fc" id="L161">    return afSocket.getAFImpl().getCore();</span>
   }
 
   @Override
   public final FileDescriptor getFileDescriptor() throws IOException {
-<span class="fc" id="L151">    return afSocket.getFileDescriptor();</span>
+<span class="fc" id="L166">    return afSocket.getFileDescriptor();</span>
   }
 
   /**
@@ -160,7 +175,7 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
    * @return {@code true} if an attempt is made to delete the socket file upon {@link #close()}.
    */
   public final boolean isDeleteOnClose() {
-<span class="nc" id="L163">    return socket().isDeleteOnClose();</span>
+<span class="nc" id="L178">    return socket().isDeleteOnClose();</span>
   }
 
   /**
@@ -173,12 +188,38 @@ public abstract class AFServerSocketChannel&lt;A extends AFSocketAddress&gt; ext
    * @param b Enabled if {@code true}.
    */
   public final void setDeleteOnClose(boolean b) {
-<span class="nc" id="L176">    socket().setDeleteOnClose(b);</span>
-<span class="nc" id="L177">  }</span>
+<span class="nc" id="L191">    socket().setDeleteOnClose(b);</span>
+<span class="nc" id="L192">  }</span>
 
   @Override
   public void setShutdownOnClose(boolean enabled) {
-<span class="nc" id="L181">    socket().setShutdownOnClose(enabled);</span>
-<span class="nc" id="L182">  }</span>
+<span class="nc" id="L196">    socket().setShutdownOnClose(enabled);</span>
+<span class="nc" id="L197">  }</span>
+
+  /**
+   * Opens a server-socket channel. The {@code family} parameter specifies the {@link ProtocolFamily
+   * protocol family} of the channel's socket.
+   * &lt;p&gt;
+   * If the {@link ProtocolFamily} is of an {@link AFProtocolFamily}, or {@code UNIX}, the
+   * corresponding junixsocket implementation is used. In all other cases, the call is delegated to
+   * {@link ServerSocketChannel#open()}.
+   *
+   * @param family The protocol family.
+   * @return The new {@link ServerSocketChannel}.
+   * @throws IOException on error.
+   */
+  public static ServerSocketChannel open(ProtocolFamily family) throws IOException {
+<span class="fc" id="L212">    requireNonNull(family);</span>
+
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">    if (family instanceof AFProtocolFamily) {</span>
+<span class="nc" id="L215">      return ((AFProtocolFamily) family).openServerSocketChannel();</span>
+<span class="pc bpc" id="L216" title="1 of 2 branches missed.">    } else if (&quot;UNIX&quot;.equals(family.name())) {</span>
+<span class="fc" id="L217">      return AFUNIXServerSocketChannel.open();</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">    } else if (family instanceof StandardProtocolFamily) {</span>
+<span class="nc" id="L219">      return ServerSocketChannel.open();</span>
+    } else {
+<span class="nc" id="L221">      throw new UnsupportedOperationException(&quot;Protocol family not supported&quot;);</span>
+    }
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

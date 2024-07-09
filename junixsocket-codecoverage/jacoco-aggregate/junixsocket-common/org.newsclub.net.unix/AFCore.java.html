@@ -21,8 +21,22 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousCloseException;
+import java.nio.channels.ClosedByInterruptException;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.SelectionKey;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.newsclub.net.unix.pool.MutableHolder;
+import org.newsclub.net.unix.pool.ObjectPool;
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * The core functionality of file descriptor based I/O.
@@ -30,203 +44,327 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Christian Kohlschütter
  */
 class AFCore extends CleanableState {
-<span class="fc" id="L33">  private static final ThreadLocal&lt;ByteBuffer&gt; TL_BUFFER = new ThreadLocal&lt;&gt;();</span>
+<span class="fc" id="L47">  private static final ObjectPool&lt;MutableHolder&lt;ByteBuffer&gt;&gt; TL_BUFFER = ObjectPool</span>
+<span class="fc" id="L48">      .newThreadLocalPool(() -&gt; {</span>
+<span class="fc" id="L49">        return new MutableHolder&lt;&gt;(null);</span>
+      }, (o) -&gt; {
+<span class="fc" id="L51">        ByteBuffer bb = o.get();</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (bb != null) {</span>
+<span class="fc" id="L53">          bb.clear();</span>
+        }
+<span class="fc" id="L55">        return true;</span>
+      });
 
   private static final String PROP_TL_BUFFER_MAX_CAPACITY =
       &quot;org.newsclub.net.unix.thread-local-buffer.max-capacity&quot;; // 0 means &quot;no limit&quot; (discouraged)
 
   private static final int TL_BUFFER_MIN_CAPACITY = 8192; // 8 kb per thread
-<span class="fc" id="L39">  private static final int TL_BUFFER_MAX_CAPACITY = Integer.parseInt(System.getProperty(</span>
-<span class="fc" id="L40">      PROP_TL_BUFFER_MAX_CAPACITY, Integer.toString(1 * 1024 * 1024))); // 1 MB per thread</span>
+<span class="fc" id="L62">  private static final int TL_BUFFER_MAX_CAPACITY = Integer.parseInt(System.getProperty(</span>
+<span class="fc" id="L63">      PROP_TL_BUFFER_MAX_CAPACITY, Integer.toString(1 * 1024 * 1024))); // 1 MB per thread</span>
 
-<span class="fc" id="L42">  private final AtomicBoolean closed = new AtomicBoolean(false);</span>
+<span class="fc" id="L65">  private final AtomicBoolean closed = new AtomicBoolean(false);</span>
 
   final FileDescriptor fd;
   final AncillaryDataSupport ancillaryDataSupport;
 
   private final boolean datagramMode;
 
-<span class="fc" id="L49">  private boolean blocking = true;</span>
-<span class="fc" id="L50">  private boolean cleanFd = true;</span>
+<span class="fc" id="L72">  private final AtomicInteger virtualBlockingLeases = new AtomicInteger(0);</span>
+<span class="fc" id="L73">  private volatile boolean blocking = true;</span>
+<span class="fc" id="L74">  private boolean cleanFd = true;</span>
 
   AFCore(Object observed, FileDescriptor fd, AncillaryDataSupport ancillaryDataSupport,
       boolean datagramMode) {
-<span class="fc" id="L54">    super(observed);</span>
-<span class="fc" id="L55">    this.datagramMode = datagramMode;</span>
-<span class="fc" id="L56">    this.ancillaryDataSupport = ancillaryDataSupport;</span>
+<span class="fc" id="L78">    super(observed);</span>
+<span class="fc" id="L79">    this.datagramMode = datagramMode;</span>
+<span class="fc" id="L80">    this.ancillaryDataSupport = ancillaryDataSupport;</span>
 
-<span class="fc bfc" id="L58" title="All 2 branches covered.">    this.fd = fd == null ? new FileDescriptor() : fd;</span>
-<span class="fc" id="L59">  }</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">    this.fd = fd == null ? new FileDescriptor() : fd;</span>
+<span class="fc" id="L83">  }</span>
 
   AFCore(Object observed, FileDescriptor fd) {
-<span class="fc" id="L62">    this(observed, fd, null, false);</span>
-<span class="fc" id="L63">  }</span>
+<span class="fc" id="L86">    this(observed, fd, null, false);</span>
+<span class="fc" id="L87">  }</span>
 
   @Override
   protected final void doClean() {
-<span class="pc bpc" id="L67" title="2 of 6 branches missed.">    if (fd != null &amp;&amp; fd.valid() &amp;&amp; cleanFd) {</span>
+<span class="pc bpc" id="L91" title="2 of 6 branches missed.">    if (fd != null &amp;&amp; fd.valid() &amp;&amp; cleanFd) {</span>
       try {
-<span class="fc" id="L69">        doClose();</span>
-<span class="nc" id="L70">      } catch (IOException e) {</span>
+<span class="fc" id="L93">        doClose();</span>
+<span class="nc" id="L94">      } catch (IOException e) {</span>
         // ignore
-<span class="fc" id="L72">      }</span>
+<span class="fc" id="L96">      }</span>
     }
-<span class="fc bfc" id="L74" title="All 2 branches covered.">    if (ancillaryDataSupport != null) {</span>
-<span class="fc" id="L75">      ancillaryDataSupport.close();</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">    if (ancillaryDataSupport != null) {</span>
+<span class="fc" id="L99">      ancillaryDataSupport.close();</span>
     }
-<span class="fc" id="L77">  }</span>
+<span class="fc" id="L101">  }</span>
 
   void disableCleanFd() {
-<span class="fc" id="L80">    this.cleanFd = false;</span>
-<span class="fc" id="L81">  }</span>
+<span class="fc" id="L104">    this.cleanFd = false;</span>
+<span class="fc" id="L105">  }</span>
 
   boolean isClosed() {
-<span class="fc" id="L84">    return closed.get();</span>
+<span class="fc" id="L108">    return closed.get();</span>
   }
 
   void doClose() throws IOException {
-<span class="pc bpc" id="L88" title="1 of 2 branches missed.">    if (closed.compareAndSet(false, true)) {</span>
-<span class="fc" id="L89">      NativeUnixSocket.close(fd);</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">    if (closed.compareAndSet(false, true)) {</span>
+<span class="fc" id="L113">      NativeUnixSocket.close(fd);</span>
     }
-<span class="fc" id="L91">  }</span>
+<span class="fc" id="L115">  }</span>
 
   FileDescriptor validFdOrException() throws SocketException {
-<span class="fc" id="L94">    FileDescriptor fdesc = validFd();</span>
-<span class="fc bfc" id="L95" title="All 2 branches covered.">    if (fdesc == null) {</span>
-<span class="fc" id="L96">      closed.set(true);</span>
-<span class="fc" id="L97">      throw new SocketClosedException(&quot;Not open&quot;);</span>
+<span class="fc" id="L118">    FileDescriptor fdesc = validFd();</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">    if (fdesc == null) {</span>
+<span class="fc" id="L120">      closed.set(true);</span>
+<span class="fc" id="L121">      throw new SocketClosedException(&quot;Not open&quot;);</span>
     }
-<span class="fc" id="L99">    return fdesc;</span>
+<span class="fc" id="L123">    return fdesc;</span>
   }
 
   synchronized FileDescriptor validFd() {
-<span class="fc bfc" id="L103" title="All 2 branches covered.">    if (isClosed()) {</span>
-<span class="fc" id="L104">      return null;</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">    if (isClosed()) {</span>
+<span class="fc" id="L128">      return null;</span>
     }
-<span class="fc" id="L106">    FileDescriptor descriptor = this.fd;</span>
-<span class="pc bpc" id="L107" title="1 of 2 branches missed.">    if (descriptor != null) {</span>
-<span class="fc bfc" id="L108" title="All 2 branches covered.">      if (descriptor.valid()) {</span>
-<span class="fc" id="L109">        return descriptor;</span>
+<span class="fc" id="L130">    FileDescriptor descriptor = this.fd;</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">    if (descriptor != null) {</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">      if (descriptor.valid()) {</span>
+<span class="fc" id="L133">        return descriptor;</span>
       }
     }
-<span class="fc" id="L112">    return null;</span>
+<span class="fc" id="L136">    return null;</span>
   }
 
-  int read(ByteBuffer dst) throws IOException {
-<span class="nc" id="L116">    return read(dst, null, 0);</span>
+  int read(ByteBuffer dst, AFSupplier&lt;Integer&gt; timeout) throws IOException {
+<span class="nc" id="L140">    return read(dst, timeout, null, 0);</span>
   }
 
-  int read(ByteBuffer dst, ByteBuffer socketAddressBuffer, int options) throws IOException {
-<span class="fc" id="L120">    int remaining = dst.remaining();</span>
-<span class="pc bpc" id="L121" title="1 of 2 branches missed.">    if (remaining == 0) {</span>
-<span class="nc" id="L122">      return 0;</span>
+  @SuppressWarnings({
+      &quot;PMD.NcssCount&quot;, &quot;PMD.CognitiveComplexity&quot;, &quot;PMD.CyclomaticComplexity&quot;,
+      &quot;PMD.NPathComplexity&quot;})
+  @SuppressFBWarnings(&quot;NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE&quot;)
+  int read(ByteBuffer dst, AFSupplier&lt;Integer&gt; timeout, ByteBuffer socketAddressBuffer, int options)
+      throws IOException {
+<span class="fc" id="L149">    int remaining = dst.remaining();</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">    if (remaining == 0) {</span>
+<span class="nc" id="L151">      return 0;</span>
     }
-<span class="fc" id="L124">    FileDescriptor fdesc = validFdOrException();</span>
+<span class="fc" id="L153">    FileDescriptor fdesc = validFdOrException();</span>
 
-<span class="fc" id="L126">    int dstPos = dst.position();</span>
+<span class="fc" id="L155">    int dstPos = dst.position();</span>
 
     ByteBuffer buf;
     int pos;
 
-<span class="fc" id="L131">    boolean direct = dst.isDirect();</span>
-<span class="fc bfc" id="L132" title="All 2 branches covered.">    if (direct) {</span>
-<span class="fc" id="L133">      buf = dst;</span>
-<span class="fc" id="L134">      pos = dstPos;</span>
+<span class="fc" id="L160">    boolean direct = dst.isDirect();</span>
+
+<span class="pc bpc" id="L162" title="1 of 4 branches missed.">    final boolean virtualBlocking = (ThreadUtil.isVirtualThread() &amp;&amp; isBlocking())</span>
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">        || isVirtualBlocking();</span>
+    final long now;
+<span class="fc bfc" id="L165" title="All 2 branches covered.">    if (virtualBlocking) {</span>
+<span class="fc" id="L166">      now = System.currentTimeMillis();</span>
     } else {
-<span class="fc" id="L136">      buf = getThreadLocalDirectByteBuffer(remaining);</span>
-<span class="fc" id="L137">      remaining = Math.min(remaining, buf.remaining());</span>
-<span class="fc" id="L138">      pos = buf.position();</span>
+<span class="fc" id="L168">      now = 0;</span>
+    }
+<span class="fc bfc" id="L170" title="All 4 branches covered.">    if (virtualBlocking || !blocking) {</span>
+<span class="fc" id="L171">      options |= NativeUnixSocket.OPT_NON_BLOCKING;</span>
     }
 
-<span class="fc bfc" id="L141" title="All 2 branches covered.">    if (!blocking) {</span>
-<span class="fc" id="L142">      options |= NativeUnixSocket.OPT_NON_BLOCKING;</span>
-    }
+<span class="fc" id="L174">    boolean park = false;</span>
 
-<span class="fc" id="L145">    int count = NativeUnixSocket.receive(fdesc, buf, pos, remaining, socketAddressBuffer, options,</span>
-        ancillaryDataSupport, 0);
-<span class="fc bfc" id="L147" title="All 2 branches covered.">    if (count == -1) {</span>
-<span class="fc" id="L148">      return count;</span>
-    }
-
-<span class="fc bfc" id="L151" title="All 2 branches covered.">    if (direct) {</span>
-<span class="pc bpc" id="L152" title="1 of 2 branches missed.">      if (count &lt; 0) {</span>
-<span class="nc" id="L153">        throw new IllegalStateException();</span>
-      }
-<span class="fc" id="L155">      dst.position(pos + count);</span>
-    } else {
-<span class="fc" id="L157">      int oldLimit = buf.limit();</span>
-<span class="fc bfc" id="L158" title="All 2 branches covered.">      if (count &lt; oldLimit) {</span>
-<span class="fc" id="L159">        buf.limit(count);</span>
-      }
-      try {
-<span class="fc bfc" id="L162" title="All 2 branches covered.">        while (buf.hasRemaining()) {</span>
-<span class="fc" id="L163">          dst.put(buf);</span>
+    int count;
+    virtualThreadLoop : do {
+<span class="fc bfc" id="L178" title="All 2 branches covered.">      if (virtualBlocking) {</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">        if (park) {</span>
+<span class="fc" id="L180">          VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_WRITE, now,</span>
+              timeout, this::close);
         }
-      } finally {
-<span class="fc bfc" id="L166" title="All 2 branches covered.">        if (count &lt; oldLimit) {</span>
-<span class="fc" id="L167">          buf.limit(oldLimit);</span>
+<span class="fc" id="L183">        configureVirtualBlocking(true);</span>
+      }
+
+<span class="fc bfc" id="L186" title="All 2 branches covered.">      try (Lease&lt;MutableHolder&lt;ByteBuffer&gt;&gt; lease = direct ? null : getPrivateDirectByteBuffer(</span>
+          remaining)) {
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        if (direct) {</span>
+<span class="fc" id="L189">          buf = dst;</span>
+<span class="fc" id="L190">          pos = dstPos;</span>
+        } else {
+<span class="fc" id="L192">          buf = Objects.requireNonNull(Objects.requireNonNull(lease).get().get());</span>
+<span class="fc" id="L193">          remaining = Math.min(remaining, buf.remaining());</span>
+<span class="fc" id="L194">          pos = buf.position();</span>
+<span class="fc" id="L195">          buf.limit(pos + remaining);</span>
+        }
+
+        try {
+<span class="fc" id="L199">          count = NativeUnixSocket.receive(fdesc, buf, pos, remaining, socketAddressBuffer, options,</span>
+              ancillaryDataSupport, 0);
+<span class="fc bfc" id="L201" title="All 4 branches covered.">          if (count == 0 &amp;&amp; virtualBlocking) {</span>
+            // try again
+<span class="fc" id="L203">            park = true;</span>
+            continue virtualThreadLoop;
+          }
+<span class="nc" id="L206">        } catch (AsynchronousCloseException e) {</span>
+<span class="nc" id="L207">          throw e;</span>
+<span class="nc" id="L208">        } catch (ClosedChannelException e) {</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">          if (isClosed()) {</span>
+<span class="nc" id="L210">            throw e;</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">          } else if (Thread.currentThread().isInterrupted()) {</span>
+<span class="nc" id="L212">            throw (ClosedByInterruptException) new ClosedByInterruptException().initCause(e);</span>
+          } else {
+<span class="nc" id="L214">            throw (AsynchronousCloseException) new AsynchronousCloseException().initCause(e);</span>
+          }
+<span class="nc" id="L216">        } catch (SocketTimeoutException e) {</span>
+<span class="nc bnc" id="L217" title="All 2 branches missed.">          if (virtualBlocking) {</span>
+            // try again
+<span class="nc" id="L219">            park = true;</span>
+            continue virtualThreadLoop;
+          } else {
+<span class="nc" id="L222">            throw e;</span>
+          }
+<span class="fc" id="L224">        }</span>
+
+<span class="pc bpc" id="L226" title="1 of 4 branches missed.">        if (count == -1 || buf == null) {</span>
+<span class="fc" id="L227">          return -1;</span>
+        }
+
+<span class="fc bfc" id="L230" title="All 2 branches covered.">        if (direct) {</span>
+<span class="pc bpc" id="L231" title="1 of 2 branches missed.">          if (count &lt; 0) {</span>
+<span class="nc" id="L232">            throw new IllegalStateException();</span>
+          }
+<span class="fc" id="L234">          dst.position(pos + count);</span>
+        } else {
+<span class="fc" id="L236">          int oldLimit = buf.limit();</span>
+<span class="fc bfc" id="L237" title="All 2 branches covered.">          if (count &lt; oldLimit) {</span>
+<span class="fc" id="L238">            buf.limit(count);</span>
+          }
+          try {
+<span class="fc bfc" id="L241" title="All 2 branches covered.">            while (buf.hasRemaining()) {</span>
+<span class="fc" id="L242">              dst.put(buf);</span>
+            }
+          } finally {
+<span class="fc bfc" id="L245" title="All 2 branches covered.">            if (count &lt; oldLimit) {</span>
+<span class="fc" id="L246">              buf.limit(oldLimit);</span>
+            }
+          }
+        }
+<span class="pc bpc" id="L250" title="3 of 6 branches missed.">      } finally {</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">        if (virtualBlocking) {</span>
+<span class="fc" id="L252">          configureVirtualBlocking(false);</span>
         }
       }
-    }
-<span class="fc" id="L171">    return count;</span>
+<span class="fc" id="L255">      break; // NOPMD.AvoidBranchingStatementAsLastInLoop virtualThreadLoop</span>
+    } while (true); // NOPMD.WhileLoopWithLiteralBoolean
+
+<span class="fc" id="L258">    return count;</span>
   }
 
-  int write(ByteBuffer src) throws IOException {
-<span class="fc" id="L175">    return write(src, null, 0);</span>
+  int write(ByteBuffer src, AFSupplier&lt;Integer&gt; timeout) throws IOException {
+<span class="fc" id="L262">    return write(src, timeout, null, 0);</span>
   }
 
-  int write(ByteBuffer src, SocketAddress target, int options) throws IOException {
-<span class="fc" id="L179">    int remaining = src.remaining();</span>
+  @SuppressWarnings({
+      &quot;PMD.NcssCount&quot;, &quot;PMD.CognitiveComplexity&quot;, &quot;PMD.CyclomaticComplexity&quot;,
+      &quot;PMD.NPathComplexity&quot;})
+  @SuppressFBWarnings(&quot;NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE&quot;)
+  int write(ByteBuffer src, AFSupplier&lt;Integer&gt; timeout, SocketAddress target, int options)
+      throws IOException {
+<span class="fc" id="L271">    int remaining = src.remaining();</span>
 
-<span class="pc bpc" id="L181" title="1 of 2 branches missed.">    if (remaining == 0) {</span>
-<span class="nc" id="L182">      return 0;</span>
+<span class="pc bpc" id="L273" title="1 of 2 branches missed.">    if (remaining == 0) {</span>
+<span class="nc" id="L274">      return 0;</span>
     }
 
-<span class="fc" id="L185">    FileDescriptor fdesc = validFdOrException();</span>
+<span class="fc" id="L277">    FileDescriptor fdesc = validFdOrException();</span>
     final ByteBuffer addressTo;
     final int addressToLen;
-<span class="fc bfc" id="L188" title="All 2 branches covered.">    if (target == null) {</span>
-<span class="fc" id="L189">      addressTo = null;</span>
-<span class="fc" id="L190">      addressToLen = 0;</span>
-    } else {
-<span class="fc" id="L192">      addressTo = AFSocketAddress.SOCKETADDRESS_BUFFER_TL.get();</span>
-<span class="fc" id="L193">      addressToLen = AFSocketAddress.unwrapAddressDirectBufferInternal(addressTo, target);</span>
-    }
-
-    // accept &quot;send buffer overflow&quot; as packet loss
-    // and don't retry (which may slow things down quite a bit)
-<span class="fc bfc" id="L198" title="All 2 branches covered.">    if (!blocking) {</span>
-<span class="fc" id="L199">      options |= NativeUnixSocket.OPT_NON_BLOCKING;</span>
-    }
-
-<span class="fc" id="L202">    int pos = src.position();</span>
-<span class="fc" id="L203">    boolean isDirect = src.isDirect();</span>
-    ByteBuffer buf;
-    int bufPos;
-<span class="fc bfc" id="L206" title="All 2 branches covered.">    if (isDirect) {</span>
-<span class="fc" id="L207">      buf = src;</span>
-<span class="fc" id="L208">      bufPos = pos;</span>
-    } else {
-<span class="fc" id="L210">      buf = getThreadLocalDirectByteBuffer(remaining);</span>
-<span class="fc" id="L211">      remaining = Math.min(remaining, buf.remaining());</span>
-
-<span class="fc" id="L213">      bufPos = buf.position();</span>
-
-<span class="pc bpc" id="L215" title="1 of 4 branches missed.">      while (src.hasRemaining() &amp;&amp; buf.hasRemaining()) {</span>
-<span class="fc" id="L216">        buf.put(src);</span>
+<span class="fc bfc" id="L280" title="All 2 branches covered.">    try (Lease&lt;ByteBuffer&gt; addressToLease = target == null ? null</span>
+<span class="fc" id="L281">        : AFSocketAddress.SOCKETADDRESS_BUFFER_TL.take()) {</span>
+<span class="fc bfc" id="L282" title="All 2 branches covered.">      if (addressToLease == null) {</span>
+<span class="fc" id="L283">        addressTo = null;</span>
+<span class="fc" id="L284">        addressToLen = 0;</span>
+      } else {
+<span class="fc" id="L286">        addressTo = addressToLease.get();</span>
+<span class="fc" id="L287">        addressToLen = AFSocketAddress.unwrapAddressDirectBufferInternal(addressTo, target);</span>
       }
 
-<span class="fc" id="L219">      buf.position(bufPos);</span>
-    }
-<span class="fc bfc" id="L221" title="All 2 branches covered.">    if (datagramMode) {</span>
-<span class="fc" id="L222">      options |= NativeUnixSocket.OPT_DGRAM_MODE;</span>
-    }
+      // accept &quot;send buffer overflow&quot; as packet loss
+      // and don't retry (which may slow things down quite a bit)
 
-<span class="fc" id="L225">    int written = NativeUnixSocket.send(fdesc, buf, bufPos, remaining, addressTo, addressToLen,</span>
-        options, ancillaryDataSupport);
-<span class="fc" id="L227">    src.position(pos + written);</span>
+<span class="fc" id="L293">      int pos = src.position();</span>
+<span class="fc" id="L294">      boolean isDirect = src.isDirect();</span>
+      ByteBuffer buf;
+      int bufPos;
 
-<span class="fc" id="L229">    return written;</span>
+<span class="pc bpc" id="L298" title="1 of 4 branches missed.">      final boolean virtualBlocking = (ThreadUtil.isVirtualThread() &amp;&amp; isBlocking())</span>
+<span class="pc bpc" id="L299" title="1 of 2 branches missed.">          || isVirtualBlocking();</span>
+      final long now;
+<span class="fc bfc" id="L301" title="All 2 branches covered.">      if (virtualBlocking) {</span>
+<span class="fc" id="L302">        now = System.currentTimeMillis();</span>
+      } else {
+<span class="fc" id="L304">        now = 0;</span>
+      }
+<span class="fc bfc" id="L306" title="All 4 branches covered.">      if (virtualBlocking || !blocking) {</span>
+<span class="fc" id="L307">        options |= NativeUnixSocket.OPT_NON_BLOCKING;</span>
+      }
+<span class="fc bfc" id="L309" title="All 2 branches covered.">      if (datagramMode) {</span>
+<span class="fc" id="L310">        options |= NativeUnixSocket.OPT_DGRAM_MODE;</span>
+      }
+
+      int written;
+
+<span class="fc" id="L315">      boolean park = false;</span>
+      virtualThreadLoop : do {
+<span class="fc bfc" id="L317" title="All 2 branches covered.">        if (virtualBlocking) {</span>
+<span class="pc bpc" id="L318" title="1 of 2 branches missed.">          if (park) {</span>
+<span class="nc" id="L319">            VirtualThreadPoller.INSTANCE.parkThreadUntilReady(fdesc, SelectionKey.OP_WRITE, now,</span>
+                timeout, this::close);
+          }
+<span class="fc" id="L322">          configureVirtualBlocking(true);</span>
+        }
+
+<span class="fc bfc" id="L325" title="All 2 branches covered.">        try (Lease&lt;MutableHolder&lt;ByteBuffer&gt;&gt; lease = isDirect ? null : getPrivateDirectByteBuffer(</span>
+            remaining)) {
+<span class="fc bfc" id="L327" title="All 2 branches covered.">          if (isDirect) {</span>
+<span class="fc" id="L328">            buf = src;</span>
+<span class="fc" id="L329">            bufPos = pos;</span>
+          } else {
+<span class="fc" id="L331">            buf = Objects.requireNonNull(Objects.requireNonNull(lease).get().get());</span>
+<span class="fc" id="L332">            remaining = Math.min(remaining, buf.remaining());</span>
+
+<span class="fc" id="L334">            bufPos = buf.position();</span>
+
+<span class="pc bpc" id="L336" title="1 of 4 branches missed.">            while (src.hasRemaining() &amp;&amp; buf.hasRemaining()) {</span>
+<span class="fc" id="L337">              buf.put(src);</span>
+            }
+
+<span class="fc" id="L340">            buf.position(bufPos);</span>
+          }
+
+<span class="fc" id="L343">          written = NativeUnixSocket.send(fdesc, buf, bufPos, remaining, addressTo, addressToLen,</span>
+              options, ancillaryDataSupport);
+<span class="pc bpc" id="L345" title="1 of 4 branches missed.">          if (written == 0 &amp;&amp; virtualBlocking) {</span>
+            // try again
+<span class="nc" id="L347">            park = true;</span>
+            continue virtualThreadLoop;
+          }
+<span class="nc bnc" id="L350" title="All 2 branches missed.">        } catch (SocketTimeoutException e) {</span>
+<span class="nc bnc" id="L351" title="All 2 branches missed.">          if (virtualBlocking) {</span>
+            // try again
+<span class="nc" id="L353">            park = true;</span>
+            continue virtualThreadLoop;
+          } else {
+<span class="nc" id="L356">            throw e;</span>
+          }
+        } finally {
+<span class="fc bfc" id="L359" title="All 2 branches covered.">          if (virtualBlocking) {</span>
+<span class="fc" id="L360">            configureVirtualBlocking(false);</span>
+          }
+        }
+<span class="fc" id="L363">        break; // NOPMD.AvoidBranchingStatementAsLastInLoop virtualThreadLoop</span>
+      } while (true); // NOPMD.WhileLoopWithLiteralBoolean
+<span class="fc" id="L365">      src.position(pos + written);</span>
+<span class="fc" id="L366">      return written;</span>
+    }
   }
 
   /**
@@ -239,32 +377,70 @@ class AFCore extends CleanableState {
    * @param capacity The desired capacity.
    * @return A byte buffer satisfying the requested capacity.
    */
-  ByteBuffer getThreadLocalDirectByteBuffer(int capacity) {
-<span class="pc bpc" id="L243" title="3 of 4 branches missed.">    if (capacity &gt; TL_BUFFER_MAX_CAPACITY &amp;&amp; TL_BUFFER_MAX_CAPACITY &gt; 0) {</span>
+  @SuppressWarnings(&quot;null&quot;)
+  Lease&lt;MutableHolder&lt;@NonNull ByteBuffer&gt;&gt; getPrivateDirectByteBuffer(int capacity) {
+<span class="pc bpc" id="L382" title="3 of 4 branches missed.">    if (capacity &gt; TL_BUFFER_MAX_CAPACITY &amp;&amp; TL_BUFFER_MAX_CAPACITY &gt; 0) {</span>
       // Capacity exceeds configurable maximum limit;
       // allocate but do not cache direct buffer.
       // This may incur a performance penalty at the cost of correctness when using such capacities.
-<span class="nc" id="L247">      return ByteBuffer.allocateDirect(capacity);</span>
+<span class="nc" id="L386">      return ObjectPool.unpooledLease(new MutableHolder&lt;&gt;(ByteBuffer.allocateDirect(capacity)));</span>
     }
-<span class="fc bfc" id="L249" title="All 2 branches covered.">    if (capacity &lt; TL_BUFFER_MIN_CAPACITY) {</span>
-<span class="fc" id="L250">      capacity = TL_BUFFER_MIN_CAPACITY;</span>
+<span class="fc bfc" id="L388" title="All 2 branches covered.">    if (capacity &lt; TL_BUFFER_MIN_CAPACITY) {</span>
+<span class="fc" id="L389">      capacity = TL_BUFFER_MIN_CAPACITY;</span>
     }
-<span class="fc" id="L252">    ByteBuffer buffer = TL_BUFFER.get();</span>
-<span class="fc bfc" id="L253" title="All 4 branches covered.">    if (buffer == null || capacity &gt; buffer.capacity()) {</span>
-<span class="fc" id="L254">      buffer = ByteBuffer.allocateDirect(capacity);</span>
-<span class="fc" id="L255">      TL_BUFFER.set(buffer);</span>
+<span class="fc" id="L391">    Lease&lt;MutableHolder&lt;ByteBuffer&gt;&gt; lease = TL_BUFFER.take();</span>
+<span class="fc" id="L392">    MutableHolder&lt;ByteBuffer&gt; holder = lease.get();</span>
+<span class="fc" id="L393">    ByteBuffer buffer = holder.get();</span>
+<span class="fc bfc" id="L394" title="All 4 branches covered.">    if (buffer == null || capacity &gt; buffer.capacity()) {</span>
+<span class="fc" id="L395">      buffer = ByteBuffer.allocateDirect(capacity);</span>
+<span class="fc" id="L396">      holder.set(buffer);</span>
     }
-<span class="fc" id="L257">    buffer.clear();</span>
-<span class="fc" id="L258">    return buffer;</span>
+<span class="fc" id="L398">    buffer.clear();</span>
+<span class="fc" id="L399">    return lease;</span>
   }
 
   void implConfigureBlocking(boolean block) throws IOException {
-<span class="fc" id="L262">    NativeUnixSocket.configureBlocking(validFdOrException(), block);</span>
-<span class="fc" id="L263">    this.blocking = block;</span>
-<span class="fc" id="L264">  }</span>
+<span class="fc" id="L403">    this.blocking = block;</span>
+<span class="pc bpc" id="L404" title="3 of 4 branches missed.">    if (block &amp;&amp; isVirtualBlocking()) {</span>
+      // do not actually change it here, defer it to when the virtual blocking counter goes to 0
+    } else {
+<span class="fc" id="L407">      NativeUnixSocket.configureBlocking(validFdOrException(), block);</span>
+    }
+<span class="fc" id="L409">  }</span>
+
+  /**
+   * Increments/decrements the &quot;virtual blocking&quot; counter (calls must be in pairs/balanced using
+   * try-finally blocks).
+   *
+   * @param enabled {@code true} if increment, {@code false} if decrement.
+   * @throws SocketException on error.
+   * @throws IOException on error, including count overflow/underflow.
+   */
+  void configureVirtualBlocking(boolean enabled) throws SocketException, IOException {
+    int v;
+<span class="fc bfc" id="L421" title="All 2 branches covered.">    if (enabled) {</span>
+<span class="pc bpc" id="L422" title="2 of 4 branches missed.">      if ((v = this.virtualBlockingLeases.incrementAndGet()) &gt;= 1 &amp;&amp; blocking) {</span>
+<span class="fc" id="L423">        NativeUnixSocket.configureBlocking(validFdOrException(), false);</span>
+      }
+<span class="pc bpc" id="L425" title="1 of 2 branches missed.">      if (v &gt;= Integer.MAX_VALUE) {</span>
+<span class="nc" id="L426">        throw new IOException(&quot;blocking overflow&quot;);</span>
+      }
+    } else {
+<span class="pc bpc" id="L429" title="1 of 4 branches missed.">      if ((v = this.virtualBlockingLeases.decrementAndGet()) == 0 &amp;&amp; blocking) {</span>
+<span class="fc" id="L430">        NativeUnixSocket.configureBlocking(validFdOrException(), true);</span>
+      }
+<span class="pc bpc" id="L432" title="1 of 2 branches missed.">      if (v &lt; 0) {</span>
+<span class="nc" id="L433">        throw new IOException(&quot;blocking underflow&quot;);</span>
+      }
+    }
+<span class="fc" id="L436">  }</span>
+
+  boolean isVirtualBlocking() {
+<span class="pc bpc" id="L439" title="1 of 2 branches missed.">    return virtualBlockingLeases.get() &gt; 0;</span>
+  }
 
   boolean isBlocking() {
-<span class="fc" id="L267">    return blocking;</span>
+<span class="fc" id="L443">    return blocking;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

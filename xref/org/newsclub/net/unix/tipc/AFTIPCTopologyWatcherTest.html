@@ -82,7 +82,7 @@
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          @Override
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> onEvent(<a name="AFTIPCTopologyEvent" href="../../../../../org/newsclub/net/unix/tipc/AFTIPCTopologyEvent.html#AFTIPCTopologyEvent">AFTIPCTopologyEvent</a> event) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>            assertTrue(isRunning());
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>            assertThrows(IllegalStateException.<strong class="jxr_keyword">class</strong>, () -&gt; runLoop());
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>            assertThrows(IllegalStateException.<strong class="jxr_keyword">class</strong>, <strong class="jxr_keyword">this</strong>::runLoop);
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>            <strong class="jxr_keyword">if</strong> (event.isPublished()) {
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>              <strong class="jxr_keyword">if</strong> (event.isPort()) {

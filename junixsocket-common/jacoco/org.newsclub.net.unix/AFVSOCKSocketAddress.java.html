@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.newsclub.net.unix.pool.ObjectPool.Lease;
+
 /**
  * An {@link AFSocketAddress} for VSOCK sockets.
  *
@@ -41,7 +43,7 @@ import java.util.regex.Pattern;
 public final class AFVSOCKSocketAddress extends AFSocketAddress {
   private static final long serialVersionUID = 1L; // do not change!
 
-<span class="fc" id="L44">  private static final Pattern PAT_VSOCK_URI_HOST_AND_PORT = Pattern.compile(</span>
+<span class="fc" id="L46">  private static final Pattern PAT_VSOCK_URI_HOST_AND_PORT = Pattern.compile(</span>
       &quot;^(?&lt;port&gt;any|[0-9a-fx\\-]+)(\\.(?&lt;cid&gt;any|hypervisor|local|host|[0-9a-fx\\-]+))?(?:\\:(?&lt;javaPort&gt;[0-9]+))?$&quot;);
 
   private static AFAddressFamily&lt;AFVSOCKSocketAddress&gt; afVsock;
@@ -71,14 +73,14 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    */
   public static final int VMADDR_PORT_ANY = -1;
 
-  private AFVSOCKSocketAddress(int port, final byte[] socketAddress, ByteBuffer nativeAddress)
-      throws SocketException {
-<span class="fc" id="L76">    super(port, socketAddress, nativeAddress, addressFamily());</span>
-<span class="fc" id="L77">  }</span>
+  private AFVSOCKSocketAddress(int port, final byte[] socketAddress,
+      Lease&lt;ByteBuffer&gt; nativeAddress) throws SocketException {
+<span class="fc" id="L78">    super(port, socketAddress, nativeAddress, addressFamily());</span>
+<span class="fc" id="L79">  }</span>
 
   private static AFVSOCKSocketAddress newAFSocketAddress(int port, final byte[] socketAddress,
-      ByteBuffer nativeAddress) throws SocketException {
-<span class="nc" id="L81">    return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),</span>
+      Lease&lt;ByteBuffer&gt; nativeAddress) throws SocketException {
+<span class="nc" id="L83">    return newDeserializedAFSocketAddress(port, socketAddress, nativeAddress, addressFamily(),</span>
         AFVSOCKSocketAddress::new);
   }
 
@@ -92,7 +94,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFVSOCKSocketAddress ofPortAndCID(int port, int cid) throws SocketException {
-<span class="fc" id="L95">    return ofPortAndCID(-1, port, cid);</span>
+<span class="fc" id="L97">    return ofPortAndCID(-1, port, cid);</span>
   }
 
   /**
@@ -104,7 +106,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFVSOCKSocketAddress ofHypervisorPort(int port) throws SocketException {
-<span class="fc" id="L107">    return ofPortAndCID(port, VMADDR_CID_HYPERVISOR);</span>
+<span class="fc" id="L109">    return ofPortAndCID(port, VMADDR_CID_HYPERVISOR);</span>
   }
 
   /**
@@ -115,7 +117,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFVSOCKSocketAddress ofAnyHypervisorPort() throws SocketException {
-<span class="fc" id="L118">    return ofPortAndCID(VMADDR_PORT_ANY, VMADDR_CID_HYPERVISOR);</span>
+<span class="fc" id="L120">    return ofPortAndCID(VMADDR_PORT_ANY, VMADDR_CID_HYPERVISOR);</span>
   }
 
   /**
@@ -127,7 +129,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFVSOCKSocketAddress ofLocalPort(int port) throws SocketException {
-<span class="fc" id="L130">    return ofPortAndCID(port, VMADDR_CID_LOCAL);</span>
+<span class="fc" id="L132">    return ofPortAndCID(port, VMADDR_CID_LOCAL);</span>
   }
 
   /**
@@ -138,7 +140,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFVSOCKSocketAddress ofAnyLocalPort() throws SocketException {
-<span class="fc" id="L141">    return ofPortAndCID(VMADDR_PORT_ANY, VMADDR_CID_LOCAL);</span>
+<span class="fc" id="L143">    return ofPortAndCID(VMADDR_PORT_ANY, VMADDR_CID_LOCAL);</span>
   }
 
   /**
@@ -150,7 +152,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFVSOCKSocketAddress ofHostPort(int port) throws SocketException {
-<span class="fc" id="L153">    return ofPortAndCID(port, VMADDR_CID_HOST);</span>
+<span class="fc" id="L155">    return ofPortAndCID(port, VMADDR_CID_HOST);</span>
   }
 
   /**
@@ -161,7 +163,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFVSOCKSocketAddress ofAnyHostPort() throws SocketException {
-<span class="fc" id="L164">    return ofPortAndCID(VMADDR_PORT_ANY, VMADDR_CID_HOST);</span>
+<span class="fc" id="L166">    return ofPortAndCID(VMADDR_PORT_ANY, VMADDR_CID_HOST);</span>
   }
 
   /**
@@ -172,7 +174,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFVSOCKSocketAddress ofAnyPort() throws SocketException {
-<span class="fc" id="L175">    return ofPortAndCID(VMADDR_PORT_ANY, VMADDR_CID_ANY);</span>
+<span class="fc" id="L177">    return ofPortAndCID(VMADDR_PORT_ANY, VMADDR_CID_ANY);</span>
   }
 
   /**
@@ -184,7 +186,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   public static AFVSOCKSocketAddress ofPortWithAnyCID(int port) throws SocketException {
-<span class="nc" id="L187">    return ofPortAndCID(port, VMADDR_CID_ANY);</span>
+<span class="nc" id="L189">    return ofPortAndCID(port, VMADDR_CID_ANY);</span>
   }
 
   /**
@@ -198,7 +200,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    */
   public static AFVSOCKSocketAddress ofPortAndCID(int javaPort, int vsockPort, int cid)
       throws SocketException {
-<span class="fc" id="L201">    return resolveAddress(toBytes(vsockPort, cid), javaPort, addressFamily());</span>
+<span class="fc" id="L203">    return resolveAddress(toBytes(vsockPort, cid), javaPort, addressFamily());</span>
   }
 
   /**
@@ -212,7 +214,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFVSOCKSocketAddress unwrap(InetAddress address, int port) throws SocketException {
-<span class="nc" id="L215">    return AFSocketAddress.unwrap(address, port, addressFamily());</span>
+<span class="nc" id="L217">    return AFSocketAddress.unwrap(address, port, addressFamily());</span>
   }
 
   /**
@@ -227,7 +229,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFVSOCKSocketAddress unwrap(String hostname, int port) throws SocketException {
-<span class="nc" id="L230">    return AFSocketAddress.unwrap(hostname, port, addressFamily());</span>
+<span class="nc" id="L232">    return AFSocketAddress.unwrap(hostname, port, addressFamily());</span>
   }
 
   /**
@@ -239,11 +241,11 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    *           specified.
    */
   public static AFVSOCKSocketAddress unwrap(SocketAddress address) throws SocketException {
-<span class="nc" id="L242">    Objects.requireNonNull(address);</span>
-<span class="nc bnc" id="L243" title="All 2 branches missed.">    if (!isSupportedAddress(address)) {</span>
-<span class="nc" id="L244">      throw new SocketException(&quot;Unsupported address&quot;);</span>
+<span class="nc" id="L244">    Objects.requireNonNull(address);</span>
+<span class="nc bnc" id="L245" title="All 2 branches missed.">    if (!isSupportedAddress(address)) {</span>
+<span class="nc" id="L246">      throw new SocketException(&quot;Unsupported address&quot;);</span>
     }
-<span class="nc" id="L246">    return (AFVSOCKSocketAddress) address;</span>
+<span class="nc" id="L248">    return (AFVSOCKSocketAddress) address;</span>
   }
 
   /**
@@ -253,9 +255,9 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @see #getPort()
    */
   public int getVSOCKPort() {
-<span class="fc" id="L256">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="fc" id="L257">    int a = bb.getInt(1 * 4);</span>
-<span class="fc" id="L258">    return a;</span>
+<span class="fc" id="L258">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="fc" id="L259">    int a = bb.getInt(1 * 4);</span>
+<span class="fc" id="L260">    return a;</span>
   }
 
   /**
@@ -264,9 +266,9 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @return The VSOCK CID identifier.
    */
   public int getVSOCKCID() {
-<span class="fc" id="L267">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="fc" id="L268">    int a = bb.getInt(2 * 4);</span>
-<span class="fc" id="L269">    return a;</span>
+<span class="fc" id="L269">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="fc" id="L270">    int a = bb.getInt(2 * 4);</span>
+<span class="fc" id="L271">    return a;</span>
   }
 
   /**
@@ -275,46 +277,46 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @return The &quot;reserved1&quot; identifier, which should be 0.
    */
   public int getVSOCKReserved1() {
-<span class="nc" id="L278">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="nc" id="L279">    int a = bb.getInt(0 * 4);</span>
-<span class="nc" id="L280">    return a;</span>
+<span class="nc" id="L280">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="nc" id="L281">    int a = bb.getInt(0 * 4);</span>
+<span class="nc" id="L282">    return a;</span>
   }
 
   @Override
   public String toString() {
-<span class="nc" id="L285">    int port = getPort();</span>
+<span class="nc" id="L287">    int port = getPort();</span>
 
-<span class="nc" id="L287">    byte[] bytes = getBytes();</span>
-<span class="nc bnc" id="L288" title="All 2 branches missed.">    if (bytes.length != (3 * 4)) {</span>
-<span class="nc bnc" id="L289" title="All 2 branches missed.">      return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port) + &quot;;UNKNOWN&quot; + &quot;]&quot;;</span>
+<span class="nc" id="L289">    byte[] bytes = getBytes();</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">    if (bytes.length != (3 * 4)) {</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">      return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port) + &quot;;UNKNOWN&quot; + &quot;]&quot;;</span>
     }
 
-<span class="nc" id="L292">    ByteBuffer bb = ByteBuffer.wrap(bytes);</span>
-<span class="nc" id="L293">    int reserved1 = bb.getInt();</span>
-<span class="nc" id="L294">    int vsockPort = bb.getInt();</span>
-<span class="nc" id="L295">    int cid = bb.getInt();</span>
+<span class="nc" id="L294">    ByteBuffer bb = ByteBuffer.wrap(bytes);</span>
+<span class="nc" id="L295">    int reserved1 = bb.getInt();</span>
+<span class="nc" id="L296">    int vsockPort = bb.getInt();</span>
+<span class="nc" id="L297">    int cid = bb.getInt();</span>
 
     String vsockPortString;
-<span class="nc bnc" id="L298" title="All 2 branches missed.">    if (vsockPort &gt;= -1) {</span>
-<span class="nc" id="L299">      vsockPortString = Integer.toString(vsockPort);</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">    if (vsockPort &gt;= -1) {</span>
+<span class="nc" id="L301">      vsockPortString = Integer.toString(vsockPort);</span>
     } else {
-<span class="nc" id="L301">      vsockPortString = String.format(Locale.ENGLISH, &quot;0x%08x&quot;, vsockPort);</span>
+<span class="nc" id="L303">      vsockPortString = String.format(Locale.ENGLISH, &quot;0x%08x&quot;, vsockPort);</span>
     }
 
-<span class="nc bnc" id="L304" title="All 2 branches missed.">    String typeString = (reserved1 == 0 ? &quot;&quot; : &quot;reserved1=&quot; + reserved1 + &quot;;&quot;) + &quot;vsockPort=&quot;</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">    String typeString = (reserved1 == 0 ? &quot;&quot; : &quot;reserved1=&quot; + reserved1 + &quot;;&quot;) + &quot;vsockPort=&quot;</span>
         + vsockPortString + &quot;;cid=&quot; + cid;
 
-<span class="nc bnc" id="L307" title="All 2 branches missed.">    return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port + &quot;;&quot;) + typeString + &quot;]&quot;;</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">    return getClass().getName() + &quot;[&quot; + (port == 0 ? &quot;&quot; : &quot;port=&quot; + port + &quot;;&quot;) + typeString + &quot;]&quot;;</span>
   }
 
   @Override
   public boolean hasFilename() {
-<span class="nc" id="L312">    return false;</span>
+<span class="nc" id="L314">    return false;</span>
   }
 
   @Override
   public File getFile() throws FileNotFoundException {
-<span class="nc" id="L317">    throw new FileNotFoundException(&quot;no file&quot;);</span>
+<span class="nc" id="L319">    throw new FileNotFoundException(&quot;no file&quot;);</span>
   }
 
   /**
@@ -326,7 +328,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @see #unwrap(InetAddress, int)
    */
   public static boolean isSupportedAddress(InetAddress addr) {
-<span class="nc" id="L329">    return AFSocketAddress.isSupportedAddress(addr, addressFamily());</span>
+<span class="nc" id="L331">    return AFSocketAddress.isSupportedAddress(addr, addressFamily());</span>
   }
 
   /**
@@ -337,16 +339,16 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @see #unwrap(InetAddress, int)
    */
   public static boolean isSupportedAddress(SocketAddress addr) {
-<span class="nc" id="L340">    return (addr instanceof AFVSOCKSocketAddress);</span>
+<span class="nc" id="L342">    return (addr instanceof AFVSOCKSocketAddress);</span>
   }
 
   @SuppressWarnings(&quot;cast&quot;)
   private static byte[] toBytes(int port, int cid) {
-<span class="fc" id="L345">    ByteBuffer bb = ByteBuffer.allocate(3 * 4);</span>
-<span class="fc" id="L346">    bb.putInt(0); // svm_reserved1</span>
-<span class="fc" id="L347">    bb.putInt(port); // svm_port</span>
-<span class="fc" id="L348">    bb.putInt(cid); // svm_cid</span>
-<span class="fc" id="L349">    return (byte[]) bb.flip().array();</span>
+<span class="fc" id="L347">    ByteBuffer bb = ByteBuffer.allocate(3 * 4);</span>
+<span class="fc" id="L348">    bb.putInt(0); // svm_reserved1</span>
+<span class="fc" id="L349">    bb.putInt(port); // svm_port</span>
+<span class="fc" id="L350">    bb.putInt(cid); // svm_cid</span>
+<span class="fc" id="L351">    return (byte[]) bb.flip().array();</span>
   }
 
   /**
@@ -356,41 +358,41 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    */
   @SuppressWarnings(&quot;null&quot;)
   public static synchronized AFAddressFamily&lt;AFVSOCKSocketAddress&gt; addressFamily() {
-<span class="fc bfc" id="L359" title="All 2 branches covered.">    if (afVsock == null) {</span>
-<span class="fc" id="L360">      afVsock = AFAddressFamily.registerAddressFamily(&quot;vsock&quot;, //</span>
-<span class="fc" id="L361">          AFVSOCKSocketAddress.class, new AFSocketAddressConfig&lt;AFVSOCKSocketAddress&gt;() {</span>
+<span class="fc bfc" id="L361" title="All 2 branches covered.">    if (afVsock == null) {</span>
+<span class="fc" id="L362">      afVsock = AFAddressFamily.registerAddressFamily(&quot;vsock&quot;, //</span>
+<span class="fc" id="L363">          AFVSOCKSocketAddress.class, new AFSocketAddressConfig&lt;AFVSOCKSocketAddress&gt;() {</span>
 
-<span class="fc" id="L363">            private final AFSocketAddressConstructor&lt;AFVSOCKSocketAddress&gt; addrConstr =</span>
-<span class="pc bpc" id="L364" title="1 of 2 branches missed.">                isUseDeserializationForInit() ? AFVSOCKSocketAddress::newAFSocketAddress</span>
-<span class="fc" id="L365">                    : AFVSOCKSocketAddress::new;</span>
+<span class="fc" id="L365">            private final AFSocketAddressConstructor&lt;AFVSOCKSocketAddress&gt; addrConstr =</span>
+<span class="pc bpc" id="L366" title="1 of 2 branches missed.">                isUseDeserializationForInit() ? AFVSOCKSocketAddress::newAFSocketAddress</span>
+<span class="fc" id="L367">                    : AFVSOCKSocketAddress::new;</span>
 
             @Override
             protected AFVSOCKSocketAddress parseURI(URI u, int port) throws SocketException {
-<span class="nc" id="L369">              return AFVSOCKSocketAddress.of(u, port);</span>
+<span class="nc" id="L371">              return AFVSOCKSocketAddress.of(u, port);</span>
             }
 
             @Override
             protected AFSocketAddressConstructor&lt;AFVSOCKSocketAddress&gt; addressConstructor() {
-<span class="fc" id="L374">              return addrConstr;</span>
+<span class="fc" id="L376">              return addrConstr;</span>
             }
 
             @Override
             protected String selectorProviderClassname() {
-<span class="fc" id="L379">              return &quot;org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider&quot;;</span>
+<span class="fc" id="L381">              return &quot;org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider&quot;;</span>
             }
 
             @Override
             protected Set&lt;String&gt; uriSchemes() {
-<span class="fc" id="L384">              return new HashSet&lt;&gt;(Arrays.asList(&quot;vsock&quot;, &quot;http+vsock&quot;, &quot;https+vsock&quot;));</span>
+<span class="fc" id="L386">              return new HashSet&lt;&gt;(Arrays.asList(&quot;vsock&quot;, &quot;http+vsock&quot;, &quot;https+vsock&quot;));</span>
             }
           });
       try {
-<span class="nc" id="L388">        Class.forName(&quot;org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider&quot;);</span>
-<span class="fc" id="L389">      } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L390">        Class.forName(&quot;org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider&quot;);</span>
+<span class="fc" id="L391">      } catch (ClassNotFoundException e) {</span>
         // ignore
-<span class="nc" id="L391">      }</span>
+<span class="nc" id="L393">      }</span>
     }
-<span class="fc" id="L393">    return afVsock;</span>
+<span class="fc" id="L395">    return afVsock;</span>
   }
 
   /**
@@ -402,7 +404,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    */
   @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   public static AFVSOCKSocketAddress of(URI uri) throws SocketException {
-<span class="fc" id="L405">    return of(uri, -1);</span>
+<span class="fc" id="L407">    return of(uri, -1);</span>
   }
 
   /**
@@ -417,145 +419,145 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
       &quot;PMD.CognitiveComplexity&quot;, &quot;PMD.CyclomaticComplexity&quot;, &quot;PMD.ExcessiveMethodLength&quot;,
       &quot;PMD.NcssCount&quot;, &quot;PMD.NPathComplexity&quot;, &quot;PMD.ShortMethodName&quot;})
   public static AFVSOCKSocketAddress of(URI uri, int overridePort) throws SocketException {
-<span class="pc bpc" id="L420" title="1 of 2 branches missed.">    switch (uri.getScheme()) {</span>
+<span class="pc bpc" id="L422" title="1 of 2 branches missed.">    switch (uri.getScheme()) {</span>
       case &quot;vsock&quot;:
       case &quot;http+vsock&quot;:
       case &quot;https+vsock&quot;:
-<span class="fc" id="L424">        break;</span>
+<span class="fc" id="L426">        break;</span>
       default:
-<span class="nc" id="L426">        throw new SocketException(&quot;Unsupported URI scheme: &quot; + uri.getScheme());</span>
+<span class="nc" id="L428">        throw new SocketException(&quot;Unsupported URI scheme: &quot; + uri.getScheme());</span>
     }
 
-<span class="fc" id="L429">    String host = uri.getHost();</span>
-<span class="fc bfc" id="L430" title="All 2 branches covered.">    if (host == null) {</span>
-<span class="fc" id="L431">      host = uri.getAuthority();</span>
-<span class="pc bpc" id="L432" title="1 of 2 branches missed.">      if (host != null) {</span>
-<span class="fc" id="L433">        int at = host.indexOf('@');</span>
-<span class="pc bpc" id="L434" title="1 of 2 branches missed.">        if (at &gt;= 0) {</span>
-<span class="nc" id="L435">          host = host.substring(at + 1);</span>
+<span class="fc" id="L431">    String host = uri.getHost();</span>
+<span class="fc bfc" id="L432" title="All 2 branches covered.">    if (host == null) {</span>
+<span class="fc" id="L433">      host = uri.getAuthority();</span>
+<span class="pc bpc" id="L434" title="1 of 2 branches missed.">      if (host != null) {</span>
+<span class="fc" id="L435">        int at = host.indexOf('@');</span>
+<span class="pc bpc" id="L436" title="1 of 2 branches missed.">        if (at &gt;= 0) {</span>
+<span class="nc" id="L437">          host = host.substring(at + 1);</span>
         }
       }
     }
-<span class="pc bpc" id="L439" title="1 of 2 branches missed.">    if (host == null) {</span>
-<span class="nc" id="L440">      throw new SocketException(&quot;Cannot get hostname from URI: &quot; + uri);</span>
+<span class="pc bpc" id="L441" title="1 of 2 branches missed.">    if (host == null) {</span>
+<span class="nc" id="L442">      throw new SocketException(&quot;Cannot get hostname from URI: &quot; + uri);</span>
     }
 
     try {
-<span class="fc" id="L444">      Matcher m = PAT_VSOCK_URI_HOST_AND_PORT.matcher(host);</span>
-<span class="fc bfc" id="L445" title="All 2 branches covered.">      if (!m.matches()) {</span>
-<span class="fc" id="L446">        throw new SocketException(&quot;Invalid VSOCK URI: &quot; + uri);</span>
+<span class="fc" id="L446">      Matcher m = PAT_VSOCK_URI_HOST_AND_PORT.matcher(host);</span>
+<span class="fc bfc" id="L447" title="All 2 branches covered.">      if (!m.matches()) {</span>
+<span class="fc" id="L448">        throw new SocketException(&quot;Invalid VSOCK URI: &quot; + uri);</span>
       }
 
-<span class="fc" id="L449">      String cidStr = m.group(&quot;cid&quot;);</span>
-<span class="fc" id="L450">      String portStr = m.group(&quot;port&quot;);</span>
-<span class="fc" id="L451">      String javaPortStr = m.group(&quot;javaPort&quot;);</span>
+<span class="fc" id="L451">      String cidStr = m.group(&quot;cid&quot;);</span>
+<span class="fc" id="L452">      String portStr = m.group(&quot;port&quot;);</span>
+<span class="fc" id="L453">      String javaPortStr = m.group(&quot;javaPort&quot;);</span>
 
       int cid;
-<span class="fc bfc" id="L454" title="All 7 branches covered.">      switch (cidStr == null ? &quot;&quot; : cidStr) {</span>
+<span class="fc bfc" id="L456" title="All 7 branches covered.">      switch (cidStr == null ? &quot;&quot; : cidStr) {</span>
         case &quot;&quot;:
         case &quot;any&quot;:
-<span class="fc" id="L457">          cid = VMADDR_CID_ANY;</span>
-<span class="fc" id="L458">          break;</span>
+<span class="fc" id="L459">          cid = VMADDR_CID_ANY;</span>
+<span class="fc" id="L460">          break;</span>
         case &quot;hypervisor&quot;:
-<span class="fc" id="L460">          cid = VMADDR_CID_HYPERVISOR;</span>
-<span class="fc" id="L461">          break;</span>
+<span class="fc" id="L462">          cid = VMADDR_CID_HYPERVISOR;</span>
+<span class="fc" id="L463">          break;</span>
         case &quot;local&quot;:
-<span class="fc" id="L463">          cid = VMADDR_CID_LOCAL;</span>
-<span class="fc" id="L464">          break;</span>
+<span class="fc" id="L465">          cid = VMADDR_CID_LOCAL;</span>
+<span class="fc" id="L466">          break;</span>
         case &quot;host&quot;:
-<span class="fc" id="L466">          cid = VMADDR_CID_HOST;</span>
-<span class="fc" id="L467">          break;</span>
+<span class="fc" id="L468">          cid = VMADDR_CID_HOST;</span>
+<span class="fc" id="L469">          break;</span>
         default:
-<span class="fc" id="L469">          cid = parseInt(cidStr);</span>
+<span class="fc" id="L471">          cid = parseInt(cidStr);</span>
           break;
       }
 
       int port;
-<span class="pc bpc" id="L474" title="1 of 4 branches missed.">      switch (portStr == null ? &quot;&quot; : portStr) {</span>
+<span class="pc bpc" id="L476" title="1 of 4 branches missed.">      switch (portStr == null ? &quot;&quot; : portStr) {</span>
         case &quot;any&quot;:
         case &quot;&quot;:
-<span class="fc" id="L477">          port = VMADDR_PORT_ANY;</span>
-<span class="fc" id="L478">          break;</span>
+<span class="fc" id="L479">          port = VMADDR_PORT_ANY;</span>
+<span class="fc" id="L480">          break;</span>
         default:
-<span class="fc" id="L480">          port = parseInt(portStr);</span>
+<span class="fc" id="L482">          port = parseInt(portStr);</span>
           break;
       }
 
-<span class="pc bpc" id="L484" title="1 of 2 branches missed.">      int javaPort = overridePort != -1 ? overridePort : uri.getPort();</span>
-<span class="pc bpc" id="L485" title="3 of 4 branches missed.">      if (javaPortStr != null &amp;&amp; !javaPortStr.isEmpty()) {</span>
-<span class="nc" id="L486">        javaPort = parseInt(javaPortStr);</span>
+<span class="pc bpc" id="L486" title="1 of 2 branches missed.">      int javaPort = overridePort != -1 ? overridePort : uri.getPort();</span>
+<span class="pc bpc" id="L487" title="3 of 4 branches missed.">      if (javaPortStr != null &amp;&amp; !javaPortStr.isEmpty()) {</span>
+<span class="nc" id="L488">        javaPort = parseInt(javaPortStr);</span>
       }
 
-<span class="fc" id="L489">      return ofPortAndCID(javaPort, port, cid);</span>
-<span class="nc" id="L490">    } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L491">      throw (SocketException) new SocketException(&quot;Invalid VSOCK URI: &quot; + uri).initCause(e);</span>
+<span class="fc" id="L491">      return ofPortAndCID(javaPort, port, cid);</span>
+<span class="nc" id="L492">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L493">      throw (SocketException) new SocketException(&quot;Invalid VSOCK URI: &quot; + uri).initCause(e);</span>
     }
   }
 
   @Override
   @SuppressWarnings({&quot;PMD.CognitiveComplexity&quot;, &quot;PMD.CompareObjectsWithEquals&quot;})
   public URI toURI(String scheme, URI template) throws IOException {
-<span class="pc bpc" id="L498" title="1 of 2 branches missed.">    switch (scheme) {</span>
+<span class="pc bpc" id="L500" title="1 of 2 branches missed.">    switch (scheme) {</span>
       case &quot;vsock&quot;:
       case &quot;http+vsock&quot;:
       case &quot;https+vsock&quot;:
-<span class="fc" id="L502">        break;</span>
+<span class="fc" id="L504">        break;</span>
       default:
-<span class="nc" id="L504">        return super.toURI(scheme, template);</span>
+<span class="nc" id="L506">        return super.toURI(scheme, template);</span>
     }
 
-<span class="fc" id="L507">    byte[] bytes = getBytes();</span>
-<span class="pc bpc" id="L508" title="1 of 2 branches missed.">    if (bytes.length != (3 * 4)) {</span>
-<span class="nc" id="L509">      return super.toURI(scheme, template);</span>
+<span class="fc" id="L509">    byte[] bytes = getBytes();</span>
+<span class="pc bpc" id="L510" title="1 of 2 branches missed.">    if (bytes.length != (3 * 4)) {</span>
+<span class="nc" id="L511">      return super.toURI(scheme, template);</span>
     }
 
-<span class="fc" id="L512">    StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L514">    StringBuilder sb = new StringBuilder();</span>
 
     String portStr;
     int port;
-<span class="fc bfc" id="L516" title="All 2 branches covered.">    switch ((port = getVSOCKPort())) {</span>
+<span class="fc bfc" id="L518" title="All 2 branches covered.">    switch ((port = getVSOCKPort())) {</span>
       case VMADDR_PORT_ANY:
-<span class="fc" id="L518">        portStr = &quot;any&quot;;</span>
-<span class="fc" id="L519">        break;</span>
+<span class="fc" id="L520">        portStr = &quot;any&quot;;</span>
+<span class="fc" id="L521">        break;</span>
       default:
-<span class="fc" id="L521">        portStr = toUnsignedString(port);</span>
+<span class="fc" id="L523">        portStr = toUnsignedString(port);</span>
         break;
     }
 
-<span class="fc" id="L525">    sb.append(portStr);</span>
-<span class="fc" id="L526">    sb.append('.');</span>
+<span class="fc" id="L527">    sb.append(portStr);</span>
+<span class="fc" id="L528">    sb.append('.');</span>
     String cidStr;
     int cid;
-<span class="fc bfc" id="L529" title="All 5 branches covered.">    switch ((cid = getVSOCKCID())) {</span>
+<span class="fc bfc" id="L531" title="All 5 branches covered.">    switch ((cid = getVSOCKCID())) {</span>
       case VMADDR_CID_ANY:
-<span class="fc" id="L531">        cidStr = &quot;any&quot;;</span>
-<span class="fc" id="L532">        break;</span>
+<span class="fc" id="L533">        cidStr = &quot;any&quot;;</span>
+<span class="fc" id="L534">        break;</span>
       case VMADDR_CID_HYPERVISOR:
-<span class="fc" id="L534">        cidStr = &quot;hypervisor&quot;;</span>
-<span class="fc" id="L535">        break;</span>
+<span class="fc" id="L536">        cidStr = &quot;hypervisor&quot;;</span>
+<span class="fc" id="L537">        break;</span>
       case VMADDR_CID_LOCAL:
-<span class="fc" id="L537">        cidStr = &quot;local&quot;;</span>
-<span class="fc" id="L538">        break;</span>
+<span class="fc" id="L539">        cidStr = &quot;local&quot;;</span>
+<span class="fc" id="L540">        break;</span>
       case VMADDR_CID_HOST:
-<span class="fc" id="L540">        cidStr = &quot;host&quot;;</span>
-<span class="fc" id="L541">        break;</span>
+<span class="fc" id="L542">        cidStr = &quot;host&quot;;</span>
+<span class="fc" id="L543">        break;</span>
       default:
-<span class="fc" id="L543">        cidStr = toUnsignedString(cid);</span>
+<span class="fc" id="L545">        cidStr = toUnsignedString(cid);</span>
         break;
     }
 
-<span class="fc" id="L547">    sb.append(cidStr);</span>
+<span class="fc" id="L549">    sb.append(cidStr);</span>
 
-<span class="fc" id="L549">    return new HostAndPort(sb.toString(), getPort()).toURI(scheme, template);</span>
+<span class="fc" id="L551">    return new HostAndPort(sb.toString(), getPort()).toURI(scheme, template);</span>
   }
 
   private static int parseInt(String v) {
-<span class="fc bfc" id="L553" title="All 2 branches covered.">    if (v.startsWith(&quot;0x&quot;)) {</span>
-<span class="fc" id="L554">      return parseUnsignedInt(v.substring(2), 16);</span>
-<span class="fc bfc" id="L555" title="All 2 branches covered.">    } else if (v.startsWith(&quot;-&quot;)) {</span>
-<span class="fc" id="L556">      return Integer.parseInt(v);</span>
+<span class="fc bfc" id="L555" title="All 2 branches covered.">    if (v.startsWith(&quot;0x&quot;)) {</span>
+<span class="fc" id="L556">      return parseUnsignedInt(v.substring(2), 16);</span>
+<span class="fc bfc" id="L557" title="All 2 branches covered.">    } else if (v.startsWith(&quot;-&quot;)) {</span>
+<span class="fc" id="L558">      return Integer.parseInt(v);</span>
     } else {
-<span class="fc" id="L558">      return parseUnsignedInt(v, 10);</span>
+<span class="fc" id="L560">      return parseUnsignedInt(v, 10);</span>
     }
   }
 
@@ -573,23 +575,23 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    */
   @Override
   public boolean covers(AFSocketAddress covered) {
-<span class="nc bnc" id="L576" title="All 2 branches missed.">    if (super.covers(covered)) {</span>
-<span class="nc" id="L577">      return true;</span>
-<span class="nc bnc" id="L578" title="All 2 branches missed.">    } else if (covered instanceof AFVSOCKSocketAddress) {</span>
-<span class="nc" id="L579">      AFVSOCKSocketAddress other = (AFVSOCKSocketAddress) covered;</span>
+<span class="nc bnc" id="L578" title="All 2 branches missed.">    if (super.covers(covered)) {</span>
+<span class="nc" id="L579">      return true;</span>
+<span class="nc bnc" id="L580" title="All 2 branches missed.">    } else if (covered instanceof AFVSOCKSocketAddress) {</span>
+<span class="nc" id="L581">      AFVSOCKSocketAddress other = (AFVSOCKSocketAddress) covered;</span>
 
-<span class="nc bnc" id="L581" title="All 2 branches missed.">      if (getVSOCKCID() == VMADDR_CID_ANY) {</span>
-<span class="nc bnc" id="L582" title="All 2 branches missed.">        if (getVSOCKPort() == VMADDR_PORT_ANY) {</span>
-<span class="nc" id="L583">          return true;</span>
+<span class="nc bnc" id="L583" title="All 2 branches missed.">      if (getVSOCKCID() == VMADDR_CID_ANY) {</span>
+<span class="nc bnc" id="L584" title="All 2 branches missed.">        if (getVSOCKPort() == VMADDR_PORT_ANY) {</span>
+<span class="nc" id="L585">          return true;</span>
         } else {
-<span class="nc bnc" id="L585" title="All 2 branches missed.">          return getVSOCKPort() == other.getVSOCKPort();</span>
+<span class="nc bnc" id="L587" title="All 2 branches missed.">          return getVSOCKPort() == other.getVSOCKPort();</span>
         }
-<span class="nc bnc" id="L587" title="All 2 branches missed.">      } else if (getVSOCKPort() == VMADDR_PORT_ANY) {</span>
-<span class="nc bnc" id="L588" title="All 2 branches missed.">        return getVSOCKCID() == other.getVSOCKCID();</span>
+<span class="nc bnc" id="L589" title="All 2 branches missed.">      } else if (getVSOCKPort() == VMADDR_PORT_ANY) {</span>
+<span class="nc bnc" id="L590" title="All 2 branches missed.">        return getVSOCKCID() == other.getVSOCKCID();</span>
       }
     }
 
-<span class="nc" id="L592">    return equals(covered);</span>
+<span class="nc" id="L594">    return equals(covered);</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

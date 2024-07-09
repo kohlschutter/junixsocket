@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>InterruptibleChannelUtil.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">InterruptibleChannelUtil.java</span></div><h1>InterruptibleChannelUtil.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2024 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.IOException;
+import java.nio.channels.AsynchronousCloseException;
+import java.nio.channels.ClosedByInterruptException;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.NotYetBoundException;
+import java.nio.channels.NotYetConnectedException;
+import java.nio.channels.spi.AbstractInterruptibleChannel;
+import java.util.Objects;
+
+/**
+ * Helper methods when working with {@link AbstractInterruptibleChannel} subclasses.
+ *
+ * @author Christian Kohlschütter
+ */
+<span class="nc" id="L34">final class InterruptibleChannelUtil {</span>
+  /**
+   * Reference to the protected {@code AbstractInterruptibleChannel#end(boolean)} method.
+   */
+  @FunctionalInterface
+  interface EndMethod {
+    void end(boolean completed) throws AsynchronousCloseException;
+  }
+
+  /**
+   * Wrapper method that calls {@code AbstractInterruptibleChannel#end(boolean)}, making sure the
+   * socket is closed and the {@link Thread#interrupted()} state is set correctly upon error.
+   *
+   * @param channel The channel.
+   * @param end The reference to the protected {@code AbstractInterruptibleChannel#end(boolean)}
+   *          method.
+   * @param complete {@code true} if the block started with {@code begin} succeeded without an
+   *          exception.
+   * @param exception An optional exception that was caught in the try-catch-finally block.
+   * @throws AsynchronousCloseException on error.
+   */
+  static void endInterruptable(AFSomeSocketChannel channel, EndMethod end, boolean complete,
+      Exception exception) throws AsynchronousCloseException {
+<span class="fc bfc" id="L57" title="All 2 branches covered.">    if (!complete) {</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">      if (exception instanceof ClosedChannelException) {</span>
+        // we already have caught a valid exception; we don't need to throw one from within &quot;end&quot;
+<span class="fc" id="L60">        complete = true;</span>
+      }
+    }
+    try {
+<span class="fc" id="L64">      end.end(complete);</span>
+<span class="fc" id="L65">    } catch (AsynchronousCloseException e) {</span>
+<span class="fc" id="L66">      throw closeAndThrow(channel, e);</span>
+<span class="fc" id="L67">    }</span>
+<span class="fc" id="L68">  }</span>
+
+  private static &lt;T extends Exception&gt; T closeAndThrow(AFSomeSocketChannel channel, T exc) {
+<span class="fc" id="L71">    Objects.requireNonNull(exc);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">    if (channel.isOpen()) {</span>
+      try {
+<span class="fc" id="L74">        channel.close();</span>
+<span class="nc" id="L75">      } catch (IOException e2) {</span>
+<span class="nc" id="L76">        exc.addSuppressed(e2);</span>
+<span class="fc" id="L77">      }</span>
+    }
+<span class="fc" id="L79">    return exc;</span>
+  }
+
+  static IOException ioExceptionOrThrowRuntimeException(Exception exception) {
+<span class="fc bfc" id="L83" title="All 2 branches covered.">    if (exception instanceof IOException) {</span>
+<span class="fc" id="L84">      return (IOException) exception;</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">    } else if (exception instanceof RuntimeException) {</span>
+<span class="fc" id="L86">      throw (RuntimeException) exception;</span>
+    } else {
+<span class="nc" id="L88">      throw new IllegalStateException(exception);</span>
+    }
+  }
+
+  /**
+   * Makes sure that upon an exception that is documented to have the channel be closed the channel
+   * is indeed closed before throwing that exception. If the exception is also documented to have
+   * the &quot;Thread interrupted&quot; state be set, make sure that this state is actually set as well.
+   *
+   * @param channel The channel to work with.
+   * @param e The exception
+   * @return The exception.
+   */
+  @SuppressWarnings(&quot;PMD.CognitiveComplexity&quot;)
+  static Exception handleException(AFSomeSocketChannel channel, IOException e) {
+<span class="fc bfc" id="L103" title="All 2 branches covered.">    if (e instanceof NotConnectedSocketException) {</span>
+<span class="fc" id="L104">      return (NotYetConnectedException) new NotYetConnectedException().initCause(e);</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">    } else if (e instanceof NotBoundSocketException) {</span>
+<span class="fc" id="L106">      return (NotYetBoundException) new NotYetBoundException().initCause(e);</span>
+    }
+
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">    if (e instanceof InvalidArgumentSocketException) {</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">      if (channel instanceof AFServerSocketChannel&lt;?&gt;) {</span>
+<span class="nc" id="L111">        AFServerSocketChannel&lt;?&gt; sc = (AFServerSocketChannel&lt;?&gt;) channel;</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (!sc.socket().isBound()) {</span>
+<span class="nc" id="L113">          return (NotYetBoundException) new NotYetBoundException().initCause(e);</span>
+        }
+<span class="nc bnc" id="L115" title="All 2 branches missed.">      } else if (channel instanceof AFSocketChannel&lt;?&gt;) {</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (!((AFSocketChannel&lt;?&gt;) channel).socket().isConnected()) {</span>
+<span class="nc" id="L117">          return (NotYetConnectedException) new NotYetConnectedException().initCause(e);</span>
+        }
+      }
+    }
+
+<span class="pc bpc" id="L122" title="2 of 6 branches missed.">    if (e instanceof SocketClosedException || e instanceof ClosedChannelException</span>
+        || e instanceof BrokenPipeSocketException) {
+<span class="fc" id="L124">      Thread t = Thread.currentThread();</span>
+
+<span class="pc bpc" id="L126" title="1 of 4 branches missed.">      if (e instanceof SocketClosedByInterruptException</span>
+          || e instanceof ClosedByInterruptException) {
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">        if (!t.isInterrupted()) {</span>
+<span class="nc" id="L129">          t.interrupt();</span>
+        }
+      }
+
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">      if (!(e instanceof ClosedChannelException)) {</span>
+        // Make sure the caught exception is transformed into the expected exception
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        if (t.isInterrupted()) {</span>
+<span class="fc" id="L136">          e = (ClosedByInterruptException) new ClosedByInterruptException().initCause(e);</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">        } else if (e instanceof BrokenPipeSocketException) {</span>
+<span class="fc" id="L138">          e = (AsynchronousCloseException) new AsynchronousCloseException().initCause(e);</span>
+        } else {
+<span class="nc" id="L140">          e = (ClosedChannelException) new ClosedChannelException().initCause(e);</span>
+        }
+      }
+
+<span class="fc" id="L144">      return closeAndThrow(channel, e);</span>
+    } else {
+<span class="nc" id="L146">      return e;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

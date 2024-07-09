@@ -42,13 +42,13 @@ import com.mysql.jdbc.SocketFactory;
  */
 @SuppressWarnings(&quot;deprecation&quot;)
 public class AFUNIXDatabaseSocketFactory implements SocketFactory {
-<span class="nc" id="L45">  private Socket socket = null;</span>
+<span class="fc" id="L45">  private Socket socket = null;</span>
 
   /**
    * Creates a new instance.
    */
-<span class="nc" id="L50">  public AFUNIXDatabaseSocketFactory() {</span>
-<span class="nc" id="L51">  }</span>
+<span class="fc" id="L50">  public AFUNIXDatabaseSocketFactory() {</span>
+<span class="fc" id="L51">  }</span>
 
   @Override
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
@@ -69,10 +69,10 @@ public class AFUNIXDatabaseSocketFactory implements SocketFactory {
     // Adjust the path to your MySQL socket by setting the
     // &quot;junixsocket.file&quot; property
     // If no socket path is given, use the default: /tmp/mysql.sock
-<span class="nc" id="L72">    final File socketFile = new File(props.getProperty(&quot;junixsocket.file&quot;, &quot;/tmp/mysql.sock&quot;));</span>
+<span class="fc" id="L72">    final File socketFile = new File(props.getProperty(&quot;junixsocket.file&quot;, &quot;/tmp/mysql.sock&quot;));</span>
 
 <span class="nc" id="L74">    socket = AFUNIXSocket.connectTo(AFUNIXSocketAddress.of(socketFile));</span>
 <span class="nc" id="L75">    return socket;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

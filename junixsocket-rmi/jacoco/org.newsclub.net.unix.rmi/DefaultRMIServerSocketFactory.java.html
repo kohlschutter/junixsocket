@@ -22,21 +22,25 @@ import java.io.Serializable;
 import java.net.ServerSocket;
 import java.rmi.server.RMIServerSocketFactory;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * An implementation of {@link RMIServerSocketFactory}.
  *
  * @see AFRMISocketFactory
  */
+@SuppressFBWarnings({
+    &quot;SING_SINGLETON_IMPLEMENTS_SERIALIZABLE&quot;, &quot;SING_SINGLETON_HAS_NONPRIVATE_CONSTRUCTOR&quot;})
 public class DefaultRMIServerSocketFactory implements RMIServerSocketFactory, Serializable {
   private static final long serialVersionUID = 1L;
-<span class="nc" id="L32">  private static final DefaultRMIServerSocketFactory INSTANCE = new DefaultRMIServerSocketFactory();</span>
+<span class="nc" id="L36">  private static final DefaultRMIServerSocketFactory INSTANCE = new DefaultRMIServerSocketFactory();</span>
 
   /**
    * Creates a new {@link DefaultRMIClientSocketFactory}.
    */
   public DefaultRMIServerSocketFactory() {
-<span class="nc" id="L38">    super();</span>
-<span class="nc" id="L39">  }</span>
+<span class="nc" id="L42">    super();</span>
+<span class="nc" id="L43">  }</span>
 
   /**
    * Returns the singleton instance for DefaultRMIServerSocketFactory.
@@ -44,26 +48,26 @@ public class DefaultRMIServerSocketFactory implements RMIServerSocketFactory, Se
    * @return The singleton.
    */
   public static DefaultRMIServerSocketFactory getInstance() {
-<span class="nc" id="L47">    return INSTANCE;</span>
+<span class="nc" id="L51">    return INSTANCE;</span>
   }
 
   @Override
   public ServerSocket createServerSocket(int port) throws IOException {
-<span class="nc" id="L52">    ServerSocket socket = new ServerSocket(port);</span>
+<span class="nc" id="L56">    ServerSocket socket = new ServerSocket(port);</span>
     // socket.setSoTimeout(60 * 60 * 1000);
-<span class="nc" id="L54">    return socket;</span>
+<span class="nc" id="L58">    return socket;</span>
   }
 
   // we must implement this (see RMIServerSocketFactory)
   @Override
   public boolean equals(Object obj) {
-<span class="nc" id="L60">    return obj instanceof DefaultRMIServerSocketFactory;</span>
+<span class="nc" id="L64">    return obj instanceof DefaultRMIServerSocketFactory;</span>
   }
 
   // we must implement this (see RMIServerSocketFactory)
   @Override
   public int hashCode() {
-<span class="nc" id="L66">    return 1;</span>
+<span class="nc" id="L70">    return 1;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
