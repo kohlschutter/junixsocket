@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.time.Duration;
 
@@ -45,6 +46,7 @@ import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFUNIXDatagramSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.AFUNIXSocketChannel;
 import org.newsclub.net.unix.ImplUtil;
 import org.newsclub.net.unix.SocketTestBase;
 
@@ -112,6 +114,114 @@ public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddres
           assertArrayEquals(new FileDescriptor[0], fds,
               "There shouldn't be any new file descriptors");
         }
+      }
+    });
+  }
+
+  @SuppressWarnings("cast")
+  @Test
+  public void testSendRecvFileDescriptorsChannel() throws Exception {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
+      try (AFUNIXServerThread serverThread = new AFUNIXServerThread() {
+        @Override
+        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
+          AFUNIXSocketChannel channel = socket.getChannel();
+          channel.setOutboundFileDescriptors(FileDescriptor.in, FileDescriptor.err);
+          assertTrue(socket.hasOutboundFileDescriptors());
+          ByteBuffer bb = ByteBuffer.allocate(64);
+          bb.put("HELLO".getBytes(UTF_8));
+          bb.flip();
+          channel.write(bb);
+          assertFalse(socket.hasOutboundFileDescriptors());
+
+          stopAcceptingConnections();
+        }
+      };
+          AFUNIXSocketChannel channel = ((AFUNIXSocket) connectTo(serverThread.getServerAddress()))
+              .getChannel()) {
+        channel.setAncillaryReceiveBufferSize(1024);
+
+        FileDescriptor[] fds;
+        int numRead;
+        fds = channel.getReceivedFileDescriptors();
+        assertArrayEquals(new FileDescriptor[0], fds, "Initially, there are no file descriptors");
+
+        ByteBuffer buf = ByteBuffer.allocate(64);
+
+        numRead = channel.read(buf);
+        assertEquals(5, numRead, "'HELLO' is five bytes long");
+        assertEquals("HELLO", new String((byte[]) buf.flip().array(), 0, numRead, UTF_8));
+
+        fds = channel.getReceivedFileDescriptors();
+        assertEquals(2, fds.length, "Now, we should have two file descriptors");
+
+        fds = channel.getReceivedFileDescriptors();
+        assertArrayEquals(new FileDescriptor[0], fds,
+            "If we ask again, these new file descriptors should be gone");
+
+        buf.clear();
+        numRead = channel.read(buf);
+        assertEquals(-1, numRead, "There shouldn't be anything left to read");
+        fds = channel.getReceivedFileDescriptors();
+        assertArrayEquals(new FileDescriptor[0], fds,
+            "There shouldn't be any new file descriptors");
+      }
+    });
+  }
+
+  @SuppressWarnings("cast")
+  @Test
+  public void testSendRecvFileDescriptorsChannelNonBlocking() throws Exception {
+    assertTimeoutPreemptively(Duration.ofSeconds(2), () -> {
+      try (AFUNIXServerThread serverThread = new AFUNIXServerThread() {
+        @Override
+        protected void handleConnection(final AFUNIXSocket socket) throws IOException {
+          AFUNIXSocketChannel channel = socket.getChannel();
+          channel.configureBlocking(false);
+          channel.setOutboundFileDescriptors(FileDescriptor.in, FileDescriptor.err);
+          assertTrue(socket.hasOutboundFileDescriptors());
+          ByteBuffer bb = ByteBuffer.allocate(64);
+          bb.put("HELLO".getBytes(UTF_8));
+          bb.flip();
+          channel.write(bb);
+          assertFalse(socket.hasOutboundFileDescriptors());
+
+          stopAcceptingConnections();
+        }
+      };
+          AFUNIXSocketChannel channel = ((AFUNIXSocket) connectTo(serverThread.getServerAddress()))
+              .getChannel()) {
+        channel.configureBlocking(false);
+        channel.setAncillaryReceiveBufferSize(1024);
+
+        FileDescriptor[] fds;
+        int numRead;
+        fds = channel.getReceivedFileDescriptors();
+        assertArrayEquals(new FileDescriptor[0], fds, "Initially, there are no file descriptors");
+
+        ByteBuffer buf = ByteBuffer.allocate(64);
+
+        do {
+          numRead = channel.read(buf);
+        } while (numRead >= 0 && buf.position() < 5);
+        assertEquals(5, buf.position(), "'HELLO' is five bytes long");
+        assertEquals("HELLO", new String((byte[]) buf.flip().array(), 0, numRead, UTF_8));
+
+        fds = channel.getReceivedFileDescriptors();
+        assertEquals(2, fds.length, "Now, we should have two file descriptors");
+
+        fds = channel.getReceivedFileDescriptors();
+        assertArrayEquals(new FileDescriptor[0], fds,
+            "If we ask again, these new file descriptors should be gone");
+
+        buf.clear();
+        numRead = channel.read(buf);
+        if (numRead != 0) {
+          assertEquals(-1, numRead, "There shouldn't be anything left to read");
+        }
+        fds = channel.getReceivedFileDescriptors();
+        assertArrayEquals(new FileDescriptor[0], fds,
+            "There shouldn't be any new file descriptors");
       }
     });
   }
