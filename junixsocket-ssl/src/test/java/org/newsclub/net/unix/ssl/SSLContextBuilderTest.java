@@ -65,7 +65,6 @@ import javax.net.ssl.TrustManager;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
-import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.newsclub.net.unix.AFSocket;
