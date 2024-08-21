@@ -82,18 +82,29 @@ Please file a [New Issue](https://github.com/kohlschutter/junixsocket/issues) if
 
 TIPC connections are not designed to be reachable from the public Internet.
 
-There are known security vulnerabilities in older Linux kernels related to TIPC. It is recommended
-to use newer kernel versions (fixed around February 2022)
+There are known security vulnerabilities in Linux kernels related to TIPC, leading to remote code execution, privilege escalation, and/or denial of service, for example.
+ 
+Especially with the increased visiblity and scrutiny, new bugs will certainly be found.
 
-Recent known TIPC Linux Kernel issues (list is non-exhausive):
+> **NOTE**: These security issues are not related to junixsocket's implementation. They refer to
+vulnerabilities in certain versions of the Linux kernel.
+
+Some known TIPC Linux Kernel issues (list is non-exhausive):
+
+    * [Search the Linux CVE-Announce mailing list for TIPC related issues](https://lore.kernel.org/linux-cve-announce/?q=tipc)
+    
+    * [Search cve.mitre.org for TIPC related issues](https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=TIPC)
+    
+    * [Search NIST NVD for TIPC related issues](https://nvd.nist.gov/vuln/search/results?form_type=Basic&results_type=overview&query=TIPC&search_type=all&isCpeNameSearch=false)
 
     * CVE-2021-43267: Remote Linux Kernel Heap Overflow | TIPC Module Allows Arbitrary Code Execution
     * CVE-2022-0435: Remote Linux Kernel Stack Overflow
+    
+    * CVE-2023-1390: Remote denial of service
+    
+    * CVE-2024-42284, CVE-2024-41081, CVE-2022-48865, CVE-2024-40983, CVE-2022-48711, CVE-2024-36954, CVE-2024-36886, CVE-2023-52845, CVE-2023-52700, CVE-2021-47186, CVE-2024-26663, CVE-2021-47163, CVE-2021-47162
 
-> **NOTE**: These security issues are not related to junixsocket's implementation. They refer to
-vulnerabilities in older versions of the Linux kernel.
-
-## More examples
+## More usage examples
 
 * [OkHttpClientTIPCDemo — Using a TIPC cluster as a high-availability HTTP serving environment](https://kohlschutter.github.io/junixsocket/junixsocket-demo/xref/org/newsclub/net/unix/demo/okhttp/OkHttpClientTIPCDemo.html)
 * Also see [junixsocket-tipc's unit tests](https://kohlschutter.github.io/junixsocket/junixsocket-tipc/xref-test/index.html)
