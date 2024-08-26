@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +53,8 @@ final class NativeLibraryLoader implements Closeable {
   private static final boolean IS_ANDROID = checkAndroid();
 
   static {
-    String dir = System.getProperty(PROP_LIBRARY_TMPDIR, null);
+    String dir = System.getProperty(PROP_LIBRARY_TMPDIR, System.getProperty("java.io.tmpdir",
+        null));
     TEMP_DIR = (dir == null) ? null : new File(dir);
   }
 
@@ -167,13 +169,64 @@ final class NativeLibraryLoader implements Closeable {
       this.library = library;
     }
 
+    /**
+     * Even though we ask the JVM to delete the library file upon VM exit, this may not be honored
+     * in all cases (crash, Windows, etc.)
+     *
+     * Therefore, we attempt to delete these files whenever another JVM using junixsocket starts up.
+     * This is simplified by keeping empty marker files next to the temporary shared library file.
+     *
+     * @param libDir The directory to check.
+     */
+    private void deleteLibTmpDelFiles(File libDir) {
+      if (libDir == null) {
+        try {
+          File tempFile = File.createTempFile("libtmp", ".del");
+          libDir = tempFile.getParentFile();
+          tryDelete(tempFile);
+        } catch (IOException e) {
+          return;
+        }
+      }
+      File[] filesToDelete = libDir.listFiles((File f) -> {
+        if (!f.isFile()) {
+          return false;
+        }
+        String name = f.getName();
+        return name.startsWith("libtmp") && name.endsWith(".del");
+      });
+      if (filesToDelete == null || filesToDelete.length == 0) {
+        return;
+      }
+
+      for (File f : filesToDelete) {
+        tryDelete(f);
+        String n = f.getName();
+        n = n.substring(0, n.length() - ".del".length());
+        File libFile = new File(f.getParentFile(), n);
+        tryDelete(libFile);
+      }
+    }
+
     @Override
+    @SuppressWarnings("PMD.CognitiveComplexity")
     synchronized String load() throws IOException, LinkageError {
       if (libraryNameAndVersion == null) {
         return null;
       }
 
       File libDir = TEMP_DIR;
+      File userHomeDir = new File(System.getProperty("user.home", "."));
+      File userDirOrNull = new File(System.getProperty("user.dir", "."));
+      if (userHomeDir.equals(userDirOrNull)) {
+        userDirOrNull = null;
+      }
+
+      deleteLibTmpDelFiles(libDir);
+      deleteLibTmpDelFiles(userHomeDir);
+      if (userDirOrNull != null) {
+        deleteLibTmpDelFiles(userDirOrNull);
+      }
 
       for (int attempt = 0; attempt < 3; attempt++) {
         File libFile;
@@ -200,19 +253,34 @@ final class NativeLibraryLoader implements Closeable {
 
           switch (attempt) {
             case 0:
-              libDir = new File(System.getProperty("user.home", "."));
+              libDir = userHomeDir;
               break;
             case 1:
-              libDir = new File(System.getProperty("user.dir", "."));
-              break;
+              if (userDirOrNull != null) {
+                libDir = userDirOrNull;
+                break;
+              }
+              // fall-through
             default:
               throw e;
           }
 
           continue;
         } finally {
-          if (!libFile.delete()) {
+          if (!libFile.delete() && libFile.exists()) {
             libFile.deleteOnExit();
+
+            File markerFile = new File(libFile.getParentFile(), libFile.getName() + ".del");
+            try {
+              Files.createFile(markerFile.toPath());
+              Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                if (!libFile.exists() || libFile.delete()) {
+                  tryDelete(markerFile);
+                }
+              }));
+            } catch (IOException | UnsupportedOperationException e) {
+              // ignore
+            }
           }
         }
 
@@ -220,6 +288,11 @@ final class NativeLibraryLoader implements Closeable {
         break; // NOPMD.AvoidBranchingStatementAsLastInLoop
       }
       return artifactName + "/" + libraryNameAndVersion;
+    }
+
+    @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
+    private static void tryDelete(File f) {
+      f.delete(); // NOPMD
     }
 
     @Override
