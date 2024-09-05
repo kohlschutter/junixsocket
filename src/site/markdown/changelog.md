@@ -12,6 +12,13 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 **Users of junixsocket are strongly advised to upgrade to version 2.10.0 or newer**
 
+### _(2024-XX-XX)_ **junixsocket 2.10.1**
+
+- Fix left-over temporary library files on Windows
+- Add support for loongarch64 Linux
+- Add more tests
+- Code cleanup
+
 ### _(2024-07-08)_ **junixsocket 2.10.0**
 
 - Fix compatibility with Java 7
