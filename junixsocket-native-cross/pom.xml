@@ -817,7 +817,7 @@
                                 <junixsocket.build.directory>${project.build.directory}/junixsocket-native-loongarch64-Linux-clang-llvm</junixsocket.build.directory>
                                 <junixsocket.native.llvm.target>loongarch64-openEuler-linux</junixsocket.native.llvm.target>
                                 <junixsocket.native.jnilib.extension>so</junixsocket.native.jnilib.extension>
-                                <junixsocket.common.classifier.linux.s390x>loongarch64-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.s390x>
+                                <junixsocket.common.classifier.linux.loongarch64>loongarch64-Linux-clang-llvm-jni</junixsocket.common.classifier.linux.loongarch64>
                                 <ignorant>${ignorant}</ignorant>
                                 <gpgkeyname>${gpgkeyname}</gpgkeyname>
                                 <gpg.executable>${gpg.executable}</gpg.executable>
