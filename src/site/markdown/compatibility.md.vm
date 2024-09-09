@@ -47,6 +47,7 @@ The minimum set of supported (out of the box) platforms and processor architectu
 * Linux s390x ("Linux on IBM Z", "Linux on zSystems")
 * Linux RISC-V 64-bit (rv64ifd / lp64d)
 * Linux ppc64le (POWER 64-bit Little Endian)
+* Linux loongarch64 (Loongson 64-bit)
 * Solaris x86 64-bit / OpenIndiana
 * Windows 10 Intel 64-bit and ARM 64-bit
 * Windows Server 2019
