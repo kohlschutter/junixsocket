@@ -362,29 +362,13 @@ int jux_mangleErrno(int);
 #endif
 
 #if __GLIBC__
-#  if __CROSSCLANG_NODEPS__
-// nothing to do
-#  else
 // This allows us to link against older glibc versions
+#  include "stat_wrapper.h"
+#  define stat(...) ck_stat(__VA_ARGS__)
+#  if __CROSSCLANG_NODEPS__
+// 
+#  else
 #    define memcpy memmove
-#    if defined(__loongarch64)
-// no stat/__xstat workaround on loongarch64
-#    else
-#      ifndef _STAT_VER
-#        if defined(__aarch64__) || defined(__riscv)
-#            define _STAT_VER 0
-#        elif defined(__x86_64__)
-#            define _STAT_VER 1
-#        else
-#            define _STAT_VER 3
-#        endif
-#      endif
-#      if !defined(__xstat)
-extern int __xstat (int __ver, const char *__filename,
-                    struct stat *__stat_buf) __THROW __nonnull ((2, 3));
-#      endif
-#      define stat(...) __xstat(_STAT_VER, __VA_ARGS__)
-#    endif
 #  endif
 #endif
 

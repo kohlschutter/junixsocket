@@ -672,6 +672,56 @@
 		43145C612B0656E30090BD53 /* gettod_zos.h in Headers */ = {isa = PBXBuildFile; fileRef = 43145C4B2B0656E30090BD53 /* gettod_zos.h */; };
 		43145C622B0656E30090BD53 /* gettod_zos.h in Headers */ = {isa = PBXBuildFile; fileRef = 43145C4B2B0656E30090BD53 /* gettod_zos.h */; };
 		43145C632B0656E30090BD53 /* gettod_zos.h in Headers */ = {isa = PBXBuildFile; fileRef = 43145C4B2B0656E30090BD53 /* gettod_zos.h */; };
+		434234192C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		4342341A2C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		4342341B2C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		4342341C2C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		4342341D2C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		4342341E2C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		4342341F2C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234202C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234212C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234222C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234232C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234242C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234252C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234262C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234272C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234282C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234292C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		4342342A2C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		4342342B2C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		4342342C2C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		4342342D2C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		4342342E2C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		4342342F2C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234302C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234312C91C2890046DBD9 /* stat_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 434234182C91C2890046DBD9 /* stat_wrapper.c */; };
+		434234342C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234352C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234362C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234372C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234382C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234392C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		4342343A2C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		4342343B2C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		4342343C2C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		4342343D2C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		4342343E2C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		4342343F2C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234402C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234412C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234422C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234432C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234442C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234452C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234462C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234472C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234482C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		434234492C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		4342344A2C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		4342344B2C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
+		4342344C2C91C4F50046DBD9 /* stat_wrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 434234332C91C4F50046DBD9 /* stat_wrapper.h */; };
 		4355474928F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
 		4355474A28F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
 		4355474B28F6E6310042E830 /* vsock.c in Sources */ = {isa = PBXBuildFile; fileRef = 4355474728F6E6310042E830 /* vsock.c */; };
@@ -1605,6 +1655,8 @@
 		432EF1F4261ADE4900F4A583 /* libjunixsocket-riscv64-redhat-linux.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-riscv64-redhat-linux.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF203261ADEDD00F4A583 /* libjunixsocket-armv6--linux-gnueabihf.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-armv6--linux-gnueabihf.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		432EF212261AE29200F4A583 /* libjunixsocket-x86_64-apple-darwin18.2.0.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-apple-darwin18.2.0.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		434234182C91C2890046DBD9 /* stat_wrapper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = stat_wrapper.c; path = src/main/c/stat_wrapper.c; sourceTree = "<group>"; };
+		434234332C91C4F50046DBD9 /* stat_wrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stat_wrapper.h; path = src/main/c/stat_wrapper.h; sourceTree = "<group>"; };
 		4355474728F6E6310042E830 /* vsock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vsock.c; path = src/main/c/vsock.c; sourceTree = "<group>"; };
 		4355474828F6E6310042E830 /* vsock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vsock.h; path = src/main/c/vsock.h; sourceTree = "<group>"; };
 		435B54A12A3F65D2001011B8 /* libjunixsocket-x86_64-linux-android30.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-linux-android30.so"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1819,6 +1871,8 @@
 				430233A32650AB4900823167 /* jniutil.c */,
 				430233A12650AB4900823167 /* jniutil.h */,
 				430235BF2650AC3200823167 /* jni */,
+				434234182C91C2890046DBD9 /* stat_wrapper.c */,
+				434234332C91C4F50046DBD9 /* stat_wrapper.h */,
 			);
 			name = "Build Essentials";
 			sourceTree = "<group>";
@@ -1944,6 +1998,7 @@
 			files = (
 				430456972C91B81000CBAC42 /* tipc.h in Headers */,
 				430456982C91B81000CBAC42 /* jni.h in Headers */,
+				4342344C2C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430456992C91B81000CBAC42 /* ancillary.h in Headers */,
 				4304569A2C91B81000CBAC42 /* pipe.h in Headers */,
 				4304569B2C91B81000CBAC42 /* init.h in Headers */,
@@ -1980,6 +2035,7 @@
 			files = (
 				436E167127FBB70B00A553EC /* tipc.h in Headers */,
 				4304A5F3266DFCEF003BCEDF /* jni.h in Headers */,
+				434234472C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				4304A5F4266DFCEF003BCEDF /* ancillary.h in Headers */,
 				4304A5F5266DFCEF003BCEDF /* pipe.h in Headers */,
 				4304A5F6266DFCEF003BCEDF /* init.h in Headers */,
@@ -2016,6 +2072,7 @@
 			files = (
 				436E166227FBB70B00A553EC /* tipc.h in Headers */,
 				430235C32650AC3200823167 /* jni.h in Headers */,
+				434234352C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430235A82650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF84265EEC930024822F /* pipe.h in Headers */,
 				430235542650AB4F00823167 /* init.h in Headers */,
@@ -2052,6 +2109,7 @@
 			files = (
 				436E166D27FBB70B00A553EC /* tipc.h in Headers */,
 				430235CD2650AC3200823167 /* jni.h in Headers */,
+				434234432C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430235B22650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF8E265EEC930024822F /* pipe.h in Headers */,
 				4302355E2650AB4F00823167 /* init.h in Headers */,
@@ -2088,6 +2146,7 @@
 			files = (
 				436E166627FBB70B00A553EC /* tipc.h in Headers */,
 				430235C62650AC3200823167 /* jni.h in Headers */,
+				434234392C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430235AB2650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF87265EEC930024822F /* pipe.h in Headers */,
 				430235572650AB4F00823167 /* init.h in Headers */,
@@ -2124,6 +2183,7 @@
 			files = (
 				436E166927FBB70B00A553EC /* tipc.h in Headers */,
 				430235C92650AC3200823167 /* jni.h in Headers */,
+				4342343E2C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430235AE2650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF8A265EEC930024822F /* pipe.h in Headers */,
 				4302355A2650AB4F00823167 /* init.h in Headers */,
@@ -2160,6 +2220,7 @@
 			files = (
 				436E166C27FBB70B00A553EC /* tipc.h in Headers */,
 				430235CC2650AC3200823167 /* jni.h in Headers */,
+				434234412C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430235B12650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF8D265EEC930024822F /* pipe.h in Headers */,
 				4302355D2650AB4F00823167 /* init.h in Headers */,
@@ -2196,6 +2257,7 @@
 			files = (
 				436E166727FBB70B00A553EC /* tipc.h in Headers */,
 				430235C72650AC3200823167 /* jni.h in Headers */,
+				4342343A2C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430235AC2650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF88265EEC930024822F /* pipe.h in Headers */,
 				430235582650AB4F00823167 /* init.h in Headers */,
@@ -2232,6 +2294,7 @@
 			files = (
 				436E166827FBB70B00A553EC /* tipc.h in Headers */,
 				430235C82650AC3200823167 /* jni.h in Headers */,
+				4342343D2C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430235AD2650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF89265EEC930024822F /* pipe.h in Headers */,
 				430235592650AB4F00823167 /* init.h in Headers */,
@@ -2268,6 +2331,7 @@
 			files = (
 				436E166527FBB70B00A553EC /* tipc.h in Headers */,
 				430235C52650AC3200823167 /* jni.h in Headers */,
+				434234382C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430235AA2650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF86265EEC930024822F /* pipe.h in Headers */,
 				430235562650AB4F00823167 /* init.h in Headers */,
@@ -2304,6 +2368,7 @@
 			files = (
 				436E166B27FBB70B00A553EC /* tipc.h in Headers */,
 				430235CB2650AC3200823167 /* jni.h in Headers */,
+				434234402C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430235B02650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF8C265EEC930024822F /* pipe.h in Headers */,
 				4302355C2650AB4F00823167 /* init.h in Headers */,
@@ -2340,6 +2405,7 @@
 			files = (
 				435B546A2A3F65D2001011B8 /* tipc.h in Headers */,
 				435B546B2A3F65D2001011B8 /* jni.h in Headers */,
+				434234492C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				435B546C2A3F65D2001011B8 /* ancillary.h in Headers */,
 				435B546D2A3F65D2001011B8 /* pipe.h in Headers */,
 				435B546E2A3F65D2001011B8 /* init.h in Headers */,
@@ -2376,6 +2442,7 @@
 			files = (
 				435B54A62A3F65F4001011B8 /* tipc.h in Headers */,
 				435B54A72A3F65F4001011B8 /* jni.h in Headers */,
+				4342344A2C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				435B54A82A3F65F4001011B8 /* ancillary.h in Headers */,
 				435B54A92A3F65F4001011B8 /* pipe.h in Headers */,
 				435B54AA2A3F65F4001011B8 /* init.h in Headers */,
@@ -2412,6 +2479,7 @@
 			files = (
 				435B54E22A3F661F001011B8 /* tipc.h in Headers */,
 				435B54E32A3F661F001011B8 /* jni.h in Headers */,
+				4342344B2C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				435B54E42A3F661F001011B8 /* ancillary.h in Headers */,
 				435B54E52A3F661F001011B8 /* pipe.h in Headers */,
 				435B54E62A3F661F001011B8 /* init.h in Headers */,
@@ -2448,6 +2516,7 @@
 			files = (
 				436E166127FBB70B00A553EC /* tipc.h in Headers */,
 				430235C22650AC3200823167 /* jni.h in Headers */,
+				434234342C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430235A72650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF83265EEC930024822F /* pipe.h in Headers */,
 				430235532650AB4F00823167 /* init.h in Headers */,
@@ -2484,6 +2553,7 @@
 			files = (
 				43684D82282EE24B005F2989 /* tipc.h in Headers */,
 				43684D83282EE24B005F2989 /* jni.h in Headers */,
+				434234422C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				43684D84282EE24B005F2989 /* ancillary.h in Headers */,
 				43684D85282EE24B005F2989 /* pipe.h in Headers */,
 				43684D86282EE24B005F2989 /* init.h in Headers */,
@@ -2520,6 +2590,7 @@
 			files = (
 				436B5A8228244CB500574CD4 /* tipc.h in Headers */,
 				436B5A8328244CB500574CD4 /* jni.h in Headers */,
+				4342343B2C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				436B5A8428244CB500574CD4 /* ancillary.h in Headers */,
 				436B5A8528244CB500574CD4 /* pipe.h in Headers */,
 				436B5A8628244CB500574CD4 /* init.h in Headers */,
@@ -2556,6 +2627,7 @@
 			files = (
 				436B5ABC2826F49A00574CD4 /* tipc.h in Headers */,
 				436B5ABD2826F49A00574CD4 /* jni.h in Headers */,
+				4342343C2C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				436B5ABE2826F49A00574CD4 /* ancillary.h in Headers */,
 				436B5ABF2826F49A00574CD4 /* pipe.h in Headers */,
 				436B5AC02826F49A00574CD4 /* init.h in Headers */,
@@ -2592,6 +2664,7 @@
 			files = (
 				436E166E27FBB70B00A553EC /* tipc.h in Headers */,
 				43B3DFD126660A2D0024822F /* jni.h in Headers */,
+				434234442C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				43B3DFD226660A2D0024822F /* ancillary.h in Headers */,
 				43B3DFD326660A2D0024822F /* pipe.h in Headers */,
 				43B3DFD426660A2D0024822F /* init.h in Headers */,
@@ -2628,6 +2701,7 @@
 			files = (
 				436E166F27FBB70B00A553EC /* tipc.h in Headers */,
 				43B3E00926672FD30024822F /* jni.h in Headers */,
+				434234452C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				43B3E00A26672FD30024822F /* ancillary.h in Headers */,
 				43B3E00B26672FD30024822F /* pipe.h in Headers */,
 				43B3E00C26672FD30024822F /* init.h in Headers */,
@@ -2664,6 +2738,7 @@
 			files = (
 				436E166327FBB70B00A553EC /* tipc.h in Headers */,
 				43B3E041266756540024822F /* jni.h in Headers */,
+				434234362C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				43B3E042266756540024822F /* ancillary.h in Headers */,
 				43B3E043266756540024822F /* pipe.h in Headers */,
 				43B3E044266756540024822F /* init.h in Headers */,
@@ -2700,6 +2775,7 @@
 			files = (
 				436E167027FBB70B00A553EC /* tipc.h in Headers */,
 				43B3E079266971630024822F /* jni.h in Headers */,
+				434234462C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				43B3E07A266971630024822F /* ancillary.h in Headers */,
 				43B3E07B266971630024822F /* pipe.h in Headers */,
 				43B3E07C266971630024822F /* init.h in Headers */,
@@ -2736,6 +2812,7 @@
 			files = (
 				43C57CC72A38F370001DEA62 /* tipc.h in Headers */,
 				43C57CC82A38F370001DEA62 /* jni.h in Headers */,
+				434234482C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				43C57CC92A38F370001DEA62 /* ancillary.h in Headers */,
 				43C57CCA2A38F370001DEA62 /* pipe.h in Headers */,
 				43C57CCB2A38F370001DEA62 /* init.h in Headers */,
@@ -2772,6 +2849,7 @@
 			files = (
 				436E166427FBB70B00A553EC /* tipc.h in Headers */,
 				430235C42650AC3200823167 /* jni.h in Headers */,
+				434234372C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430235A92650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF85265EEC930024822F /* pipe.h in Headers */,
 				430235552650AB4F00823167 /* init.h in Headers */,
@@ -2808,6 +2886,7 @@
 			files = (
 				436E166A27FBB70B00A553EC /* tipc.h in Headers */,
 				430235CA2650AC3200823167 /* jni.h in Headers */,
+				4342343F2C91C4F50046DBD9 /* stat_wrapper.h in Headers */,
 				430235AF2650AB4F00823167 /* ancillary.h in Headers */,
 				43B3DF8B265EEC930024822F /* pipe.h in Headers */,
 				4302355B2650AB4F00823167 /* init.h in Headers */,
@@ -3348,6 +3427,7 @@
 				430456C32C91B81000CBAC42 /* tipc.c in Sources */,
 				430456C42C91B81000CBAC42 /* config.c in Sources */,
 				430456C52C91B81000CBAC42 /* credentials.c in Sources */,
+				434234312C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				430456C62C91B81000CBAC42 /* socketpair.c in Sources */,
 				430456C72C91B81000CBAC42 /* exceptions.c in Sources */,
 				430456C82C91B81000CBAC42 /* reflection.c in Sources */,
@@ -3379,6 +3459,7 @@
 				436E168227FBB70B00A553EC /* tipc.c in Sources */,
 				4304A61A266DFCEF003BCEDF /* config.c in Sources */,
 				4304A61B266DFCEF003BCEDF /* credentials.c in Sources */,
+				4342342C2C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				4304A61C266DFCEF003BCEDF /* socketpair.c in Sources */,
 				4304A61D266DFCEF003BCEDF /* exceptions.c in Sources */,
 				4304A61E266DFCEF003BCEDF /* reflection.c in Sources */,
@@ -3410,6 +3491,7 @@
 				436E167327FBB70B00A553EC /* tipc.c in Sources */,
 				430233F82650AB4E00823167 /* config.c in Sources */,
 				430235B42650AB4F00823167 /* credentials.c in Sources */,
+				4342341A2C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFB8266082000024822F /* socketpair.c in Sources */,
 				430235482650AB4F00823167 /* exceptions.c in Sources */,
 				430235242650AB4F00823167 /* reflection.c in Sources */,
@@ -3441,6 +3523,7 @@
 				436E167E27FBB70B00A553EC /* tipc.c in Sources */,
 				430234022650AB4E00823167 /* config.c in Sources */,
 				430235BE2650AB4F00823167 /* credentials.c in Sources */,
+				434234282C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFC2266082000024822F /* socketpair.c in Sources */,
 				430235522650AB4F00823167 /* exceptions.c in Sources */,
 				4302352E2650AB4F00823167 /* reflection.c in Sources */,
@@ -3472,6 +3555,7 @@
 				436E167727FBB70B00A553EC /* tipc.c in Sources */,
 				430233FB2650AB4E00823167 /* config.c in Sources */,
 				430235B72650AB4F00823167 /* credentials.c in Sources */,
+				4342341E2C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFBB266082000024822F /* socketpair.c in Sources */,
 				4302354B2650AB4F00823167 /* exceptions.c in Sources */,
 				430235272650AB4F00823167 /* reflection.c in Sources */,
@@ -3503,6 +3587,7 @@
 				436E167A27FBB70B00A553EC /* tipc.c in Sources */,
 				430233FE2650AB4E00823167 /* config.c in Sources */,
 				430235BA2650AB4F00823167 /* credentials.c in Sources */,
+				434234232C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFBE266082000024822F /* socketpair.c in Sources */,
 				4302354E2650AB4F00823167 /* exceptions.c in Sources */,
 				4302352A2650AB4F00823167 /* reflection.c in Sources */,
@@ -3534,6 +3619,7 @@
 				436E167D27FBB70B00A553EC /* tipc.c in Sources */,
 				430234012650AB4E00823167 /* config.c in Sources */,
 				430235BD2650AB4F00823167 /* credentials.c in Sources */,
+				434234262C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFC1266082000024822F /* socketpair.c in Sources */,
 				430235512650AB4F00823167 /* exceptions.c in Sources */,
 				4302352D2650AB4F00823167 /* reflection.c in Sources */,
@@ -3565,6 +3651,7 @@
 				436E167827FBB70B00A553EC /* tipc.c in Sources */,
 				430233FC2650AB4E00823167 /* config.c in Sources */,
 				430235B82650AB4F00823167 /* credentials.c in Sources */,
+				4342341F2C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFBC266082000024822F /* socketpair.c in Sources */,
 				4302354C2650AB4F00823167 /* exceptions.c in Sources */,
 				430235282650AB4F00823167 /* reflection.c in Sources */,
@@ -3596,6 +3683,7 @@
 				436E167927FBB70B00A553EC /* tipc.c in Sources */,
 				430233FD2650AB4E00823167 /* config.c in Sources */,
 				430235B92650AB4F00823167 /* credentials.c in Sources */,
+				434234222C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFBD266082000024822F /* socketpair.c in Sources */,
 				4302354D2650AB4F00823167 /* exceptions.c in Sources */,
 				430235292650AB4F00823167 /* reflection.c in Sources */,
@@ -3627,6 +3715,7 @@
 				436E167627FBB70B00A553EC /* tipc.c in Sources */,
 				430233FA2650AB4E00823167 /* config.c in Sources */,
 				430235B62650AB4F00823167 /* credentials.c in Sources */,
+				4342341D2C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFBA266082000024822F /* socketpair.c in Sources */,
 				4302354A2650AB4F00823167 /* exceptions.c in Sources */,
 				430235262650AB4F00823167 /* reflection.c in Sources */,
@@ -3658,6 +3747,7 @@
 				436E167C27FBB70B00A553EC /* tipc.c in Sources */,
 				430234002650AB4E00823167 /* config.c in Sources */,
 				430235BC2650AB4F00823167 /* credentials.c in Sources */,
+				434234252C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFC0266082000024822F /* socketpair.c in Sources */,
 				430235502650AB4F00823167 /* exceptions.c in Sources */,
 				4302352C2650AB4F00823167 /* reflection.c in Sources */,
@@ -3689,6 +3779,7 @@
 				435B54942A3F65D2001011B8 /* tipc.c in Sources */,
 				435B54952A3F65D2001011B8 /* config.c in Sources */,
 				435B54962A3F65D2001011B8 /* credentials.c in Sources */,
+				4342342E2C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				435B54972A3F65D2001011B8 /* socketpair.c in Sources */,
 				435B54982A3F65D2001011B8 /* exceptions.c in Sources */,
 				435B54992A3F65D2001011B8 /* reflection.c in Sources */,
@@ -3720,6 +3811,7 @@
 				435B54D02A3F65F4001011B8 /* tipc.c in Sources */,
 				435B54D12A3F65F4001011B8 /* config.c in Sources */,
 				435B54D22A3F65F4001011B8 /* credentials.c in Sources */,
+				4342342F2C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				435B54D32A3F65F4001011B8 /* socketpair.c in Sources */,
 				435B54D42A3F65F4001011B8 /* exceptions.c in Sources */,
 				435B54D52A3F65F4001011B8 /* reflection.c in Sources */,
@@ -3751,6 +3843,7 @@
 				435B550C2A3F661F001011B8 /* tipc.c in Sources */,
 				435B550D2A3F661F001011B8 /* config.c in Sources */,
 				435B550E2A3F661F001011B8 /* credentials.c in Sources */,
+				434234302C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				435B550F2A3F661F001011B8 /* socketpair.c in Sources */,
 				435B55102A3F661F001011B8 /* exceptions.c in Sources */,
 				435B55112A3F661F001011B8 /* reflection.c in Sources */,
@@ -3782,6 +3875,7 @@
 				436E167227FBB70B00A553EC /* tipc.c in Sources */,
 				430233F72650AB4E00823167 /* config.c in Sources */,
 				430235B32650AB4F00823167 /* credentials.c in Sources */,
+				434234192C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFB7266082000024822F /* socketpair.c in Sources */,
 				430235472650AB4F00823167 /* exceptions.c in Sources */,
 				430235232650AB4F00823167 /* reflection.c in Sources */,
@@ -3813,6 +3907,7 @@
 				43684DAA282EE24B005F2989 /* tipc.c in Sources */,
 				43684DAB282EE24B005F2989 /* config.c in Sources */,
 				43684DAC282EE24B005F2989 /* credentials.c in Sources */,
+				434234272C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43684DAD282EE24B005F2989 /* socketpair.c in Sources */,
 				43684DAE282EE24B005F2989 /* exceptions.c in Sources */,
 				43684DAF282EE24B005F2989 /* reflection.c in Sources */,
@@ -3844,6 +3939,7 @@
 				436B5AAA28244CB500574CD4 /* tipc.c in Sources */,
 				436B5AAB28244CB500574CD4 /* config.c in Sources */,
 				436B5AAC28244CB500574CD4 /* credentials.c in Sources */,
+				434234202C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				436B5AAD28244CB500574CD4 /* socketpair.c in Sources */,
 				436B5AAE28244CB500574CD4 /* exceptions.c in Sources */,
 				436B5AAF28244CB500574CD4 /* reflection.c in Sources */,
@@ -3875,6 +3971,7 @@
 				436B5AE42826F49A00574CD4 /* tipc.c in Sources */,
 				436B5AE52826F49A00574CD4 /* config.c in Sources */,
 				436B5AE62826F49A00574CD4 /* credentials.c in Sources */,
+				434234212C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				436B5AE72826F49A00574CD4 /* socketpair.c in Sources */,
 				436B5AE82826F49A00574CD4 /* exceptions.c in Sources */,
 				436B5AE92826F49A00574CD4 /* reflection.c in Sources */,
@@ -3906,6 +4003,7 @@
 				436E167F27FBB70B00A553EC /* tipc.c in Sources */,
 				43B3DFF826660A2D0024822F /* config.c in Sources */,
 				43B3DFF926660A2D0024822F /* credentials.c in Sources */,
+				434234292C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFFA26660A2D0024822F /* socketpair.c in Sources */,
 				43B3DFFB26660A2D0024822F /* exceptions.c in Sources */,
 				43B3DFFC26660A2D0024822F /* reflection.c in Sources */,
@@ -3937,6 +4035,7 @@
 				436E168027FBB70B00A553EC /* tipc.c in Sources */,
 				43B3E03026672FD30024822F /* config.c in Sources */,
 				43B3E03126672FD30024822F /* credentials.c in Sources */,
+				4342342A2C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3E03226672FD30024822F /* socketpair.c in Sources */,
 				43B3E03326672FD30024822F /* exceptions.c in Sources */,
 				43B3E03426672FD30024822F /* reflection.c in Sources */,
@@ -3968,6 +4067,7 @@
 				436E167427FBB70B00A553EC /* tipc.c in Sources */,
 				43B3E068266756540024822F /* config.c in Sources */,
 				43B3E069266756540024822F /* credentials.c in Sources */,
+				4342341B2C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3E06A266756540024822F /* socketpair.c in Sources */,
 				43B3E06B266756540024822F /* exceptions.c in Sources */,
 				43B3E06C266756540024822F /* reflection.c in Sources */,
@@ -3999,6 +4099,7 @@
 				436E168127FBB70B00A553EC /* tipc.c in Sources */,
 				43B3E0A0266971630024822F /* config.c in Sources */,
 				43B3E0A1266971630024822F /* credentials.c in Sources */,
+				4342342B2C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3E0A2266971630024822F /* socketpair.c in Sources */,
 				43B3E0A3266971630024822F /* exceptions.c in Sources */,
 				43B3E0A4266971630024822F /* reflection.c in Sources */,
@@ -4030,6 +4131,7 @@
 				43C57CF12A38F370001DEA62 /* tipc.c in Sources */,
 				43C57CF22A38F370001DEA62 /* config.c in Sources */,
 				43C57CF32A38F370001DEA62 /* credentials.c in Sources */,
+				4342342D2C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43C57CF42A38F370001DEA62 /* socketpair.c in Sources */,
 				43C57CF52A38F370001DEA62 /* exceptions.c in Sources */,
 				43C57CF62A38F370001DEA62 /* reflection.c in Sources */,
@@ -4061,6 +4163,7 @@
 				436E167527FBB70B00A553EC /* tipc.c in Sources */,
 				430233F92650AB4E00823167 /* config.c in Sources */,
 				430235B52650AB4F00823167 /* credentials.c in Sources */,
+				4342341C2C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFB9266082000024822F /* socketpair.c in Sources */,
 				430235492650AB4F00823167 /* exceptions.c in Sources */,
 				430235252650AB4F00823167 /* reflection.c in Sources */,
@@ -4092,6 +4195,7 @@
 				436E167B27FBB70B00A553EC /* tipc.c in Sources */,
 				430233FF2650AB4E00823167 /* config.c in Sources */,
 				430235BB2650AB4F00823167 /* credentials.c in Sources */,
+				434234242C91C2890046DBD9 /* stat_wrapper.c in Sources */,
 				43B3DFBF266082000024822F /* socketpair.c in Sources */,
 				4302354F2650AB4F00823167 /* exceptions.c in Sources */,
 				4302352B2650AB4F00823167 /* reflection.c in Sources */,
