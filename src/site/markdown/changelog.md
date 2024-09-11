@@ -15,6 +15,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 ### _(2024-XX-XX)_ **junixsocket 2.10.1**
 
 - Fix left-over temporary library files on Windows
+- Improve interoperability with exotic Linux/Java combinations
 - Add support for loongarch64 Linux
 - Add more tests
 - Code cleanup
