@@ -17,12 +17,19 @@
  */
 package org.newsclub.net.unix.vsock;
 
+import java.io.IOException;
+import java.net.SocketAddress;
+import java.nio.channels.SocketChannel;
+
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
+import org.newsclub.net.unix.InvalidSocketException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_VSOCK)
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
@@ -71,5 +78,19 @@ public final class ThroughputTest extends
   @Override
   public void testDatagramChannelNonBlockingDirect() throws Exception {
     super.testDatagramChannelNonBlockingDirect();
+  }
+
+  @Override
+  protected IOException handleConnectSocketException(SocketChannel channel, SocketAddress sa,
+      Exception e) {
+    if (e instanceof InvalidSocketException || e.getCause() instanceof InvalidSocketException) {
+      String msg = "Could not connect AF_VSOCK socket to CID=" + ((AFVSOCKSocketAddress) sa)
+          .getVSOCKCID() + "; check kernel capabilities.";
+      throw (TestAbortedWithImportantMessageException) new TestAbortedWithImportantMessageException(
+          MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, msg, summaryImportantMessage(msg)).initCause(
+              e);
+
+    }
+    return super.handleConnectSocketException(channel, sa, e);
   }
 }

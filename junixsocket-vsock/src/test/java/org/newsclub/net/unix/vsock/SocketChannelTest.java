@@ -20,6 +20,7 @@ package org.newsclub.net.unix.vsock;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
+import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
@@ -77,14 +78,26 @@ public final class SocketChannelTest extends
 
   @Override
   protected boolean handleConnect(SocketChannel sc, SocketAddress sa) throws IOException {
+    Exception ex;
     try {
       return super.handleConnect(sc, sa);
+    } catch (NotYetConnectedException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof InvalidSocketException) {
+        ex = e;
+        // continue below
+      } else {
+        throw e;
+      }
     } catch (InvalidSocketException e) {
-      String msg = "Could not connect AF_VSOCK socket to CID=" + ((AFVSOCKSocketAddress) sa)
-          .getVSOCKCID() + "; check kernel capabilities.";
-      throw (TestAbortedWithImportantMessageException) new TestAbortedWithImportantMessageException(
-          MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, msg, summaryImportantMessage(msg)).initCause(
-              e);
+      ex = e;
+      // continue below
     }
+
+    String msg = "Could not connect AF_VSOCK socket to CID=" + ((AFVSOCKSocketAddress) sa)
+        .getVSOCKCID() + "; check kernel capabilities.";
+    throw (TestAbortedWithImportantMessageException) new TestAbortedWithImportantMessageException(
+        MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, msg, summaryImportantMessage(msg)).initCause(
+            ex);
   }
 }

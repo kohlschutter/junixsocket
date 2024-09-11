@@ -496,7 +496,22 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
   protected final boolean connectSocket(SocketChannel socketChannel, SocketAddress endpoint)
       throws IOException {
-    return asp.connectSocket(socketChannel, endpoint);
+    try {
+      return asp.connectSocket(socketChannel, endpoint);
+    } catch (IllegalStateException | IOException e) {
+      throw handleConnectSocketException(socketChannel, endpoint, e);
+    }
+  }
+
+  protected IOException handleConnectSocketException(SocketChannel socketChannel,
+      SocketAddress endpoint, Exception e) {
+    if (e instanceof IOException) {
+      return (IOException) e;
+    } else if (e instanceof RuntimeException) {
+      throw (RuntimeException) e;
+    } else {
+      throw new IllegalStateException(e);
+    }
   }
 
   protected CloseablePair<? extends Socket> newInterconnectedSockets() throws IOException {
