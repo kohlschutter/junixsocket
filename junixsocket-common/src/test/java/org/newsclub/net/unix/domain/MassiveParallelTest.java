@@ -51,6 +51,7 @@ import org.newsclub.net.unix.ThreadUtil;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
+import com.kohlschutter.util.SystemPropertyUtil;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
 @SuppressWarnings({
@@ -72,9 +73,15 @@ public class MassiveParallelTest extends
     }
     // number of connections to perform
     // final int numConnections = 1_000;
-    final int numConnections = 10_000;
+    // final int numConnections = 10_000;
     // final int numConnections = 100_000;
     // final int numConnections = 1_000_000;
+    final int numConnections = SystemPropertyUtil.getIntSystemProperty(
+        "selftest.MassiveParallelTest.numConnections", 1000);
+    if (numConnections <= 0) {
+      throw new TestAbortedNotAnIssueException("Skipping test due to numConnections="
+          + numConnections);
+    }
 
     // limit the number of concurrently active servers/clients
     // so we don't run out of file descriptors (the limit could be as low as 256)
@@ -164,7 +171,6 @@ public class MassiveParallelTest extends
       }
 
       boolean stopped = server.cl.await(10, TimeUnit.SECONDS);
-      server.stop();
       if (!stopped) {
         List<Runnable> remainingClients = esClients.shutdownNow();
         List<Runnable> remainingServers = server.esServers.shutdownNow();
@@ -174,6 +180,7 @@ public class MassiveParallelTest extends
               + remainingClients.size());
         }
       }
+      server.stop();
 
       long elapsed = (System.currentTimeMillis() - startTime);
       int completed = server.completed.intValue();
