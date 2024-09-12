@@ -130,7 +130,7 @@ static ssize_t recvmsg_wrapper(JNIEnv * env, int handle, jbyte *buf, jint length
     controlLen = msg.msg_controllen;
     control = msg.msg_control;
 
-    if(controlLen <= 0 || control == NULL || ancSupp == NULL) {
+    if(count < 0 || controlLen <= 0 || control == NULL || ancSupp == NULL) {
         return count;
     }
 
