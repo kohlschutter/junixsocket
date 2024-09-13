@@ -104,7 +104,7 @@ echo Running junixsocket-selftest with GraalVM native-image-agent...
 (
   set -x
   java -agentlib:native-image-agent=config-output-dir=${tmpDir}/native-image.{pid} \
-	  ${selftestArgs[@]} org.newsclub.net.unix.selftest.Selftest >/dev/null
+	  ${selftestArgs[@]} org.newsclub.net.unix.selftest.Selftest
 )
 
 if [[ $? -ne 0 ]]; then
