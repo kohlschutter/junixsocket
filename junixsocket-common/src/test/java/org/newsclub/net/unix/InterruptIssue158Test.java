@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -33,6 +34,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -73,28 +75,45 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
   private static boolean DELAY_CLOSE = SystemPropertyUtil.getBooleanSystemProperty(
       "selftest.issue.158.delay-close", true);
 
-  private final A address;
+  private A address = newAddress();
   private TestInfo testInfo;
+  private List<AutoCloseable> closeables = new ArrayList<>();
 
-  @SuppressWarnings("unchecked")
   protected InterruptIssue158Test(AddressSpecifics<A> asp) {
     super(asp);
-
-    try {
-      address = (A) newTempAddress();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   @BeforeEach
   public void beforeEach(TestInfo info) {
     this.testInfo = info;
+    this.address = newAddress();
+  }
+
+  @SuppressWarnings("unchecked")
+  private A newAddress() {
+    try {
+      return (A) newTempAddress();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void closeAfterTest() {
+    deleteSocketFile(address);
+
+    for (AutoCloseable cl : closeables) {
+      try {
+        cl.close();
+      } catch (Exception e) {
+        // ignore
+      }
+    }
+    closeables.clear();
   }
 
   @AfterEach
   public void afterEach() {
-    deleteSocketFile(address);
+    closeAfterTest();
   }
 
   protected abstract void deleteSocketFile(A sa);
@@ -119,7 +138,7 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
 
   public List<Arguments> serverProvider() {
     return Arrays.asList( //
-        serverSocket(() -> newServerSocketBindOn(address), ServerSocket::accept,
+        serverSocket(() -> registerCloseable(newServerSocketBindOn(address)), ServerSocket::accept,
             SocketException.class, ServerSocket::isClosed), //
         serverSocket(this::bindServerSocketChannel, ServerSocketChannel::accept,
             ClosedByInterruptException.class, s -> !s.isOpen())//
@@ -175,7 +194,15 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
     t.interrupt();
     t.join(Duration.of(1, ChronoUnit.SECONDS).toMillis());
     if (t.isAlive()) {
-      throw new RuntimeException("Thread failed to terminate after interrupt");
+      // Thread.interrupt is not guaranteed to succeed
+      // observed with graalvm-jdk-17.0.9+11.1 when building with agent for junixsocket-native-graalvm
+      // What we need to do here is to close all socket-related resources and try again
+      closeAfterTest();
+      t.interrupt();
+      t.join(Duration.of(1, ChronoUnit.SECONDS).toMillis());
+      if (t.isAlive()) {
+        throw new RuntimeException("Thread failed to terminate after interrupt");
+      }
     }
     Throwable thrownException = exceptionHolder.get();
     if (thrownException != null) {
@@ -183,9 +210,14 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
     }
   }
 
+  private <C extends AutoCloseable> C registerCloseable(C closeable) {
+    closeables.add(closeable);
+    return closeable;
+  }
+
   private void withServer(boolean acceptConnections, ThrowingRunnable func) throws Throwable {
     Semaphore done = new Semaphore(0);
-    try (ServerSocketChannel serverSocket = newServerSocketChannel()) {
+    try (ServerSocketChannel serverSocket = registerCloseable(newServerSocketChannel())) {
       serverSocket.bind(address);
       Thread serverThread = null;
       if (acceptConnections) {
@@ -249,7 +281,7 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
     Exception exc = null;
     try {
       @SuppressWarnings({"resource"})
-      T sock = socket.get();
+      T sock = registerCloseable(socket.get());
       ready.countDown();
 
       supported = true;
@@ -314,14 +346,25 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
   }
 
   private SocketChannel connectSocketChannel() throws IOException {
-    SocketChannel socket = newSocketChannel();
+    SocketChannel socket = registerCloseable(newSocketChannel());
     socket.connect(address);
     return socket;
   }
 
   private ServerSocketChannel bindServerSocketChannel() throws IOException {
-    ServerSocketChannel socket = newServerSocketChannel();
-    socket.bind(address);
+    ServerSocketChannel socket = registerCloseable(newServerSocketChannel());
+    try {
+      try {
+        socket.bind(address);
+      } catch (BindException e) {
+        // With Inet sockets, our reserved address may just have been taken by another process
+        // so let's try again
+        address = newAddress();
+        socket.bind(address);
+      }
+    } catch (BindException e) {
+      throw (BindException) new BindException(e.getMessage() + ": " + address).initCause(e);
+    }
     return socket;
   }
 
