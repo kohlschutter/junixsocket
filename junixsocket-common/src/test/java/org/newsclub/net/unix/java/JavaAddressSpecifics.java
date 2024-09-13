@@ -53,7 +53,13 @@ public final class JavaAddressSpecifics implements AddressSpecifics<InetSocketAd
 
   @Override
   public SocketAddress newTempAddress() throws IOException {
-    return wildcardBindAddress();
+    SocketAddress bindAddr = new InetSocketAddress(InetAddress.getLoopbackAddress(), 0);
+    try (ServerSocket sock = new ServerSocket()) {
+      sock.bind(bindAddr);
+      return sock.getLocalSocketAddress();
+    } catch (BindException e) {
+      throw new TestAbortedException("Cannot bind to " + bindAddr, e);
+    }
   }
 
   @Override
