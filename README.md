@@ -37,7 +37,7 @@ from Java.
 * No outside dependencies are necessary at runtime.
 * Apache 2.0 licensed.
 
-`*` (Tested up to Java 22; basic support for Java 7 was dropped in version 2.5.0 and reintroduced in version 2.8.0).
+`*` (Tested up to Java 24; basic support for Java 7 was dropped in version 2.5.0 and reintroduced in version 2.8.0).
 
 ## Quick links
 
