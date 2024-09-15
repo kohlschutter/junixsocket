@@ -22,7 +22,7 @@ If you have certain business reasons to not upgrade but still need something fix
 
 #[[##]]# Supported Java versions
 
-junixsocket ${project.version} is fully compatible with Java 8 and newer (tested up to Java 20).
+junixsocket ${project.version} is fully compatible with Java 8 and newer (tested up to Java 24).
 
 #[[##]]# Supported Java VMs
 
@@ -34,6 +34,23 @@ and (since version 2.6.0, partially) in Native Image mode with Substrate VM.
 More [details here](graalvm.html).
 
 Since version 2.7.0, junixsocket runs on Android, too.
+
+#[[##]]# Java 24 warnings
+
+Java 24 introduced a warning when a library calls System.loadLibrary to load some native JNI code,
+something like:
+
+    WARNING: A restricted method in java.lang.System has been called
+    WARNING: java.lang.System::loadLibrary has been called by org.newsclub.net.unix.NativeLibraryLoader$StandardLibraryCandidate in an unnamed module
+    WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+    WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+For now, you can ignore this warning, but can also explicitly allow native access by adding a
+corresponding `--enable-native-access=` statement when invoking your JVM that uses junixsocket.
+
+If junixsocket is referenced by a modularized project, you could add
+`--enable-native-access=org.newsclub.net.unix`. Otherwise (and this includes the selftest jar),
+simplify specify `--enable-native-access=ALL-UNNAMED`
 
 #[[##]]# Supported Platforms
 
