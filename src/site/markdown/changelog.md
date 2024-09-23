@@ -10,9 +10,9 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ## Noteworthy changes
 
-**Users of junixsocket are strongly advised to upgrade to version 2.10.0 or newer**
+**Users of junixsocket are strongly advised to upgrade to version 2.10.1 or newer**
 
-### _(2024-XX-XX)_ **junixsocket 2.10.1**
+### _(2024-09-23)_ **junixsocket 2.10.1**
 
 - Fix left-over temporary library files on Windows
 - Fix duplicate file descriptors being received sporadically for non-blocking sockets and upon error
