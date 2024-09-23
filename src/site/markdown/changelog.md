@@ -18,6 +18,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 - Fix duplicate file descriptors being received sporadically for non-blocking sockets and upon error
 - Fix a flaky selftest when VSOCK is not supported
 - Fix a flaky selftest with GraalvM 17
+- Fix a flaky selftest with old-style finalizers
 - Improve interoperability with exotic Linux/Java combinations
 - Add support for loongarch64 Linux
 - Add more tests

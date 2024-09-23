@@ -62,8 +62,14 @@ public class FinalizeTestClient {
 
     // create some pressure on GC
     List<String> list = new ArrayList<>();
+    long nextGc = System.currentTimeMillis() + 500;
     while (true) {
       list.add(new String("junixsocket".getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8));
+      long now = System.currentTimeMillis();
+      if (now >= nextGc) {
+        nextGc = now + 500;
+        System.gc(); // NOPMD
+      }
     }
   }
 }
