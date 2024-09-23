@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1720563020805">
-    <module artifactId="junixsocket-selftest-native-image" groupId="com.kohlschutter.junixsocket" version="2.10.1-SNAPSHOT"/>
+<licensePluginReport goal="CHECK" timestamp="1727101589083">
+    <module artifactId="junixsocket-selftest-native-image" groupId="com.kohlschutter.junixsocket" version="2.10.1"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/selftest/nativeimage/Main.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/selftest/nativeimage/TriggerSelftest.java" result="PRESENT"/>

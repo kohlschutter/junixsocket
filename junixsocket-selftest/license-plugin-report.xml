@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1720562965630">
-    <module artifactId="junixsocket-selftest" groupId="com.kohlschutter.junixsocket" version="2.10.1-SNAPSHOT"/>
+<licensePluginReport goal="CHECK" timestamp="1727101523173">
+    <module artifactId="junixsocket-selftest" groupId="com.kohlschutter.junixsocket" version="2.10.1"/>
     <files>
         <file path="src/main/java-overlay/org/newsclub/net/unix/selftest/SelftestProvider.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/selftest/Selftest.java" result="PRESENT"/>

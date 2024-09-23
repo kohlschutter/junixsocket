@@ -254,8 +254,8 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
 <span class="fc bfc" id="L254" title="All 2 branches covered.">    if (timeout &lt; 0) {</span>
 <span class="fc" id="L255">      throw new IllegalArgumentException(&quot;connect: timeout can't be negative&quot;);</span>
     }
-<span class="fc bfc" id="L257" title="All 2 branches covered.">    if (isClosed()) {</span>
-<span class="fc" id="L258">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="pc bpc" id="L257" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L258">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
 
 <span class="pc bpc" id="L261" title="1 of 2 branches missed.">    if (connectFilter != null) {</span>
@@ -362,7 +362,7 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
 
   @Override
   public final boolean isClosed() {
-<span class="pc bpc" id="L365" title="1 of 8 branches missed.">    return super.isClosed() || (isConnected() &amp;&amp; !impl.getFD().valid()) || impl.isClosed();</span>
+<span class="pc bpc" id="L365" title="2 of 8 branches missed.">    return super.isClosed() || (isConnected() &amp;&amp; !impl.getFD().valid()) || impl.isClosed();</span>
   }
 
   @Override

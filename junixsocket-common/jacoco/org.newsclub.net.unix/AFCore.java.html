@@ -198,7 +198,7 @@ class AFCore extends CleanableState {
         try {
 <span class="fc" id="L199">          count = NativeUnixSocket.receive(fdesc, buf, pos, remaining, socketAddressBuffer, options,</span>
               ancillaryDataSupport, 0);
-<span class="pc bpc" id="L201" title="1 of 4 branches missed.">          if (count == 0 &amp;&amp; virtualBlocking) {</span>
+<span class="fc bfc" id="L201" title="All 4 branches covered.">          if (count == 0 &amp;&amp; virtualBlocking) {</span>
             // try again
 <span class="fc" id="L203">            park = true;</span>
             continue virtualThreadLoop;

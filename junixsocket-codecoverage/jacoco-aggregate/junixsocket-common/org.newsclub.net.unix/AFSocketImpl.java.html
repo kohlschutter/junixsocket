@@ -251,7 +251,7 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
 
 <span class="fc" id="L252">    AFSocketAddress socketAddress = core.socketAddress;</span>
 <span class="fc" id="L253">    AFSocketAddress boundSocketAddress = getLocalSocketAddress();</span>
-<span class="fc bfc" id="L254" title="All 2 branches covered.">    if (boundSocketAddress != null) {</span>
+<span class="pc bpc" id="L254" title="1 of 2 branches missed.">    if (boundSocketAddress != null) {</span>
       // Always resolve bound address from wildcard address, etc.
 <span class="fc" id="L256">      core.socketAddress = socketAddress = boundSocketAddress;</span>
     }

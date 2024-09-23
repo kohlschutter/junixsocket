@@ -209,9 +209,9 @@ public abstract class AFDatagramChannel&lt;A extends AFSocketAddress&gt; extends
 <span class="fc" id="L209">      int ret = afSocket.getAFImpl().write(src);</span>
 <span class="fc" id="L210">      complete = true;</span>
 <span class="fc" id="L211">      return ret;</span>
-<span class="nc" id="L212">    } catch (IOException e) {</span>
-<span class="nc" id="L213">      throw InterruptibleChannelUtil.ioExceptionOrThrowRuntimeException( // NOPMD.PreserveStackTrace</span>
-<span class="nc" id="L214">          (exception = InterruptibleChannelUtil.handleException(this, e)));</span>
+<span class="fc" id="L212">    } catch (IOException e) {</span>
+<span class="fc" id="L213">      throw InterruptibleChannelUtil.ioExceptionOrThrowRuntimeException( // NOPMD.PreserveStackTrace</span>
+<span class="fc" id="L214">          (exception = InterruptibleChannelUtil.handleException(this, e)));</span>
     } finally {
 <span class="fc" id="L216">      InterruptibleChannelUtil.endInterruptable(this, this::end, complete, exception);</span>
     }

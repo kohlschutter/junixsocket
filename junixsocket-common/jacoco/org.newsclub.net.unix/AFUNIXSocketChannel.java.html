@@ -56,7 +56,7 @@ public final class AFUNIXSocketChannel extends AFSocketChannel&lt;AFUNIXSocketAd
 
   @Override
   public FileDescriptor[] getReceivedFileDescriptors() throws IOException {
-<span class="nc" id="L59">    return ((AFUNIXSocketExtensions) getAFSocket()).getReceivedFileDescriptors();</span>
+<span class="fc" id="L59">    return ((AFUNIXSocketExtensions) getAFSocket()).getReceivedFileDescriptors();</span>
   }
 
   @Override
@@ -66,11 +66,11 @@ public final class AFUNIXSocketChannel extends AFSocketChannel&lt;AFUNIXSocketAd
 
   @Override
   public void setOutboundFileDescriptors(FileDescriptor... fdescs) throws IOException {
-<span class="nc bnc" id="L69" title="All 6 branches missed.">    if (fdescs != null &amp;&amp; fdescs.length &gt; 0 &amp;&amp; !isConnected()) {</span>
+<span class="pc bpc" id="L69" title="3 of 6 branches missed.">    if (fdescs != null &amp;&amp; fdescs.length &gt; 0 &amp;&amp; !isConnected()) {</span>
 <span class="nc" id="L70">      throw new SocketException(&quot;Not connected&quot;);</span>
     }
-<span class="nc" id="L72">    ((AFUNIXSocketExtensions) getAFSocket()).setOutboundFileDescriptors(fdescs);</span>
-<span class="nc" id="L73">  }</span>
+<span class="fc" id="L72">    ((AFUNIXSocketExtensions) getAFSocket()).setOutboundFileDescriptors(fdescs);</span>
+<span class="fc" id="L73">  }</span>
 
   @Override
   public boolean hasOutboundFileDescriptors() {

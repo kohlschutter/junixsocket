@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1720562790284">
-    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.10.1-SNAPSHOT"/>
+<licensePluginReport goal="CHECK" timestamp="1727101320413">
+    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.10.1"/>
     <files>
         <file path="src/main/java-unresolved-properties/org/newsclub/net/unix/BuildProperties.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamily.java" result="PRESENT"/>
