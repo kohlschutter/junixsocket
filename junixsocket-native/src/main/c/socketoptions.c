@@ -357,10 +357,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
         return;
     }
 
+    long dummy = 0;
     void* valPtr;
     socklen_t valLen;
     if(value == NULL) {
-        valPtr = NULL;
+        valPtr = &dummy;
         valLen = 0;
     } else {
         jclass objClass = (*env)->GetObjectClass(env, value);
@@ -393,5 +394,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
     }
 
 end:
-    free(valPtr);
+    if(valLen) {
+        free(valPtr);
+    }
 }
