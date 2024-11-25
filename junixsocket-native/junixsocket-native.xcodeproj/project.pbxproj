@@ -5789,6 +5789,7 @@
 					"-Werror-implicit-function-declaration",
 					"-Wno-declaration-after-statement",
 					"-Wno-unsafe-buffer-usage",
+					"-Wno-missing-include-dirs",
 				);
 			};
 			name = Debug;
@@ -5877,6 +5878,7 @@
 					"-Werror-implicit-function-declaration",
 					"-Wno-declaration-after-statement",
 					"-Wno-unsafe-buffer-usage",
+					"-Wno-missing-include-dirs",
 				);
 			};
 			name = Release;
