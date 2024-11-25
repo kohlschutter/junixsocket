@@ -8,9 +8,9 @@ JNI code for both macOS and Linux, on _either_ platform.
 In order to cross-compile, our development machine (the one where we do the compilation), needs
 to have clang and llvm.
 
-On Mac, the Xcode version of clang is not sufficient. You have to install llvm from Homebrew:
+On Mac, the Xcode version of clang is not sufficient. You have to install llvm and lld from Homebrew:
 
-    brew install llvm
+    brew install llvm lld
 
 ## Setting up the target SDKs
 
