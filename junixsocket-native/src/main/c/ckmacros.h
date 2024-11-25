@@ -81,7 +81,12 @@ _Pragma("clang diagnostic pop")
  */
 #   define CK_EXCLUDED_FROM_STATIC_ANALYSIS !(__clang_analyzer__)
 
-#   define CK_STATIC_ASSERT(COND) _Static_assert(COND, "Assertion failed")
+#   define CK_STATIC_ASSERT(COND) \
+        _Pragma("clang diagnostic push") \
+        _Pragma("clang diagnostic ignored \"-Wunknown-warning-option\"") \
+        _Pragma("clang diagnostic ignored \"-Wpre-c11-compat\"") \
+        _Static_assert(COND, "Assertion failed") \
+        _Pragma("clang diagnostic pop")
 
 #define CK_FALLTHROUGH \
     _Pragma("clang diagnostic push") \
