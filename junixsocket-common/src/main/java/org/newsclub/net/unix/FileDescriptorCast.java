@@ -149,6 +149,15 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
         }
       });
 
+      addProvider(FileChannelSupplier.ReadOnly.class, (fdc,
+          desiredType) -> new FileChannelSupplier.ReadOnly(fdc.getFileDescriptor()));
+
+      addProvider(FileChannelSupplier.WriteOnly.class, (fdc,
+          desiredType) -> new FileChannelSupplier.WriteOnly(fdc.getFileDescriptor()));
+
+      addProvider(FileChannelSupplier.ReadWrite.class, (fdc,
+          desiredType) -> new FileChannelSupplier.ReadWrite(fdc.getFileDescriptor()));
+
       addProvider(FileOutputStream.class, new CastingProvider<FileOutputStream>() {
         @Override
         public FileOutputStream provideAs(FileDescriptorCast fdc,
@@ -156,6 +165,7 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
           return new FileOutputStream(fdc.getFileDescriptor());
         }
       });
+
       addProvider(FileInputStream.class, new CastingProvider<FileInputStream>() {
         @Override
         public FileInputStream provideAs(FileDescriptorCast fdc,

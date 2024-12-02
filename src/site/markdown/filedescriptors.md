@@ -125,6 +125,10 @@ For example, if you want to simply read from this file descriptor, use:
 
 	InputStream in = FileDescriptorCast.using(fd).as(InputStream.class);
 
+If you want to get a FileChannel, you need to use our custom FileChannelSupplier, which has specific subclasses to indicate read-only, write-only, and read-write access modes, for example:
+
+    FileChannel fc = FileDescriptorCast.using(fd).as(FileChannelSupplier.ReadOnly.class).get();
+
 If the file descriptor is a Socket, you can use:
 
 	Socket sock = FileDescriptorCast.using(fd).as(Socket.class);
