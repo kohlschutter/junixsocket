@@ -195,7 +195,8 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
     t.join(Duration.of(1, ChronoUnit.SECONDS).toMillis());
     if (t.isAlive()) {
       // Thread.interrupt is not guaranteed to succeed
-      // observed with graalvm-jdk-17.0.9+11.1 when building with agent for junixsocket-native-graalvm
+      // observed with graalvm-jdk-17.0.9+11.1 when building with agent for
+      // junixsocket-native-graalvm
       // What we need to do here is to close all socket-related resources and try again
       closeAfterTest();
       t.interrupt();

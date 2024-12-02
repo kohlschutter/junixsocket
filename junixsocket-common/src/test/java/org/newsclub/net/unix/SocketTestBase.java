@@ -506,9 +506,9 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
   protected IOException handleConnectSocketException(SocketChannel socketChannel,
       SocketAddress endpoint, Exception e) {
     if (e instanceof IOException) {
-      return (IOException)e;
+      return (IOException) e;
     } else if (e instanceof RuntimeException) {
-      throw (RuntimeException)e;
+      throw (RuntimeException) e;
     } else {
       throw new IllegalStateException(e);
     }
