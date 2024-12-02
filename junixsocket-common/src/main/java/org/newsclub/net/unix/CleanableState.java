@@ -20,6 +20,7 @@ package org.newsclub.net.unix;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.ref.Cleaner;
+import java.util.Objects;
 
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
 
@@ -40,32 +41,58 @@ import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
  * <li>If the observed class implements {@code close()}, it's a good practice to have it just call
  * {@code cleanableState.runCleaner()}.</li>
  * </ol>
- * </p>
+ * <p>
+ * Exceptions thrown upon doClean() are either thrown via {@link #close()} when invoked directly,
+ * or, if cleaned during Garbage collection, to the exception handler specified in the constructor
+ * or (if none specified) to the default uncaught exception handler.
  * <p>
  * Implementation details:
  * <ul>
  * <li>In Java 9 or later, {@link Cleaner} is used under the hood.</li>
  * <li>In Java 8 or earlier, {@link #finalize()} calls {@link #doClean()} directly.</li>
  * </ul>
- * </p>
  *
  * @author Christian Kohlschütter
  */
 @IgnoreJRERequirement // see src/main/java8
-abstract class CleanableState implements Closeable {
+public abstract class CleanableState implements Closeable {
+  /**
+   * A default exception handler: Calls {@link Thread#getDefaultUncaughtExceptionHandler()} with the
+   * stacktrace and information about the current thread.
+   */
+  public static final AFConsumer<Throwable> DEFAULT_EXCEPTION_HANDLER = (t) -> Thread
+      .getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), t);
+
   private static final Cleaner CLEANER = Cleaner.create();
   private final Cleaner.Cleanable cleanable;
+  private AFConsumer<Throwable> exceptionHandler;
+  private AFConsumer<Throwable> exceptionHandlerCurrent;
+  private IOException exceptionUponClose = null;
 
   /**
    * Creates a state object to be used as an implementation detail of the specified observed
-   * instance.
+   * instance, using the {@link #DEFAULT_EXCEPTION_HANDLER}.
    *
    * @param observed The observed instance (the outer class referencing this
    *          {@link CleanableState}).
    */
   protected CleanableState(Object observed) {
-    this.cleanable = CLEANER.register(observed, () -> doClean()); // NOPMD.LambdaCanBeMethodReference
-                                                                  // (Retrolambda)
+    this(observed, DEFAULT_EXCEPTION_HANDLER);
+  }
+
+  /**
+   * Creates a state object to be used as an implementation detail of the specified observed
+   * instance, using a custom exception handler.
+   *
+   * @param observed The observed instance (the outer class referencing this
+   *          {@link CleanableState}).
+   * @param exceptionHandler The exception handler.
+   */
+  protected CleanableState(Object observed, AFConsumer<Throwable> exceptionHandler) {
+    this.exceptionHandler = Objects.requireNonNull(exceptionHandler);
+    this.exceptionHandlerCurrent = exceptionHandler;
+    this.cleanable = CLEANER.register(observed, () -> doClean1()); // NOPMD.LambdaCanBeMethodReference
+                                                                   // (Retrolambda)
   }
 
   /**
@@ -76,13 +103,49 @@ abstract class CleanableState implements Closeable {
     cleanable.clean();
   }
 
+  private void doClean1() {
+    try {
+      doClean();
+    } catch (Throwable t) { // NOPMD
+      exceptionHandlerCurrent.accept(t);
+    }
+  }
+
   /**
-   * Performs the actual cleanup.
+   * Performs the actual cleanup. Be sure to always clean up whenever possible, either by tracking
+   * potential exceptions or by using try-finally to ensure proper cleanup.
+   *
+   * @throws IOException on error.
    */
-  protected abstract void doClean();
+  protected abstract void doClean() throws IOException;
+
+  /**
+   * Checks if we're being called from within {@link #close()}.
+   *
+   * @return {@code true} if being called from within {@link #close()}.
+   */
+  protected boolean inClose() {
+    return exceptionHandlerCurrent != exceptionHandler; // NOPMD
+  }
 
   @Override
   public final void close() throws IOException {
+    this.exceptionHandlerCurrent = (t) -> {
+      IOException exc = exceptionUponClose;
+      if (exc != null) {
+        exc.addSuppressed(t);
+      } else if (t instanceof IOException) {
+        exceptionUponClose = (IOException) t;
+      } else {
+        exceptionUponClose = new IOException();
+        exceptionUponClose.addSuppressed(t);
+      }
+    };
     runCleaner();
+    this.exceptionHandlerCurrent = exceptionHandler;
+
+    if (exceptionUponClose != null) {
+      throw exceptionUponClose;
+    }
   }
 }
