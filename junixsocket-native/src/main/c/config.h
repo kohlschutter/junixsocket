@@ -302,6 +302,7 @@ typedef unsigned long socklen_t; /* 64-bits */
 #endif
 
 #if defined(__BSD_VISIBLE)
+#  define junixsocket_have_arc4random 1
 #  if defined(__MACH__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
 // not OpenBSD
 #  else
@@ -311,6 +312,7 @@ typedef unsigned long socklen_t; /* 64-bits */
 #endif
 
 #if defined(__MACH__)
+#  define junixsocket_have_arc4random 1
 #  if !defined(_DARWIN_C_SOURCE)
 #    define _DARWIN_C_SOURCE 1
 #  endif
