@@ -39,7 +39,7 @@ import com.kohlschutter.testutil.TestStackTraceUtil;
 /**
  * Tests breaking out of accept.
  *
- * @see <a href="http://code.google.com/p/junixsocket/issues/detail?id=6">Issue 6</a>
+ * @see <a href="https://code.google.com/archive/p/junixsocket/issues/6">Issue 6</a>
  */
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})

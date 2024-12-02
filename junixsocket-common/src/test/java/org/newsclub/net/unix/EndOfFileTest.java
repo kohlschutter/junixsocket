@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
- * See http://code.google.com/p/junixsocket/issues/detail?id=9
+ * See <a href="https://code.google.com/archive/p/junixsocket/issues/9">Issue 9</a>.
  *
  * @author Derrick Rice (April, 2010)
  */

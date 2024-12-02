@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
- * See https://code.google.com/p/junixsocket/issues/detail?id=20
+ * See <a href="https://code.google.com/archive/p/junixsocket/issues/20">Issue 20</a>.
  */
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",

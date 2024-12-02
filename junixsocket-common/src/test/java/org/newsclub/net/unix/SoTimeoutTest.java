@@ -41,7 +41,7 @@ import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.Messag
 /**
  * Tests {@link Socket#setSoTimeout(int)} behavior.
  *
- * @see <a href="http://code.google.com/p/junixsocket/issues/detail?id=14">Issue 14</a>
+ * @see <a href="https://code.google.com/archive/p/junixsocket/issues/14">Issue 14</a>
  */
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
