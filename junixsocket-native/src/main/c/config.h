@@ -123,6 +123,12 @@ typedef unsigned long long uint64_t;
 #  endif
 #endif
 
+#if __TANDEM
+#define off64_t off_t
+#elif !defined(off64_t) // FIXME 32-bit
+#define off64_t off_t
+#endif
+
 #if !defined(SOCKLEN_MAX)
     // from ruby's ext/socket/rubysocket.h
     #define SOCKLEN_MAX \
