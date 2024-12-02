@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/DECORATION/1.8.0"
+<site xmlns="http://maven.apache.org/SITE/2.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd"
+  xsi:schemaLocation="http://maven.apache.org/SITE/2.0.0 http://maven.apache.org/xsd/site-2.0.0.xsd"
   name="junixsocket">
 
   <skin>
@@ -18,8 +18,7 @@
     </fluidoSkin>
   </custom>
 
-  <bannerLeft>
-    <name>junixsocket — Unix Domain Sockets for Java</name>
+  <bannerLeft name="junixsocket — Unix Domain Sockets for Java">
     <!-- <name>${project.name}</name> -->
     <!-- <src>https://project-website.example/images/project-logo.png</src>
       <href>https://project-website.example/</href> -->
@@ -122,4 +121,4 @@
       ]]>
     </footer>
   </body>
-</project>
+</site>
