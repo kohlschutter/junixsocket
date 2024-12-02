@@ -14,7 +14,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ### _(XXXX-XX-XX)_ **junixsocket 2.11.0**
 
-- Add support to cast FileDescriptor to FileChannel (read-only, write-only, read-write)
+- Improve support for casting FileDescriptor to FileChannel; allow specifying open mode.
 
 ### _(2024-09-23)_ **junixsocket 2.10.1**
 
