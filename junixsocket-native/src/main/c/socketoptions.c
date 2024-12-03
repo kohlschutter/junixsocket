@@ -390,7 +390,14 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
     int ret = setsockopt(handle, domain, optionName,
                          WIN32_NEEDS_CHARP valPtr, valLen);
     if(ret == -1) {
-        _throwSockoptErrnumException(env, socket_errno, fd);
+        int errnum = socket_errno;
+        if(errnum == EINVAL) {
+            if(domain == 271 /* SOL_TIPC */ && optionName == 136 /* TIPC_GROUP_LEAVE */) {
+                // ignore EINVAL
+                goto end;
+            }
+        }
+        _throwSockoptErrnumException(env, errnum, fd);
     }
 
 end:
