@@ -52,6 +52,9 @@ void _throwException(JNIEnv* env, ExceptionType exceptionType, char* message);
 void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose);
 
 void _throwSockoptErrnumException(JNIEnv* env, int errnum, jobject fd);
+
 CK_IGNORE_RESERVED_IDENTIFIER_END
+
+void throwIOErrnumException(JNIEnv* env, int errnum, jobject fdToClose);
 
 #endif /* exceptions_h */

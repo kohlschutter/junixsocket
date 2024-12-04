@@ -108,12 +108,12 @@ void _throwException(JNIEnv* env, ExceptionType exceptionType, char* message)
     (*env)->Throw(env, t);
 }
 
-void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
+void throwErrnumException1(JNIEnv* env, int errnum, jobject fdToClose, jboolean isSocket)
 {
     ExceptionType exceptionType;
 
 #if ENOTSUP
-    if(errnum == ENOTSUP) {
+    if(errnum == ENOTSUP && isSocket) {
         errnum = EOPNOTSUPP;
     }
 #endif
@@ -127,7 +127,11 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
             exceptionType = kExceptionNoRouteToHostException;
             break;
         case EINVAL:
-            exceptionType = kExceptionInvalidArgumentSocketException;
+            if(isSocket) {
+                exceptionType = kExceptionInvalidArgumentSocketException;
+            } else {
+                exceptionType = kExceptionIOException;
+            }
             break;
         case EADDRNOTAVAIL:
             exceptionType = kExceptionAddressUnavailableSocketException;
@@ -148,10 +152,18 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
 #if EAFNOSUPPORT
         case EAFNOSUPPORT:
 #endif
-            exceptionType = kExceptionOperationNotSupportedSocketException;
+            if(isSocket) {
+                exceptionType = kExceptionOperationNotSupportedSocketException;
+            } else {
+                exceptionType = kExceptionIOException;
+            }
             break;
         case ENODEV:
-            exceptionType = kExceptionNoSuchDeviceSocketException;
+            if(isSocket) {
+                exceptionType = kExceptionNoSuchDeviceSocketException;
+            } else {
+                exceptionType = kExceptionIOException;
+            }
             break;
         case ENOTCONN:
             exceptionType = kExceptionNotConnectedSocketException;
@@ -182,6 +194,20 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
                 _closeFd(env, fdToClose, -1);
             }
             break;
+        case ENOENT:
+            if(isSocket) {
+                exceptionType = kExceptionSocketException; // unexpected
+            } else {
+                exceptionType = kExceptionFileNotFoundException;
+            }
+            break;
+        case EEXIST:
+            if(isSocket) {
+                exceptionType = kExceptionSocketException; // unexpected
+            } else {
+                exceptionType = kExceptionFileAlreadyExistsException;
+            }
+            break;
         case EBADF:
             // close socket fd, so Socket#isClosed returns true
             if(fdToClose != NULL) {
@@ -190,7 +216,11 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
 
             CK_FALLTHROUGH;
         default:
-            exceptionType = kExceptionSocketException;
+            if(isSocket) {
+                exceptionType = kExceptionSocketException;
+            } else {
+                exceptionType = kExceptionIOException;
+            }
     }
 
     size_t buflen = 255;
@@ -240,6 +270,16 @@ void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
     _throwException(env, exceptionType, message);
 
     free(message);
+}
+
+inline void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
+{
+    throwErrnumException1(env, errnum, fdToClose, true);
+}
+
+inline void throwIOErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
+{
+    throwErrnumException1(env, errnum, fdToClose, false);
 }
 
 void _throwSockoptErrnumException(JNIEnv* env, int errnum, jobject fd)
