@@ -14,6 +14,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ### _(XXXX-XX-XX)_ **junixsocket 2.11.0**
 
+- Fix an unecessary exception being thrown for TIPC_GROUP_LEAVE (AFTIPCSocket)
 - Improve support for casting FileDescriptor to FileChannel; allow specifying open mode.
 
 ### _(2024-09-23)_ **junixsocket 2.10.1**
