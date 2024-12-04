@@ -53,6 +53,54 @@ extern "C" {
 #define org_newsclub_net_unix_NativeUnixSocket_SHUT_WR 1L
 #undef org_newsclub_net_unix_NativeUnixSocket_SHUT_RD_WR
 #define org_newsclub_net_unix_NativeUnixSocket_SHUT_RD_WR 2L
+#undef org_newsclub_net_unix_NativeUnixSocket_S_IRUSR
+#define org_newsclub_net_unix_NativeUnixSocket_S_IRUSR 256L
+#undef org_newsclub_net_unix_NativeUnixSocket_S_IWUSR
+#define org_newsclub_net_unix_NativeUnixSocket_S_IWUSR 128L
+#undef org_newsclub_net_unix_NativeUnixSocket_S_IRGRP
+#define org_newsclub_net_unix_NativeUnixSocket_S_IRGRP 32L
+#undef org_newsclub_net_unix_NativeUnixSocket_S_IWGRP
+#define org_newsclub_net_unix_NativeUnixSocket_S_IWGRP 16L
+#undef org_newsclub_net_unix_NativeUnixSocket_S_IROTH
+#define org_newsclub_net_unix_NativeUnixSocket_S_IROTH 4L
+#undef org_newsclub_net_unix_NativeUnixSocket_S_IWOTH
+#define org_newsclub_net_unix_NativeUnixSocket_S_IWOTH 2L
+#undef org_newsclub_net_unix_NativeUnixSocket_MOPT_RDONLY
+#define org_newsclub_net_unix_NativeUnixSocket_MOPT_RDONLY 1L
+#undef org_newsclub_net_unix_NativeUnixSocket_MOPT_CREAT
+#define org_newsclub_net_unix_NativeUnixSocket_MOPT_CREAT 4L
+#undef org_newsclub_net_unix_NativeUnixSocket_MOPT_EXCL
+#define org_newsclub_net_unix_NativeUnixSocket_MOPT_EXCL 8L
+#undef org_newsclub_net_unix_NativeUnixSocket_MOPT_TRUNC
+#define org_newsclub_net_unix_NativeUnixSocket_MOPT_TRUNC 16L
+#undef org_newsclub_net_unix_NativeUnixSocket_MOPT_SEALABLE
+#define org_newsclub_net_unix_NativeUnixSocket_MOPT_SEALABLE 32L
+#undef org_newsclub_net_unix_NativeUnixSocket_MOPT_SECRET
+#define org_newsclub_net_unix_NativeUnixSocket_MOPT_SECRET 64L
+#undef org_newsclub_net_unix_NativeUnixSocket_MOPT_UNLINK_UPON_CLOSE
+#define org_newsclub_net_unix_NativeUnixSocket_MOPT_UNLINK_UPON_CLOSE 128L
+#undef org_newsclub_net_unix_NativeUnixSocket_MMODE_READ
+#define org_newsclub_net_unix_NativeUnixSocket_MMODE_READ 1L
+#undef org_newsclub_net_unix_NativeUnixSocket_MMODE_WRITE
+#define org_newsclub_net_unix_NativeUnixSocket_MMODE_WRITE 2L
+#undef org_newsclub_net_unix_NativeUnixSocket_MMODE_COPY_ON_WRITE
+#define org_newsclub_net_unix_NativeUnixSocket_MMODE_COPY_ON_WRITE 4L
+#undef org_newsclub_net_unix_NativeUnixSocket_MMODE_SYNC
+#define org_newsclub_net_unix_NativeUnixSocket_MMODE_SYNC 8L
+#undef org_newsclub_net_unix_NativeUnixSocket_MADV_NORMAL
+#define org_newsclub_net_unix_NativeUnixSocket_MADV_NORMAL 1L
+#undef org_newsclub_net_unix_NativeUnixSocket_MADV_FREE
+#define org_newsclub_net_unix_NativeUnixSocket_MADV_FREE 2L
+#undef org_newsclub_net_unix_NativeUnixSocket_MADV_FREE_NOW
+#define org_newsclub_net_unix_NativeUnixSocket_MADV_FREE_NOW 4L
+#undef org_newsclub_net_unix_NativeUnixSocket_MADV_WILLNEED
+#define org_newsclub_net_unix_NativeUnixSocket_MADV_WILLNEED 8L
+#undef org_newsclub_net_unix_NativeUnixSocket_MADV_DONTNEED
+#define org_newsclub_net_unix_NativeUnixSocket_MADV_DONTNEED 16L
+#undef org_newsclub_net_unix_NativeUnixSocket_MADV_SEQUENTIAL
+#define org_newsclub_net_unix_NativeUnixSocket_MADV_SEQUENTIAL 32L
+#undef org_newsclub_net_unix_NativeUnixSocket_MADV_RANDOM
+#define org_newsclub_net_unix_NativeUnixSocket_MADV_RANDOM 64L
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    init
@@ -476,6 +524,70 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_vsockGetLocal
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_systemResolveCtlId
   (JNIEnv *, jclass, jobject, jstring);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    shmUnlink
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shmUnlink
+  (JNIEnv *, jclass, jstring);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    shmOpen
+ * Signature: (Ljava/io/FileDescriptor;Ljava/lang/String;JII)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shmOpen
+  (JNIEnv *, jclass, jobject, jstring, jlong, jint, jint);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    pageSize
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_pageSize
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    mmap
+ * Signature: (Ljava/lang/Object;Ljava/io/FileDescriptor;JJII)Ljava/nio/ByteBuffer;
+ */
+JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
+  (JNIEnv *, jclass, jobject, jobject, jlong, jlong, jint, jint);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    unmap
+ * Signature: (JJZ)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_unmap
+  (JNIEnv *, jclass, jlong, jlong, jboolean);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    madvise
+ * Signature: (JJIZ)V
+ */
+JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_madvise
+  (JNIEnv *, jclass, jlong, jlong, jint, jboolean);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    futexWait
+ * Signature: (JII)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_futexWait
+  (JNIEnv *, jclass, jlong, jint, jint);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    futexWake
+ * Signature: (JZ)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_futexWake
+  (JNIEnv *, jclass, jlong, jboolean);
 
 #ifdef __cplusplus
 }

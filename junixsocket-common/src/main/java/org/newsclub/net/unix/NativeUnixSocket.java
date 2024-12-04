@@ -19,8 +19,10 @@ package org.newsclub.net.unix;
 
 import java.io.Closeable;
 import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -29,6 +31,7 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.spi.AbstractSelectableChannel;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.newsclub.net.unix.AFSelector.PollFd;
@@ -81,6 +84,34 @@ final class NativeUnixSocket {
   static final int SHUT_WR = 1;
   static final int SHUT_RD_WR = 2;
 
+  static final int S_IRUSR = 0400; // NOPMD.AvoidUsingOctalValues
+  static final int S_IWUSR = 0200; // NOPMD.AvoidUsingOctalValues
+  static final int S_IRGRP = 0040; // NOPMD.AvoidUsingOctalValues
+  static final int S_IWGRP = 0020; // NOPMD.AvoidUsingOctalValues
+  static final int S_IROTH = 0004; // NOPMD.AvoidUsingOctalValues
+  static final int S_IWOTH = 0002; // NOPMD.AvoidUsingOctalValues
+
+  static final int MOPT_RDONLY = 1 << 0;
+  static final int MOPT_CREAT = 1 << 2;
+  static final int MOPT_EXCL = 1 << 3;
+  static final int MOPT_TRUNC = 1 << 4;
+  static final int MOPT_SEALABLE = 1 << 5;
+  static final int MOPT_SECRET = 1 << 6;
+  static final int MOPT_UNLINK_UPON_CLOSE = 1 << 7;
+
+  static final int MMODE_READ = 1 << 0;
+  static final int MMODE_WRITE = 1 << 1;
+  static final int MMODE_COPY_ON_WRITE = 1 << 2;
+  static final int MMODE_SYNC = 1 << 3;
+
+  static final int MADV_NORMAL = 1 << 0;
+  static final int MADV_FREE = 1 << 1;
+  static final int MADV_FREE_NOW = 1 << 2;
+  static final int MADV_WILLNEED = 1 << 3;
+  static final int MADV_DONTNEED = 1 << 4;
+  static final int MADV_SEQUENTIAL = 1 << 5;
+  static final int MADV_RANDOM = 1 << 6;
+
   @ExcludeFromCodeCoverageGeneratedReport(reason = "unreachable")
   private NativeUnixSocket() {
     throw new UnsupportedOperationException("No instances");
@@ -108,10 +139,25 @@ final class NativeUnixSocket {
         "org.newsclub.net.unix.AFVSOCKSocketAddress");
     AFAddressFamily.registerAddressFamily("system", NativeUnixSocket.DOMAIN_SYSTEM,
         "org.newsclub.net.unix.AFSYSTEMSocketAddress");
+
+    initSharedMemory();
   }
 
   static boolean isLoaded() {
     return LOADED.get();
+  }
+
+  private static void initSharedMemory() {
+    try {
+      Class<?> sharedMemory = Class.forName("org.newsclub.net.unix.memory.SharedMemory");
+      if (sharedMemory != null) {
+        sharedMemory.getMethod("init", MemoryImplUtilInternal.class).invoke(null,
+            new MemoryImplUtilInternal());
+      }
+    } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException
+        | NoSuchMethodException | SecurityException e) {
+      // ignore
+    }
   }
 
   static void ensureSupported() throws UnsupportedOperationException {
@@ -145,6 +191,9 @@ final class NativeUnixSocket {
     tryResolveClass(BrokenPipeSocketException.class.getName());
     tryResolveClass(ConnectionResetSocketException.class.getName());
     tryResolveClass(SocketClosedException.class.getName());
+    tryResolveClass(FileNotFoundException.class.getName());
+    tryResolveClass(FileAlreadyExistsException.class.getName());
+    tryResolveClass(IOException.class.getName());
   }
 
   private static void tryResolveClass(String className) {
@@ -336,4 +385,23 @@ final class NativeUnixSocket {
   static void setLoaded(boolean successful) {
     LOADED.compareAndSet(false, successful);
   }
+
+  static native void shmUnlink(String name) throws IOException;
+
+  static native void shmOpen(FileDescriptor fdOut, String name, long truncateLength, int mode,
+      int options) throws IOException;
+
+  static native long pageSize();
+
+  static native ByteBuffer mmap(Object arenaSegment, FileDescriptor fd, long offset, long length,
+      int mmode, int duplicates) throws IOException;
+
+  static native void unmap(long address, long byteSize, boolean ignoreError) throws IOException;
+
+  static native void madvise(long address, long byteSize, int madv, boolean ignoreError)
+      throws IOException;
+
+  static native boolean futexWait(long address, int value, int timeoutMillis) throws IOException;
+
+  static native boolean futexWake(long address, boolean wakeAll) throws IOException;
 }

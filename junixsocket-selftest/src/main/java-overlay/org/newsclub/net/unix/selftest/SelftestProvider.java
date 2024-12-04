@@ -43,6 +43,8 @@ public class SelftestProvider {
       new org.newsclub.net.unix.darwin.SelftestProvider();
   private final org.newsclub.net.mysql.SelftestProvider mysqlSelftests =
       new org.newsclub.net.mysql.SelftestProvider();
+  private final org.newsclub.net.unix.memory.SelftestProvider memorySelftests =
+      new org.newsclub.net.unix.memory.SelftestProvider();
 
   public Map<String, Class<?>[]> tests() throws Exception {
     Map<String, Class<?>[]> tests = new LinkedHashMap<>();
@@ -53,6 +55,7 @@ public class SelftestProvider {
     tests.putAll(sslSelftests.tests());
     tests.putAll(darwinSelftests.tests());
     tests.putAll(mysqlSelftests.tests());
+    tests.putAll(memorySelftests.tests());
 
     return tests;
   }
@@ -66,6 +69,7 @@ public class SelftestProvider {
     set.addAll(sslSelftests.modulesDisabledByDefault());
     set.addAll(darwinSelftests.modulesDisabledByDefault());
     set.addAll(mysqlSelftests.modulesDisabledByDefault());
+    set.addAll(memorySelftests.modulesDisabledByDefault());
     return set;
   }
 
@@ -77,5 +81,6 @@ public class SelftestProvider {
     sslSelftests.printAdditionalProperties(out);
     darwinSelftests.printAdditionalProperties(out);
     mysqlSelftests.printAdditionalProperties(out);
+    memorySelftests.printAdditionalProperties(out);
   }
 }

@@ -1370,6 +1370,106 @@
 		43B3E0A5266971630024822F /* listen.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233AF2650AB4B00823167 /* listen.c */; };
 		43B3E0A6266971630024822F /* ancillary.c in Sources */ = {isa = PBXBuildFile; fileRef = 430233A52650AB4900823167 /* ancillary.c */; };
 		43B3E0A7266971630024822F /* accept.c in Sources */ = {isa = PBXBuildFile; fileRef = 4302339E2650AB4900823167 /* accept.c */; };
+		43B5DE6F2CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE702CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE712CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE722CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE732CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE742CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE752CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE762CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE772CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE782CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE792CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE7A2CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE7B2CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE7C2CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE7D2CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE7E2CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE7F2CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE802CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE812CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE822CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE832CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE842CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE852CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE862CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE872CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE882CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE892CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE8A2CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE8B2CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE8C2CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE8D2CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE8E2CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE8F2CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE902CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE912CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE922CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE932CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE942CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE952CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE962CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE972CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE982CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE992CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE9A2CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE9B2CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE9C2CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE9D2CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DE9E2CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DE9F2CF4FEE7001227CF /* shm.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DE6D2CF4FEE7001227CF /* shm.h */; };
+		43B5DEA02CF4FEE7001227CF /* shm.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DE6E2CF4FEE7001227CF /* shm.c */; };
+		43B5DEA32CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEA42CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEA52CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEA62CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEA72CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEA82CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEA92CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEAA2CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEAB2CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEAC2CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEAD2CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEAE2CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEAF2CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEB02CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEB12CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEB22CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEB32CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEB42CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEB52CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEB62CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEB72CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEB82CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEB92CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEBA2CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEBB2CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEBC2CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEBD2CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEBE2CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEBF2CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEC02CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEC12CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEC22CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEC32CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEC42CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEC52CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEC62CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEC72CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DEC82CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DEC92CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DECA2CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DECB2CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DECC2CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DECD2CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DECE2CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DECF2CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DED02CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DED12CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DED22CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
+		43B5DED32CFBD19F001227CF /* futex.c in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DEA22CFBD19F001227CF /* futex.c */; };
+		43B5DED42CFBD19F001227CF /* futex.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B5DEA12CFBD19F001227CF /* futex.h */; };
 		43C57CC72A38F370001DEA62 /* tipc.h in Headers */ = {isa = PBXBuildFile; fileRef = 436E165F27FBB70B00A553EC /* tipc.h */; };
 		43C57CC82A38F370001DEA62 /* jni.h in Headers */ = {isa = PBXBuildFile; fileRef = 430235C02650AC3200823167 /* jni.h */; };
 		43C57CC92A38F370001DEA62 /* ancillary.h in Headers */ = {isa = PBXBuildFile; fileRef = 430233C52650AB4E00823167 /* ancillary.h */; };
@@ -1678,6 +1778,10 @@
 		43B3E03C26672FD30024822F /* libjunixsocket-x86_64-unknown-linux-gnu.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-unknown-linux-gnu.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43B3E074266756540024822F /* libjunixsocket-amd64-unknown-openbsd6.9.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-amd64-unknown-openbsd6.9.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43B3E0AC266971630024822F /* libjunixsocket-sparc-sun-solaris2.11.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-sparc-sun-solaris2.11.so"; sourceTree = BUILT_PRODUCTS_DIR; };
+		43B5DE6D2CF4FEE7001227CF /* shm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = shm.h; path = src/main/c/shm.h; sourceTree = "<group>"; };
+		43B5DE6E2CF4FEE7001227CF /* shm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = shm.c; path = src/main/c/shm.c; sourceTree = "<group>"; };
+		43B5DEA12CFBD19F001227CF /* futex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = futex.h; path = src/main/c/futex.h; sourceTree = "<group>"; };
+		43B5DEA22CFBD19F001227CF /* futex.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = futex.c; path = src/main/c/futex.c; sourceTree = "<group>"; };
 		43C57CFE2A38F370001DEA62 /* libjunixsocket-aarch64-linux-android30.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-aarch64-linux-android30.so"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43C5FB7D261AC3700088E301 /* libjunixsocket-arm64-apple-macos11.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-arm64-apple-macos11.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43D436BC261A564C002D0C12 /* libjunixsocket-x86_64-alpine-linux-musl.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libjunixsocket-x86_64-alpine-linux-musl.so"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1933,6 +2037,10 @@
 				436E165F27FBB70B00A553EC /* tipc.h */,
 				4355474728F6E6310042E830 /* vsock.c */,
 				4355474828F6E6310042E830 /* vsock.h */,
+				43B5DE6E2CF4FEE7001227CF /* shm.c */,
+				43B5DE6D2CF4FEE7001227CF /* shm.h */,
+				43B5DEA22CFBD19F001227CF /* futex.c */,
+				43B5DEA12CFBD19F001227CF /* futex.h */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -2003,7 +2111,9 @@
 				4304569A2C91B81000CBAC42 /* pipe.h in Headers */,
 				4304569B2C91B81000CBAC42 /* init.h in Headers */,
 				4304569C2C91B81000CBAC42 /* send.h in Headers */,
+				43B5DE912CF4FEE7001227CF /* shm.h in Headers */,
 				4304569D2C91B81000CBAC42 /* listen.h in Headers */,
+				43B5DEC92CFBD19F001227CF /* futex.h in Headers */,
 				4304569E2C91B81000CBAC42 /* config.h in Headers */,
 				4304569F2C91B81000CBAC42 /* socketpair.h in Headers */,
 				430456A02C91B81000CBAC42 /* vsock.h in Headers */,
@@ -2040,7 +2150,9 @@
 				4304A5F5266DFCEF003BCEDF /* pipe.h in Headers */,
 				4304A5F6266DFCEF003BCEDF /* init.h in Headers */,
 				4304A5F7266DFCEF003BCEDF /* send.h in Headers */,
+				43B5DE8E2CF4FEE7001227CF /* shm.h in Headers */,
 				4304A5F8266DFCEF003BCEDF /* listen.h in Headers */,
+				43B5DEA82CFBD19F001227CF /* futex.h in Headers */,
 				4304A5F9266DFCEF003BCEDF /* config.h in Headers */,
 				4304A5FA266DFCEF003BCEDF /* socketpair.h in Headers */,
 				4355477028F6E6310042E830 /* vsock.h in Headers */,
@@ -2077,7 +2189,9 @@
 				43B3DF84265EEC930024822F /* pipe.h in Headers */,
 				430235542650AB4F00823167 /* init.h in Headers */,
 				430234702650AB4E00823167 /* send.h in Headers */,
+				43B5DE8B2CF4FEE7001227CF /* shm.h in Headers */,
 				430234C42650AB4E00823167 /* listen.h in Headers */,
+				43B5DEB92CFBD19F001227CF /* futex.h in Headers */,
 				430234102650AB4E00823167 /* config.h in Headers */,
 				43B3DFC4266082000024822F /* socketpair.h in Headers */,
 				4355475E28F6E6310042E830 /* vsock.h in Headers */,
@@ -2114,7 +2228,9 @@
 				43B3DF8E265EEC930024822F /* pipe.h in Headers */,
 				4302355E2650AB4F00823167 /* init.h in Headers */,
 				4302347A2650AB4E00823167 /* send.h in Headers */,
+				43B5DE852CF4FEE7001227CF /* shm.h in Headers */,
 				430234CE2650AB4E00823167 /* listen.h in Headers */,
+				43B5DED42CFBD19F001227CF /* futex.h in Headers */,
 				4302341A2650AB4E00823167 /* config.h in Headers */,
 				43B3DFCE266082000024822F /* socketpair.h in Headers */,
 				4355476C28F6E6310042E830 /* vsock.h in Headers */,
@@ -2151,7 +2267,9 @@
 				43B3DF87265EEC930024822F /* pipe.h in Headers */,
 				430235572650AB4F00823167 /* init.h in Headers */,
 				430234732650AB4E00823167 /* send.h in Headers */,
+				43B5DE9B2CF4FEE7001227CF /* shm.h in Headers */,
 				430234C72650AB4E00823167 /* listen.h in Headers */,
+				43B5DEBB2CFBD19F001227CF /* futex.h in Headers */,
 				430234132650AB4E00823167 /* config.h in Headers */,
 				43B3DFC7266082000024822F /* socketpair.h in Headers */,
 				4355476228F6E6310042E830 /* vsock.h in Headers */,
@@ -2188,7 +2306,9 @@
 				43B3DF8A265EEC930024822F /* pipe.h in Headers */,
 				4302355A2650AB4F00823167 /* init.h in Headers */,
 				430234762650AB4E00823167 /* send.h in Headers */,
+				43B5DE7D2CF4FEE7001227CF /* shm.h in Headers */,
 				430234CA2650AB4E00823167 /* listen.h in Headers */,
+				43B5DECB2CFBD19F001227CF /* futex.h in Headers */,
 				430234162650AB4E00823167 /* config.h in Headers */,
 				43B3DFCA266082000024822F /* socketpair.h in Headers */,
 				4355476728F6E6310042E830 /* vsock.h in Headers */,
@@ -2225,7 +2345,9 @@
 				43B3DF8D265EEC930024822F /* pipe.h in Headers */,
 				4302355D2650AB4F00823167 /* init.h in Headers */,
 				430234792650AB4E00823167 /* send.h in Headers */,
+				43B5DE962CF4FEE7001227CF /* shm.h in Headers */,
 				430234CD2650AB4E00823167 /* listen.h in Headers */,
+				43B5DEB62CFBD19F001227CF /* futex.h in Headers */,
 				430234192650AB4E00823167 /* config.h in Headers */,
 				43B3DFCD266082000024822F /* socketpair.h in Headers */,
 				4355476A28F6E6310042E830 /* vsock.h in Headers */,
@@ -2262,7 +2384,9 @@
 				43B3DF88265EEC930024822F /* pipe.h in Headers */,
 				430235582650AB4F00823167 /* init.h in Headers */,
 				430234742650AB4E00823167 /* send.h in Headers */,
+				43B5DE982CF4FEE7001227CF /* shm.h in Headers */,
 				430234C82650AB4E00823167 /* listen.h in Headers */,
+				43B5DEA62CFBD19F001227CF /* futex.h in Headers */,
 				430234142650AB4E00823167 /* config.h in Headers */,
 				43B3DFC8266082000024822F /* socketpair.h in Headers */,
 				4355476328F6E6310042E830 /* vsock.h in Headers */,
@@ -2299,7 +2423,9 @@
 				43B3DF89265EEC930024822F /* pipe.h in Headers */,
 				430235592650AB4F00823167 /* init.h in Headers */,
 				430234752650AB4E00823167 /* send.h in Headers */,
+				43B5DE8F2CF4FEE7001227CF /* shm.h in Headers */,
 				430234C92650AB4E00823167 /* listen.h in Headers */,
+				43B5DECF2CFBD19F001227CF /* futex.h in Headers */,
 				430234152650AB4E00823167 /* config.h in Headers */,
 				43B3DFC9266082000024822F /* socketpair.h in Headers */,
 				4355476628F6E6310042E830 /* vsock.h in Headers */,
@@ -2336,7 +2462,9 @@
 				43B3DF86265EEC930024822F /* pipe.h in Headers */,
 				430235562650AB4F00823167 /* init.h in Headers */,
 				430234722650AB4E00823167 /* send.h in Headers */,
+				43B5DE762CF4FEE7001227CF /* shm.h in Headers */,
 				430234C62650AB4E00823167 /* listen.h in Headers */,
+				43B5DEAC2CFBD19F001227CF /* futex.h in Headers */,
 				430234122650AB4E00823167 /* config.h in Headers */,
 				43B3DFC6266082000024822F /* socketpair.h in Headers */,
 				4355476128F6E6310042E830 /* vsock.h in Headers */,
@@ -2373,7 +2501,9 @@
 				43B3DF8C265EEC930024822F /* pipe.h in Headers */,
 				4302355C2650AB4F00823167 /* init.h in Headers */,
 				430234782650AB4E00823167 /* send.h in Headers */,
+				43B5DE832CF4FEE7001227CF /* shm.h in Headers */,
 				430234CC2650AB4E00823167 /* listen.h in Headers */,
+				43B5DEB72CFBD19F001227CF /* futex.h in Headers */,
 				430234182650AB4E00823167 /* config.h in Headers */,
 				43B3DFCC266082000024822F /* socketpair.h in Headers */,
 				4355476928F6E6310042E830 /* vsock.h in Headers */,
@@ -2410,7 +2540,9 @@
 				435B546D2A3F65D2001011B8 /* pipe.h in Headers */,
 				435B546E2A3F65D2001011B8 /* init.h in Headers */,
 				435B546F2A3F65D2001011B8 /* send.h in Headers */,
+				43B5DE7C2CF4FEE7001227CF /* shm.h in Headers */,
 				435B54702A3F65D2001011B8 /* listen.h in Headers */,
+				43B5DEB22CFBD19F001227CF /* futex.h in Headers */,
 				435B54712A3F65D2001011B8 /* config.h in Headers */,
 				435B54722A3F65D2001011B8 /* socketpair.h in Headers */,
 				435B54732A3F65D2001011B8 /* vsock.h in Headers */,
@@ -2447,7 +2579,9 @@
 				435B54A92A3F65F4001011B8 /* pipe.h in Headers */,
 				435B54AA2A3F65F4001011B8 /* init.h in Headers */,
 				435B54AB2A3F65F4001011B8 /* send.h in Headers */,
+				43B5DE7A2CF4FEE7001227CF /* shm.h in Headers */,
 				435B54AC2A3F65F4001011B8 /* listen.h in Headers */,
+				43B5DEA42CFBD19F001227CF /* futex.h in Headers */,
 				435B54AD2A3F65F4001011B8 /* config.h in Headers */,
 				435B54AE2A3F65F4001011B8 /* socketpair.h in Headers */,
 				435B54AF2A3F65F4001011B8 /* vsock.h in Headers */,
@@ -2484,7 +2618,9 @@
 				435B54E52A3F661F001011B8 /* pipe.h in Headers */,
 				435B54E62A3F661F001011B8 /* init.h in Headers */,
 				435B54E72A3F661F001011B8 /* send.h in Headers */,
+				43B5DE8A2CF4FEE7001227CF /* shm.h in Headers */,
 				435B54E82A3F661F001011B8 /* listen.h in Headers */,
+				43B5DEC02CFBD19F001227CF /* futex.h in Headers */,
 				435B54E92A3F661F001011B8 /* config.h in Headers */,
 				435B54EA2A3F661F001011B8 /* socketpair.h in Headers */,
 				435B54EB2A3F661F001011B8 /* vsock.h in Headers */,
@@ -2521,7 +2657,9 @@
 				43B3DF83265EEC930024822F /* pipe.h in Headers */,
 				430235532650AB4F00823167 /* init.h in Headers */,
 				4302346F2650AB4E00823167 /* send.h in Headers */,
+				43B5DE9E2CF4FEE7001227CF /* shm.h in Headers */,
 				430234C32650AB4E00823167 /* listen.h in Headers */,
+				43B5DEB02CFBD19F001227CF /* futex.h in Headers */,
 				4302340F2650AB4E00823167 /* config.h in Headers */,
 				43B3DFC3266082000024822F /* socketpair.h in Headers */,
 				4355475D28F6E6310042E830 /* vsock.h in Headers */,
@@ -2558,7 +2696,9 @@
 				43684D85282EE24B005F2989 /* pipe.h in Headers */,
 				43684D86282EE24B005F2989 /* init.h in Headers */,
 				43684D87282EE24B005F2989 /* send.h in Headers */,
+				43B5DE802CF4FEE7001227CF /* shm.h in Headers */,
 				43684D88282EE24B005F2989 /* listen.h in Headers */,
+				43B5DEAA2CFBD19F001227CF /* futex.h in Headers */,
 				43684D89282EE24B005F2989 /* config.h in Headers */,
 				43684D8A282EE24B005F2989 /* socketpair.h in Headers */,
 				4355476B28F6E6310042E830 /* vsock.h in Headers */,
@@ -2595,7 +2735,9 @@
 				436B5A8528244CB500574CD4 /* pipe.h in Headers */,
 				436B5A8628244CB500574CD4 /* init.h in Headers */,
 				436B5A8728244CB500574CD4 /* send.h in Headers */,
+				43B5DE742CF4FEE7001227CF /* shm.h in Headers */,
 				436B5A8828244CB500574CD4 /* listen.h in Headers */,
+				43B5DED22CFBD19F001227CF /* futex.h in Headers */,
 				436B5A8928244CB500574CD4 /* config.h in Headers */,
 				436B5A8A28244CB500574CD4 /* socketpair.h in Headers */,
 				4355476428F6E6310042E830 /* vsock.h in Headers */,
@@ -2632,7 +2774,9 @@
 				436B5ABF2826F49A00574CD4 /* pipe.h in Headers */,
 				436B5AC02826F49A00574CD4 /* init.h in Headers */,
 				436B5AC12826F49A00574CD4 /* send.h in Headers */,
+				43B5DE772CF4FEE7001227CF /* shm.h in Headers */,
 				436B5AC22826F49A00574CD4 /* listen.h in Headers */,
+				43B5DECE2CFBD19F001227CF /* futex.h in Headers */,
 				436B5AC32826F49A00574CD4 /* config.h in Headers */,
 				436B5AC42826F49A00574CD4 /* socketpair.h in Headers */,
 				4355476528F6E6310042E830 /* vsock.h in Headers */,
@@ -2669,7 +2813,9 @@
 				43B3DFD326660A2D0024822F /* pipe.h in Headers */,
 				43B3DFD426660A2D0024822F /* init.h in Headers */,
 				43B3DFD526660A2D0024822F /* send.h in Headers */,
+				43B5DE722CF4FEE7001227CF /* shm.h in Headers */,
 				43B3DFD626660A2D0024822F /* listen.h in Headers */,
+				43B5DEAE2CFBD19F001227CF /* futex.h in Headers */,
 				43B3DFD726660A2D0024822F /* config.h in Headers */,
 				43B3DFD826660A2D0024822F /* socketpair.h in Headers */,
 				4355476D28F6E6310042E830 /* vsock.h in Headers */,
@@ -2706,7 +2852,9 @@
 				43B3E00B26672FD30024822F /* pipe.h in Headers */,
 				43B3E00C26672FD30024822F /* init.h in Headers */,
 				43B3E00D26672FD30024822F /* send.h in Headers */,
+				43B5DE942CF4FEE7001227CF /* shm.h in Headers */,
 				43B3E00E26672FD30024822F /* listen.h in Headers */,
+				43B5DEC82CFBD19F001227CF /* futex.h in Headers */,
 				43B3E00F26672FD30024822F /* config.h in Headers */,
 				43B3E01026672FD30024822F /* socketpair.h in Headers */,
 				4355476E28F6E6310042E830 /* vsock.h in Headers */,
@@ -2743,7 +2891,9 @@
 				43B3E043266756540024822F /* pipe.h in Headers */,
 				43B3E044266756540024822F /* init.h in Headers */,
 				43B3E045266756540024822F /* send.h in Headers */,
+				43B5DE872CF4FEE7001227CF /* shm.h in Headers */,
 				43B3E046266756540024822F /* listen.h in Headers */,
+				43B5DEB32CFBD19F001227CF /* futex.h in Headers */,
 				43B3E047266756540024822F /* config.h in Headers */,
 				43B3E048266756540024822F /* socketpair.h in Headers */,
 				4355475F28F6E6310042E830 /* vsock.h in Headers */,
@@ -2780,7 +2930,9 @@
 				43B3E07B266971630024822F /* pipe.h in Headers */,
 				43B3E07C266971630024822F /* init.h in Headers */,
 				43B3E07D266971630024822F /* send.h in Headers */,
+				43B5DE9F2CF4FEE7001227CF /* shm.h in Headers */,
 				43B3E07E266971630024822F /* listen.h in Headers */,
+				43B5DEC12CFBD19F001227CF /* futex.h in Headers */,
 				43B3E07F266971630024822F /* config.h in Headers */,
 				43B3E080266971630024822F /* socketpair.h in Headers */,
 				4355476F28F6E6310042E830 /* vsock.h in Headers */,
@@ -2817,7 +2969,9 @@
 				43C57CCA2A38F370001DEA62 /* pipe.h in Headers */,
 				43C57CCB2A38F370001DEA62 /* init.h in Headers */,
 				43C57CCC2A38F370001DEA62 /* send.h in Headers */,
+				43B5DE992CF4FEE7001227CF /* shm.h in Headers */,
 				43C57CCD2A38F370001DEA62 /* listen.h in Headers */,
+				43B5DEBD2CFBD19F001227CF /* futex.h in Headers */,
 				43C57CCE2A38F370001DEA62 /* config.h in Headers */,
 				43C57CCF2A38F370001DEA62 /* socketpair.h in Headers */,
 				43C57CD02A38F370001DEA62 /* vsock.h in Headers */,
@@ -2854,7 +3008,9 @@
 				43B3DF85265EEC930024822F /* pipe.h in Headers */,
 				430235552650AB4F00823167 /* init.h in Headers */,
 				430234712650AB4E00823167 /* send.h in Headers */,
+				43B5DE702CF4FEE7001227CF /* shm.h in Headers */,
 				430234C52650AB4E00823167 /* listen.h in Headers */,
+				43B5DEC42CFBD19F001227CF /* futex.h in Headers */,
 				430234112650AB4E00823167 /* config.h in Headers */,
 				43B3DFC5266082000024822F /* socketpair.h in Headers */,
 				4355476028F6E6310042E830 /* vsock.h in Headers */,
@@ -2891,7 +3047,9 @@
 				43B3DF8B265EEC930024822F /* pipe.h in Headers */,
 				4302355B2650AB4F00823167 /* init.h in Headers */,
 				430234772650AB4E00823167 /* send.h in Headers */,
+				43B5DE812CF4FEE7001227CF /* shm.h in Headers */,
 				430234CB2650AB4E00823167 /* listen.h in Headers */,
+				43B5DEC52CFBD19F001227CF /* futex.h in Headers */,
 				430234172650AB4E00823167 /* config.h in Headers */,
 				43B3DFCB266082000024822F /* socketpair.h in Headers */,
 				4355476828F6E6310042E830 /* vsock.h in Headers */,
@@ -3416,6 +3574,7 @@
 				430456B82C91B81000CBAC42 /* vsock.c in Sources */,
 				430456B92C91B81000CBAC42 /* send.c in Sources */,
 				430456BA2C91B81000CBAC42 /* socket.c in Sources */,
+				43B5DE922CF4FEE7001227CF /* shm.c in Sources */,
 				430456BB2C91B81000CBAC42 /* pipe.c in Sources */,
 				430456BC2C91B81000CBAC42 /* connect.c in Sources */,
 				430456BD2C91B81000CBAC42 /* capabilities.c in Sources */,
@@ -3433,6 +3592,7 @@
 				430456C82C91B81000CBAC42 /* reflection.c in Sources */,
 				430456C92C91B81000CBAC42 /* listen.c in Sources */,
 				430456CA2C91B81000CBAC42 /* ancillary.c in Sources */,
+				43B5DECA2CFBD19F001227CF /* futex.c in Sources */,
 				430456CB2C91B81000CBAC42 /* accept.c in Sources */,
 				430456CC2C91B81000CBAC42 /* afsystem.c in Sources */,
 			);
@@ -3448,6 +3608,7 @@
 				4355475C28F6E6310042E830 /* vsock.c in Sources */,
 				4304A610266DFCEF003BCEDF /* send.c in Sources */,
 				4304A611266DFCEF003BCEDF /* socket.c in Sources */,
+				43B5DE8D2CF4FEE7001227CF /* shm.c in Sources */,
 				4304A612266DFCEF003BCEDF /* pipe.c in Sources */,
 				4304A613266DFCEF003BCEDF /* connect.c in Sources */,
 				4304A614266DFCEF003BCEDF /* capabilities.c in Sources */,
@@ -3465,6 +3626,7 @@
 				4304A61E266DFCEF003BCEDF /* reflection.c in Sources */,
 				4304A61F266DFCEF003BCEDF /* listen.c in Sources */,
 				4304A620266DFCEF003BCEDF /* ancillary.c in Sources */,
+				43B5DEA72CFBD19F001227CF /* futex.c in Sources */,
 				4304A621266DFCEF003BCEDF /* accept.c in Sources */,
 				438F4DAA2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3480,6 +3642,7 @@
 				4355474A28F6E6310042E830 /* vsock.c in Sources */,
 				430234D02650AB4F00823167 /* send.c in Sources */,
 				430235842650AB4F00823167 /* socket.c in Sources */,
+				43B5DE8C2CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DF90265EEC930024822F /* pipe.c in Sources */,
 				4302353C2650AB4F00823167 /* connect.c in Sources */,
 				430234B82650AB4E00823167 /* capabilities.c in Sources */,
@@ -3497,6 +3660,7 @@
 				430235242650AB4F00823167 /* reflection.c in Sources */,
 				430234AC2650AB4E00823167 /* listen.c in Sources */,
 				430234342650AB4E00823167 /* ancillary.c in Sources */,
+				43B5DEBA2CFBD19F001227CF /* futex.c in Sources */,
 				430233E02650AB4E00823167 /* accept.c in Sources */,
 				438F4D982A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3512,6 +3676,7 @@
 				4355475828F6E6310042E830 /* vsock.c in Sources */,
 				430234DA2650AB4F00823167 /* send.c in Sources */,
 				4302358E2650AB4F00823167 /* socket.c in Sources */,
+				43B5DE862CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DF9A265EEC930024822F /* pipe.c in Sources */,
 				430235462650AB4F00823167 /* connect.c in Sources */,
 				430234C22650AB4E00823167 /* capabilities.c in Sources */,
@@ -3529,6 +3694,7 @@
 				4302352E2650AB4F00823167 /* reflection.c in Sources */,
 				430234B62650AB4E00823167 /* listen.c in Sources */,
 				4302343E2650AB4E00823167 /* ancillary.c in Sources */,
+				43B5DED32CFBD19F001227CF /* futex.c in Sources */,
 				430233EA2650AB4E00823167 /* accept.c in Sources */,
 				438F4DA62A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3544,6 +3710,7 @@
 				4355474E28F6E6310042E830 /* vsock.c in Sources */,
 				430234D32650AB4F00823167 /* send.c in Sources */,
 				430235872650AB4F00823167 /* socket.c in Sources */,
+				43B5DE9C2CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DF93265EEC930024822F /* pipe.c in Sources */,
 				4302353F2650AB4F00823167 /* connect.c in Sources */,
 				430234BB2650AB4E00823167 /* capabilities.c in Sources */,
@@ -3561,6 +3728,7 @@
 				430235272650AB4F00823167 /* reflection.c in Sources */,
 				430234AF2650AB4E00823167 /* listen.c in Sources */,
 				430234372650AB4E00823167 /* ancillary.c in Sources */,
+				43B5DEBC2CFBD19F001227CF /* futex.c in Sources */,
 				430233E32650AB4E00823167 /* accept.c in Sources */,
 				438F4D9C2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3576,6 +3744,7 @@
 				4355475328F6E6310042E830 /* vsock.c in Sources */,
 				430234D62650AB4F00823167 /* send.c in Sources */,
 				4302358A2650AB4F00823167 /* socket.c in Sources */,
+				43B5DE7E2CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DF96265EEC930024822F /* pipe.c in Sources */,
 				430235422650AB4F00823167 /* connect.c in Sources */,
 				430234BE2650AB4E00823167 /* capabilities.c in Sources */,
@@ -3593,6 +3762,7 @@
 				4302352A2650AB4F00823167 /* reflection.c in Sources */,
 				430234B22650AB4E00823167 /* listen.c in Sources */,
 				4302343A2650AB4E00823167 /* ancillary.c in Sources */,
+				43B5DECC2CFBD19F001227CF /* futex.c in Sources */,
 				430233E62650AB4E00823167 /* accept.c in Sources */,
 				438F4DA12A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3608,6 +3778,7 @@
 				4355475628F6E6310042E830 /* vsock.c in Sources */,
 				430234D92650AB4F00823167 /* send.c in Sources */,
 				4302358D2650AB4F00823167 /* socket.c in Sources */,
+				43B5DE952CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DF99265EEC930024822F /* pipe.c in Sources */,
 				430235452650AB4F00823167 /* connect.c in Sources */,
 				430234C12650AB4E00823167 /* capabilities.c in Sources */,
@@ -3625,6 +3796,7 @@
 				4302352D2650AB4F00823167 /* reflection.c in Sources */,
 				430234B52650AB4E00823167 /* listen.c in Sources */,
 				4302343D2650AB4E00823167 /* ancillary.c in Sources */,
+				43B5DEB52CFBD19F001227CF /* futex.c in Sources */,
 				430233E92650AB4E00823167 /* accept.c in Sources */,
 				438F4DA42A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3640,6 +3812,7 @@
 				4355474F28F6E6310042E830 /* vsock.c in Sources */,
 				430234D42650AB4F00823167 /* send.c in Sources */,
 				430235882650AB4F00823167 /* socket.c in Sources */,
+				43B5DE972CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DF94265EEC930024822F /* pipe.c in Sources */,
 				430235402650AB4F00823167 /* connect.c in Sources */,
 				430234BC2650AB4E00823167 /* capabilities.c in Sources */,
@@ -3657,6 +3830,7 @@
 				430235282650AB4F00823167 /* reflection.c in Sources */,
 				430234B02650AB4E00823167 /* listen.c in Sources */,
 				430234382650AB4E00823167 /* ancillary.c in Sources */,
+				43B5DEA52CFBD19F001227CF /* futex.c in Sources */,
 				430233E42650AB4E00823167 /* accept.c in Sources */,
 				438F4D9D2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3672,6 +3846,7 @@
 				4355475228F6E6310042E830 /* vsock.c in Sources */,
 				430234D52650AB4F00823167 /* send.c in Sources */,
 				430235892650AB4F00823167 /* socket.c in Sources */,
+				43B5DE902CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DF95265EEC930024822F /* pipe.c in Sources */,
 				430235412650AB4F00823167 /* connect.c in Sources */,
 				430234BD2650AB4E00823167 /* capabilities.c in Sources */,
@@ -3689,6 +3864,7 @@
 				430235292650AB4F00823167 /* reflection.c in Sources */,
 				430234B12650AB4E00823167 /* listen.c in Sources */,
 				430234392650AB4E00823167 /* ancillary.c in Sources */,
+				43B5DED02CFBD19F001227CF /* futex.c in Sources */,
 				430233E52650AB4E00823167 /* accept.c in Sources */,
 				438F4DA02A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3704,6 +3880,7 @@
 				4355474D28F6E6310042E830 /* vsock.c in Sources */,
 				430234D22650AB4F00823167 /* send.c in Sources */,
 				430235862650AB4F00823167 /* socket.c in Sources */,
+				43B5DE752CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DF92265EEC930024822F /* pipe.c in Sources */,
 				4302353E2650AB4F00823167 /* connect.c in Sources */,
 				430234BA2650AB4E00823167 /* capabilities.c in Sources */,
@@ -3721,6 +3898,7 @@
 				430235262650AB4F00823167 /* reflection.c in Sources */,
 				430234AE2650AB4E00823167 /* listen.c in Sources */,
 				430234362650AB4E00823167 /* ancillary.c in Sources */,
+				43B5DEAB2CFBD19F001227CF /* futex.c in Sources */,
 				430233E22650AB4E00823167 /* accept.c in Sources */,
 				438F4D9B2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3736,6 +3914,7 @@
 				4355475528F6E6310042E830 /* vsock.c in Sources */,
 				430234D82650AB4F00823167 /* send.c in Sources */,
 				4302358C2650AB4F00823167 /* socket.c in Sources */,
+				43B5DE842CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DF98265EEC930024822F /* pipe.c in Sources */,
 				430235442650AB4F00823167 /* connect.c in Sources */,
 				430234C02650AB4E00823167 /* capabilities.c in Sources */,
@@ -3753,6 +3932,7 @@
 				4302352C2650AB4F00823167 /* reflection.c in Sources */,
 				430234B42650AB4E00823167 /* listen.c in Sources */,
 				4302343C2650AB4E00823167 /* ancillary.c in Sources */,
+				43B5DEB82CFBD19F001227CF /* futex.c in Sources */,
 				430233E82650AB4E00823167 /* accept.c in Sources */,
 				438F4DA32A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3768,6 +3948,7 @@
 				435B54892A3F65D2001011B8 /* vsock.c in Sources */,
 				435B548A2A3F65D2001011B8 /* send.c in Sources */,
 				435B548B2A3F65D2001011B8 /* socket.c in Sources */,
+				43B5DE7B2CF4FEE7001227CF /* shm.c in Sources */,
 				435B548C2A3F65D2001011B8 /* pipe.c in Sources */,
 				435B548D2A3F65D2001011B8 /* connect.c in Sources */,
 				435B548E2A3F65D2001011B8 /* capabilities.c in Sources */,
@@ -3785,6 +3966,7 @@
 				435B54992A3F65D2001011B8 /* reflection.c in Sources */,
 				435B549A2A3F65D2001011B8 /* listen.c in Sources */,
 				435B549B2A3F65D2001011B8 /* ancillary.c in Sources */,
+				43B5DEB12CFBD19F001227CF /* futex.c in Sources */,
 				435B549C2A3F65D2001011B8 /* accept.c in Sources */,
 				438F4DAC2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3800,6 +3982,7 @@
 				435B54C52A3F65F4001011B8 /* vsock.c in Sources */,
 				435B54C62A3F65F4001011B8 /* send.c in Sources */,
 				435B54C72A3F65F4001011B8 /* socket.c in Sources */,
+				43B5DE792CF4FEE7001227CF /* shm.c in Sources */,
 				435B54C82A3F65F4001011B8 /* pipe.c in Sources */,
 				435B54C92A3F65F4001011B8 /* connect.c in Sources */,
 				435B54CA2A3F65F4001011B8 /* capabilities.c in Sources */,
@@ -3817,6 +4000,7 @@
 				435B54D52A3F65F4001011B8 /* reflection.c in Sources */,
 				435B54D62A3F65F4001011B8 /* listen.c in Sources */,
 				435B54D72A3F65F4001011B8 /* ancillary.c in Sources */,
+				43B5DEA32CFBD19F001227CF /* futex.c in Sources */,
 				435B54D82A3F65F4001011B8 /* accept.c in Sources */,
 				438F4DAD2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3832,6 +4016,7 @@
 				435B55012A3F661F001011B8 /* vsock.c in Sources */,
 				435B55022A3F661F001011B8 /* send.c in Sources */,
 				435B55032A3F661F001011B8 /* socket.c in Sources */,
+				43B5DE892CF4FEE7001227CF /* shm.c in Sources */,
 				435B55042A3F661F001011B8 /* pipe.c in Sources */,
 				435B55052A3F661F001011B8 /* connect.c in Sources */,
 				435B55062A3F661F001011B8 /* capabilities.c in Sources */,
@@ -3849,6 +4034,7 @@
 				435B55112A3F661F001011B8 /* reflection.c in Sources */,
 				435B55122A3F661F001011B8 /* listen.c in Sources */,
 				435B55132A3F661F001011B8 /* ancillary.c in Sources */,
+				43B5DEBF2CFBD19F001227CF /* futex.c in Sources */,
 				435B55142A3F661F001011B8 /* accept.c in Sources */,
 				438F4DAE2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3864,6 +4050,7 @@
 				4355474928F6E6310042E830 /* vsock.c in Sources */,
 				430234CF2650AB4F00823167 /* send.c in Sources */,
 				430235832650AB4F00823167 /* socket.c in Sources */,
+				43B5DE9D2CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DF8F265EEC930024822F /* pipe.c in Sources */,
 				4302353B2650AB4F00823167 /* connect.c in Sources */,
 				430234B72650AB4E00823167 /* capabilities.c in Sources */,
@@ -3881,6 +4068,7 @@
 				430235232650AB4F00823167 /* reflection.c in Sources */,
 				430234AB2650AB4E00823167 /* listen.c in Sources */,
 				430234332650AB4E00823167 /* ancillary.c in Sources */,
+				43B5DEAF2CFBD19F001227CF /* futex.c in Sources */,
 				430233DF2650AB4E00823167 /* accept.c in Sources */,
 				438F4D972A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3896,6 +4084,7 @@
 				4355475728F6E6310042E830 /* vsock.c in Sources */,
 				43684DA0282EE24B005F2989 /* send.c in Sources */,
 				43684DA1282EE24B005F2989 /* socket.c in Sources */,
+				43B5DE7F2CF4FEE7001227CF /* shm.c in Sources */,
 				43684DA2282EE24B005F2989 /* pipe.c in Sources */,
 				43684DA3282EE24B005F2989 /* connect.c in Sources */,
 				43684DA4282EE24B005F2989 /* capabilities.c in Sources */,
@@ -3913,6 +4102,7 @@
 				43684DAF282EE24B005F2989 /* reflection.c in Sources */,
 				43684DB0282EE24B005F2989 /* listen.c in Sources */,
 				43684DB1282EE24B005F2989 /* ancillary.c in Sources */,
+				43B5DEA92CFBD19F001227CF /* futex.c in Sources */,
 				43684DB2282EE24B005F2989 /* accept.c in Sources */,
 				438F4DA52A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3928,6 +4118,7 @@
 				4355475028F6E6310042E830 /* vsock.c in Sources */,
 				436B5AA028244CB500574CD4 /* send.c in Sources */,
 				436B5AA128244CB500574CD4 /* socket.c in Sources */,
+				43B5DE732CF4FEE7001227CF /* shm.c in Sources */,
 				436B5AA228244CB500574CD4 /* pipe.c in Sources */,
 				436B5AA328244CB500574CD4 /* connect.c in Sources */,
 				436B5AA428244CB500574CD4 /* capabilities.c in Sources */,
@@ -3945,6 +4136,7 @@
 				436B5AAF28244CB500574CD4 /* reflection.c in Sources */,
 				436B5AB028244CB500574CD4 /* listen.c in Sources */,
 				436B5AB128244CB500574CD4 /* ancillary.c in Sources */,
+				43B5DED12CFBD19F001227CF /* futex.c in Sources */,
 				436B5AB228244CB500574CD4 /* accept.c in Sources */,
 				438F4D9E2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3960,6 +4152,7 @@
 				4355475128F6E6310042E830 /* vsock.c in Sources */,
 				436B5ADA2826F49A00574CD4 /* send.c in Sources */,
 				436B5ADB2826F49A00574CD4 /* socket.c in Sources */,
+				43B5DE782CF4FEE7001227CF /* shm.c in Sources */,
 				436B5ADC2826F49A00574CD4 /* pipe.c in Sources */,
 				436B5ADD2826F49A00574CD4 /* connect.c in Sources */,
 				436B5ADE2826F49A00574CD4 /* capabilities.c in Sources */,
@@ -3977,6 +4170,7 @@
 				436B5AE92826F49A00574CD4 /* reflection.c in Sources */,
 				436B5AEA2826F49A00574CD4 /* listen.c in Sources */,
 				436B5AEB2826F49A00574CD4 /* ancillary.c in Sources */,
+				43B5DECD2CFBD19F001227CF /* futex.c in Sources */,
 				436B5AEC2826F49A00574CD4 /* accept.c in Sources */,
 				438F4D9F2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3992,6 +4186,7 @@
 				4355475928F6E6310042E830 /* vsock.c in Sources */,
 				43B3DFEE26660A2D0024822F /* send.c in Sources */,
 				43B3DFEF26660A2D0024822F /* socket.c in Sources */,
+				43B5DE712CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DFF026660A2D0024822F /* pipe.c in Sources */,
 				43B3DFF126660A2D0024822F /* connect.c in Sources */,
 				43B3DFF226660A2D0024822F /* capabilities.c in Sources */,
@@ -4009,6 +4204,7 @@
 				43B3DFFC26660A2D0024822F /* reflection.c in Sources */,
 				43B3DFFD26660A2D0024822F /* listen.c in Sources */,
 				43B3DFFE26660A2D0024822F /* ancillary.c in Sources */,
+				43B5DEAD2CFBD19F001227CF /* futex.c in Sources */,
 				43B3DFFF26660A2D0024822F /* accept.c in Sources */,
 				438F4DA72A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4024,6 +4220,7 @@
 				4355475A28F6E6310042E830 /* vsock.c in Sources */,
 				43B3E02626672FD30024822F /* send.c in Sources */,
 				43B3E02726672FD30024822F /* socket.c in Sources */,
+				43B5DE932CF4FEE7001227CF /* shm.c in Sources */,
 				43B3E02826672FD30024822F /* pipe.c in Sources */,
 				43B3E02926672FD30024822F /* connect.c in Sources */,
 				43B3E02A26672FD30024822F /* capabilities.c in Sources */,
@@ -4041,6 +4238,7 @@
 				43B3E03426672FD30024822F /* reflection.c in Sources */,
 				43B3E03526672FD30024822F /* listen.c in Sources */,
 				43B3E03626672FD30024822F /* ancillary.c in Sources */,
+				43B5DEC72CFBD19F001227CF /* futex.c in Sources */,
 				43B3E03726672FD30024822F /* accept.c in Sources */,
 				438F4DA82A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4056,6 +4254,7 @@
 				4355474B28F6E6310042E830 /* vsock.c in Sources */,
 				43B3E05E266756540024822F /* send.c in Sources */,
 				43B3E05F266756540024822F /* socket.c in Sources */,
+				43B5DE882CF4FEE7001227CF /* shm.c in Sources */,
 				43B3E060266756540024822F /* pipe.c in Sources */,
 				43B3E061266756540024822F /* connect.c in Sources */,
 				43B3E062266756540024822F /* capabilities.c in Sources */,
@@ -4073,6 +4272,7 @@
 				43B3E06C266756540024822F /* reflection.c in Sources */,
 				43B3E06D266756540024822F /* listen.c in Sources */,
 				43B3E06E266756540024822F /* ancillary.c in Sources */,
+				43B5DEB42CFBD19F001227CF /* futex.c in Sources */,
 				43B3E06F266756540024822F /* accept.c in Sources */,
 				438F4D992A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4088,6 +4288,7 @@
 				4355475B28F6E6310042E830 /* vsock.c in Sources */,
 				43B3E096266971630024822F /* send.c in Sources */,
 				43B3E097266971630024822F /* socket.c in Sources */,
+				43B5DEA02CF4FEE7001227CF /* shm.c in Sources */,
 				43B3E098266971630024822F /* pipe.c in Sources */,
 				43B3E099266971630024822F /* connect.c in Sources */,
 				43B3E09A266971630024822F /* capabilities.c in Sources */,
@@ -4105,6 +4306,7 @@
 				43B3E0A4266971630024822F /* reflection.c in Sources */,
 				43B3E0A5266971630024822F /* listen.c in Sources */,
 				43B3E0A6266971630024822F /* ancillary.c in Sources */,
+				43B5DEC22CFBD19F001227CF /* futex.c in Sources */,
 				43B3E0A7266971630024822F /* accept.c in Sources */,
 				438F4DA92A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4120,6 +4322,7 @@
 				43C57CE62A38F370001DEA62 /* vsock.c in Sources */,
 				43C57CE72A38F370001DEA62 /* send.c in Sources */,
 				43C57CE82A38F370001DEA62 /* socket.c in Sources */,
+				43B5DE9A2CF4FEE7001227CF /* shm.c in Sources */,
 				43C57CE92A38F370001DEA62 /* pipe.c in Sources */,
 				43C57CEA2A38F370001DEA62 /* connect.c in Sources */,
 				43C57CEB2A38F370001DEA62 /* capabilities.c in Sources */,
@@ -4137,6 +4340,7 @@
 				43C57CF62A38F370001DEA62 /* reflection.c in Sources */,
 				43C57CF72A38F370001DEA62 /* listen.c in Sources */,
 				43C57CF82A38F370001DEA62 /* ancillary.c in Sources */,
+				43B5DEBE2CFBD19F001227CF /* futex.c in Sources */,
 				43C57CF92A38F370001DEA62 /* accept.c in Sources */,
 				438F4DAB2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4152,6 +4356,7 @@
 				4355474C28F6E6310042E830 /* vsock.c in Sources */,
 				430234D12650AB4F00823167 /* send.c in Sources */,
 				430235852650AB4F00823167 /* socket.c in Sources */,
+				43B5DE6F2CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DF91265EEC930024822F /* pipe.c in Sources */,
 				4302353D2650AB4F00823167 /* connect.c in Sources */,
 				430234B92650AB4E00823167 /* capabilities.c in Sources */,
@@ -4169,6 +4374,7 @@
 				430235252650AB4F00823167 /* reflection.c in Sources */,
 				430234AD2650AB4E00823167 /* listen.c in Sources */,
 				430234352650AB4E00823167 /* ancillary.c in Sources */,
+				43B5DEC32CFBD19F001227CF /* futex.c in Sources */,
 				430233E12650AB4E00823167 /* accept.c in Sources */,
 				438F4D9A2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4184,6 +4390,7 @@
 				4355475428F6E6310042E830 /* vsock.c in Sources */,
 				430234D72650AB4F00823167 /* send.c in Sources */,
 				4302358B2650AB4F00823167 /* socket.c in Sources */,
+				43B5DE822CF4FEE7001227CF /* shm.c in Sources */,
 				43B3DF97265EEC930024822F /* pipe.c in Sources */,
 				430235432650AB4F00823167 /* connect.c in Sources */,
 				430234BF2650AB4E00823167 /* capabilities.c in Sources */,
@@ -4201,6 +4408,7 @@
 				4302352B2650AB4F00823167 /* reflection.c in Sources */,
 				430234B32650AB4E00823167 /* listen.c in Sources */,
 				4302343B2650AB4E00823167 /* ancillary.c in Sources */,
+				43B5DEC62CFBD19F001227CF /* futex.c in Sources */,
 				430233E72650AB4E00823167 /* accept.c in Sources */,
 				438F4DA22A6AF05000546E2C /* afsystem.c in Sources */,
 			);

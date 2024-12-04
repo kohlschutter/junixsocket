@@ -95,6 +95,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <module>junixsocket-common</module>
         <module>junixsocket-tipc</module>
         <module>junixsocket-vsock</module>
+        <module>junixsocket-memory</module>
         <module>junixsocket-darwin</module>
         <module>junixsocket-server</module>
         <module>junixsocket-ssl</module>
@@ -435,6 +436,11 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
             <dependency>
                 <groupId>com.kohlschutter.junixsocket</groupId>
                 <artifactId>junixsocket-jetty-11</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kohlschutter.junixsocket</groupId>
+                <artifactId>junixsocket-memory</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

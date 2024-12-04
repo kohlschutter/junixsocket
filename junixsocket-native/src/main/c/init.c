@@ -27,6 +27,7 @@
 #include "polling.h"
 #include "socketoptions.h"
 #include "vsock.h"
+#include "shm.h"
 
 static jboolean cap_supports_unix = false;
 static jboolean cap_supports_tipc = false;
@@ -159,6 +160,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init
     init_poll(env);
     init_socketoptions(env);
 
+    init_shm(env);
+
     init_capabilities(env); // should be last
 }
 
@@ -183,6 +186,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy
 #endif
     destroy_poll(env);
     destroy_socketoptions(env);
+
+    destroy_shm(env);
 }
 
 /*
