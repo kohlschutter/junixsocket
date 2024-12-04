@@ -83,6 +83,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
 
         <kohlschutter.custom.package.folder>org/newsclub</kohlschutter.custom.package.folder>
 
+        <kohlschutter.surefire.access.args>--enable-native-access=org.newsclub.net.unix</kohlschutter.surefire.access.args>
+
         <bouncycastle.version>1.79</bouncycastle.version>
         <jetty.version>12.0.15</jetty.version>
 
