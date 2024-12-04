@@ -4917,6 +4917,8 @@
 					"$(CROSSCLANG_TARGET)",
 					"-Xcrossclang-ld64-sdk-version",
 					"\"undefined\"",
+					"-undefined",
+					dynamic_lookup,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -4945,6 +4947,8 @@
 					"$(CROSSCLANG_TARGET)",
 					"-Xcrossclang-ld64-sdk-version",
 					"\"undefined\"",
+					"-undefined",
+					dynamic_lookup,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -5132,6 +5136,8 @@
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-undefined",
+					dynamic_lookup,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -5157,6 +5163,8 @@
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-undefined",
+					dynamic_lookup,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -5672,6 +5680,8 @@
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-undefined",
+					dynamic_lookup,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -5697,6 +5707,8 @@
 					"$(inherited)",
 					"-target",
 					"$(CROSSCLANG_TARGET)",
+					"-undefined",
+					dynamic_lookup,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
