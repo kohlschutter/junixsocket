@@ -23,10 +23,9 @@ import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * <h1>SSL-over-UNIX sockets demo.</h1>
+ * SSL-over-UNIX sockets demo.
  * <p>
  * Prerequisites:
- * <p>
  * <ol>
  * <li>Create server public/private key pair, valid for ~10 years, Store it as a PKCS12 file named
  * "{@code juxserver.p12}":
