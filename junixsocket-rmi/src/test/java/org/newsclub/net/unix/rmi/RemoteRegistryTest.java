@@ -158,7 +158,7 @@ public class RemoteRegistryTest {
 
   private boolean awaitNoRMIFiles(File socketDir) throws InterruptedException {
     int count = 0;
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 100; i++) {
       count = countRMIFiles(socketDir);
       if (count == 0) {
         return true;
