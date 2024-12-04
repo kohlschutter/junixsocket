@@ -171,3 +171,23 @@ struct jni_direct_byte_buffer_ref getDirectByteBufferRef(JNIEnv *env, jobject by
 
     return ref;
 }
+
+char* jstring_to_char_if_possible(JNIEnv* env, jstring string, char* targetBuf, size_t targetBufLen) {
+    if(string == NULL) {
+        return NULL;
+    }
+    jsize len = (*env)->GetStringLength(env, string);
+    if((size_t)len >= targetBufLen) {
+        return NULL;
+    }
+    size_t bytes = (*env)->GetStringUTFLength(env, string);
+    if(bytes >= targetBufLen) {
+        return NULL;
+    }
+    if(targetBuf == NULL) {
+        targetBuf = (char*) malloc(bytes + 1);
+    }
+    (*env)->GetStringUTFRegion(env, string, 0, len, targetBuf);
+    targetBuf[bytes] = 0;
+    return targetBuf;
+}

@@ -55,4 +55,10 @@ struct jni_direct_byte_buffer_ref {
  */
 CK_VISIBILITY_INTERNAL struct jni_direct_byte_buffer_ref getDirectByteBufferRef(JNIEnv *env, jobject byteBuffer, size_t offset, size_t minSizeExpected);
 
+/**
+ * Tries to convert a jstring to char*, using the given target buffer, or if NULL, a newly allocated one, respecting the given target buffer length (or maximum length).
+ * Returns the buffer or NULL if the string was NULL or too long.
+ */
+CK_VISIBILITY_INTERNAL char* jstring_to_char_if_possible(JNIEnv* env, jstring string, char* targetBuf, size_t targetBufLen);
+
 #endif /* jniutil_h */

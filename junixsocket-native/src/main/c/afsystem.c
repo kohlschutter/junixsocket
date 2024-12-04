@@ -18,21 +18,9 @@
 
 #include "afsystem.h"
 
+#include "jniutil.h"
 #include "exceptions.h"
 #include "filedescriptors.h"
-
-#if junixsocket_have_system
-
-static inline char* java_to_char(JNIEnv* env, jstring string) {
-    jsize len = (*env)->GetStringLength(env, string);
-    size_t bytes = (*env)->GetStringUTFLength(env, string);
-    char* chars = (char*) malloc(bytes + 1);
-    (*env)->GetStringUTFRegion(env, string, 0, len, chars);
-    chars[bytes] = 0;
-    return chars;
-}
-
-#endif
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -49,15 +37,10 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_systemResolve
 
     struct ctl_info info = {0};
 
-    char *name = java_to_char(env, ctlName);
-
-    size_t nameLen = strlen(name);
-
-    strlcpy(info.ctl_name, name, MIN(nameLen + 1, sizeof(info.ctl_name)));
-
-    free(name);
-
-//    (*env)->ReleaseStringUTFChars(env, ctlName, name);
+    if(jstring_to_char_if_possible(env, ctlName, info.ctl_name, sizeof(info.ctl_name)) == NULL) {
+        _throwErrnumException(env, EINVAL, NULL);
+        return -1;
+    }
 
     int fdHandle = _getFD(env, fd);
 
