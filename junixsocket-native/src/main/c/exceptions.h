@@ -37,6 +37,9 @@ typedef enum {
     kExceptionConnectionResetSocketException,
     kExceptionSocketClosedException,
     kExceptionNotConnectedSocketException,
+    kExceptionFileNotFoundException,
+    kExceptionFileAlreadyExistsException,
+    kExceptionIOException,
     kExceptionMaxExcl
 } ExceptionType;
 

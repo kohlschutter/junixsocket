@@ -39,6 +39,9 @@ static char *kExceptionClassnames[kExceptionMaxExcl] = {
     "org/newsclub/net/unix/ConnectionResetSocketException", // kExceptionConnectionResetSocketException
     "org/newsclub/net/unix/SocketClosedException", // kExceptionSocketClosedException
     "org/newsclub/net/unix/NotConnectedSocketException", // kExceptionNotConnectedSocketException
+    "java/io/FileNotFoundException", // kExceptionFileNotFoundException
+    "java/nio/file/FileAlreadyExistsException", // kExceptionFileAlreadyExistsException
+    "java/io/IOException", // kExceptionIOException
 };
 
 static jclass *kExceptionClasses;
