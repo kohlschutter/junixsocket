@@ -40,6 +40,7 @@ typedef enum {
     kExceptionFileNotFoundException,
     kExceptionFileAlreadyExistsException,
     kExceptionIOException,
+    kExceptionOperationNotSupportedIOException,
     kExceptionMaxExcl
 } ExceptionType;
 

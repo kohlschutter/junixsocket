@@ -194,6 +194,7 @@ final class NativeUnixSocket {
     tryResolveClass(FileNotFoundException.class.getName());
     tryResolveClass(FileAlreadyExistsException.class.getName());
     tryResolveClass(IOException.class.getName());
+    tryResolveClass(OperationNotSupportedIOException.class.getName());
   }
 
   private static void tryResolveClass(String className) {

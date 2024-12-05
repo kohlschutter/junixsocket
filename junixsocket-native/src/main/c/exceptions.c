@@ -42,6 +42,7 @@ static char *kExceptionClassnames[kExceptionMaxExcl] = {
     "java/io/FileNotFoundException", // kExceptionFileNotFoundException
     "java/nio/file/FileAlreadyExistsException", // kExceptionFileAlreadyExistsException
     "java/io/IOException", // kExceptionIOException
+    "org/newsclub/net/unix/OperationNotSupportedIOException", // kExceptionOperationNotSupportedIOException
 };
 
 static jclass *kExceptionClasses;
@@ -112,12 +113,6 @@ void throwErrnumException1(JNIEnv* env, int errnum, jobject fdToClose, jboolean 
 {
     ExceptionType exceptionType;
 
-#if ENOTSUP
-    if(errnum == ENOTSUP && isSocket) {
-        errnum = EOPNOTSUPP;
-    }
-#endif
-
     switch(errnum) {
         case EAGAIN:
         case ETIMEDOUT:
@@ -136,6 +131,9 @@ void throwErrnumException1(JNIEnv* env, int errnum, jobject fdToClose, jboolean 
         case EADDRNOTAVAIL:
             exceptionType = kExceptionAddressUnavailableSocketException;
             break;
+#if ENOTSUP != EOPNOTSUPP
+        case ENOTSUP:
+#endif
         case EOPNOTSUPP:
 #if EPROTOTYPE
         case EPROTOTYPE:
@@ -152,10 +150,11 @@ void throwErrnumException1(JNIEnv* env, int errnum, jobject fdToClose, jboolean 
 #if EAFNOSUPPORT
         case EAFNOSUPPORT:
 #endif
+        case ENOSYS:
             if(isSocket) {
                 exceptionType = kExceptionOperationNotSupportedSocketException;
             } else {
-                exceptionType = kExceptionIOException;
+                exceptionType = kExceptionOperationNotSupportedIOException;
             }
             break;
         case ENODEV:
