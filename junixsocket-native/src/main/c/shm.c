@@ -13,6 +13,10 @@
 #include "exceptions.h"
 #include "filedescriptors.h"
 
+#if defined(__linux)
+#include <sys/syscall.h>
+#endif
+
 static jclass kBufferClass;
 static jfieldID kBufferFieldSegment;
 static jclass kMappedByteBufferClass;
@@ -28,6 +32,12 @@ static int vm_page_size;
 
 #if defined(__sun) || defined(__sun__)
 extern int madvise(caddr_t, size_t, int);
+#endif
+
+#if !defined(junixsocket_use_memfd_create)
+CK_IGNORE_UNUSED_MACROS_BEGIN
+#   define junixsocket_use_memfd_create 0
+CK_IGNORE_UNUSED_MACROS_END
 #endif
 
 #if defined(_WIN32)
@@ -85,6 +95,23 @@ int ashmem_create_region(const char *name, size_t size);
 #       define MADV_FREE    8
 #   endif
 
+__attribute((weak)) extern int memfd_create(const char *name, unsigned flags);
+#if !defined(MFD_CLOEXEC)
+// from include/uapi/linux/memfd.h
+#   define MFD_CLOEXEC  0x0001U
+#   define MFD_ALLOW_SEALING    0x0002U
+#endif
+#if !defined(MFD_NOEXEC_SEAL)
+#   define MFD_NOEXEC_SEAL  0x0008U
+#endif
+#undef junixsocket_use_memfd_create
+#define junixsocket_use_memfd_create    1
+
+#if !defined(SYS_memfd_secret)
+// from include/uapi/asm-generic/unistd.h
+#   define SYS_memfd_secret 447
+#endif
+
 #endif
 #if !defined(MAP_SYNC)
 #       define MAP_SYNC 0 // no effect unless defined elsewhere
@@ -135,6 +162,45 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shmUnlink
 #endif
 }
 
+#if junixsocket_use_memfd_create
+
+// returns -1 for "error; try something else", and -2 for "error; don't bother trying...",
+// values >= 0: the handle (success)
+static inline int try_memfd_create(jint juxOpts) {
+    if(memfd_create == NULL) {
+        errno = ENOTSUP;
+        return -1;
+    }
+
+    const jboolean sealing = (juxOpts & org_newsclub_net_unix_NativeUnixSocket_MOPT_SEALABLE);
+    const jboolean secret = (juxOpts & org_newsclub_net_unix_NativeUnixSocket_MOPT_SECRET);
+    if(secret) {
+        if(sealing) {
+            errno = ENOTSUP;
+            return -1;
+        }
+        int handle = (int)syscall(SYS_memfd_secret, FD_CLOEXEC);
+        if(handle < 0) {
+            return -2;
+        }
+        return handle;
+    }
+
+    const int opts = MFD_CLOEXEC | (sealing ? MFD_ALLOW_SEALING : 0);
+
+    int handle = memfd_create("junixsocket", opts | MFD_NOEXEC_SEAL);
+    if(handle == -1 && errno == EINVAL) {
+        handle = memfd_create("junixsocket", opts);
+    }
+    if(sealing && handle < 0) {
+        return -2;
+    } else {
+        return handle;
+    }
+}
+
+#endif
+
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    shmOpen
@@ -166,6 +232,14 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shmOpen
     CK_ARGUMENT_POTENTIALLY_UNUSED(mode);
     CK_ARGUMENT_POTENTIALLY_UNUSED(juxOpts);
 
+#if junixsocket_use_memfd_create
+    if(!*name) {
+        handle = try_memfd_create(juxOpts);
+        if(handle != -1) {
+            goto haveHandle;
+        }
+    }
+#endif
     //
     //    handle = ashmem_create_region(name, 0);
     // FIXME
@@ -198,13 +272,18 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shmOpen
         return;
 #endif
     }
+
     if(juxOpts & org_newsclub_net_unix_NativeUnixSocket_MOPT_SEALABLE) {
-#ifdef __linux__
-#else
+#if junixsocket_use_memfd_create
+        if(memfd_create) {
+            goto optsAfterSealable;
+        }
+#endif
         throwIOErrnumException(env, ENOTSUP, NULL);
         return;
-#endif
     }
+    goto optsAfterSealable;
+optsAfterSealable:
 
     if(!*name) {
 #       if defined(SHM_ANON)
@@ -233,11 +312,19 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shmOpen
             }
         }
         if(handle >= 0) {
-            if(shm_unlink(name) == 0) {
+            if(shm_unlink(name) != 0) {
                 // FIXME handle?
             }
         }
 #       else
+
+#if junixsocket_use_memfd_create
+        handle = try_memfd_create(juxOpts);
+        if(handle != -1) {
+            goto haveHandle;
+        }
+#endif
+
         opts |= (O_CREAT | O_EXCL);
 
         pid_t ppid = getppid();
@@ -260,7 +347,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shmOpen
             close(dummyFd);
         }
         if(handle >= 0) {
-            if(shm_unlink(name) == 0) {
+            if(shm_unlink(name) != 0) {
                 // FIXME handle
             }
         }
@@ -279,6 +366,9 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shmOpen
     }
 #   endif
 
+    goto haveHandle;
+
+haveHandle:
     if(handle < 0) {
         throwIOErrnumException(env, errno, NULL);
         return;

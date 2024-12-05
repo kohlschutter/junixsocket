@@ -50,12 +50,14 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.FileDescriptorCast;
+import org.newsclub.net.unix.OperationNotSupportedIOException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.ExecutionEnvironmentRequirement;
 import com.kohlschutter.testutil.ExecutionEnvironmentRequirement.Rule;
 import com.kohlschutter.testutil.ForkedVM;
 import com.kohlschutter.testutil.ForkedVMRequirement;
+import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
@@ -577,6 +579,35 @@ public class SharedMemoryTest {
           }
         }
       }
+    }
+  }
+
+  @Test
+  public void testTwoAnonymous() throws Exception {
+    try (SharedMemory mem1 = SharedMemory.createAnonymous(64);
+        SharedMemory mem2 = SharedMemory.createAnonymous(64)) {
+      MemorySegment seg1 = mem1.asMappedMemorySegment(MapMode.READ_WRITE);
+      MemorySegment seg2 = mem2.asMappedMemorySegment(MapMode.READ_WRITE);
+
+      seg1.set(OfByte.JAVA_INT, 0, 12);
+      assertEquals(12, seg1.get(OfByte.JAVA_INT, 0));
+      assertEquals(0, seg2.get(OfByte.JAVA_INT, 0));
+      seg2.set(OfByte.JAVA_INT, 0, 34);
+      assertEquals(12, seg1.get(OfByte.JAVA_INT, 0));
+      assertEquals(34, seg2.get(OfByte.JAVA_INT, 0));
+    }
+  }
+
+  @Test
+  public void testSecret() throws Exception {
+    try (SharedMemory mem = SharedMemory.createAnonymous(64, SharedMemoryOption.SECRET)) {
+      MemorySegment seg = mem.asMappedMemorySegment(MapMode.READ_WRITE);
+      assertEquals(0, seg.get(OfByte.JAVA_INT, 0));
+      seg.set(OfByte.JAVA_INT, 0, 99);
+      assertEquals(99, seg.get(OfByte.JAVA_INT, 0));
+    } catch (OperationNotSupportedIOException e) {
+      // acceptable
+      throw new TestAbortedNotAnIssueException("memfd_secret not supported/enabled in kernel", e);
     }
   }
 }
