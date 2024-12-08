@@ -19,6 +19,7 @@
 #include "config.h"
 #include "init.h"
 
+#include "logging.h"
 #include "exceptions.h"
 #include "capabilities.h"
 #include "reflection.h"
@@ -142,7 +143,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init
     }
 #endif
 
-    init_exceptions(env); // should be first
+#if DEBUG
+    init_logging(env);  // should be first
+#endif
+    init_exceptions(env); // should be second
 
     init_reflection(env);
     init_unix();
@@ -186,8 +190,11 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy
 #endif
     destroy_poll(env);
     destroy_socketoptions(env);
-
     destroy_shm(env);
+
+#if DEBUG
+    destroy_logging(env);
+#endif
 }
 
 /*

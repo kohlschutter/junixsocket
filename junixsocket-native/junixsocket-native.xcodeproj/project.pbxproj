@@ -1138,6 +1138,56 @@
 		438F4DC42A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
 		438F4DC52A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
 		438F4DC62A6AF05100546E2C /* afsystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 438F4D962A6AF05000546E2C /* afsystem.h */; };
+		43ADC6EE2D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC6EF2D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC6F02D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC6F12D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC6F22D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC6F32D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC6F42D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC6F52D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC6F62D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC6F72D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC6F82D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC6F92D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC6FA2D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC6FB2D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC6FC2D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC6FD2D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC6FE2D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC6FF2D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC7002D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC7012D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC7022D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC7032D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC7042D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC7052D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC7062D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC7072D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC7082D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC7092D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC70A2D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC70B2D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC70C2D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC70D2D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC70E2D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC70F2D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC7102D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC7112D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC7122D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC7132D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC7142D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC7152D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC7162D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC7172D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC7182D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC7192D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC71A2D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC71B2D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC71C2D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC71D2D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
+		43ADC71E2D04DE8D0095802A /* logging.c in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC6ED2D04DE8D0095802A /* logging.c */; };
+		43ADC71F2D04DE8D0095802A /* logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 43ADC6EC2D04DE8D0095802A /* logging.h */; };
 		43B3DF83265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
 		43B3DF84265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
 		43B3DF85265EEC930024822F /* pipe.h in Headers */ = {isa = PBXBuildFile; fileRef = 43B3DF81265EEC930024822F /* pipe.h */; };
@@ -1770,6 +1820,8 @@
 		436E166027FBB70B00A553EC /* tipc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = tipc.c; path = src/main/c/tipc.c; sourceTree = "<group>"; };
 		438F4D952A6AF05000546E2C /* afsystem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = afsystem.c; path = src/main/c/afsystem.c; sourceTree = "<group>"; };
 		438F4D962A6AF05000546E2C /* afsystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = afsystem.h; path = src/main/c/afsystem.h; sourceTree = "<group>"; };
+		43ADC6EC2D04DE8D0095802A /* logging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = logging.h; path = src/main/c/logging.h; sourceTree = "<group>"; };
+		43ADC6ED2D04DE8D0095802A /* logging.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = logging.c; path = src/main/c/logging.c; sourceTree = "<group>"; };
 		43B3DF81265EEC930024822F /* pipe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pipe.h; path = src/main/c/pipe.h; sourceTree = "<group>"; };
 		43B3DF82265EEC930024822F /* pipe.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = pipe.c; path = src/main/c/pipe.c; sourceTree = "<group>"; };
 		43B3DFB5266082000024822F /* socketpair.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = socketpair.c; path = src/main/c/socketpair.c; sourceTree = "<group>"; };
@@ -2041,6 +2093,8 @@
 				43B5DE6D2CF4FEE7001227CF /* shm.h */,
 				43B5DEA22CFBD19F001227CF /* futex.c */,
 				43B5DEA12CFBD19F001227CF /* futex.h */,
+				43ADC6ED2D04DE8D0095802A /* logging.c */,
+				43ADC6EC2D04DE8D0095802A /* logging.h */,
 			);
 			name = Implementation;
 			sourceTree = "<group>";
@@ -2123,6 +2177,7 @@
 				430456A42C91B81000CBAC42 /* filedescriptors.h in Headers */,
 				430456A52C91B81000CBAC42 /* exceptions.h in Headers */,
 				430456A62C91B81000CBAC42 /* capabilities.h in Headers */,
+				43ADC7122D04DE8D0095802A /* logging.h in Headers */,
 				430456A72C91B81000CBAC42 /* gettod_zos.h in Headers */,
 				430456A82C91B81000CBAC42 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430456A92C91B81000CBAC42 /* socket.h in Headers */,
@@ -2162,6 +2217,7 @@
 				4304A5FE266DFCEF003BCEDF /* filedescriptors.h in Headers */,
 				4304A5FF266DFCEF003BCEDF /* exceptions.h in Headers */,
 				4304A600266DFCEF003BCEDF /* capabilities.h in Headers */,
+				43ADC6FD2D04DE8D0095802A /* logging.h in Headers */,
 				43145C5F2B0656E30090BD53 /* gettod_zos.h in Headers */,
 				4304A601266DFCEF003BCEDF /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				4304A602266DFCEF003BCEDF /* socket.h in Headers */,
@@ -2201,6 +2257,7 @@
 				430234882650AB4E00823167 /* filedescriptors.h in Headers */,
 				430234582650AB4E00823167 /* exceptions.h in Headers */,
 				430234282650AB4E00823167 /* capabilities.h in Headers */,
+				43ADC7152D04DE8D0095802A /* logging.h in Headers */,
 				43145C4D2B0656E30090BD53 /* gettod_zos.h in Headers */,
 				4302356C2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430234E82650AB4F00823167 /* socket.h in Headers */,
@@ -2240,6 +2297,7 @@
 				430234922650AB4E00823167 /* filedescriptors.h in Headers */,
 				430234622650AB4E00823167 /* exceptions.h in Headers */,
 				430234322650AB4E00823167 /* capabilities.h in Headers */,
+				43ADC6F52D04DE8D0095802A /* logging.h in Headers */,
 				43145C5B2B0656E30090BD53 /* gettod_zos.h in Headers */,
 				430235762650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430234F22650AB4F00823167 /* socket.h in Headers */,
@@ -2279,6 +2337,7 @@
 				4302348B2650AB4E00823167 /* filedescriptors.h in Headers */,
 				4302345B2650AB4E00823167 /* exceptions.h in Headers */,
 				4302342B2650AB4E00823167 /* capabilities.h in Headers */,
+				43ADC71A2D04DE8D0095802A /* logging.h in Headers */,
 				43145C512B0656E30090BD53 /* gettod_zos.h in Headers */,
 				4302356F2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430234EB2650AB4F00823167 /* socket.h in Headers */,
@@ -2318,6 +2377,7 @@
 				4302348E2650AB4E00823167 /* filedescriptors.h in Headers */,
 				4302345E2650AB4E00823167 /* exceptions.h in Headers */,
 				4302342E2650AB4E00823167 /* capabilities.h in Headers */,
+				43ADC70B2D04DE8D0095802A /* logging.h in Headers */,
 				43145C562B0656E30090BD53 /* gettod_zos.h in Headers */,
 				430235722650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430234EE2650AB4F00823167 /* socket.h in Headers */,
@@ -2357,6 +2417,7 @@
 				430234912650AB4E00823167 /* filedescriptors.h in Headers */,
 				430234612650AB4E00823167 /* exceptions.h in Headers */,
 				430234312650AB4E00823167 /* capabilities.h in Headers */,
+				43ADC6F32D04DE8D0095802A /* logging.h in Headers */,
 				43145C592B0656E30090BD53 /* gettod_zos.h in Headers */,
 				430235752650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430234F12650AB4F00823167 /* socket.h in Headers */,
@@ -2396,6 +2457,7 @@
 				4302348C2650AB4E00823167 /* filedescriptors.h in Headers */,
 				4302345C2650AB4E00823167 /* exceptions.h in Headers */,
 				4302342C2650AB4E00823167 /* capabilities.h in Headers */,
+				43ADC6EF2D04DE8D0095802A /* logging.h in Headers */,
 				43145C522B0656E30090BD53 /* gettod_zos.h in Headers */,
 				430235702650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430234EC2650AB4F00823167 /* socket.h in Headers */,
@@ -2435,6 +2497,7 @@
 				4302348D2650AB4E00823167 /* filedescriptors.h in Headers */,
 				4302345D2650AB4E00823167 /* exceptions.h in Headers */,
 				4302342D2650AB4E00823167 /* capabilities.h in Headers */,
+				43ADC71D2D04DE8D0095802A /* logging.h in Headers */,
 				43145C552B0656E30090BD53 /* gettod_zos.h in Headers */,
 				430235712650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430234ED2650AB4F00823167 /* socket.h in Headers */,
@@ -2474,6 +2537,7 @@
 				4302348A2650AB4E00823167 /* filedescriptors.h in Headers */,
 				4302345A2650AB4E00823167 /* exceptions.h in Headers */,
 				4302342A2650AB4E00823167 /* capabilities.h in Headers */,
+				43ADC7042D04DE8D0095802A /* logging.h in Headers */,
 				43145C502B0656E30090BD53 /* gettod_zos.h in Headers */,
 				4302356E2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430234EA2650AB4F00823167 /* socket.h in Headers */,
@@ -2513,6 +2577,7 @@
 				430234902650AB4E00823167 /* filedescriptors.h in Headers */,
 				430234602650AB4E00823167 /* exceptions.h in Headers */,
 				430234302650AB4E00823167 /* capabilities.h in Headers */,
+				43ADC6FA2D04DE8D0095802A /* logging.h in Headers */,
 				43145C582B0656E30090BD53 /* gettod_zos.h in Headers */,
 				430235742650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430234F02650AB4F00823167 /* socket.h in Headers */,
@@ -2552,6 +2617,7 @@
 				435B54772A3F65D2001011B8 /* filedescriptors.h in Headers */,
 				435B54782A3F65D2001011B8 /* exceptions.h in Headers */,
 				435B54792A3F65D2001011B8 /* capabilities.h in Headers */,
+				43ADC70E2D04DE8D0095802A /* logging.h in Headers */,
 				43145C612B0656E30090BD53 /* gettod_zos.h in Headers */,
 				435B547A2A3F65D2001011B8 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				435B547B2A3F65D2001011B8 /* socket.h in Headers */,
@@ -2591,6 +2657,7 @@
 				435B54B32A3F65F4001011B8 /* filedescriptors.h in Headers */,
 				435B54B42A3F65F4001011B8 /* exceptions.h in Headers */,
 				435B54B52A3F65F4001011B8 /* capabilities.h in Headers */,
+				43ADC70D2D04DE8D0095802A /* logging.h in Headers */,
 				43145C622B0656E30090BD53 /* gettod_zos.h in Headers */,
 				435B54B62A3F65F4001011B8 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				435B54B72A3F65F4001011B8 /* socket.h in Headers */,
@@ -2630,6 +2697,7 @@
 				435B54EF2A3F661F001011B8 /* filedescriptors.h in Headers */,
 				435B54F02A3F661F001011B8 /* exceptions.h in Headers */,
 				435B54F12A3F661F001011B8 /* capabilities.h in Headers */,
+				43ADC6FE2D04DE8D0095802A /* logging.h in Headers */,
 				43145C632B0656E30090BD53 /* gettod_zos.h in Headers */,
 				435B54F22A3F661F001011B8 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				435B54F32A3F661F001011B8 /* socket.h in Headers */,
@@ -2669,6 +2737,7 @@
 				430234872650AB4E00823167 /* filedescriptors.h in Headers */,
 				430234572650AB4E00823167 /* exceptions.h in Headers */,
 				430234272650AB4E00823167 /* capabilities.h in Headers */,
+				43ADC7192D04DE8D0095802A /* logging.h in Headers */,
 				43145C4C2B0656E30090BD53 /* gettod_zos.h in Headers */,
 				4302356B2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430234E72650AB4F00823167 /* socket.h in Headers */,
@@ -2708,6 +2777,7 @@
 				43684D8E282EE24B005F2989 /* filedescriptors.h in Headers */,
 				43684D8F282EE24B005F2989 /* exceptions.h in Headers */,
 				43684D90282EE24B005F2989 /* capabilities.h in Headers */,
+				43ADC6F62D04DE8D0095802A /* logging.h in Headers */,
 				43145C5A2B0656E30090BD53 /* gettod_zos.h in Headers */,
 				43684D91282EE24B005F2989 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				43684D92282EE24B005F2989 /* socket.h in Headers */,
@@ -2747,6 +2817,7 @@
 				436B5A8E28244CB500574CD4 /* filedescriptors.h in Headers */,
 				436B5A8F28244CB500574CD4 /* exceptions.h in Headers */,
 				436B5A9028244CB500574CD4 /* capabilities.h in Headers */,
+				43ADC71F2D04DE8D0095802A /* logging.h in Headers */,
 				43145C532B0656E30090BD53 /* gettod_zos.h in Headers */,
 				436B5A9128244CB500574CD4 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				436B5A9228244CB500574CD4 /* socket.h in Headers */,
@@ -2786,6 +2857,7 @@
 				436B5AC82826F49A00574CD4 /* filedescriptors.h in Headers */,
 				436B5AC92826F49A00574CD4 /* exceptions.h in Headers */,
 				436B5ACA2826F49A00574CD4 /* capabilities.h in Headers */,
+				43ADC7012D04DE8D0095802A /* logging.h in Headers */,
 				43145C542B0656E30090BD53 /* gettod_zos.h in Headers */,
 				436B5ACB2826F49A00574CD4 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				436B5ACC2826F49A00574CD4 /* socket.h in Headers */,
@@ -2825,6 +2897,7 @@
 				43B3DFDC26660A2D0024822F /* filedescriptors.h in Headers */,
 				43B3DFDD26660A2D0024822F /* exceptions.h in Headers */,
 				43B3DFDE26660A2D0024822F /* capabilities.h in Headers */,
+				43ADC7062D04DE8D0095802A /* logging.h in Headers */,
 				43145C5C2B0656E30090BD53 /* gettod_zos.h in Headers */,
 				43B3DFDF26660A2D0024822F /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				43B3DFE026660A2D0024822F /* socket.h in Headers */,
@@ -2864,6 +2937,7 @@
 				43B3E01426672FD30024822F /* filedescriptors.h in Headers */,
 				43B3E01526672FD30024822F /* exceptions.h in Headers */,
 				43B3E01626672FD30024822F /* capabilities.h in Headers */,
+				43ADC6F92D04DE8D0095802A /* logging.h in Headers */,
 				43145C5D2B0656E30090BD53 /* gettod_zos.h in Headers */,
 				43B3E01726672FD30024822F /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				43B3E01826672FD30024822F /* socket.h in Headers */,
@@ -2903,6 +2977,7 @@
 				43B3E04C266756540024822F /* filedescriptors.h in Headers */,
 				43B3E04D266756540024822F /* exceptions.h in Headers */,
 				43B3E04E266756540024822F /* capabilities.h in Headers */,
+				43ADC7022D04DE8D0095802A /* logging.h in Headers */,
 				43145C4E2B0656E30090BD53 /* gettod_zos.h in Headers */,
 				43B3E04F266756540024822F /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				43B3E050266756540024822F /* socket.h in Headers */,
@@ -2942,6 +3017,7 @@
 				43B3E084266971630024822F /* filedescriptors.h in Headers */,
 				43B3E085266971630024822F /* exceptions.h in Headers */,
 				43B3E086266971630024822F /* capabilities.h in Headers */,
+				43ADC7172D04DE8D0095802A /* logging.h in Headers */,
 				43145C5E2B0656E30090BD53 /* gettod_zos.h in Headers */,
 				43B3E087266971630024822F /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				43B3E088266971630024822F /* socket.h in Headers */,
@@ -2981,6 +3057,7 @@
 				43C57CD42A38F370001DEA62 /* filedescriptors.h in Headers */,
 				43C57CD52A38F370001DEA62 /* exceptions.h in Headers */,
 				43C57CD62A38F370001DEA62 /* capabilities.h in Headers */,
+				43ADC7092D04DE8D0095802A /* logging.h in Headers */,
 				43145C602B0656E30090BD53 /* gettod_zos.h in Headers */,
 				43C57CD72A38F370001DEA62 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				43C57CD82A38F370001DEA62 /* socket.h in Headers */,
@@ -3020,6 +3097,7 @@
 				430234892650AB4E00823167 /* filedescriptors.h in Headers */,
 				430234592650AB4E00823167 /* exceptions.h in Headers */,
 				430234292650AB4E00823167 /* capabilities.h in Headers */,
+				43ADC7112D04DE8D0095802A /* logging.h in Headers */,
 				43145C4F2B0656E30090BD53 /* gettod_zos.h in Headers */,
 				4302356D2650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430234E92650AB4F00823167 /* socket.h in Headers */,
@@ -3059,6 +3137,7 @@
 				4302348F2650AB4E00823167 /* filedescriptors.h in Headers */,
 				4302345F2650AB4E00823167 /* exceptions.h in Headers */,
 				4302342F2650AB4E00823167 /* capabilities.h in Headers */,
+				43ADC6F12D04DE8D0095802A /* logging.h in Headers */,
 				43145C572B0656E30090BD53 /* gettod_zos.h in Headers */,
 				430235732650AB4F00823167 /* org_newsclub_net_unix_NativeUnixSocket.h in Headers */,
 				430234EF2650AB4F00823167 /* socket.h in Headers */,
@@ -3593,6 +3672,7 @@
 				430456C92C91B81000CBAC42 /* listen.c in Sources */,
 				430456CA2C91B81000CBAC42 /* ancillary.c in Sources */,
 				43B5DECA2CFBD19F001227CF /* futex.c in Sources */,
+				43ADC7132D04DE8D0095802A /* logging.c in Sources */,
 				430456CB2C91B81000CBAC42 /* accept.c in Sources */,
 				430456CC2C91B81000CBAC42 /* afsystem.c in Sources */,
 			);
@@ -3627,6 +3707,7 @@
 				4304A61F266DFCEF003BCEDF /* listen.c in Sources */,
 				4304A620266DFCEF003BCEDF /* ancillary.c in Sources */,
 				43B5DEA72CFBD19F001227CF /* futex.c in Sources */,
+				43ADC6FC2D04DE8D0095802A /* logging.c in Sources */,
 				4304A621266DFCEF003BCEDF /* accept.c in Sources */,
 				438F4DAA2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3661,6 +3742,7 @@
 				430234AC2650AB4E00823167 /* listen.c in Sources */,
 				430234342650AB4E00823167 /* ancillary.c in Sources */,
 				43B5DEBA2CFBD19F001227CF /* futex.c in Sources */,
+				43ADC7142D04DE8D0095802A /* logging.c in Sources */,
 				430233E02650AB4E00823167 /* accept.c in Sources */,
 				438F4D982A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3695,6 +3777,7 @@
 				430234B62650AB4E00823167 /* listen.c in Sources */,
 				4302343E2650AB4E00823167 /* ancillary.c in Sources */,
 				43B5DED32CFBD19F001227CF /* futex.c in Sources */,
+				43ADC6F42D04DE8D0095802A /* logging.c in Sources */,
 				430233EA2650AB4E00823167 /* accept.c in Sources */,
 				438F4DA62A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3729,6 +3812,7 @@
 				430234AF2650AB4E00823167 /* listen.c in Sources */,
 				430234372650AB4E00823167 /* ancillary.c in Sources */,
 				43B5DEBC2CFBD19F001227CF /* futex.c in Sources */,
+				43ADC71B2D04DE8D0095802A /* logging.c in Sources */,
 				430233E32650AB4E00823167 /* accept.c in Sources */,
 				438F4D9C2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3763,6 +3847,7 @@
 				430234B22650AB4E00823167 /* listen.c in Sources */,
 				4302343A2650AB4E00823167 /* ancillary.c in Sources */,
 				43B5DECC2CFBD19F001227CF /* futex.c in Sources */,
+				43ADC70A2D04DE8D0095802A /* logging.c in Sources */,
 				430233E62650AB4E00823167 /* accept.c in Sources */,
 				438F4DA12A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3797,6 +3882,7 @@
 				430234B52650AB4E00823167 /* listen.c in Sources */,
 				4302343D2650AB4E00823167 /* ancillary.c in Sources */,
 				43B5DEB52CFBD19F001227CF /* futex.c in Sources */,
+				43ADC6F22D04DE8D0095802A /* logging.c in Sources */,
 				430233E92650AB4E00823167 /* accept.c in Sources */,
 				438F4DA42A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3831,6 +3917,7 @@
 				430234B02650AB4E00823167 /* listen.c in Sources */,
 				430234382650AB4E00823167 /* ancillary.c in Sources */,
 				43B5DEA52CFBD19F001227CF /* futex.c in Sources */,
+				43ADC6EE2D04DE8D0095802A /* logging.c in Sources */,
 				430233E42650AB4E00823167 /* accept.c in Sources */,
 				438F4D9D2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3865,6 +3952,7 @@
 				430234B12650AB4E00823167 /* listen.c in Sources */,
 				430234392650AB4E00823167 /* ancillary.c in Sources */,
 				43B5DED02CFBD19F001227CF /* futex.c in Sources */,
+				43ADC71C2D04DE8D0095802A /* logging.c in Sources */,
 				430233E52650AB4E00823167 /* accept.c in Sources */,
 				438F4DA02A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3899,6 +3987,7 @@
 				430234AE2650AB4E00823167 /* listen.c in Sources */,
 				430234362650AB4E00823167 /* ancillary.c in Sources */,
 				43B5DEAB2CFBD19F001227CF /* futex.c in Sources */,
+				43ADC7052D04DE8D0095802A /* logging.c in Sources */,
 				430233E22650AB4E00823167 /* accept.c in Sources */,
 				438F4D9B2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3933,6 +4022,7 @@
 				430234B42650AB4E00823167 /* listen.c in Sources */,
 				4302343C2650AB4E00823167 /* ancillary.c in Sources */,
 				43B5DEB82CFBD19F001227CF /* futex.c in Sources */,
+				43ADC6FB2D04DE8D0095802A /* logging.c in Sources */,
 				430233E82650AB4E00823167 /* accept.c in Sources */,
 				438F4DA32A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -3967,6 +4057,7 @@
 				435B549A2A3F65D2001011B8 /* listen.c in Sources */,
 				435B549B2A3F65D2001011B8 /* ancillary.c in Sources */,
 				43B5DEB12CFBD19F001227CF /* futex.c in Sources */,
+				43ADC70F2D04DE8D0095802A /* logging.c in Sources */,
 				435B549C2A3F65D2001011B8 /* accept.c in Sources */,
 				438F4DAC2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4001,6 +4092,7 @@
 				435B54D62A3F65F4001011B8 /* listen.c in Sources */,
 				435B54D72A3F65F4001011B8 /* ancillary.c in Sources */,
 				43B5DEA32CFBD19F001227CF /* futex.c in Sources */,
+				43ADC70C2D04DE8D0095802A /* logging.c in Sources */,
 				435B54D82A3F65F4001011B8 /* accept.c in Sources */,
 				438F4DAD2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4035,6 +4127,7 @@
 				435B55122A3F661F001011B8 /* listen.c in Sources */,
 				435B55132A3F661F001011B8 /* ancillary.c in Sources */,
 				43B5DEBF2CFBD19F001227CF /* futex.c in Sources */,
+				43ADC6FF2D04DE8D0095802A /* logging.c in Sources */,
 				435B55142A3F661F001011B8 /* accept.c in Sources */,
 				438F4DAE2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4069,6 +4162,7 @@
 				430234AB2650AB4E00823167 /* listen.c in Sources */,
 				430234332650AB4E00823167 /* ancillary.c in Sources */,
 				43B5DEAF2CFBD19F001227CF /* futex.c in Sources */,
+				43ADC7182D04DE8D0095802A /* logging.c in Sources */,
 				430233DF2650AB4E00823167 /* accept.c in Sources */,
 				438F4D972A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4103,6 +4197,7 @@
 				43684DB0282EE24B005F2989 /* listen.c in Sources */,
 				43684DB1282EE24B005F2989 /* ancillary.c in Sources */,
 				43B5DEA92CFBD19F001227CF /* futex.c in Sources */,
+				43ADC6F72D04DE8D0095802A /* logging.c in Sources */,
 				43684DB2282EE24B005F2989 /* accept.c in Sources */,
 				438F4DA52A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4137,6 +4232,7 @@
 				436B5AB028244CB500574CD4 /* listen.c in Sources */,
 				436B5AB128244CB500574CD4 /* ancillary.c in Sources */,
 				43B5DED12CFBD19F001227CF /* futex.c in Sources */,
+				43ADC71E2D04DE8D0095802A /* logging.c in Sources */,
 				436B5AB228244CB500574CD4 /* accept.c in Sources */,
 				438F4D9E2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4171,6 +4267,7 @@
 				436B5AEA2826F49A00574CD4 /* listen.c in Sources */,
 				436B5AEB2826F49A00574CD4 /* ancillary.c in Sources */,
 				43B5DECD2CFBD19F001227CF /* futex.c in Sources */,
+				43ADC7002D04DE8D0095802A /* logging.c in Sources */,
 				436B5AEC2826F49A00574CD4 /* accept.c in Sources */,
 				438F4D9F2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4205,6 +4302,7 @@
 				43B3DFFD26660A2D0024822F /* listen.c in Sources */,
 				43B3DFFE26660A2D0024822F /* ancillary.c in Sources */,
 				43B5DEAD2CFBD19F001227CF /* futex.c in Sources */,
+				43ADC7072D04DE8D0095802A /* logging.c in Sources */,
 				43B3DFFF26660A2D0024822F /* accept.c in Sources */,
 				438F4DA72A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4239,6 +4337,7 @@
 				43B3E03526672FD30024822F /* listen.c in Sources */,
 				43B3E03626672FD30024822F /* ancillary.c in Sources */,
 				43B5DEC72CFBD19F001227CF /* futex.c in Sources */,
+				43ADC6F82D04DE8D0095802A /* logging.c in Sources */,
 				43B3E03726672FD30024822F /* accept.c in Sources */,
 				438F4DA82A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4273,6 +4372,7 @@
 				43B3E06D266756540024822F /* listen.c in Sources */,
 				43B3E06E266756540024822F /* ancillary.c in Sources */,
 				43B5DEB42CFBD19F001227CF /* futex.c in Sources */,
+				43ADC7032D04DE8D0095802A /* logging.c in Sources */,
 				43B3E06F266756540024822F /* accept.c in Sources */,
 				438F4D992A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4307,6 +4407,7 @@
 				43B3E0A5266971630024822F /* listen.c in Sources */,
 				43B3E0A6266971630024822F /* ancillary.c in Sources */,
 				43B5DEC22CFBD19F001227CF /* futex.c in Sources */,
+				43ADC7162D04DE8D0095802A /* logging.c in Sources */,
 				43B3E0A7266971630024822F /* accept.c in Sources */,
 				438F4DA92A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4341,6 +4442,7 @@
 				43C57CF72A38F370001DEA62 /* listen.c in Sources */,
 				43C57CF82A38F370001DEA62 /* ancillary.c in Sources */,
 				43B5DEBE2CFBD19F001227CF /* futex.c in Sources */,
+				43ADC7082D04DE8D0095802A /* logging.c in Sources */,
 				43C57CF92A38F370001DEA62 /* accept.c in Sources */,
 				438F4DAB2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4375,6 +4477,7 @@
 				430234AD2650AB4E00823167 /* listen.c in Sources */,
 				430234352650AB4E00823167 /* ancillary.c in Sources */,
 				43B5DEC32CFBD19F001227CF /* futex.c in Sources */,
+				43ADC7102D04DE8D0095802A /* logging.c in Sources */,
 				430233E12650AB4E00823167 /* accept.c in Sources */,
 				438F4D9A2A6AF05000546E2C /* afsystem.c in Sources */,
 			);
@@ -4409,6 +4512,7 @@
 				430234B32650AB4E00823167 /* listen.c in Sources */,
 				4302343B2650AB4E00823167 /* ancillary.c in Sources */,
 				43B5DEC62CFBD19F001227CF /* futex.c in Sources */,
+				43ADC6F02D04DE8D0095802A /* logging.c in Sources */,
 				430233E72650AB4E00823167 /* accept.c in Sources */,
 				438F4DA22A6AF05000546E2C /* afsystem.c in Sources */,
 			);
