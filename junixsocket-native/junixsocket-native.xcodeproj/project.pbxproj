@@ -4855,6 +4855,7 @@
 					"-lmswsock",
 					"-Xcrossclang-use-gcc=x86_64-w64-mingw32-gcc",
 					"-Xcrossclang-output-strip-lib-prefix",
+					"-Xcrossclang-ignore-export-dynamic",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = "$(CROSSCLANG_SDKROOT)";
@@ -4886,6 +4887,7 @@
 					"-lMswsock",
 					"-Xcrossclang-use-gcc=x86_64-w64-mingw32-gcc",
 					"-Xcrossclang-output-strip-lib-prefix",
+					"-Xcrossclang-ignore-export-dynamic",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = "$(CROSSCLANG_SDKROOT)";
