@@ -64,6 +64,12 @@ _Pragma("clang diagnostic ignored \"-Wunused-variable\"")
 #   define CK_IGNORE_UNUSED_VARIABLE_END \
 _Pragma("clang diagnostic pop")
 
+#   define CK_IGNORE_FORMAT_NONLITERAL_BEGIN \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wformat-nonliteral\"")
+#   define CK_IGNORE_FORMAT_NONLITERAL_END \
+_Pragma("clang diagnostic pop")
+
 #if __has_warning("-Wreserved-identifier")
 #   define CK_IGNORE_RESERVED_IDENTIFIER_BEGIN \
 _Pragma("clang diagnostic push") \
@@ -116,6 +122,17 @@ _Pragma("GCC diagnostic pop")
 #else
 #   define CK_IGNORE_CAST_BEGIN
 #   define CK_IGNORE_CAST_END
+#endif
+
+#if __GNUC__
+#   define CK_IGNORE_FORMAT_NONLITERAL_BEGIN \
+_Pragma("GCC diagnostic push") \
+_Pragma("GCC diagnostic ignored \"-Wformat-nonliteral\"")
+#   define CK_IGNORE_FORMAT_NONLITERAL_END \
+_Pragma("GCC diagnostic pop")
+#else
+#   define CK_IGNORE_FORMAT_NONLITERAL_BEGIN
+#   define CK_IGNORE_FORMAT_NONLITERAL_END
 #endif
 
 #   define CK_IGNORE_USED_BUT_MARKED_UNUSED_BEGIN
