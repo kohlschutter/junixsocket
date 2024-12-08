@@ -31,7 +31,7 @@
 # set -x
 
 # Make sure to include all paths that may contain custom linkers etc.
-PATH="$PATH":/usr/bin:/opt/crossclang/local/bin:/opt/homebrew/bin:/usr/local/bin
+PATH=/opt/crossclang/local/bin:"$PATH":/usr/bin:/opt/homebrew/bin:/usr/local/bin
 export PATH
 
 currentDir=$(cd "$(dirname $0)"; pwd)
