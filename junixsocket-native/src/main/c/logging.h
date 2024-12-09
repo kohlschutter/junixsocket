@@ -28,6 +28,10 @@ void destroy_logging(JNIEnv *env);
 
 void juxLog(JNIEnv *env, const char *fmt, ...);
 
+#else
+
+#define juxLog(env, fmt, ...)
+
 #endif // DEBUG
 
 #endif /* logging_h */
