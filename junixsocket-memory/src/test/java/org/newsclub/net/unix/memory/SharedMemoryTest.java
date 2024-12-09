@@ -789,4 +789,17 @@ public class SharedMemoryTest {
       }
     }
   }
+
+  @Test
+  public void testOSAdvisory() throws Exception {
+    String osName = System.getProperty("os.name", "");
+    if ("z/OS".equals(osName)) {
+      throw new TestAbortedWithImportantMessageException(
+          MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+          "junixsocket-memory has not been tested on z/OS, due to the lack of availability of a "
+              + "Java 22 environment. Please file a ticket at "
+              + "https://github.com/kohlschutter/junixsocket/issues with your selftest results, this "
+              + "will be tremendously useful. Thank you!");
+    }
+  }
 }
