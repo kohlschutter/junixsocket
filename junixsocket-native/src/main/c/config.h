@@ -86,6 +86,14 @@ CK_IGNORE_UNUSED_MACROS_END
 
 #if __TOS_MVS__
 // z/OS
+#   if PATH_MAX
+#   else
+#      define PATH_MAX 1024
+#   endif
+int sched_yield(void);
+int shm_unlink(const char *name);
+int shm_open(const char *name, int oflag, mode_t mode);
+
 #  undef junixsocket_have_ancillary
 #  undef junixsocket_have_pipe2
 #  define junixsocket_use_poll_for_read
