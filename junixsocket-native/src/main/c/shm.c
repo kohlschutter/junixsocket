@@ -53,6 +53,13 @@ CK_IGNORE_UNUSED_MACROS_BEGIN
 CK_IGNORE_UNUSED_MACROS_END
 #endif
 
+#if __TOS_MVS__
+#   ifdef __SUSV3_XSI
+#   else
+#       define __SUSV3_XSI
+#   endif
+#endif
+
 #if defined(_WIN32)
 //
 #  define SHM_NAME_MAXLEN PATH_MAX
@@ -78,12 +85,18 @@ int ashmem_create_region(const char *name, size_t size);
 #  endif
 #endif /* shm_h */
 
-#if defined(SHM_ANON)
+#if __TOS_MVS__
+#   if MAP_ANONYMOUS
+#   else
+#       define MAP_ANONYMOUS 32 // https://www.ibm.com/docs/en/zos/3.1.0?topic=31-bpxycons-constants-used-by-services
+#   endif
+#elif defined(SHM_ANON)
 //
 #elif defined(OpenBSD)
 //
 #elif defined(__APPLE__)
 #   undef MADV_PAGEOUT // internal-only (see sys/mman.h)
+#elif __TOS_MVS__
 #elif __has_include(<bsd/stdlib.h>)
 #   include <bsd/stdlib.h>
 #elif defined(_WIN32)
@@ -92,8 +105,6 @@ static PVOID WINAPI (*f_VirtualAlloc2)(HANDLE Process, PVOID BaseAddress, SIZE_T
 static PVOID WINAPI (*f_MapViewOfFile3)(HANDLE FileMapping, HANDLE Process, PVOID BaseAddress, ULONG64 Offset, SIZE_T ViewSize, ULONG AllocationType, ULONG PageProtection, MEM_EXTENDED_PARAMETER* ExtendedParameters, ULONG ParameterCount);
 
 #elif defined(__ANDROID__)
-//
-#else
 //
 #endif
 
@@ -875,6 +886,13 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_madvise
             throwIOErrnumException(env, ENOTSUP, NULL);
             return;
     }
+#elif __TOS_MVS__
+    // no madvise on z/OS ...
+    if(ignoreError) {
+        return;
+    }
+    throwIOErrnumException(env, ENOTSUP, NULL);
+    return;
 #else
 
     int advice;

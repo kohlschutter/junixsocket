@@ -196,4 +196,10 @@ _Pragma("GCC diagnostic pop")
 
 #define CK_UNREACHABLE_CODE do { if((true))abort(); } while(0);
 
+#if __TOS_MVS__
+#   define CK_INLINE_IF_POSSIBLE
+#else
+#   define CK_INLINE_IF_POSSIBLE inline
+#endif
+
 #endif /* ckmacros_h */

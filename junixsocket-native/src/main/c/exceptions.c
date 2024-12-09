@@ -284,12 +284,12 @@ void throwErrnumException1(JNIEnv* env, int errnum, jobject fdToClose, jboolean 
     free(message);
 }
 
-inline void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
+CK_INLINE_IF_POSSIBLE void _throwErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
 {
     throwErrnumException1(env, errnum, fdToClose, true);
 }
 
-inline void throwIOErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
+CK_INLINE_IF_POSSIBLE void throwIOErrnumException(JNIEnv* env, int errnum, jobject fdToClose)
 {
     throwErrnumException1(env, errnum, fdToClose, false);
 }
