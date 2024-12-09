@@ -39,7 +39,7 @@ public final class MemoryImplUtilInternal {
   public static final int MOPT_CREAT = NativeUnixSocket.MOPT_CREAT;
   public static final int MOPT_EXCL = NativeUnixSocket.MOPT_EXCL;
 
-  private static final long PAGE_SIZE = NativeUnixSocket.pageSize();
+  private static final long SHM_ALLOC_SIZE = NativeUnixSocket.sharedMemoryAllocationSize();
 
   // FIXME: POSIX leaves the behavior of the combination of O_RDONLY and
   // O_TRUNC unspecified. On Linux, this will successfully truncate
@@ -61,6 +61,9 @@ public final class MemoryImplUtilInternal {
   public static final int MADV_WILLNEED = NativeUnixSocket.MADV_WILLNEED;
   public static final int MADV_DONTNEED = NativeUnixSocket.MADV_DONTNEED;
 
+  private static final boolean NEED_TO_TRACK_SHM = NativeUnixSocket.needToTrackSharedMemory();
+  private static final boolean FUTEX_INTER_PROCESS = NativeUnixSocket.futexIsInterProcess();
+
   MemoryImplUtilInternal() {
   }
 
@@ -70,19 +73,17 @@ public final class MemoryImplUtilInternal {
     }
   }
 
-  public FileDescriptor shmOpen(String name, long truncateLength, int mode, int options)
+  public long shmOpen(FileDescriptor fdOut, String name, long truncateLength, int mode, int options)
       throws IOException {
-    FileDescriptor fdOut = new FileDescriptor();
-    NativeUnixSocket.shmOpen(fdOut, name, truncateLength, mode, options);
-    return fdOut;
+    return NativeUnixSocket.shmOpen(fdOut, name, truncateLength, mode, options);
   }
 
   public void close(FileDescriptor fd) throws IOException {
     NativeUnixSocket.close(fd);
   }
 
-  public long getPageSize() {
-    return PAGE_SIZE;
+  public long getSharedMemoryAllocationSize() {
+    return SHM_ALLOC_SIZE;
   }
 
   public ByteBuffer mmap(Object arenaSegment, FileDescriptor fd, long offset, long length,
@@ -100,8 +101,9 @@ public final class MemoryImplUtilInternal {
     return NativeUnixSocket.mmap(arenaSegment, fd, offset, length, mmode, duplicates);
   }
 
-  public void unmap(long address, long byteSize, boolean ignoreError) throws IOException {
-    NativeUnixSocket.unmap(address, byteSize, ignoreError);
+  public void unmap(long address, long byteSize, int duplicates, boolean ignoreError)
+      throws IOException {
+    NativeUnixSocket.unmap(address, byteSize, duplicates, ignoreError);
   }
 
   public void madvise(long address, long byteSize, int madv, boolean ignoreError)
@@ -110,10 +112,30 @@ public final class MemoryImplUtilInternal {
   }
 
   public boolean futexWait(long address, int ifValue, int timeoutMillis) throws IOException {
-    return NativeUnixSocket.futexWait(address, ifValue, timeoutMillis);
+    try {
+      return NativeUnixSocket.futexWait(address, ifValue, timeoutMillis);
+    } catch (OperationNotSupportedIOException e) {
+      throw new UnsupportedOperationException("futexWait", e);
+    }
   }
 
   public boolean futexWake(long address, boolean wakeAll) throws IOException {
-    return NativeUnixSocket.futexWake(address, wakeAll);
+    try {
+      return NativeUnixSocket.futexWake(address, wakeAll);
+    } catch (OperationNotSupportedIOException e) {
+      throw new UnsupportedOperationException("futexWake", e);
+    }
+  }
+
+  public boolean needToTrackSharedMemory() {
+    return NEED_TO_TRACK_SHM;
+  }
+
+  public long sizeOfSharedMemory(FileDescriptor fd) throws IOException {
+    return NativeUnixSocket.sizeOfSharedMemory(fd);
+  }
+
+  public boolean futexIsInterProcess() {
+    return FUTEX_INTER_PROCESS;
   }
 }

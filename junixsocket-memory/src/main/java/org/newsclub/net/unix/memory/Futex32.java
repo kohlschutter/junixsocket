@@ -88,7 +88,12 @@ final class Futex32 implements Futex {
     return ms;
   }
 
-  private final class Mutex32 implements Mutex {
+  @Override
+  public boolean isInterProcess() {
+    return SharedMemory.UTIL.futexIsInterProcess();
+  }
+
+  private final class Mutex32 implements SharedMutex {
     @Override
     public void close() throws IOException {
       Futex32.this.close();
@@ -148,9 +153,13 @@ final class Futex32 implements Futex {
       return false;
     }
 
+    @Override
+    public boolean isInterProcess() {
+      return Futex32.this.isInterProcess();
+    }
   }
 
-  Mutex mutex() {
+  SharedMutex mutex() {
     return new Mutex32();
   }
 
@@ -158,7 +167,7 @@ final class Futex32 implements Futex {
     try (SharedMemory mem = SharedMemory.createAnonymous(64)) {
       MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE);
 
-      Mutex mutex = mem.mutex(ms.asSlice(0, SharedMemory.MUTEX_SEGMENT_SIZE));
+      SharedMutex mutex = mem.mutex(ms.asSlice(0, SharedMemory.MUTEX_SEGMENT_SIZE));
       ExecutorService service = Executors.newCachedThreadPool();
       for (int i = 0; i < 8; i++) {
         service.submit(() -> {

@@ -25,7 +25,7 @@ import java.io.IOException;
  *
  * @author Christian Kohlschütter
  */
-public interface Mutex extends Closeable {
+public interface SharedMutex extends Closeable {
   /**
    * Try to lock the mutex.
    * <p>
@@ -55,4 +55,15 @@ public interface Mutex extends Closeable {
    * @return {@code true} if reentrant.
    */
   boolean isReentrant();
+
+  /**
+   * Reports if this lock instance can safely be accessed from multiple processes, or not. The
+   * actual way of accessing this {@link SharedMutex} is unspecified, but typically this is coordinated
+   * via {@link SharedMemory}.
+   * <p>
+   * The value returned is constant.
+   *
+   * @return {@code true} if inter-process access is permitted.
+   */
+  boolean isInterProcess();
 }

@@ -42,7 +42,35 @@ __attribute__((weak_import)) extern int os_sync_wake_by_address_all(void *addr, 
 #   include <linux/futex.h>      /* Definition of FUTEX_* constants */
 #   include <sys/syscall.h>      /* Definition of SYS_* constants */
 #   include <unistd.h>
+#elif defined(_WIN32)
+
+static VOID WINAPI (*f_WakeByAddressSingle)(PVOID Address);
+static VOID WINAPI (*f_WakeByAddressAll)(PVOID Address);
+static WINBOOL WINAPI (*f_WaitOnAddress)(volatile VOID *Address, PVOID CompareAddress, SIZE_T AddressSize, DWORD dwMilliseconds);
+
 #endif
+
+
+void init_futex(JNIEnv *env) {
+#if defined(_WIN32)
+    HMODULE lib = LoadLibrary("KernelBase.dll"); // Windows 10
+    if(lib) {
+        f_WakeByAddressSingle = (VOID WINAPI (*)(PVOID Address))GetProcAddress(lib, "WakeByAddressSingle");
+        f_WakeByAddressAll = (VOID WINAPI (*)(PVOID Address))GetProcAddress(lib, "WakeByAddressAll");
+        f_WaitOnAddress = (WINBOOL WINAPI (*)(volatile VOID *Address, PVOID CompareAddress, SIZE_T AddressSize, DWORD dwMilliseconds))GetProcAddress(lib, "WaitOnAddress");
+    } else {
+        f_WakeByAddressSingle = NULL;
+        f_WakeByAddressAll = NULL;
+        f_WaitOnAddress = NULL;
+    }
+#endif
+
+    (*env)->ExceptionClear(env);
+}
+
+void destroy_futex(JNIEnv *env) {
+    CK_ARGUMENT_POTENTIALLY_UNUSED(env);
+}
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -106,6 +134,17 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_futexWait
     return false;
 
 #else
+#   if defined(_WIN32)
+    if(f_WaitOnAddress) {
+        if(f_WaitOnAddress((void*)addr, &ifValue, 4, timeoutMillis)) {
+            return true;
+        } else if(io_errno == 1460) { // ERROR_TIMEOUT
+            return false;
+        } else {
+            throwIOErrnumException(env, io_errno, NULL);
+        }
+    }
+#   endif
     CK_ARGUMENT_POTENTIALLY_UNUSED(env);
     CK_ARGUMENT_POTENTIALLY_UNUSED(addr);
     CK_ARGUMENT_POTENTIALLY_UNUSED(ifValue);
@@ -168,10 +207,34 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_futexWake
     }
     return false;
 #else
+#   if defined(_WIN32)
+    if(wakeAll && f_WakeByAddressAll) {
+        f_WakeByAddressAll((void*)addr);
+        return false;
+    } else if(f_WakeByAddressSingle) {
+        f_WakeByAddressSingle((void*)addr);
+        return false;
+    }
+#   endif
+
     CK_ARGUMENT_POTENTIALLY_UNUSED(env);
     CK_ARGUMENT_POTENTIALLY_UNUSED(addr);
     CK_ARGUMENT_POTENTIALLY_UNUSED(wakeAll);
     throwIOErrnumException(env, ENOTSUP, NULL);
     return false;
+#endif
+}
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    futexIsInterProcess
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_futexIsInterProcess
+ (CK_UNUSED JNIEnv *env, CK_UNUSED  jclass klazz) {
+#if defined(_WIN32)
+    return false;
+#else
+    return true;
 #endif
 }

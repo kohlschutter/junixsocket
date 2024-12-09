@@ -90,6 +90,11 @@ static char *kFDTypeClassNames[kFDTypeMaxExcl] = {
 #endif
 };
 
+#if defined(_WIN32)
+#   define dup _dup
+#   define dup2 _dup2
+#endif
+
 static jclass *kFDTypeClasses;
 
 static jclass kRedirectImplClass;
@@ -617,13 +622,34 @@ jboolean supportsCastAsRedirect(void) {
 JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_duplicate
  (JNIEnv *env, jclass  clazz CK_UNUSED, jobject source, jobject target) {
 
-    int sourceFD = _getFD(env, source);
-    if(sourceFD == -1) {
+    jint sourceFD = _getFD(env, source);
+
+    if(sourceFD < 0) {
         // invalid fd, or Windows handle (not yet supported)
         return NULL;
     }
 
-    int targetFD = _getFD(env, target);
+    jint targetFD = _getFD(env, target);
+
+#if defined(_WIN32)
+    WSAPROTOCOL_INFO protocolInfo;
+    if(WSADuplicateSocket(sourceFD, GetCurrentProcessId(), &protocolInfo) == 0) {
+        SOCKET targetSocket = WSASocket(protocolInfo.iAddressFamily,
+                                        protocolInfo.iSocketType,
+                                        protocolInfo.iProtocol,&protocolInfo, 0, 0);
+        if(targetFD != -1) {
+            // Cannot dup2 a winsock socket
+            _throwErrnumException(env, ENOTSUP, NULL);
+            return NULL;
+        }
+        if(targetSocket == INVALID_SOCKET) {
+            _throwErrnumException(env, socket_errno, NULL);
+            return NULL;
+        }
+        targetFD = targetSocket;
+        goto dupDone;
+    }
+#endif
 
     if(targetFD == -1) {
         targetFD = dup(sourceFD);
@@ -631,25 +657,9 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_duplicate
         targetFD = dup2(sourceFD, targetFD);
     }
 
-#if defined(_WIN32)
-    if(targetFD == -1 && errno == EBADF) {
-        WSAPROTOCOL_INFO protocolInfo;
-        if(WSADuplicateSocket(sourceFD, GetCurrentProcessId(), &protocolInfo) != 0) {
-            _throwErrnumException(env, socket_errno, NULL);
-            return NULL;
-        }
-        SOCKET targetSocket = WSASocket(protocolInfo.iAddressFamily,
-                                        protocolInfo.iSocketType,
-                                        protocolInfo.iProtocol,&protocolInfo, 0, 0);
-        if(targetSocket == INVALID_SOCKET) {
-            _throwErrnumException(env, socket_errno, NULL);
-            return NULL;
-        }
+    goto dupDone;
 
-        targetFD = targetSocket;
-    }
-#endif
-
+dupDone:
     if(targetFD == -1) {
         _throwErrnumException(env, errno, NULL);
         return NULL;

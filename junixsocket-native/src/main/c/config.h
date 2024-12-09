@@ -302,7 +302,6 @@ typedef unsigned long socklen_t; /* 64-bits */
 #endif
 
 #if defined(__BSD_VISIBLE)
-#  define junixsocket_have_arc4random 1
 #  if defined(__MACH__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
 // not OpenBSD
 #  else
@@ -312,7 +311,6 @@ typedef unsigned long socklen_t; /* 64-bits */
 #endif
 
 #if defined(__MACH__)
-#  define junixsocket_have_arc4random 1
 #  if !defined(_DARWIN_C_SOURCE)
 #    define _DARWIN_C_SOURCE 1
 #  endif
@@ -351,15 +349,33 @@ typedef unsigned long socklen_t; /* 64-bits */
 #  include <uuid/uuid.h>
 #endif
 
+#if SIZE_MAX
+#else
+#   define SIZE_MAX INT_MAX
+#endif
+#define jux_SIZE_MAX ((jlong)((unsigned)SIZE_MAX))
+
 // Windows requires us fetching errno for socket-related errors
 #if defined(_WIN32)
 int jux_mangleErrno(int);
+
+union jlong_dword {
+    jlong jlong;
+    struct {
+        DWORD lower;
+        DWORD higher;
+    } dwords;
+};
+typedef union jlong_dword jux_jlong_dword_t;
+
 #  define socket_errno (errno = jux_mangleErrno(WSAGetLastError()))
+#  define io_errno (errno = jux_mangleErrno(GetLastError()))
 #  define ssize_t int
 #elif defined(_OS400)
 CK_VISIBILITY_INTERNAL
 int jux_mangleErrno(int);
 #   define socket_errno (errno = jux_mangleErrno(errno))
+#   define io_errno (errno = jux_mangleErrno(errno))
 
 #  if !defined(ECLOSED)
 // IBM i PASE doesn't define "ECLOSED" but we may encounter it
@@ -367,6 +383,7 @@ int jux_mangleErrno(int);
 #  endif
 #else
 #  define socket_errno errno
+#  define io_errno errno
 #endif
 
 #if __GLIBC__

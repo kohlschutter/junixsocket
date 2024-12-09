@@ -29,6 +29,7 @@
 #include "socketoptions.h"
 #include "vsock.h"
 #include "shm.h"
+#include "futex.h"
 
 static jboolean cap_supports_unix = false;
 static jboolean cap_supports_tipc = false;
@@ -163,8 +164,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_init
 #endif
     init_poll(env);
     init_socketoptions(env);
-
     init_shm(env);
+    init_futex(env);
 
     init_capabilities(env); // should be last
 }
@@ -191,6 +192,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_destroy
     destroy_poll(env);
     destroy_socketoptions(env);
     destroy_shm(env);
+    destroy_futex(env);
 
 #if DEBUG
     destroy_logging(env);

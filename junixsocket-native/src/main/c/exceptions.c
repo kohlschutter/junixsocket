@@ -121,6 +121,9 @@ void throwErrnumException1(JNIEnv* env, int errnum, jobject fdToClose, jboolean 
         case EHOSTUNREACH:
             exceptionType = kExceptionNoRouteToHostException;
             break;
+#if defined(_WIN32)
+        case 87 /*ERROR_INVALID_PARAMETER*/:
+#endif
         case EINVAL:
             if(isSocket) {
                 exceptionType = kExceptionInvalidArgumentSocketException;
@@ -239,10 +242,20 @@ void throwErrnumException1(JNIEnv* env, int errnum, jobject fdToClose, jboolean 
         FormatMessage (FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                        NULL, errnum, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
                        message, buflen, NULL);
-    } else if(errnum == 138) {
-        strcpy(message, "Permission to access the network was denied.");
     } else {
-        strncpy(message, strerror(errnum), buflen);
+        switch(errnum) {
+            case 87:
+                strcpy(message, "Invalid parameter");
+                break;
+            case 138:
+                strcpy(message, "Permission to access the network was denied.");
+                break;
+            case 487:
+                strcpy(message, "Invalid address");
+                break;
+            default:
+                strncpy(message, strerror(errnum), buflen);
+        }
     }
 #elif !defined(strerror_r)
     strncpy(message, strerror(errnum), buflen);

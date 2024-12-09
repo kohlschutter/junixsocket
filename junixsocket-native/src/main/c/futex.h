@@ -8,6 +8,9 @@
 #ifndef futex_h
 #define futex_h
 
-#include <stdio.h>
+#include "config.h"
+
+void init_futex(JNIEnv *env);
+void destroy_futex(JNIEnv *env);
 
 #endif /* futex_h */

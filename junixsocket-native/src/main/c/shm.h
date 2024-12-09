@@ -25,4 +25,3 @@ void init_shm(JNIEnv *env);
 void destroy_shm(JNIEnv *env);
 
 #endif
-

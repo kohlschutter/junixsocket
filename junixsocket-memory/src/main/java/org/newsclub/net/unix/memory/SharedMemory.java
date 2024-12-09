@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.FileChannelSupplier;
@@ -46,6 +47,11 @@ import org.newsclub.net.unix.MemoryImplUtilInternal;
 public final class SharedMemory implements Closeable {
   private static final Set<PosixFilePermission> DEFAULT_PERMISSIONS = PosixFilePermissions
       .fromString("rw-rw-rw-");
+
+  /**
+   * Keep track of known shared memory sizes, but only if useful (currently: Windows only).
+   */
+  static Map<FileDescriptor, Long> FD_MEMORY; // NOPMD
 
   /**
    * The exact size (in bytes) required for a {@link MemorySegment} used in
@@ -79,17 +85,38 @@ public final class SharedMemory implements Closeable {
 
   private final SharedMemoryCleaner cleaner;
 
+  private final long size;
+
   private SharedMemory(FileDescriptor fd) throws IOException {
-    this(fd, null, 0);
+    this(fd, -1, null, 0);
   }
 
-  private SharedMemory(FileDescriptor fd, String name, int mopts) throws IOException {
+  private SharedMemory(FileDescriptor fd, long size, String name, int mopts) throws IOException {
     super();
+    if (size == -1) {
+      this.size = determineSize(fd);
+    } else {
+      this.size = size;
+    }
     Objects.requireNonNull(fd);
     this.cleaner = new SharedMemoryCleaner(this, fd);
     this.name = name;
     this.knownReadOnly = isReadOnly(mopts);
     this.unlinkUponClose = (mopts & MemoryImplUtilInternal.MOPT_UNLINK_UPON_CLOSE) != 0;
+  }
+
+  private static long determineSize(FileDescriptor fd) throws IOException {
+    Map<FileDescriptor, Long> map = FD_MEMORY;
+    if (map != null) {
+      synchronized (map) {
+        Long knownSize = map.get(fd);
+        if (knownSize != null) {
+          return knownSize;
+        }
+      }
+    }
+    return getUtil().sizeOfSharedMemory(fd);
+    // ; return FileDescriptorCast.using(fd).as(FileChannel.class).size();
   }
 
   static boolean isUtilLoaded() {
@@ -115,6 +142,11 @@ public final class SharedMemory implements Closeable {
     if (util != null) {
       if (UTIL == null) {
         UTIL = util;
+        if (util.needToTrackSharedMemory()) {
+          FD_MEMORY = new WeakHashMap<>();
+        } else {
+          FD_MEMORY = null;
+        }
       } else {
         throw new IllegalStateException();
       }
@@ -124,7 +156,7 @@ public final class SharedMemory implements Closeable {
   /**
    * Creates a new {@link SharedMemory} instance using the given file descriptor, which can be
    * associated with a regular file that is to be memory-mapped, or a shared memory region.
-   * 
+   *
    * @param fd The file descriptor.
    * @return The new instance.
    * @throws IOException on error.
@@ -137,7 +169,7 @@ public final class SharedMemory implements Closeable {
    * Creates a new {@link SharedMemory} instance under the given name, using default permissions
    * (read-write for all users, where applicable). If there already exists an object under that
    * name, this call fails with an error.
-   * 
+   *
    * @param name The name.
    * @param minimumLength The requested length (the actual object can be larger).
    * @param options Instantiation options.
@@ -152,7 +184,7 @@ public final class SharedMemory implements Closeable {
   /**
    * Creates a new {@link SharedMemory} instance under the given name. If there already exists an
    * instance under that name, this call fails with an error.
-   * 
+   *
    * @param name The name.
    * @param minimumLength The requested length (the actual object can be larger).
    * @param perms The file system permissions, where applicable.
@@ -170,7 +202,7 @@ public final class SharedMemory implements Closeable {
    * Creates a new {@link SharedMemory} instance under the given name, using default permissions
    * (read-write for all users, where applicable). If there already exists an object under that
    * name, that object is opened instead.
-   * 
+   *
    * @param name The name.
    * @param minimumLength The requested length (the actual object can be larger).
    * @param options Instantiation options.
@@ -185,7 +217,7 @@ public final class SharedMemory implements Closeable {
   /**
    * Creates a new {@link SharedMemory} instance under the given namex. If there already exists an
    * object under that name, that object is opened instead.
-   * 
+   *
    * @param name The name.
    * @param minimumLength The requested length (the actual object can be larger).
    * @param perms The file system permissions, where applicable.
@@ -203,7 +235,7 @@ public final class SharedMemory implements Closeable {
    * Creates a new {@link SharedMemory} instance under the given name, using default permissions
    * (read-write for all users, where applicable). If there already exists an object under that
    * name, that object is reused (truncated to zero or deleted prior to allocation).
-   * 
+   *
    * @param name The name.
    * @param minimumLength The requested length (the actual object can be larger).
    * @param options Instantiation options.
@@ -219,7 +251,7 @@ public final class SharedMemory implements Closeable {
    * Creates a new {@link SharedMemory} instance under the given name. If there already exists an
    * object under that name, that object is reused (truncated to zero or deleted prior to
    * allocation).
-   * 
+   *
    * @param name The name.
    * @param minimumLength The requested length (the actual object can be larger).
    * @param perms The file system permissions, where applicable.
@@ -236,7 +268,7 @@ public final class SharedMemory implements Closeable {
   /**
    * Creates a new {@link SharedMemory} instance under the given name, using the object under the
    * given name. This call fails with an exception if no such object exists.
-   * 
+   *
    * @param name The name.
    * @param options Instantiation options.
    * @return The new instance.
@@ -249,7 +281,7 @@ public final class SharedMemory implements Closeable {
 
   /**
    * Creates a new {@link SharedMemory} instance using an anonymous identifier.
-   * 
+   *
    * @param minimumLength The requested length (the actual object can be larger).
    * @return The new instance.
    * @throws IOException on error.
@@ -260,7 +292,7 @@ public final class SharedMemory implements Closeable {
 
   /**
    * Creates a new {@link SharedMemory} instance using an anonymous identifier.
-   * 
+   *
    * @param minimumLength The requested length (the actual object can be larger).
    * @param options Instantiation options.
    * @return The new instance.
@@ -268,21 +300,32 @@ public final class SharedMemory implements Closeable {
    */
   public static SharedMemory createAnonymous(long minimumLength, SharedMemoryOption... options)
       throws IOException {
-    MemoryImplUtilInternal util = getUtil();
-
     int mopts = toOptions(options) | MemoryImplUtilInternal.MOPT_CREAT
         | MemoryImplUtilInternal.MOPT_TRUNC;
-    FileDescriptor fd = util.shmOpen(null, minimumLength, 0, mopts);
-    return new SharedMemory(fd, null, mopts);
+    return shmOpen0(null, Collections.emptySet(), mopts, minimumLength);
   }
 
   private static SharedMemory shmOpen(String name, Set<PosixFilePermission> perms, int mopts,
       long minimumLength) throws IOException {
+    name = checkShmName(name);
+    return shmOpen0(name, perms, mopts, minimumLength);
+  }
+
+  private static SharedMemory shmOpen0(String name, Set<PosixFilePermission> perms, int mopts,
+      long minimumLength) throws IOException {
     MemoryImplUtilInternal util = getUtil();
 
-    name = checkShmName(name);
-    FileDescriptor fd = util.shmOpen(name, minimumLength, toMode(perms), mopts);
-    return new SharedMemory(fd, name, mopts);
+    FileDescriptor fd = new FileDescriptor();
+    long size = util.shmOpen(fd, name, minimumLength, toMode(perms), mopts);
+    SharedMemory sm = new SharedMemory(fd, size, name, mopts);
+
+    Map<FileDescriptor, Long> map = FD_MEMORY;
+    if (map != null) {
+      synchronized (map) {
+        map.put(fd, size);
+      }
+    }
+    return sm;
   }
 
   private static boolean isReadOnly(int mopts) {
@@ -304,7 +347,7 @@ public final class SharedMemory implements Closeable {
 
   /**
    * Returns the file descriptor associated with this instance.
-   * 
+   *
    * @return The file descriptor.
    */
   public FileDescriptor getFileDescriptor() {
@@ -313,15 +356,20 @@ public final class SharedMemory implements Closeable {
 
   /**
    * Returns a {@link FileChannel} instance that can be used for memory-mapping via {code
-   * FileChannel#map}. There are no guarantees that writing/truncating works, however getting the
-   * current allocation size via {@link FileChannel#size()} should work.
+   * FileChannel#map}. There are no guarantees that writing/truncating/mapping works, however
+   * getting the current allocation size via {@link FileChannel#size()} should work.
    *
    * @return The {@link FileChannel}.
    * @throws IOException on error.
+   * @throws ClosedChannelException if the file descriptor is closed.
+   * @throws UnsupportedOperationException if this operation is not supported on this platform.
    */
-  public FileChannel asMappableFileChannel() throws IOException {
+  FileChannel asMappableFileChannel() throws IOException {
     if (!cleaner.fd.valid()) {
       throw new ClosedChannelException();
+    }
+    if (FD_MEMORY != null) {
+      throw new UnsupportedOperationException();
     }
     if (knownReadOnly) {
       return FileDescriptorCast.using(cleaner.fd).as(FileChannelSupplier.ReadOnly.class).get();
@@ -416,10 +464,10 @@ public final class SharedMemory implements Closeable {
     }
 
     int mmode = resolveMmode(mapMode);
-    FileChannel fc = asMappableFileChannel();
-    long size = fc.size();
-
     if (length == -1) {
+      // FileChannel fc = asMappableFileChannel();
+      // long size = fc.size();
+
       length = size;
     }
 
@@ -434,13 +482,13 @@ public final class SharedMemory implements Closeable {
       buf = buf.asReadOnlyBuffer();
     }
     MemorySegment ms = MemorySegment.ofBuffer(buf);
-    cleaner.registerMemorySegment(ms);
+    cleaner.registerMemorySegment(ms, duplicates);
     return ms;
   }
 
   /**
    * Adds the given {@link MemorySeal}s, preventing certain operations on shared memory.
-   * 
+   *
    * @param seals The seals.
    * @throws IOException on error (e.g., if unsupported).
    */
@@ -450,7 +498,7 @@ public final class SharedMemory implements Closeable {
 
   /**
    * Returns the current {@link MemorySeal}s for this shared memory instance.
-   * 
+   *
    * @return The seals, or empty if none or unsupported.
    * @throws IOException on error (e.g., if a system call fails unexpectedly).
    */
@@ -545,12 +593,14 @@ public final class SharedMemory implements Closeable {
   }
 
   /**
-   * Returns the system's default memory page size.
-   * 
+   * Returns the system's default memory page allocation size for shared memory.
+   * <p>
+   * This may be larger than the system's regular page size (e.g., on Windows it's 64k).
+   *
    * @return The page size.
    */
-  public static long defaultPageSize() {
-    return getUtil().getPageSize();
+  public static long defaultAllocationSize() {
+    return getUtil().getSharedMemoryAllocationSize();
   }
 
   Futex futex(MemorySegment addr) throws IOException {
@@ -575,18 +625,18 @@ public final class SharedMemory implements Closeable {
   }
 
   /**
-   * Returns a {@link Mutex} instance working with the given {@link MemorySegment}, which has to be
+   * Returns a {@link SharedMutex} instance working with the given {@link MemorySegment}, which has to be
    * exactly {@link #MUTEX_SEGMENT_SIZE} bytes long.
-   * 
+   *
    * @param addr The address.
    * @return The instance.
    * @throws IOException on error.
    */
-  public Mutex mutex(MemorySegment addr) throws IOException {
+  public SharedMutex mutex(MemorySegment addr) throws IOException {
     return mutex(addr, false);
   }
 
-  private Mutex mutex(MemorySegment addr, boolean unlockOnClose) throws IOException {
+  private SharedMutex mutex(MemorySegment addr, boolean unlockOnClose) throws IOException {
     if (addr.isReadOnly()) {
       throw new IOException("MemorySegment is read-only");
     }
@@ -602,5 +652,14 @@ public final class SharedMemory implements Closeable {
     }
 
     return futex.mutex();
+  }
+
+  /**
+   * Returns the aligned size of this shared memory instance.
+   *
+   * @return The aligned size, in bytes.
+   */
+  public long byteSize() {
+    return size;
   }
 }

@@ -536,17 +536,17 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shmUnlink
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    shmOpen
- * Signature: (Ljava/io/FileDescriptor;Ljava/lang/String;JII)V
+ * Signature: (Ljava/io/FileDescriptor;Ljava/lang/String;JII)J
  */
-JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shmOpen
+JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shmOpen
   (JNIEnv *, jclass, jobject, jstring, jlong, jint, jint);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    pageSize
+ * Method:    sharedMemoryAllocationSize
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_pageSize
+JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sharedMemoryAllocationSize
   (JNIEnv *, jclass);
 
 /*
@@ -560,10 +560,10 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    unmap
- * Signature: (JJZ)V
+ * Signature: (JJIZ)V
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_unmap
-  (JNIEnv *, jclass, jlong, jlong, jboolean);
+  (JNIEnv *, jclass, jlong, jlong, jint, jboolean);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
@@ -588,6 +588,30 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_futexWait
  */
 JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_futexWake
   (JNIEnv *, jclass, jlong, jboolean);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    needToTrackSharedMemory
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_needToTrackSharedMemory
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    futexIsInterProcess
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_futexIsInterProcess
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    sizeOfSharedMemory
+ * Signature: (Ljava/io/FileDescriptor;)J
+ */
+JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sizeOfSharedMemory
+  (JNIEnv *, jclass, jobject);
 
 #ifdef __cplusplus
 }

@@ -21,8 +21,7 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
@@ -31,7 +30,7 @@ import org.newsclub.net.unix.CleanableState;
 import org.newsclub.net.unix.MemoryImplUtilInternal;
 
 class SharedMemoryCleaner extends CleanableState {
-  private final List<MemorySegment> segments = new ArrayList<>();
+  private final Map<MemorySegment, Integer> segments = new LinkedHashMap<>();
   private final Map<Futex, Futex> futexes = new WeakHashMap<>();
   private final Arena arena = Arena.ofShared();
   private final MemorySegment arenaSegment = arena.allocate(0);
@@ -43,9 +42,9 @@ class SharedMemoryCleaner extends CleanableState {
     this.fd = fd;
   }
 
-  void registerMemorySegment(MemorySegment ms) {
+  void registerMemorySegment(MemorySegment ms, int duplicates) {
     synchronized (segments) {
-      segments.add(ms);
+      segments.put(ms, duplicates);
     }
   }
 
@@ -55,6 +54,13 @@ class SharedMemoryCleaner extends CleanableState {
     if (!SharedMemory.isUtilLoaded()) {
       // Nothing to do
       return;
+    }
+
+    Map<FileDescriptor, Long> map = SharedMemory.FD_MEMORY;
+    if (map != null) {
+      synchronized (map) {
+        map.remove(fd);
+      }
     }
 
     synchronized (futexes) {
@@ -88,16 +94,19 @@ class SharedMemoryCleaner extends CleanableState {
     }
 
     synchronized (segments) {
-      for (MemorySegment ms : segments) {
+      for (Map.Entry<MemorySegment, Integer> en : segments.entrySet()) {
+        MemorySegment ms = en.getKey();
+        int duplicates = en.getValue();
+
         long addr = ms.address();
         long length = ms.byteSize();
         if (ms.scope().isAlive()) {
-          util.madvise(addr, length, MemoryImplUtilInternal.MADV_FREE_NOW, false);
+          util.madvise(addr, length, MemoryImplUtilInternal.MADV_FREE_NOW, true);
           continue;
         }
 
         try {
-          util.unmap(addr, length, false);
+          util.unmap(addr, length, duplicates, false);
         } catch (IOException e) {
           if (exc == null) {
             exc = e;
@@ -119,7 +128,7 @@ class SharedMemoryCleaner extends CleanableState {
     long start = segment.address();
     long end = start + segment.byteSize();
     synchronized (segments) {
-      for (MemorySegment ms : segments) {
+      for (MemorySegment ms : segments.keySet()) {
         if (ms == segment) { // NOPMD
           return true;
         }

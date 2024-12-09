@@ -44,8 +44,10 @@ import java.nio.channels.NonWritableChannelException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
@@ -74,7 +76,7 @@ public class SharedMemoryTest {
 
   @Test
   public void testPageSize() throws Exception {
-    long pageSize = SharedMemory.defaultPageSize();
+    long pageSize = SharedMemory.defaultAllocationSize();
     assertNotEquals(0, pageSize);
     assertTrue((pageSize & 0xFFFL) == 0, "Page size should be a multiple of 4k");
 
@@ -125,6 +127,7 @@ public class SharedMemoryTest {
     }
   }
 
+  @ExecutionEnvironmentRequirement(windows = Rule.PROHIBITED)
   @Test
   public void testFileChannelMMap() throws Exception {
     String name = "juxtest.FileChannelMap";
@@ -132,69 +135,77 @@ public class SharedMemoryTest {
     try {
       SharedMemory.unlinkShared(name); // forcibly remove, just in case
       try (SharedMemory mem = SharedMemory.createOrReuseExisting(name, 3,
-          SharedMemoryOption.UNLINK_UPON_CLOSE); FileChannel fc = mem.asMappableFileChannel()) {
+          SharedMemoryOption.UNLINK_UPON_CLOSE)) {
 
-        int actuallyAllocatedSize = (int) fc.size();
+        int actuallyAllocatedSize = (int) mem.byteSize() /* (int) fc.size() */;
         // System.out.println("Allocation size: " + actuallyAllocatedSize);
         assertTrue(actuallyAllocatedSize >= 3);
 
-        MappedByteBuffer mbb = fc.map(MapMode.READ_WRITE, 0, actuallyAllocatedSize);
-        assertTrue(mbb.capacity() >= 3);
-        assertTrue(mbb.limit() >= 3);
-        assertEquals(0, mbb.position());
+        try (FileChannel fc = mem.asMappableFileChannel()) {
+          assertEquals(actuallyAllocatedSize, fc.size());
+          MappedByteBuffer mbb = fc.map(MapMode.READ_WRITE, 0, actuallyAllocatedSize);
+          assertTrue(mbb.capacity() >= 3);
+          assertTrue(mbb.limit() >= 3);
+          assertEquals(0, mbb.position());
 
-        mbb.put((byte) 1);
-        mbb.put((byte) 2);
-        mbb.put((byte) 3);
-        mbb.put(actuallyAllocatedSize - 1, (byte) 3);
+          mbb.put((byte) 1);
+          mbb.put((byte) 2);
+          mbb.put((byte) 3);
+          mbb.put(actuallyAllocatedSize - 1, (byte) 3);
 
-        int actuallyAllocatedSize0 = (int) fc.size(); // don't expect any extra allocations for that
-                                                      // fourth put
-        assertEquals(actuallyAllocatedSize, actuallyAllocatedSize0);
+          int actuallyAllocatedSize0 = (int) fc.size(); // don't expect any extra allocations for
+                                                        // that
+                                                        // fourth put
+          assertEquals(actuallyAllocatedSize, actuallyAllocatedSize0);
 
-        assertThrows(FileAlreadyExistsException.class, () -> SharedMemory.createExclusively(name,
-            16));
+          assertThrows(FileAlreadyExistsException.class, () -> SharedMemory.createExclusively(name,
+              16));
 
-        // mbb.force();
+          // mbb.force();
 
-        // opening an existing mapping by name should retain its data
-        try (SharedMemory mem1 = SharedMemory.openExisting(name);
-            FileChannel fc1 = mem1.asMappableFileChannel()) {
-          int actuallyAllocatedSize1 = (int) fc1.size();
-          assertEquals(actuallyAllocatedSize0, actuallyAllocatedSize1);
+          // opening an existing mapping by name should retain its data
+          try (SharedMemory mem1 = SharedMemory.openExisting(name);
+              FileChannel fc1 = mem1.asMappableFileChannel()) {
+            int actuallyAllocatedSize1 = (int) fc1.size();
+            assertEquals(actuallyAllocatedSize0, actuallyAllocatedSize1);
 
-          MappedByteBuffer mbb1 = fc1.map(MapMode.READ_WRITE, 0, actuallyAllocatedSize1);
-          assertEquals(1, mbb1.get());
-          assertEquals(2, mbb1.get());
-          assertEquals(3, mbb1.get());
+            MappedByteBuffer mbb1 = fc1.map(MapMode.READ_WRITE, 0, actuallyAllocatedSize1);
+            assertEquals(1, mbb1.get());
+            assertEquals(2, mbb1.get());
+            assertEquals(3, mbb1.get());
 
-          assertFalse(mbb1.isReadOnly());
-        }
+            assertFalse(mbb1.isReadOnly());
+          }
 
-        // reusing an existing mapping should still clear out the previous memory
-        try (SharedMemory mem1 = SharedMemory.createOrReuseExisting(name, 3);
-            FileChannel fc1 = mem1.asMappableFileChannel()) {
-          int actuallyAllocatedSize1 = (int) fc1.size();
-          assertEquals(actuallyAllocatedSize0, actuallyAllocatedSize1);
+          // reusing an existing mapping should still clear out the previous memory
+          try (SharedMemory mem1 = SharedMemory.createOrReuseExisting(name, 3);
+              FileChannel fc1 = mem1.asMappableFileChannel()) {
+            int actuallyAllocatedSize1 = (int) fc1.size();
+            assertEquals(actuallyAllocatedSize0, actuallyAllocatedSize1);
 
-          MappedByteBuffer mbb1 = fc1.map(MapMode.READ_WRITE, 0, actuallyAllocatedSize1);
-          assertEquals(0, mbb1.get());
-          assertEquals(0, mbb1.get());
-          assertEquals(0, mbb1.get());
+            MappedByteBuffer mbb1 = fc1.map(MapMode.READ_WRITE, 0, actuallyAllocatedSize1);
+            assertEquals(0, mbb1.get());
+            assertEquals(0, mbb1.get());
+            assertEquals(0, mbb1.get());
 
-          assertFalse(mbb1.isReadOnly());
-        }
+            assertFalse(mbb1.isReadOnly());
+          }
 
-        // read-only should work as expected
-        try (SharedMemory mem2 = SharedMemory.createOrReuseExisting(name, 3,
-            SharedMemoryOption.READ_ONLY); //
-            FileChannel fc2 = mem2.asMappableFileChannel()) {
+          // read-only should work as expected
+          try (SharedMemory mem2 = SharedMemory.createOrReuseExisting(name, 3,
+              SharedMemoryOption.READ_ONLY); //
+              FileChannel fc2 = mem2.asMappableFileChannel()) {
 
-          assertThrows(NonWritableChannelException.class, () -> fc2.map(MapMode.READ_WRITE, 0, fc2
-              .size()));
+            assertThrows(NonWritableChannelException.class, () -> fc2.map(MapMode.READ_WRITE, 0, fc2
+                .size()));
 
-          MappedByteBuffer mbb2 = fc2.map(MapMode.READ_ONLY, 0, fc2.size());
-          assertTrue(mbb2.isReadOnly());
+            MappedByteBuffer mbb2 = fc2.map(MapMode.READ_ONLY, 0, fc2.size());
+            assertTrue(mbb2.isReadOnly());
+          }
+        } catch (UnsupportedOperationException e) {
+          throw new TestAbortedWithImportantMessageException(
+              MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+              "System does not support SharedMemory#asMappableFileChannel", e);
         }
       }
 
@@ -207,13 +218,17 @@ public class SharedMemoryTest {
 
   @Test
   @SuppressWarnings("preview")
-  public void testMemorySegment() throws Exception {
-    try (SharedMemory mem = SharedMemory.createAnonymous(64); //
-        FileChannel fc = mem.asMappableFileChannel()) {
-
-      MemorySegment ms = fc.map(MapMode.READ_WRITE, 0, fc.size(), Arena.global());
-      ms.setString(0, "Hello");
-      ms.force();
+  public void testMemorySegmentFileChannelMap() throws Exception {
+    try (SharedMemory mem = SharedMemory.createAnonymous(64)) {
+      try (FileChannel fc = mem.asMappableFileChannel()) {
+        MemorySegment ms = fc.map(MapMode.READ_WRITE, 0, fc.size(), Arena.global());
+        ms.setString(0, "Hello");
+        ms.force();
+      } catch (UnsupportedOperationException e) {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+            "System does not support SharedMemory#asMappableFileChannel", e);
+      }
     }
   }
 
@@ -224,11 +239,12 @@ public class SharedMemoryTest {
 
       MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_ONLY);
       try {
-        out.write(1);
+        out.write(1); // please don't do this
       } catch (IOException e) {
         // macOS: Device not configured
-        throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_INFORMATIONAL,
-            "The operating system does not support writing to shared memory objects via the file API",
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+            "(debugging) System does not support writing to shared memory objects via FileOutputStream",
             e);
       }
       assertEquals(1, ms.get(OfByte.JAVA_BYTE, 0));
@@ -237,13 +253,16 @@ public class SharedMemoryTest {
 
   @Test
   public void testWriteFileChannel() throws Exception {
-    try (SharedMemory mem = SharedMemory.createAnonymous(0)) {
-      try {
-        mem.asMappableFileChannel().write(ByteBuffer.wrap("Hello World".getBytes(
-            StandardCharsets.UTF_8)));
+    try (SharedMemory mem = SharedMemory.createAnonymous(64)) {
+      try (FileChannel fc = mem.asMappableFileChannel()) {
+        fc.write(ByteBuffer.wrap("Hello World".getBytes(StandardCharsets.UTF_8))); // please don't
       } catch (IOException e) {
         // macOS: Device not configured
       }
+    } catch (UnsupportedOperationException e) {
+      throw new TestAbortedWithImportantMessageException(
+          MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+          "(debugging) System does not support SharedMemory#asMappableFileChannel", e);
     }
   }
 
@@ -254,9 +273,11 @@ public class SharedMemoryTest {
   }
 
   private void testMMapWithDuplicates(Arena arena, boolean closeArena) throws Exception {
+    boolean notMarkedAsMapped = false;
+
     MemorySegment ms;
-    try (SharedMemory mem = SharedMemory.createAnonymous(16);) {
-      long memSizeFC = mem.asMappableFileChannel().size();
+    try (SharedMemory mem = SharedMemory.createAnonymous(16)) {
+      long memSizeFC = mem.byteSize();
       assertNotEquals(0, memSizeFC);
 
       ms = mem.asMappedMemorySegment(MapMode.READ_WRITE, arena, 2);
@@ -268,13 +289,15 @@ public class SharedMemoryTest {
       assertEquals("Hello World", ms.getString(2 * memSize));
 
       // mmap-specific calls should succeed; these rely on Buffer having a "fd" field.
+      // However, shared memory on Windows does not have a file descriptor, therefore we
+      // need to guard this.
       if (ms.isMapped()) {
         ms.force();
         ms.load();
         ms.isLoaded();
         ms.unload();
       } else {
-        System.err.println("Warn: not marked as mapped");
+        notMarkedAsMapped = true;
       }
 
       if (closeArena) {
@@ -289,6 +312,12 @@ public class SharedMemoryTest {
         assertEquals("Hello World", ms.getString(0));
       } else {
         assertThrows(IllegalStateException.class, () -> ms.getString(0)); // already closed
+      }
+
+      if (notMarkedAsMapped) {
+        throw new TestAbortedWithImportantMessageException(
+            MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+            "SharedMemory MemorySegments are not considered #isMapped() on this platform");
       }
     }
   }
@@ -336,8 +365,10 @@ public class SharedMemoryTest {
   @Test
   public void testCreateAnonymousZeroMmap() throws Exception {
     try (SharedMemory mem = SharedMemory.createAnonymous(0)) {
-      assertThrows(IOException.class, () -> mem.asMappedMemorySegment(MapMode.READ_WRITE,
-          (Arena) null)); // currently: IOEception: Invalid argument
+      MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE, (Arena) null);
+      assertEquals(SharedMemory.defaultAllocationSize(), ms.byteSize());
+    } catch (IOException e) {
+      // may also be thrown here (Windows)
     }
   }
 
@@ -421,8 +452,85 @@ public class SharedMemoryTest {
   @Test
   public void testUnlink() throws Exception {
     // trying to remove a non-existant or already deleted entry should not throw an exception
-    SharedMemory.unlinkShared("jux.dawg");
-    SharedMemory.unlinkShared("jux.dawg");
+    SharedMemory.unlinkShared("jux.unlink");
+    SharedMemory.unlinkShared("jux.unlink");
+  }
+
+  @Test
+  public void testOpenExisting() throws Exception {
+    String name = "juxoe";
+    String unrelated = "juxoeU";
+    SharedMemory.unlinkShared(name);
+    SharedMemory.unlinkShared(unrelated);
+    try (SharedMemory mem1 = SharedMemory.createOrReuseExisting(name, 64)) {
+      MemorySegment seg1 = mem1.asMappedMemorySegment(MapMode.READ_WRITE);
+      assertEquals("", seg1.getString(0));
+      seg1.setString(0, "Hello");
+      assertEquals("Hello", seg1.getString(0));
+
+      try (SharedMemory memUnrelated = SharedMemory.createOrOpenExisting(unrelated, 64)) {
+        MemorySegment segUnrelated = memUnrelated.asMappedMemorySegment(MapMode.READ_WRITE);
+        assertEquals("", segUnrelated.getString(0));
+        segUnrelated.setString(0, "unrelated");
+      }
+
+      try (SharedMemory mem2 = SharedMemory.createOrOpenExisting(name, 64)) {
+        MemorySegment seg2 = mem2.asMappedMemorySegment(MapMode.READ_WRITE);
+        assertEquals("Hello", seg2.getString(0));
+        seg2.setString(0, "World");
+      }
+
+      assertEquals("World", seg1.getString(0));
+    } finally {
+      SharedMemory.unlinkShared(name);
+      SharedMemory.unlinkShared(unrelated);
+    }
+  }
+
+  @Test
+  public void testOpen() throws Exception {
+    String name = "juxo";
+    SharedMemory.unlinkShared(name);
+    try (SharedMemory mem1 = SharedMemory.createExclusively(name, 64)) {
+      MemorySegment seg1 = mem1.asMappedMemorySegment(MapMode.READ_WRITE);
+      seg1.setString(0, "Hello");
+
+      try (SharedMemory mem2 = SharedMemory.openExisting(name)) {
+        MemorySegment seg2 = mem2.asMappedMemorySegment(MapMode.READ_WRITE);
+        assertEquals("Hello", seg2.getString(0));
+      }
+    }
+  }
+
+  @Test
+  public void testreateOrOpen() throws Exception {
+    String name = "juxco";
+    SharedMemory.unlinkShared(name);
+    try (SharedMemory mem1 = SharedMemory.createExclusively(name, 64)) {
+      MemorySegment seg1 = mem1.asMappedMemorySegment(MapMode.READ_WRITE);
+      seg1.setString(0, "Hello");
+
+      try (SharedMemory mem2 = SharedMemory.createOrOpenExisting(name, 64)) {
+        MemorySegment seg2 = mem2.asMappedMemorySegment(MapMode.READ_WRITE);
+        assertEquals("Hello", seg2.getString(0));
+      }
+    }
+  }
+
+  @Test
+  public void testUnlinkOpen() throws Exception {
+    String name = "juxuo";
+    SharedMemory.unlinkShared(name);
+    try (SharedMemory mem1 = SharedMemory.createExclusively(name, 3 * 64 * 1024)) {
+      MemorySegment seg1 = mem1.asMappedMemorySegment(MapMode.READ_WRITE);
+      seg1.setString(0, "Hello");
+
+      SharedMemory.unlinkShared(name);
+      try (SharedMemory mem2 = SharedMemory.createOrOpenExisting(name, 64)) {
+        MemorySegment seg2 = mem2.asMappedMemorySegment(MapMode.READ_WRITE);
+        assertEquals("", seg2.getString(0));
+      }
+    }
   }
 
   @Test
@@ -481,6 +589,9 @@ public class SharedMemoryTest {
         // "ifValue" was not the expected one.
         fail("The futex should have waited at least " + FUTEX32BIT_CHECK_WAIT_TIME + "ms");
       }
+    } catch (UnsupportedOperationException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          "Futexes are not supported on your platform", e);
     }
   }
 
@@ -521,7 +632,17 @@ public class SharedMemoryTest {
 
       Process p = vm.fork();
 
-      IOException exc = cf.get(5, TimeUnit.SECONDS);
+      IOException exc;
+      try {
+        exc = cf.get(5, TimeUnit.SECONDS);
+      } catch (ExecutionException e) {
+        if (e.getCause() instanceof UnsupportedOperationException) {
+          throw new TestAbortedWithImportantMessageException(
+              MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+              "Futexes are not supported on your platform", e);
+        }
+        throw e;
+      }
       if (exc != null) {
         throw exc;
       }
@@ -542,6 +663,7 @@ public class SharedMemoryTest {
         time = System.currentTimeMillis() - time;
         assertTrue(time >= 10, "Should have waited for at least 10 milliseconds");
 
+        AtomicBoolean tryWaitComplete = new AtomicBoolean(false);
         Semaphore cfReady = new Semaphore(0);
         CompletableFuture<Throwable> cf = CompletableFuture.supplyAsync(() -> {
           try {
@@ -553,7 +675,7 @@ public class SharedMemoryTest {
             } else {
               // We may try to wake before a wait was registered, so let's keep trying until we
               // actually wake up some thread
-              assertTrue(futex.tryWakeWithTimeout(false, 5000, 10));
+              assertTrue(futex.tryWakeWithTimeout(false, 5000, 10, () -> !tryWaitComplete.get()));
             }
           } catch (Throwable e) { // NOPMD.AvoidCatchingThrowable
             return e;
@@ -564,10 +686,14 @@ public class SharedMemoryTest {
 
         if (closeMem && !wakeUp) {
           // use a shorter test interval since it's going to fail anyways
-          assertFalse(futex.tryWait(0, 50));
+          boolean success = futex.tryWait(0, 50);
+          tryWaitComplete.set(true);
+          assertFalse(success);
         } else {
-          assertTrue(futex.tryWait(0, 5000) || //
-              (closeMem && futex.isClosed())); // Wait may fail because closed the memory
+          // Wait may fail because we closed the memory
+          boolean success = futex.tryWait(0, 5000) || futex.isClosed();
+          tryWaitComplete.set(true);
+          assertTrue(success);
         }
 
         Throwable t = cf.get();
@@ -579,6 +705,9 @@ public class SharedMemoryTest {
           }
         }
       }
+    } catch (UnsupportedOperationException e) {
+      throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_SHORT_WITH_ISSUES,
+          "Futexes are not supported on your platform", e);
     }
   }
 
@@ -608,6 +737,56 @@ public class SharedMemoryTest {
     } catch (OperationNotSupportedIOException e) {
       // acceptable
       throw new TestAbortedNotAnIssueException("memfd_secret not supported/enabled in kernel", e);
+    }
+  }
+
+  // @Test
+  public void testFutexIsInterProcess() throws Exception { // NOPMD
+    try (SharedMemory mem = SharedMemory.createAnonymous(8)) {
+      MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE);
+
+      try (Futex futex = mem.futex(ms.asSlice(0, SharedMemory.FUTEX32_SEGMENT_SIZE))) {
+        if (!futex.isInterProcess()) {
+          throw new TestAbortedWithImportantMessageException(
+              MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+              "On this system, SharedMemory Futexes cannot be shared between processes");
+        }
+      }
+    }
+  }
+
+  @Test
+  public void testMutexIsInterProcess() throws Exception {
+    try (SharedMemory mem = SharedMemory.createAnonymous(8)) {
+      MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE);
+
+      try (SharedMutex mutex = mem.mutex(ms.asSlice(0, SharedMemory.MUTEX_SEGMENT_SIZE))) {
+        if (!mutex.isInterProcess()) {
+          throw new TestAbortedWithImportantMessageException(
+              MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+              "On this system, SharedMemory Mutexes cannot be shared between processes");
+        }
+      }
+    }
+  }
+
+  @Test
+  public void testMutex() throws Exception {
+    try (SharedMemory mem = SharedMemory.createAnonymous(8)) {
+      MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE);
+
+      try (SharedMutex mutex = mem.mutex(ms.asSlice(0, SharedMemory.MUTEX_SEGMENT_SIZE))) {
+        assertTrue(mutex.tryLock(1));
+        assertFalse(mutex.tryLock(1));
+        mutex.unlock();
+        assertTrue(mutex.tryLock(1));
+        mutex.unlock();
+        mutex.unlock();
+        mutex.unlock();
+        mutex.unlock();
+        mutex.unlock();
+        assertTrue(mutex.tryLock(1));
+      }
     }
   }
 }

@@ -35,7 +35,7 @@ public class FutexTestApp {
 
       long size = ms.byteSize();
       if (size != SharedMemoryTest.FORKEDVM_FUTEX_SIZE) {
-        assertEquals(SharedMemory.defaultPageSize(), size, "Should either be exactly "
+        assertEquals(SharedMemory.defaultAllocationSize(), size, "Should either be exactly "
             + SharedMemoryTest.FORKEDVM_FUTEX_SIZE + " or page-aligned");
       }
 

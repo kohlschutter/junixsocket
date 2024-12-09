@@ -37,7 +37,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_systemResolve
 
     struct ctl_info info = {0};
 
-    if(jstring_to_char_if_possible(env, ctlName, info.ctl_name, sizeof(info.ctl_name)) == NULL) {
+    if(jstring_to_char_if_possible(env, ctlName, 0, info.ctl_name, sizeof(info.ctl_name)) == NULL) {
         _throwErrnumException(env, EINVAL, NULL);
         return -1;
     }

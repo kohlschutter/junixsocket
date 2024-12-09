@@ -19,7 +19,7 @@ package org.newsclub.net.unix.memory;
 
 /**
  * Specific "memory seal" operations.
- * 
+ *
  * @author Christian Kohlschütter
  * @see SharedMemory#addSeals(java.util.Set)
  */

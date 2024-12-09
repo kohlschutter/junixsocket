@@ -389,15 +389,16 @@ final class NativeUnixSocket {
 
   static native void shmUnlink(String name) throws IOException;
 
-  static native void shmOpen(FileDescriptor fdOut, String name, long truncateLength, int mode,
+  static native long shmOpen(FileDescriptor fdOut, String name, long truncateLength, int mode,
       int options) throws IOException;
 
-  static native long pageSize();
+  static native long sharedMemoryAllocationSize();
 
   static native ByteBuffer mmap(Object arenaSegment, FileDescriptor fd, long offset, long length,
       int mmode, int duplicates) throws IOException;
 
-  static native void unmap(long address, long byteSize, boolean ignoreError) throws IOException;
+  static native void unmap(long address, long byteSize, int duplicates, boolean ignoreError)
+      throws IOException;
 
   static native void madvise(long address, long byteSize, int madv, boolean ignoreError)
       throws IOException;
@@ -405,4 +406,10 @@ final class NativeUnixSocket {
   static native boolean futexWait(long address, int value, int timeoutMillis) throws IOException;
 
   static native boolean futexWake(long address, boolean wakeAll) throws IOException;
+
+  static native boolean needToTrackSharedMemory();
+
+  static native boolean futexIsInterProcess();
+
+  static native long sizeOfSharedMemory(FileDescriptor fdObj) throws IOException;
 }

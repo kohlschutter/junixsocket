@@ -54,4 +54,3 @@ void juxLog(JNIEnv *env, const char *format, ...) {
 }
 
 #endif
-
