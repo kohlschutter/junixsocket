@@ -613,12 +613,21 @@ public class SharedMemoryTest {
       CompletableFuture<@Nullable IOException> cf = CompletableFuture.supplyAsync(() -> {
         try {
           MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE);
+
+          int waitRemaining = 5000;
+          long now = System.currentTimeMillis();
+
           try (Futex futex = mem.futex(ms.asSlice(0, 4))) {
-            if (!futex.tryWait(0, 5000)) {
-              return new IOException("Timeout");
-            } else {
-              return null;
-            }
+            do {
+              if (!futex.tryWait(0, waitRemaining)) {
+                waitRemaining -= (System.currentTimeMillis() - now);
+                if (waitRemaining <= 0) {
+                  return new IOException("Timeout");
+                }
+              } else {
+                return null;
+              }
+            } while (true); // NOPMD
           }
         } catch (IOException e) {
           return e;

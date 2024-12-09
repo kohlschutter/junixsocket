@@ -30,7 +30,7 @@ interface Futex extends Closeable {
   /**
    * Tries to wait on the futex, if and as long as it has the value specified in @{code ifValue},
    * for the given amount in milliseconds, or, if {@code timeoutMillis} is 0, for as long as the
-   * condition holds.
+   * condition holds. Sporadic wakeups (with a return value of {@code false}) may occur.
    *
    * @param ifValue The expected value for this wait.
    * @param timeoutMillis The timeout, in milliseconds, or 0 for "undetermined".
