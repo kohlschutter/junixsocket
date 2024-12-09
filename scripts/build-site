@@ -18,7 +18,8 @@ mvn install site -D strict -Drelease -pl '!junixsocket-native,!junixsocket-nativ
 mvn install site -pl junixsocket-jetty,junixsocket-selftest-native-image && \
 mvn javadoc:aggregate -P '!with-non-modularized' -pl '!junixsocket-native' && \
 mvn jxr:aggregate jxr:test-aggregate -Drelease && \
-mvn site:stage -Drelease -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross'
+mvn site:stage -Drelease -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross' && \
+rsync -av target/reports/{apidocs,xref,xref-test} target/staging/
 ) || exit $?
 
 echo "The website should now be inspected at ${junixsocketDir}/target/staging/index.html"
