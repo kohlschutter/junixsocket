@@ -14,7 +14,9 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ### _(XXXX-XX-XX)_ **junixsocket 2.11.0**
 
-- Fix an unecessary exception being thrown for TIPC_GROUP_LEAVE (AFTIPCSocket)
+- Add junixsocket-memory, a new Java 22+ module to support Shared Memory in a platform-agnostic way via MemorySegment, including
+support for Linux memfd_secret, Futex-based Mutexes, and even Windows.
+- Fix an unecessary exception being thrown for `TIPC_GROUP_LEAVE` (AFTIPCSocket)
 - Improve support for casting FileDescriptor to FileChannel; allow specifying open mode.
 - Building now requires Java 22 or newer
 
