@@ -28,7 +28,7 @@ import java.util.function.Supplier;
  */
 interface Futex extends Closeable {
   /**
-   * Tries to wait on the futex, if and as long as it has the value specified in @{code ifValue},
+   * Tries to wait on the futex, if and as long as it has the value specified in {@code ifValue},
    * for the given amount in milliseconds, or, if {@code timeoutMillis} is 0, for as long as the
    * condition holds. Sporadic wakeups (with a return value of {@code false}) may occur.
    *
