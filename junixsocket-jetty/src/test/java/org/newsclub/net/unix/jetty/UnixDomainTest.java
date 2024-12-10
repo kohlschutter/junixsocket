@@ -158,14 +158,15 @@ public class UnixDomainTest {
     // ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
     ClientConnector clientConnector = AFSocketClientConnector.withSocketAddress(AFUNIXSocketAddress
         .of(unixDomainPath));
-    HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
-    httpClient.start();
-    try {
-      ContentResponse response = httpClient.newRequest(uri).timeout(5, TimeUnit.SECONDS).send();
+    try (HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector))) {
+      httpClient.start();
+      try {
+        ContentResponse response = httpClient.newRequest(uri).timeout(5, TimeUnit.SECONDS).send();
 
-      assertEquals(HttpStatus.OK_200, response.getStatus());
-    } finally {
-      httpClient.stop();
+        assertEquals(HttpStatus.OK_200, response.getStatus());
+      } finally {
+        httpClient.stop();
+      }
     }
   }
 
@@ -199,16 +200,17 @@ public class UnixDomainTest {
         fakeProxyPort), null, new Origin.Protocol(List.of("http/1.1"), false), AFSocketTransport
             .withSocketChannel(unixDomainAddress)), null);
 
-    HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
-    httpClient.getProxyConfiguration().addProxy(proxy);
-    httpClient.start();
-    try {
-      ContentResponse response = httpClient.newRequest("localhost", fakeServerPort).timeout(5,
-          TimeUnit.SECONDS).send();
+    try (HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector))) {
+      httpClient.getProxyConfiguration().addProxy(proxy);
+      httpClient.start();
+      try {
+        ContentResponse response = httpClient.newRequest("localhost", fakeServerPort).timeout(5,
+            TimeUnit.SECONDS).send();
 
-      assertEquals(HttpStatus.OK_200, response.getStatus());
-    } finally {
-      httpClient.stop();
+        assertEquals(HttpStatus.OK_200, response.getStatus());
+      } finally {
+        httpClient.stop();
+      }
     }
   }
 
@@ -256,25 +258,26 @@ public class UnixDomainTest {
     ClientConnector clientConnector = AFSocketClientConnector.withSocketAddress(AFUNIXSocketAddress
         .of(unixDomainPath));
 
-    HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
-    httpClient.start();
-    try {
-      // Try PROXYv1 with the PROXY information retrieved from the EndPoint.
-      // PROXYv1 does not support the UNIX family.
-      ContentResponse response1 = httpClient.newRequest("localhost", 0).path("/v1").tag(
-          new V1.Tag()).timeout(5, TimeUnit.SECONDS).send();
+    try (HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector))) {
+      httpClient.start();
+      try {
+        // Try PROXYv1 with the PROXY information retrieved from the EndPoint.
+        // PROXYv1 does not support the UNIX family.
+        ContentResponse response1 = httpClient.newRequest("localhost", 0).path("/v1").tag(
+            new V1.Tag()).timeout(5, TimeUnit.SECONDS).send();
 
-      assertEquals(HttpStatus.OK_200, response1.getStatus());
+        assertEquals(HttpStatus.OK_200, response1.getStatus());
 
-      // Try PROXYv2 with explicit PROXY information.
-      V2.Tag tag = new V2.Tag(V2.Tag.Command.PROXY, V2.Tag.Family.UNIX, V2.Tag.Protocol.STREAM,
-          srcAddr, 0, dstAddr, 0, null);
-      ContentResponse response2 = httpClient.newRequest("localhost", 0).path("/v2").tag(tag)
-          .timeout(5, TimeUnit.SECONDS).send();
+        // Try PROXYv2 with explicit PROXY information.
+        V2.Tag tag = new V2.Tag(V2.Tag.Command.PROXY, V2.Tag.Family.UNIX, V2.Tag.Protocol.STREAM,
+            srcAddr, 0, dstAddr, 0, null);
+        ContentResponse response2 = httpClient.newRequest("localhost", 0).path("/v2").tag(tag)
+            .timeout(5, TimeUnit.SECONDS).send();
 
-      assertEquals(HttpStatus.OK_200, response2.getStatus());
-    } finally {
-      httpClient.stop();
+        assertEquals(HttpStatus.OK_200, response2.getStatus());
+      } finally {
+        httpClient.stop();
+      }
     }
   }
 
@@ -351,16 +354,17 @@ public class UnixDomainTest {
     // ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
     ClientConnector clientConnector = AFSocketClientConnector.withSocketAddress(AFUNIXSocketAddress
         .of(unixDomainPath));
-    HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector));
-    httpClient.start();
-    try {
-      ContentResponse response = httpClient.newRequest(uri).timeout(5, TimeUnit.SECONDS).send();
+    try (HttpClient httpClient = new HttpClient(new HttpClientTransportDynamic(clientConnector))) {
+      httpClient.start();
+      try {
+        ContentResponse response = httpClient.newRequest(uri).timeout(5, TimeUnit.SECONDS).send();
 
-      assertEquals(HttpStatus.OK_200, response.getStatus());
-      byte[] data = response.getContent();
-      assertArrayEquals(payload, data);
-    } finally {
-      httpClient.stop();
+        assertEquals(HttpStatus.OK_200, response.getStatus());
+        byte[] data = response.getContent();
+        assertArrayEquals(payload, data);
+      } finally {
+        httpClient.stop();
+      }
     }
   }
 }
