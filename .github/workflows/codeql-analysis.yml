@@ -46,7 +46,7 @@ jobs:
         distribution: 'temurin'
         java-version: |
           8
-          21
+          22
         cache: 'maven'
 
     # Initializes the CodeQL tools for scanning.
