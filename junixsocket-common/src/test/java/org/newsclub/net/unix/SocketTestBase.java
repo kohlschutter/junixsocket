@@ -277,6 +277,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
       return ExceptionHandlingDecision.RAISE;
     }
 
+    @SuppressWarnings("PatternMatchingInstanceof")
     protected void acceptAndHandleConnection() throws IOException {
       boolean acceptSuccess = false;
       sema.release();

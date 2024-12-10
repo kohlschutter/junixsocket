@@ -47,6 +47,7 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketChannel;
 import org.newsclub.net.unix.ConnectionResetSocketException;
 import org.newsclub.net.unix.SocketClosedException;
+import org.newsclub.net.unix.TestUtil;
 import org.newsclub.net.unix.ThreadUtil;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
@@ -158,7 +159,7 @@ public class MassiveParallelTest extends
             concurrentClientPermits.release();
             if (server.isRunning()) {
               // keep trying
-              esClients.submit(this);
+              TestUtil.trackFuture(esClients.submit(this));
             }
           }
         }
@@ -167,7 +168,7 @@ public class MassiveParallelTest extends
       startTime = System.currentTimeMillis();
 
       for (int i = 0; i < numConnections; i++) {
-        esClients.submit(clientJob);
+        TestUtil.trackFuture(esClients.submit(clientJob));
       }
 
       boolean stopped = server.cl.await(10, TimeUnit.SECONDS);
@@ -218,7 +219,7 @@ public class MassiveParallelTest extends
       esServers = ThreadUtil.newVirtualThreadPerTaskExecutor();
 
       for (int i = 0; i < numServerThreads; i++) {
-        esServers.submit(this::acceptJob);
+        TestUtil.trackFuture(esServers.submit(this::acceptJob));
       }
     }
 
@@ -307,13 +308,13 @@ public class MassiveParallelTest extends
         if (isRunning()) {
           System.err.println("Restarting failed server job");
           try {
-            esServers.submit(this::acceptJob);
+            TestUtil.trackFuture(esServers.submit(this::acceptJob));
           } catch (RejectedExecutionException e) {
             if (isRunning()) {
-              e.printStackTrace();
+              TestUtil.printStackTrace(e);
             }
           } catch (Throwable t) { // NOPMD.AvoidCatchingThrowable
-            t.printStackTrace();
+            TestUtil.printStackTrace(t);
           }
         }
       }

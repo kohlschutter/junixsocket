@@ -176,6 +176,7 @@ public final class SNIHostnameCapture {
    * @param socket The socket.
    * @return The hostname (retrieved or fallback).
    */
+  @SuppressWarnings("PatternMatchingInstanceof") // ErrorProne
   String getHostnameFromSSLSession(SSLSocket socket,
       Consumer<UnsupportedOperationException> usoCallback) {
     SSLSession session = socket.getSession();

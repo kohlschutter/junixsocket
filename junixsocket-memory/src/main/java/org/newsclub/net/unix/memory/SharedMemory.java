@@ -492,6 +492,7 @@ public final class SharedMemory implements Closeable {
    * @param seals The seals.
    * @throws IOException on error (e.g., if unsupported).
    */
+  @SuppressWarnings("DoNotCallSuggester") // ErrorProne
   public void addSeals(Set<MemorySeal> seals) throws IOException {
     throw new IOException("Unsupported"); // FIXME
   }

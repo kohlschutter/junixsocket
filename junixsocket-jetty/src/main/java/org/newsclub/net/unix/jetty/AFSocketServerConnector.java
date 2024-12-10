@@ -182,6 +182,7 @@ public class AFSocketServerConnector extends AbstractConnector {
    */
   @ManagedAttribute("The Unix-Domain path this connector listens to")
   @Deprecated
+  @SuppressWarnings("PatternMatchingInstanceof") // ErrorProne
   public Path getUnixDomainPath() {
     if (listenSocketAddress instanceof AFUNIXSocketAddress) {
       AFUNIXSocketAddress addr = (AFUNIXSocketAddress) listenSocketAddress;

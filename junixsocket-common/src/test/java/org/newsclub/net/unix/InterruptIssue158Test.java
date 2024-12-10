@@ -235,7 +235,7 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
               if (socket != null) {
                 final SocketChannel socketToClose = socket;
                 if (DELAY_CLOSE) {
-                  CompletableFuture.runAsync(() -> {
+                  TestUtil.trackFuture(CompletableFuture.runAsync(() -> {
                     try {
                       if (!done.tryAcquire(1, TimeUnit.SECONDS)) {
                         // ignore
@@ -246,16 +246,14 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
                     try {
                       socketToClose.close();
                     } catch (IOException e) {
-                      // TODO Auto-generated catch block
-                      e.printStackTrace();
+                      TestUtil.printStackTrace(e);
                     }
-                  });
+                  }));
                 } else {
                   try {
                     socketToClose.close();
                   } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    TestUtil.printStackTrace(e);
                   }
                 }
               }
@@ -275,6 +273,7 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
     }
   }
 
+  @SuppressWarnings("Finally") // ErrorProne
   <T extends AutoCloseable> Throwable runOperation(CountDownLatch ready, IOSupplier<T> socket,
       IOConsumer<T> blockingOp, Class<?> expectedException, Predicate<T> closeCheck) {
 
@@ -320,7 +319,7 @@ public abstract class InterruptIssue158Test<A extends SocketAddress> extends Soc
     } catch (TestAbortedNotAnIssueException e) {
       return e;
     } catch (Throwable e) {
-      e.printStackTrace();
+      TestUtil.printStackTrace(e);
       return e;
     } finally {
       ready.countDown();

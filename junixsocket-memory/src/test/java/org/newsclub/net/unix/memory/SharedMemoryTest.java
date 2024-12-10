@@ -620,7 +620,7 @@ public class SharedMemoryTest {
           try (Futex futex = mem.futex(ms.asSlice(0, 4))) {
             do {
               if (!futex.tryWait(0, waitRemaining)) {
-                waitRemaining -= (System.currentTimeMillis() - now);
+                waitRemaining -= (int) (System.currentTimeMillis() - now);
                 if (waitRemaining <= 0) {
                   return new IOException("Timeout");
                 }

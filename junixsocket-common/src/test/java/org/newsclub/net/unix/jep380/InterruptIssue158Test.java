@@ -22,6 +22,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 
 import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.TestUtil;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.AvailabilityRequirement;
@@ -50,7 +51,7 @@ public class InterruptIssue158Test extends
     } catch (FileNotFoundException ignore) {
       // ignore
     } catch (SocketException e) {
-      e.printStackTrace();
+      TestUtil.printStackTrace(e);
     }
   }
 }

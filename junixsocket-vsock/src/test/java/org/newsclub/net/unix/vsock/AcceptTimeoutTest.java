@@ -78,6 +78,7 @@ public final class AcceptTimeoutTest extends
   }
 
   @Override
+  @SuppressWarnings("PatternMatchingInstanceof") // ErrorProne
   protected String checkKnownBugAcceptTimeout(SocketAddress serverAddress) {
     boolean vsockNotAvailable = false;
 

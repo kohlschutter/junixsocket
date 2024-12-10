@@ -534,6 +534,7 @@ public final class SSLContextBuilder {
    * @throws IOException on error.
    * @see #buildAndDestroyBuilder()
    */
+  @SuppressWarnings("PatternMatchingInstanceof") // ErrorProne
   public SSLContext build() throws GeneralSecurityException, IOException {
     SSLContext sslContext;
     if (provider == null) {
@@ -593,6 +594,7 @@ public final class SSLContextBuilder {
    *
    * @throws DestroyFailedException on error (thrown at the end, to increase level of destruction).
    */
+  @SuppressWarnings("PatternMatchingInstanceof") // ErrorProne
   public void destroy() throws DestroyFailedException {
     DestroyFailedException dfe = null;
 

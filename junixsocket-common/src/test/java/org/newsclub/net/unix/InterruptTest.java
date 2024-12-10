@@ -54,7 +54,7 @@ public abstract class InterruptTest<A extends SocketAddress> extends SocketTestB
       CompletableFuture<Boolean> result = new CompletableFuture<>();
 
       ExecutorService executor = ThreadUtil.newVirtualThreadPerTaskExecutor();
-      executor.submit(() -> {
+      TestUtil.trackFuture(executor.submit(() -> {
         myThread.complete(Thread.currentThread());
         boolean closedByInterrupt = false;
         try {
@@ -73,11 +73,11 @@ public abstract class InterruptTest<A extends SocketAddress> extends SocketTestB
             e.printStackTrace();
           }
         } catch (IOException e) {
-          e.printStackTrace();
+          TestUtil.printStackTrace(e);
         } finally {
           result.complete(closedByInterrupt);
         }
-      });
+      }));
 
       Thread t = myThread.get();
       t.interrupt();
@@ -105,7 +105,7 @@ public abstract class InterruptTest<A extends SocketAddress> extends SocketTestB
         CompletableFuture<Boolean> result = new CompletableFuture<>();
 
         ExecutorService executor = ThreadUtil.newVirtualThreadPerTaskExecutor();
-        executor.submit(() -> {
+        TestUtil.trackFuture(executor.submit(() -> {
           myThread.complete(Thread.currentThread());
           boolean closedByInterrupt = false;
           try {
@@ -117,11 +117,11 @@ public abstract class InterruptTest<A extends SocketAddress> extends SocketTestB
               e.printStackTrace();
             }
           } catch (IOException e) {
-            e.printStackTrace();
+            TestUtil.printStackTrace(e);
           } finally {
             result.complete(closedByInterrupt);
           }
-        });
+        }));
 
         Thread t = myThread.get();
         t.interrupt();

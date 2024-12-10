@@ -50,6 +50,7 @@ import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.Messag
 @SuppressFBWarnings({
     "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
     "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
+@SuppressWarnings("VoidUsed") // ErrorProne
 public final class SocketOptionsTest extends
     org.newsclub.net.unix.SocketOptionsTest<AFTIPCSocketAddress> {
   public SocketOptionsTest() throws IOException {
@@ -126,7 +127,7 @@ public final class SocketOptionsTest extends
     }
   }
 
-  @SuppressWarnings("null")
+  @SuppressWarnings({"null"})
   @Test
   public void testGroupJoinLeave() throws Exception {
     try (DatagramChannel socket = newDatagramChannel()) {
