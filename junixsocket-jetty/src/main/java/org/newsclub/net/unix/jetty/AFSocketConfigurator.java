@@ -32,7 +32,6 @@ import org.newsclub.net.unix.AFSocketAddress;
  * @author Christian Kohlschütter
  */
 @Deprecated
-@SuppressWarnings("deprecation")
 class AFSocketConfigurator extends Configurator {
   protected final AFSocketAddress addr;
 
