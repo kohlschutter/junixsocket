@@ -19,6 +19,7 @@ support for Linux memfd_secret, Futex-based Mutexes, and even Windows.
 - Fix an unecessary exception being thrown for `TIPC_GROUP_LEAVE` (AFTIPCSocket)
 - Improve support for casting FileDescriptor to FileChannel; allow specifying open mode.
 - Building now requires Java 22 or newer
+- Code cleanup
 
 ### _(2024-09-23)_ **junixsocket 2.10.1**
 
