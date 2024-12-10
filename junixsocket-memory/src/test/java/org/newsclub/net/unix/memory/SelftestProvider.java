@@ -50,6 +50,7 @@ public class SelftestProvider {
   // registerTest(MODULE, test);
   // }
 
+  @SuppressWarnings("unused")
   private void registerTest(String group, Class<?> test) {
     if (test != null) {
       testMap.computeIfAbsent(group, (key) -> new LinkedHashSet<>()).add(test);
