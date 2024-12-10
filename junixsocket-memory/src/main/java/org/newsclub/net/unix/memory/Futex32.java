@@ -22,10 +22,6 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.foreign.ValueLayout.OfInt;
 import java.lang.invoke.VarHandle;
-import java.nio.channels.FileChannel.MapMode;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.newsclub.net.unix.MemoryImplUtilInternal;
 
@@ -126,7 +122,7 @@ final class Futex32 implements Futex {
           return true;
         }
         if (timeoutMillis != 0) {
-          timeoutMillis -= (System.currentTimeMillis() - start);
+          timeoutMillis -= (int) (System.currentTimeMillis() - start);
           if (timeoutMillis <= 0) {
             return false;
           }
@@ -161,33 +157,5 @@ final class Futex32 implements Futex {
 
   SharedMutex mutex() {
     return new Mutex32();
-  }
-
-  public static void main(String[] args) throws Exception {
-    try (SharedMemory mem = SharedMemory.createAnonymous(64)) {
-      MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE);
-
-      SharedMutex mutex = mem.mutex(ms.asSlice(0, SharedMemory.MUTEX_SEGMENT_SIZE));
-      ExecutorService service = Executors.newCachedThreadPool();
-      for (int i = 0; i < 8; i++) {
-        service.submit(() -> {
-          try {
-            if (!mutex.tryLock(0)) {
-              System.out.println("Fail");
-            } else {
-              mutex.unlock();
-              System.out.println("success");
-            }
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        });
-      }
-      service.shutdown();
-      service.awaitTermination(1, TimeUnit.SECONDS);
-
-      System.out.println(mutex.tryLock(0));
-      mutex.unlock();
-    }
   }
 }
