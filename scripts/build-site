@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 #
 # Builds the junixsocket website.
 # 
-# Copyright 2023 by Christian Kohlschütter
+# Copyright 2023-2024 by Christian Kohlschütter
 # SPDX-License-Identifier: Apache-2.0
 #
 #
@@ -12,14 +12,39 @@ cd "${dirname}/.."
 junixsocketDir=$(pwd)
 
 (
+set -e
 set -x
-mvn clean && \
-mvn install site -D strict -Drelease -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross' && \
-mvn install site -pl junixsocket-jetty,junixsocket-selftest-native-image && \
-mvn javadoc:aggregate -P '!with-non-modularized' -pl '!junixsocket-native' && \
-mvn jxr:aggregate jxr:test-aggregate -Drelease && \
-mvn site:stage -Drelease -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross' && \
+mvn clean
+mvn install site -D strict -Drelease -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross'
+mvn install site -pl junixsocket-jetty,junixsocket-selftest-native-image
+mvn javadoc:aggregate -P '!with-non-modularized' -pl '!junixsocket-native'
+mvn jxr:aggregate jxr:test-aggregate -Drelease
+mvn site:stage -Drelease -pl '!junixsocket-native,!junixsocket-native-common,!junixsocket-native-cross'
 rsync -av target/reports/{apidocs,xref,xref-test} target/staging/
+set +x
+
+echo Re-linking apidocs for jxr...
+for d in "$junixsocketDir/"target/staging/apidocs/org.newsclub.*; do
+	module=$(basename "$d")
+	cd "$d"
+	pwd
+	echo $module
+	for f in $(find org -name "*.html"); do
+		dn=$(dirname "$f")
+		fn=$(basename "$f")
+		outDir=../"$dn"
+		mkdir -p "$outDir"
+		outFile="$outDir/$fn"
+		touch "$outFile"
+
+        up=$(echo "$dn" | sed -E "s|[^/]+|..|g")
+
+        echo $outFile
+        cat >"$outFile" <<EOT
+<meta http-equiv="refresh" content="0;url=${up}/${module}/${f}">
+EOT
+	done
+done
 ) || exit $?
 
 echo "The website should now be inspected at ${junixsocketDir}/target/staging/index.html"
