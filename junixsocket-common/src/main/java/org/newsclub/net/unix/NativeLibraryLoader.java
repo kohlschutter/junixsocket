@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
-@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
+@SuppressFBWarnings({"RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE", "PATH_TRAVERSAL_IN"})
 final class NativeLibraryLoader implements Closeable {
   private static final String PROP_LIBRARY_DISABLE = "org.newsclub.net.unix.library.disable";
   private static final String PROP_LIBRARY_OVERRIDE = "org.newsclub.net.unix.library.override";
@@ -210,6 +210,7 @@ final class NativeLibraryLoader implements Closeable {
 
     @Override
     @SuppressWarnings("PMD.CognitiveComplexity")
+    @SuppressFBWarnings("URLCONNECTION_SSRF_FD")
     synchronized String load() throws IOException, LinkageError {
       if (libraryNameAndVersion == null) {
         return null;

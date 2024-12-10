@@ -27,6 +27,8 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 import org.newsclub.net.unix.AddressUnavailableSocketException;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Provides access to AF_VSOCK connections that aren't directly accessible but exposed via a
  * proxying/multiplexing Unix domain socket.
@@ -35,6 +37,7 @@ import org.newsclub.net.unix.AddressUnavailableSocketException;
  * @see #openFirecrackerStyleConnector(File, int)
  * @see #openDirectConnector()
  */
+@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public final class AFVSOCKProxyServerSocketConnector implements
     AFServerSocketConnector<AFVSOCKSocketAddress, AFSocketAddress> {
   private static final AFServerSocketConnector<AFVSOCKSocketAddress, AFSocketAddress> DIRECT_CONNECTOR =

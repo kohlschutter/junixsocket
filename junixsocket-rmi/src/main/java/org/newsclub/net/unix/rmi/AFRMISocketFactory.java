@@ -361,6 +361,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
   }
 
   @Override
+  @SuppressFBWarnings("OBJECT_DESERIALIZATION")
   public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     setExternable(new Externables(readNamingInstance(in), //
         (RMIClientSocketFactory) in.readObject(), //

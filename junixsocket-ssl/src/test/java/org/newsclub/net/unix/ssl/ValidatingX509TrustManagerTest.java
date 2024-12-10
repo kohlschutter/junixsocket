@@ -54,12 +54,14 @@ import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.KnownJavaBugIOException;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.AssertUtil;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 import com.kohlschutter.testutil.TestResourceUtil;
 
 // CPD-OFF
+@SuppressFBWarnings("URLCONNECTION_SSRF_FD")
 public class ValidatingX509TrustManagerTest extends SSLTestBase {
 
   @ParameterizedTest

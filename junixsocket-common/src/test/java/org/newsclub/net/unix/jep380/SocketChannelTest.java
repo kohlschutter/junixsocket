@@ -33,7 +33,7 @@ import com.kohlschutter.testutil.AvailabilityRequirement;
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
 @AvailabilityRequirement(classes = "java.net.UnixDomainSocketAddress", //
     message = "This test requires Java 16 or later")
-@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
+@SuppressFBWarnings({"NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", "PATH_TRAVERSAL_IN"})
 public final class SocketChannelTest extends
     org.newsclub.net.unix.SocketChannelTest<SocketAddress> {
 

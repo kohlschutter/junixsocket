@@ -58,8 +58,8 @@ public interface SharedMutex extends Closeable {
 
   /**
    * Reports if this lock instance can safely be accessed from multiple processes, or not. The
-   * actual way of accessing this {@link SharedMutex} is unspecified, but typically this is coordinated
-   * via {@link SharedMemory}.
+   * actual way of accessing this {@link SharedMutex} is unspecified, but typically this is
+   * coordinated via {@link SharedMemory}.
    * <p>
    * The value returned is constant.
    *

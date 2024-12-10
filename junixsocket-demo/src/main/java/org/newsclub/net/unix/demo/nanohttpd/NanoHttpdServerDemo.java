@@ -28,6 +28,8 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.demo.DemoHelper;
 import org.newsclub.net.unix.demo.okhttp.OkHttpClientDemo;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 import fi.iki.elonen.NanoHTTPD;
 
 /**
@@ -38,6 +40,7 @@ import fi.iki.elonen.NanoHTTPD;
  * @author Christian Kohlschütter
  * @see OkHttpClientDemo
  */
+@SuppressFBWarnings("UNENCRYPTED_SERVER_SOCKET")
 public final class NanoHttpdServerDemo extends NanoHTTPD {
 
   public NanoHttpdServerDemo(SocketAddress socketAddress) throws IOException {
@@ -62,6 +65,7 @@ public final class NanoHttpdServerDemo extends NanoHTTPD {
     }
   }
 
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   public static void main(String[] args) throws IOException {
     SocketAddress addr = DemoHelper.parseAddress(args, //
         AFUNIXSocketAddress.of(new File("/tmp/junixsocket-http-server.sock")));

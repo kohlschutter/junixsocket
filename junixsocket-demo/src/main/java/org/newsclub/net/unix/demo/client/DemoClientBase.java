@@ -24,6 +24,8 @@ import java.net.SocketAddress;
 import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocket;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * An {@link AFUNIXSocket} client that's just good for demo purposes.
  *
@@ -38,6 +40,7 @@ abstract class DemoClientBase {
     }
   }
 
+  @SuppressFBWarnings("UNENCRYPTED_SOCKET")
   public void connect(SocketAddress endpoint) throws IOException {
     System.out.println("Connect " + this + " to " + endpoint);
     if (endpoint instanceof AFSocketAddress) {

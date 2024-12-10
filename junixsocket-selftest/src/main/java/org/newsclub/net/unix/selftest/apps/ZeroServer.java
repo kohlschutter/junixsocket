@@ -31,6 +31,9 @@ import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.server.AFSocketServer;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public class ZeroServer {
   private static void printHelp() {
     System.err.println("Syntax: java " + ZeroServer.class.getName() + " <URI>");

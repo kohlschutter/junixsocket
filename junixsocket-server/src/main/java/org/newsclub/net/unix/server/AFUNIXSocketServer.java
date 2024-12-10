@@ -25,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.newsclub.net.unix.AFSocketAddress;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A base implementation for a simple, multi-threaded socket server.
  *
@@ -34,6 +36,7 @@ import org.newsclub.net.unix.AFSocketAddress;
  * @deprecated Use {@link SocketServer} or {@link AFSocketServer}
  */
 @Deprecated
+@SuppressFBWarnings("UNENCRYPTED_SERVER_SOCKET")
 public abstract class AFUNIXSocketServer extends SocketServer<SocketAddress, Socket, ServerSocket> {
   /**
    * Creates a server using the given, bound {@link ServerSocket}.

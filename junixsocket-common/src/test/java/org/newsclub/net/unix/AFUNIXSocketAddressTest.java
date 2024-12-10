@@ -38,7 +38,7 @@ import org.newsclub.net.unix.pool.ObjectPool.Lease;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.AssertUtil;
 
-@SuppressFBWarnings("DMI_HARDCODED_ABSOLUTE_FILENAME")
+@SuppressFBWarnings({"DMI_HARDCODED_ABSOLUTE_FILENAME", "OBJECT_DESERIALIZATION"})
 public class AFUNIXSocketAddressTest {
 
   @Test

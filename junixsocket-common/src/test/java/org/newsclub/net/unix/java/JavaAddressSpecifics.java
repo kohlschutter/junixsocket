@@ -35,6 +35,9 @@ import org.newsclub.net.unix.AddressSpecifics;
 import org.newsclub.net.unix.CloseablePair;
 import org.opentest4j.TestAbortedException;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+@SuppressFBWarnings({"UNENCRYPTED_SERVER_SOCKET", "UNENCRYPTED_SOCKET"})
 public final class JavaAddressSpecifics implements AddressSpecifics<InetSocketAddress> {
   public static final AddressSpecifics<InetSocketAddress> INSTANCE = new JavaAddressSpecifics();
 

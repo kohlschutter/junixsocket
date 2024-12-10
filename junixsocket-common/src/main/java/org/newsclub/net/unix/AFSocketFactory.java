@@ -26,6 +26,8 @@ import java.util.Objects;
 
 import javax.net.SocketFactory;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * The base for a SocketFactory that connects to UNIX sockets.
  *
@@ -35,6 +37,7 @@ import javax.net.SocketFactory;
  * @see AFUNIXSocketFactory
  * @param <A> The supported address type.
  */
+@SuppressFBWarnings("UNENCRYPTED_SOCKET")
 public abstract class AFSocketFactory<A extends AFSocketAddress> extends SocketFactory implements
     AFSocketAddressFromHostname<A> {
 
@@ -77,6 +80,7 @@ public abstract class AFSocketFactory<A extends AFSocketAddress> extends SocketF
   protected abstract Socket connectTo(A addr) throws IOException;
 
   @SuppressWarnings("unchecked")
+  @SuppressFBWarnings("UNENCRYPTED_SOCKET")
   private Socket connectTo(SocketAddress addr) throws IOException {
     if (AFSocketAddress.canMap(addr, socketAddressClass)) {
       return connectTo((A) AFSocketAddress.mapOrFail(addr, socketAddressClass));

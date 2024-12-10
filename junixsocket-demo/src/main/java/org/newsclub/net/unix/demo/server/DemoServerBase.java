@@ -28,12 +28,15 @@ import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.server.SocketServer;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * An {@link SocketServer} that's just good for demo purposes.
  *
  * @author Christian Kohlschütter
  */
 @SuppressWarnings("CatchAndPrintStackTrace" /* errorprone */)
+@SuppressFBWarnings("UNENCRYPTED_SERVER_SOCKET")
 abstract class DemoServerBase extends SocketServer<SocketAddress, Socket, ServerSocket> {
   public DemoServerBase(SocketAddress listenAddress) {
     super(listenAddress);

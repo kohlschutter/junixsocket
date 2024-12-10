@@ -24,6 +24,9 @@ import java.net.URI;
 import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public class SocketAddressUtil {
   public static AFSocketAddress parseAddress(String addr) throws SocketException {
     if (addr.startsWith("/")) {

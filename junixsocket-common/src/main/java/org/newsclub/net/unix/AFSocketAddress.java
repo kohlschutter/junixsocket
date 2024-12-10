@@ -194,6 +194,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @return The new instance.
    * @throws SocketException on error.
    */
+  @SuppressFBWarnings("OBJECT_DESERIALIZATION") // we craft the serialized data
   protected static <A extends AFSocketAddress> A newDeserializedAFSocketAddress(int port,
       final byte[] socketAddress, Lease<ByteBuffer> nativeAddress, AFAddressFamily<A> af,
       AFSocketAddressConstructor<A> constructor) throws SocketException {

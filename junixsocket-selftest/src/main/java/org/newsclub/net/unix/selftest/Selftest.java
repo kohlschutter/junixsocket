@@ -81,6 +81,7 @@ import com.kohlschutter.util.SystemPropertyUtil;
  */
 @SuppressWarnings({
     "PMD.CyclomaticComplexity", "PMD.CognitiveComplexity", "PMD.CouplingBetweenObjects"})
+@SuppressFBWarnings({"PATH_TRAVERSAL_IN", "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE"})
 public class Selftest {
   private final Class<?> diagnosticsHelperClass = resolveOptionalClass(
       "org.newsclub.net.unix.SelftestDiagnosticsHelper");

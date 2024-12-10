@@ -25,11 +25,14 @@ import java.nio.channels.FileChannel;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Hack to get a readable AND writable {@link FileChannel} for a {@link FileDescriptor}.
  *
  * @author Christian Kohlschütter
  */
+@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 final class RAFChannelProvider extends RandomAccessFile implements FileDescriptorAccess {
   private static final File DEV_NULL = new File("/dev/null");
 

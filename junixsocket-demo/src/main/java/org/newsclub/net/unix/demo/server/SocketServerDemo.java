@@ -24,11 +24,14 @@ import java.net.SocketAddress;
 import org.newsclub.net.unix.demo.DemoHelper;
 import org.newsclub.net.unix.server.SocketServer;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A demo program to configure and run several {@link SocketServer} demos from the command line.
  *
  * @author Christian Kohlschütter
  */
+@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public final class SocketServerDemo {
   public static void main(String[] args) throws IOException, InterruptedException {
     final DemoServerBase demoServer;

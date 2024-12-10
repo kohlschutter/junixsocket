@@ -39,11 +39,14 @@ import org.newsclub.net.unix.FileChannelSupplier;
 import org.newsclub.net.unix.FileDescriptorCast;
 import org.newsclub.net.unix.MemoryImplUtilInternal;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Some shared memory.
  *
  * @author Christian Kohlschütter
  */
+@SuppressFBWarnings("OVERLY_PERMISSIVE_FILE_PERMISSION")
 public final class SharedMemory implements Closeable {
   private static final Set<PosixFilePermission> DEFAULT_PERMISSIONS = PosixFilePermissions
       .fromString("rw-rw-rw-");
@@ -626,8 +629,8 @@ public final class SharedMemory implements Closeable {
   }
 
   /**
-   * Returns a {@link SharedMutex} instance working with the given {@link MemorySegment}, which has to be
-   * exactly {@link #MUTEX_SEGMENT_SIZE} bytes long.
+   * Returns a {@link SharedMutex} instance working with the given {@link MemorySegment}, which has
+   * to be exactly {@link #MUTEX_SEGMENT_SIZE} bytes long.
    *
    * @param addr The address.
    * @return The instance.

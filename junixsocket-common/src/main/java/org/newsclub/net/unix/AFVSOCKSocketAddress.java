@@ -35,11 +35,14 @@ import java.util.regex.Pattern;
 
 import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * An {@link AFSocketAddress} for VSOCK sockets.
  *
  * @author Christian Kohlschütter
  */
+@SuppressFBWarnings("REDOS")
 public final class AFVSOCKSocketAddress extends AFSocketAddress {
   private static final long serialVersionUID = 1L; // do not change!
 

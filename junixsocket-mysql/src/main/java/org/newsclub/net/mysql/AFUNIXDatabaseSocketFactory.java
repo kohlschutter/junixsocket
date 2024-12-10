@@ -63,7 +63,7 @@ public class AFUNIXDatabaseSocketFactory implements SocketFactory {
   }
 
   @Override
-  @SuppressFBWarnings("EI_EXPOSE_REP")
+  @SuppressFBWarnings({"EI_EXPOSE_REP", "PATH_TRAVERSAL_IN"})
   public Socket connect(String host, int portNumber, Properties props) throws SocketException,
       IOException {
     // Adjust the path to your MySQL socket by setting the

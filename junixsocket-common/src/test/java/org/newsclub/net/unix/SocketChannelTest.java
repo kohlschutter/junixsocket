@@ -45,10 +45,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 import com.kohlschutter.testutil.TestAsyncUtil;
 
+@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public abstract class SocketChannelTest<A extends SocketAddress> extends SocketTestBase<A> {
   protected SocketChannelTest(AddressSpecifics<A> asp) {
     super(asp);

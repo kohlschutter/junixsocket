@@ -26,6 +26,8 @@ import java.util.Objects;
 
 import javax.net.SocketFactory;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * The base for a SocketFactory that connects to UNIX sockets.
  *
@@ -59,6 +61,7 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory<AFUNIXSocketAd
    * system property &quot;org.newsclub.net.unix.socket.hostname&quot;), forwarding all other
    * requests to the fallback {@link SocketFactory}.
    */
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   private abstract static class DefaultSocketHostnameSocketFactory extends AFUNIXSocketFactory {
     private static final String PROP_SOCKET_HOSTNAME = "org.newsclub.net.unix.socket.hostname";
 
@@ -89,6 +92,7 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory<AFUNIXSocketAd
    * This is particularly useful for JDBC drivers that take a "socketFactory" and a
    * "socketFactoryArg". The latter will be passed as a constructor argument.
    */
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   public static final class FactoryArg extends DefaultSocketHostnameSocketFactory {
     private final File socketFile;
 
@@ -133,6 +137,7 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory<AFUNIXSocketAd
    * NOTE: While it is technically possible, it is highly discouraged to programmatically change the
    * value of the property as it can lead to concurrency issues and undefined behavior.
    */
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   public static final class SystemProperty extends DefaultSocketHostnameSocketFactory {
     private static final String PROP_SOCKET_DEFAULT = "org.newsclub.net.unix.socket.default";
 
@@ -167,6 +172,7 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory<AFUNIXSocketAd
    * encoded and without the closing bracket. Since this is an invalid hostname, it will not trigger
    * a DNS lookup, but can still be used within a JDBC Connection URL.
    */
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   public static final class URIScheme extends AFUNIXSocketFactory {
     private static final String FILE_SCHEME_PREFIX = "file://";
     private static final String FILE_SCHEME_PREFIX_ENCODED = "file%";

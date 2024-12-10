@@ -39,6 +39,8 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Describes an {@link InetSocketAddress} that actually uses AF_UNIX sockets instead of AF_INET.
  *
@@ -48,6 +50,7 @@ import org.newsclub.net.unix.pool.ObjectPool.Lease;
  * @author Christian Kohlschütter
  */
 @SuppressWarnings("PMD.ShortMethodName")
+@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public final class AFUNIXSocketAddress extends AFSocketAddress {
   private static final long serialVersionUID = 1L; // do not change!
 

@@ -68,7 +68,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
    * @param afh The conversion helper to get a socket address from an encoded hostname.
    * @throws SocketException on error.
    */
-  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
+  @SuppressFBWarnings({"CT_CONSTRUCTOR_THROW", "UNENCRYPTED_SOCKET"})
   protected AFSocket(final AFSocketImpl<A> impl, AFSocketAddressFromHostname<A> afh)
       throws SocketException {
     super(impl);

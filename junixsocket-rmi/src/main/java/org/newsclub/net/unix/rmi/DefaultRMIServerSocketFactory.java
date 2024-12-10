@@ -52,6 +52,7 @@ public class DefaultRMIServerSocketFactory implements RMIServerSocketFactory, Se
   }
 
   @Override
+  @SuppressFBWarnings("UNENCRYPTED_SERVER_SOCKET")
   public ServerSocket createServerSocket(int port) throws IOException {
     ServerSocket socket = new ServerSocket(port);
     // socket.setSoTimeout(60 * 60 * 1000);

@@ -46,7 +46,7 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
   }
 
   @SuppressWarnings({"unchecked"})
-  @SuppressFBWarnings("EI_EXPOSE_REP")
+  @SuppressFBWarnings({"EI_EXPOSE_REP", "PATH_TRAVERSAL_IN"})
   @Override
   public Socket connect(String hostname, int portNumber,
       @SuppressWarnings("exports") PropertySet props, int loginTimeout) throws IOException {

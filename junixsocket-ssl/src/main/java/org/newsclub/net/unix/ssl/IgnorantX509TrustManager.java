@@ -22,6 +22,8 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.X509TrustManager;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * An ignorant {@link X509TrustManager} that doesn't check certificates at all.
  * <p>
@@ -31,6 +33,7 @@ import javax.net.ssl.X509TrustManager;
  *
  * @author Christian Kohlschütter
  */
+@SuppressFBWarnings("WEAK_TRUST_MANAGER")
 public final class IgnorantX509TrustManager implements X509TrustManager {
   private static final IgnorantX509TrustManager INSTANCE = new IgnorantX509TrustManager();
   private static final X509Certificate[] EMPTY_ACCEPTED_ISSUERS = new X509Certificate[0];

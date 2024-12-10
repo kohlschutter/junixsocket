@@ -26,11 +26,14 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Hostname and port.
  *
  * @author Christian Kohlschütter
  */
+@SuppressFBWarnings("REDOS")
 public final class HostAndPort {
   private static final Pattern PAT_HOST_AND_PORT = Pattern.compile(
       "^//((?<userinfo>[^/\\@]*)\\@)?(?<host>[^/\\:]+)(?:\\:(?<port>[0-9]+))?");

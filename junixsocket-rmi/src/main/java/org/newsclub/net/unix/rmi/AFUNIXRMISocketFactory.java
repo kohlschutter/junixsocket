@@ -112,6 +112,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
   }
 
   @Override
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   protected AFNaming readNamingInstance(ObjectInput in) throws IOException {
     socketDir = new File(in.readUTF());
     int port = in.readInt();
@@ -167,6 +168,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
     return socketDir;
   }
 
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   File getFile(int port) {
     if (isPlainFileSocket()) {
       return getSocketDir();

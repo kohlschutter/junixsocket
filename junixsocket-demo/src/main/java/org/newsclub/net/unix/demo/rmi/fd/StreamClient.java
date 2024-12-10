@@ -29,12 +29,15 @@ import org.newsclub.net.unix.rmi.AFUNIXNaming;
 import org.newsclub.net.unix.rmi.RemoteCloseable;
 import org.newsclub.net.unix.rmi.RemoteFileInput;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Demonstrates how to read files via FileDescriptors that are exchanged via RMI.
  *
  * @author Christian Kohlschütter
  * @see StreamServer
  */
+@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public final class StreamClient {
   private StreamClient() {
     throw new IllegalStateException("No instances");
@@ -47,6 +50,7 @@ public final class StreamClient {
    * @throws IOException on error.
    * @throws NotBoundException if the server cannot be reached.
    */
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   public static void main(String[] args) throws IOException, NotBoundException {
     if (args.length != 1) {
       System.err.println("Usage: StreamClient <path-to-file>");

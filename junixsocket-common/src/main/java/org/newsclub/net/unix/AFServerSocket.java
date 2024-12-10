@@ -44,6 +44,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.CouplingBetweenObjects"})
+@SuppressFBWarnings("UNENCRYPTED_SERVER_SOCKET")
 public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSocket implements
     AFSomeSocketThing {
   private final AFSocketImpl<A> implementation;

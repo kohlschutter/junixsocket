@@ -83,6 +83,7 @@ import com.kohlschutter.testutil.TestResourceUtil;
 
 // CPD-OFF
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
+@SuppressFBWarnings({"UNENCRYPTED_SERVER_SOCKET", "URLCONNECTION_SSRF_FD"})
 public class SSLContextBuilderTest extends SSLTestBase {
 
   @ParameterizedTest

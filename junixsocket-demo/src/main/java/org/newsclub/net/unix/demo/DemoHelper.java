@@ -32,10 +32,12 @@ import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
 import com.kohlschutter.annotations.compiletime.ExcludeFromCodeCoverageGeneratedReport;
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * Just a helper class to simplify controlling the demo from the command line.
  */
+@SuppressFBWarnings({"UNENCRYPTED_SOCKET", "PATH_TRAVERSAL_IN"})
 public final class DemoHelper {
   @ExcludeFromCodeCoverageGeneratedReport(reason = "unreachable")
   private DemoHelper() {
@@ -194,6 +196,7 @@ public final class DemoHelper {
     }
   }
 
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   public static SocketAddress parseAddress(String[] args, SocketAddress defaultAddress)
       throws IOException {
     if (args.length == 0) {
@@ -205,6 +208,7 @@ public final class DemoHelper {
     }
   }
 
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   public static SocketAddress parseAddress(String opt, String val, SocketAddress defaultAddress)
       throws IOException {
     if (opt == null || val == null) {

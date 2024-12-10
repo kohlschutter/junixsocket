@@ -23,11 +23,14 @@ import java.net.SocketAddress;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.demo.DemoHelper;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A demo program to configure and run several {@link AFSocket} client demos from the command line.
  *
  * @author Christian Kohlschütter
  */
+@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public final class DemoClient {
   public static void main(String[] args) throws IOException, InterruptedException {
     final DemoClientBase demoClient;

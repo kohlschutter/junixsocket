@@ -25,6 +25,8 @@ import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.AFUNIXSelectorProvider;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -41,6 +43,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  * guide for 4.x</a>
  */
 @SuppressWarnings("FutureReturnValueIgnored" /* errorprone */)
+@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public class EchoServer {
   private final AFSocketAddress addr;
 
@@ -81,6 +84,7 @@ public class EchoServer {
     }
   }
 
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   public static void main(String[] args) throws Exception {
     File path = new File("/tmp/nettyecho");
     if (args.length > 0) {

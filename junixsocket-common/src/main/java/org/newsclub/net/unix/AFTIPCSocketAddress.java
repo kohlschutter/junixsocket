@@ -39,6 +39,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * An {@link AFSocketAddress} for TIPC sockets.
  *
@@ -110,6 +112,7 @@ import org.newsclub.net.unix.pool.ObjectPool.Lease;
  *
  * @author Christian Kohlschütter (documentation credits to Jon Maloy and the TIPC team).
  */
+@SuppressFBWarnings("REDOS")
 public final class AFTIPCSocketAddress extends AFSocketAddress {
   private static final long serialVersionUID = 1L; // do not change!
 

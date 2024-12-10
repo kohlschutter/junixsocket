@@ -361,6 +361,7 @@ public final class SSLContextBuilder {
     return TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
   }
 
+  @SuppressFBWarnings("URLCONNECTION_SSRF_FD")
   private KeyManager[] buildKeyManagers(KeyManagerFactory kmf) throws GeneralSecurityException,
       IOException, UnrecoverableKeyException {
     if (keyStoreUrl == null) {
@@ -443,6 +444,7 @@ public final class SSLContextBuilder {
     }
   }
 
+  @SuppressFBWarnings("URLCONNECTION_SSRF_FD")
   private TrustManager[] buildTrustManagers(TrustManagerFactory tmf) throws IOException,
       GeneralSecurityException {
 

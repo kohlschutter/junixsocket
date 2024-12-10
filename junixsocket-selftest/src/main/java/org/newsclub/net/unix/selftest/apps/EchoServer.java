@@ -25,7 +25,10 @@ import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFSocketAddress;
 import org.newsclub.net.unix.server.AFSocketServer;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 // CPD-OFF
+@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public class EchoServer {
   private static void printHelp() {
     System.err.println("Syntax: java " + EchoServer.class.getName() + " <URI>");
