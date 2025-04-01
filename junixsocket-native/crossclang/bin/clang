@@ -170,6 +170,7 @@ while [ $# -gt 0 ]; do
       -target ) v="$1"; target="$v"; shift; skipArg=1 ;;
       c++ ) if [ "$previous" == "-x" ]; then looksLikeCPP=1; fi ;;
       -m64 ) extraVersionArgs+=("$v") ;;
+      -rdynamic ) skipGccArg=1 ; hasExportDynamic=1; ;;
       -Xlinker )
             if [[ "$1" == "-export_dynamic" ]]; then
                 hasExportDynamic=1
