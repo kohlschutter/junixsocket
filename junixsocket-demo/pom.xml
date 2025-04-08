@@ -16,6 +16,7 @@
         <kohlschutter.project.base.directory>${project.parent.basedir}</kohlschutter.project.base.directory>
         <kohlschutter.multirelease.java8.release>8</kohlschutter.multirelease.java8.release>
         <javadoc.strict>false</javadoc.strict>
+        <postgresql.version>42.7.5</postgresql.version>
     </properties>
     <description>Some example code to demo junixsocket's features</description>
     <dependencies>
@@ -55,7 +56,7 @@
             <!-- https://issues.apache.org/jira/browse/MPIR-374 -->
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.4</version>
+            <version>${postgresql.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

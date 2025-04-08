@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.kohlschutter</groupId>
         <artifactId>kohlschutter-parent-multirelease</artifactId>
-        <version>1.8.0</version>
+        <version>1.8.1</version>
         <relativePath>../kohlschutter-parent/kohlschutter-parent-multirelease/pom.xml</relativePath>
     </parent>
     <name>junixsocket</name>
@@ -85,8 +85,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
 
         <kohlschutter.surefire.access.args>--enable-native-access=org.newsclub.net.unix</kohlschutter.surefire.access.args>
 
-        <bouncycastle.version>1.79</bouncycastle.version>
-        <jetty.version>12.0.15</jetty.version>
+        <bouncycastle.version>1.80</bouncycastle.version>
+        <jetty.version>12.0.19</jetty.version>
 
         <junixsocket.repo.use-staging>https://oss.sonatype.org/content/groups/staging/</junixsocket.repo.use-staging>
     </properties>
