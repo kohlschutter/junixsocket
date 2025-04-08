@@ -15,6 +15,20 @@
 
         <kohlschutter.multirelease.java8.release>8</kohlschutter.multirelease.java8.release>
         <kohlschutter.multirelease.java.release>22</kohlschutter.multirelease.java.release>
+        <kohlschutter.multirelease.java8.skip>true</kohlschutter.multirelease.java8.skip>
+        <kohlschutter.multirelease.java9.skip>true</kohlschutter.multirelease.java9.skip>
+        <kohlschutter.multirelease.java10.skip>true</kohlschutter.multirelease.java10.skip>
+        <kohlschutter.multirelease.java11.skip>true</kohlschutter.multirelease.java11.skip>
+        <kohlschutter.multirelease.java12.skip>true</kohlschutter.multirelease.java12.skip>
+        <kohlschutter.multirelease.java13.skip>true</kohlschutter.multirelease.java13.skip>
+        <kohlschutter.multirelease.java14.skip>true</kohlschutter.multirelease.java14.skip>
+        <kohlschutter.multirelease.java15.skip>true</kohlschutter.multirelease.java15.skip>
+        <kohlschutter.multirelease.java16.skip>true</kohlschutter.multirelease.java16.skip>
+        <kohlschutter.multirelease.java17.skip>true</kohlschutter.multirelease.java17.skip>
+        <kohlschutter.multirelease.java18.skip>true</kohlschutter.multirelease.java18.skip>
+        <kohlschutter.multirelease.java19.skip>true</kohlschutter.multirelease.java19.skip>
+        <kohlschutter.multirelease.java20.skip>true</kohlschutter.multirelease.java20.skip>
+        <kohlschutter.multirelease.java21.skip>true</kohlschutter.multirelease.java21.skip>
 
         <patchArgs.org.newsclub.net.unix>org.newsclub.net.unix=${project.basedir}/../junixsocket-common/${kohlschutter.target.name}/test-classes:${settings.localRepository}/com/kohlschutter/junixsocket/junixsocket-common/${project.version}/junixsocket-common-${project.version}-tests.jar</patchArgs.org.newsclub.net.unix>
 
