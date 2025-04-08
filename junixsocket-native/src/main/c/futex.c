@@ -92,7 +92,7 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_futexWait
 (JNIEnv *env, CK_UNUSED jclass klazz, jlong addr, jint ifValue, jint timeoutMillis) {
 #if defined(__APPLE__)
     int ret;
-    if(os_sync_wait_on_address_with_timeout && USE_OS_SYNC_WAIT_ON_ADDRESS) {
+    if(USE_OS_SYNC_WAIT_ON_ADDRESS && os_sync_wait_on_address_with_timeout) {
         if(timeoutMillis == 0) {
             ret = os_sync_wait_on_address((void*)addr, (uint64_t)ifValue, 4, OS_SYNC_WAIT_ON_ADDRESS_SHARED);
         } else {
@@ -175,7 +175,7 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_futexWake
 #if defined(__APPLE__)
     int ret;
     if(wakeAll) {
-        if(os_sync_wake_by_address_all && USE_OS_SYNC_WAIT_ON_ADDRESS) {
+        if(USE_OS_SYNC_WAIT_ON_ADDRESS && os_sync_wake_by_address_all) {
             ret = os_sync_wake_by_address_all((void*)addr, 4, OS_SYNC_WAKE_BY_ADDRESS_SHARED);
         } else if(__ulock_wake) {
             ret = __ulock_wake(UL_COMPARE_AND_WAIT_SHARED | ULF_WAKE_ALL, (void*)addr, 0);
@@ -184,7 +184,7 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_futexWake
             return false;
         }
     } else {
-        if(os_sync_wake_by_address_any && USE_OS_SYNC_WAIT_ON_ADDRESS) {
+        if(USE_OS_SYNC_WAIT_ON_ADDRESS && os_sync_wake_by_address_any) {
             ret = os_sync_wake_by_address_any((void*)addr, 4, OS_SYNC_WAKE_BY_ADDRESS_SHARED);
         } else if(__ulock_wake) {
             ret = __ulock_wake(UL_COMPARE_AND_WAIT_SHARED, (void*)addr, 0);
