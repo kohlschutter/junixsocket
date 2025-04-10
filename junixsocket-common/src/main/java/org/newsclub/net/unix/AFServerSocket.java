@@ -64,6 +64,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
    *
    * @param <A> The concrete {@link AFSocketAddress} that is supported by this type.
    */
+  @FunctionalInterface
   public interface Constructor<A extends AFSocketAddress> {
     /**
      * Creates a new {@link AFServerSocket} instance.

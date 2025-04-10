@@ -26,6 +26,7 @@ import java.net.SocketException;
  * @author Christian Kohlschütter
  * @param <A> The supported address type.
  */
+@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface AFSocketAddressFromHostname<A extends AFSocketAddress> {
   /**
    * Translates a "host" string (and port) to an {@link AFSocketAddress}.

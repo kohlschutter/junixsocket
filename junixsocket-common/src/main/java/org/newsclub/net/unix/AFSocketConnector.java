@@ -28,6 +28,7 @@ import java.io.IOException;
  * @author Christian Kohlschütter
  * @see AFServerSocketConnector
  */
+@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface AFSocketConnector<A extends AFSocketAddress, T extends AFSocketAddress> {
   /**
    * Connect to the socket at the given address.

@@ -28,6 +28,7 @@ import java.nio.channels.SelectionKey;
  *
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 interface VirtualThreadPoller {
   /**
    * Returns the default instance best suited for the current system.

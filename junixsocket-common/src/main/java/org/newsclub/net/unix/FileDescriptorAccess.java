@@ -25,6 +25,7 @@ import java.io.IOException;
  *
  * @author Christian Kohlschütter
  */
+@FunctionalInterface
 public interface FileDescriptorAccess {
   /**
    * Returns the corresponding {@link FileDescriptor}.

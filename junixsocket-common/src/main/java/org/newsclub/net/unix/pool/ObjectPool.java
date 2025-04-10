@@ -28,6 +28,7 @@ import org.newsclub.net.unix.ThreadUtil;
  * @param <O> The object type.
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface ObjectPool<O> {
 
   /**
