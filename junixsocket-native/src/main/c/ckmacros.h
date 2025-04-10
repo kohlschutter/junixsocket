@@ -1,7 +1,7 @@
 /*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2025 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 #define ckmacros_h
 
 #if __clang__
+
 #   define CK_IGNORE_UNUSED_MACROS_BEGIN \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wunused-macros\"")
@@ -36,6 +37,18 @@ _Pragma("clang diagnostic pop")
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wsign-compare\"")
 #   define CK_IGNORE_SIGN_COMPARE_END \
+_Pragma("clang diagnostic pop")
+
+#   define CK_IGNORE_BUFFER_ARITHMETIC_BEGIN \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wunsafe-buffer-usage\"")
+#   define CK_IGNORE_BUFFER_ARITHMETIC_END \
+_Pragma("clang diagnostic pop")
+
+#   define CK_IGNORE_PEDANTIC_BEGIN \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wpedantic\"")
+#   define CK_IGNORE_PEDANTIC_END \
 _Pragma("clang diagnostic pop")
 
 #   define CK_IGNORE_CAST_BEGIN \
@@ -88,17 +101,17 @@ _Pragma("clang diagnostic pop")
 #   define CK_EXCLUDED_FROM_STATIC_ANALYSIS !(__clang_analyzer__)
 
 #   define CK_STATIC_ASSERT(COND) \
-        _Pragma("clang diagnostic push") \
-        _Pragma("clang diagnostic ignored \"-Wunknown-warning-option\"") \
-        _Pragma("clang diagnostic ignored \"-Wpre-c11-compat\"") \
-        _Static_assert(COND, "Assertion failed") \
-        _Pragma("clang diagnostic pop")
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wunknown-warning-option\"") \
+_Pragma("clang diagnostic ignored \"-Wpre-c11-compat\"") \
+_Static_assert(COND, "Assertion failed") \
+_Pragma("clang diagnostic pop")
 
 #define CK_FALLTHROUGH \
-    _Pragma("clang diagnostic push") \
-    _Pragma("clang diagnostic ignored \"-Wmissing-declarations\"") \
-    __attribute__((fallthrough)) \
-    _Pragma("clang diagnostic pop")
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wmissing-declarations\"") \
+__attribute__((fallthrough)) \
+_Pragma("clang diagnostic pop")
 
 #else
 #   define CK_IGNORE_UNUSED_MACROS_BEGIN
@@ -110,7 +123,16 @@ _Pragma("clang diagnostic pop")
 #   define CK_IGNORE_SIGN_COMPARE_BEGIN
 #   define CK_IGNORE_SIGN_COMPARE_END
 
+#   define CK_IGNORE_BUFFER_ARITHMETIC_BEGIN
+#   define CK_IGNORE_BUFFER_ARITHMETIC_END
+
 #if __GNUC__
+#   define CK_IGNORE_PEDANTIC_BEGIN \
+_Pragma("GCC diagnostic push") \
+_Pragma("GCC diagnostic ignored \"-Wpedantic\"")
+#   define CK_IGNORE_PEDANTIC_END \
+_Pragma("GCC diagnostic pop")
+
 #   define CK_IGNORE_CAST_BEGIN \
 _Pragma("GCC diagnostic push") \
 _Pragma("GCC diagnostic ignored \"-Wint-to-pointer-cast\"") \
@@ -120,6 +142,9 @@ _Pragma("GCC diagnostic ignored \"-Wcast-function-type\"")
 #   define CK_IGNORE_CAST_END \
 _Pragma("GCC diagnostic pop")
 #else
+#   define CK_IGNORE_PEDANTIC_BEGIN
+#   define CK_IGNORE_PEDANTIC_END
+
 #   define CK_IGNORE_CAST_BEGIN
 #   define CK_IGNORE_CAST_END
 #endif
@@ -167,10 +192,15 @@ _Pragma("GCC diagnostic pop")
 #define CK_STRUCT_PACKED __attribute__((__packed__))
 #define CK_ALIGNED_8 __attribute__((aligned(8)))
 
-#if defined(_WIN32) || defined(__TOS_MVS__)
+#if __TOS_MVS__
 #  define CK_VISIBILITY_INTERNAL
 #  define CK_VISIBILITY_DEFAULT
-#elif __TANDEM
+#endif
+#ifdef _WIN32
+#  define CK_VISIBILITY_INTERNAL
+#  define CK_VISIBILITY_DEFAULT
+#endif
+#ifdef __TANDEM
 #  define CK_VISIBILITY_INTERNAL
 #  define CK_VISIBILITY_DEFAULT
 #  undef CK_UNUSED
@@ -181,7 +211,8 @@ _Pragma("GCC diagnostic pop")
 #  define CK_FALLTHROUGH
 #  undef CK_ALIGNED_8
 #  define CK_ALIGNED_8
-#elif __clang
+#endif
+#if __clang__
 #  define CK_VISIBILITY_INTERNAL __attribute__((visibility("internal")))
 #  define CK_VISIBILITY_DEFAULT __attribute__((visibility("default")))
 #else
@@ -196,7 +227,7 @@ _Pragma("GCC diagnostic pop")
 
 #define CK_UNREACHABLE_CODE do { if((true))abort(); } while(0);
 
-#if __TOS_MVS__
+#ifdef __TOS_MVS__
 #   define CK_INLINE_IF_POSSIBLE
 #else
 #   define CK_INLINE_IF_POSSIBLE inline
