@@ -86,6 +86,14 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>net.revelc.code</groupId>
+                <artifactId>impsort-maven-plugin</artifactId>
+                <configuration>
+                    <!-- Temporary fix for unsupported Java 22 code -->
+                    <ignoreParseErrorsBelowImports>true</ignoreParseErrorsBelowImports>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
