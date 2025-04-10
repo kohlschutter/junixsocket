@@ -91,7 +91,6 @@ final class AFGenericSelectorProvider extends AFSelectorProvider<AFGenericSocket
    *
    * @return The instance.
    */
-  @SuppressFBWarnings("MS_EXPOSE_REP")
   public static AFGenericSelectorProvider getInstance() {
     return INSTANCE;
   }

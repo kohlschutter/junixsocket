@@ -30,6 +30,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Implementation of an AF_UNIX domain socket.
  *
@@ -163,6 +165,7 @@ public final class AFUNIXSocket extends AFSocket<AFUNIXSocketAddress> implements
    *
    * @return {@code true} iff supported.
    */
+  @SuppressFBWarnings("HSM_HIDING_METHOD")
   public static boolean isSupported() {
     return AFSocket.isSupported() && AFSocket.supports(AFSocketCapability.CAPABILITY_UNIX_DOMAIN);
   }

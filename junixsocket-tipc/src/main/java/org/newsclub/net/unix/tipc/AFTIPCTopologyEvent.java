@@ -192,7 +192,6 @@ public final class AFTIPCTopologyEvent {
    *
    * @return The socket address.
    */
-  @SuppressFBWarnings("EI_EXPOSE_REP")
   public AFTIPCSocketAddress getAddress() {
     return address;
   }

@@ -336,6 +336,7 @@ public abstract class AFDatagramChannel<A extends AFSocketAddress> extends Datag
    * @return The new {@link DatagramChannel}.
    * @throws IOException on error.
    */
+  @SuppressFBWarnings("HSM_HIDING_METHOD")
   public static DatagramChannel open(ProtocolFamily family) throws IOException {
     requireNonNull(family);
 

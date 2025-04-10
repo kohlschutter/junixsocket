@@ -15,21 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.newsclub.net.unix.rmi;
+package org.newsclub.net.unix.tipc;
 
-import java.io.Closeable;
-import java.io.Serializable;
+import org.newsclub.net.unix.AFSocketCapability;
+import org.newsclub.net.unix.AFSocketCapabilityRequirement;
+import org.newsclub.net.unix.AFTIPCSocketAddress;
 
-/**
- * To be used by {@link RemoteCloseableTest}.
- *
- * @author Christian Kohlschütter
- */
-public interface RemoteCloseableThing extends Serializable {
-  interface NotCloseable extends RemoteCloseableThing {
+@AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_TIPC)
+public class MulticastThroughputTest extends
+    org.newsclub.net.unix.ThroughputTest<AFTIPCSocketAddress> {
+
+  public MulticastThroughputTest() {
+    super(AFTIPCAddressSpecifics.INSTANCE);
   }
 
-  @FunctionalInterface
-  interface IsCloseable extends RemoteCloseableThing, Closeable {
+  @Override
+  protected String stbTestType() {
+    return "AF_TIPC";
   }
 }

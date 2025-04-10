@@ -28,6 +28,8 @@ import org.newsclub.net.unix.AFSocketFactory;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 import org.newsclub.net.unix.AFVSOCKSocketImplExtensions;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Implementation of an {@code AF_VSOCK} socket.
  *
@@ -64,6 +66,7 @@ public final class AFVSOCKSocket extends AFSocket<AFVSOCKSocketAddress> implemen
    *
    * @return {@code true} iff supported.
    */
+  @SuppressFBWarnings("HSM_HIDING_METHOD")
   public static boolean isSupported() {
     return AFSocket.isSupported() && AFSocket.supports(AFSocketCapability.CAPABILITY_VSOCK);
   }

@@ -25,6 +25,7 @@ import java.rmi.Remote;
  *
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface Hello extends Remote {
   /**
    * Returns "Hello".

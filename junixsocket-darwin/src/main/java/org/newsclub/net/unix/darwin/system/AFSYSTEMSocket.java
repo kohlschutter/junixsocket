@@ -28,6 +28,8 @@ import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketFactory;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Implementation of an {@code AF_SYSTEM} socket.
  *
@@ -66,6 +68,7 @@ public final class AFSYSTEMSocket extends AFSocket<AFSYSTEMSocketAddress> implem
    *
    * @return {@code true} iff supported.
    */
+  @SuppressFBWarnings("HSM_HIDING_METHOD")
   public static boolean isSupported() {
     return AFSocket.isSupported() && AFSocket.supports(AFSocketCapability.CAPABILITY_DARWIN);
   }

@@ -37,7 +37,6 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  * @see StreamServer
  */
-@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public final class StreamClient {
   private StreamClient() {
     throw new IllegalStateException("No instances");

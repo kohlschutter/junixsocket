@@ -428,7 +428,6 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
   }
 
   @Override
-  @SuppressFBWarnings("EI_EXPOSE_REP")
   public final @Nullable A getLocalSocketAddress() {
     @Nullable
     A ep = boundEndpoint0();

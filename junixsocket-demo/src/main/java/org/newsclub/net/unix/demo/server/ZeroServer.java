@@ -22,8 +22,6 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * A multi-threaded unix socket server that simply writes null-bytes, and does not attempt to read
  * anything.
@@ -31,7 +29,6 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 // CPD-OFF
-@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public final class ZeroServer extends DemoServerBase {
   public ZeroServer(SocketAddress listenAddress) {
     super(listenAddress);

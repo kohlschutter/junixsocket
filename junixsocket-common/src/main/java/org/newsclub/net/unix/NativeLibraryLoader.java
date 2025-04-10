@@ -137,7 +137,6 @@ final class NativeLibraryLoader implements Closeable {
     }
 
     @Override
-    @SuppressFBWarnings("THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION")
     String load() throws Exception, LinkageError {
       if (libraryNameAndVersion != null) {
         System.loadLibrary(libraryNameAndVersion);

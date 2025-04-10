@@ -71,7 +71,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   private final AFInputStream in;
   private final AFOutputStream out;
 
-  private boolean reuseAddr = true;
+  private final AtomicBoolean reuseAddr = new AtomicBoolean(true);
 
   private final AtomicInteger socketTimeout = new AtomicInteger(0);
   private final AFAddressFamily<A> addressFamily;
@@ -1042,7 +1042,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
       throw new SocketException("Socket is closed");
     }
     if (optID == SocketOptions.SO_REUSEADDR) {
-      return reuseAddr;
+      return reuseAddr.get();
     }
 
     FileDescriptor fdesc = core.validFdOrException();
@@ -1100,7 +1100,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
       throw new SocketException("Socket is closed");
     }
     if (optID == SocketOptions.SO_REUSEADDR) {
-      reuseAddr = (expectBoolean(value) != 0);
+      reuseAddr.set((expectBoolean(value) != 0));
       return;
     }
 
@@ -1218,7 +1218,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
    *
    * @throws IOException on error.
    */
-  protected final void shutdown() throws IOException {
+  protected final synchronized void shutdown() throws IOException {
     FileDescriptor fdesc = core.validFd();
     if (fdesc != null) {
       NativeUnixSocket.shutdown(fdesc, SHUT_RD_WR);
@@ -1227,7 +1227,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   }
 
   @Override
-  protected final void shutdownInput() throws IOException {
+  protected final synchronized void shutdownInput() throws IOException {
     FileDescriptor fdesc = core.validFd();
     if (fdesc != null) {
       NativeUnixSocket.shutdown(fdesc, SHUT_RD);
@@ -1240,7 +1240,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   }
 
   @Override
-  protected final void shutdownOutput() throws IOException {
+  protected final synchronized void shutdownOutput() throws IOException {
     FileDescriptor fdesc = core.validFd();
     if (fdesc != null) {
       NativeUnixSocket.shutdown(fdesc, SHUT_WR);

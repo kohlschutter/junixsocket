@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Implementation of an unknown-type socket.
  *
@@ -58,6 +60,7 @@ final class AFGenericSocket extends AFSocket<AFGenericSocketAddress> implements
    *
    * @return {@code true} iff supported.
    */
+  @SuppressFBWarnings("HSM_HIDING_METHOD")
   public static boolean isSupported() {
     return AFSocket.isSupported();
   }

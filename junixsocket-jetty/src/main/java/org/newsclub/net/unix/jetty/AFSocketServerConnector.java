@@ -93,13 +93,13 @@ public class AFSocketServerConnector extends AbstractConnector {
   private final SelectorManager selectorManager;
   private ServerSocketChannel serverChannel;
   private AFSocketAddress listenSocketAddress;
-  private boolean inheritChannel;
-  private int acceptQueueSize;
-  private int acceptedReceiveBufferSize;
-  private int acceptedSendBufferSize;
-
-  private boolean mayStopServer = false;
-  private boolean mayStopServerForce = false;
+  private volatile boolean inheritChannel;
+  private volatile int acceptQueueSize;
+  private volatile int acceptedReceiveBufferSize;
+  private volatile int acceptedSendBufferSize;
+  private volatile boolean mayStopServer = false;
+  private volatile boolean mayStopServerForce = false;
+  
   private final Class<? extends EventListener> selectorManagerListenerClass;
   private final Server server;
 
@@ -221,7 +221,6 @@ public class AFSocketServerConnector extends AbstractConnector {
    * @return The socket address, or {@code null} if none set.
    */
   @ManagedAttribute("The socket address this connector listens to")
-  @SuppressFBWarnings("EI_EXPOSE_REP")
   public AFSocketAddress getListenSocketAddress() {
     return listenSocketAddress;
   }
@@ -231,7 +230,6 @@ public class AFSocketServerConnector extends AbstractConnector {
    *
    * @param addr The socket address, or {@code null}.
    */
-  @SuppressFBWarnings("EI_EXPOSE_REP2")
   public void setListenSocketAddress(AFSocketAddress addr) {
     this.listenSocketAddress = addr;
   }

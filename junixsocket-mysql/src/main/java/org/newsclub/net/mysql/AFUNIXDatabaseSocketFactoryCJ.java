@@ -46,7 +46,7 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
   }
 
   @SuppressWarnings({"unchecked"})
-  @SuppressFBWarnings({"EI_EXPOSE_REP", "PATH_TRAVERSAL_IN"})
+  @SuppressFBWarnings({"PATH_TRAVERSAL_IN"})
   @Override
   public Socket connect(String hostname, int portNumber,
       @SuppressWarnings("exports") PropertySet props, int loginTimeout) throws IOException {
@@ -73,7 +73,6 @@ public class AFUNIXDatabaseSocketFactoryCJ implements SocketFactory {
   }
 
   @SuppressWarnings({"unchecked"})
-  @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
   public Socket performTlsHandshake(@SuppressWarnings("exports") SocketConnection socketConnection,
       @SuppressWarnings("exports") ServerSession serverSession) throws IOException {

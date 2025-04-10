@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -44,7 +45,7 @@ class AFSocketCore extends AFCore {
   AFSocketAddress socketAddress;
 
   private final AFAddressFamily<?> af;
-  private boolean shutdownOnClose = true;
+  private final AtomicBoolean shutdownOnClose = new AtomicBoolean(true);
 
   protected AFSocketCore(Object observed, FileDescriptor fd,
       AncillaryDataSupport ancillaryDataSupport, AFAddressFamily<?> af, boolean datagramMode) {
@@ -164,10 +165,10 @@ class AFSocketCore extends AFCore {
   }
 
   boolean isShutdownOnClose() {
-    return shutdownOnClose;
+    return shutdownOnClose.get();
   }
 
   void setShutdownOnClose(boolean enabled) {
-    this.shutdownOnClose = enabled;
+    this.shutdownOnClose.set(enabled);
   }
 }

@@ -22,21 +22,22 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 final class AFSelectionKey extends SelectionKey {
   private static final int OP_INVALID = 1 << 7; // custom
   private final AFSelector sel;
   private final AFSocketCore core;
-  private int ops;
+  private final AtomicInteger ops = new AtomicInteger();
+  private final AtomicInteger opsReady = new AtomicInteger(0);
   private final SelectableChannel chann;
   private final AtomicBoolean cancelled = new AtomicBoolean();
-  private int opsReady;
 
   AFSelectionKey(AFSelector selector, AbstractSelectableChannel ch, int ops, Object att) {
     super();
     this.chann = ch;
     this.sel = selector;
-    this.ops = ops; // FIXME check
+    this.ops.set(ops); // FIXME check
 
     if (ch instanceof AFDatagramChannel<?>) {
       this.core = ((AFDatagramChannel<?>) ch).getAFCore();
@@ -71,7 +72,7 @@ final class AFSelectionKey extends SelectionKey {
   }
 
   boolean hasOpInvalid() {
-    return (opsReady & OP_INVALID) != 0;
+    return (opsReady.get() & OP_INVALID) != 0;
   }
 
   boolean isSelected() {
@@ -98,18 +99,18 @@ final class AFSelectionKey extends SelectionKey {
 
   @Override
   public int interestOps() {
-    return ops;
+    return ops.get();
   }
 
   @Override
   public SelectionKey interestOps(int interestOps) {
-    this.ops = interestOps; // FIXME check
+    this.ops.set(interestOps); // FIXME check
     return this;
   }
 
   @Override
   public int readyOps() {
-    return opsReady & ~OP_INVALID;
+    return opsReady.get() & ~OP_INVALID;
   }
 
   AFSocketCore getAFCore() {
@@ -117,7 +118,7 @@ final class AFSelectionKey extends SelectionKey {
   }
 
   void setOpsReady(int opsReady) {
-    this.opsReady = opsReady;
+    this.opsReady.set(opsReady);
   }
 
   @Override

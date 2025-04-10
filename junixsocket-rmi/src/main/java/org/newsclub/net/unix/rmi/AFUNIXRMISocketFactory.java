@@ -75,7 +75,6 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
    * @param socketSuffix A string that will be added to the end of each socket filename, or
    *          {@code null}.
    */
-  @SuppressFBWarnings("EI_EXPOSE_REP2")
   public AFUNIXRMISocketFactory(final AFNaming naming, final File socketDir,
       final RMIClientSocketFactory defaultClientFactory,
       final RMIServerSocketFactory defaultServerFactory, final String socketPrefix,

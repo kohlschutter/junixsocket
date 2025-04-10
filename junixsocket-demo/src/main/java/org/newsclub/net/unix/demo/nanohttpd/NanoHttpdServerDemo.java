@@ -65,7 +65,6 @@ public final class NanoHttpdServerDemo extends NanoHTTPD {
     }
   }
 
-  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   public static void main(String[] args) throws IOException {
     SocketAddress addr = DemoHelper.parseAddress(args, //
         AFUNIXSocketAddress.of(new File("/tmp/junixsocket-http-server.sock")));

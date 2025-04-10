@@ -28,6 +28,7 @@ import java.io.IOException;
  * @param <T> The actual {@link AFNaming} subclass.
  * @author Christian Kohlschütter
  */
+@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface AFNamingProvider<T extends AFNaming> {
   /**
    * Creates a new {@link AFNaming} instance using the given registry port.

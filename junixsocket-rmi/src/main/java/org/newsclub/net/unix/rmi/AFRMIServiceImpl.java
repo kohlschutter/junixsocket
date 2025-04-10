@@ -52,7 +52,7 @@ final class AFRMIServiceImpl implements AFRMIService {
     this.naming = new WeakReference<>(naming);
   }
 
-  @SuppressFBWarnings({"DMI_RANDOM_USED_ONLY_ONCE", "PREDICTABLE_RANDOM"})
+  @SuppressFBWarnings({"PREDICTABLE_RANDOM"})
   private/* synchronized */int randomPort() {
     int maxRandom = ports.size();
 

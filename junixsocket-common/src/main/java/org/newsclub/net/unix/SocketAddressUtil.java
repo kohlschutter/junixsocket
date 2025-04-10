@@ -23,15 +23,12 @@ import java.net.UnixDomainSocketAddress;
 
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * {@link SocketAddress}-related helper methods.
  *
  * @author Christian Kohlschütter
  */
 @IgnoreJRERequirement // see src/main/java15
-@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 final class SocketAddressUtil {
   private SocketAddressUtil() {
     throw new IllegalStateException("No instances");

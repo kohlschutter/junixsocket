@@ -72,6 +72,7 @@ final class ShutdownHookSupport {
    *
    * @author Christian Kohlschütter
    */
+  @FunctionalInterface
   interface ShutdownHook {
     /**
      * Called upon Runtime shutdown.

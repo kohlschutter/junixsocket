@@ -154,7 +154,6 @@ public final class SNIHostnameCapture {
    * @return The hostname, or {@code null}.
    * @throws IllegalStateException if the method was called before a hostname could be retrieved.
    */
-  @SuppressFBWarnings("NP_NONNULL_PARAM_VIOLATION")
   public String getHostname() {
     if (!isComplete()) {
       throw new IllegalStateException("Handshake not yet complete");

@@ -47,7 +47,6 @@ final class AncillaryDataSupport implements Closeable {
   private ByteBuffer ancillaryReceiveBuffer = EMPTY_BUFFER;
 
   // referenced from native code
-  @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
   int[] pendingFileDescriptors = null;
 
   private int[] tipcErrorInfo = null;

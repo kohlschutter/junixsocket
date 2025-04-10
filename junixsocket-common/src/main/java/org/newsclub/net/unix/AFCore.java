@@ -71,7 +71,7 @@ class AFCore extends CleanableState {
 
   private final AtomicInteger virtualBlockingLeases = new AtomicInteger(0);
   private volatile boolean blocking = true;
-  private boolean cleanFd = true;
+  private final AtomicBoolean cleanFd = new AtomicBoolean(true);
 
   AFCore(Object observed, FileDescriptor fd, AncillaryDataSupport ancillaryDataSupport,
       boolean datagramMode) {
@@ -88,7 +88,7 @@ class AFCore extends CleanableState {
 
   @Override
   protected final void doClean() {
-    if (fd != null && fd.valid() && cleanFd) {
+    if (fd != null && fd.valid() && cleanFd.get()) {
       try {
         doClose();
       } catch (IOException e) {
@@ -101,7 +101,7 @@ class AFCore extends CleanableState {
   }
 
   void disableCleanFd() {
-    this.cleanFd = false;
+    this.cleanFd.set(false);
   }
 
   boolean isClosed() {
@@ -143,7 +143,6 @@ class AFCore extends CleanableState {
   @SuppressWarnings({
       "PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity",
       "PMD.NPathComplexity"})
-  @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
   int read(ByteBuffer dst, AFSupplier<Integer> timeout, ByteBuffer socketAddressBuffer, int options)
       throws IOException {
     int remaining = dst.remaining();
@@ -265,7 +264,6 @@ class AFCore extends CleanableState {
   @SuppressWarnings({
       "PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity",
       "PMD.NPathComplexity"})
-  @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
   int write(ByteBuffer src, AFSupplier<Integer> timeout, SocketAddress target, int options)
       throws IOException {
     int remaining = src.remaining();

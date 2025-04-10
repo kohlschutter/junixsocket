@@ -196,7 +196,6 @@ public final class DemoHelper {
     }
   }
 
-  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   public static SocketAddress parseAddress(String[] args, SocketAddress defaultAddress)
       throws IOException {
     if (args.length == 0) {

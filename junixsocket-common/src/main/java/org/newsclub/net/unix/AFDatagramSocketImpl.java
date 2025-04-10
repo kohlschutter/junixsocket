@@ -58,8 +58,8 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
   private final AtomicBoolean bound = new AtomicBoolean(false);
 
   private final AtomicInteger socketTimeout = new AtomicInteger(0);
-  private int localPort;
-  private int remotePort = 0;
+  private final AtomicInteger localPort = new AtomicInteger(0);
+  private final AtomicInteger remotePort = new AtomicInteger(0);
   private final AFAddressFamily<@NonNull A> addressFamily;
   private AFSocketImplExtensions<A> implExtensions = null;
 
@@ -116,7 +116,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
       ByteBuffer ab = abLease.get();
       NativeUnixSocket.connect(ab, ab.limit(), fd, -1);
     }
-    this.remotePort = socketAddress.getPort();
+    this.remotePort.set(socketAddress.getPort());
   }
 
   @Override
@@ -124,7 +124,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
     try {
       NativeUnixSocket.disconnect(fd);
       connected.set(false);
-      this.remotePort = 0;
+      this.remotePort.set(0);
     } catch (IOException e) {
       StackTraceUtil.printStackTrace(e);
     }
@@ -157,10 +157,10 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
       ByteBuffer ab = abLease.get();
       NativeUnixSocket.bind(ab, ab.limit(), fd, NativeUnixSocket.OPT_DGRAM_MODE);
       if (socketAddress == null) {
-        this.localPort = 0;
+        this.localPort.set(0);
         this.bound.set(false);
       } else {
-        this.localPort = socketAddress.getPort();
+        this.localPort.set(socketAddress.getPort());
       }
     } catch (SocketException e) {
       throw e;
@@ -177,7 +177,6 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
   @SuppressWarnings({
       "PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity",
       "PMD.NPathComplexity"})
-  @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
   private void recv(DatagramPacket p, int options) throws IOException {
     int len = p.getLength();
     FileDescriptor fdesc = core.validFdOrException();
@@ -234,7 +233,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
 
         A addr = AFSocketAddress.ofInternal(socketAddressBuffer, getAddressFamily());
         p.setAddress(addr == null ? null : addr.getInetAddress());
-        p.setPort(remotePort);
+        p.setPort(remotePort.get());
       } catch (SocketTimeoutException e) { // NOPMD.ExceptionAsFlowControl
         if (virtualBlocking) {
           // try again
@@ -255,7 +254,6 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
   @SuppressWarnings({
       "PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity",
       "PMD.NPathComplexity"})
-  @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
   @Override
   protected final void send(DatagramPacket p) throws IOException {
     InetAddress addr = p.getAddress();
@@ -473,17 +471,17 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
   }
 
   final void updatePorts(int local, int remote) {
-    this.localPort = local;
-    this.remotePort = remote;
+    this.localPort.set(local);
+    this.remotePort.set(remote);
   }
 
   final @Nullable A getLocalSocketAddress() {
-    return AFSocketAddress.getSocketAddress(getFileDescriptor(), false, localPort,
+    return AFSocketAddress.getSocketAddress(getFileDescriptor(), false, localPort.get(),
         getAddressFamily());
   }
 
   final @Nullable A getRemoteSocketAddress() {
-    return AFSocketAddress.getSocketAddress(getFileDescriptor(), true, remotePort,
+    return AFSocketAddress.getSocketAddress(getFileDescriptor(), true, remotePort.get(),
         getAddressFamily());
   }
 
@@ -577,21 +575,21 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
   }
 
   final int getLocalPort1() {
-    return localPort;
+    return localPort.get();
   }
 
   final int getRemotePort() {
-    return remotePort;
+    return remotePort.get();
   }
 
   final void setSocketAddress(AFSocketAddress socketAddress) {
     if (socketAddress == null) {
       this.core.socketAddress = null;
-      this.localPort = -1;
+      this.localPort.set(-1);
     } else {
       this.core.socketAddress = socketAddress;
-      if (this.localPort <= 0) {
-        this.localPort = socketAddress.getPort();
+      if (this.localPort.get() <= 0) {
+        this.localPort.set(socketAddress.getPort());
       }
     }
   }

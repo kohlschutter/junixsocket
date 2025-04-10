@@ -96,14 +96,11 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * Some byte-level representation of this address, which can only be converted to a native
    * representation in combination with the domain ID.
    */
-  @SuppressFBWarnings("JCIP_FIELD_ISNT_FINAL_IN_IMMUTABLE_CLASS")
   private byte[] bytes;
 
   /**
    * An {@link InetAddress}-wrapped representation of this address. Only created upon demand.
    */
-  @SuppressFBWarnings("JCIP_FIELD_ISNT_FINAL_IN_IMMUTABLE_CLASS") // only modified during
-                                                                  // construction/deserialization
   private InetAddress inetAddress = null; // derived from bytes
 
   /**
@@ -893,7 +890,6 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @throws ClassNotFoundException on error.
    * @throws IOException on error.
    */
-  @SuppressFBWarnings("MC_OVERRIDABLE_METHOD_CALL_IN_READ_OBJECT") // https://github.com/spotbugs/spotbugs/issues/2957
   private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
     in.defaultReadObject();
 

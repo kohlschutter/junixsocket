@@ -34,6 +34,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.newsclub.net.unix.AFServerSocket;
@@ -58,8 +59,10 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
   private int maxConcurrentConnections = Runtime.getRuntime().availableProcessors();
   private int serverTimeout = 0; // by default, the server doesn't timeout.
-  private int socketTimeout = (int) TimeUnit.SECONDS.toMillis(60);
-  private int serverBusyTimeout = (int) TimeUnit.SECONDS.toMillis(1);
+  private final AtomicInteger socketTimeout = new AtomicInteger((int) TimeUnit.SECONDS.toMillis(
+      60));
+  private final AtomicInteger serverBusyTimeout = new AtomicInteger((int) TimeUnit.SECONDS.toMillis(
+      1));
 
   private Thread listenThread = null;
   private V serverSocket;
@@ -114,6 +117,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    *
    * @param maxConcurrentConnections The new maximum.
    */
+  @SuppressFBWarnings("AT_STALE_THREAD_WRITE_OF_PRIMITIVE")
   public void setMaxConcurrentConnections(int maxConcurrentConnections) {
     if (isRunning()) {
       throw new IllegalStateException("Already configured");
@@ -135,6 +139,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    *
    * @param timeout The new timeout in milliseconds (0 = no timeout).
    */
+  @SuppressFBWarnings("AT_STALE_THREAD_WRITE_OF_PRIMITIVE")
   public void setServerTimeout(int timeout) {
     if (isRunning()) {
       throw new IllegalStateException("Already configured");
@@ -148,7 +153,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    * @return The socket timeout in milliseconds (0 = no timeout).
    */
   public int getSocketTimeout() {
-    return socketTimeout;
+    return socketTimeout.get();
   }
 
   /**
@@ -157,7 +162,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    * @param timeout The new timeout in milliseconds (0 = no timeout).
    */
   public void setSocketTimeout(int timeout) {
-    this.socketTimeout = timeout;
+    this.socketTimeout.set(timeout);
   }
 
   /**
@@ -166,7 +171,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    * @return The server-busy timeout in milliseconds (0 = no timeout).
    */
   public int getServerBusyTimeout() {
-    return serverBusyTimeout;
+    return serverBusyTimeout.get();
   }
 
   /**
@@ -175,7 +180,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    * @param timeout The new timeout in milliseconds (0 = no timeout).
    */
   public void setServerBusyTimeout(int timeout) {
-    this.serverBusyTimeout = timeout;
+    this.serverBusyTimeout.set(timeout);
   }
 
   /**
@@ -331,7 +336,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
 
           synchronized (connectionsMonitor) {
             try {
-              connectionsMonitor.wait(serverBusyTimeout);
+              connectionsMonitor.wait(getServerBusyTimeout());
             } catch (InterruptedException e) {
               throw (InterruptedIOException) new InterruptedIOException(
                   "Interrupted while waiting on server resources").initCause(e);
@@ -364,7 +369,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
           }
         }
         try {
-          socket.setSoTimeout(socketTimeout);
+          socket.setSoTimeout(getSocketTimeout());
         } catch (SocketException e) {
           // Connection closed before we could do anything
           onSocketExceptionAfterAccept(socket, e);
@@ -392,7 +397,6 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    * @throws IOException If there was an error.
    */
   @SuppressWarnings("null")
-  @SuppressFBWarnings("NN_NAKED_NOTIFY")
   public void stop() throws IOException {
     stopRequested.set(true);
     ready.set(false);
@@ -482,7 +486,6 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
       }
 
       return (this.timeoutFuture = TIMEOUTS.schedule(new Callable<IOException>() {
-        @SuppressFBWarnings("THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION")
         @Override
         public IOException call() throws Exception {
           try {

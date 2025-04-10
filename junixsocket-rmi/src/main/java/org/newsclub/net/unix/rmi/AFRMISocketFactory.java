@@ -85,7 +85,6 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
    * @param defaultClientFactory The default {@link RMIClientSocketFactory}.
    * @param defaultServerFactory The default {@link RMIServerSocketFactory}.
    */
-  @SuppressFBWarnings("EI_EXPOSE_REP2")
   public AFRMISocketFactory(final AFNaming naming,
       final RMIClientSocketFactory defaultClientFactory,
       final RMIServerSocketFactory defaultServerFactory) {

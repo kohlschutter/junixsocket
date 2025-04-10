@@ -104,7 +104,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
   @Override
   @SuppressWarnings("PMD.ExceptionAsFlowControl")
   @SuppressFBWarnings("PREDICTABLE_RANDOM")
-  public final void writeExternal(ObjectOutput objOut) throws IOException {
+  public final synchronized void writeExternal(ObjectOutput objOut) throws IOException {
     if (fd == null || !fd.valid()) {
       throw new IOException("No or invalid file descriptor");
     }
@@ -172,7 +172,7 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
   @SuppressWarnings("resource")
   @SuppressFBWarnings("OBJECT_DESERIALIZATION")
   @Override
-  public final void readExternal(ObjectInput objIn) throws IOException, ClassNotFoundException {
+  public final synchronized void readExternal(ObjectInput objIn) throws IOException, ClassNotFoundException {
     DataInputStream in1 = remoteConnection.getAndSet(null);
     if (in1 != null) {
       in1.close();

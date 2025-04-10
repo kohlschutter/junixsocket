@@ -24,8 +24,6 @@ import java.net.SocketException;
 import org.newsclub.net.unix.AFSocketFactory;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * The base for a SocketFactory that connects to VSOCK sockets.
  */
@@ -82,13 +80,11 @@ public abstract class AFVSOCKSocketFactory extends AFSocketFactory<AFVSOCKSocket
      *
      * @param addr The address.
      */
-    @SuppressFBWarnings("EI_EXPOSE_REP2")
     public FixedAddress(AFVSOCKSocketAddress addr) {
       super();
       this.addr = addr;
     }
 
-    @SuppressFBWarnings("EI_EXPOSE_REP")
     @Override
     public AFVSOCKSocketAddress addressFromHost(String host, int javaPort) throws SocketException {
       return addr;

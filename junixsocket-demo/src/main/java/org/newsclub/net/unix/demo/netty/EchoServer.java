@@ -43,7 +43,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  * guide for 4.x</a>
  */
 @SuppressWarnings("FutureReturnValueIgnored" /* errorprone */)
-@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public class EchoServer {
   private final AFSocketAddress addr;
 

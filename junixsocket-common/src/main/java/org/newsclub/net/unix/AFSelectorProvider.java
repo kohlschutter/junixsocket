@@ -31,6 +31,8 @@ import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Service-provider class for junixsocket selectors and selectable channels.
  *
@@ -316,6 +318,7 @@ public abstract class AFSelectorProvider<A extends AFSocketAddress> extends Sele
    *
    * @return The instance.
    */
+  @SuppressFBWarnings("HSM_HIDING_METHOD")
   public static SelectorProvider provider() {
     return AF_PROVIDER;
   }

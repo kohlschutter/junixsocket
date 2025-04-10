@@ -28,7 +28,6 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.demo.DemoHelper;
 import org.newsclub.net.unix.demo.nanohttpd.NanoHttpdServerDemo;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.util.IOUtil;
 
 import okhttp3.OkHttpClient;
@@ -46,7 +45,6 @@ import okhttp3.ResponseBody;
  * @see NanoHttpdServerDemo
  */
 public class OkHttpClientDemo {
-  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   public static void main(String[] args) throws IOException {
     SocketAddress addr = DemoHelper.parseAddress(args, //
         AFUNIXSocketAddress.of(new File("/tmp/junixsocket-http-server.sock")));

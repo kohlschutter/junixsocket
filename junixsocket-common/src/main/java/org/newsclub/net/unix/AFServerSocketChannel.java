@@ -208,6 +208,7 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
    * @return The new {@link ServerSocketChannel}.
    * @throws IOException on error.
    */
+  @SuppressFBWarnings("HSM_HIDING_METHOD")
   public static ServerSocketChannel open(ProtocolFamily family) throws IOException {
     requireNonNull(family);
 

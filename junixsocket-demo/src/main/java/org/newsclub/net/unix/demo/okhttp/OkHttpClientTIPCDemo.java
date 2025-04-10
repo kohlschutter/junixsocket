@@ -29,7 +29,6 @@ import org.newsclub.net.unix.AFTIPCSocketAddress;
 import org.newsclub.net.unix.demo.DemoHelper;
 import org.newsclub.net.unix.demo.nanohttpd.NanoHttpdServerDemo;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.util.IOUtil;
 
 import okhttp3.OkHttpClient;
@@ -49,7 +48,6 @@ import okhttp3.ResponseBody;
  */
 @SuppressWarnings("CatchAndPrintStackTrace" /* errorprone */)
 public class OkHttpClientTIPCDemo {
-  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
   public static void main(String[] args) throws IOException, InterruptedException {
 
     SocketAddress addr = DemoHelper.parseAddress(args, //
