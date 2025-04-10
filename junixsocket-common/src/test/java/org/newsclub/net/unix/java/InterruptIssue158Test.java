@@ -18,6 +18,7 @@
 package org.newsclub.net.unix.java;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 
@@ -45,8 +46,18 @@ public class InterruptIssue158Test extends
 
   @Override
   protected InetSocketAddress newTempAddress() throws IOException {
-    try (ServerSocket ss = newServerSocketBindOn(super.newTempAddress())) {
-      return (InetSocketAddress) ss.getLocalSocketAddress();
+    BindException bindEx = null;
+    for (int i = 0; i < 100; i++) {
+      try (ServerSocket ss = newServerSocketBindOn(super.newTempAddress())) {
+        return (InetSocketAddress) ss.getLocalSocketAddress();
+      } catch (BindException e) {
+        bindEx = e;
+      }
+    }
+    if (bindEx == null) {
+      throw new BindException("Cannot bind");
+    } else {
+      throw bindEx;
     }
   }
 }
