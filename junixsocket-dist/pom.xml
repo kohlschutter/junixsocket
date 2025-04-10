@@ -47,6 +47,10 @@
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-jetty-11</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-selftest</artifactId>
             <classifier>jar-with-dependencies</classifier>
         </dependency>
