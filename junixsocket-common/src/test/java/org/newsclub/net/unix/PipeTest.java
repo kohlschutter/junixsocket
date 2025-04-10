@@ -34,14 +34,11 @@ import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.Test;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * Tests the behavior of {@link AFPipe}.
  *
  * @author Christian Kohlschütter
  */
-@SuppressFBWarnings("THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION")
 public final class PipeTest {
   private final ExecutorService exc = Executors.newCachedThreadPool();
 

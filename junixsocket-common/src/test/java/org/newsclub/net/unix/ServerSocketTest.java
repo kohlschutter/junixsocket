@@ -30,15 +30,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * Tests some otherwise uncovered methods of {@link AFSocket}.
  *
  * @author Christian Kohlschütter
  */
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class ServerSocketTest<A extends SocketAddress> extends SocketTestBase<A> {
 
   protected ServerSocketTest(AddressSpecifics<A> asp) {

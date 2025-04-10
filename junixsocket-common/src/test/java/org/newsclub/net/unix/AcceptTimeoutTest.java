@@ -37,7 +37,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 import com.kohlschutter.testutil.TestAsyncUtil;
@@ -48,8 +47,6 @@ import com.kohlschutter.testutil.TestStackTraceUtil;
  *
  * @author Christian Kohlschütter
  */
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketTestBase<A> {
   private static final int TIMING_INACCURACY_MILLIS = 5000;
 
@@ -90,7 +87,6 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
 
   @Test
   @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.ExcessiveMethodLength"})
-  @SuppressFBWarnings("NP_NONNULL_PARAM_VIOLATION")
   public void testTimeoutAfterDelay() throws Exception {
     final int timeoutMillis = 5000;
 

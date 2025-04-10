@@ -37,15 +37,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.ForkedVM;
 import com.kohlschutter.testutil.ForkedVMRequirement;
 import com.kohlschutter.testutil.OutputBridge;
 import com.kohlschutter.testutil.OutputBridge.ProcessStream;
 import com.kohlschutter.testutil.TestAsyncUtil;
 
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public class RemoteRegistryTest {
   @Test
   @ForkedVMRequirement(forkSupported = true)

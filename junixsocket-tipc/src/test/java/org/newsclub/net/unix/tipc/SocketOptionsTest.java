@@ -47,9 +47,7 @@ import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_TIPC)
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
-    "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
+@SuppressFBWarnings({"NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
 @SuppressWarnings("VoidUsed") // ErrorProne
 public final class SocketOptionsTest extends
     org.newsclub.net.unix.SocketOptionsTest<AFTIPCSocketAddress> {

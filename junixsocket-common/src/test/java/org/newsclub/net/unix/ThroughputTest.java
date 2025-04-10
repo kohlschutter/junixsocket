@@ -57,7 +57,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.commons.JUnitException;
 import org.opentest4j.AssertionFailedError;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAsyncUtil;
 import com.kohlschutter.testutil.TestStackTraceUtil;
 import com.kohlschutter.util.SystemPropertyUtil;
@@ -81,8 +80,6 @@ import com.kohlschutter.util.SystemPropertyUtil;
  * @author Christian Kohlschütter
  */
 @TestMethodOrder(MethodOrderer.MethodName.class)
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class ThroughputTest<A extends SocketAddress> extends SocketTestBase<A> {
   protected static final int ENABLED = SystemPropertyUtil.getIntSystemProperty(
       "org.newsclub.net.unix.throughput-test.enabled", 1);

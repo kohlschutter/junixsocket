@@ -32,9 +32,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_TIPC)
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
-    "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
+@SuppressFBWarnings({"NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
 public final class SocketTest extends org.newsclub.net.unix.SocketTest<AFTIPCSocketAddress> {
 
   public SocketTest() {

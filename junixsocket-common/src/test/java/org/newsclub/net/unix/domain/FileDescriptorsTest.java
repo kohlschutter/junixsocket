@@ -18,7 +18,6 @@
 package org.newsclub.net.unix.domain;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -50,7 +49,6 @@ import org.newsclub.net.unix.AFUNIXSocketChannel;
 import org.newsclub.net.unix.ImplUtil;
 import org.newsclub.net.unix.SocketTestBase;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.util.IOUtil;
 
 //CPD-OFF - Skip code-duplication checks
@@ -62,8 +60,6 @@ import com.kohlschutter.util.IOUtil;
  */
 @AFSocketCapabilityRequirement({
     AFSocketCapability.CAPABILITY_UNIX_DOMAIN, AFSocketCapability.CAPABILITY_FILE_DESCRIPTORS})
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public final class FileDescriptorsTest extends SocketTestBase<AFUNIXSocketAddress> {
 
   public FileDescriptorsTest() {

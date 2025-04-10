@@ -41,9 +41,7 @@ import org.newsclub.net.unix.SocketTestBase;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
-    "DMI_HARDCODED_ABSOLUTE_FILENAME"})
+@SuppressFBWarnings({"DMI_HARDCODED_ABSOLUTE_FILENAME"})
 public final class SocketFactoryTest extends SocketTestBase<AFUNIXSocketAddress> {
 
   public SocketFactoryTest() {

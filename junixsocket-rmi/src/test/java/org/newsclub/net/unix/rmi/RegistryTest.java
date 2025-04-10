@@ -31,10 +31,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketCapability;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 @AFSocketCapabilityRequirement({AFSocketCapability.CAPABILITY_UNIX_DOMAIN})
 public class RegistryTest extends ShutdownHookTestBase {
   @Test

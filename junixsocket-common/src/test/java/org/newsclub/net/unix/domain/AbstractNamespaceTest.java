@@ -31,13 +31,8 @@ import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.SocketTestBase;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 @AFSocketCapabilityRequirement({
     AFSocketCapability.CAPABILITY_UNIX_DOMAIN, AFSocketCapability.CAPABILITY_ABSTRACT_NAMESPACE})
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
-    "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
 public class AbstractNamespaceTest extends SocketTestBase<AFUNIXSocketAddress> {
 
   public AbstractNamespaceTest() {

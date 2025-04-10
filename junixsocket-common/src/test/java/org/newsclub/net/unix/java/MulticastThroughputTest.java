@@ -15,21 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.newsclub.net.unix.vsock;
+package org.newsclub.net.unix.java;
 
-import java.io.IOException;
+import java.net.InetSocketAddress;
 
-import org.newsclub.net.unix.AFSocketCapability;
-import org.newsclub.net.unix.AFSocketCapabilityRequirement;
-import org.newsclub.net.unix.AFVSOCKSocketAddress;
+public class MulticastThroughputTest extends
+    org.newsclub.net.unix.ThroughputTest<InetSocketAddress> {
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+  public MulticastThroughputTest() {
+    super(JavaAddressSpecifics.INSTANCE);
+  }
 
-@AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_VSOCK)
-@SuppressFBWarnings({"NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
-public final class SocketOptionsTest extends
-    org.newsclub.net.unix.SocketOptionsTest<AFVSOCKSocketAddress> {
-  public SocketOptionsTest() throws IOException {
-    super(AFVSOCKAddressSpecifics.INSTANCE);
+  @Override
+  protected String stbTestType() {
+    return "AF_INET";
   }
 }

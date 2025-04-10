@@ -33,9 +33,7 @@ import org.junit.jupiter.api.Test;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.SystemPropertyRequirement;
 
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
-    "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
+@SuppressFBWarnings({"NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
 @JavaInetStackRequirement
 public final class ThroughputTest extends org.newsclub.net.unix.ThroughputTest<InetSocketAddress> {
 

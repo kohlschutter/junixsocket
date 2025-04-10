@@ -49,7 +49,6 @@ public final class FinalizeTest extends org.newsclub.net.unix.FinalizeTest<AFUNI
     return "UNIX";
   }
 
-  @SuppressFBWarnings({"RV_DONT_JUST_NULL_CHECK_READLINE"})
   private static List<String> lsofUnixSockets(long pid) throws IOException, TestAbortedException,
       InterruptedException {
     assertTrue(pid > 0);

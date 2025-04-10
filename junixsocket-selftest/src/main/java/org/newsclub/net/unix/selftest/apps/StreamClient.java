@@ -30,10 +30,7 @@ import org.newsclub.net.unix.AFAddressFamily;
 import org.newsclub.net.unix.AFSocket;
 import org.newsclub.net.unix.AFSocketAddress;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 // CPD-OFF
-@SuppressFBWarnings("PATH_TRAVERSAL_IN")
 public class StreamClient {
   private static void printHelp() {
     System.err.println("Syntax: java " + StreamClient.class.getName() + " <URI>");

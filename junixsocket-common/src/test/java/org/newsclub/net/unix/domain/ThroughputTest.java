@@ -20,10 +20,7 @@ package org.newsclub.net.unix.domain;
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
-@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
 public final class ThroughputTest extends ThroughputTestShim {
 
   public ThroughputTest() {

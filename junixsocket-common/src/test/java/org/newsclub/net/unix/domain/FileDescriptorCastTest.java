@@ -67,8 +67,6 @@ import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.Messag
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
 @SuppressWarnings("PMD.CouplingBetweenObjects")
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public class FileDescriptorCastTest {
   @Test
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_NATIVE_SOCKETPAIR)

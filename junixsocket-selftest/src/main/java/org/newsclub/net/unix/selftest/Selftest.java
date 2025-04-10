@@ -217,8 +217,6 @@ public class Selftest {
    * @param args Ignored.
    * @throws Exception on error.
    */
-  @SuppressFBWarnings({
-      "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
   public static void main(String[] args) throws Exception {
     int delay = SystemPropertyUtil.getIntSystemProperty("selftest.delay.at-start", 0);
     if (delay > 0) {
@@ -247,8 +245,6 @@ public class Selftest {
    *
    * @throws Exception on error.
    */
-  @SuppressFBWarnings({
-      "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
   public static int runSelftest() throws Exception {
     return runSelftest(System.out);
   }
@@ -293,8 +289,6 @@ public class Selftest {
     });
   }
 
-  @SuppressFBWarnings({
-      "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
   public static int runSelftest(PrintStream out) throws Exception {
     return runSelftest0(out, null);
   }

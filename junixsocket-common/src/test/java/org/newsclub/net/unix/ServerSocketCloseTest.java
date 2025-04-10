@@ -36,13 +36,9 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * Ensures that we don't have any dangling "accept" calls after closing our ServerSocket.
  */
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class ServerSocketCloseTest<A extends SocketAddress> extends SocketTestBase<A> {
   protected ServerSocketCloseTest(AddressSpecifics<A> asp) {
     super(asp);

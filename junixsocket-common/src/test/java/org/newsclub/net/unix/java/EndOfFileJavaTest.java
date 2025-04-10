@@ -19,9 +19,6 @@ package org.newsclub.net.unix.java;
 
 import java.net.InetSocketAddress;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
-@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
 @JavaInetStackRequirement
 public final class EndOfFileJavaTest extends
     org.newsclub.net.unix.EndOfFileTest<InetSocketAddress> {

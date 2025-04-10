@@ -43,9 +43,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 /**
  * See <a href="https://code.google.com/archive/p/junixsocket/issues/20">Issue 20</a>.
  */
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
-    "RANGE_ARRAY_LENGTH"})
+@SuppressFBWarnings({"RANGE_ARRAY_LENGTH"})
 // CPD-OFF - Skip code-duplication checks
 public abstract class BufferOverflowTest<A extends SocketAddress> extends SocketTestBase<A> {
   private ServerSocket server;

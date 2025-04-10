@@ -31,15 +31,11 @@ import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.rmi.RemoteCloseableThing.IsCloseable;
 import org.newsclub.net.unix.rmi.RemoteCloseableThing.NotCloseable;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * Tests {@link RemoteCloseable}.
  *
  * @author Christian Kohlschütter
  */
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 @AFSocketCapabilityRequirement({AFSocketCapability.CAPABILITY_UNIX_DOMAIN})
 public class RemoteCloseableTest extends TestBase {
   public RemoteCloseableTest() throws IOException {

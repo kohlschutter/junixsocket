@@ -64,9 +64,7 @@ import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
  * @author Christian Kohlschuetter
  */
 @SuppressWarnings({"PMD.AbstractClassWithoutAbstractMethod", "PMD.CouplingBetweenObjects"})
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
-    "PREDICTABLE_RANDOM"})
+@SuppressFBWarnings({"PREDICTABLE_RANDOM"})
 public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs to be public for
                                                                 // junit
 

@@ -39,15 +39,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * See <a href="https://code.google.com/archive/p/junixsocket/issues/9">Issue 9</a>.
  *
  * @author Derrick Rice (April, 2010)
  */
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class EndOfFileTest<A extends SocketAddress> extends SocketTestBase<A> {
   protected ServerSocket server;
   protected ExecutorService executor;

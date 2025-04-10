@@ -40,7 +40,6 @@ import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.AFUNIXSocketCredentials;
 import org.newsclub.net.unix.SocketTestBase;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 import com.kohlschutter.util.ProcessUtil;
@@ -52,8 +51,6 @@ import com.kohlschutter.util.ProcessUtil;
  */
 @AFSocketCapabilityRequirement({
     AFSocketCapability.CAPABILITY_UNIX_DOMAIN, AFSocketCapability.CAPABILITY_PEER_CREDENTIALS})
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public final class PeerCredentialsTest extends SocketTestBase<AFUNIXSocketAddress> {
   private static AFUNIXSocketCredentials credsSockets = null;
   private static AFUNIXSocketCredentials credsDatagramSockets = null;

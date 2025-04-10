@@ -33,11 +33,9 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @see FinalizeTest
  * @author Christian Kohlschütter
  */
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public class FinalizeTestClient {
   @SuppressWarnings({"ModifiedButNotUsed" /* errorprone */})
-  @SuppressFBWarnings({"RV_RETURN_VALUE_IGNORED", "UC_USELESS_OBJECT"})
+  @SuppressFBWarnings({"UC_USELESS_OBJECT"})
   public static void main(String[] args) throws Exception {
     String socketType = System.getProperty("test.junixsocket.socket.type", "");
     String socketName = System.getProperty("test.junixsocket.socket", "");

@@ -31,10 +31,6 @@ import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class SocketPairTest<A extends SocketAddress> extends SocketTestBase<A> {
   // CPD-OFF
 

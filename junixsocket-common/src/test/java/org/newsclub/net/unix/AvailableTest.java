@@ -29,10 +29,6 @@ import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class AvailableTest<A extends SocketAddress> extends SocketTestBase<A> {
   private static final int BYTES_SENT = 23;
   private static final int TIME_TO_SLEEP = 100;

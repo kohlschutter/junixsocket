@@ -37,11 +37,7 @@ import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
 import org.newsclub.net.unix.SocketTestBase;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 // @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DOMAIN)
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public final class SocketAddressTest extends SocketTestBase<AFUNIXSocketAddress> {
 
   public SocketAddressTest() {

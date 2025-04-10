@@ -40,13 +40,10 @@ import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFTIPCSocketAddress;
 import org.opentest4j.AssertionFailedError;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_TIPC)
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public final class AFTIPCTopologyWatcherTest extends
     org.newsclub.net.unix.SocketTestBase<AFTIPCSocketAddress> {
 

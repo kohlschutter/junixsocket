@@ -233,7 +233,6 @@ public class MassiveParallelTest extends
           + ";inAccept=" + acceptsInFlight + ";completed=" + completed + "]";
     }
 
-    @SuppressFBWarnings({"NP_LOAD_OF_KNOWN_NULL_VALUE", "RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"})
     private void acceptJob() {
       serverThreads.incrementAndGet();
       acceptsInFlight.incrementAndGet();

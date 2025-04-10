@@ -51,10 +51,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBase<A> {
   protected SelectorTest(AddressSpecifics<A> asp) throws IOException {
     super(asp);

@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Named;
 import org.newsclub.net.unix.AFSocket;
 
 import com.google.errorprone.annotations.Immutable;
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.LoggerUtil;
 import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
 import com.kohlschutter.util.ReflectionUtil;
@@ -166,7 +165,6 @@ public abstract class SSLTestBase {
     removeAllConfigurableProviders();
   }
 
-  @SuppressFBWarnings("SE_BAD_FIELD")
   public enum TestSSLConfiguration implements Named<TestSSLConfiguration> {
     DEFAULT((b) -> {
       removeAllConfigurableProviders();

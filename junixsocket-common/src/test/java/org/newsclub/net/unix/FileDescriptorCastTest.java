@@ -49,13 +49,10 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
 import com.kohlschutter.util.IOUtil;
 
 @SuppressWarnings("PMD.CouplingBetweenObjects")
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public class FileDescriptorCastTest {
   // CPD-OFF
 

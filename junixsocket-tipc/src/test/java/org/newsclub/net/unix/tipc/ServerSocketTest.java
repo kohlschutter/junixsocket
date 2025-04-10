@@ -27,9 +27,7 @@ import org.newsclub.net.unix.AFTIPCSocketAddress;
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_TIPC)
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION",
-    "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
+@SuppressFBWarnings({"NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
 public final class ServerSocketTest extends
     org.newsclub.net.unix.ServerSocketTest<AFTIPCSocketAddress> {
 

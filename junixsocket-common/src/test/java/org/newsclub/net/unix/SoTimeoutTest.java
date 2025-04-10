@@ -33,7 +33,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.AssertUtil;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
@@ -43,8 +42,6 @@ import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.Messag
  *
  * @see <a href="https://code.google.com/archive/p/junixsocket/issues/14">Issue 14</a>
  */
-@SuppressFBWarnings({
-    "THROWS_METHOD_THROWS_CLAUSE_THROWABLE", "THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION"})
 public abstract class SoTimeoutTest<A extends SocketAddress> extends SocketTestBase<A> {
   protected SoTimeoutTest(AddressSpecifics<A> asp) {
     super(asp);
