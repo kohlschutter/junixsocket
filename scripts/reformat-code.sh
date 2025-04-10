@@ -2,11 +2,11 @@
 #
 # Reformats the Java code in this project
 # 
-# Copyright 2023 by Christian Kohlschütter
+# Copyright 2023-2025 by Christian Kohlschütter
 # SPDX-License-Identifier: Apache-2.0
 #
 
 set -e
 dirname=$(dirname "$0")
 cd "${dirname}/.."
-mvn process-sources -Dreformat -Dignorant -pl \!junixsocket-native,\!junixsocket-native-cross,\!junixsocket-native-common,\!junixsocket-native-custom
+mvn process-sources -Dreformat -Dignorant -pl \!junixsocket-native,\!junixsocket-native-cross,\!junixsocket-native-common,\!junixsocket-native-custom $@
