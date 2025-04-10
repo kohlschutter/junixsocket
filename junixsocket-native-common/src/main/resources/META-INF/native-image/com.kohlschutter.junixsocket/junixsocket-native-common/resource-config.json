@@ -1,9 +1,323 @@
 {
-  "resources":{
-  "includes":[
-    {
-      "pattern":"\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-native-common/pom.properties\\E"
-    } 
-  ]},
-  "bundles":[]
+    "resources": {
+        "includes": [
+            {
+                "pattern": "\\QMETA-INF/maven/com.kohlschutter.junixsocket/junixsocket-native-common/pom.properties\\E"
+            }
+        ]
+    },
+    "bundles": [],
+    "jni": [
+        {
+            "type": "java.io.FileDescriptor"
+        },
+        {
+            "type": "java.lang.Boolean",
+            "methods": [
+                {
+                    "name": "getBoolean",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.lang.Class",
+            "methods": [
+                {
+                    "name": "getName",
+                    "parameterTypes": []
+                }
+            ]
+        },
+        {
+            "type": "java.lang.IllegalStateException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.lang.IndexOutOfBoundsException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.lang.Integer",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "int"
+                    ]
+                },
+                {
+                    "name": "intValue",
+                    "parameterTypes": []
+                }
+            ]
+        },
+        {
+            "type": "java.lang.NullPointerException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.lang.Object",
+            "methods": [
+                {
+                    "name": "getClass",
+                    "parameterTypes": []
+                }
+            ]
+        },
+        {
+            "type": "java.lang.ProcessBuilder$RedirectPipeImpl",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": []
+                }
+            ]
+        },
+        {
+            "type": "java.net.DatagramSocket"
+        },
+        {
+            "type": "java.net.InetSocketAddress",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "int"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.net.InetSocketAddress$InetSocketAddressHolder"
+        },
+        {
+            "type": "java.net.NoRouteToHostException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.net.ServerSocket"
+        },
+        {
+            "type": "java.net.Socket"
+        },
+        {
+            "type": "java.net.SocketException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.net.SocketTimeoutException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.nio.channels.ClosedChannelException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": []
+                },
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.nio.channels.spi.AbstractSelectableChannel",
+            "methods": [
+                {
+                    "name": "removeKey",
+                    "parameterTypes": [
+                        "java.nio.channels.SelectionKey"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "org.newsclub.net.unix.AFSelector$PollFd"
+        },
+        {
+            "type": "org.newsclub.net.unix.AFUNIXDatagramSocket"
+        },
+        {
+            "type": "org.newsclub.net.unix.AFUNIXServerSocket",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.net.SocketImpl"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "org.newsclub.net.unix.AFUNIXSocket"
+        },
+        {
+            "type": "org.newsclub.net.unix.AFUNIXSocketImpl",
+            "fields": [
+                {
+                    "name": "serverSocket"
+                }
+            ]
+        },
+        {
+            "type": "org.newsclub.net.unix.AddressUnavailableSocketException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "org.newsclub.net.unix.AncillaryDataSupport",
+            "methods": [
+                {
+                    "name": "setTipcDestName",
+                    "parameterTypes": [
+                        "int",
+                        "int",
+                        "int"
+                    ]
+                },
+                {
+                    "name": "setTipcErrorInfo",
+                    "parameterTypes": [
+                        "int",
+                        "int"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "org.newsclub.net.unix.BrokenPipeSocketException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "org.newsclub.net.unix.ConnectionResetSocketException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "org.newsclub.net.unix.InvalidArgumentSocketException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "org.newsclub.net.unix.NoSuchDeviceSocketException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "org.newsclub.net.unix.OperationNotSupportedSocketException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "org.newsclub.net.unix.SocketClosedException",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "org.newsclub.net.unix.darwin.system.AFSYSTEMDatagramSocket"
+        },
+        {
+            "type": "org.newsclub.net.unix.darwin.system.AFSYSTEMSocket"
+        },
+        {
+            "type": "org.newsclub.net.unix.tipc.AFTIPCGroupRequest"
+        },
+        {
+            "type": "org.newsclub.net.unix.vsock.AFVSOCKDatagramSocket"
+        },
+        {
+            "type": "org.newsclub.net.unix.vsock.AFVSOCKSocket"
+        }
+    ]
 }
