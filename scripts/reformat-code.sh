@@ -9,4 +9,9 @@
 set -e
 dirname=$(dirname "$0")
 cd "${dirname}/.."
-mvn process-sources -Dreformat -Dignorant -pl \!junixsocket-native,\!junixsocket-native-cross,\!junixsocket-native-common,\!junixsocket-native-custom $@
+
+if [[ "$1" != "-pl" ]]; then
+  mvn process-sources -Dreformat -Dignorant -pl \!junixsocket-native,\!junixsocket-native-cross,\!junixsocket-native-common,\!junixsocket-native-custom $@
+else
+  mvn process-sources -Dreformat -Dignorant $@
+fi
