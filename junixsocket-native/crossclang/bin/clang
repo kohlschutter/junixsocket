@@ -690,4 +690,4 @@ elif [[ $hideUnknownWarningWarnings -eq 1 ]]; then
 else
     exec "$compilerBinary" ${isystem_decls[@]} ${clangLinkerArgs[@]} ${output_args[@]} ${clangArgs[@]} ${libsArgs[@]}
 fi
-) 2> >(grep -v -E "unrecognized command-line option .* may have been intended to silence")
+) 2> >(grep -v -E "unrecognized command-line option .* may have been intended to silence" >&2)
