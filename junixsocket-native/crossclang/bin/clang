@@ -47,7 +47,7 @@ fi
 clangArgs=()
 gccArgs=()
 libsArgs=()
-target=""
+target="$TARGET"
 sdkroot=
 sdkroot_base=""
 
