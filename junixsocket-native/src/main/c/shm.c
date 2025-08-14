@@ -567,10 +567,10 @@ void destroy_shm(JNIEnv *env) {
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    mmap
+ * Method:    mmapShm
  * Signature: (Ljava/lang/Object;Ljava/io/FileDescriptor;JJII)Ljava/nio/ByteBuffer;
  */
-JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
+JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmapShm
  (JNIEnv *env, CK_UNUSED jclass klazz, jobject arenaSegment, jobject fd, jlong offset, jlong length, jint mmode, jint duplicates) {
 
     if(length > jux_SIZE_MAX || length < 0) {

@@ -98,7 +98,7 @@ public final class MemoryImplUtilInternal {
       throw new IllegalArgumentException("duplicates");
     }
 
-    return NativeUnixSocket.mmap(arenaSegment, fd, offset, length, mmode, duplicates);
+    return NativeUnixSocket.mmapShm(arenaSegment, fd, offset, length, mmode, duplicates);
   }
 
   public void unmap(long address, long byteSize, int duplicates, boolean ignoreError)

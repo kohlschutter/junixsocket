@@ -394,7 +394,7 @@ final class NativeUnixSocket {
 
   static native long sharedMemoryAllocationSize();
 
-  static native ByteBuffer mmap(Object arenaSegment, FileDescriptor fd, long offset, long length,
+  static native ByteBuffer mmapShm(Object arenaSegment, FileDescriptor fd, long offset, long length,
       int mmode, int duplicates) throws IOException;
 
   static native void unmap(long address, long byteSize, int duplicates, boolean ignoreError)
