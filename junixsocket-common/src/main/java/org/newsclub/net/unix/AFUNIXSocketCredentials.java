@@ -132,7 +132,7 @@ public final class AFUNIXSocketCredentials implements Serializable {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
     sb.append('[');
-    if (this == SAME_PROCESS) { // NOPMD: CompareObjectsWithEquals
+    if (this == SAME_PROCESS) {
       sb.append("(same process)]");
       return sb.toString();
     }

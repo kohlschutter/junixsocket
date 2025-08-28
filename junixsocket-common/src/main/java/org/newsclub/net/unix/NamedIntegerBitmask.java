@@ -103,7 +103,7 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
    * @param other The other flag / flag set to merge.
    * @return An instance combining both.
    */
-  @SuppressWarnings({"PMD.ShortMethodName", "null"})
+  @SuppressWarnings({"null"})
   protected final T combineWith(T[] allFlags, T flagsNone, Constructor<@NonNull T> constr,
       T other) {
     return resolve(allFlags, flagsNone, constr, value() | other.value());
@@ -115,7 +115,6 @@ public abstract class NamedIntegerBitmask<T extends NamedIntegerBitmask<T>> impl
    * @param other The other flag / flag set.
    * @return An instance combining both.
    */
-  @SuppressWarnings("PMD.ShortMethodName")
   public abstract T combineWith(T other);
 
   /**

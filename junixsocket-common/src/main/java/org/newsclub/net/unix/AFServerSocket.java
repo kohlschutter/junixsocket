@@ -286,7 +286,7 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
       setBoundEndpoint(endpointCast);
     }
 
-    if (endpoint == AFSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD
+    if (endpoint == AFSocketAddress.INTERNAL_DUMMY_BIND) {
       return;
     }
 

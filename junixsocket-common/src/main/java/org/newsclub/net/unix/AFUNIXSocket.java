@@ -45,7 +45,7 @@ public final class AFUNIXSocket extends AFSocket<AFUNIXSocketAddress> implements
         @Override
         public @NonNull AFSocket<AFUNIXSocketAddress> newInstance(FileDescriptor fdObj,
             AFSocketFactory<AFUNIXSocketAddress> factory) throws SocketException {
-          return new AFUNIXSocket(new AFUNIXSocketImpl(fdObj), factory); // NOPMD
+          return new AFUNIXSocket(new AFUNIXSocketImpl(fdObj), factory);
         }
       };
 
@@ -231,7 +231,7 @@ public final class AFUNIXSocket extends AFSocket<AFUNIXSocketAddress> implements
                 chann.write(bb);
               }
             } finally {
-              server.close(); // NOPMD
+              server.close();
             }
           } catch (Exception e) { // NOPMD
             success.set(false);

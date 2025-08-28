@@ -235,7 +235,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
    * @param config The address family-specific configuration object.
    * @return The corresponding {@link AFAddressFamily} instance.
    */
-  @SuppressWarnings({"unchecked", "rawtypes", "PMD.ExcessiveParameterList"})
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public static synchronized <A extends AFSocketAddress> AFAddressFamily<A> registerAddressFamilyImpl(
       String juxString, //
       AFAddressFamily<A> addressFamily, //

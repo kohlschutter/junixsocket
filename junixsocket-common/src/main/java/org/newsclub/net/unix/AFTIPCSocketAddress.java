@@ -717,8 +717,8 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    * @throws SocketException if the operation fails.
    */
   @SuppressWarnings({
-      "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity", "PMD.ExcessiveMethodLength",
-      "PMD.NcssCount", "PMD.NPathComplexity", "PMD.ShortMethodName"})
+      "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity", "PMD.NcssCount", "PMD.NPathComplexity",
+      "PMD.ShortMethodName"})
   public static AFTIPCSocketAddress of(URI uri, int overridePort) throws SocketException {
     switch (uri.getScheme()) {
       case "tipc":
@@ -794,7 +794,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
           scope = Scope.SCOPE_NOT_SPECIFIED;
           break;
         case "":
-          if (addrType == AddressType.SERVICE_ADDR || addrType == AddressType.SERVICE_RANGE) { // NOPMD
+          if (addrType == AddressType.SERVICE_ADDR || addrType == AddressType.SERVICE_RANGE) {
             scope = Scope.SCOPE_CLUSTER;
           } else {
             scope = Scope.SCOPE_NOT_SPECIFIED;
@@ -810,7 +810,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
 
       int c;
       if (strC == null || strC.isEmpty()) {
-        if (addrType == AddressType.SERVICE_RANGE) { // NOPMD
+        if (addrType == AddressType.SERVICE_RANGE) {
           c = b;
         } else {
           c = 0;
@@ -832,7 +832,6 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
   }
 
   @Override
-  @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CompareObjectsWithEquals"})
   public URI toURI(String scheme, URI template) throws IOException {
     switch (scheme) {
       case "tipc":
@@ -858,7 +857,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
     if (scope == Scope.SCOPE_NOT_SPECIFIED) {
       sb.append("default-");
     } else if (scope == Scope.SCOPE_CLUSTER) {
-      if (addrType == AddressType.SERVICE_ADDR || addrType == AddressType.SERVICE_RANGE) { // NOPMD
+      if (addrType == AddressType.SERVICE_ADDR || addrType == AddressType.SERVICE_RANGE) {
         // implied
         haveScope = false;
       } else {

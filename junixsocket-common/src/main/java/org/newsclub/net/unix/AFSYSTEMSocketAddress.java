@@ -330,9 +330,7 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    * @return The address.
    * @throws SocketException if the operation fails.
    */
-  @SuppressWarnings({
-      "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity", "PMD.ExcessiveMethodLength",
-      "PMD.NcssCount", "PMD.NPathComplexity", "PMD.ShortMethodName"})
+  @SuppressWarnings({"PMD.ShortMethodName"})
   public static AFSYSTEMSocketAddress of(URI uri, int overridePort) throws SocketException {
     switch (uri.getScheme()) {
       case "afsystem":
@@ -385,7 +383,6 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
   }
 
   @Override
-  @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CompareObjectsWithEquals"})
   public URI toURI(String scheme, URI template) throws IOException {
     switch (scheme) {
       case "afsystem":

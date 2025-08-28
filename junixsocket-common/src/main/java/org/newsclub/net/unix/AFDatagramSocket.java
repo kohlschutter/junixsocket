@@ -273,7 +273,7 @@ public abstract class AFDatagramSocket<A extends AFSocketAddress> extends Datagr
   public final synchronized void bind(SocketAddress addr) throws SocketException {
     boolean isBound = isBound();
     if (isBound) {
-      if (addr == AFSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD
+      if (addr == AFSocketAddress.INTERNAL_DUMMY_BIND) {
         return;
       }
       // getAFImpl().bind(null); // try unbind (may not succeed)

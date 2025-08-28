@@ -201,7 +201,7 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
   }
 
   /**
-   * Not supported, since it's not necessary for client sockets.
+   * Not fully supported, since it's not necessary for client sockets.
    *
    * @see AFServerSocket
    */
@@ -217,7 +217,6 @@ public abstract class AFSocket<A extends AFSocketAddress> extends Socket impleme
       throw new SocketException("Already bound");
     }
     preprocessSocketAddress(bindpoint);
-    throw new SocketException("Use AF*ServerSocket#bind or #bindOn");
   }
 
   @Override

@@ -36,8 +36,6 @@ import org.newsclub.net.unix.pool.MutableHolder;
 import org.newsclub.net.unix.pool.ObjectPool;
 import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * The core functionality of file descriptor based I/O.
  *
@@ -140,9 +138,7 @@ class AFCore extends CleanableState {
     return read(dst, timeout, null, 0);
   }
 
-  @SuppressWarnings({
-      "PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity",
-      "PMD.NPathComplexity"})
+  @SuppressWarnings({"PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
   int read(ByteBuffer dst, AFSupplier<Integer> timeout, ByteBuffer socketAddressBuffer, int options)
       throws IOException {
     int remaining = dst.remaining();

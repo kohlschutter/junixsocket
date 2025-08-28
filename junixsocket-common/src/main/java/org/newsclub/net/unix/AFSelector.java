@@ -108,7 +108,6 @@ final class AFSelector extends AbstractSelector {
     }
   }
 
-  @SuppressWarnings("PMD.CognitiveComplexity")
   private int select0(int timeout) throws IOException {
     PollFd pfd;
 

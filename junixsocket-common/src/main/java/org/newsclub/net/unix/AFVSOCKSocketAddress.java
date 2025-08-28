@@ -418,9 +418,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    * @return The address.
    * @throws SocketException if the operation fails.
    */
-  @SuppressWarnings({
-      "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity", "PMD.ExcessiveMethodLength",
-      "PMD.NcssCount", "PMD.NPathComplexity", "PMD.ShortMethodName"})
+  @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.NPathComplexity", "PMD.ShortMethodName"})
   public static AFVSOCKSocketAddress of(URI uri, int overridePort) throws SocketException {
     switch (uri.getScheme()) {
       case "vsock":
@@ -498,7 +496,6 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
   }
 
   @Override
-  @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CompareObjectsWithEquals"})
   public URI toURI(String scheme, URI template) throws IOException {
     switch (scheme) {
       case "vsock":

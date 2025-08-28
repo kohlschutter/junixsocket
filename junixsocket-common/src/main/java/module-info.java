@@ -1,7 +1,6 @@
 /**
  * The common junixsocket classes.
  */
-// NOPMD -- https://github.com/pmd/pmd/issues/4620
 @SuppressWarnings("module") module org.newsclub.net.unix {
   exports org.newsclub.net.unix;
 

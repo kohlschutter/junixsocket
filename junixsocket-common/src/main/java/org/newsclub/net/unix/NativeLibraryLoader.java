@@ -234,7 +234,7 @@ final class NativeLibraryLoader implements Closeable {
           libFile = File.createTempFile("libtmp", System.mapLibraryName(libraryNameAndVersion),
               libDir);
           try (InputStream libraryIn = library.openStream();
-              OutputStream out = new FileOutputStream(libFile)) { // NOPMD UseTryWithResources
+              OutputStream out = new FileOutputStream(libFile)) {
             byte[] buf = new byte[4096];
             int read;
             while ((read = libraryIn.read(buf)) >= 0) {
@@ -292,7 +292,7 @@ final class NativeLibraryLoader implements Closeable {
 
     @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
     private static void tryDelete(File f) {
-      f.delete(); // NOPMD
+      f.delete();
     }
 
     @Override
@@ -372,7 +372,7 @@ final class NativeLibraryLoader implements Closeable {
 
   @SuppressWarnings("null")
   public synchronized void loadLibrary() {
-    synchronized (loadLibrarySyncMonitor()) { // NOPMD We want to lock this class' classloader.
+    synchronized (loadLibrarySyncMonitor()) {
       if (LOADED.get()) {
         // Already loaded
         return;

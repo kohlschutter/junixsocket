@@ -19,7 +19,6 @@ package org.newsclub.net.unix;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
@@ -219,16 +218,8 @@ public final class AFGenericSocketAddress extends AFSocketAddress {
    * @return The address.
    * @throws SocketException if the operation fails.
    */
-  @SuppressWarnings({
-      "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity", "PMD.ExcessiveMethodLength",
-      "PMD.NcssCount", "PMD.NPathComplexity", "PMD.ShortMethodName"})
+  @SuppressWarnings({"PMD.ShortMethodName"})
   public static AFGenericSocketAddress of(URI uri, int overridePort) throws SocketException {
     throw new SocketException("Unsupported");
-  }
-
-  @Override
-  @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CompareObjectsWithEquals"})
-  public URI toURI(String scheme, URI template) throws IOException {
-    return super.toURI(scheme, template);
   }
 }

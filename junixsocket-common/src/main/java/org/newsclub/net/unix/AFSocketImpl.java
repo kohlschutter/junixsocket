@@ -240,7 +240,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
 
   @SuppressWarnings({
       "Finally" /* errorprone */, //
-      "PMD.CognitiveComplexity", "PMD.NPathComplexity", "PMD.NcssCount"})
+      "PMD.CognitiveComplexity", "PMD.NcssCount"})
   final boolean accept0(SocketImpl socket) throws IOException {
     FileDescriptor fdesc = core.validFdOrException();
     if (isClosed()) {
@@ -392,7 +392,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
       }
     }
 
-    if (addr == AFSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD
+    if (addr == AFSocketAddress.INTERNAL_DUMMY_BIND) {
       bound.set(true);
       core.inode.set(0);
       return;
@@ -453,12 +453,12 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     connect0(addr, connectTimeout);
   }
 
-  @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity", "PMD.NcssCount"})
+  @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NcssCount"})
   final boolean connect0(SocketAddress addr, int connectTimeout) throws IOException {
-    if (addr == AFSocketAddress.INTERNAL_DUMMY_CONNECT) { // NOPMD
+    if (addr == AFSocketAddress.INTERNAL_DUMMY_CONNECT) {
       this.connected.set(true);
       return true;
-    } else if (addr == AFSocketAddress.INTERNAL_DUMMY_DONT_CONNECT) { // NOPMD)
+    } else if (addr == AFSocketAddress.INTERNAL_DUMMY_DONT_CONNECT) {
       return false;
     }
 
@@ -882,7 +882,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
       } while (true); // NOPMD.WhileLoopWithLiteralBoolean
     }
 
-    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
+    @SuppressWarnings({"PMD.CognitiveComplexity"})
     @Override
     public void write(byte[] buf, int off, int len) throws IOException {
       if (streamClosed) {

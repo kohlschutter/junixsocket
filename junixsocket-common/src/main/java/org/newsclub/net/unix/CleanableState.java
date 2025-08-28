@@ -91,8 +91,7 @@ public abstract class CleanableState implements Closeable {
   protected CleanableState(Object observed, AFConsumer<Throwable> exceptionHandler) {
     this.exceptionHandler = Objects.requireNonNull(exceptionHandler);
     this.exceptionHandlerCurrent = exceptionHandler;
-    this.cleanable = CLEANER.register(observed, () -> doClean1()); // NOPMD.LambdaCanBeMethodReference
-                                                                   // (Retrolambda)
+    this.cleanable = CLEANER.register(observed, () -> doClean1());
   }
 
   /**

@@ -106,7 +106,6 @@ public abstract class AFSocketAddress extends InetSocketAddress {
   /**
    * The system-native representation of this address, or {@code null}.
    */
-  @SuppressWarnings("PMD.ImmutableField")
   private transient ByteBuffer nativeAddress;
 
   /**
@@ -829,8 +828,8 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @throws IOException on error (a {@link SocketException} is thrown if the native address cannot
    *           be accessed).
    */
-  public @Nullable @SuppressWarnings("PMD.NPathComplexity") String toSocatAddressString(
-      AFSocketType socketType, AFSocketProtocol socketProtocol) throws IOException {
+  public @Nullable String toSocatAddressString(AFSocketType socketType,
+      AFSocketProtocol socketProtocol) throws IOException {
 
     if (SOCKADDR_NATIVE_FAMILY_OFFSET == -1 || SOCKADDR_NATIVE_DATA_OFFSET == -1) {
       return null;

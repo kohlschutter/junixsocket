@@ -40,8 +40,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.newsclub.net.unix.pool.MutableHolder;
 import org.newsclub.net.unix.pool.ObjectPool.Lease;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * A {@link DatagramSocketImpl} implemented by junixsocket.
  *
@@ -109,7 +107,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
   }
 
   final void connect(AFSocketAddress socketAddress) throws IOException {
-    if (socketAddress == AFSocketAddress.INTERNAL_DUMMY_CONNECT) { // NOPMD
+    if (socketAddress == AFSocketAddress.INTERNAL_DUMMY_CONNECT) {
       return;
     }
     try (Lease<ByteBuffer> abLease = socketAddress.getNativeAddressDirectBuffer()) {
@@ -149,7 +147,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
   }
 
   final void bind(AFSocketAddress socketAddress) throws SocketException {
-    if (socketAddress == AFSocketAddress.INTERNAL_DUMMY_BIND) { // NOPMD
+    if (socketAddress == AFSocketAddress.INTERNAL_DUMMY_BIND) {
       return;
     }
     try (Lease<ByteBuffer> abLease = socketAddress == null ? AFSocketAddress
@@ -174,9 +172,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
     recv(p, 0);
   }
 
-  @SuppressWarnings({
-      "PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity",
-      "PMD.NPathComplexity"})
+  @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
   private void recv(DatagramPacket p, int options) throws IOException {
     int len = p.getLength();
     FileDescriptor fdesc = core.validFdOrException();
@@ -251,9 +247,7 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
     } while (true); // NOPMD.WhileLoopWithLiteralBoolean
   }
 
-  @SuppressWarnings({
-      "PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity",
-      "PMD.NPathComplexity"})
+  @SuppressWarnings({"PMD.CognitiveComplexity"})
   @Override
   protected final void send(DatagramPacket p) throws IOException {
     InetAddress addr = p.getAddress();

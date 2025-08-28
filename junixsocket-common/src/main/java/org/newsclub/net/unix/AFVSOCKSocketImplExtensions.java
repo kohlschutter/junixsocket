@@ -28,7 +28,7 @@ import java.io.IOException;
 public final class AFVSOCKSocketImplExtensions implements
     AFSocketImplExtensions<AFVSOCKSocketAddress> {
   @SuppressWarnings("unused")
-  private final AncillaryDataSupport ancillaryDataSupport; // NOPMD
+  private final AncillaryDataSupport ancillaryDataSupport;
 
   AFVSOCKSocketImplExtensions(AncillaryDataSupport ancillaryDataSupport) {
     this.ancillaryDataSupport = ancillaryDataSupport;
