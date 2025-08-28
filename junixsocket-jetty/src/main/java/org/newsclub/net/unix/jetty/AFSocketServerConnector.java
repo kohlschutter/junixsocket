@@ -99,7 +99,7 @@ public class AFSocketServerConnector extends AbstractConnector {
   private volatile int acceptedSendBufferSize;
   private volatile boolean mayStopServer = false;
   private volatile boolean mayStopServerForce = false;
-  
+
   private final Class<? extends EventListener> selectorManagerListenerClass;
   private final Server server;
 

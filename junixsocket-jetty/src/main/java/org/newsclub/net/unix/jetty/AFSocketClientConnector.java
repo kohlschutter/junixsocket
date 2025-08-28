@@ -18,11 +18,14 @@
 package org.newsclub.net.unix.jetty;
 
 import java.io.IOException;
+import java.net.SocketAddress;
 import java.nio.channels.Selector;
 import java.nio.channels.spi.SelectorProvider;
+import java.util.Map;
 
 import org.eclipse.jetty.io.ClientConnector;
 import org.eclipse.jetty.io.SelectorManager;
+import org.eclipse.jetty.io.Transport;
 import org.eclipse.jetty.server.Connector;
 import org.newsclub.net.unix.AFAddressFamily;
 import org.newsclub.net.unix.AFSocketAddress;
@@ -32,16 +35,19 @@ import org.newsclub.net.unix.AFSocketAddress;
  *
  * Based upon jetty's ClientConnector.
  *
- * This implementation should work with jetty version 10.0.8 or newer.
+ * This implementation should work with jetty version 12.1.0 or newer.
  *
  * @author Christian Kohlschütter
  */
 public final class AFSocketClientConnector extends ClientConnector {
   private final AFAddressFamily<?> addressFamily;
+  private final AFSocketAddress addr;
+  private final Transport transport;
 
-  @SuppressWarnings("removal")
   private AFSocketClientConnector(AFSocketAddress addr) {
-    super(configuratorFor(addr));
+    super();
+    this.addr = addr;
+    this.transport = AFSocketTransport.withSocketChannel(addr);
     this.addressFamily = addr.getAddressFamily();
   }
 
@@ -67,12 +73,10 @@ public final class AFSocketClientConnector extends ClientConnector {
     };
   }
 
-  @SuppressWarnings({"removal", "deprecation"})
-  private static Configurator configuratorFor(AFSocketAddress addr) {
-    if (JettyCompat.hasTransportClass()) {
-      return new AFSocketConfiguratorWithTransport(addr);
-    } else {
-      return new AFSocketConfigurator(addr);
-    }
+  @Override
+  public void connect(SocketAddress address, Map<String, Object> context) {
+    context.put(Transport.CONTEXT_KEY, transport);
+
+    super.connect(addr, context);
   }
 }
