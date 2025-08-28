@@ -172,7 +172,8 @@ public abstract class RemoteFileDescriptorBase<T> implements Externalizable, Clo
   @SuppressWarnings("resource")
   @SuppressFBWarnings("OBJECT_DESERIALIZATION")
   @Override
-  public final synchronized void readExternal(ObjectInput objIn) throws IOException, ClassNotFoundException {
+  public final synchronized void readExternal(ObjectInput objIn) throws IOException,
+      ClassNotFoundException {
     DataInputStream in1 = remoteConnection.getAndSet(null);
     if (in1 != null) {
       in1.close();

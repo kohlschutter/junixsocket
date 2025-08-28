@@ -32,8 +32,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_VSOCK)
-@SuppressFBWarnings({
-    "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
+@SuppressFBWarnings({"NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"})
 public final class SocketTest extends org.newsclub.net.unix.SocketTest<AFVSOCKSocketAddress> {
 
   public SocketTest() {
