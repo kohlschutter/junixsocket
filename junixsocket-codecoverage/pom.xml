@@ -90,11 +90,6 @@
         </dependency>
         <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
-            <artifactId>junixsocket-jetty-11</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-darwin</artifactId>
             <scope>compile</scope>
         </dependency>
