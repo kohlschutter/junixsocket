@@ -89,6 +89,8 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <jetty.version>12.1.0</jetty.version>
 
         <junixsocket.repo.use-staging>https://oss.sonatype.org/content/groups/staging/</junixsocket.repo.use-staging>
+
+        <errorprone.args>-Xep:PatternMatchingInstanceof:OFF -Xep:StatementSwitchToExpressionSwitch:OFF -Xep:AssignmentExpression:OFF -Xep:EffectivelyPrivate:OFF</errorprone.args>
     </properties>
 
     <modules>
