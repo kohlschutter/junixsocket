@@ -25,6 +25,8 @@
 #include "vsock.h"
 #include "socket.h"
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    bind
@@ -371,3 +373,6 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_bind
     return (jlong)inode;
 #endif
 }
+
+CK_IGNORE_CPP_WARNINGS_END
+

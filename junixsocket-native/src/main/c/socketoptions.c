@@ -27,6 +27,8 @@
 #  include <sys/time.h>
 #endif
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 static jclass kIntegerClass;
 static jmethodID kIntegerConstructor;
 static jmethodID kIntegerIntValue;
@@ -405,3 +407,5 @@ end:
         free(valPtr);
     }
 }
+
+CK_IGNORE_CPP_WARNINGS_END

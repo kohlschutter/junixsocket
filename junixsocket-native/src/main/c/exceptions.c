@@ -22,6 +22,8 @@
 #include "jniutil.h"
 #include "filedescriptors.h"
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 // NOTE: The exceptions must all be either inherit from IOException or RuntimeException/Error
 static char *kExceptionClassnames[kExceptionMaxExcl] = {
     "java/net/SocketException", // kExceptionSocketException
@@ -310,3 +312,6 @@ void _throwSockoptErrnumException(JNIEnv* env, int errnum, jobject fd)
 
     _throwErrnumException(env, errnum, fd);
 }
+
+CK_IGNORE_CPP_WARNINGS_END
+

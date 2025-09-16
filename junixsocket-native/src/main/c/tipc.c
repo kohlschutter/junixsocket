@@ -20,6 +20,8 @@
 
 #include "exceptions.h"
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 #if junixsocket_have_tipc
 
 #if !defined(SIOCGETLINKNAME)
@@ -143,3 +145,6 @@ JNIEXPORT jbyteArray JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_tipcGet
 }
 
 #endif
+
+CK_IGNORE_CPP_WARNINGS_END
+

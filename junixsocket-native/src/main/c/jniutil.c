@@ -21,6 +21,8 @@
 
 #include "exceptions.h"
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 void handleFieldNotFound(JNIEnv *env, jobject instance, char *fieldName)
 {
     (*env)->ExceptionClear(env);
@@ -191,3 +193,6 @@ char* jstring_to_char_if_possible(JNIEnv* env, jstring string, jsize offset, cha
     targetBuf[bytes] = 0;
     return targetBuf;
 }
+
+CK_IGNORE_CPP_WARNINGS_END
+

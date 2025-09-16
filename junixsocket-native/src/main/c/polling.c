@@ -23,6 +23,8 @@
 #include "filedescriptors.h"
 #include "jniutil.h"
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 #if __TOS_MVS__
 #  include <sys/time.h>
 #  include <sys/select.h>
@@ -421,3 +423,5 @@ end:
     free(pollFd);
     return ret;
 }
+
+CK_IGNORE_CPP_WARNINGS_END

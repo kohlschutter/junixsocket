@@ -26,6 +26,8 @@
 #include "polling.h"
 #include "address.h"
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 #if junixsocket_have_tipc
 struct jux_tipc_errinfo {
     uint32_t errorCode;
@@ -394,3 +396,5 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
 
     return 0;
 }
+
+CK_IGNORE_CPP_WARNINGS_END

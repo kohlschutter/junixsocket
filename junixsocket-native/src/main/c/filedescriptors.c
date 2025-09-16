@@ -23,6 +23,8 @@
 #include "jniutil.h"
 #include "address.h"
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 static jclass class_FileDescriptor = NULL;
 
 static jfieldID fieldID_fd = NULL;
@@ -674,3 +676,6 @@ dupDone:
     _initFD(env, target, targetFD);
     return target;
 }
+
+CK_IGNORE_CPP_WARNINGS_END
+

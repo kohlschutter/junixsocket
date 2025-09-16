@@ -30,6 +30,8 @@
 #include <sys/syscall.h>
 #endif
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 static jclass kBufferClass;
 static jfieldID kBufferFieldSegment;
 static jclass kMappedByteBufferClass;
@@ -987,3 +989,5 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sizeOfShared
     return s.st_size;
 #endif
 }
+
+CK_IGNORE_CPP_WARNINGS_END

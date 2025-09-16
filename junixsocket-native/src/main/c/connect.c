@@ -25,6 +25,8 @@
 #include "vsock.h"
 #include "socket.h"
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    connect
@@ -192,3 +194,6 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_finishCon
      free(pollFd);
      return success;
  }
+
+CK_IGNORE_CPP_WARNINGS_END
+

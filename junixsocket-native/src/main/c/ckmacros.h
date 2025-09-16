@@ -83,6 +83,14 @@ _Pragma("clang diagnostic ignored \"-Wformat-nonliteral\"")
 #   define CK_IGNORE_FORMAT_NONLITERAL_END \
 _Pragma("clang diagnostic pop")
 
+#   define CK_IGNORE_CPP_WARNINGS_BEGIN \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wunknown-warning-option\"") \
+_Pragma("clang diagnostic ignored \"-Wimplicit-void-ptr-cast\"") \
+_Pragma("clang diagnostic ignored \"-Wjump-misses-init\"")
+#   define CK_IGNORE_CPP_WARNINGS_END \
+_Pragma("clang diagnostic pop")
+
 #if __has_warning("-Wreserved-identifier")
 #   define CK_IGNORE_RESERVED_IDENTIFIER_BEGIN \
 _Pragma("clang diagnostic push") \
@@ -159,6 +167,9 @@ _Pragma("GCC diagnostic pop")
 #   define CK_IGNORE_FORMAT_NONLITERAL_BEGIN
 #   define CK_IGNORE_FORMAT_NONLITERAL_END
 #endif
+
+#   define CK_IGNORE_CPP_WARNINGS_BEGIN
+#   define CK_IGNORE_CPP_WARNINGS_END
 
 #   define CK_IGNORE_USED_BUT_MARKED_UNUSED_BEGIN
 #   define CK_IGNORE_USED_BUT_MARKED_UNUSED_END

@@ -26,6 +26,8 @@
 #include "jniutil.h"
 #include "vsock.h"
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 #if __TOS_MVS__
 #  include <sched.h>
 #elif __TANDEM
@@ -309,3 +311,5 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_send
 
     return (jint)ret;
 }
+
+CK_IGNORE_CPP_WARNINGS_END

@@ -25,6 +25,8 @@
 #include "polling.h"
 #include "socket.h"
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 #if defined(_WIN32)
 static jboolean checkAcceptable(JNIEnv * env, jobject fdServer, jobject fd, int serverHandle, int socketHandle) {
     jux_sockaddr_t localAddr = {0};
@@ -147,3 +149,5 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_accept
 
     return true;
 }
+
+CK_IGNORE_CPP_WARNINGS_END

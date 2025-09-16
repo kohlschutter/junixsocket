@@ -25,6 +25,8 @@
 #include "socket.h"
 #include "vsock.h"
 
+CK_IGNORE_CPP_WARNINGS_BEGIN
+
 // Either we have sun_len (and we can skip the null byte), or we add the null byte at the end
 static const socklen_t SUN_NAME_MAX_LEN = (socklen_t)(sizeof(struct sockaddr_un) - 2);
 
@@ -713,3 +715,6 @@ bool fixupSocketAddressPostError(int handle, jux_sockaddr_t *sa, socklen_t addrL
 
     return false;
 }
+
+CK_IGNORE_CPP_WARNINGS_END
+
