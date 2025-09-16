@@ -13,7 +13,7 @@
 #endif
 
 #if __GLIBC__
-int ck_stat(const char *__filename, struct stat *__stat_buf) __THROW __nonnull ((1, 2));
+int ck_stat(const char *filename, struct stat *stat_buf) __THROW __nonnull ((1, 2));
 #endif
 
 #endif
