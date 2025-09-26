@@ -259,8 +259,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    */
   public int getVSOCKPort() {
     ByteBuffer bb = ByteBuffer.wrap(getBytes());
-    int a = bb.getInt(1 * 4);
-    return a;
+    return bb.getInt(1 * 4);
   }
 
   /**
@@ -270,8 +269,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    */
   public int getVSOCKCID() {
     ByteBuffer bb = ByteBuffer.wrap(getBytes());
-    int a = bb.getInt(2 * 4);
-    return a;
+    return bb.getInt(2 * 4);
   }
 
   /**
@@ -281,8 +279,7 @@ public final class AFVSOCKSocketAddress extends AFSocketAddress {
    */
   public int getVSOCKReserved1() {
     ByteBuffer bb = ByteBuffer.wrap(getBytes());
-    int a = bb.getInt(0 * 4);
-    return a;
+    return bb.getInt(0 * 4);
   }
 
   @Override

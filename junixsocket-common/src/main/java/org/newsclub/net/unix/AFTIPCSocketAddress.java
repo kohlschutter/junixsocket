@@ -506,8 +506,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public int getTIPCType() {
     ByteBuffer bb = ByteBuffer.wrap(getBytes());
-    int a = bb.getInt(2 * 4);
-    return a;
+    return bb.getInt(2 * 4);
   }
 
   /**
@@ -517,8 +516,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public int getTIPCInstance() {
     ByteBuffer bb = ByteBuffer.wrap(getBytes());
-    int a = bb.getInt(3 * 4);
-    return a;
+    return bb.getInt(3 * 4);
   }
 
   /**
@@ -528,8 +526,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public int getTIPCDomain() {
     ByteBuffer bb = ByteBuffer.wrap(getBytes());
-    int a = bb.getInt(4 * 4);
-    return a;
+    return bb.getInt(4 * 4);
   }
 
   /**
@@ -539,8 +536,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public int getTIPCLower() {
     ByteBuffer bb = ByteBuffer.wrap(getBytes());
-    int a = bb.getInt(2 * 4);
-    return a;
+    return bb.getInt(2 * 4);
   }
 
   /**
@@ -550,8 +546,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public int getTIPCUpper() {
     ByteBuffer bb = ByteBuffer.wrap(getBytes());
-    int a = bb.getInt(3 * 4);
-    return a;
+    return bb.getInt(3 * 4);
   }
 
   /**
@@ -561,8 +556,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public int getTIPCRef() {
     ByteBuffer bb = ByteBuffer.wrap(getBytes());
-    int a = bb.getInt(2 * 4);
-    return a;
+    return bb.getInt(2 * 4);
   }
 
   /**
@@ -572,8 +566,7 @@ public final class AFTIPCSocketAddress extends AFSocketAddress {
    */
   public int getTIPCNodeHash() {
     ByteBuffer bb = ByteBuffer.wrap(getBytes());
-    int a = bb.getInt(3 * 4);
-    return a;
+    return bb.getInt(3 * 4);
   }
 
   @Override

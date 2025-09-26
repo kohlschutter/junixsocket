@@ -560,7 +560,8 @@ public final class FileDescriptorCast implements FileDescriptorAccess {
    * @see #isAvailable(Class)
    */
   @SuppressWarnings("PMD.ShortMethodName")
-  public @NonNull <K> K as(Class<K> desiredType) throws IOException {
+  @NonNull
+  public <K> K as(Class<K> desiredType) throws IOException {
     Objects.requireNonNull(desiredType);
 
     CastingProvider<? extends K> provider = cpm.get(desiredType);

@@ -469,9 +469,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
         .isVirtualBlocking();
     long now = virtualBlocking ? System.currentTimeMillis() : 0;
 
-    /**
-     * If set, a two-phase connect is in flight, and the value holds the connect timeout.
-     */
+    // If set, a two-phase connect is in flight, and the value holds the connect timeout.
     AFSupplier<Integer> virtualConnectTimeout = null;
 
     if (virtualBlocking) {

@@ -212,7 +212,7 @@ public final class AFUNIXSocketCredentials implements Serializable {
    */
   public static AFUNIXSocketCredentials remotePeerCredentials() {
     try {
-      RemoteServer.getClientHost();
+      RemoteServer.getClientHost(); // NOPMD.UselessPureMethodCall
     } catch (Exception e) {
       return null;
     }

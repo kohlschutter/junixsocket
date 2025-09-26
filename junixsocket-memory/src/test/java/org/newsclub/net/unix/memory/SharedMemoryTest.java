@@ -292,10 +292,10 @@ public class SharedMemoryTest {
       // However, shared memory on Windows does not have a file descriptor, therefore we
       // need to guard this.
       if (ms.isMapped()) {
-        ms.force();
-        ms.load();
-        ms.isLoaded();
-        ms.unload();
+        ms.force(); // NOPMD.UselessPureMethodCall
+        ms.load(); // NOPMD.UselessPureMethodCall
+        ms.isLoaded(); // NOPMD.UselessPureMethodCall
+        ms.unload(); // NOPMD.UselessPureMethodCall
       } else {
         notMarkedAsMapped = true;
       }

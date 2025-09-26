@@ -50,7 +50,7 @@ public final class DefaultRMIClientSocketFactory implements RMIClientSocketFacto
   @Override
   @SuppressFBWarnings("UNENCRYPTED_SOCKET")
   public Socket createSocket(String host, int port) throws IOException {
-    Socket socket = new Socket(host, port);
+    Socket socket = new Socket(host, port); // NOPMD.VariableCanBeInlined
     // socket.setSoTimeout(60 * 60 * 1000);
     // socket.setSoLinger(false, 0);
     return socket;
