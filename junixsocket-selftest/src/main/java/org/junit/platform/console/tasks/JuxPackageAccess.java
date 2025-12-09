@@ -2,7 +2,9 @@ package org.junit.platform.console.tasks;
 
 import java.io.PrintWriter;
 
-import org.junit.platform.console.options.Theme;
+import org.junit.platform.console.output.ColorPalette;
+import org.junit.platform.console.output.Theme;
+import org.junit.platform.console.output.TreePrintingListener;
 import org.junit.platform.launcher.TestExecutionListener;
 
 /**

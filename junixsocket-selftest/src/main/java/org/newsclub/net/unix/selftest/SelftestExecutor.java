@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.engine.JupiterTestEngine;
-import org.junit.platform.console.options.Theme;
+import org.junit.platform.console.output.Theme;
 import org.junit.platform.console.tasks.JuxPackageAccess;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.TestExecutionResult.Status;
