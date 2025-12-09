@@ -101,7 +101,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
         try {
           Class<?> clz = Class.forName(af.addressClassname);
           clz.getMethod("addressFamily").invoke(null);
-        } catch (Exception e) {
+        } catch (Exception e) { // NOPMD.AvoidCatchingGenericException
           // ignore
         }
       }
