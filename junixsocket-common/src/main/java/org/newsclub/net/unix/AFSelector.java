@@ -246,6 +246,11 @@ final class AFSelector extends AbstractSelector {
       for (int i = 1; i < pfd.rops.length; i++) {
         int rops = pfd.rops[i];
         AFSelectionKey key = pfd.keys[i];
+        if (key == null) {
+          // empty key slots should never return a ready op
+          assert (rops == 0);
+          continue;
+        }
         key.setOpsReady(rops);
         if (rops != 0 && keysRegistered.containsKey(key)) {
           keysRegistered.put(key, selectId);
