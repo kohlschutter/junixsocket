@@ -167,7 +167,7 @@ struct jni_direct_byte_buffer_ref getDirectByteBufferRef(JNIEnv *env, jobject by
     }
 
     struct jni_direct_byte_buffer_ref ref = {
-        .buf = buf + offset,
+        .buf = buf ? buf + offset : NULL,
         .size = (ssize_t)MIN(capacity, SSIZE_MAX)
     };
 
