@@ -974,7 +974,7 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sizeOfShared
     HANDLE handle = ((HANDLE)_getHandle(env, fd));
 
     jlong size = -1;
-    if(!GetFileSizeEx(handle, &size)) {
+    if(!GetFileSizeEx(handle, (PLARGE_INTEGER)&size)) {
         return determineShmSize(handle, vm_page_size, CK_round_page((size_t)(SIZE_MAX >> 1)));
     }
 
