@@ -4765,7 +4765,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				OTHER_LDFLAGS = "-Xcrossclang-ignore-reproducible";
+				OTHER_LDFLAGS = (
+					"-Xcrossclang-ignore-reproducible",
+					"-Xcrossclang-ignore-dead-strip",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4776,7 +4779,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				OTHER_LDFLAGS = "-Xcrossclang-ignore-reproducible";
+				OTHER_LDFLAGS = (
+					"-Xcrossclang-ignore-reproducible",
+					"-Xcrossclang-ignore-dead-strip",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -6092,6 +6098,7 @@
 				OTHER_LDFLAGS = (
 					"-Xcrossclang-ignore-reproducible",
 					"-Wno-unused-command-line-argument",
+					"-Xcrossclang-ignore-dead-strip",
 				);
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
@@ -6181,6 +6188,7 @@
 				OTHER_LDFLAGS = (
 					"-Xcrossclang-ignore-reproducible",
 					"-Wno-unused-command-line-argument",
+					"-Xcrossclang-ignore-dead-strip",
 				);
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SKIP_INSTALL = YES;
