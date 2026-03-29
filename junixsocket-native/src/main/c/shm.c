@@ -153,6 +153,13 @@ __attribute((weak)) extern int memfd_create(const char *name, unsigned flags);
 #   define jux_MADV_FREE_OR_DONTNEED MADV_DONTNEED
 #endif
 
+
+#if defined(MAP_FIXED_NOREPLACE)
+#    define jux_MAP_FIXED_NOREPLACE_IF_POSSIBLE MAP_FIXED_NOREPLACE
+#else
+#    define jux_MAP_FIXED_NOREPLACE_IF_POSSIBLE MAP_FIXED
+#endif
+
 #if defined(_WIN32)
 
 /*
@@ -567,6 +574,179 @@ void destroy_shm(JNIEnv *env) {
     releaseClassGlobalRef(env, kMappedByteBufferClass);
 }
 
+#if defined(_WIN32)
+static int mmodeToAccess(jint mmode) {
+    if((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_READ)) {
+        if((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_WRITE)) {
+            if((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_COPY_ON_WRITE)) {
+                return PAGE_WRITECOPY;
+            } else {
+                return PAGE_READWRITE;
+            }
+        } else {
+            return PAGE_READONLY;
+        }
+    } else {
+        return PAGE_NOACCESS;
+    }
+}
+#else
+static int mmodeToFlags(jint mmode) {
+    int flags =
+    (mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_COPY_ON_WRITE ? MAP_PRIVATE :
+#   if defined(MAP_SHARED_VALIDATE)
+     ((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_SYNC) ? MAP_SHARED_VALIDATE : MAP_SHARED)
+#   else
+     MAP_SHARED
+#   endif
+     )
+    | ((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_SYNC) ? MAP_SYNC : 0);
+
+    if (mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_FIXED) {
+        flags |= jux_MAP_FIXED_NOREPLACE_IF_POSSIBLE;
+    }
+    if (mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_ANONYMOUS) {
+        flags |= MAP_ANONYMOUS;
+    }
+
+    return flags;
+}
+#endif
+
+/*
+* Class:     org_newsclub_net_unix_NativeUnixSocket
+* Method:    mmap
+* Signature: (JLjava/io/FileDescriptor;JJI)J
+*/
+JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
+ (JNIEnv *env, CK_UNUSED jclass klazz, jlong address, jobject fd, jlong offset, jlong length, jint mmode) {
+    if(length > jux_SIZE_MAX || length < 0) {
+        _throwException(env, kExceptionIOException, "length");
+        return -1;
+    }
+
+    if(offset < 0) {
+        _throwException(env, kExceptionIOException, "offset");
+        return -1;
+    }
+
+    CK_IGNORE_UNUSED_VARIABLE_BEGIN
+    jboolean haveFd = true;
+    CK_IGNORE_UNUSED_VARIABLE_END
+
+#if defined(_WIN32)
+    if(f_MapViewOfFile3 == NULL) {
+        throwIOErrnumException(env, ENOTSUP, NULL); // Windows 8
+        return -1;
+    }
+    if((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_FIXED) &&
+       (CK_round_page(address) != address)) {
+        _throwException(env, kExceptionIOException, "MMODE_FIXED");
+        return -1;
+    }
+
+    if(mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_ANONYMOUS) {
+        void *actualAddr = f_VirtualAlloc2(NULL, (void*)address, length, (MEM_RESERVE | MEM_RESERVE_PLACEHOLDER), PAGE_NOACCESS, NULL, 0);
+        if(actualAddr == NULL) {
+            throwIOErrnumException(env, io_errno, NULL);
+            return (jlong)0;
+        } else {
+            return (jlong)actualAddr;
+        }
+    }
+
+
+    HANDLE handle = ((HANDLE)_getHandle(env, fd));
+
+    if(handle == NULL || handle == INVALID_HANDLE_VALUE) {
+        jint fdHandle = _getFD(env, fd);
+        if(fdHandle == -1) {
+            _throwException(env, kExceptionClosedChannelException, "Channel is closed");
+            return -1;
+        }
+        handle = (HANDLE)_get_osfhandle(fdHandle);
+    } else {
+        haveFd = false;
+        CK_ARGUMENT_POTENTIALLY_UNUSED(haveFd);
+    }
+
+    if(handle == NULL || handle == INVALID_HANDLE_VALUE) {
+        _throwException(env, kExceptionClosedChannelException, "Channel is closed");
+        return -1;
+    }
+
+    int access = mmodeToAccess(mmode);
+
+    void* actualAddr = f_MapViewOfFile3
+    (handle, NULL, (void*)address, offset, length, MEM_REPLACE_PLACEHOLDER, access, NULL, 0);
+    if(actualAddr == NULL) {
+        throwIOErrnumException(env, io_errno, NULL);
+        return -1;
+    }
+
+    return (jlong)actualAddr;
+#else // defined(_WIN32)
+
+    int handle;
+    if(mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_ANONYMOUS) {
+        handle = -1;
+    } else {
+        handle = _getFD(env, fd);
+        if(handle < 0) {
+            _throwException(env, kExceptionClosedChannelException, "Channel is closed");
+            return -1;
+        }
+    }
+
+    const int prot = ((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_READ) ? PROT_READ : 0)
+    | ((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_WRITE) ? PROT_WRITE : 0);
+    const int flags = mmodeToFlags(mmode);
+
+    void* addr = mmap((void*)address, (size_t)length, prot, flags, handle, (off_t)offset);
+    if(addr == MAP_FAILED) {
+        throwIOErrnumException(env, errno, NULL);
+        return -1;
+    } else {
+        return (jlong)addr;
+    }
+#endif
+}
+
+JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mappedBuffer
+ (JNIEnv *env, CK_UNUSED jclass klazz, jlong addr, jlong length, jobject fd, int mmode, jobject arenaSegment) {
+    // NewDirectByteBuffer is guaranteed to create a DirectByteBuffer class, which is a subclass of MappedByteBuffer/Buffer
+    jobject dbb = (*env)->NewDirectByteBuffer(env, (void*)addr, length);
+    if(dbb == NULL) {
+        if(!((*env)->ExceptionCheck(env))) {
+            _throwException(env, kExceptionIOException, "NewDirectByteBuffer");
+            return NULL;
+        }
+    }
+
+    // enable mmap-specific operations on MemorySegment (isMapped=true -> force(), load(), isLoaded(), unload())
+    // MappedByteBuffer.fd
+    if(kMappedByteBufferFieldFd && fd != NULL) {
+        (*env)->SetObjectField(env, dbb, kMappedByteBufferFieldFd, fd);
+    }
+
+#if defined(_WIN32)
+#else
+    int flags = mmodeToFlags(mmode);
+
+    // Set MappedByteBuffer.isSync only when necessary, since it's false by default
+    if((flags & MAP_SYNC) && kMappedByteBufferFieldIsSync) {
+        (*env)->SetBooleanField(env, dbb, kMappedByteBufferFieldIsSync, JNI_TRUE);
+    }
+#endif
+
+    // Buffer.segment
+    if(kBufferFieldSegment) {
+        (*env)->SetObjectField(env, dbb, kBufferFieldSegment, arenaSegment);
+    }
+
+    return dbb;
+}
+
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    mmapShm
@@ -627,20 +807,7 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmapShm
         jlong copies = duplicates + 1;
         size_t totalLen = CK_round_page((size_t)(length * copies));
 
-        int access;
-        if((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_READ)) {
-            if((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_WRITE)) {
-                if((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_COPY_ON_WRITE)) {
-                    access = PAGE_WRITECOPY;
-                } else {
-                    access = PAGE_READWRITE;
-                }
-            } else {
-                access = PAGE_READONLY;
-            }
-        } else {
-            access = PAGE_NOACCESS;
-        }
+        int access = mmodeToAccess(mmode);
 
         addr = f_VirtualAlloc2(NULL, NULL, totalLen, (MEM_RESERVE | MEM_RESERVE_PLACEHOLDER), PAGE_NOACCESS, NULL, 0);
         if(addr == NULL) {
@@ -662,6 +829,7 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmapShm
                 throwIOErrnumException(env, io_errno, NULL);
                 return NULL;
             } else if(actualAddr != sliceAddr) {
+                UnmapViewOfFile((void*)actualAddr);
                 _throwException(env, kExceptionIOException, "mmap-slice");
                 return NULL;
             }
@@ -676,28 +844,20 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmapShm
     }
 
 #else // defined(_WIN32)
+    if(offset != CK_trunc_page(offset)) {
+        _throwException(env, kExceptionIOException, "offset");
+        return NULL;
+    }
 
     int handle = _getFD(env, fd);
     if(handle < 0) {
         _throwException(env, kExceptionClosedChannelException, "Channel is closed");
         return NULL;
     }
-    if(offset != CK_trunc_page(offset)) {
-        _throwException(env, kExceptionIOException, "offset");
-        return NULL;
-    }
 
     const int prot = ((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_READ) ? PROT_READ : 0)
     | ((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_WRITE) ? PROT_WRITE : 0);
-    const int flags = (mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_COPY_ON_WRITE ? MAP_PRIVATE :
-#   if defined(MAP_SHARED_VALIDATE)
-                       ((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_SYNC) ? MAP_SHARED_VALIDATE : MAP_SHARED)
-#   else
-                       MAP_SHARED
-#   endif
-                       )
-    | ((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_SYNC) ? MAP_SYNC : 0)
-    ;
+    const int flags = mmodeToFlags(mmode);
 
     // FIXME add support for MAP_NOCORE/MAP_CONCEAL, MAP_NOSYNC (NOTE: pre-allocate space using write, not ftruncate!)
     // MAP_LOCKED, MAP_POPULATE(FreeBSD:MAP_PREFAULT_READ)/MAP_NONBLOCK, MAP_NOCACHE
@@ -706,7 +866,8 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmapShm
     // FIXME check if MAP_HASSEMAPHORE is actually used/useful elsewhere
 
     // on MAP_POPULATE/MAP_PREFAULT_READ: see https://stackoverflow.com/questions/32049240/implementing-mmaps-map-populate-flag-in-windows-and-other-unices-than-linux
-    // (if unavailable, use madvise with MADV_WILLNEED or PrefetchVirtualMemory on macOS)
+    // (if unavailable, use madvise with MADV_WILLNEED, or PrefetchVirtualMemory on Windows)
+    // also see https://github.com/microsoft/WSL/issues/3535
 
     void *addr;
     if(duplicates) {
@@ -727,18 +888,15 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmapShm
 
         for(int i=0;i<copies;i++) {
             void* sliceAddr = (void*)((uint64_t)addr + i * length);
-            void* actualAddr = mmap(sliceAddr, (size_t)length, prot, flags |
-#   if defined(MAP_FIXED_NOREPLACE)
-                                    MAP_FIXED_NOREPLACE
-#   else
-                                    MAP_FIXED
-#   endif
+            void* actualAddr = mmap(sliceAddr, (size_t)length, prot,
+                                    flags | jux_MAP_FIXED_NOREPLACE_IF_POSSIBLE
                                     , handle, (off_t)offset
                                     );
             if(actualAddr == MAP_FAILED) {
                 throwIOErrnumException(env, errno, NULL);
                 return NULL;
             } else if(actualAddr != sliceAddr) {
+                munmap((void*)actualAddr, (size_t)length);
                 _throwException(env, kExceptionIOException, "mmap-slice");
                 return NULL;
             }
@@ -806,8 +964,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_unmap
                 return;
             }
         }
-        VirtualFree((void*)addr, 0, MEM_RELEASE);
         VirtualAlloc((void*)addr, length, MEM_RESET, PAGE_NOACCESS);
+        VirtualFree((void*)addr, 0, MEM_RELEASE);
     } else {
         jlong sliceLength = length / (duplicates + 1);
         for(jlong start = addr, end = addr + length; start < end; start += sliceLength) {
@@ -817,8 +975,8 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_unmap
                     return;
                 }
             }
-            VirtualFree((void*)start, 0, MEM_RELEASE);
             VirtualAlloc((void*)start, length, MEM_RESET, PAGE_NOACCESS);
+            VirtualFree((void*)start, 0, MEM_RELEASE);
         }
     }
 #else

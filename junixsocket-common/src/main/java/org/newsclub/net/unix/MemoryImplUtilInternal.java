@@ -52,8 +52,12 @@ public final class MemoryImplUtilInternal {
 
   public static final int MMODE_READ = NativeUnixSocket.MMODE_READ;
   public static final int MMODE_WRITE = NativeUnixSocket.MMODE_WRITE;
+  public static final int MMODE_READ_WRITE = NativeUnixSocket.MMODE_READ
+      | NativeUnixSocket.MMODE_WRITE;
   public static final int MMODE_COPY_ON_WRITE = NativeUnixSocket.MMODE_COPY_ON_WRITE;
   public static final int MMODE_SYNC = NativeUnixSocket.MMODE_SYNC;
+  public static final int MMODE_FIXED = NativeUnixSocket.MMODE_FIXED;
+  public static final int MMODE_ANONYMOUS = NativeUnixSocket.MMODE_ANONYMOUS;
 
   public static final int MADV_NORMAL = NativeUnixSocket.MADV_NORMAL;
   public static final int MADV_FREE = NativeUnixSocket.MADV_FREE;
@@ -86,7 +90,7 @@ public final class MemoryImplUtilInternal {
     return SHM_ALLOC_SIZE;
   }
 
-  public ByteBuffer mmap(Object arenaSegment, FileDescriptor fd, long offset, long length,
+  public ByteBuffer mmapShm(Object arenaSegment, FileDescriptor fd, long offset, long length,
       int mmode, int duplicates) throws IOException {
     if (offset < 0) {
       throw new IllegalArgumentException("offset");
@@ -99,6 +103,16 @@ public final class MemoryImplUtilInternal {
     }
 
     return NativeUnixSocket.mmapShm(arenaSegment, fd, offset, length, mmode, duplicates);
+  }
+
+  public ByteBuffer mappedBuffer(long address, long length, FileDescriptor fdRef, int mmode,
+      Object arenaSegment) throws IOException {
+    return NativeUnixSocket.mappedBuffer(address, length, fdRef, mmode, arenaSegment);
+  }
+
+  public long mmap(long address, FileDescriptor fdObj, long offset, long length, int mmode)
+      throws IOException {
+    return NativeUnixSocket.mmap(address, fdObj, offset, length, mmode);
   }
 
   public void unmap(long address, long byteSize, int duplicates, boolean ignoreError)

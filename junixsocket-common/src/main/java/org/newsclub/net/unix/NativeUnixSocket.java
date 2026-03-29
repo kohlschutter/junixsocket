@@ -103,6 +103,8 @@ final class NativeUnixSocket {
   static final int MMODE_WRITE = 1 << 1;
   static final int MMODE_COPY_ON_WRITE = 1 << 2;
   static final int MMODE_SYNC = 1 << 3;
+  static final int MMODE_FIXED = 1 << 4;
+  static final int MMODE_ANONYMOUS = 1 << 5;
 
   static final int MADV_NORMAL = 1 << 0;
   static final int MADV_FREE = 1 << 1;
@@ -399,6 +401,12 @@ final class NativeUnixSocket {
 
   static native void unmap(long address, long byteSize, int duplicates, boolean ignoreError)
       throws IOException;
+
+  static native long mmap(long address, FileDescriptor fdObj, long offset, long length, int mmode)
+      throws IOException;
+
+  static native ByteBuffer mappedBuffer(long address, long length, FileDescriptor fdRef, int mmode,
+      Object arenaSegment) throws IOException;
 
   static native void madvise(long address, long byteSize, int madv, boolean ignoreError)
       throws IOException;

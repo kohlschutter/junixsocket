@@ -87,6 +87,10 @@ extern "C" {
 #define org_newsclub_net_unix_NativeUnixSocket_MMODE_COPY_ON_WRITE 4L
 #undef org_newsclub_net_unix_NativeUnixSocket_MMODE_SYNC
 #define org_newsclub_net_unix_NativeUnixSocket_MMODE_SYNC 8L
+#undef org_newsclub_net_unix_NativeUnixSocket_MMODE_FIXED
+#define org_newsclub_net_unix_NativeUnixSocket_MMODE_FIXED 16L
+#undef org_newsclub_net_unix_NativeUnixSocket_MMODE_ANONYMOUS
+#define org_newsclub_net_unix_NativeUnixSocket_MMODE_ANONYMOUS 32L
 #undef org_newsclub_net_unix_NativeUnixSocket_MADV_NORMAL
 #define org_newsclub_net_unix_NativeUnixSocket_MADV_NORMAL 1L
 #undef org_newsclub_net_unix_NativeUnixSocket_MADV_FREE
@@ -551,10 +555,10 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sharedMemory
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
- * Method:    mmap
+ * Method:    mmapShm
  * Signature: (Ljava/lang/Object;Ljava/io/FileDescriptor;JJII)Ljava/nio/ByteBuffer;
  */
-JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
+JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmapShm
   (JNIEnv *, jclass, jobject, jobject, jlong, jlong, jint, jint);
 
 /*
@@ -564,6 +568,22 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
  */
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_unmap
   (JNIEnv *, jclass, jlong, jlong, jint, jboolean);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    mmap
+ * Signature: (JLjava/io/FileDescriptor;JJI)J
+ */
+JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
+  (JNIEnv *, jclass, jlong, jobject, jlong, jlong, jint);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    mappedBuffer
+ * Signature: (JJLjava/io/FileDescriptor;ILjava/lang/Object;)Ljava/nio/ByteBuffer;
+ */
+JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mappedBuffer
+  (JNIEnv *, jclass, jlong, jlong, jobject, jint, jobject);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
