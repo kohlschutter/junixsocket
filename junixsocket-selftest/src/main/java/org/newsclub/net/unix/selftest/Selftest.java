@@ -703,8 +703,6 @@ public class Selftest {
       modified = true;
     }
 
-    boolean skipped = false;
-
     final ModuleResult moduleResult;
 
     SkipMode skipMode;
@@ -788,9 +786,7 @@ public class Selftest {
         exception = e;
       }
 
-      if (skipped) {
-        moduleResult = new ModuleResult(Result.SKIP, null, exception);
-      } else if (exception != null || summary == null) {
+      if (exception != null || summary == null) {
         moduleResult = new ModuleResult(Result.FAIL, null, exception);
         fail = true;
       } else {
