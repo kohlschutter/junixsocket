@@ -81,7 +81,9 @@ hasExportDynamic=0
 ignoreExportDynamic=0
 
 hasReproducible=0
+hasDeadStrip=0
 ignoreReproducible=0
+ignoreDeadStrip=0
 
 skipGccArg=0
 analyze=0
@@ -130,6 +132,8 @@ while [ $# -gt 0 ]; do
       -Xcrossclang-hide-unknown-warning-warnings ) hideUnknownWarningWarnings=1 ; skipArg=1 ;;
       -Xcrossclang-ignore-export-dynamic) ignoreExportDynamic=1 ; skipArg=1 ;;
       -Xcrossclang-ignore-reproducible) ignoreReproducible=1 ; skipArg=1 ;;
+      -Xcrossclang-ignore-dead-strip) ignoreDeadStrip=1 ; skipArg=1 ;;
+      -Xcrossclang-dont-ignore-dead-strip) ignoreDeadStrip=0 ; skipArg=1 ;;
       # -index-store-path ) shift ; skipArg=1 ;; # if you're hitting this, set "Enable Index-While-Building Functionality=No" in Xcode build settings instead
       -filelist ) fileList="$1" ; shift; skipArg=1 ;;
       -current_version ) shift ; skipArg=1 ;;
@@ -176,6 +180,8 @@ while [ $# -gt 0 ]; do
                 hasExportDynamic=1
             elif [[ "$1" == "-reproducible" ]]; then
                 hasReproducible=1
+            elif [[ "$1" == "-dead_strip" ]]; then
+		hasDeadStrip=1
             elif [[ "$1" == "-no_adhoc_codesign" ]]; then
                 # ignore
                 skipArg=1
@@ -213,6 +219,11 @@ fi
 if [[ $hasReproducible -eq 1 && $ignoreReproducible -eq 0 ]]; then
     clangArgs+=("-Xlinker" "-reproducible")
     # gccArgs+=("-Xlinker" "-reproducible")
+fi
+
+if [[ $hasDeadStrip -eq 1 && $ignoreDeadStrip -eq 0 ]]; then
+    clangArgs+=("-Xlinker" "-dead_strip")
+    # gccArgs+=("-Xlinker" "-dead_strip")
 fi
 
 if [[ $analyze -gt 0 && $gccMode -gt 0 ]]; then
