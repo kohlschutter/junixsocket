@@ -44,7 +44,9 @@ static char *kExceptionClassnames[kExceptionMaxExcl] = {
     "java/io/FileNotFoundException", // kExceptionFileNotFoundException
     "java/nio/file/FileAlreadyExistsException", // kExceptionFileAlreadyExistsException
     "java/io/IOException", // kExceptionIOException
-    "org/newsclub/net/unix/OperationNotSupportedIOException", // kExceptionOperationNotSupportedIOException
+    "org/newsclub/net/unix/OperationNotSupportedIOException", // kExceptionOperationNotSupportedIOException,
+    "org/newsclub/net/unix/ConnectionRefusedSocketException", // kExceptionConnectionRefusedSocketException
+
 };
 
 static jclass *kExceptionClasses;
@@ -183,6 +185,12 @@ void throwErrnumException1(JNIEnv* env, int errnum, jobject fdToClose, jboolean 
             break;
         case ECONNRESET:
             exceptionType = kExceptionConnectionResetSocketException;
+            if(fdToClose != NULL) {
+                _closeFd(env, fdToClose, -1);
+            }
+            break;
+        case ECONNREFUSED:
+            exceptionType = kExceptionConnectionRefusedSocketException;
             if(fdToClose != NULL) {
                 _closeFd(env, fdToClose, -1);
             }

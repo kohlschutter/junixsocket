@@ -41,6 +41,7 @@ typedef enum {
     kExceptionFileAlreadyExistsException,
     kExceptionIOException,
     kExceptionOperationNotSupportedIOException,
+    kExceptionConnectionRefusedSocketException,
     kExceptionMaxExcl
 } ExceptionType;
 
