@@ -125,7 +125,9 @@ public class SelftestProvider {
     registerTestJavaInet(org.newsclub.net.unix.java.ThroughputTest.class);
 
     registerTest(org.newsclub.net.unix.domain.UnixDomainSocketAddressTest.class);
-  }
+
+    registerTest(COMMON, org.newsclub.net.unix.domain.VirtualThreadConnectTest.class);
+}
 
   public Set<String> modulesDisabledByDefault() {
     return new HashSet<>(Arrays.asList(COMMON_JAVA_INET, COMMON_JEP380));
