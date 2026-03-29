@@ -28,8 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 final class AncillaryDataSupport implements Closeable {
   private static final ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate(0);
   private static final FileDescriptor[] NO_FILE_DESCRIPTORS = new FileDescriptor[0];

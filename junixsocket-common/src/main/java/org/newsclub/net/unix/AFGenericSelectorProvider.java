@@ -23,8 +23,6 @@ import java.net.SocketAddress;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * Service-provider class for junixsocket selectors and selectable channels.
  */
