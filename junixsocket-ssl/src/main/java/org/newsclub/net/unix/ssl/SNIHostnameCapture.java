@@ -33,8 +33,6 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.StandardConstants;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * Helper class to simplify retrieving the requested SNI hostname sent from an SSL client to an SSL
  * server.
