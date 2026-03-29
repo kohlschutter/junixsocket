@@ -21,8 +21,11 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.WeakHashMap;
 
@@ -32,13 +35,24 @@ import org.newsclub.net.unix.MemoryImplUtilInternal;
 class SharedMemoryCleaner extends CleanableState {
   private final Map<MemorySegment, Integer> segments = new LinkedHashMap<>();
   private final Map<Futex, Futex> futexes = new WeakHashMap<>();
-  private final Arena arena = Arena.ofShared();
-  private final MemorySegment arenaSegment = arena.allocate(0);
+  private Arena arena;
+  private final boolean closeArena;
+  private MemorySegment arenaSegment;
   final FileDescriptor fd;
-  Arena defaultArena;
 
-  protected SharedMemoryCleaner(Object observed, FileDescriptor fd) {
+  SharedMemoryCleaner(Arena arena, Object observed) {
+    this(arena, observed, null);
+  }
+
+  SharedMemoryCleaner(Arena arena, Object observed, FileDescriptor fd) {
     super(observed);
+    if (arena == null) {
+      this.arena = null;
+      this.closeArena = true;
+    } else {
+      this.arena = arena;
+      this.closeArena = false;
+    }
     this.fd = fd;
   }
 
@@ -50,14 +64,14 @@ class SharedMemoryCleaner extends CleanableState {
 
   @Override
   @SuppressWarnings("PMD.CognitiveComplexity")
-  protected void doClean() throws IOException {
+  protected synchronized void doClean() throws IOException {
     if (!SharedMemory.isUtilLoaded()) {
       // Nothing to do
       return;
     }
 
     Map<FileDescriptor, Long> map = SharedMemory.FD_MEMORY;
-    if (map != null) {
+    if (map != null && fd != null) {
       synchronized (map) {
         map.remove(fd);
       }
@@ -77,15 +91,14 @@ class SharedMemoryCleaner extends CleanableState {
       }
     }
 
-    if (defaultArena != null) {
-      defaultArena.close();
-      defaultArena = null;
+    if (closeArena && arena != null) {
+      arena.close();
     }
 
     MemoryImplUtilInternal util = SharedMemory.getUtil();
 
     IOException exc = null;
-    if (fd.valid()) {
+    if (fd != null && fd.valid()) {
       try {
         util.close(fd);
       } catch (IOException e) {
@@ -93,29 +106,31 @@ class SharedMemoryCleaner extends CleanableState {
       }
     }
 
+    List<Entry<MemorySegment, Integer>> list;
     synchronized (segments) {
-      for (Map.Entry<MemorySegment, Integer> en : segments.entrySet()) {
-        MemorySegment ms = en.getKey();
-        int duplicates = en.getValue();
+      list = new ArrayList<>(segments.entrySet()).reversed();
+      segments.clear();
+    }
+    for (Map.Entry<MemorySegment, Integer> en : list) {
+      MemorySegment ms = en.getKey();
+      int duplicates = en.getValue();
 
-        long addr = ms.address();
-        long length = ms.byteSize();
-        if (ms.scope().isAlive()) {
-          util.madvise(addr, length, MemoryImplUtilInternal.MADV_FREE_NOW, true);
-          continue;
-        }
+      long addr = ms.address();
+      long length = ms.byteSize();
+      if (ms.scope().isAlive()) {
+        util.madvise(addr, length, MemoryImplUtilInternal.MADV_FREE_NOW, true);
+        continue;
+      }
 
-        try {
-          util.unmap(addr, length, duplicates, false);
-        } catch (IOException e) {
-          if (exc == null) {
-            exc = e;
-          } else {
-            exc.addSuppressed(e);
-          }
+      try {
+        util.unmap(addr, length, duplicates, false);
+      } catch (IOException e) {
+        if (exc == null) {
+          exc = e;
+        } else {
+          exc.addSuppressed(e);
         }
       }
-      segments.clear();
     }
 
     if (exc != null) {
@@ -141,7 +156,10 @@ class SharedMemoryCleaner extends CleanableState {
     return false;
   }
 
-  public MemorySegment getArenaSegment() {
+  public synchronized MemorySegment getArenaSegment() {
+    if (this.arenaSegment == null) {
+      this.arenaSegment = getArena().allocate(0);
+    }
     return arenaSegment;
   }
 
@@ -155,5 +173,12 @@ class SharedMemoryCleaner extends CleanableState {
     if (!isCovered(addr)) {
       throw new IOException("Not a MemorySegment of ours");
     }
+  }
+
+  public synchronized Arena getArena() {
+    if (this.arena == null) {
+      this.arena = Arena.ofShared();
+    }
+    return this.arena;
   }
 }

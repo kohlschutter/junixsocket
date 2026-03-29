@@ -102,7 +102,7 @@ public final class SharedMemory implements Closeable {
       this.size = size;
     }
     Objects.requireNonNull(fd);
-    this.cleaner = new SharedMemoryCleaner(this, fd);
+    this.cleaner = new SharedMemoryCleaner(null, this, fd);
     this.name = name;
     this.knownReadOnly = isReadOnly(mopts);
     this.unlinkUponClose = (mopts & MemoryImplUtilInternal.MOPT_UNLINK_UPON_CLOSE) != 0;
@@ -459,11 +459,12 @@ public final class SharedMemory implements Closeable {
       throw new IllegalArgumentException("length");
     }
 
+    // use a zero-length, 0-address segment for lifecycle management, preventing chicken-egg problem
+    MemorySegment arenaSegment;
     if (arena == null) {
-      arena = cleaner.defaultArena;
-      if (arena == null) {
-        arena = cleaner.defaultArena = Arena.ofShared();
-      }
+      arenaSegment = cleaner.getArenaSegment();
+    } else {
+      arenaSegment = arena.allocate(0);
     }
 
     int mmode = resolveMmode(mapMode);
@@ -474,11 +475,19 @@ public final class SharedMemory implements Closeable {
       length = size;
     }
 
-    // use a zero-length, 0-address segment for lifecycle management, preventing chicken-egg problem
-    MemorySegment arenaSegment = arena.allocate(0);
+    ByteBuffer buf = getUtil().mmapShm(arenaSegment, cleaner.fd, offset, length, mmode, duplicates);
+    return asRegisteredMemorySegment(cleaner, buf, (mmode
+        & MemoryImplUtilInternal.MMODE_WRITE) != 0, duplicates);
+  }
 
-    ByteBuffer buf = getUtil().mmap(arenaSegment, cleaner.fd, offset, length, mmode, duplicates);
-    if ((mmode & MemoryImplUtilInternal.MMODE_WRITE) == 0) {
+  static MemorySegment asRegisteredMemorySegment(SharedMemoryCleaner cleaner, ByteBuffer buf,
+      boolean rw) {
+    return asRegisteredMemorySegment(cleaner, buf, rw, 0);
+  }
+
+  private static MemorySegment asRegisteredMemorySegment(SharedMemoryCleaner cleaner,
+      ByteBuffer buf, boolean rw, int duplicates) {
+    if (!rw) {
       // The MapMode is read-only.
       // If we don't ask for a read-only buffer here, write accesses will fail with a page fault
       // ("java.lang.InternalError: a fault occurred in an unsafe memory access operation")
