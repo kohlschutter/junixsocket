@@ -219,6 +219,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
       }
 
       Thread t = new Thread(SocketServer.this.toString() + " listening thread") {
+        @SuppressWarnings("deprecation")
         @Override
         public void run() {
           try {
@@ -424,6 +425,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
   private Future<?> submit(final S socket, ExecutorService executor) {
     Objects.requireNonNull(socket);
     return executor.submit(new Runnable() {
+      @SuppressWarnings("deprecation")
       @SuppressFBWarnings("NN_NAKED_NOTIFY")
       @Override
       public void run() {
