@@ -168,12 +168,12 @@ by running `junixsocket-selftest-native-image/target/junixsocket-selftest-native
 
 If you need to make a revision afterwards, retag with `git tag -f TAG` and `git push origin TAG --force`.
 
-#[[####]]# Deploy to staging
+#[[####]]# Deploy to Maven Central Publish API (staging)
   
     cd junixsocket
     mvn clean install -Drelease -Dstrict
 
-    mvn clean deploy -Drelease -Ddeploy -Dignorant -D -DskipTests -Dsigned -Dgpgkeyname=$(git config --get user.email) -Dgpg.executable=$(which gpg)
+    mvn clean deploy -Drelease -Ddeploy -Dignorant -Dcentral -DskipTests -Dsigned -Dgpgkeyname=$(git config --get user.email) -Dgpg.executable=$(which gpg)
 
 #[[#####]]# Notes
 
@@ -181,9 +181,11 @@ If you need to make a revision afterwards, retag with `git tag -f TAG` and `git 
 
 `-Dstrict` enforces code quality checks to succeed (e.g., *spotbugs*, *checkstyle*).
 
+`-Ddeploy` re-enable javadoc/attach-sources even with `-Dignorant` set.
+
 `-Dignorant` disables linters, code quality checks, javadoc, source jars, etc.
 
-`-Ddeploy` re-enable javadoc/attach-sources even with `-Dignorant` set.
+`-Dcentral` enables deploying to Maven central
 
 `-DskipTests` skips unit testing.
 
@@ -200,29 +202,16 @@ For example:
 
     gpg2 --keyserver http://keyserver.ubuntu.com:11371 --send-key THEKEYID
 
-If you get an error `Remote staging failed: A message body reader for Java class
-com.sonatype.nexus.staging.api.dto.StagingProfileRepositoryDTO, and Java type class
-com.sonatype.nexus.staging.api.dto.StagingProfileRepositoryDTO, and MIME media type text/html was
-not found`, then simply try again; see [OSSRH-51097](https://issues.sonatype.org/browse/OSSRH-51097).
-
 #[[####]]# Review the deployed artifacts
   
-The URL of the staging repository is `https://oss.sonatype.org/content/groups/staging`.
-The artifacts can be found [here](https://oss.sonatype.org/content/groups/staging/com/kohlschutter/).
-
-If you're deploying a `-SNAPSHOT` version, you can find the artifacts
-[here](https://oss.sonatype.org/content/repositories/snapshots/com/kohlschutter/junixsocket/).
+The URL of the staging area is `https://central.sonatype.com/publishing`.
 
 **IMPORTANT** Double-check that the staged junixsocket-native-common artifact contains all required
 library binaries (macOS, Linux 64-bit, etc.).
 
 #[[###]]# Review selftest on all supported platforms
 
-Download `junixsocket-selftest-X.Y.Z-jar-with-dependencies.jar` from staging to all supported platforms:
-
-```
-https://oss.sonatype.org/content/groups/staging/com/kohlschutter/junixsocket/junixsocket-selftest/X.Y.Z/junixsocket-selftest-X.Y.Z-jar-with-dependencies.jar
-```
+Download `junixsocket-selftest-X.Y.Z-jar-with-dependencies.jar` from staging to all supported platforms.
 
 Run `java -jar junixsocket-selftest-X.Y.Z-jar-with-dependencies.jar` on all supported platforms and supported JDK combinations.
 
@@ -234,9 +223,9 @@ Also check the header, especially the `Git properties` at the beginning of the o
 * `git.dirty` should be `false`
 * `git.commit.id.describe` should match the new git tag.
 
-#[[####]]# Release artifact to Maven Central
+#[[####]]# Publish artifact to Maven Central
   
-**IMPORTANT** Once released, it cannot be undone! Make sure you verify the staged artifact first!
+**IMPORTANT** Once published, it cannot be undone! Make sure you verify the staged artifact first!
   
     MAVEN_OPTS="--add-opens java.base/java.util=ALL-UNNAMED" mvn nexus-staging:release -Drelease
 
@@ -262,7 +251,7 @@ NOTE: There can be quite a delay (30 minutes?) until the artifact is deployed in
 
 #[[###]]# Publish website
 
-> **NOTE:** Maven 3.9.7 and 3.9.8 contain a bug ([MNG-8178](https://issues.apache.org/jira/browse/MNG-8178)) that prevents building the site. Use Maven 3.9.6 instead.
+> **NOTE:** Maven 3.9.7 and 3.9.8 contain a bug ([MNG-8178](https://issues.apache.org/jira/browse/MNG-8178)) that prevents building the site. Use Maven 3.9.9 instead.
 
 This builds the Maven site
 
