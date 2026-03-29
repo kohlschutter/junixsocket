@@ -24,12 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -234,8 +236,25 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
   }
 
   private void testPendingAcceptCloseServerSocket(boolean delayed) throws Exception {
-    SocketAddress addr = newTempAddress();
-    ServerSocket ss = newServerSocketBindOn(addr);
+    SocketAddress addr = null;
+    ServerSocket ss0 = null;
+    for (int triesLeft = 3; triesLeft >= 0; triesLeft--) {
+      addr = newTempAddress();
+      try {
+        // NOTE: Sometimes, for some address families, this fails. If so, try again.
+        ss0 = newServerSocketBindOn(addr);
+      } catch (BindException e) {
+        if (triesLeft > 0) {
+          // keep trying
+          continue;
+        } else {
+          throw e;
+        }
+      }
+      break; // NOPMD
+    }
+
+    ServerSocket ss = Objects.requireNonNull(ss0);
 
     Runnable doClose = () -> {
       try {
