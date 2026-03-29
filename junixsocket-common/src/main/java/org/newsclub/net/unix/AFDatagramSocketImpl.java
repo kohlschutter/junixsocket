@@ -341,12 +341,14 @@ public abstract class AFDatagramSocketImpl<A extends AFSocketAddress> extends
 
   @Override
   @Deprecated
+  @SuppressWarnings("doclint")
   protected final byte getTTL() throws IOException {
     return (byte) (getTimeToLive() & 0xFF);
   }
 
   @Override
   @Deprecated
+  @SuppressWarnings("doclint")
   protected final void setTTL(byte ttl) throws IOException {
     // ignored
   }
