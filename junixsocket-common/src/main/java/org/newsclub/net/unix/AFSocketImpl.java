@@ -524,6 +524,15 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
                 }
               }
               throw e;
+            } catch (ConnectionRefusedSocketException e) {
+              if (virtualBlocking) {
+                // https://github.com/kohlschutter/junixsocket/issues/172
+                if (connectTimeout == 0 || ((System.currentTimeMillis() - now) < connectTimeout)) {
+                  Thread.yield();
+                  continue;
+                }
+              }
+              throw e;
             } catch (NotConnectedSocketException | SocketClosedException
                 | BrokenPipeSocketException e) {
               try {
