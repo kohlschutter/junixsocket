@@ -19,7 +19,7 @@
 #include "config.h"
 
 #if defined(_WIN32) && junixsocket_clock_gettime_impl
-CK_VISIBILITY_INTERNAL int clock_gettime(int ignored CK_UNUSED, struct timespec *spec) {
+CK_VISIBILITY_INTERNAL int junixsocket_clock_gettime(int ignored CK_UNUSED, struct timespec *spec) {
     __int64 time;
     GetSystemTimeAsFileTime((FILETIME*)&time);
     time -= 116444736000000000LL; // EPOCHFILETIME

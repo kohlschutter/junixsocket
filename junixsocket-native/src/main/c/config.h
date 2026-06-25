@@ -195,7 +195,8 @@ CK_IGNORE_UNUSED_MACROS_END
 
 #  if !defined(clock_gettime) // older time.h
 #  define junixsocket_clock_gettime_impl 1
-int clock_gettime(int ignored CK_UNUSED, struct timespec *spec);
+int junixsocket_clock_gettime(int ignored CK_UNUSED, struct timespec *spec);
+#  define clock_gettime junixsocket_clock_gettime
 # endif
 
 #  if !defined(WSA_FLAG_NO_HANDLE_INHERIT) // older Windows API
