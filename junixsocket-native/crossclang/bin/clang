@@ -31,7 +31,7 @@
 # set -x
 
 # Make sure to include all paths that may contain custom linkers etc.
-PATH=/opt/crossclang/local/bin:"$PATH":/usr/bin:/opt/homebrew/bin:/usr/local/bin
+PATH=/opt/crossclang/local/bin:/opt/homebrew/bin:"$PATH":/usr/bin:/usr/local/bin
 export PATH
 
 currentDir=$(cd "$(dirname $0)"; pwd)
@@ -284,7 +284,7 @@ if [[ "$currentDir" == "$clangDir" || -z "$clangDir" ]]; then
 fi
 
 llvmPath=
-if [[ -z "$(which llvm-ar 2>/dev/null)" || $findOtherClang -gt 0 ]]; then
+if [[ -z "$(which llvm-ar | grep -v swiftly 2>/dev/null)" || $findOtherClang -gt 0 ]]; then
   # let's add the latest LLVM to the path
   latestLLVM=$(shopt -u failglob ; for f in {/usr/local,/opt/homebrew}/Cellar/"$llvmName"/*/bin; do [[ -d "$f" ]] && echo $f; done | sort -r -n | head -n 1)
   if [[ -n "$latestLLVM" && -d "$latestLLVM" ]]; then
