@@ -203,17 +203,21 @@ _Pragma("GCC diagnostic pop")
 #define CK_STRUCT_PACKED __attribute__((__packed__))
 #define CK_ALIGNED_8 __attribute__((aligned(8)))
 
+#define CK_HAVE_VISIBILITY 1
 #if __TOS_MVS__
 #  define CK_VISIBILITY_INTERNAL
 #  define CK_VISIBILITY_DEFAULT
+#  define CK_HAVE_VISIBILITY 0
 #endif
 #ifdef _WIN32
 #  define CK_VISIBILITY_INTERNAL
 #  define CK_VISIBILITY_DEFAULT
+#  define CK_HAVE_VISIBILITY 0
 #endif
 #ifdef __TANDEM
 #  define CK_VISIBILITY_INTERNAL
 #  define CK_VISIBILITY_DEFAULT
+#  define CK_HAVE_VISIBILITY 0
 #  undef CK_UNUSED
 #  define CK_UNUSED
 #  undef CK_STRUCT_PACKED
@@ -223,12 +227,15 @@ _Pragma("GCC diagnostic pop")
 #  undef CK_ALIGNED_8
 #  define CK_ALIGNED_8
 #endif
-#if __clang__
-#  define CK_VISIBILITY_INTERNAL __attribute__((visibility("internal")))
-#  define CK_VISIBILITY_DEFAULT __attribute__((visibility("default")))
-#else
-#  define CK_VISIBILITY_INTERNAL __attribute__((visibility("hidden")))
-#  define CK_VISIBILITY_DEFAULT __attribute__((visibility("default")))
+
+#if CK_HAVE_VISIBILITY
+#  if __clang__
+#    define CK_VISIBILITY_INTERNAL __attribute__((visibility("internal")))
+#    define CK_VISIBILITY_DEFAULT __attribute__((visibility("default")))
+#  else
+#    define CK_VISIBILITY_INTERNAL __attribute__((visibility("hidden")))
+#    define CK_VISIBILITY_DEFAULT __attribute__((visibility("default")))
+#  endif
 #endif
 
 /**
