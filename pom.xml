@@ -42,10 +42,6 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <developerConnection>scm:git:git@github.com:kohlschutter/junixsocket.git</developerConnection>
     </scm>
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
         <site>
             <id>github.com/kohlschutter/junixsocket</id>
             <url>gitsite:git@github.com/kohlschutter/junixsocket.git</url>
