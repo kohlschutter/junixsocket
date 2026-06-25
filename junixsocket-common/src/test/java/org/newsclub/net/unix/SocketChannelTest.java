@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -36,13 +37,17 @@ import java.nio.channels.NotYetBoundException;
 import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
@@ -477,6 +482,28 @@ public abstract class SocketChannelTest<A extends SocketAddress> extends SocketT
       }
 
       cleanupTestBindNull(sc, addr);
+    }
+  }
+
+  @Test
+  public void testConnectCloseImmediatelyNonBlocking() throws Exception {
+    try (ServerSocketChannel ssc = newServerSocketChannel()) {
+      SocketAddress sa = newTempAddress();
+
+      Issue171TestServer server = new Issue171TestServer(ssc, sa);
+      CompletableFuture<@Nullable Throwable> future = server.start();
+
+      try (SocketChannel sc = newSocketChannel()) {
+        sc.connect(sa);
+        sc.write(ByteBuffer.wrap("Hello world".getBytes(StandardCharsets.UTF_8)));
+      }
+
+      assertTimeoutPreemptively(Duration.ofSeconds(5), () -> {
+        Throwable tw = future.join();
+        if (tw != null) {
+          fail(tw);
+        }
+      });
     }
   }
 }

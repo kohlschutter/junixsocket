@@ -365,8 +365,13 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_receive
     if(count == -1) {
         theError = errno;
     } else if(count == 0) {
-        // check if non-blocking below
-        theError = EWOULDBLOCK;
+        if((opt & org_newsclub_net_unix_NativeUnixSocket_OPT_DGRAM_MODE)) {
+            // zero-length datagram: check if non-blocking below
+            theError = EWOULDBLOCK;
+        } else {
+            // EOF
+            return -1;
+        }
     } else {
         return (jint)count;
     }
