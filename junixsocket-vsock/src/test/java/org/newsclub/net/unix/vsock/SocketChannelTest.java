@@ -24,9 +24,11 @@ import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
+import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketCapability;
 import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
+import org.newsclub.net.unix.ConnectionResetSocketException;
 import org.newsclub.net.unix.InvalidSocketException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
@@ -99,5 +101,17 @@ public final class SocketChannelTest extends
     throw (TestAbortedWithImportantMessageException) new TestAbortedWithImportantMessageException(
         MessageType.TEST_ABORTED_SHORT_WITH_ISSUES, msg, summaryImportantMessage(msg)).initCause(
             ex);
+  }
+
+  @Override
+  @Test
+  public void testConnectCloseImmediatelyNonBlocking() throws Exception {
+    try {
+      super.testConnectCloseImmediatelyNonBlocking();
+    } catch (ConnectionResetSocketException e) {
+      String msg = "VSOCK may not be available";
+      throw (TestAbortedWithImportantMessageException) new TestAbortedWithImportantMessageException(
+          MessageType.TEST_ABORTED_INFORMATIONAL, msg, summaryImportantMessage(msg)).initCause(e);
+    }
   }
 }
