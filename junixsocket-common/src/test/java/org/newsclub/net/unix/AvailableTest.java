@@ -63,7 +63,11 @@ public abstract class AvailableTest<A extends SocketAddress> extends SocketTestB
       // it's kind of OK but since available() is an estimate, but come on...
       return;
     }
-    assertEquals(toExpect, available);
+
+    // NOTE: in.available() returns just an estimate,
+    // which can be lower, or higher (as seen on Linux)
+    // assertEquals(toExpect, available);
+
     final byte[] buf = new byte[expected];
     final int numRead = in.read(buf);
     assertEquals(toExpect, numRead);
