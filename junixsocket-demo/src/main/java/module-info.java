@@ -13,7 +13,7 @@ module org.newsclub.net.unix.demo {
   requires java.sql;
   requires nanohttpd;
   requires okhttp3;
-  requires mina.core;
+  requires org.apache.mina.core;
   requires io.netty.common;
   requires io.netty.buffer;
   requires io.netty.transport;
