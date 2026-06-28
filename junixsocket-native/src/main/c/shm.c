@@ -259,6 +259,9 @@ static inline int try_memfd_create(jint juxOpts) {
         }
         int handle = (int)syscall(SYS_memfd_secret, FD_CLOEXEC);
         if(handle < 0) {
+            if(errno == EINVAL) { // seen on Linux 7.0.7
+                errno = ENOSYS;
+            }
             return -2;
         }
         return handle;
