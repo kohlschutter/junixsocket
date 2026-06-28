@@ -28,6 +28,7 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -104,9 +105,9 @@ public abstract class EndOfFileTest<A extends SocketAddress> extends SocketTestB
         String output;
 
         OutputStreamWriter clientOutWriter = new OutputStreamWriter(clientSocket.getOutputStream(),
-            "UTF-8");
+            StandardCharsets.UTF_8);
         BufferedReader serverInReader = new BufferedReader(new InputStreamReader(serverSocket
-            .getInputStream(), "UTF-8"));
+            .getInputStream(), StandardCharsets.UTF_8));
         input = "TestStringOne";
         clientOutWriter.write(input + "\n");
         clientOutWriter.flush();
@@ -115,9 +116,9 @@ public abstract class EndOfFileTest<A extends SocketAddress> extends SocketTestB
         assertEquals(input, output, "Server output should match client input.");
 
         OutputStreamWriter serverOutWriter = new OutputStreamWriter(serverSocket.getOutputStream(),
-            "UTF-8");
+            StandardCharsets.UTF_8);
         BufferedReader clientInReader = new BufferedReader(new InputStreamReader(clientSocket
-            .getInputStream(), "UTF-8"));
+            .getInputStream(), StandardCharsets.UTF_8));
         input = "TestStringTwo";
         serverOutWriter.write(input + "\n");
         serverOutWriter.flush();

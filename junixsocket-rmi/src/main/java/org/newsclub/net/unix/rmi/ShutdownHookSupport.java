@@ -41,7 +41,7 @@ final class ShutdownHookSupport {
    * @return The thread, to be used with #removeShutdownHook
    */
   public static Thread addWeakShutdownHook(ShutdownHook hook) {
-    Thread t = new ShutdownThread(new WeakReference<>(hook));
+    Thread t = newShutdownThread(new WeakReference<>(hook));
     Runtime.getRuntime().addShutdownHook(t);
     if (HOOKS != null) {
       synchronized (HOOKS) {
@@ -79,7 +79,7 @@ final class ShutdownHookSupport {
      *
      * When you implement this method, make sure to check that the given Thread matches the current
      * thread, e.g.: <code>
-     * if (thread != Thread.currentThread() || !(thread instanceof ShutdownThread)) {
+     * if (thread != Thread.currentThread()) {
      * throw new IllegalStateException("Illegal caller"); }
      * </code>
      *
@@ -91,29 +91,21 @@ final class ShutdownHookSupport {
   }
 
   /**
-   * The Thread that will be called upon Runtime shutdown.
-   *
-   * @author Christian Kohlschütter
+   * Create a Thread that will be called upon Runtime shutdown.
+   * 
+   * @param ref The shutdown hook (weak reference).
    */
-  static final class ShutdownThread extends Thread {
-    private final WeakReference<ShutdownHook> ref;
-
-    ShutdownThread(WeakReference<ShutdownHook> ref) {
-      super();
-      this.ref = ref;
-    }
-
-    @Override
-    public void run() {
+  public static Thread newShutdownThread(WeakReference<ShutdownHook> ref) {
+    return new Thread(() -> {
       ShutdownHook hook = ref.get();
       ref.clear();
       try {
         if (hook != null) {
-          hook.onRuntimeShutdown(this);
+          hook.onRuntimeShutdown(Thread.currentThread());
         }
       } catch (Exception e) {
         // ignore
       }
-    }
+    }, "ShutdownHook");
   }
 }

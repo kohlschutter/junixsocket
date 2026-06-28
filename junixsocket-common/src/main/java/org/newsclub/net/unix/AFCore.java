@@ -138,7 +138,9 @@ class AFCore extends CleanableState {
     return read(dst, timeout, null, 0);
   }
 
-  @SuppressWarnings({"PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity"})
+  @SuppressWarnings({
+      "PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity",
+      "PMD.VariableDeclarationUsageDistance"})
   int read(ByteBuffer dst, AFSupplier<Integer> timeout, ByteBuffer socketAddressBuffer, int options)
       throws IOException {
     int remaining = dst.remaining();
@@ -259,7 +261,7 @@ class AFCore extends CleanableState {
 
   @SuppressWarnings({
       "PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity",
-      "PMD.NPathComplexity"})
+      "PMD.NPathComplexity", "PMD.VariableDeclarationUsageDistance"})
   int write(ByteBuffer src, AFSupplier<Integer> timeout, SocketAddress target, int options)
       throws IOException {
     int remaining = src.remaining();

@@ -22,6 +22,8 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A multi-threaded unix socket server that simply reads all input, byte per byte, not doing
  * anything else with it.
@@ -34,6 +36,7 @@ public final class NullServer extends DemoServerBase {
   }
 
   @Override
+  @SuppressFBWarnings("NCR_NOT_PROPERLY_CHECKED_READ")
   protected void doServeSocket(Socket socket) throws IOException {
     int bufferSize = socket.getReceiveBufferSize();
     byte[] buffer = new byte[bufferSize];

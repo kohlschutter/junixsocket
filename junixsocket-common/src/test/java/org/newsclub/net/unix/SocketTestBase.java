@@ -315,7 +315,7 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidInstanceofChecksInCatchClause")
+    @SuppressWarnings({"PMD.AvoidInstanceofChecksInCatchClause", "PMD.OverridingThreadRun"})
     public final void run() {
       try {
         loop.set(true);

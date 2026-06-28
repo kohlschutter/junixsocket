@@ -38,6 +38,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 @SuppressWarnings({"PMD.CouplingBetweenObjects", "PMD.CyclomaticComplexity"})
+@SuppressFBWarnings({"USO_UNSAFE_STATIC_METHOD_SYNCHRONIZATION"})
 public abstract class AFSocket<A extends AFSocketAddress> extends Socket implements AFSomeSocket,
     AFSocketExtensions {
   static final String PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX =

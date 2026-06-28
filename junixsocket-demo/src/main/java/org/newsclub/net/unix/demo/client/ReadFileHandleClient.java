@@ -25,6 +25,8 @@ import java.net.Socket;
 
 import org.newsclub.net.unix.AFUNIXSocket;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A client that reads the contents of file descriptors that are sent as ancillary messages.
  *
@@ -39,6 +41,7 @@ public class ReadFileHandleClient extends DemoClientBase {
     handleSocket((AFUNIXSocket) socket);
   }
 
+  @SuppressFBWarnings("NCR_NOT_PROPERLY_CHECKED_READ")
   protected void handleSocket(AFUNIXSocket socket) throws IOException {
     // set to a reasonable size
     socket.setAncillaryReceiveBufferSize(1024);

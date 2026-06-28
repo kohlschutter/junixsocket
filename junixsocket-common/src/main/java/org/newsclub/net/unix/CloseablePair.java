@@ -23,6 +23,8 @@ import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNull;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A pair of two closeable items.
  *
@@ -40,6 +42,7 @@ public class CloseablePair<T extends Closeable> implements Closeable {
    * @param a The first item.
    * @param b The second item.
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public CloseablePair(T a, T b) {
     this(a, b, null);
   }
@@ -51,6 +54,7 @@ public class CloseablePair<T extends Closeable> implements Closeable {
    * @param b The second item.
    * @param alsoClose Some closeable that is also closed upon {@link #close()}, or {@code null}.
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public CloseablePair(T a, T b, Closeable alsoClose) {
     Objects.requireNonNull(a);
     Objects.requireNonNull(b);

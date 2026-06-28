@@ -76,6 +76,7 @@ final class RAFChannelProvider extends RandomAccessFile implements FileDescripto
     NativeUnixSocket.copyFileDescriptor(fdObj, rafFdObj);
   }
 
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   @Override
   public FileDescriptor getFileDescriptor() {
     return fdObj;

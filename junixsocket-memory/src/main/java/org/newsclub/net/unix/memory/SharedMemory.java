@@ -314,6 +314,7 @@ public final class SharedMemory implements Closeable {
     return shmOpen0(name, perms, mopts, minimumLength);
   }
 
+  @SuppressFBWarnings("USO_UNSAFE_ACCESSIBLE_OBJECT_SYNCHRONIZATION")
   private static SharedMemory shmOpen0(String name, Set<PosixFilePermission> perms, int mopts,
       long minimumLength) throws IOException {
     MemoryImplUtilInternal util = getUtil();

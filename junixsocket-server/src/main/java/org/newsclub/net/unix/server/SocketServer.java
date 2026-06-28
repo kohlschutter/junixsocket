@@ -81,6 +81,7 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    * @param serverSocket The server socket to use (must be bound).
    */
   @SuppressWarnings("all") // unchecked, null
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public SocketServer(V serverSocket) {
     this((A) Objects.requireNonNull(serverSocket).getLocalSocketAddress(), serverSocket);
   }
@@ -91,11 +92,13 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
    * @param listenAddress The address to bind the socket on.
    */
   @SuppressWarnings("null")
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public SocketServer(A listenAddress) {
     this(listenAddress, null);
   }
 
   @SuppressWarnings("null")
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   private SocketServer(A listenAddress, V preboundSocket) {
     Objects.requireNonNull(listenAddress, "listenAddress");
     this.reuseSocket = preboundSocket;
@@ -218,23 +221,21 @@ public abstract class SocketServer<A extends SocketAddress, S extends Socket, V 
             ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true);
       }
 
-      Thread t = new Thread(SocketServer.this.toString() + " listening thread") {
-        @SuppressWarnings("deprecation")
-        @Override
-        public void run() {
-          try {
-            listen();
-          } catch (Exception e) {
-            onListenException(e);
-          } catch (Throwable e) { // NOPMD
-            onListenException(e);
-          }
+      @SuppressWarnings("deprecation")
+      Thread t = new Thread(() -> {
+        try {
+          listen();
+        } catch (Exception e) {
+          onListenException(e);
+        } catch (Throwable e) { // NOPMD
+          onListenException(e);
         }
-      };
+      }, SocketServer.this.toString() + " listening thread");
       t.start();
 
       listenThread = t;
     }
+
   }
 
   /**

@@ -337,34 +337,30 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
           AtomicLong readTotal = new AtomicLong();
           long sentTotal = 0;
 
-          new Thread() {
-            final DatagramPacket dp = new DatagramPacket(new byte[PAYLOAD_SIZE_DATAGRAM],
-                PAYLOAD_SIZE_DATAGRAM);
-
-            @Override
-            public void run() {
-              try {
-                while (!Thread.interrupted() && !ds.isClosed()) {
-                  try {
-                    ds.receive(dp);
-                  } catch (SocketTimeoutException e) {
-                    continue;
-                  }
-                  int read = dp.getLength();
-                  if (read != PAYLOAD_SIZE_DATAGRAM && read != 0) {
-                    throw new IOException("Unexpected response length: " + read);
-                  }
-                  readTotal.addAndGet(dp.getLength());
+          new Thread(() -> {
+            try {
+              final DatagramPacket dp = new DatagramPacket(new byte[PAYLOAD_SIZE_DATAGRAM],
+                  PAYLOAD_SIZE_DATAGRAM);
+              while (!Thread.interrupted() && !ds.isClosed()) {
+                try {
+                  ds.receive(dp);
+                } catch (SocketTimeoutException e) {
+                  continue;
                 }
-              } catch (SocketException e) {
-                if (keepRunning.get()) {
-                  TestStackTraceUtil.printStackTrace(e);
+                int read = dp.getLength();
+                if (read != PAYLOAD_SIZE_DATAGRAM && read != 0) {
+                  throw new IOException("Unexpected response length: " + read);
                 }
-              } catch (IOException e) { // NOPMD.ExceptionAsFlowControl
+                readTotal.addAndGet(dp.getLength());
+              }
+            } catch (SocketException e) {
+              if (keepRunning.get()) {
                 TestStackTraceUtil.printStackTrace(e);
               }
+            } catch (Exception e) { // NOPMD.ExceptionAsFlowControl
+              TestStackTraceUtil.printStackTrace(e);
             }
-          }.start();
+          }).start();
 
           long time = System.currentTimeMillis();
 
@@ -527,54 +523,52 @@ public abstract class ThroughputTest<A extends SocketAddress> extends SocketTest
 
     CompletableFuture<Long> bytesRead = new CompletableFuture<>();
     try (AbstractSelector readSelector = sp == null ? null : sp.openSelector()) {
-      new Thread() {
-        @Override
-        public void run() {
-          final ByteBuffer receiveBuffer = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE_DATAGRAM)
-              : ByteBuffer.allocate(PAYLOAD_SIZE_DATAGRAM);
-          try {
-            SelectionKey key;
-            if (readSelector != null) {
-              key = ds.register(readSelector, SelectionKey.OP_READ);
-            } else {
-              key = null;
-            }
-            while (!Thread.interrupted() && keepRunning.get() && !bytesRead.isCancelled()) {
-              int read;
-              if (readSelector != null) {
-                int numReady = readSelector.select(1000);
-                if (numReady == 0) {
-                  continue;
-                }
-                assertEquals(1, numReady);
-                Objects.requireNonNull(key);
+      final ByteBuffer receiveBuffer = direct ? ByteBuffer.allocateDirect(PAYLOAD_SIZE_DATAGRAM)
+          : ByteBuffer.allocate(PAYLOAD_SIZE_DATAGRAM);
 
-                // If we'd check for invalid keys, we could prevent the ClosedChannelException
-                // if (!key.isValid()) {
-                // break;
-                // }
+      new Thread(() -> {
+        try {
+          SelectionKey key;
+          if (readSelector != null) {
+            key = ds.register(readSelector, SelectionKey.OP_READ);
+          } else {
+            key = null;
+          }
+          while (!Thread.interrupted() && keepRunning.get() && !bytesRead.isCancelled()) {
+            int read;
+            if (readSelector != null) {
+              int numReady = readSelector.select(1000);
+              if (numReady == 0) {
+                continue;
               }
-              read = ds.read(receiveBuffer);
-              receiveBuffer.rewind();
-              if (read != PAYLOAD_SIZE_DATAGRAM && read != 0 && read != -1) {
-                throw new IOException("Unexpected response length: " + read);
-              }
-              readTotal.addAndGet(read);
+              assertEquals(1, numReady);
+              Objects.requireNonNull(key);
+
+              // If we'd check for invalid keys, we could prevent the ClosedChannelException
+              // if (!key.isValid()) {
+              // break;
+              // }
             }
-            bytesRead.complete(readTotal.get());
-          } catch (ClosedChannelException | SocketException e) {
-            if (keepRunning.get()) {
-              keepRunning.set(false);
-              bytesRead.completeExceptionally(e);
-            } else {
-              bytesRead.complete(readTotal.get());
+            read = ds.read(receiveBuffer);
+            receiveBuffer.rewind();
+            if (read != PAYLOAD_SIZE_DATAGRAM && read != 0 && read != -1) {
+              throw new IOException("Unexpected response length: " + read);
             }
-          } catch (Exception e) { // NOPMD.ExceptionAsFlowControl
+            readTotal.addAndGet(read);
+          }
+          bytesRead.complete(readTotal.get());
+        } catch (ClosedChannelException | SocketException e) {
+          if (keepRunning.get()) {
             keepRunning.set(false);
             bytesRead.completeExceptionally(e);
+          } else {
+            bytesRead.complete(readTotal.get());
           }
+        } catch (Exception e) { // NOPMD.ExceptionAsFlowControl
+          keepRunning.set(false);
+          bytesRead.completeExceptionally(e);
         }
-      }.start();
+      }).start();
 
       time = System.currentTimeMillis();
 

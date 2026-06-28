@@ -75,6 +75,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
    * @param socketSuffix A string that will be added to the end of each socket filename, or
    *          {@code null}.
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public AFUNIXRMISocketFactory(final AFNaming naming, final File socketDir,
       final RMIClientSocketFactory defaultClientFactory,
       final RMIServerSocketFactory defaultServerFactory, final String socketPrefix,
@@ -94,6 +95,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
    * @param defaultClientFactory The default {@link RMIClientSocketFactory}.
    * @param defaultServerFactory The default {@link RMIServerSocketFactory}.
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public AFUNIXRMISocketFactory(AFNaming naming, File socketDir,
       RMIClientSocketFactory defaultClientFactory, RMIServerSocketFactory defaultServerFactory) {
     this(naming, socketDir, defaultClientFactory, defaultServerFactory, null, null);
@@ -105,6 +107,7 @@ public class AFUNIXRMISocketFactory extends AFRMISocketFactory {
    * @param naming The {@link AFNaming} instance to use.
    * @param socketDir The directory to store the sockets in.
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public AFUNIXRMISocketFactory(AFNaming naming, File socketDir) {
     this(naming, socketDir, DefaultRMIClientSocketFactory.getInstance(),
         DefaultRMIServerSocketFactory.getInstance());

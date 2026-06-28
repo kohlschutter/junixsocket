@@ -106,11 +106,7 @@ public final class HostAndPort {
     if (!m.find()) {
       throw new SocketException("Cannot parse URI: " + u);
     }
-    try {
-      host = URLDecoder.decode(m.group("host"), "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new IllegalStateException(e);
-    }
+    host = urlDecode(m.group("host"));
 
     String portStr = m.group("port");
     int port;
@@ -123,6 +119,16 @@ public final class HostAndPort {
     return new HostAndPort(host, port);
   }
 
+  @SuppressWarnings("PMD.UseStandardCharsets")
+  private static String urlDecode(String s) {
+    try {
+      return URLDecoder.decode(s, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  @SuppressWarnings("PMD.UseStandardCharsets")
   private static String urlEncode(String s) {
     try {
       return URLEncoder.encode(s, "UTF-8");

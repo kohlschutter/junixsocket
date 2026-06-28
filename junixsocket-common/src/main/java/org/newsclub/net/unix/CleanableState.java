@@ -24,6 +24,8 @@ import java.util.Objects;
 
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * This wrapper (along with the Java 8-specific counterpart in src/main/java8) allows us to
  * implement cleanup logic for objects that are garbage-collectable/no longer reachable.
@@ -76,6 +78,7 @@ public abstract class CleanableState implements Closeable {
    * @param observed The observed instance (the outer class referencing this
    *          {@link CleanableState}).
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   protected CleanableState(Object observed) {
     this(observed, DEFAULT_EXCEPTION_HANDLER);
   }
@@ -88,8 +91,11 @@ public abstract class CleanableState implements Closeable {
    *          {@link CleanableState}).
    * @param exceptionHandler The exception handler.
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   protected CleanableState(Object observed, AFConsumer<Throwable> exceptionHandler) {
-    this.exceptionHandler = Objects.requireNonNull(exceptionHandler);
+    Objects.requireNonNull(exceptionHandler);
+
+    this.exceptionHandler = exceptionHandler;
     this.exceptionHandlerCurrent = exceptionHandler;
     this.cleanable = CLEANER.register(observed, () -> doClean1());
   }

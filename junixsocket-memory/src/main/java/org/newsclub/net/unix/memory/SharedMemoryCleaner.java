@@ -32,6 +32,8 @@ import java.util.WeakHashMap;
 import org.newsclub.net.unix.CleanableState;
 import org.newsclub.net.unix.MemoryImplUtilInternal;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 class SharedMemoryCleaner extends CleanableState {
   private final Map<MemorySegment, Integer> segments = new LinkedHashMap<>();
   private final Map<Futex, Futex> futexes = new WeakHashMap<>();
@@ -64,6 +66,7 @@ class SharedMemoryCleaner extends CleanableState {
 
   @Override
   @SuppressWarnings("PMD.CognitiveComplexity")
+  @SuppressFBWarnings("USO_UNSAFE_OBJECT_SYNCHRONIZATION")
   protected synchronized void doClean() throws IOException {
     if (!SharedMemory.isUtilLoaded()) {
       // Nothing to do

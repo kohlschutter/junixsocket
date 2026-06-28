@@ -439,11 +439,13 @@ public class SNIHostnameCaptureTest extends SSLTestBase {
       }
 
       @Override
+      @SuppressFBWarnings("EI_EXPOSE_REP")
       public SSLParameters getSSLParameters() {
         return params;
       }
 
       @Override
+      @SuppressFBWarnings("EI_EXPOSE_REP")
       public void setSSLParameters(SSLParameters params) {
         this.params = params;
       }

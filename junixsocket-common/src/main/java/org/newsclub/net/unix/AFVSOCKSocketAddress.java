@@ -42,7 +42,7 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  *
  * @author Christian Kohlschütter
  */
-@SuppressFBWarnings("REDOS")
+@SuppressFBWarnings({"REDOS", "USO_UNSAFE_STATIC_METHOD_SYNCHRONIZATION"})
 public final class AFVSOCKSocketAddress extends AFSocketAddress {
   private static final long serialVersionUID = 1L; // do not change!
 

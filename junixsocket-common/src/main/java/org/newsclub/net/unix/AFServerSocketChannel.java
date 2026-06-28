@@ -53,6 +53,7 @@ public abstract class AFServerSocketChannel<A extends AFSocketAddress> extends S
    * @param sp The corresponding {@link SelectorProvider}.
    */
   @SuppressWarnings("all") // null
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   protected AFServerSocketChannel(AFServerSocket<A> socket, AFSelectorProvider<A> sp) {
     super(sp);
     this.afSocket = Objects.requireNonNull(socket);

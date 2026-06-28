@@ -210,7 +210,7 @@ public final class AFTIPCTopologySubscription {
     }
   }
 
-  @SuppressWarnings({"null", "cast"})
+  @SuppressWarnings({"null", "cast", "PMD.VariableDeclarationUsageDistance"})
   static AFTIPCTopologySubscription readFromBuffer(ByteBuffer buf) {
     buf = (ByteBuffer) buf.slice().limit(MESSAGE_LENGTH);
     AFTIPCTopologySubscription sub = SUBSCRIPTIONS.get(buf);

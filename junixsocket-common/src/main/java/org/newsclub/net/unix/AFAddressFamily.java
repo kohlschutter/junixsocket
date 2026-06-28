@@ -38,6 +38,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.newsclub.net.unix.AFSocketAddress.AFSocketAddressConstructor;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Describes an address family supported by junixsocket.
  *
@@ -188,6 +190,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
    * @return The corresponding {@link AFAddressFamily} instance.
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
+  @SuppressFBWarnings("USO_UNSAFE_METHOD_SYNCHRONIZATION")
   public static synchronized <A extends AFSocketAddress> AFAddressFamily<A> registerAddressFamily(
       String juxString, //
       Class<A> addressClass, AFSocketAddressConfig<A> config) {
@@ -351,6 +354,7 @@ public final class AFAddressFamily<A extends AFSocketAddress> {
    * @return The {@link SelectorProvider}.
    * @throws IllegalStateException on error.
    */
+  @SuppressFBWarnings("USO_UNSAFE_METHOD_SYNCHRONIZATION")
   public synchronized SelectorProvider getSelectorProvider() {
     if (selectorProvider != null) {
       return selectorProvider;

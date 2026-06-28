@@ -165,6 +165,7 @@ public abstract class AFRMISocketFactory extends RMISocketFactory implements Ext
     }
   }
 
+  @SuppressFBWarnings("USO_UNSAFE_ACCESSIBLE_OBJECT_SYNCHRONIZATION")
   private AFRMIService getRmiService() throws IOException {
     AFNaming naming = getExternables().naming;
     synchronized (naming) {

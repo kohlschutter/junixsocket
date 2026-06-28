@@ -92,7 +92,7 @@ public class UtunTest {
 
   @SuppressWarnings({
       "checkstyle:VariableDeclarationUsageDistance", "PMD.JUnitTestContainsTooManyAsserts",
-      "PMD.AvoidBranchingStatementAsLastInLoop"})
+      "PMD.AvoidBranchingStatementAsLastInLoop", "PMD.VariableDeclarationUsageDistance"})
   @Test
   @ExecutionEnvironmentRequirement(root = Rule.REQUIRED)
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_DARWIN)

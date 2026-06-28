@@ -201,6 +201,7 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory<AFUNIXSocketAd
     }
 
     @Override
+    @SuppressWarnings("PMD.UseStandardCharsets")
     public AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
       host = stripBrackets(host);
       if (host.startsWith(FILE_SCHEME_PREFIX_ENCODED)) {

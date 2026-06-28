@@ -79,7 +79,8 @@ public class TestRegistryServer {
         "rmitest.junixsocket.shutdown-after.secs", -1);
     if (shutdownAfter >= 0) {
       Thread t = new Thread() {
-        @SuppressFBWarnings({"DM_EXIT"})
+        @SuppressFBWarnings("DM_EXIT")
+        @SuppressWarnings("PMD.OverridingThreadRun")
         @Override
         public void run() {
           try {

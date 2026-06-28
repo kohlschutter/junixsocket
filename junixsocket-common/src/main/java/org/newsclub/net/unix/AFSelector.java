@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 final class AFSelector extends AbstractSelector {
   private final AFPipe selectorPipe;
   private final PollFd selectorPipePollFd;
@@ -79,7 +81,8 @@ final class AFSelector extends AbstractSelector {
   }
 
   @Override
-  public Set<SelectionKey> selectedKeys() {
+  @SuppressFBWarnings("EI_EXPOSE_REP")
+    public Set<SelectionKey> selectedKeys() {
     return selectedKeysPublic;
   }
 

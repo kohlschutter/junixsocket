@@ -22,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A specialized subclass of {@link RemoteFileDescriptorBase}, specifically for
  * {@link FileInputStream}s.
@@ -73,6 +75,7 @@ public final class RemoteFileInput extends RemoteFileDescriptorBase<FileInputStr
       }
       return new FileInputStream(getFileDescriptor()) {
         @Override
+        @SuppressFBWarnings("USO_UNSAFE_OBJECT_SYNCHRONIZATION")
         public void close() throws IOException {
           super.close();
 

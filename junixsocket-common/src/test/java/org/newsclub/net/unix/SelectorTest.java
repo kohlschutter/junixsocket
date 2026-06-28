@@ -126,19 +126,16 @@ public abstract class SelectorTest<A extends SocketAddress> extends SocketTestBa
     Selector selector = selectorProvider().openSelector();
     CompletableFuture<Integer> cf = new CompletableFuture<>();
 
-    new Thread() {
-      @Override
-      public void run() {
-        int num;
-        try {
-          num = selector.select();
-        } catch (IOException e) {
-          cf.completeExceptionally(e);
-          return;
-        }
-        cf.complete(num);
+    new Thread(() -> {
+      int num;
+      try {
+        num = selector.select();
+      } catch (IOException e) {
+        cf.completeExceptionally(e);
+        return;
       }
-    }.start();
+      cf.complete(num);
+    }).start();
 
     selector.wakeup();
     try {

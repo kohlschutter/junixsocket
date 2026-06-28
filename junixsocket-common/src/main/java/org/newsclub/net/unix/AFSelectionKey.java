@@ -24,6 +24,8 @@ import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 final class AFSelectionKey extends SelectionKey {
   private static final int OP_INVALID = 1 << 7; // custom
   private final AFSelector sel;
@@ -53,12 +55,14 @@ final class AFSelectionKey extends SelectionKey {
   }
 
   @Override
+  @SuppressFBWarnings("EI_EXPOSE_REP")
   public SelectableChannel channel() {
     return chann;
   }
 
   @Override
-  public Selector selector() {
+  @SuppressFBWarnings("EI_EXPOSE_REP")
+    public Selector selector() {
     return sel;
   }
 
