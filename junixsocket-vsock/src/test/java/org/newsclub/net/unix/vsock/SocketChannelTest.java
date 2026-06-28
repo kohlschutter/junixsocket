@@ -30,6 +30,7 @@ import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 import org.newsclub.net.unix.AFVSOCKSocketAddress;
 import org.newsclub.net.unix.ConnectionResetSocketException;
 import org.newsclub.net.unix.InvalidSocketException;
+import org.newsclub.net.unix.NetworkUnreachableSocketException;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
@@ -108,7 +109,7 @@ public final class SocketChannelTest extends
   public void testConnectCloseImmediatelyNonBlocking() throws Exception {
     try {
       super.testConnectCloseImmediatelyNonBlocking();
-    } catch (ConnectionResetSocketException e) {
+    } catch (ConnectionResetSocketException | NetworkUnreachableSocketException e) {
       String msg = "VSOCK may not be available";
       throw (TestAbortedWithImportantMessageException) new TestAbortedWithImportantMessageException(
           MessageType.TEST_ABORTED_INFORMATIONAL, msg, summaryImportantMessage(msg)).initCause(e);
