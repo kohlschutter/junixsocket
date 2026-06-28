@@ -435,7 +435,16 @@ public class FileDescriptorCastTest {
         AFUNIXSocket serverConn = serverSocket.accept()) {
       assertTrue(addr.getFile().delete());
 
-      ForkedVM vm = new ForkedVM(StdinSocketApp.class);
+      ForkedVM vm = new ForkedVM(StdinSocketApp.class) {
+        @Override
+        protected void onJavaMainClass(String arg) {
+          if (TestUtil.getJavaFeatureVersion() >= 24) {
+            onJavaOption("--enable-native-access=ALL-UNNAMED");
+          }
+          super.onJavaMainClass(arg);
+        }
+      };
+
       vm.setRedirectInput(FileDescriptorCast.using(clientConn.getFileDescriptor()).as(
           Redirect.class));
       vm.setRedirectError(Redirect.INHERIT);
