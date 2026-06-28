@@ -38,6 +38,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -449,12 +450,40 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
   }
 
   @Override
-  protected final void connect(SocketAddress addr, int connectTimeout) throws IOException {
-    connect0(addr, connectTimeout);
+  protected final void connect(SocketAddress addr, int connectTimeoutMs) throws IOException {
+    connect0(addr, connectTimeoutMs);
+  }
+
+  final boolean connect0(SocketAddress addr, int connectTimeoutMs) throws IOException {
+    if (connectTimeoutMs <= 0) {
+      return connect1(addr, 0);
+    }
+
+    // Catch spurious timeouts (seen on Windows)
+    int remainingTimeout = connectTimeoutMs;
+    SocketTimeoutException ste = null;
+    while (remainingTimeout > 0) {
+      long time = System.nanoTime();
+      try {
+        return connect1(addr, remainingTimeout);
+      } catch (SocketTimeoutException e) {
+        if (ste == null) {
+          ste = e;
+        } else {
+          ste.addSuppressed(ste);
+        }
+      }
+      time = System.nanoTime() - time;
+      remainingTimeout -= TimeUnit.NANOSECONDS.toMillis(time);
+    }
+    if (ste == null) {
+      ste = new SocketTimeoutException();
+    }
+    throw ste;
   }
 
   @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NcssCount"})
-  final boolean connect0(SocketAddress addr, int connectTimeout) throws IOException {
+  final boolean connect1(SocketAddress addr, int connectTimeout) throws IOException {
     if (addr == AFSocketAddress.INTERNAL_DUMMY_CONNECT) {
       this.connected.set(true);
       return true;
