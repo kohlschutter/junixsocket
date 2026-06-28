@@ -207,16 +207,19 @@ _Pragma("GCC diagnostic pop")
 #if __TOS_MVS__
 #  define CK_VISIBILITY_INTERNAL
 #  define CK_VISIBILITY_DEFAULT
+#  undef CK_HAVE_VISIBILITY
 #  define CK_HAVE_VISIBILITY 0
 #endif
 #ifdef _WIN32
 #  define CK_VISIBILITY_INTERNAL
 #  define CK_VISIBILITY_DEFAULT
+#  undef CK_HAVE_VISIBILITY
 #  define CK_HAVE_VISIBILITY 0
 #endif
 #ifdef __TANDEM
 #  define CK_VISIBILITY_INTERNAL
 #  define CK_VISIBILITY_DEFAULT
+#  undef CK_HAVE_VISIBILITY
 #  define CK_HAVE_VISIBILITY 0
 #  undef CK_UNUSED
 #  define CK_UNUSED
