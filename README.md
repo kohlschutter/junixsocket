@@ -100,6 +100,15 @@ to keep updating to the most recent version. Check back frequently.
 For more, optional packages (RMI, MySQL, Jetty, TIPC, VSOCK, server, Darwin, SSL, GraalVM, etc.) and
 Gradle instructions see [here](https://kohlschutter.github.io/junixsocket/dependency.html)
 
+### GPG keys used for signing artifacts
+
+The following GPG public keys are used for signing Maven artifacts:
+
+```
+ed25519 2024-12-04 [SC] [expires: 2027-12-04]
+      F2F098DD0383FE75CD5C6D3A0321BEE8AA36B734
+```
+
 ## Snapshot builds for testing
 
 When you're testing a `-SNAPSHOT` version, make sure that the Sonatype snapshot repository is
