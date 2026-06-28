@@ -544,6 +544,7 @@ public class SharedMemoryTest {
   }
 
   @Test
+  @ExecutionEnvironmentRequirement(windows = Rule.PROHIBITED)
   public void testFutexCloseSharedMemoryFail() throws Exception {
     testFutex(true, false);
   }
