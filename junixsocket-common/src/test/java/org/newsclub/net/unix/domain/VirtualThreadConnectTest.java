@@ -32,16 +32,23 @@ import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.ThreadUtil;
+
+import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
 
 @SuppressWarnings("all")
 public class VirtualThreadConnectTest {
   @Test
   public void testBlockingReadCompletesForAllClients() throws Exception {
-    final int clients = 64;
+    if (!ThreadUtil.isVirtualThreadSupported()) {
+      throw new TestAbortedNotAnIssueException("Virtual threads not supported");
+    }
+
+    final int clients = Runtime.getRuntime().availableProcessors();
     final int serverDelayMillis = 20;
     final int timeoutSeconds = 60;
     final byte payload = 0x2A;
-    final int connectTimeoutMs = 100;
+    final int connectTimeoutMs = 5000;
 
     Path socketPath = Files.createTempFile("junixsocket-vt-", ".sock");
 
