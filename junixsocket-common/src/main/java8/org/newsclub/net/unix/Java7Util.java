@@ -21,6 +21,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Semaphore;
 
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
@@ -47,9 +51,20 @@ final class Java7Util {
     JAVA8_OR_LATER = ok;
   }
 
-  static <@Nullable U> AFFuture<U> supplyAsync(AFSupplier<U> supplier) {
+  private static final ForkJoinPool COMMON_POOL = JAVA8_OR_LATER ? ForkJoinPool.commonPool()
+      : new ForkJoinPool();
+
+  static ForkJoinPool commonPool() {
+    return COMMON_POOL;
+  }
+
+  static ExecutorService newWorkStealingPool() {
+    return new ForkJoinPool(Runtime.getRuntime().availableProcessors());
+  }
+
+  static <@Nullable U> AFFuture<U> supplyAsync(AFSupplier<U> supplier, Executor executor) {
     if (JAVA8_OR_LATER) {
-      return CompletableFuture.supplyAsync(supplier::get)::get;
+      return CompletableFuture.supplyAsync(supplier::get, executor)::get;
     } else {
       return new Java7CompletableFuture<>(supplier);
     }
@@ -95,5 +110,9 @@ final class Java7Util {
       sema.acquire();
       return object;
     }
+  }
+
+  static int getJavaFeatureVersion() {
+    return JAVA8_OR_LATER ? 8 : 7;
   }
 }

@@ -127,6 +127,7 @@ public class SelftestProvider {
     registerTest(org.newsclub.net.unix.domain.UnixDomainSocketAddressTest.class);
 
     registerTest(COMMON, org.newsclub.net.unix.domain.VirtualThreadConnectTest.class);
+    registerTest(COMMON, org.newsclub.net.unix.domain.VirtualThreadPollerNaiveDeadlockTest.class);
 }
 
   public Set<String> modulesDisabledByDefault() {

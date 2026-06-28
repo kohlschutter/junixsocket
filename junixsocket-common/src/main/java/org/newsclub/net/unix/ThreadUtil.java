@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.locks.LockSupport;
 
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
@@ -34,6 +35,12 @@ import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
 @IgnoreJRERequirement // see src/main/java20
 public final class ThreadUtil {
   private static final ThreadLocal<Boolean> TREAT_AS_VIRTUAL_THREAD = new ThreadLocal<>();
+
+  private static final String PROP_VIRTUAL_THREADS_SUPPORTED =
+      "org.newsclub.net.unix.virtual-threads";
+
+  private static final boolean VIRTUAL_THREADS_SUPPORTED = Boolean.parseBoolean(System.getProperty(
+      PROP_VIRTUAL_THREADS_SUPPORTED, "true"));
 
   private ThreadUtil() {
     throw new IllegalStateException("No instances");
@@ -71,13 +78,24 @@ public final class ThreadUtil {
   }
 
   /**
+   * Checks if the given {@link Thread} is a virtual thread, regardless of
+   * {@link #setTreatAsVirtualThread(boolean)}.
+   *
+   * @param t The thread to check.
+   * @return {@code true} if so.
+   */
+  public static boolean isTrulyAVirtualThread(Thread t) {
+    return t.isVirtual();
+  }
+
+  /**
    * Checks if virtual threads are considered to be supported (and therefore if special support
    * should be enabled).
    *
    * @return {@code true} if so.
    */
   public static boolean isVirtualThreadSupported() {
-    return true;
+    return VIRTUAL_THREADS_SUPPORTED;
   }
 
   /**
@@ -169,5 +187,23 @@ public final class ThreadUtil {
         }
       }
     }
+  }
+
+  /**
+   * Java 7-compatible wrapper for {@link ForkJoinPool#commonPool()}.
+   *
+   * @return The common pool.
+   */
+  public static ForkJoinPool commonPool() {
+    return Java7Util.commonPool();
+  }
+
+  /**
+   * Java 7-compatible wrapper for {@link Executors#newWorkStealingPool()}.
+   *
+   * @return A new pool.
+   */
+  public static ExecutorService newWorkStealingPool() {
+    return Java7Util.newWorkStealingPool();
   }
 }

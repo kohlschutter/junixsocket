@@ -47,6 +47,15 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
   private static final InterruptedIOException POLL_INTERRUPTED_SENTINEL =
       new InterruptedIOException();
 
+  private static final String PROP_POLLJOB_EXECUTOR =
+      "org.newsclub.net.unix.VirtualThreadPoller.use-common-pool";
+
+  // With Java 25 and above, using the commonPool may cause a deadlock
+  // see https://github.com/kohlschutter/junixsocket/issues/172
+  private static final java.util.concurrent.ExecutorService POLLJOB_EXECUTOR = //
+      Boolean.parseBoolean(System.getProperty(PROP_POLLJOB_EXECUTOR, "false")) ? //
+          ThreadUtil.commonPool() : ThreadUtil.newWorkStealingPool();
+
   private static final class PollJob {
     private final List<Thread> waitingThreads = new LinkedList<>();
     private final FileDescriptor fd;
@@ -111,7 +120,7 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
         }
 
         return null;
-      })::get;
+      }, POLLJOB_EXECUTOR)::get;
     }
   }
 

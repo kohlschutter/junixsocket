@@ -21,6 +21,7 @@ import java.io.InterruptedIOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -71,6 +72,17 @@ public final class ThreadUtil {
    */
   public static boolean isVirtualThread() {
     return isTreatAsVirtualThread();
+  }
+
+  /**
+   * Checks if the given {@link Thread} is a virtual thread, regardless of
+   * {@link #setTreatAsVirtualThread(boolean)}.
+   *
+   * @param t The thread to check.
+   * @return {@code true} if so.
+   */
+  public static boolean isTrulyAVirtualThread(Thread t) {
+    return false;
   }
 
   /**
@@ -153,5 +165,23 @@ public final class ThreadUtil {
         setTreatAsVirtualThread(treatAsVirtual);
       }
     }
+  }
+
+  /**
+   * Java 7-compatible wrapper for {@link ForkJoinPool#commonPool()}.
+   *
+   * @return The common pool.
+   */
+  public static ForkJoinPool commonPool() {
+    return Java7Util.commonPool();
+  }
+
+  /**
+   * Java 7-compatible wrapper for {@link Executors#newWorkStealingPool()}.
+   *
+   * @return A new pool.
+   */
+  public static ExecutorService newWorkStealingPool() {
+    return Java7Util.newWorkStealingPool();
   }
 }

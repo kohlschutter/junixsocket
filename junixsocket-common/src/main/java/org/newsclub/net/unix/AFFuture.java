@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -42,7 +43,7 @@ interface AFFuture<T> {
    */
   T get() throws InterruptedException, ExecutionException;
 
-  static <@Nullable U> AFFuture<U> supplyAsync(AFSupplier<U> supplier) {
-    return Java7Util.supplyAsync(supplier);
+  static <@Nullable U> AFFuture<U> supplyAsync(AFSupplier<U> supplier, Executor executor) {
+    return Java7Util.supplyAsync(supplier, executor);
   }
 }

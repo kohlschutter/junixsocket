@@ -109,4 +109,12 @@ public final class TestUtil {
         "AF_UNIX datagram support is buggy in this Haiku release or environment; see https://dev.haiku-os.org/ticket/18535",
         e);
   }
+
+  public static int getJavaFeatureVersion() {
+    return Java7Util.getJavaFeatureVersion();
+  }
+
+  public static String getNativeUnixSocketClassName() {
+    return NativeUnixSocket.class.getName();
+  }
 }
