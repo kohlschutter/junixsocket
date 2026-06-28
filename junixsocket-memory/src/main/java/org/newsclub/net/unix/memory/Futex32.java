@@ -22,6 +22,7 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.foreign.ValueLayout.OfInt;
 import java.lang.invoke.VarHandle;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.newsclub.net.unix.MemoryImplUtilInternal;
 
@@ -34,50 +35,48 @@ final class Futex32 implements Futex {
 
   private final MemorySegment ms;
   private final boolean zeroOnClose;
-  private final long address;
-  private volatile boolean closed = false;
+  private final AtomicBoolean closed = new AtomicBoolean(false);
 
-  Futex32(MemorySegment addr, boolean zeroOnClose) throws IOException {
-    this.address = addr.address();
-    if ((address & 3) != 0) {
+  Futex32(MemorySegment ms, boolean zeroOnClose) throws IOException {
+    if (!ms.isAccessibleBy(Thread.currentThread())) {
+      throw new IllegalStateException("Cannot access this MemorySegment from the current thread");
+    }
+    if ((ms.address() & 3) != 0) {
       throw new IOException("Not aligned");
     }
-    if (addr.byteSize() != SharedMemory.FUTEX32_SEGMENT_SIZE) {
+    if (ms.byteSize() != SharedMemory.FUTEX32_SEGMENT_SIZE) {
       throw new IOException("MemorySegment must be exactly 4 bytes long");
     }
-    this.ms = addr;
+    this.ms = ms;
     this.zeroOnClose = zeroOnClose;
 
     // Make sure the 32-bit value is accessible (page-in memory)
-    SharedMemory.UTIL.madvise(address, SharedMemory.FUTEX32_SEGMENT_SIZE,
+    SharedMemory.UTIL.madvise(ms.address(), SharedMemory.FUTEX32_SEGMENT_SIZE,
         MemoryImplUtilInternal.MADV_WILLNEED, true);
   }
 
   @Override
   public void close() {
-    if (zeroOnClose && ms != null) {
-      ms.set(OfInt.JAVA_INT, 0, 0);
+    if (!closed.getAndSet(true)) {
+      if (zeroOnClose && ms != null) {
+        ms.set(OfInt.JAVA_INT, 0, 0);
+      }
     }
-    this.closed = true;
   }
 
   @Override
   public boolean tryWait(int ifValue, int timeoutMillis) throws IOException {
-    if (closed) {
-      return false;
-    }
-
-    return SharedMemory.UTIL.futexWait(address, ifValue, timeoutMillis);
+    return SharedMemory.UTIL.futexWait(ms.address(), ifValue, timeoutMillis);
   }
 
   @Override
   public boolean tryWake(boolean wakeAll) throws IOException {
-    return SharedMemory.UTIL.futexWake(address, wakeAll);
+    return SharedMemory.UTIL.futexWake(ms.address(), wakeAll);
   }
 
   @Override
   public boolean isClosed() {
-    return closed;
+    return closed.get();
   }
 
   MemorySegment getMemorySegment() {

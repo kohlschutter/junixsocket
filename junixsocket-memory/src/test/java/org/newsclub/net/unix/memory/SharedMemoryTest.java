@@ -551,7 +551,7 @@ public class SharedMemoryTest {
   @Test
   public void testFutexAlignmentAndLength() throws Exception {
     try (SharedMemory mem = SharedMemory.createAnonymous(16)) {
-      MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE);
+      MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE).fill((byte) 0);
 
       mem.futex(ms.asSlice(0, SharedMemory.FUTEX32_SEGMENT_SIZE)); // OK
       assertThrows(IOException.class, () -> mem.futex(ms.asSlice(1,
@@ -573,7 +573,7 @@ public class SharedMemoryTest {
   @Test
   public void testFutexIs32Bit() throws Exception {
     try (SharedMemory mem = SharedMemory.createAnonymous(16)) {
-      MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE);
+      MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE).fill((byte) 0);
 
       ms.setAtIndex(OfInt.JAVA_INT, 1, 0xCAFEBABE);
       assertNotEquals(0, ms.get(OfLong.JAVA_LONG, 0));
@@ -606,11 +606,12 @@ public class SharedMemoryTest {
 
   @Test
   @ForkedVMRequirement(forkSupported = true)
+  @SuppressWarnings("PMD.ExceptionAsFlowControl")
   public void testFutexSeparateVM() throws Exception {
     try (SharedMemory mem = SharedMemory.createAnonymous(FORKEDVM_FUTEX_SIZE)) {
       ForkedVM vm = new ForkedVM(FutexTestApp.class);
 
-      CompletableFuture<@Nullable IOException> cf = CompletableFuture.supplyAsync(() -> {
+      CompletableFuture<@Nullable Exception> cf = CompletableFuture.supplyAsync(() -> {
         try {
           MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE);
 
@@ -618,6 +619,12 @@ public class SharedMemoryTest {
           long now = System.currentTimeMillis();
 
           try (Futex futex = mem.futex(ms.asSlice(0, 4))) {
+            if (!futex.isInterProcess()) {
+              throw new TestAbortedWithImportantMessageException(
+                  MessageType.TEST_ABORTED_SHORT_INFORMATIONAL,
+                  "On this system, SharedMemory Futexes cannot be shared between processes");
+            }
+
             do {
               if (!futex.tryWait(0, waitRemaining)) {
                 waitRemaining -= (int) (System.currentTimeMillis() - now);
@@ -629,7 +636,7 @@ public class SharedMemoryTest {
               }
             } while (true); // NOPMD
           }
-        } catch (IOException e) {
+        } catch (Exception e) {
           return e;
         }
       });
@@ -641,7 +648,7 @@ public class SharedMemoryTest {
 
       Process p = vm.fork();
 
-      IOException exc;
+      Exception exc;
       try {
         exc = cf.get(5, TimeUnit.SECONDS);
       } catch (ExecutionException e) {
@@ -664,7 +671,7 @@ public class SharedMemoryTest {
     try (SharedMemory mem = SharedMemory.createAnonymous(16)) {
       MemorySegment ms = mem.asMappedMemorySegment(MapMode.READ_WRITE);
 
-      try (Futex futex = mem.futex(ms.asSlice(4, 4), wakeUp)) {
+      try (Futex futex = mem.futex(ms.asSlice(4, 4).fill((byte) 0), wakeUp)) {
         assertTrue(futex.tryWait(0xDEADBEEF, 0)); // immediately returns; value doesn't match
 
         long time = System.currentTimeMillis();
