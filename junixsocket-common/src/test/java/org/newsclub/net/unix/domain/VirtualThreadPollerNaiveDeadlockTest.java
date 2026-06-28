@@ -18,7 +18,6 @@
 package org.newsclub.net.unix.domain;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -40,6 +39,7 @@ import org.newsclub.net.unix.ThreadUtil;
 
 import com.kohlschutter.testutil.ForkedVM;
 import com.kohlschutter.testutil.ForkedVMRequirement;
+import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
 
 /**
  * Ensures dependent virtual-thread socket reads can complete when the common pool has a single
@@ -52,7 +52,9 @@ public class VirtualThreadPollerNaiveDeadlockTest {
   @Test
   @ForkedVMRequirement(forkSupported = true)
   public void testWithParallelism1() throws Exception {
-    assumeTrue(ThreadUtil.isVirtualThreadSupported());
+    if (!ThreadUtil.isVirtualThreadSupported()) {
+      throw new TestAbortedNotAnIssueException("Virtual threads not supported");
+    }
 
     if (ThreadUtil.commonPool().getParallelism() == 1) {
       // no need to fork
@@ -117,9 +119,13 @@ public class VirtualThreadPollerNaiveDeadlockTest {
   }
 
   private static void reproduce() throws Exception { // NOPMD.CognitiveComplexity
-    assumeTrue(ThreadUtil.isVirtualThreadSupported());
-    assumeTrue(ThreadUtil.commonPool().getParallelism() == 1,
-        "Test requires -Djava.util.concurrent.ForkJoinPool.common.parallelism=1");
+    if (!ThreadUtil.isVirtualThreadSupported()) {
+      throw new TestAbortedNotAnIssueException("Virtual threads not supported");
+    }
+    if (ThreadUtil.commonPool().getParallelism() == 1) {
+      throw new TestAbortedNotAnIssueException(
+          "Test requires -Djava.util.concurrent.ForkJoinPool.common.parallelism=1");
+    }
 
     Path socketPath = Files.createTempFile("junixsocket-vtpoll-deadlock-", ".sock");
     Files.deleteIfExists(socketPath);
