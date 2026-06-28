@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix.domain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
@@ -97,8 +98,9 @@ public class VirtualThreadPollerNaiveDeadlockTest {
         }
       });
 
-      assertTrue(p.waitFor(10, TimeUnit.SECONDS) && p.exitValue() == 0,
-          "Forked VM should have terminated successfully within a resonable time interval");
+      assertTrue(p.waitFor(10, TimeUnit.SECONDS),
+          "Forked VM should have terminated within a resonable time interval");
+      assertEquals(0, p.exitValue(), "Forked VM should have terminated successfully");
     }
   }
 
@@ -122,7 +124,7 @@ public class VirtualThreadPollerNaiveDeadlockTest {
     if (!ThreadUtil.isVirtualThreadSupported()) {
       throw new TestAbortedNotAnIssueException("Virtual threads not supported");
     }
-    if (ThreadUtil.commonPool().getParallelism() == 1) {
+    if (ThreadUtil.commonPool().getParallelism() != 1) {
       throw new TestAbortedNotAnIssueException(
           "Test requires -Djava.util.concurrent.ForkJoinPool.common.parallelism=1");
     }
