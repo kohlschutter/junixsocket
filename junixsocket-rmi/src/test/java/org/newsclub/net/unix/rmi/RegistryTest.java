@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -30,6 +31,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocketCapability;
+import org.newsclub.net.unix.AddressAlreadyInUseSocketException;
+
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
+import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 
 @AFSocketCapabilityRequirement({AFSocketCapability.CAPABILITY_UNIX_DOMAIN})
 public class RegistryTest extends ShutdownHookTestBase {
@@ -37,7 +42,19 @@ public class RegistryTest extends ShutdownHookTestBase {
   public void testDoubleCreateRegistry() throws IOException {
     AFNaming naming = AFUNIXNaming.newPrivateInstance();
     naming.createRegistry();
-    naming.createRegistry();
+    try {
+      naming.createRegistry();
+    } catch (RemoteException e) {
+      if (e.getCause() instanceof AddressAlreadyInUseSocketException) {
+        if ("z/OS".equals(System.getProperty("os.name", ""))) {
+          throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
+              "Attempting to create an RMI registry twice appears to fail with "
+                  + "\"EDC8115I Address already in use\" when compiling for z/OS using xlclang, "
+                  + "but not when using xlc; this is a known bug", e);
+        }
+      }
+      throw e;
+    }
     naming.shutdownRegistry();
   }
 
