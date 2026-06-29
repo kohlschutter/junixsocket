@@ -6,7 +6,7 @@
 //
 
 #if __TOS_MVS__
-//
+; //
 #else
 #if __has_include(<features.h>)
 #  include <features.h>
