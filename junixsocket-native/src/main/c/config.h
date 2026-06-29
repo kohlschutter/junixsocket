@@ -79,11 +79,15 @@ CK_IGNORE_UNUSED_MACROS_END
 #if __astral__
 #  undef junixsocket_have_sun_len
 #  undef junixsocket_have_ancillary
+#  define junixsocket_dont_have_rcvsndtimeo
+#  define junixsocket_use_poll_for_read
+#  define junixsocket_use_poll_for_accept
 #  include <netinet/in.h>
 #endif
 
 #if __TANDEM
 #  include <stdbool.h>
+#  define junixsocket_dont_have_rcvsndtimeo
 #elif !defined(false)
 #  define false JNI_FALSE
 #  define true JNI_TRUE
@@ -102,6 +106,7 @@ int shm_open(const char *name, int oflag, mode_t mode);
 
 #  undef junixsocket_have_ancillary
 #  undef junixsocket_have_pipe2
+#  define junixsocket_dont_have_rcvsndtimeo
 #  define junixsocket_use_poll_for_read
 #  define junixsocket_use_poll_for_accept
 #endif

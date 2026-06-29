@@ -103,11 +103,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_getSocketOpti
     }
 #if !defined(_WIN32)
     if(optID == SO_SNDTIMEO || optID == SO_RCVTIMEO) {
-#if __TOS_MVS__
-        // Unsupported on z/OS
-        return -1;
-#endif
-#if __TANDEM
+#ifdef junixsocket_dont_have_rcvsndtimeo
         return -1;
 #else
         struct timeval optVal;
@@ -169,11 +165,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setSocketOpti
 
 #if !defined(_WIN32)
     if(optID == SO_SNDTIMEO || optID == SO_RCVTIMEO) {
-#if __TOS_MVS__
-        // Unsupported on z/OS
-        return;
-#endif
-#if __TANDEM
+#ifdef junixsocket_dont_have_rcvsndtimeo
 #else
         // NOTE: SO_RCVTIMEO == SocketOptions.SO_TIMEOUT = 0x1006
         struct timeval optVal;
