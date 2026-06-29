@@ -120,7 +120,7 @@ defined(SO_PEERCRED) || defined(SO_PEERID) || defined(__NetBSD__) || defined(__s
         }
 #endif
 
-#if !defined(_WIN32)
+#if !defined(_WIN32) && !defined(__astral__)
         capabilities |= CAPABILITY_UNIX_DATAGRAMS;
 #endif
 

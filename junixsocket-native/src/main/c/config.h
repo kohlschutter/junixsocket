@@ -76,6 +76,12 @@ CK_IGNORE_UNUSED_MACROS_BEGIN
 #define junixsocket_have_pipe2 // might be undef'ed below
 CK_IGNORE_UNUSED_MACROS_END
 
+#if __astral__
+#  undef junixsocket_have_sun_len
+#  undef junixsocket_have_ancillary
+#  include <netinet/in.h>
+#endif
+
 #if __TANDEM
 #  include <stdbool.h>
 #elif !defined(false)
