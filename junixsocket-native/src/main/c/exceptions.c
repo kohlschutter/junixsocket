@@ -47,6 +47,7 @@ static char *kExceptionClassnames[kExceptionMaxExcl] = {
     "org/newsclub/net/unix/OperationNotSupportedIOException", // kExceptionOperationNotSupportedIOException,
     "org/newsclub/net/unix/ConnectionRefusedSocketException", // kExceptionConnectionRefusedSocketException
     "org/newsclub/net/unix/NetworkUnreachableSocketException", // kExceptionNetworkUnreachableSocketException
+    "org/newsclub/net/unix/AddressAlreadyInUseSocketException", // kExceptionAddressAlreadyInUseSocketException,
 };
 
 static jclass *kExceptionClasses;
@@ -127,6 +128,9 @@ void throwErrnumException1(JNIEnv* env, int errnum, jobject fdToClose, jboolean 
             break;
         case ENETUNREACH:
             exceptionType = kExceptionNetworkUnreachableSocketException;
+            break;
+        case EADDRINUSE:
+            exceptionType = kExceptionAddressAlreadyInUseSocketException;
             break;
 #if defined(_WIN32)
         case 87 /*ERROR_INVALID_PARAMETER*/:
