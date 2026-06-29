@@ -19,9 +19,11 @@ package org.newsclub.net.unix.domain;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileDescriptor;
+import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFSocket;
@@ -47,7 +49,9 @@ public final class SocketTest extends org.newsclub.net.unix.SocketTest<AFUNIXSoc
 
   @Test
   public void testMain() throws Exception {
-    AFUNIXSocket.main(new String[0]);
+    assertTimeoutPreemptively(Duration.ofSeconds(30), () -> {
+      AFUNIXSocket.main(new String[0]);
+    });
   }
 
   @Test
