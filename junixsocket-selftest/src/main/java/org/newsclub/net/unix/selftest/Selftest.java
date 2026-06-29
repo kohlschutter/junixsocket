@@ -35,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -67,6 +68,7 @@ import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException.MessageType;
 import com.kohlschutter.util.ConsolePrintStream;
+import com.kohlschutter.util.ProcessUtil;
 import com.kohlschutter.util.SystemPropertyUtil;
 
 /**
@@ -80,7 +82,8 @@ import com.kohlschutter.util.SystemPropertyUtil;
  * @author Christian Kohlschütter
  */
 @SuppressWarnings({
-    "PMD.CyclomaticComplexity", "PMD.CognitiveComplexity", "PMD.CouplingBetweenObjects"})
+    "PMD.CyclomaticComplexity", "PMD.CognitiveComplexity", "PMD.CouplingBetweenObjects",
+    "PMD.ExcessiveImports"})
 @SuppressFBWarnings({"PATH_TRAVERSAL_IN", "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE"})
 public class Selftest {
   private final Class<?> diagnosticsHelperClass = resolveOptionalClass(
@@ -318,6 +321,7 @@ public class Selftest {
     st.dumpAdditionalProperties();
     st.dumpSystemProperties();
     st.dumpOSReleaseFiles();
+    st.dumpPid();
     st.checkSupported();
     st.checkCapabilities();
 
@@ -366,6 +370,22 @@ public class Selftest {
 
     out.flush();
     return rc;
+  }
+
+  private void dumpPid() {
+    String pid;
+    try {
+      pid = Long.toString(ProcessUtil.getPid());
+    } catch (Exception e) {
+      pid = "(unknown)";
+    }
+    out.println("Selftest process PID: " + pid);
+    String javaCmd = ProcessUtil.getJavaCommand();
+    String[] javaArgs = ProcessUtil.getJavaCommandArguments();
+    if (javaCmd != null && javaArgs != null) {
+      out.println("Selftest process command: " + javaCmd + " " + Arrays.toString(javaArgs));
+    }
+    out.println();
   }
 
   private void dumpAdditionalProperties() {
