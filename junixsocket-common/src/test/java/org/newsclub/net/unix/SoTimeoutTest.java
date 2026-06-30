@@ -58,26 +58,28 @@ public abstract class SoTimeoutTest<A extends SocketAddress> extends SocketTestB
   @Test
   public void issue14Fail() throws Exception {
     Semaphore sema = new Semaphore(0);
-    try (ServerThread serverThread = new ServerThread() {
+    assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+      try (ServerThread serverThread = new ServerThread() {
 
-      @Override
-      protected void handleConnection(final Socket socket) throws IOException {
+        @Override
+        protected void handleConnection(final Socket socket) throws IOException {
+          try {
+            socket.close();
+          } finally {
+            sema.release();
+          }
+        }
+      }; Socket sock = connectTo(serverThread.getServerAddress())) {
+        sema.acquire();
+
         try {
-          socket.close();
-        } finally {
-          sema.release();
+          sock.setSoTimeout((int) TimeUnit.SECONDS.toMillis(12));
+          // Socket#setSoTimeout(int) did not throw a SocketException. This is OK.
+        } catch (final SocketException e) {
+          // expected, as the socket is actually closed
         }
       }
-    }; Socket sock = connectTo(serverThread.getServerAddress())) {
-      sema.acquire();
-
-      try {
-        sock.setSoTimeout((int) TimeUnit.SECONDS.toMillis(12));
-        // Socket#setSoTimeout(int) did not throw a SocketException. This is OK.
-      } catch (final SocketException e) {
-        // expected, as the socket is actually closed
-      }
-    }
+    });
   }
 
   /**
