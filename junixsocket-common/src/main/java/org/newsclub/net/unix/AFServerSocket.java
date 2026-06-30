@@ -28,6 +28,7 @@ import java.net.SocketException;
 import java.net.SocketOption;
 import java.net.SocketOptions;
 import java.nio.channels.IllegalBlockingModeException;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -459,7 +460,15 @@ public abstract class AFServerSocket<A extends AFSocketAddress> extends ServerSo
     if (addr == null) {
       return false;
     }
-    return addr.equals(getAFImpl().getLocalSocketAddress());
+    byte[] addrBytes = addr.getBytes();
+    if (addrBytes == null) {
+      return false;
+    }
+    byte[] sab = getAFImpl().getLocalSocketAddressBytes();
+    if (sab == null) {
+      return false;
+    }
+    return Arrays.equals(sab, addrBytes);
   }
 
   final synchronized void setBoundEndpoint(@Nullable A addr) {

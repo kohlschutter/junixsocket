@@ -1336,6 +1336,10 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
     return AFSocketAddress.getSocketAddress(getFileDescriptor(), false, localport, addressFamily);
   }
 
+  final byte[] getLocalSocketAddressBytes() {
+    return AFSocketAddress.getSocketAddressBytes(getFileDescriptor(), false, addressFamily);
+  }
+
   final @Nullable A getRemoteSocketAddress() {
     return AFSocketAddress.getSocketAddress(getFileDescriptor(), true, port, addressFamily);
   }

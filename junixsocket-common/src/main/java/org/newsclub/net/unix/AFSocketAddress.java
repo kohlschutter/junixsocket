@@ -385,6 +385,28 @@ public abstract class AFSocketAddress extends InetSocketAddress {
     }
   }
 
+  /**
+   * Gets the socket name/peer name of a file descriptor as bytes.
+   *
+   * @param <A> The corresponding address type.
+   * @param fdesc The file descriptor.
+   * @param requestPeerName If {@code true}, the remote peer name (instead of the local name) is
+   *          retrieved.
+   * @param af The address family.
+   * @return The address bytes.
+   */
+  static final <A extends AFSocketAddress> byte[] getSocketAddressBytes(FileDescriptor fdesc,
+      boolean requestPeerName, AFAddressFamily<A> af) {
+    if (!fdesc.valid()) {
+      return null;
+    }
+    byte[] addr = NativeUnixSocket.sockname(af.getDomain(), fdesc, requestPeerName);
+    if (addr == null) {
+      return null;
+    }
+    return addr.clone();
+  }
+
   static final AFSocketAddress preprocessSocketAddress(
       Class<? extends AFSocketAddress> supportedAddressClass, SocketAddress endpoint,
       AFSocketAddressFromHostname<?> afh) throws SocketException {
