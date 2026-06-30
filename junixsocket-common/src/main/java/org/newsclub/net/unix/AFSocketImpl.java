@@ -321,6 +321,7 @@ public abstract class AFSocketImpl<A extends AFSocketAddress> extends SocketImpl
           } catch (Exception e2) {
             e.addSuppressed(e2);
           }
+          caught = e;
           throw e;
         } catch (SocketException e) { // NOPMD.ExceptionAsFlowControl
           caught = e;
