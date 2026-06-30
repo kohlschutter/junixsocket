@@ -97,16 +97,18 @@ public final class SocketAddressTest extends SocketTestBase<AFUNIXSocketAddress>
 
   @Test
   public void testAbstractNamespace() throws Exception {
+    boolean isEBCDIC = "z/OS".equals(System.getProperty("os.name"));
+
     AFUNIXSocketAddress address = AFUNIXSocketAddress.inAbstractNamespace(
         "test\n\u000b\u0000\u007f");
-    if ("z/OS".equals(System.getProperty("os.name"))) {
+    if (isEBCDIC) {
       // FIXME: check bytes in EBCDIC
     } else {
       byte[] addressBytes = {0, 't', 'e', 's', 't', '\n', '\u000b', '\u0000', '\u007f'};
       assertArrayEquals(addressBytes, address.getPathAsBytes());
     }
     assertEquals(0, address.getPort());
-    if ("z/OS".equals(System.getProperty("os.name"))) {
+    if (isEBCDIC) {
       // FIXME: check bytes in EBCDIC
     } else {
       assertEquals("@test..@.", address.getPath());
