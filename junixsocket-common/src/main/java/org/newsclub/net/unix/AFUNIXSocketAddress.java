@@ -304,12 +304,9 @@ public final class AFUNIXSocketAddress extends AFSocketAddress {
   }
 
   static File newTempPath(boolean deleteOnExit) throws IOException {
-    File f = File.createTempFile("jux", ".sock");
+    File f = TempFileUtil.INSTANCE.newPathForUnixDomainSocket(true).toFile();
     if (deleteOnExit) {
       f.deleteOnExit(); // always delete on exit to clean-up sockets created under that name
-    }
-    if (!f.delete() && f.exists()) {
-      throw new IOException("Could not delete temporary file that we just created: " + f);
     }
     return f;
   }

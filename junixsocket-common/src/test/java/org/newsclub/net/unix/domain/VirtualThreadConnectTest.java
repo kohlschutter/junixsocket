@@ -8,7 +8,7 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.newsclub.net.unix.AFUNIXServerSocket;
 import org.newsclub.net.unix.AFUNIXSocket;
 import org.newsclub.net.unix.AFUNIXSocketAddress;
+import org.newsclub.net.unix.TestUtil;
 import org.newsclub.net.unix.ThreadUtil;
 
 import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
@@ -50,7 +51,7 @@ public class VirtualThreadConnectTest {
     final byte payload = 0x2A;
     final int connectTimeoutMs = 5000;
 
-    Path socketPath = Files.createTempFile("junixsocket-vt-", ".sock");
+    Path socketPath = TestUtil.newPathForUnixDomainSocket();
 
     var failures = new AtomicInteger(0);
     var completed = new CountDownLatch(clients);

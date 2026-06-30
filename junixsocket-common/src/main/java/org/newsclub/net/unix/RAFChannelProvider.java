@@ -42,7 +42,7 @@ final class RAFChannelProvider extends RandomAccessFile implements FileDescripto
   private final AtomicBoolean closed = new AtomicBoolean(false);
 
   private RAFChannelProvider(FileDescriptor fdObj) throws IOException {
-    this(fdObj, File.createTempFile("jux", ".sock"));
+    this(fdObj, TempFileUtil.INSTANCE.newPathForUnixDomainSocket(false).toFile());
   }
 
   private RAFChannelProvider(FileDescriptor fdObj, File tempPath) throws IOException {

@@ -17,6 +17,8 @@
  */
 package org.newsclub.net.unix;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.concurrent.Future;
 
 import com.kohlschutter.testutil.TestAbortedWithImportantMessageException;
@@ -116,5 +118,9 @@ public final class TestUtil {
 
   public static String getNativeUnixSocketClassName() {
     return NativeUnixSocket.class.getName();
+  }
+
+  public static Path newPathForUnixDomainSocket() throws IOException {
+    return TempFileUtil.getInstance().newPathForUnixDomainSocket(true);
   }
 }

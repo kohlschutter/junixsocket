@@ -45,7 +45,7 @@ import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
 /**
  * Ensures dependent virtual-thread socket reads can complete when the common pool has a single
  * worker.
- * 
+ *
  * @author Jakub Kultys (Azahe)
  */
 @SuppressWarnings({"PMD.DoNotUseThreads", "PMD.AvoidInstantiatingObjectsInsideLoops"})
@@ -112,7 +112,7 @@ public class VirtualThreadPollerNaiveDeadlockTest {
 
   /**
    * Called from ForkedVM only (testForkWithParallelism1).
-   * 
+   *
    * @param args Unchecked.
    * @throws Exception on error.
    */
@@ -129,8 +129,7 @@ public class VirtualThreadPollerNaiveDeadlockTest {
           "Test requires -Djava.util.concurrent.ForkJoinPool.common.parallelism=1");
     }
 
-    Path socketPath = Files.createTempFile("junixsocket-vtpoll-deadlock-", ".sock");
-    Files.deleteIfExists(socketPath);
+    Path socketPath = TestUtil.newPathForUnixDomainSocket();
 
     CountDownLatch firstTransactionOwnsResource = new CountDownLatch(1);
     CountDownLatch secondTransactionAwaitsResource = new CountDownLatch(1);
