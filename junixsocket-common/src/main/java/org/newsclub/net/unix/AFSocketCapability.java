@@ -146,6 +146,12 @@ public enum AFSocketCapability {
    */
   CAPABILITY_DARWIN(14),
 
+  /**
+   * Support for socket receive/send timeout at the kernel level. If unavailable, poll is used under
+   * the hood.
+   */
+  CAPABILITY_SEND_RECV_TIMEOUT(15),
+
   ; // end of list
 
   private final int bitmask;

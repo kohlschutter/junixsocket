@@ -52,6 +52,9 @@ import com.kohlschutter.testutil.TestStackTraceUtil;
 public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketTestBase<A> {
   private static final int TIMING_INACCURACY_MILLIS = 5000;
 
+  private static boolean SUPPORTS_SOCKET_TIMEOUT = AFSocket.supports(
+      AFSocketCapability.CAPABILITY_SEND_RECV_TIMEOUT);
+
   protected AcceptTimeoutTest(AddressSpecifics<A> asp) {
     super(asp);
   }
@@ -65,8 +68,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
         sock.setSoTimeout(timeoutMillis);
         long actualTimeout = sock.getSoTimeout();
         if (actualTimeout == 0) {
-          // timeout not supported. So far we know this is only true for z/OS
-          if ("z/OS".equals(System.getProperty("os.name"))) {
+          if (!SUPPORTS_SOCKET_TIMEOUT) {
             return;
           }
         }
@@ -103,8 +105,7 @@ public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketT
 
           long actualTimeout = serverSock.getSoTimeout();
           if (actualTimeout == 0) {
-            // timeout not supported. So far we know this is only true for z/OS
-            if ("z/OS".equals(System.getProperty("os.name"))) {
+            if (!SUPPORTS_SOCKET_TIMEOUT) {
               return;
             }
           }

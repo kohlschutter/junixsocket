@@ -45,6 +45,7 @@ static jint CAPABILITY_ZERO_LENGTH_SEND = (1 << 11);
 static jint CAPABILITY_UNSAFE = (1 << 12);
 static jint CAPABILITY_LARGE_PORTS = (1 << 13);
 static jint CAPABILITY_DARWIN = (1 << 14);
+static jint CAPABILITY_SEND_RECV_TIMEOUT = (1 << 15);
 CK_IGNORE_UNUSED_VARIABLE_END
 
 void init_capabilities(JNIEnv *env CK_UNUSED) {
@@ -106,6 +107,11 @@ defined(SO_PEERCRED) || defined(SO_PEERID) || defined(__NetBSD__) || defined(__s
 #if defined(junixsocket_have_ancillary)
         capabilities |= CAPABILITY_ANCILLARY_MESSAGES;
         capabilities |= CAPABILITY_FILE_DESCRIPTORS;
+#endif
+
+#if defined(junixsocket_dont_have_rcvsndtimeo)
+#else
+        capabilities |= CAPABILITY_SEND_RECV_TIMEOUT;
 #endif
 
 #if defined(__linux__)
