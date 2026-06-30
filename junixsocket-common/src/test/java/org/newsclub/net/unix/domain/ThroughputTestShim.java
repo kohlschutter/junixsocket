@@ -17,6 +17,7 @@
  */
 package org.newsclub.net.unix.domain;
 
+import java.net.SocketAddress;
 import java.net.StandardProtocolFamily;
 import java.net.UnixDomainSocketAddress;
 import java.nio.channels.ServerSocketChannel;
@@ -66,7 +67,15 @@ abstract class ThroughputTestShim extends
 
       runTestSocketChannel("JEP380 SocketChannel", usa, ssc, () -> {
         SocketChannel sc = SocketChannel.open(StandardProtocolFamily.UNIX);
-        connectSocket(sc, ssc.getLocalAddress());
+
+        SocketAddress la = ssc.getLocalAddress();
+        if (!usa.equals(la)) {
+          System.err.println(
+              "WARNING: JEP380 server bind address differs from connected local address: " + usa
+                  + " vs. " + la);
+        }
+
+        connectSocket(sc, usa);
         return sc;
       }, direct);
     } finally {
