@@ -395,6 +395,7 @@ public abstract class AFSocketAddress extends InetSocketAddress {
    * @param af The address family.
    * @return The address bytes.
    */
+  @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
   static final <A extends AFSocketAddress> byte[] getSocketAddressBytes(FileDescriptor fdesc,
       boolean requestPeerName, AFAddressFamily<A> af) {
     if (!fdesc.valid()) {

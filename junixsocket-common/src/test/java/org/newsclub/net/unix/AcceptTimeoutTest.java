@@ -52,7 +52,7 @@ import com.kohlschutter.testutil.TestStackTraceUtil;
 public abstract class AcceptTimeoutTest<A extends SocketAddress> extends SocketTestBase<A> {
   private static final int TIMING_INACCURACY_MILLIS = 5000;
 
-  private static boolean SUPPORTS_SOCKET_TIMEOUT = AFSocket.supports(
+  private static final boolean SUPPORTS_SOCKET_TIMEOUT = AFSocket.supports(
       AFSocketCapability.CAPABILITY_SEND_RECV_TIMEOUT);
 
   protected AcceptTimeoutTest(AddressSpecifics<A> asp) {

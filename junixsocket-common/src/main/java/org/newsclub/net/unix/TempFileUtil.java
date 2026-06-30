@@ -26,6 +26,8 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Random;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 abstract class TempFileUtil {
   static final TempFileUtil INSTANCE = newInstance();
 
@@ -56,6 +58,7 @@ abstract class TempFileUtil {
     }
   }
 
+  @SuppressFBWarnings("PREDICTABLE_RANDOM")
   private static final class MaxLengthInstance extends TempFileUtil {
     private final int maxLength;
     private final Random random = new Random();
@@ -71,6 +74,7 @@ abstract class TempFileUtil {
     };
 
     public MaxLengthInstance(int maxLength) {
+      super();
       this.maxLength = maxLength;
     }
 
@@ -85,10 +89,10 @@ abstract class TempFileUtil {
         }
         try {
           Files.createFile(p);
+          break;
         } catch (FileAlreadyExistsException e) {
           continue;
         }
-        break;
       }
       Objects.requireNonNull(p);
       if (delete && !Files.deleteIfExists(p) && Files.exists(p)) {
@@ -97,6 +101,7 @@ abstract class TempFileUtil {
       return p;
     }
 
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     private Path randomPath() {
       byte[] bytes = new byte[maxLength];
       random.nextBytes(bytes);
