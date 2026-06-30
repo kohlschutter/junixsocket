@@ -33,6 +33,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -120,6 +121,10 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
 
   public static File newTempFile() throws IOException {
     return newTempFile(null);
+  }
+
+  public static Path newTempPath() throws IOException {
+    return TempFileUtil.getInstance().newPathForUnixDomainSocket(true);
   }
 
   public static File newTempFile(String name) throws IOException {

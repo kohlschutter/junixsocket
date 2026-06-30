@@ -146,8 +146,8 @@ public final class PeerCredentialsTest extends SocketTestBase<AFUNIXSocketAddres
   @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_UNIX_DATAGRAMS)
   @Test
   public void testDatagramSocket() throws Exception {
-    AFUNIXSocketAddress ds1Addr = AFUNIXSocketAddress.of(newTempFile());
-    AFUNIXSocketAddress ds2Addr = AFUNIXSocketAddress.of(newTempFile());
+    AFUNIXSocketAddress ds1Addr = AFUNIXSocketAddress.of(newTempPath());
+    AFUNIXSocketAddress ds2Addr = AFUNIXSocketAddress.of(newTempPath());
 
     try (AFUNIXDatagramSocket ds1 = AFUNIXDatagramSocket.newInstance();
         AFUNIXDatagramSocket ds2 = AFUNIXDatagramSocket.newInstance();) {

@@ -58,7 +58,7 @@ abstract class ThroughputTestShim extends
   }
 
   private void testJEP380(boolean direct) throws Exception {
-    Path p = newTempFile().toPath();
+    Path p = newTempPath();
     try {
       UnixDomainSocketAddress usa = UnixDomainSocketAddress.of(p);
 
