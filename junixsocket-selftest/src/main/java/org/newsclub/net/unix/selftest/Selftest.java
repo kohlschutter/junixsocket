@@ -659,6 +659,10 @@ public class Selftest {
         if (nSkipped > 0) {
           extra += " (" + nSkipped + " skipped)";
         }
+        long failures = summary.getTestsFailedCount();
+        if (failures > 0) {
+          extra += " failures: " + failures + "/" + summary.getTestsStartedCount();
+        }
       }
 
       out.println(result + "\t" + en.getKey() + "\t" + extra);
