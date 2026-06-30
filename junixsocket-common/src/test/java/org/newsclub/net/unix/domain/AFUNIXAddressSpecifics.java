@@ -86,7 +86,7 @@ public final class AFUNIXAddressSpecifics implements AddressSpecifics<AFUNIXSock
 
   @Override
   public AFSocketAddress newTempAddressForDatagram() throws IOException {
-    return AFUNIXSocketAddress.of(SocketTestBase.newTempFile());
+    return AFUNIXSocketAddress.of(SocketTestBase.newTempPath());
   }
 
   @Override
