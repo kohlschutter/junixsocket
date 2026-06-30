@@ -19,6 +19,7 @@ package org.newsclub.net.unix;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.time.Duration;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -115,48 +117,52 @@ public abstract class SoTimeoutTest<A extends SocketAddress> extends SocketTestB
 
   @Test
   public void testSocketTimeoutExceptionRead() throws Exception {
-    try (CloseablePair<? extends Socket> pair = newInterconnectedSockets();) {
-      Socket socket = pair.getSecond();
-      socket.setSoTimeout(500);
-      byte[] buf = new byte[socket.getReceiveBufferSize()];
-      InputStream in = socket.getInputStream();
+    assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+      try (CloseablePair<? extends Socket> pair = newInterconnectedSockets();) {
+        Socket socket = pair.getSecond();
+        socket.setSoTimeout(500);
+        byte[] buf = new byte[socket.getReceiveBufferSize()];
+        InputStream in = socket.getInputStream();
 
-      assertThrows(SocketTimeoutException.class, () -> {
-        AssertUtil.ignoreValue(in.read(buf));
-      });
-    }
+        assertThrows(SocketTimeoutException.class, () -> {
+          AssertUtil.ignoreValue(in.read(buf));
+        });
+      }
+    });
   }
 
   @Test
   public void testSocketTimeoutExceptionWrite() throws Exception {
-    try (CloseablePair<? extends Socket> pair = newInterconnectedSockets();) {
-      Socket socket = pair.getSecond();
-      socket.setSoTimeout(500);
-      if (socket.getSoTimeout() == 0) {
-        boolean isZOS = "z/OS".equals(System.getProperty("os.name", ""));
+    assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+      try (CloseablePair<? extends Socket> pair = newInterconnectedSockets();) {
+        Socket socket = pair.getSecond();
+        socket.setSoTimeout(500);
+        if (socket.getSoTimeout() == 0) {
+          boolean haveTimeout = AFSocket.supports(AFSocketCapability.CAPABILITY_SEND_RECV_TIMEOUT);
 
-        String afs = addressFamilyString();
+          String afs = addressFamilyString();
 
-        if (isZOS && "AF_UNIX".equals(afs)) {
-          // https://www.ibm.com/docs/en/zos/2.5.0?topic=csd-getsockopt-setsockopt-bpx1opt-bpx4opt-get-set-options-associated-socket
-          throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
-              "Could not set socket timeout via Socket.setSoTimeout (" + addressFamilyString()
-                  + "); this is a known limitation of z/OS");
-        } else {
-          throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
-              "Could not set socket timeout via Socket.setSoTimeout (" + addressFamilyString()
-                  + ")");
+          if (!haveTimeout && "AF_UNIX".equals(afs)) {
+            // https://www.ibm.com/docs/en/zos/2.5.0?topic=csd-getsockopt-setsockopt-bpx1opt-bpx4opt-get-set-options-associated-socket
+            throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
+                "Could not set socket timeout via Socket.setSoTimeout (" + addressFamilyString()
+                    + "); this is a known limitation of your operating system");
+          } else {
+            throw new TestAbortedWithImportantMessageException(MessageType.TEST_ABORTED_WITH_ISSUES,
+                "Could not set socket timeout via Socket.setSoTimeout (" + addressFamilyString()
+                    + ")");
+          }
+        }
+        byte[] buf = new byte[socket.getSendBufferSize()];
+        OutputStream out = socket.getOutputStream();
+
+        try {
+          out.write(buf);
+          out.write(buf);
+        } catch (SocketTimeoutException e) {
+          // expected but not guaranteed
         }
       }
-      byte[] buf = new byte[socket.getSendBufferSize()];
-      OutputStream out = socket.getOutputStream();
-
-      try {
-        out.write(buf);
-        out.write(buf);
-      } catch (SocketTimeoutException e) {
-        // expected but not guaranteed
-      }
-    }
+    });
   }
 }
