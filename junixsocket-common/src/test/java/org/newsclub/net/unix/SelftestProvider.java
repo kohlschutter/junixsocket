@@ -128,7 +128,7 @@ public class SelftestProvider {
 
     registerTest(COMMON, org.newsclub.net.unix.domain.VirtualThreadConnectTest.class);
     registerTest(COMMON, org.newsclub.net.unix.domain.VirtualThreadPollerNaiveDeadlockTest.class);
-}
+  }
 
   public Set<String> modulesDisabledByDefault() {
     return new HashSet<>(Arrays.asList(COMMON_JAVA_INET, COMMON_JEP380));

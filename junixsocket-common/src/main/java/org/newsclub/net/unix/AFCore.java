@@ -260,8 +260,8 @@ class AFCore extends CleanableState {
   }
 
   @SuppressWarnings({
-      "PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity",
-      "PMD.NPathComplexity", "PMD.VariableDeclarationUsageDistance"})
+      "PMD.NcssCount", "PMD.CognitiveComplexity", "PMD.CyclomaticComplexity", "PMD.NPathComplexity",
+      "PMD.VariableDeclarationUsageDistance"})
   int write(ByteBuffer src, AFSupplier<Integer> timeout, SocketAddress target, int options)
       throws IOException {
     int remaining = src.remaining();

@@ -82,7 +82,7 @@ final class AFSelector extends AbstractSelector {
 
   @Override
   @SuppressFBWarnings("EI_EXPOSE_REP")
-    public Set<SelectionKey> selectedKeys() {
+  public Set<SelectionKey> selectedKeys() {
     return selectedKeysPublic;
   }
 

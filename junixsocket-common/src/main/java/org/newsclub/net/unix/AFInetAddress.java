@@ -95,6 +95,7 @@ class AFInetAddress {
     sb.append('.');
     sb.append(af.getJuxString());
     sb.append(INETADDR_SUFFIX);
+
     return sb.toString();
   }
 

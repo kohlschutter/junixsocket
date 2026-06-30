@@ -62,7 +62,7 @@ final class AFSelectionKey extends SelectionKey {
 
   @Override
   @SuppressFBWarnings("EI_EXPOSE_REP")
-    public Selector selector() {
+  public Selector selector() {
     return sel;
   }
 

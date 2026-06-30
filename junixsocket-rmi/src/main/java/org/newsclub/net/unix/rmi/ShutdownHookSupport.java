@@ -92,7 +92,7 @@ final class ShutdownHookSupport {
 
   /**
    * Create a Thread that will be called upon Runtime shutdown.
-   * 
+   *
    * @param ref The shutdown hook (weak reference).
    */
   public static Thread newShutdownThread(WeakReference<ShutdownHook> ref) {
