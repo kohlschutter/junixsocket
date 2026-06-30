@@ -108,7 +108,7 @@ jint pollWithTimeout(JNIEnv * env, jobject fd, int handle, int timeout) {
     }
 
     socklen_t optLen = sizeof(optVal);
-#if __TOS_MVS__
+#ifdef junixsocket_dont_have_rcvsndtimeo
     int ret = 0;
     optVal.tv_sec = 0;
     optVal.tv_usec = 0;

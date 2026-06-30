@@ -59,6 +59,8 @@ static void init_unix(void) {
 #elif defined(_OS400) || defined(__TOS_MVS__) || defined(_AIX)
     // At least IBM is consistent here ...
     cap_supports_zero_length_send = false;
+#elif defined(__astral__)
+    cap_supports_zero_length_send = false;
 #else
     cap_supports_zero_length_send = true;
 #endif
