@@ -93,7 +93,11 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
   }
 
   private static File initSocketFile() {
-    return SocketTestBase.newTempFile(System.getProperty("org.newsclub.net.unix.testsocket"));
+    try {
+      return SocketTestBase.newTempFile(System.getProperty("org.newsclub.net.unix.testsocket"));
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
   }
 
   public static File socketFile() {
@@ -114,18 +118,16 @@ public abstract class SocketTestBase<A extends SocketAddress> { // NOTE: needs t
     Files.deleteIfExists(SOCKET_FILE.toPath());
   }
 
-  public static File newTempFile() {
+  public static File newTempFile() throws IOException {
     return newTempFile(null);
   }
 
-  public static File newTempFile(String name) {
-    File f;
-    try {
-      f = (name == null) ? File.createTempFile("jutest", ".sock") : new File(name);
-      f.deleteOnExit(); // always delete on exit to clean-up sockets created under that name
-    } catch (IOException e) {
-      throw new IllegalStateException("Can't create temporary file", e);
+  public static File newTempFile(String name) throws IOException {
+    if (name == null) {
+      return TempFileUtil.getInstance().newPathForUnixDomainSocket(true).toFile();
     }
+    File f = new File(name);
+    f.deleteOnExit(); // always delete on exit to clean-up sockets created under that name
     if (!f.delete()) {
       throw new IllegalStateException("Could not delete temporary file that we just created: " + f);
     }
