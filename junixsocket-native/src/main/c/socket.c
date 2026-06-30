@@ -186,6 +186,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketStatus
 
      int ret;
 
+    jint result = org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_UNKNOWN;
+
      ret = getpeername(handle, (struct sockaddr *)&addr, &len);
      if(ret != 0) {
          int errnum = socket_errno;
@@ -200,7 +202,12 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketStatus
                  return -1;
          }
      } else {
+#if __astral__
+         // continue below to see if this is a server socket ...
+         result = org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_CONNECTED;
+#else
          return org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_CONNECTED;
+#endif
      }
 
      ret = getsockname(handle, (struct sockaddr *)&addr, &len);
@@ -237,5 +244,6 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_socketStatus
              return org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_BOUND;
          }
      }
-     return org_newsclub_net_unix_NativeUnixSocket_SOCKETSTATUS_UNKNOWN;
+
+     return result;
  }
