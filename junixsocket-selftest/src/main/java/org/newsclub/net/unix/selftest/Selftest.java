@@ -326,34 +326,49 @@ public class Selftest {
     st.checkCapabilities();
 
     Set<String> disabledModules = sp.modulesDisabledByDefault();
-
     List<String> messagesAtEnd = new ArrayList<>();
-    for (Entry<String, Class<?>[]> en : sp.tests().entrySet()) {
-      String module = en.getKey();
-      if (disabledModules.contains(module)) {
-        if (SystemPropertyUtil.getBooleanSystemProperty("selftest.enable-module." + module,
+
+    boolean skipModules = false;
+    String only = System.getProperty("selftest.only", "");
+    if (!only.isEmpty()) {
+      if ("mini".equals(only)) {
+        skipModules = true;
+        st.important.add("Selftest was modified, only a mini-selftest was run");
+        st.inconclusive = true;
+        AFUNIXSocket.main(new String[0]);
+      }
+    }
+
+    if (!skipModules) {
+      for (Entry<String, Class<?>[]> en : sp.tests().entrySet()) {
+        String module = en.getKey();
+        if (disabledModules.contains(module)) {
+          if (SystemPropertyUtil.getBooleanSystemProperty("selftest.enable-module." + module,
+              false)) {
+            out.println("Enabling optional module: " + module
+                + " (consult documentation for errors)");
+            st.modified = true;
+          } else {
+            messagesAtEnd.add("Skipping optional module: " + module
+                + "; enable by launching with -Dselftest.enable-module." + module
+                + "=true (consult documentation first)");
+            continue;
+          }
+        } else if (SystemPropertyUtil.getBooleanSystemProperty("selftest.disable-module." + module,
             false)) {
-          out.println("Enabling optional module: " + module
-              + " (consult documentation for errors)");
-          st.modified = true;
-        } else {
-          messagesAtEnd.add("Skipping optional module: " + module
-              + "; enable by launching with -Dselftest.enable-module." + module
-              + "=true (consult documentation first)");
+          messagesAtEnd.add("Skipping required module: " + module + "; this taints the test");
+          st.withIssues = true;
+          st.results.put(module, new ModuleResult(Result.SKIP, null, null));
           continue;
         }
-      } else if (SystemPropertyUtil.getBooleanSystemProperty("selftest.disable-module." + module,
-          false)) {
-        messagesAtEnd.add("Skipping required module: " + module + "; this taints the test");
-        st.withIssues = true;
-      }
-      try {
-        st.runTests(module, en.getValue());
-      } catch (Error | RuntimeException t) { // NOPMD
-        messagesAtEnd.add("INTERNAL INCONSISTENCY: Unexpected error while running tests for  "
-            + module + ": " + t);
-        t.printStackTrace();
-        st.fail = true;
+        try {
+          st.runTests(module, en.getValue());
+        } catch (Error | RuntimeException t) { // NOPMD
+          messagesAtEnd.add("INTERNAL INCONSISTENCY: Unexpected error while running tests for  "
+              + module + ": " + t);
+          t.printStackTrace();
+          st.fail = true;
+        }
       }
     }
 
