@@ -3,6 +3,9 @@
   "name":"java.nio.channels.spi.AbstractSelectableChannel"
 },
 {
+  "name":"java.nio.file.FileAlreadyExistsException"
+},
+{
   "condition" : { "typeReachable" : "org.newsclub.lib.junixsocket.common.NarMetadata" },
   "name":"org.newsclub.lib.junixsocket.common.NarMetadata"
 },
@@ -94,6 +97,9 @@
   "name":"org.newsclub.net.unix.NoSuchDeviceSocketException"
 },
 {
+  "name":"org.newsclub.net.unix.OperationNotSupportedIOException"
+},
+{
   "name":"org.newsclub.net.unix.AddressUnavailableSocketException"
 },
 {
@@ -107,6 +113,10 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"java.util.PropertyPermission",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String"] }]
+},
+{
   "name":"[J"
 },
 {
@@ -116,16 +126,84 @@
   "name":"[Ljava.lang.StackTraceElement;"
 },
 {
+  "name":"java.io.FileNotFoundException"
+},
+{
   "name":"java.io.IOException"
 },
 {
+  "name":"java.io.Closeable",
+  "allDeclaredClasses":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.AutoCloseable",
+  "allDeclaredClasses":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.Boolean",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Byte",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Character",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Deprecated",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.Double",
+  "fields":[{"name":"TYPE"}]
+},
+{
   "name":"java.lang.Exception"
+},
+{
+  "name":"java.lang.Float",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Integer",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Long",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Runnable",
+  "allDeclaredClasses":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.Short",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.StackTraceElement",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.String",
+  "fields":[{"name":"TYPE"}]
 },
 {
   "name":"java.lang.Number"
 },
 {
   "name":"java.lang.Throwable"
+},
+{
+  "name":"java.math.BigDecimal"
+},
+{
+  "name":"java.math.BigInteger"
 },
 {
   "name":"java.lang.reflect.Proxy"

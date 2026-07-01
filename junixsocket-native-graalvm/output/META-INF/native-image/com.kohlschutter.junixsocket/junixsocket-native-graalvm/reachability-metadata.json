@@ -1,0 +1,4491 @@
+{
+  "reflection": [
+    {
+      "type": "apple.security.AppleProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "boolean[]"
+    },
+    {
+      "type": "byte[]",
+      "serializable": true
+    },
+    {
+      "type": "char[]"
+    },
+    {
+      "type": "com.kohlschutter.testutil.AvailabilityExecutionCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.kohlschutter.testutil.AvailabilityRequirement"
+    },
+    {
+      "type": "com.kohlschutter.testutil.ExecutionEnvironmentExecutionCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.kohlschutter.testutil.ExecutionEnvironmentRequirement"
+    },
+    {
+      "type": "com.kohlschutter.testutil.ForkedVMExecutionCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.kohlschutter.testutil.ForkedVMRequirement"
+    },
+    {
+      "type": "com.kohlschutter.testutil.ProcessUtilCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.kohlschutter.testutil.ProcessUtilRequirement"
+    },
+    {
+      "type": "com.kohlschutter.testutil.SystemPropertyExecutionCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.kohlschutter.testutil.SystemPropertyRequirement"
+    },
+    {
+      "type": "com.mysql.cj.conf.url.SingleConnectionUrl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "com.mysql.cj.conf.ConnectionUrlParser",
+            "java.util.Properties"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.mysql.cj.exceptions.CJCommunicationsException",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.mysql.cj.exceptions.WrongArgumentException",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.mysql.cj.jdbc.AbandonedConnectionCleanupThread"
+    },
+    {
+      "type": "com.mysql.cj.jdbc.Driver"
+    },
+    {
+      "type": "com.mysql.cj.log.StandardLogger",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.mysql.cj.protocol.SocketFactory"
+    },
+    {
+      "type": "com.mysql.jdbc.SocketFactory"
+    },
+    {
+      "type": "com.sun.crypto.provider.AESCipher$General",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.AESKeyGenerator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.ARCFOURCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.DESCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.DESedeCipher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.DHParameters",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.GaloisCounterMode$AESGCM",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.HKDFKeyDerivation$HKDFSHA256",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.crypto.KDFParameters"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.HKDFKeyDerivation$HKDFSHA384",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.crypto.KDFParameters"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.HmacCore$HmacSHA256",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.HmacCore$HmacSHA384",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.HmacPKCS12PBECore$HmacPKCS12PBE_SHA256",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.PBEKeyFactory$PBEWithMD5AndDES",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.PBES2Core$HmacSHA256AndAES_256",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.PBES2Parameters$General",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.crypto.provider.TlsMasterSecretGenerator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.management.GarbageCollectorMXBean"
+    },
+    {
+      "type": "com.sun.management.GcInfo"
+    },
+    {
+      "type": "com.sun.management.HotSpotDiagnosticMXBean"
+    },
+    {
+      "type": "com.sun.management.ThreadMXBean"
+    },
+    {
+      "type": "com.sun.management.UnixOperatingSystemMXBean"
+    },
+    {
+      "type": "com.sun.management.VMOption"
+    },
+    {
+      "type": "com.sun.management.internal.DiagnosticCommandArgumentInfo",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean",
+            "boolean",
+            "boolean",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.management.internal.DiagnosticCommandArgumentInfo[]"
+    },
+    {
+      "type": "com.sun.management.internal.DiagnosticCommandInfo",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.management.internal.DiagnosticCommandInfo[]"
+    },
+    {
+      "type": "com.sun.management.internal.GarbageCollectorExtImpl"
+    },
+    {
+      "type": "com.sun.management.internal.HotSpotDiagnostic"
+    },
+    {
+      "type": "com.sun.management.internal.HotSpotThreadImpl"
+    },
+    {
+      "type": "com.sun.management.internal.OperatingSystemImpl"
+    },
+    {
+      "type": "com.sun.management.internal.VirtualThreadSchedulerImpls$VirtualThreadSchedulerImpl"
+    },
+    {
+      "type": "com.wolfssl.provider.jce.WolfCryptProvider"
+    },
+    {
+      "type": "com.wolfssl.provider.jsse.WolfSSLProvider"
+    },
+    {
+      "type": "double[]"
+    },
+    {
+      "type": "float[]"
+    },
+    {
+      "type": "iaik.security.jsse.provider.IAIKJSSEProvider"
+    },
+    {
+      "type": "iaik.security.provider.IAIK"
+    },
+    {
+      "type": "int[]"
+    },
+    {
+      "type": "java.io.Closeable"
+    },
+    {
+      "type": "java.io.FileDescriptor",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "fd"
+        }
+      ],
+      "methods": [
+        {
+          "name": "attach",
+          "parameterTypes": [
+            "java.io.Closeable"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.io.FileNotFoundException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.io.IOException",
+      "serializable": true,
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.AutoCloseable"
+    },
+    {
+      "type": "java.lang.Boolean",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getBoolean",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Byte",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Character",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Class",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "getName",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Deprecated"
+    },
+    {
+      "type": "java.lang.Double",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Exception",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.Float",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.IllegalStateException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.IndexOutOfBoundsException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Integer",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "intValue",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Long",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.NullPointerException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Number",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.Object",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.ProcessBuilder$RedirectPipeImpl",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "fd"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Runnable"
+    },
+    {
+      "type": "java.lang.Short",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.StackTraceElement"
+    },
+    {
+      "type": "java.lang.StackTraceElement[]",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.String",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.String[]"
+    },
+    {
+      "type": "java.lang.Thread"
+    },
+    {
+      "type": "java.lang.ThreadLocal",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "get",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Throwable",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.Void",
+      "fields": [
+        {
+          "name": "TYPE"
+        }
+      ]
+    },
+    {
+      "type": "java.lang.management.BufferPoolMXBean"
+    },
+    {
+      "type": "java.lang.management.ClassLoadingMXBean"
+    },
+    {
+      "type": "java.lang.management.CompilationMXBean"
+    },
+    {
+      "type": "java.lang.management.LockInfo"
+    },
+    {
+      "type": "java.lang.management.MemoryMXBean"
+    },
+    {
+      "type": "java.lang.management.MemoryManagerMXBean"
+    },
+    {
+      "type": "java.lang.management.MemoryPoolMXBean"
+    },
+    {
+      "type": "java.lang.management.MemoryUsage"
+    },
+    {
+      "type": "java.lang.management.MonitorInfo"
+    },
+    {
+      "type": "java.lang.management.PlatformLoggingMXBean"
+    },
+    {
+      "type": "java.lang.management.RuntimeMXBean"
+    },
+    {
+      "type": "java.lang.management.ThreadInfo"
+    },
+    {
+      "type": "java.lang.reflect.Proxy",
+      "serializable": true
+    },
+    {
+      "type": "java.math.BigDecimal"
+    },
+    {
+      "type": "java.math.BigInteger"
+    },
+    {
+      "type": "java.net.DatagramSocket",
+      "jniAccessible": true
+    },
+    {
+      "type": "java.net.InetSocketAddress",
+      "serializable": true,
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "holder"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.net.InetSocketAddress$InetSocketAddressHolder",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "port"
+        }
+      ]
+    },
+    {
+      "type": "java.net.NoRouteToHostException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.net.ServerSocket",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "impl"
+        }
+      ]
+    },
+    {
+      "type": "java.net.Socket",
+      "jniAccessible": true
+    },
+    {
+      "type": "java.net.SocketAddress",
+      "serializable": true
+    },
+    {
+      "type": "java.net.SocketException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.net.SocketTimeoutException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.net.UnixDomainSocketAddress",
+      "methods": [
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.nio.file.Path"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.nio.Buffer",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "segment"
+        }
+      ]
+    },
+    {
+      "type": "java.nio.MappedByteBuffer",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "fd"
+        },
+        {
+          "name": "isSync"
+        }
+      ]
+    },
+    {
+      "type": "java.nio.channels.ClosedChannelException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.nio.channels.DatagramChannel"
+    },
+    {
+      "type": "java.nio.channels.ServerSocketChannel",
+      "methods": [
+        {
+          "name": "open",
+          "parameterTypes": [
+            "java.net.ProtocolFamily"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.nio.channels.SocketChannel",
+      "methods": [
+        {
+          "name": "open",
+          "parameterTypes": [
+            "java.net.ProtocolFamily"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.nio.channels.spi.AbstractSelectableChannel",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "removeKey",
+          "parameterTypes": [
+            "java.nio.channels.SelectionKey"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.nio.file.FileAlreadyExistsException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.rmi.NoSuchObjectException",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.Remote"
+    },
+    {
+      "type": "java.rmi.RemoteException",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.dgc.Lease",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.dgc.VMID",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.registry.Registry"
+    },
+    {
+      "type": "java.rmi.server.ObjID",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.server.ObjID[]",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.server.RemoteObject",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.server.RemoteObjectInvocationHandler",
+      "serializable": true
+    },
+    {
+      "type": "java.rmi.server.UID",
+      "serializable": true
+    },
+    {
+      "type": "java.security.AlgorithmParametersSpi"
+    },
+    {
+      "type": "java.security.KeyStoreSpi"
+    },
+    {
+      "type": "java.security.interfaces.RSAPrivateKey"
+    },
+    {
+      "type": "java.security.interfaces.RSAPublicKey"
+    },
+    {
+      "type": "java.sql.SQLException"
+    },
+    {
+      "type": "java.util.Arrays",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "asList",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.util.Collections$EmptyList",
+      "serializable": true
+    },
+    {
+      "type": "java.util.Date"
+    },
+    {
+      "type": "java.util.UUID",
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.atomic.AtomicInteger",
+      "serializable": true
+    },
+    {
+      "type": "java.util.function.Consumer"
+    },
+    {
+      "type": "javax.management.MBeanOperationInfo"
+    },
+    {
+      "type": "javax.management.MBeanServerBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "javax.management.ObjectName"
+    },
+    {
+      "type": "javax.management.StandardEmitterMBean"
+    },
+    {
+      "type": "javax.management.openmbean.CompositeData"
+    },
+    {
+      "type": "javax.management.openmbean.CompositeData[]"
+    },
+    {
+      "type": "javax.management.openmbean.OpenMBeanOperationInfoSupport"
+    },
+    {
+      "type": "javax.management.openmbean.TabularData"
+    },
+    {
+      "type": "jdk.management.VirtualThreadSchedulerMXBean"
+    },
+    {
+      "type": "jdk.management.jfr.ConfigurationInfo"
+    },
+    {
+      "type": "jdk.management.jfr.EventTypeInfo"
+    },
+    {
+      "type": "jdk.management.jfr.FlightRecorderMXBean"
+    },
+    {
+      "type": "jdk.management.jfr.FlightRecorderMXBeanImpl"
+    },
+    {
+      "type": "jdk.management.jfr.RecordingInfo"
+    },
+    {
+      "type": "jdk.management.jfr.SettingDescriptorInfo"
+    },
+    {
+      "type": "kotlin.Metadata"
+    },
+    {
+      "type": "long[]",
+      "serializable": true
+    },
+    {
+      "type": "org.apiguardian.api.API"
+    },
+    {
+      "type": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+    },
+    {
+      "type": "org.bouncycastle.jsse.provider.BouncyCastleJsseProvider"
+    },
+    {
+      "type": "org.bouncycastle.tls.TlsException"
+    },
+    {
+      "type": "org.conscrypt.Conscrypt"
+    },
+    {
+      "type": "org.junit.internal.AssumptionViolatedException"
+    },
+    {
+      "type": "org.junit.jupiter.api.MethodOrderer$MethodName",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.junit.jupiter.api.Test"
+    },
+    {
+      "type": "org.junit.jupiter.api.TestInstance"
+    },
+    {
+      "type": "org.junit.jupiter.api.TestMethodOrder"
+    },
+    {
+      "type": "org.junit.jupiter.api.TestTemplate"
+    },
+    {
+      "type": "org.junit.jupiter.api.Timeout"
+    },
+    {
+      "type": "org.junit.jupiter.api.extension.ExtendWith"
+    },
+    {
+      "type": "org.junit.jupiter.engine.extension.TimeoutInvocationFactory$SingleThreadExecutorResource",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.junit.jupiter.params.ParameterizedTest"
+    },
+    {
+      "type": "org.junit.jupiter.params.ParameterizedTestExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.junit.jupiter.params.provider.AnnotationBasedArgumentsProvider"
+    },
+    {
+      "type": "org.junit.jupiter.params.provider.ArgumentsProvider"
+    },
+    {
+      "type": "org.junit.jupiter.params.provider.ArgumentsSource"
+    },
+    {
+      "type": "org.junit.jupiter.params.provider.EnumArgumentsProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.junit.jupiter.params.provider.EnumSource"
+    },
+    {
+      "type": "org.junit.jupiter.params.provider.MethodArgumentsProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.junit.jupiter.params.provider.MethodSource"
+    },
+    {
+      "type": "org.junit.jupiter.params.support.AnnotationConsumer"
+    },
+    {
+      "type": "org.junit.platform.commons.annotation.Testable"
+    },
+    {
+      "type": "org.junit.platform.launcher.TestIdentifier$SerializedForm",
+      "serializable": true
+    },
+    {
+      "type": "org.junit.platform.launcher.listeners.UniqueIdTrackingListener"
+    },
+    {
+      "type": "org.junit.platform.reporting.open.xml.OpenTestReportGeneratingListener"
+    },
+    {
+      "type": "org.newsclub.lib.junixsocket.common.NarMetadata"
+    },
+    {
+      "type": "org.newsclub.lib.junixsocket.custom.NarMetadata"
+    },
+    {
+      "type": "org.newsclub.net.mysql.AFUNIXDatabaseSocketFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryCJ",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryCJTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testConnectTimeout",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testConnectTimeout",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.mysql.MysqlSocketFactoryTestBase",
+      "methods": [
+        {
+          "name": "testDriverManagerConnectionToMissingServer",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDriverManagerConnectionToMysqlSock",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFGenericServerSocket",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.net.SocketImpl"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFGenericSocketAddress",
+      "methods": [
+        {
+          "name": "addressFamily",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFSYSTEMSocketAddress",
+      "methods": [
+        {
+          "name": "addressFamily",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFSelector$PollFd",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "fds"
+        },
+        {
+          "name": "ops"
+        },
+        {
+          "name": "rops"
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFSocketAddress",
+      "serializable": true
+    },
+    {
+      "type": "org.newsclub.net.unix.AFSocketCapabilityCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFSocketCapabilityRequirement"
+    },
+    {
+      "type": "org.newsclub.net.unix.AFTIPCSocketAddress",
+      "methods": [
+        {
+          "name": "addressFamily",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFTIPCSocketAddressTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testGeneric",
+          "parameterTypes": []
+        },
+        {
+          "name": "testParseFail",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSchemesAvailable",
+          "parameterTypes": []
+        },
+        {
+          "name": "testServiceRangeURI",
+          "parameterTypes": []
+        },
+        {
+          "name": "testServiceURI",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocatString",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocketURI",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFUNIXDatagramSocket",
+      "jniAccessible": true
+    },
+    {
+      "type": "org.newsclub.net.unix.AFUNIXServerSocket",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.net.SocketImpl"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFUNIXSocket",
+      "jniAccessible": true
+    },
+    {
+      "type": "org.newsclub.net.unix.AFUNIXSocketAddress",
+      "serializable": true,
+      "methods": [
+        {
+          "name": "addressFamily",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFUNIXSocketAddressTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testAbstractNamespace",
+          "parameterTypes": []
+        },
+        {
+          "name": "testCraftDeserialization",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFileScheme",
+          "parameterTypes": []
+        },
+        {
+          "name": "testHttpUnix",
+          "parameterTypes": []
+        },
+        {
+          "name": "testParseURIandBack",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSchemesAvailable",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSerialize",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocatString",
+          "parameterTypes": []
+        },
+        {
+          "name": "testURITemplate",
+          "parameterTypes": []
+        },
+        {
+          "name": "testURITemplateWithPortNumber",
+          "parameterTypes": []
+        },
+        {
+          "name": "testUnixScheme",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFUNIXSocketCredentials",
+      "serializable": true,
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "gids"
+        },
+        {
+          "name": "pid"
+        },
+        {
+          "name": "uid"
+        }
+      ],
+      "methods": [
+        {
+          "name": "setUUID",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFUNIXSocketFactory$FactoryArg",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFUNIXSocketFactory$SystemProperty",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFUNIXSocketFactory$URIScheme",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFUNIXSocketImpl",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "serverSocket"
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AFVSOCKSocketAddress",
+      "methods": [
+        {
+          "name": "addressFamily",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AcceptTimeoutTest",
+      "methods": [
+        {
+          "name": "testAcceptWithoutBindToService",
+          "parameterTypes": []
+        },
+        {
+          "name": "testCatchTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "testPendingAcceptCloseServerSocketDelayed",
+          "parameterTypes": []
+        },
+        {
+          "name": "testPendingAcceptCloseServerSocketImmediately",
+          "parameterTypes": []
+        },
+        {
+          "name": "testTimeoutAfterDelay",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AddressAlreadyInUseSocketException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AddressUnavailableSocketException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AncillaryDataSupport",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "ancillaryReceiveBuffer"
+        },
+        {
+          "name": "pendingFileDescriptors"
+        }
+      ],
+      "methods": [
+        {
+          "name": "receiveFileDescriptors",
+          "parameterTypes": [
+            "int[]"
+          ]
+        },
+        {
+          "name": "setTipcDestName",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "setTipcErrorInfo",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.AncillaryMessageTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.AvailableTest",
+      "methods": [
+        {
+          "name": "testAvailableAtClient",
+          "parameterTypes": []
+        },
+        {
+          "name": "testAvailableAtServer",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.BrokenPipeSocketException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.BufferOverflowTest",
+      "methods": [
+        {
+          "name": "readOutOfBounds",
+          "parameterTypes": []
+        },
+        {
+          "name": "readUpTo",
+          "parameterTypes": []
+        },
+        {
+          "name": "setUp",
+          "parameterTypes": []
+        },
+        {
+          "name": "tearDown",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeOverflow",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.BuildPropertiesTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testHasProperties",
+          "parameterTypes": []
+        },
+        {
+          "name": "testNotEmpty",
+          "parameterTypes": []
+        },
+        {
+          "name": "testResolved",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.CancelAcceptTest",
+      "methods": [
+        {
+          "name": "issue6test1",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.ConnectionRefusedSocketException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.ConnectionResetSocketException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.DatagramSocketTest",
+      "methods": [
+        {
+          "name": "testBindConnect",
+          "parameterTypes": []
+        },
+        {
+          "name": "testChannelSendTo",
+          "parameterTypes": []
+        },
+        {
+          "name": "testPeekTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "testReadTimeout",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.EndOfFileTest",
+      "methods": [
+        {
+          "name": "bidirectionalSanity",
+          "parameterTypes": []
+        },
+        {
+          "name": "clientReadEof",
+          "parameterTypes": []
+        },
+        {
+          "name": "clientWriteToSocketClosedByClient",
+          "parameterTypes": []
+        },
+        {
+          "name": "clientWriteToSocketClosedByServer",
+          "parameterTypes": []
+        },
+        {
+          "name": "serverReadEof",
+          "parameterTypes": []
+        },
+        {
+          "name": "serverWriteToSocketClosedByClient",
+          "parameterTypes": []
+        },
+        {
+          "name": "serverWriteToSocketClosedByServer",
+          "parameterTypes": []
+        },
+        {
+          "name": "setUp",
+          "parameterTypes": []
+        },
+        {
+          "name": "tearDown",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.FileDescriptorCastTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testAvailableTypes",
+          "parameterTypes": []
+        },
+        {
+          "name": "testCastAsInteger",
+          "parameterTypes": []
+        },
+        {
+          "name": "testCastGeneric",
+          "parameterTypes": []
+        },
+        {
+          "name": "testCastGenericDuplicating",
+          "parameterTypes": []
+        },
+        {
+          "name": "testCastToServerSocketIsSameType",
+          "parameterTypes": []
+        },
+        {
+          "name": "testInvalidFileDescriptor",
+          "parameterTypes": []
+        },
+        {
+          "name": "testPipe",
+          "parameterTypes": []
+        },
+        {
+          "name": "testRandomAccessFile",
+          "parameterTypes": []
+        },
+        {
+          "name": "testStdout",
+          "parameterTypes": []
+        },
+        {
+          "name": "testUnsafeCast",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.InetAddressTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFromToBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "testHostnameString",
+          "parameterTypes": []
+        },
+        {
+          "name": "testHostnameStringEndsWithJunixSocket",
+          "parameterTypes": []
+        },
+        {
+          "name": "testIsLoopbackAddress",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.InterruptIssue158Test",
+      "methods": [
+        {
+          "name": "afterEach",
+          "parameterTypes": []
+        },
+        {
+          "name": "beforeEach",
+          "parameterTypes": [
+            "org.junit.jupiter.api.TestInfo"
+          ]
+        },
+        {
+          "name": "clientProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "serverProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "testClientInterruption",
+          "parameterTypes": [
+            "boolean",
+            "org.newsclub.net.unix.InterruptIssue158Test$IOSupplier",
+            "org.newsclub.net.unix.InterruptIssue158Test$IOConsumer",
+            "java.lang.Class",
+            "java.util.function.Predicate"
+          ]
+        },
+        {
+          "name": "testClientInterruptionWithDelay",
+          "parameterTypes": [
+            "boolean",
+            "org.newsclub.net.unix.InterruptIssue158Test$IOSupplier",
+            "org.newsclub.net.unix.InterruptIssue158Test$IOConsumer",
+            "java.lang.Class",
+            "java.util.function.Predicate"
+          ]
+        },
+        {
+          "name": "testServerInterruption",
+          "parameterTypes": [
+            "org.newsclub.net.unix.InterruptIssue158Test$IOSupplier",
+            "org.newsclub.net.unix.InterruptIssue158Test$IOConsumer",
+            "java.lang.Class",
+            "java.util.function.Predicate"
+          ]
+        },
+        {
+          "name": "testServerInterruptionWithDelay",
+          "parameterTypes": [
+            "org.newsclub.net.unix.InterruptIssue158Test$IOSupplier",
+            "org.newsclub.net.unix.InterruptIssue158Test$IOConsumer",
+            "java.lang.Class",
+            "java.util.function.Predicate"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.InterruptTest",
+      "methods": [
+        {
+          "name": "testInterruptSocketChannelVirtualThread",
+          "parameterTypes": []
+        },
+        {
+          "name": "testInterruptSocketVirtualThread",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.InvalidArgumentSocketException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.MassiveParallelTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.NetworkUnreachableSocketException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.NoSuchDeviceSocketException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.NotConnectedSocketException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.OperationNotSupportedIOException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.OperationNotSupportedSocketException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.PipeTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testPipe",
+          "parameterTypes": []
+        },
+        {
+          "name": "testPipeRecvHang",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.ReadWriteTest",
+      "methods": [
+        {
+          "name": "testReceiveDataByteForByteSendByteForByte",
+          "parameterTypes": []
+        },
+        {
+          "name": "testReceiveDataByteForByteSendWithByteArray",
+          "parameterTypes": []
+        },
+        {
+          "name": "testReceiveWithByteArraySendByteForByte",
+          "parameterTypes": []
+        },
+        {
+          "name": "testReceiveWithByteArraySendWithByteArray",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.ReadWriteTest$ByteArrayWritingServerThread"
+    },
+    {
+      "type": "org.newsclub.net.unix.ReadWriteTest$ByteForByteWritingServerThread"
+    },
+    {
+      "type": "org.newsclub.net.unix.SelectorTest",
+      "methods": [
+        {
+          "name": "testCancelSelect",
+          "parameterTypes": []
+        },
+        {
+          "name": "testClosedSelectorSelect",
+          "parameterTypes": []
+        },
+        {
+          "name": "testClosedSelectorWakeup",
+          "parameterTypes": []
+        },
+        {
+          "name": "testConnectionCloseEventualClientDisconnect",
+          "parameterTypes": []
+        },
+        {
+          "name": "testConnectionCloseEventualClientDisconnectKeepLooping",
+          "parameterTypes": []
+        },
+        {
+          "name": "testConnectionCloseImmediateClientDisconnect",
+          "parameterTypes": []
+        },
+        {
+          "name": "testConnectionCloseImmediateClientDisconnectKeepLooping",
+          "parameterTypes": []
+        },
+        {
+          "name": "testNonBlockingAccept",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.SelftestDiagnosticsHelper",
+      "methods": [
+        {
+          "name": "buildProperties",
+          "parameterTypes": []
+        },
+        {
+          "name": "initError",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.ServerSocketCloseTest",
+      "methods": [
+        {
+          "name": "testUnblockAcceptsWithSoTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "testUnblockAcceptsWithoutSoTimeout",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.ServerSocketTest",
+      "methods": [
+        {
+          "name": "testBindBadArguments",
+          "parameterTypes": []
+        },
+        {
+          "name": "testCloseable",
+          "parameterTypes": []
+        },
+        {
+          "name": "testUnboundServerSocket",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.SoTimeoutTest",
+      "methods": [
+        {
+          "name": "issue14Fail",
+          "parameterTypes": []
+        },
+        {
+          "name": "issue14Pass",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocketTimeoutExceptionRead",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocketTimeoutExceptionWrite",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.SocketChannelTest",
+      "methods": [
+        {
+          "name": "testAcceptNotBoundYet",
+          "parameterTypes": []
+        },
+        {
+          "name": "testBindNull",
+          "parameterTypes": []
+        },
+        {
+          "name": "testByteBufferWithPositionOffset",
+          "parameterTypes": []
+        },
+        {
+          "name": "testConnectCloseImmediatelyNonBlocking",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDoubleBindAddressNotReusable",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDoubleBindAddressReusable",
+          "parameterTypes": []
+        },
+        {
+          "name": "testNonBlockingConnect",
+          "parameterTypes": []
+        },
+        {
+          "name": "testReadNotConnectedYet",
+          "parameterTypes": []
+        },
+        {
+          "name": "testWriteNotConnectedYet",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.SocketClosedException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.SocketOptionsTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.SocketPairTest",
+      "methods": [
+        {
+          "name": "testDatagramPair",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocketPair",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.SocketTest",
+      "methods": [
+        {
+          "name": "testBindBadArguments",
+          "parameterTypes": []
+        },
+        {
+          "name": "testCloseable",
+          "parameterTypes": []
+        },
+        {
+          "name": "testConnectBadArguments",
+          "parameterTypes": []
+        },
+        {
+          "name": "testUnconnectedSocket",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.SocketTestBase",
+      "methods": [
+        {
+          "name": "ensureSocketFileIsDeleted",
+          "parameterTypes": []
+        },
+        {
+          "name": "tearDownClass",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.SocketTestBase$AFUNIXServerThread"
+    },
+    {
+      "type": "org.newsclub.net.unix.SocketTestBase$ServerThread"
+    },
+    {
+      "type": "org.newsclub.net.unix.StandardSocketOptionsTest",
+      "methods": [
+        {
+          "name": "afterEach",
+          "parameterTypes": []
+        },
+        {
+          "name": "beforeEach",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocketOptions",
+          "parameterTypes": []
+        },
+        {
+          "name": "testUnconnectedServerSocketOptions",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.StandardSocketOptionsTest$TestState"
+    },
+    {
+      "type": "org.newsclub.net.unix.StandardSocketOptionsTest$TestStateServerSocket"
+    },
+    {
+      "type": "org.newsclub.net.unix.StandardSocketOptionsTest$TestStateSocket"
+    },
+    {
+      "type": "org.newsclub.net.unix.TcpNoDelayTest",
+      "methods": [
+        {
+          "name": "testDefaultImpl",
+          "parameterTypes": []
+        },
+        {
+          "name": "testStrictImpl",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.ThroughputTest",
+      "methods": [
+        {
+          "name": "testDatagramChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDatagramChannelDirect",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDatagramChannelNonBlocking",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDatagramChannelNonBlockingDirect",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDatagramPacket",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocket",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocketChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocketChannelDirectBuffer",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.darwin.system.AFSYSTEMDatagramSocket",
+      "jniAccessible": true
+    },
+    {
+      "type": "org.newsclub.net.unix.darwin.system.AFSYSTEMSelectorProvider"
+    },
+    {
+      "type": "org.newsclub.net.unix.darwin.system.AFSYSTEMSocket",
+      "jniAccessible": true
+    },
+    {
+      "type": "org.newsclub.net.unix.darwin.system.KernelControlNamesTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testStandardKernelControlNames",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.darwin.system.UtunTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.AbstractNamespaceTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.AcceptTimeoutTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.AvailableTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.BufferOverflowTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.CancelAcceptTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.DatagramSocketTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSeqPacket",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSeqPacketPair",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.EndOfFileTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.FileDescriptorCastTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDatagramFileChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDatagramPorts",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDatagramSocket",
+          "parameterTypes": []
+        },
+        {
+          "name": "testForkedVMRedirectStdin",
+          "parameterTypes": []
+        },
+        {
+          "name": "testServer",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocketPair",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocketPairNative",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocketPorts",
+          "parameterTypes": []
+        },
+        {
+          "name": "testUnconnectedServerAsSocket",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.FileDescriptorsTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testAncillaryReceiveBufferTooSmall",
+          "parameterTypes": []
+        },
+        {
+          "name": "testBadFileDescriptor",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDatagramSocket",
+          "parameterTypes": []
+        },
+        {
+          "name": "testEmptyFileDescriptorArray",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFileInputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFileInputStreamPartiallyConsumed",
+          "parameterTypes": []
+        },
+        {
+          "name": "testNoAncillaryReceiveBuffer",
+          "parameterTypes": []
+        },
+        {
+          "name": "testNullFileDescriptorArray",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSendRecvFileDescriptors",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSendRecvFileDescriptorsChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSendRecvFileDescriptorsChannelNonBlocking",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.InterruptIssue158Test",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.InterruptTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.MassiveParallelTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testAcceptConnect",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.PeerCredentialsTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "ensureSameCreds",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDatagramSocket",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSocketsSameProcess",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.ReadWriteTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.SelectorTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.ServerSocketCloseTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.ServerSocketTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSupported",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.SoTimeoutTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.SocketAddressTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testAbstractNamespace",
+          "parameterTypes": []
+        },
+        {
+          "name": "testByteConstructor",
+          "parameterTypes": []
+        },
+        {
+          "name": "testEmptyAddress",
+          "parameterTypes": []
+        },
+        {
+          "name": "testInetAddress",
+          "parameterTypes": []
+        },
+        {
+          "name": "testLargePort",
+          "parameterTypes": []
+        },
+        {
+          "name": "testLegacyConstructor",
+          "parameterTypes": []
+        },
+        {
+          "name": "testPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "testPort",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.SocketChannelTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testUnixDomainProtocolFamily",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.SocketFactoryTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFactoryArg",
+          "parameterTypes": []
+        },
+        {
+          "name": "testReflection",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSystemProperty",
+          "parameterTypes": []
+        },
+        {
+          "name": "testURISchemeCeateSocketThenConnect",
+          "parameterTypes": []
+        },
+        {
+          "name": "testURISchemeCeateSocketWithHostnameValidCases",
+          "parameterTypes": []
+        },
+        {
+          "name": "testURISchemeCeateSocketWithIllegalArguments",
+          "parameterTypes": []
+        },
+        {
+          "name": "testURISchemeCeateSocketWithInvalidHostname",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.SocketPairTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.SocketTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testLoadedLibrary",
+          "parameterTypes": []
+        },
+        {
+          "name": "testMain",
+          "parameterTypes": []
+        },
+        {
+          "name": "testReceivedFileDescriptorsUnconnected",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSupported",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSupports",
+          "parameterTypes": []
+        },
+        {
+          "name": "testVersion",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.StandardSocketOptionsTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.TcpNoDelayTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.ThroughputTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.ThroughputTestShim",
+      "methods": [
+        {
+          "name": "testJEP380",
+          "parameterTypes": []
+        },
+        {
+          "name": "testJEP380direct",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.UnixDomainSocketAddressTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testConvertUnixDomainSocketAddress",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.VirtualThreadConnectTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testBlockingReadCompletesForAllClients",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.domain.VirtualThreadPollerNaiveDeadlockTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testWithParallelism1",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.generic.AFGenericSelectorProvider"
+    },
+    {
+      "type": "org.newsclub.net.unix.java.InterruptIssue158Test",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.java.InterruptTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.java.JavaInetStackCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.java.JavaInetStackRequirement"
+    },
+    {
+      "type": "org.newsclub.net.unix.java.SelectorTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.java.SocketChannelTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.java.ThroughputTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.jep380.InterruptIssue158Test",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.jep380.SocketChannelTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.memory.MappedMemoryTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testAnonymous",
+          "parameterTypes": []
+        },
+        {
+          "name": "testAnonymousReadOnly",
+          "parameterTypes": []
+        },
+        {
+          "name": "testMappedFiles",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.memory.SharedMemory",
+      "methods": [
+        {
+          "name": "init",
+          "parameterTypes": [
+            "org.newsclub.net.unix.MemoryImplUtilInternal"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.memory.SharedMemoryTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testCreateAnonymousZeroMmap",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFileChannelMMap",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFutex",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFutexAlignmentAndLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFutexCloseSharedMemory",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFutexCloseSharedMemoryFail",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFutexIs32Bit",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFutexReadOnlySegment",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFutexSeparateVM",
+          "parameterTypes": []
+        },
+        {
+          "name": "testMMapAccessAfterClose",
+          "parameterTypes": []
+        },
+        {
+          "name": "testMMapAccessAfterCloseGlobalArena",
+          "parameterTypes": []
+        },
+        {
+          "name": "testMMapAfterClose",
+          "parameterTypes": []
+        },
+        {
+          "name": "testMMapReadOnly",
+          "parameterTypes": []
+        },
+        {
+          "name": "testMMapThenAccessAfterGC",
+          "parameterTypes": []
+        },
+        {
+          "name": "testMMapWithDuplicates",
+          "parameterTypes": []
+        },
+        {
+          "name": "testMemorySegmentFileChannelMap",
+          "parameterTypes": []
+        },
+        {
+          "name": "testMutex",
+          "parameterTypes": []
+        },
+        {
+          "name": "testMutexIsInterProcess",
+          "parameterTypes": []
+        },
+        {
+          "name": "testOSAdvisory",
+          "parameterTypes": []
+        },
+        {
+          "name": "testOpen",
+          "parameterTypes": []
+        },
+        {
+          "name": "testOpenEmpty",
+          "parameterTypes": []
+        },
+        {
+          "name": "testOpenExisting",
+          "parameterTypes": []
+        },
+        {
+          "name": "testOpenNull",
+          "parameterTypes": []
+        },
+        {
+          "name": "testOpenTwoAnonymous",
+          "parameterTypes": []
+        },
+        {
+          "name": "testPageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSecret",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSlashes",
+          "parameterTypes": []
+        },
+        {
+          "name": "testTwoAnonymous",
+          "parameterTypes": []
+        },
+        {
+          "name": "testUnlink",
+          "parameterTypes": []
+        },
+        {
+          "name": "testUnlinkOpen",
+          "parameterTypes": []
+        },
+        {
+          "name": "testWriteFileChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "testWriteFileOutputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "testreateOrOpen",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.AFRMIService"
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.AFRMIServiceImpl_Stub"
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.AFRMISocketFactory",
+      "serializable": true
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.AFRegistry$1_Stub"
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.AFSocketCapabilityCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.AFSocketCapabilityRequirement"
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.AFUNIXRMISocketFactory",
+      "serializable": true
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.Hello",
+      "methods": [
+        {
+          "name": "hello",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.HelloImpl_Stub"
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.JunixsocketVersionTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testVersion",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.NaiveFileInputStreamRemote",
+      "methods": [
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRemoteFileDescriptor",
+          "parameterTypes": []
+        },
+        {
+          "name": "read",
+          "parameterTypes": []
+        },
+        {
+          "name": "readAllBytes",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.NaiveFileInputStreamRemoteImpl_Stub"
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RMIPeerCredentialsTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testRemotePeerCredentials",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RegistryTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDoubleCreateRegistry",
+          "parameterTypes": []
+        },
+        {
+          "name": "testExportAndBind",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteCloseable",
+      "methods": [
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteCloseableImpl_Stub"
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteCloseableTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testRemoteCloseableWithACloseableThing",
+          "parameterTypes": []
+        },
+        {
+          "name": "testRemoteCloseableWithANotCloseableThing",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteCloseableThing$IsCloseable",
+      "serializable": true
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteCloseableThing$NotCloseable",
+      "serializable": true
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteCloseableThingImpl",
+      "serializable": true
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteCloseableThingImpl$IsCloseableImpl",
+      "serializable": true
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteCloseableThingImpl$NotCloseableImpl",
+      "serializable": true
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteFileDescriptor",
+      "serializable": true
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteFileDescriptorBase",
+      "serializable": true
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteFileDescriptorTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testFindSocketFactory",
+          "parameterTypes": []
+        },
+        {
+          "name": "testReadWrite",
+          "parameterTypes": []
+        },
+        {
+          "name": "testRemoteStdout",
+          "parameterTypes": []
+        },
+        {
+          "name": "testRemoteStdoutNoop",
+          "parameterTypes": []
+        },
+        {
+          "name": "testServiceProxy",
+          "parameterTypes": []
+        },
+        {
+          "name": "testWriteAndReadHello",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteFileInput",
+      "serializable": true
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.RemoteFileOutput",
+      "serializable": true
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.ShutdownHookTestBase",
+      "methods": [
+        {
+          "name": "tearDownClass",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.TestBase",
+      "methods": [
+        {
+          "name": "setUp",
+          "parameterTypes": []
+        },
+        {
+          "name": "tearDown",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.TestService",
+      "methods": [
+        {
+          "name": "input",
+          "parameterTypes": []
+        },
+        {
+          "name": "input",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "naiveInputStreamRemote",
+          "parameterTypes": []
+        },
+        {
+          "name": "output",
+          "parameterTypes": []
+        },
+        {
+          "name": "remoteCloseable",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "remoteCloseableThingNumberOfCloseCalls",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "remoteCloseableThingResetNumberOfCloseCalls",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "remotePeerCredentials",
+          "parameterTypes": []
+        },
+        {
+          "name": "stdout",
+          "parameterTypes": []
+        },
+        {
+          "name": "verifyContents",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.rmi.TestServiceImpl_Stub"
+    },
+    {
+      "type": "org.newsclub.net.unix.ssl.ProviderTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testDumpDefaultProviders",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.ssl.SNIHostnameCaptureTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testSNISuccessExpectDefault_NO_serverNullDefault_NO_clientEmptyDefault_NO",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testSNISuccessExpectDefault_NO_serverNullDefault_NO_clientEmptyDefault_YES",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testSNISuccessExpectDefault_NO_serverNullDefault_YES_clientEmptyDefault_NO",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testSNISuccessExpectDefault_NO_serverNullDefault_YES_clientEmptyDefault_YES",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testSNISuccessExpectDefault_YES_serverNullDefault_NO_clientEmptyDefault_NO",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testSNISuccessExpectDefault_YES_serverNullDefault_NO_clientEmptyDefault_YES",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testSNISuccessExpectDefault_YES_serverNullDefault_YES_clientEmptyDefault_NO",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testSNISuccessExpectDefault_YES_serverNullDefault_YES_clientEmptyDefault_YES",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testWonkySSLSocket",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.ssl.SSLContextBuilderTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testBadProtocol",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testBothKeyManagersAndKeyStore",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testBothKeyStoreAndKeyManagers",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testBothTrustManagersAndTrustStore",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testBothTrustStoreAndTrustManagers",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testClientAuthRequired",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testClientAuthRequiredButClientIsNotSendingAKey",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testClientAuthRequiredButClientKeyIsNotTrusted",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testClientHasNoTrustStore",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testDestroyablePasswordSupplier",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testDestroyablePasswordSupplierDestroyed",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testKeyStoreFileNotFound",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testKeyStoreNullPasswordSupplied",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testKeyStoreNullPasswordSupplier",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testKeyStoreNullURL",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testKeyStoreURLNotFound",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testNoClientAuth",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testSSLEngineMethods",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testServerAndClientBlindlyTrustAnything",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testServerSocketFactoryMethods",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testServerSocketFactoryMethodsForCodeCoverageOnly",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testSocketFactoryMethods",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testSocketFactoryMethodsForCodeCoverageOnly",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testTrustStoreFileNotFound",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testTrustStoreNullPasswordSupplied",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testTrustStoreNullPasswordSupplier",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testTrustStoreNullURL",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testTrustStoreURLNotFound",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testUndestroyablePasswordSupplier",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testUndestroyablePasswordSuppliers",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testWithDefaultParameters1",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testWithDefaultParameters2",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.ssl.SSLTestBase",
+      "methods": [
+        {
+          "name": "afterAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "beforeAll",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.ssl.ValidatingX509TrustManagerTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testInspectTrustedCertificateExpired",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testInspectTrustedCertificateExpiredNested",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testInspectTrustedCertificateExpiredNestedFilter",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testInspectTrustedCertificateNotExpired",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testInspectTrustedClientCertificate",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testInspectTrustedClientCertificateExpired",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        },
+        {
+          "name": "testInspectTrustedClientCertificateExpiredNested",
+          "parameterTypes": [
+            "org.newsclub.net.unix.ssl.SSLTestBase$TestSSLConfiguration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.AFTIPCGroupRequest",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "fromNative",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "getFlagsValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInstance",
+          "parameterTypes": []
+        },
+        {
+          "name": "getScopeId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getType",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.AFTIPCSelectorProvider"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.AFTIPCTopologyWatcherTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.AcceptTimeoutTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.AncillaryMessageTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.AvailableTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.BufferOverflowTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.CancelAcceptTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.DatagramSocketTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.EndOfFileTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.ReadWriteTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.SelectorTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.ServerSocketCloseTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.ServerSocketTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.SoTimeoutTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.SocketChannelTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.SocketOptionsTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.SocketPairTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.SocketTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.StandardSocketOptionsTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.TcpNoDelayTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.tipc.ThroughputTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.AFVSOCKDatagramSocket",
+      "jniAccessible": true
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.AFVSOCKExtensionsTest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "testGetLocalID",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.AFVSOCKSelectorProvider"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.AFVSOCKSocket",
+      "jniAccessible": true
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.AcceptTimeoutTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.AncillaryMessageTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.AvailableTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.BufferOverflowTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.CancelAcceptTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.DatagramSocketTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.EndOfFileTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.ReadWriteTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.SelectorTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.ServerSocketCloseTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.ServerSocketTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.SoTimeoutTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.SocketChannelTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.SocketOptionsTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.SocketPairTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.SocketTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.StandardSocketOptionsTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.TcpNoDelayTest"
+    },
+    {
+      "type": "org.newsclub.net.unix.vsock.ThroughputTest"
+    },
+    {
+      "type": "org.openjsse.net.ssl.OpenJSSE"
+    },
+    {
+      "type": "short[]"
+    },
+    {
+      "type": "sun.management.ClassLoadingImpl"
+    },
+    {
+      "type": "sun.management.CompilationImpl"
+    },
+    {
+      "type": "sun.management.ManagementFactoryHelper$1"
+    },
+    {
+      "type": "sun.management.ManagementFactoryHelper$PlatformLoggingImpl"
+    },
+    {
+      "type": "sun.management.MemoryImpl"
+    },
+    {
+      "type": "sun.management.MemoryManagerImpl"
+    },
+    {
+      "type": "sun.management.MemoryPoolImpl"
+    },
+    {
+      "type": "sun.management.RuntimeImpl"
+    },
+    {
+      "type": "sun.management.VMManagementImpl",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "compTimeMonitoringSupport"
+        },
+        {
+          "name": "currentThreadCpuTimeSupport"
+        },
+        {
+          "name": "objectMonitorUsageSupport"
+        },
+        {
+          "name": "otherThreadCpuTimeSupport"
+        },
+        {
+          "name": "remoteDiagnosticCommandsSupport"
+        },
+        {
+          "name": "synchronizerUsageSupport"
+        },
+        {
+          "name": "threadAllocatedMemorySupport"
+        },
+        {
+          "name": "threadContentionMonitoringSupport"
+        }
+      ]
+    },
+    {
+      "type": "sun.net.www.protocol.http.Handler",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.rmi.registry.RegistryImpl_Skel",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.rmi.registry.RegistryImpl_Stub",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.rmi.server.RemoteRef"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.rmi.server.UnicastRef2",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.rmi.transport.DGCImpl_Skel",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.rmi.transport.DGCImpl_Stub",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.rmi.server.RemoteRef"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.rmi.transport.tcp.TCPTransport",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "threadConnectionHandler"
+        }
+      ]
+    },
+    {
+      "type": "sun.rmi.transport.tcp.TCPTransport$ConnectionHandler",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "socket"
+        }
+      ]
+    },
+    {
+      "type": "sun.security.pkcs12.PKCS12KeyStore",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.pkcs12.PKCS12KeyStore$DualFormatPKCS12",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.DSA$SHA224withDSA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.DSA$SHA256withDSA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.NativePRNG",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.SecureRandomParameters"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.NativePRNG$NonBlocking",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.SecureRandomParameters"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA2$SHA224",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA2$SHA256",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA5$SHA384",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.SHA5$SHA512",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.X509Factory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.certpath.CollectionCertStore",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.cert.CertStoreParameters"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.provider.certpath.SunCertPathBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.rsa.PSSParameters",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.rsa.RSAKeyFactory$Legacy",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.rsa.RSAPSSSignature",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.rsa.RSASignature$SHA224withRSA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.rsa.RSASignature$SHA384withRSA",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.ssl.KeyManagerFactoryImpl$SunX509",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.ssl.SSLContextImpl$DefaultSSLContext",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.ssl.SSLContextImpl$TLSContext",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.ssl.TrustManagerFactoryImpl$PKIXFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.AuthorityInfoAccessExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.AuthorityKeyIdentifierExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.BasicConstraintsExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.CRLDistributionPointsExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.CertificatePoliciesExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.ExtendedKeyUsageExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.KeyUsageExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.NetscapeCertTypeExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.PrivateKeyUsageExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.SubjectAlternativeNameExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.security.x509.SubjectKeyIdentifierExtension",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sun.text.resources.cldr.FormatData"
+    },
+    {
+      "type": "sun.text.resources.cldr.FormatData_en"
+    },
+    {
+      "type": "sun.text.resources.cldr.FormatData_en_US"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames_en"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames_en_US"
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.newsclub.net.unix.rmi.AFRMIService"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.newsclub.net.unix.rmi.Hello"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.newsclub.net.unix.rmi.NaiveFileInputStreamRemote"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.newsclub.net.unix.rmi.RemoteCloseable"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.newsclub.net.unix.rmi.TestService"
+        ]
+      }
+    }
+  ],
+  "resources": [
+    {
+      "glob": ""
+    },
+    {
+      "glob": "META-INF/maven/com.kohlschutter.junixsocket/junixsocket-common/pom.properties"
+    },
+    {
+      "glob": "META-INF/maven/com.kohlschutter.junixsocket/junixsocket-native-common/pom.properties"
+    },
+    {
+      "glob": "META-INF/maven/com.kohlschutter.junixsocket/junixsocket-native-custom/pom.properties"
+    },
+    {
+      "glob": "META-INF/maven/com.kohlschutter.junixsocket/junixsocket-selftest/git.properties"
+    },
+    {
+      "glob": "META-INF/services/java.net.spi.InetAddressResolverProvider"
+    },
+    {
+      "glob": "META-INF/services/java.net.spi.URLStreamHandlerProvider"
+    },
+    {
+      "glob": "META-INF/services/java.nio.channels.spi.SelectorProvider"
+    },
+    {
+      "glob": "META-INF/services/java.rmi.server.RMIClassLoaderSpi"
+    },
+    {
+      "glob": "META-INF/services/java.sql.Driver"
+    },
+    {
+      "glob": "META-INF/services/java.util.spi.ResourceBundleControlProvider"
+    },
+    {
+      "glob": "META-INF/services/org.junit.platform.commons.support.scanning.ClasspathScanner"
+    },
+    {
+      "glob": "META-INF/services/org.junit.platform.launcher.LauncherDiscoveryListener"
+    },
+    {
+      "glob": "META-INF/services/org.junit.platform.launcher.LauncherSessionListener"
+    },
+    {
+      "glob": "META-INF/services/org.junit.platform.launcher.PostDiscoveryFilter"
+    },
+    {
+      "glob": "META-INF/services/org.junit.platform.launcher.TestExecutionListener"
+    },
+    {
+      "glob": "com/mysql/cj/LocalizedErrorMessages.properties"
+    },
+    {
+      "glob": "com/mysql/cj/LocalizedErrorMessages_en.properties"
+    },
+    {
+      "glob": "com/mysql/cj/LocalizedErrorMessages_en_US.properties"
+    },
+    {
+      "glob": "junit-platform.properties"
+    },
+    {
+      "glob": "lib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.11.0-SNAPSHOT.dylib"
+    },
+    {
+      "glob": "lib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.11.0-SNAPSHOT.nodeps.dylib"
+    },
+    {
+      "glob": "lib/aarch64-MacOSX-gcc/jni/libjunixsocket-native-2.11.0-SNAPSHOT.dylib"
+    },
+    {
+      "glob": "lib/aarch64-MacOSX-gcc/jni/libjunixsocket-native-2.11.0-SNAPSHOT.nodeps.dylib"
+    },
+    {
+      "glob": "org/newsclub/net/unix/ssl/juxclient.p12"
+    },
+    {
+      "glob": "org/newsclub/net/unix/ssl/juxclient.truststore"
+    },
+    {
+      "glob": "org/newsclub/net/unix/ssl/juxserver.p12"
+    },
+    {
+      "glob": "org/newsclub/net/unix/ssl/juxserver.truststore"
+    },
+    {
+      "glob": "org/newsclub/net/unix/ssl/logging.properties"
+    },
+    {
+      "module": "java.base",
+      "glob": "jdk/internal/icu/impl/data/icudt76b/nfc.nrm"
+    },
+    {
+      "module": "java.base",
+      "glob": "jdk/internal/icu/impl/data/icudt76b/nfkc.nrm"
+    },
+    {
+      "module": "java.base",
+      "glob": "jdk/internal/icu/impl/data/icudt76b/uprops.icu"
+    },
+    {
+      "module": "java.base",
+      "glob": "sun/net/idn/uidna.spp"
+    },
+    {
+      "module": "jdk.jfr",
+      "glob": "jdk/jfr/internal/query/view.ini"
+    },
+    {
+      "bundle": "com.mysql.cj.LocalizedErrorMessages"
+    }
+  ]
+}

@@ -1,8 +1,30 @@
 [
 {
+  "name":"[Lcom.sun.management.internal.DiagnosticCommandArgumentInfo;"
+},
+{
+  "name":"[Lcom.sun.management.internal.DiagnosticCommandInfo;"
+},
+{
+  "name":"com.sun.management.internal.DiagnosticCommandArgumentInfo",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String","java.lang.String","java.lang.String","boolean","boolean","boolean","int"] }]
+},
+{
+  "name":"com.sun.management.internal.DiagnosticCommandInfo",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String","java.lang.String","java.lang.String","java.lang.String","java.lang.String","boolean","java.util.List"] }]
+},
+{
   "name":"java.io.FileDescriptor",
   "fields":[{"name":"fd"}],
   "methods":[{"name":"attach","parameterTypes":["java.io.Closeable"] }]
+},
+{
+  "name":"java.io.FileNotFoundException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.io.IOException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"java.lang.Boolean",
@@ -81,12 +103,28 @@
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {
+  "name":"java.nio.Buffer",
+  "fields":[{"name":"segment"}]
+},
+{
+  "name":"java.nio.MappedByteBuffer",
+  "fields":[{"name":"fd"}, {"name":"isSync"}]
+},
+{
   "name":"java.nio.channels.ClosedChannelException",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"java.nio.channels.spi.AbstractSelectableChannel",
   "methods":[{"name":"removeKey","parameterTypes":["java.nio.channels.SelectionKey"] }]
+},
+{
+  "name":"java.nio.file.FileAlreadyExistsException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.util.Arrays",
+  "methods":[{"name":"asList","parameterTypes":["java.lang.Object[]"] }]
 },
 {
   "name":"org.newsclub.net.unix.AFGenericServerSocket"
@@ -113,6 +151,10 @@
   "methods":[{"name":"setUUID","parameterTypes":["java.lang.String"] }]
 },
 {
+  "name":"org.newsclub.net.unix.AddressAlreadyInUseSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
   "name":"org.newsclub.net.unix.AddressUnavailableSocketException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
@@ -126,6 +168,10 @@
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {
+  "name":"org.newsclub.net.unix.ConnectionRefusedSocketException",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"org.newsclub.net.unix.ConnectionResetSocketException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
@@ -134,11 +180,19 @@
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {
+  "name":"org.newsclub.net.unix.NetworkUnreachableSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
   "name":"org.newsclub.net.unix.NoSuchDeviceSocketException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {
   "name":"org.newsclub.net.unix.NotConnectedSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"org.newsclub.net.unix.OperationNotSupportedIOException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {
@@ -160,6 +214,14 @@
   "name":"org.newsclub.net.unix.darwin.system.AFSYSTEMSocket"
 },
 {
+  "name":"org.newsclub.net.unix.domain.VirtualThreadPollerNaiveDeadlockTest",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.newsclub.net.unix.memory.FutexTestApp",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.newsclub.net.unix.selftest.Selftest",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
@@ -172,6 +234,10 @@
 },
 {
   "name":"org.newsclub.net.unix.vsock.AFVSOCKSocket"
+},
+{
+  "name":"sun.management.VMManagementImpl",
+  "fields":[{"name":"compTimeMonitoringSupport"}, {"name":"currentThreadCpuTimeSupport"}, {"name":"objectMonitorUsageSupport"}, {"name":"otherThreadCpuTimeSupport"}, {"name":"remoteDiagnosticCommandsSupport"}, {"name":"synchronizerUsageSupport"}, {"name":"threadAllocatedMemorySupport"}, {"name":"threadContentionMonitoringSupport"}]
 },
 {
   "name":"sun.rmi.transport.tcp.TCPTransport",

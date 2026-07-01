@@ -213,6 +213,22 @@
   "allDeclaredConstructors":true
 },
 {
+  "name":"org.newsclub.net.unix.ReadWriteTest$ByteArrayWritingServerThread",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.ReadWriteTest$ByteForByteWritingServerThread",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
   "name":"org.newsclub.net.unix.SelectorTest",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
@@ -293,7 +309,47 @@
   "allDeclaredConstructors":true
 },
 {
+  "name":"org.newsclub.net.unix.SocketTestBase$AFUNIXServerThread",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.SocketTestBase$ServerThread",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
   "name":"org.newsclub.net.unix.StandardSocketOptionsTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.StandardSocketOptionsTest$TestState",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.StandardSocketOptionsTest$TestStateServerSocket",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.StandardSocketOptionsTest$TestStateSocket",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
@@ -1115,6 +1171,28 @@
   "queryAllDeclaredConstructors":true
 },
 {
+  "name":"org.newsclub.net.unix.domain.VirtualThreadConnectTest",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.domain.VirtualThreadPollerNaiveDeadlockTest",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
   "name":"org.newsclub.net.unix.domain.InterruptIssue158Test",
   "allDeclaredConstructors" : true,
   "allPublicConstructors" : true,
@@ -1244,6 +1322,28 @@
 },
 {
   "name":"org.newsclub.net.unix.rmi.TestServiceImpl_Stub"
+},
+{
+    "name":"org.newsclub.net.unix.memory.MappedMemoryTest",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods":true,
+    "allDeclaredFields":true,
+    "allDeclaredClasses":true,
+    "queryAllDeclaredMethods":true,
+    "queryAllPublicMethods":true,
+    "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.newsclub.net.unix.memory.SharedMemoryTest",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods":true,
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
 },
 {
   "name":"org.newsclub.net.mysql.AFUNIXDatabaseSocketFactoryCJTest",

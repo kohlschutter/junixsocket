@@ -23,6 +23,8 @@
   }, {
     "pattern":"\\QMETA-INF/services/java.util.spi.ResourceBundleControlProvider\\E"
   }, {
+    "pattern":"\\QMETA-INF/services/org.junit.platform.commons.support.scanning.ClasspathScanner\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.LauncherDiscoveryListener\\E"
   }, {
     "pattern":"\\QMETA-INF/services/org.junit.platform.launcher.LauncherSessionListener\\E"
@@ -43,13 +45,13 @@
   }, {
     "pattern":"\\Qjunit-platform.properties\\E"
   }, {
-    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.10.0-SNAPSHOT.dylib\\E"
+    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.11.0-SNAPSHOT.dylib\\E"
   }, {
-    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.10.0-SNAPSHOT.nodeps.dylib\\E"
+    "pattern":"\\Qlib/aarch64-MacOSX-clang/jni/libjunixsocket-native-2.11.0-SNAPSHOT.nodeps.dylib\\E"
   }, {
-    "pattern":"\\Qlib/aarch64-MacOSX-gcc/jni/libjunixsocket-native-2.10.0-SNAPSHOT.dylib\\E"
+    "pattern":"\\Qlib/aarch64-MacOSX-gcc/jni/libjunixsocket-native-2.11.0-SNAPSHOT.dylib\\E"
   }, {
-    "pattern":"\\Qlib/aarch64-MacOSX-gcc/jni/libjunixsocket-native-2.10.0-SNAPSHOT.nodeps.dylib\\E"
+    "pattern":"\\Qlib/aarch64-MacOSX-gcc/jni/libjunixsocket-native-2.11.0-SNAPSHOT.nodeps.dylib\\E"
   }, {
     "pattern":"\\Qorg/newsclub/net/unix/ssl/juxclient.p12\\E"
   }, {
@@ -72,6 +74,8 @@
     "pattern":"jdk.internal.le:\\Qjdk/internal/org/jline/utils/capabilities.txt\\E"
   }, {
     "pattern":"jdk.internal.le:\\Qjdk/internal/org/jline/utils/xterm-256color.caps\\E"
+  }, {
+    "pattern":"jdk.jfr:\\Qjdk/jfr/internal/query/view.ini\\E"
   }]},
   "bundles":[{
     "name":"com.mysql.cj.LocalizedErrorMessages",

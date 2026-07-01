@@ -28,6 +28,30 @@
   ]
 },
 {
+  "name":"java.io.FileNotFoundException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.io.IOException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.nio.Buffer",
+  "fields":[{"name":"segment"}]
+},
+{
+  "name":"java.nio.file.FileAlreadyExistsException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.util.Arrays",
+  "methods":[{"name":"asList","parameterTypes":["java.lang.Object[]"] }]
+},
+{
+  "name":"java.nio.MappedByteBuffer",
+  "fields":[{"name":"fd"}, {"name":"isSync"}]
+},
+{
   "name":"java.lang.NullPointerException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
@@ -165,7 +189,23 @@
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {
+  "name":"org.newsclub.net.unix.AddressAlreadyInUseSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
   "name":"org.newsclub.net.unix.AddressUnavailableSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"org.newsclub.net.unix.ConnectionRefusedSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"org.newsclub.net.unix.NetworkUnreachableSocketException",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"org.newsclub.net.unix.OperationNotSupportedIOException",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
 },
 {

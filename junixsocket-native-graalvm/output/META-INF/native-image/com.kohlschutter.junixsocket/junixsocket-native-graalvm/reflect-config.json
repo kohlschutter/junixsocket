@@ -3,6 +3,18 @@
   "name":"[B"
 },
 {
+  "name":"[C"
+},
+{
+  "name":"[D"
+},
+{
+  "name":"[F"
+},
+{
+  "name":"[I"
+},
+{
   "name":"[J"
 },
 {
@@ -15,7 +27,16 @@
   "name":"[Ljava.rmi.server.ObjID;"
 },
 {
+  "name":"[Ljavax.management.openmbean.CompositeData;"
+},
+{
   "name":"[Lsun.security.pkcs.SignerInfo;"
+},
+{
+  "name":"[S"
+},
+{
+  "name":"[Z"
 },
 {
   "name":"apple.security.AppleProvider",
@@ -150,6 +171,46 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"com.sun.management.GarbageCollectorMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.sun.management.GcInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.sun.management.HotSpotDiagnosticMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.sun.management.ThreadMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.sun.management.UnixOperatingSystemMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.sun.management.VMOption",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.sun.management.internal.GarbageCollectorExtImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"com.sun.management.internal.HotSpotDiagnostic",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"com.sun.management.internal.HotSpotThreadImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"com.sun.management.internal.OperatingSystemImpl",
+  "queryAllPublicConstructors":true
+},
+{
   "name":"com.wolfssl.provider.jce.WolfCryptProvider"
 },
 {
@@ -162,10 +223,55 @@
   "name":"iaik.security.provider.IAIK"
 },
 {
+  "name":"java.io.Closeable",
+  "allDeclaredClasses":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.io.FileNotFoundException"
+},
+{
   "name":"java.io.IOException"
 },
 {
+  "name":"java.lang.AutoCloseable",
+  "allDeclaredClasses":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.Boolean",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Byte",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Character",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Deprecated",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.Double",
+  "fields":[{"name":"TYPE"}]
+},
+{
   "name":"java.lang.Exception"
+},
+{
+  "name":"java.lang.Float",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Integer",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Long",
+  "fields":[{"name":"TYPE"}]
 },
 {
   "name":"java.lang.Number"
@@ -174,17 +280,97 @@
   "name":"java.lang.ProcessBuilder$RedirectPipeImpl"
 },
 {
-  "name":"java.lang.String"
+  "name":"java.lang.Runnable",
+  "allDeclaredClasses":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.Short",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.StackTraceElement",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.String",
+  "fields":[{"name":"TYPE"}]
 },
 {
   "name":"java.lang.Thread",
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
   "fields":[{"name":"threadLocalRandomProbe"}]
 },
 {
   "name":"java.lang.Throwable"
 },
 {
+  "name":"java.lang.Void",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.management.BufferPoolMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.ClassLoadingMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.CompilationMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.LockInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.ManagementPermission",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.management.MemoryMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.MemoryManagerMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.MemoryPoolMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.MemoryUsage",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.MonitorInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.PlatformLoggingMXBean",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"getLoggerLevel","parameterTypes":["java.lang.String"] }, {"name":"getLoggerNames","parameterTypes":[] }, {"name":"getParentLoggerName","parameterTypes":["java.lang.String"] }, {"name":"setLoggerLevel","parameterTypes":["java.lang.String","java.lang.String"] }]
+},
+{
+  "name":"java.lang.management.RuntimeMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"java.lang.management.ThreadInfo",
+  "queryAllPublicMethods":true
+},
+{
   "name":"java.lang.reflect.Proxy"
+},
+{
+  "name":"java.math.BigDecimal"
+},
+{
+  "name":"java.math.BigInteger"
 },
 {
   "name":"java.net.InetSocketAddress"
@@ -207,6 +393,9 @@
 },
 {
   "name":"java.nio.channels.spi.AbstractSelectableChannel"
+},
+{
+  "name":"java.nio.file.FileAlreadyExistsException"
 },
 {
   "name":"java.rmi.NoSuchObjectException"
@@ -247,12 +436,6 @@
   "name":"java.security.KeyStoreSpi"
 },
 {
-  "name":"java.security.SecureRandomParameters"
-},
-{
-  "name":"java.security.cert.CertStoreParameters"
-},
-{
   "name":"java.security.interfaces.RSAPrivateKey"
 },
 {
@@ -267,6 +450,10 @@
 },
 {
   "name":"java.util.Date"
+},
+{
+  "name":"java.util.PropertyPermission",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String"] }]
 },
 {
   "name":"java.util.UUID"
@@ -295,12 +482,73 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"java.util.logging.LogManager",
+  "methods":[{"name":"getLoggingMXBean","parameterTypes":[] }]
+},
+{
+  "name":"java.util.logging.LoggingMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"javax.management.MBeanOperationInfo",
+  "queryAllPublicMethods":true,
+  "methods":[{"name":"getSignature","parameterTypes":[] }]
+},
+{
+  "name":"javax.management.MBeanServerBuilder",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"javax.management.ObjectName"
+},
+{
+  "name":"javax.management.StandardEmitterMBean",
+  "methods":[{"name":"cacheMBeanInfo","parameterTypes":["javax.management.MBeanInfo"] }, {"name":"getCachedMBeanInfo","parameterTypes":[] }, {"name":"getMBeanInfo","parameterTypes":[] }]
+},
+{
+  "name":"javax.management.openmbean.CompositeData"
+},
+{
+  "name":"javax.management.openmbean.OpenMBeanOperationInfoSupport"
+},
+{
+  "name":"javax.management.openmbean.TabularData"
+},
+{
   "name":"javax.security.auth.x500.X500Principal",
   "fields":[{"name":"thisX500Name"}],
   "methods":[{"name":"<init>","parameterTypes":["sun.security.x509.X500Name"] }]
 },
 {
   "name":"jdk.internal.misc.Unsafe"
+},
+{
+  "name":"jdk.management.jfr.ConfigurationInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"jdk.management.jfr.EventTypeInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"jdk.management.jfr.FlightRecorderMXBean",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"jdk.management.jfr.FlightRecorderMXBeanImpl",
+  "queryAllPublicConstructors":true,
+  "methods":[{"name":"cacheMBeanInfo","parameterTypes":["javax.management.MBeanInfo"] }, {"name":"getCachedMBeanInfo","parameterTypes":[] }, {"name":"getMBeanInfo","parameterTypes":[] }, {"name":"getNotificationInfo","parameterTypes":[] }]
+},
+{
+  "name":"jdk.management.jfr.RecordingInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"jdk.management.jfr.SettingDescriptorInfo",
+  "queryAllPublicMethods":true
+},
+{
+  "name":"kotlin.Metadata"
 },
 {
   "name":"org.apiguardian.api.API",
@@ -378,6 +626,7 @@
   "name":"org.junit.jupiter.params.provider.EnumArgumentsProvider",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -388,6 +637,7 @@
   "name":"org.junit.jupiter.params.provider.MethodArgumentsProvider",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -630,6 +880,9 @@
   "name":"org.newsclub.net.unix.NoSuchDeviceSocketException"
 },
 {
+  "name":"org.newsclub.net.unix.OperationNotSupportedIOException"
+},
+{
   "name":"org.newsclub.net.unix.OperationNotSupportedSocketException"
 },
 {
@@ -648,6 +901,18 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "methods":[{"name":"testReceiveDataByteForByteSendByteForByte","parameterTypes":[] }, {"name":"testReceiveDataByteForByteSendWithByteArray","parameterTypes":[] }, {"name":"testReceiveWithByteArraySendByteForByte","parameterTypes":[] }, {"name":"testReceiveWithByteArraySendWithByteArray","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.ReadWriteTest$ByteArrayWritingServerThread",
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.newsclub.net.unix.ReadWriteTest$ByteForByteWritingServerThread",
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
 },
 {
   "name":"org.newsclub.net.unix.SelectorTest",
@@ -691,7 +956,7 @@
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"testAcceptNotBoundYet","parameterTypes":[] }, {"name":"testByteBufferWithPositionOffset","parameterTypes":[] }, {"name":"testDoubleBindAddressNotReusable","parameterTypes":[] }, {"name":"testDoubleBindAddressReusable","parameterTypes":[] }, {"name":"testNonBlockingConnect","parameterTypes":[] }, {"name":"testReadNotConnectedYet","parameterTypes":[] }, {"name":"testWriteNotConnectedYet","parameterTypes":[] }]
+  "methods":[{"name":"testAcceptNotBoundYet","parameterTypes":[] }, {"name":"testBindNull","parameterTypes":[] }, {"name":"testByteBufferWithPositionOffset","parameterTypes":[] }, {"name":"testConnectCloseImmediatelyNonBlocking","parameterTypes":[] }, {"name":"testDoubleBindAddressNotReusable","parameterTypes":[] }, {"name":"testDoubleBindAddressReusable","parameterTypes":[] }, {"name":"testNonBlockingConnect","parameterTypes":[] }, {"name":"testReadNotConnectedYet","parameterTypes":[] }, {"name":"testWriteNotConnectedYet","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.SocketClosedException"
@@ -728,12 +993,42 @@
   "methods":[{"name":"ensureSocketFileIsDeleted","parameterTypes":[] }, {"name":"tearDownClass","parameterTypes":[] }]
 },
 {
+  "name":"org.newsclub.net.unix.SocketTestBase$AFUNIXServerThread",
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.newsclub.net.unix.SocketTestBase$ServerThread",
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
   "name":"org.newsclub.net.unix.StandardSocketOptionsTest",
   "allDeclaredFields":true,
   "allDeclaredClasses":true,
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "methods":[{"name":"afterEach","parameterTypes":[] }, {"name":"beforeEach","parameterTypes":[] }, {"name":"testSocketOptions","parameterTypes":[] }, {"name":"testUnconnectedServerSocketOptions","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.StandardSocketOptionsTest$TestState",
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.newsclub.net.unix.StandardSocketOptionsTest$TestStateServerSocket",
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.newsclub.net.unix.StandardSocketOptionsTest$TestStateSocket",
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
 },
 {
   "name":"org.newsclub.net.unix.TcpNoDelayTest",
@@ -850,7 +1145,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testAncillaryReceiveBufferTooSmall","parameterTypes":[] }, {"name":"testBadFileDescriptor","parameterTypes":[] }, {"name":"testDatagramSocket","parameterTypes":[] }, {"name":"testEmptyFileDescriptorArray","parameterTypes":[] }, {"name":"testFileInputStream","parameterTypes":[] }, {"name":"testFileInputStreamPartiallyConsumed","parameterTypes":[] }, {"name":"testNoAncillaryReceiveBuffer","parameterTypes":[] }, {"name":"testNullFileDescriptorArray","parameterTypes":[] }, {"name":"testSendRecvFileDescriptors","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testAncillaryReceiveBufferTooSmall","parameterTypes":[] }, {"name":"testBadFileDescriptor","parameterTypes":[] }, {"name":"testDatagramSocket","parameterTypes":[] }, {"name":"testEmptyFileDescriptorArray","parameterTypes":[] }, {"name":"testFileInputStream","parameterTypes":[] }, {"name":"testFileInputStreamPartiallyConsumed","parameterTypes":[] }, {"name":"testNoAncillaryReceiveBuffer","parameterTypes":[] }, {"name":"testNullFileDescriptorArray","parameterTypes":[] }, {"name":"testSendRecvFileDescriptors","parameterTypes":[] }, {"name":"testSendRecvFileDescriptorsChannel","parameterTypes":[] }, {"name":"testSendRecvFileDescriptorsChannelNonBlocking","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.domain.InterruptIssue158Test",
@@ -1023,6 +1318,24 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testConvertUnixDomainSocketAddress","parameterTypes":[] }]
 },
 {
+  "name":"org.newsclub.net.unix.domain.VirtualThreadConnectTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testBlockingReadCompletesForAllClients","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.domain.VirtualThreadPollerNaiveDeadlockTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testWithParallelism1","parameterTypes":[] }]
+},
+{
   "name":"org.newsclub.net.unix.generic.AFGenericSelectorProvider"
 },
 {
@@ -1095,6 +1408,28 @@
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.memory.MappedMemoryTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testAnonymous","parameterTypes":[] }, {"name":"testAnonymousReadOnly","parameterTypes":[] }, {"name":"testMappedFiles","parameterTypes":[] }]
+},
+{
+  "name":"org.newsclub.net.unix.memory.SharedMemory",
+  "methods":[{"name":"init","parameterTypes":["org.newsclub.net.unix.MemoryImplUtilInternal"] }]
+},
+{
+  "name":"org.newsclub.net.unix.memory.SharedMemoryTest",
+  "allDeclaredFields":true,
+  "allDeclaredClasses":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"testCreateAnonymousZeroMmap","parameterTypes":[] }, {"name":"testFileChannelMMap","parameterTypes":[] }, {"name":"testFutex","parameterTypes":[] }, {"name":"testFutexAlignmentAndLength","parameterTypes":[] }, {"name":"testFutexCloseSharedMemory","parameterTypes":[] }, {"name":"testFutexCloseSharedMemoryFail","parameterTypes":[] }, {"name":"testFutexIs32Bit","parameterTypes":[] }, {"name":"testFutexReadOnlySegment","parameterTypes":[] }, {"name":"testFutexSeparateVM","parameterTypes":[] }, {"name":"testMMapAccessAfterClose","parameterTypes":[] }, {"name":"testMMapAccessAfterCloseGlobalArena","parameterTypes":[] }, {"name":"testMMapAfterClose","parameterTypes":[] }, {"name":"testMMapReadOnly","parameterTypes":[] }, {"name":"testMMapThenAccessAfterGC","parameterTypes":[] }, {"name":"testMMapWithDuplicates","parameterTypes":[] }, {"name":"testMemorySegmentFileChannelMap","parameterTypes":[] }, {"name":"testMutex","parameterTypes":[] }, {"name":"testMutexIsInterProcess","parameterTypes":[] }, {"name":"testOSAdvisory","parameterTypes":[] }, {"name":"testOpen","parameterTypes":[] }, {"name":"testOpenEmpty","parameterTypes":[] }, {"name":"testOpenExisting","parameterTypes":[] }, {"name":"testOpenNull","parameterTypes":[] }, {"name":"testOpenTwoAnonymous","parameterTypes":[] }, {"name":"testPageSize","parameterTypes":[] }, {"name":"testSecret","parameterTypes":[] }, {"name":"testSlashes","parameterTypes":[] }, {"name":"testTwoAnonymous","parameterTypes":[] }, {"name":"testUnlink","parameterTypes":[] }, {"name":"testUnlinkOpen","parameterTypes":[] }, {"name":"testWriteFileChannel","parameterTypes":[] }, {"name":"testWriteFileOutputStream","parameterTypes":[] }, {"name":"testreateOrOpen","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.rmi.AFRMIService",
@@ -1611,6 +1946,38 @@
   "name":"org.openjsse.net.ssl.OpenJSSE"
 },
 {
+  "name":"sun.management.ClassLoadingImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.CompilationImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.ManagementFactoryHelper$1",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.ManagementFactoryHelper$PlatformLoggingImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.MemoryImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.MemoryManagerImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.MemoryPoolImpl",
+  "queryAllPublicConstructors":true
+},
+{
+  "name":"sun.management.RuntimeImpl",
+  "queryAllPublicConstructors":true
+},
+{
   "name":"sun.rmi.registry.RegistryImpl_Skel",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -1648,11 +2015,11 @@
 },
 {
   "name":"sun.security.provider.NativePRNG",
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
+  "methods":[{"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
 },
 {
   "name":"sun.security.provider.NativePRNG$NonBlocking",
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
+  "methods":[{"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
 },
 {
   "name":"sun.security.provider.SHA",

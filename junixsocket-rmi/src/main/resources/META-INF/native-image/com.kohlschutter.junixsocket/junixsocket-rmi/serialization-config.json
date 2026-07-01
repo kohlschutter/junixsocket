@@ -53,6 +53,11 @@
     "proxies": [
         {
             "interfaces": [
+                "org.newsclub.net.unix.rmi.NaiveFileInputStreamRemote"
+            ]
+        },
+        {
+            "interfaces": [
                 "org.newsclub.net.unix.rmi.RemoteCloseable"
             ]
         }

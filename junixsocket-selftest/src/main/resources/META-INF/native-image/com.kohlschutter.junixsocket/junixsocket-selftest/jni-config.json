@@ -14,5 +14,13 @@
 {
   "name":"sun.rmi.transport.tcp.TCPTransport$ConnectionHandler",
   "fields":[{"name":"socket"}]
+},
+{
+  "name":"org.newsclub.net.unix.domain.VirtualThreadPollerNaiveDeadlockTest",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"org.newsclub.net.unix.memory.FutexTestApp",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 }
 ]
