@@ -617,12 +617,12 @@ static int mmodeToFlags(jint mmode) {
 #endif
 
 /*
-* Class:     org_newsclub_net_unix_NativeUnixSocket
-* Method:    mmap
-* Signature: (JLjava/io/FileDescriptor;JJI)J
-*/
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    mmap
+ * Signature: (JLjava/io/FileDescriptor;JJILjava/io/FileDescriptor;)J
+ */
 JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
- (JNIEnv *env, CK_UNUSED jclass klazz, jlong address, jobject fd, jlong offset, jlong length, jint mmode) {
+ (JNIEnv *env, CK_UNUSED jclass klazz, jlong address, jobject fd, jlong offset, jlong length, jint mmode, jobject extraFd) {
     if(length > jux_SIZE_MAX || length < 0) {
         _throwException(env, kExceptionIOException, "length");
         return -1;
@@ -643,13 +643,23 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
         return -1;
     }
     if((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_FIXED) &&
-       (CK_round_page(address) != address)) {
+       ((CK_round_page(address) != address) || address == 0)) {
         _throwException(env, kExceptionIOException, "MMODE_FIXED");
         return -1;
     }
 
+    int access = mmodeToAccess(mmode);
+
+    int memMode;
+    if((mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_PLACEHOLDER)) {
+        memMode = (MEM_RESERVE | MEM_RESERVE_PLACEHOLDER);
+        access = PAGE_NOACCESS;
+    } else {
+        memMode = (MEM_RESERVE | MEM_COMMIT);
+    }
+
     if(mmode & org_newsclub_net_unix_NativeUnixSocket_MMODE_ANONYMOUS) {
-        void *actualAddr = f_VirtualAlloc2(NULL, (void*)address, length, (MEM_RESERVE | MEM_RESERVE_PLACEHOLDER), PAGE_NOACCESS, NULL, 0);
+        void *actualAddr = f_VirtualAlloc2(NULL, (void*)address, length, memMode, access, NULL, 0);
         if(actualAddr == NULL) {
             throwIOErrnumException(env, io_errno, NULL);
             return (jlong)0;
@@ -657,7 +667,6 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
             return (jlong)actualAddr;
         }
     }
-
 
     HANDLE handle = ((HANDLE)_getHandle(env, fd));
 
@@ -678,10 +687,22 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
         return -1;
     }
 
-    int access = mmodeToAccess(mmode);
+    HANDLE mappingHandle = CreateFileMapping(handle, NULL, access, 0, 0, NULL);
+    if(!mappingHandle) {
+        throwIOErrnumException(env, io_errno, NULL);
+        return -1;
+    }
+
+    if(extraFd) {
+        _initHandle(env, extraFd, mappingHandle);
+    }
+
+    if(address) {
+        VirtualFree(address + offset, length, MEM_RELEASE | MEM_PRESERVE_PLACEHOLDER);
+    }
 
     void* actualAddr = f_MapViewOfFile3
-    (handle, NULL, (void*)address, offset, length, MEM_REPLACE_PLACEHOLDER, access, NULL, 0);
+    (mappingHandle, NULL, (void*)address, offset, length, MEM_REPLACE_PLACEHOLDER, access, NULL, 0);
     if(actualAddr == NULL) {
         throwIOErrnumException(env, io_errno, NULL);
         return -1;

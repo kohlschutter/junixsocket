@@ -91,6 +91,8 @@ extern "C" {
 #define org_newsclub_net_unix_NativeUnixSocket_MMODE_FIXED 16L
 #undef org_newsclub_net_unix_NativeUnixSocket_MMODE_ANONYMOUS
 #define org_newsclub_net_unix_NativeUnixSocket_MMODE_ANONYMOUS 32L
+#undef org_newsclub_net_unix_NativeUnixSocket_MMODE_PLACEHOLDER
+#define org_newsclub_net_unix_NativeUnixSocket_MMODE_PLACEHOLDER 64L
 #undef org_newsclub_net_unix_NativeUnixSocket_MADV_NORMAL
 #define org_newsclub_net_unix_NativeUnixSocket_MADV_NORMAL 1L
 #undef org_newsclub_net_unix_NativeUnixSocket_MADV_FREE
@@ -580,10 +582,10 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_unmap
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    mmap
- * Signature: (JLjava/io/FileDescriptor;JJI)J
+ * Signature: (JLjava/io/FileDescriptor;JJILjava/io/FileDescriptor;)J
  */
 JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
-  (JNIEnv *, jclass, jlong, jobject, jlong, jlong, jint);
+  (JNIEnv *, jclass, jlong, jobject, jlong, jlong, jint, jobject);
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket

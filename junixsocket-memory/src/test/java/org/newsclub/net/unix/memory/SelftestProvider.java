@@ -39,6 +39,7 @@ public class SelftestProvider {
 
   @SuppressWarnings({"PMD.ExcessiveMethodLength", "PMD.UnnecessaryFullyQualifiedName"})
   public SelftestProvider() {
+    registerTest(MODULE, MappedMemoryTest.class);
     registerTest(MODULE, SharedMemoryTest.class);
   }
 

@@ -42,10 +42,6 @@ class SharedMemoryCleaner extends CleanableState {
   private MemorySegment arenaSegment;
   final FileDescriptor fd;
 
-  SharedMemoryCleaner(Arena arena, Object observed) {
-    this(arena, observed, null);
-  }
-
   SharedMemoryCleaner(Arena arena, Object observed, FileDescriptor fd) {
     super(observed);
     if (arena == null) {

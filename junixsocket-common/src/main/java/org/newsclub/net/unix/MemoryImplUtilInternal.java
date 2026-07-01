@@ -58,6 +58,7 @@ public final class MemoryImplUtilInternal {
   public static final int MMODE_SYNC = NativeUnixSocket.MMODE_SYNC;
   public static final int MMODE_FIXED = NativeUnixSocket.MMODE_FIXED;
   public static final int MMODE_ANONYMOUS = NativeUnixSocket.MMODE_ANONYMOUS;
+  public static final int MMODE_PLACEHOLDER = NativeUnixSocket.MMODE_PLACEHOLDER;
 
   public static final int MADV_NORMAL = NativeUnixSocket.MADV_NORMAL;
   public static final int MADV_FREE = NativeUnixSocket.MADV_FREE;
@@ -110,9 +111,9 @@ public final class MemoryImplUtilInternal {
     return NativeUnixSocket.mappedBuffer(address, length, fdRef, mmode, arenaSegment);
   }
 
-  public long mmap(long address, FileDescriptor fdObj, long offset, long length, int mmode)
-      throws IOException {
-    return NativeUnixSocket.mmap(address, fdObj, offset, length, mmode);
+  public long mmap(long address, FileDescriptor fdObj, long offset, long length, int mmode,
+      FileDescriptor extraFd) throws IOException {
+    return NativeUnixSocket.mmap(address, fdObj, offset, length, mmode, extraFd);
   }
 
   public void unmap(long address, long byteSize, int duplicates, boolean ignoreError)
