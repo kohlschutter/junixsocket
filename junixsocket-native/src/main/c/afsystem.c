@@ -57,3 +57,28 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_systemResolve
 #endif
 }
 
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    systemCtlIdCount
+ * Signature: (Ljava/io/FileDescriptor;)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_systemCtlIdCount
+ (JNIEnv *env, jclass klazz CK_UNUSED, jobject fd) {
+    CK_ARGUMENT_POTENTIALLY_UNUSED(env);
+    CK_ARGUMENT_POTENTIALLY_UNUSED(fd);
+#if junixsocket_have_system
+    int fdHandle = _getFD(env, fd);
+
+    uint32_t n = -1;
+    int ret = ioctl(fdHandle, CTLIOCGCOUNT, &n);
+    if(ret < 0) {
+        _throwErrnumException(env, errno, NULL);
+        return -1;
+    }
+
+    return n;
+#else
+    _throwException(env, kExceptionSocketException, "AF_SYSTEM is not supported");
+    return -1;
+#endif
+}

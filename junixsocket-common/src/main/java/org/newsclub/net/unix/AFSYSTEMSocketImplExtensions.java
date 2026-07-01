@@ -45,4 +45,15 @@ public final class AFSYSTEMSocketImplExtensions implements
   public int getKernelControlId(FileDescriptor fd, String name) throws IOException {
     return NativeUnixSocket.systemResolveCtlId(fd, Objects.requireNonNull(name));
   }
+
+  /**
+   * Retrieves the number of registered kernel control IDs.
+   *
+   * @param fd The socket file descriptor.
+   * @return The count.
+   * @throws IOException on error.
+   */
+  public int getKernelControlIdCount(FileDescriptor fd) throws IOException {
+    return NativeUnixSocket.systemCtlIdCount(fd);
+  }
 }

@@ -385,6 +385,8 @@ final class NativeUnixSocket {
 
   static native int systemResolveCtlId(FileDescriptor fd, String ctlName) throws IOException;
 
+  static native int systemCtlIdCount(FileDescriptor fd) throws IOException;
+
   static void setLoaded(boolean successful) {
     LOADED.compareAndSet(false, successful);
   }

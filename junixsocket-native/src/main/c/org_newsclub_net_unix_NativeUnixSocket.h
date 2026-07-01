@@ -531,6 +531,14 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_systemResolve
 
 /*
  * Class:     org_newsclub_net_unix_NativeUnixSocket
+ * Method:    systemCtlIdCount
+ * Signature: (Ljava/io/FileDescriptor;)I
+ */
+JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_systemCtlIdCount
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     org_newsclub_net_unix_NativeUnixSocket
  * Method:    shmUnlink
  * Signature: (Ljava/lang/String;)V
  */

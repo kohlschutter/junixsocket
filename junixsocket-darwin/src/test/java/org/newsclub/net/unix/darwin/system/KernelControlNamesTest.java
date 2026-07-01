@@ -27,10 +27,12 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+import org.newsclub.net.unix.AFSocketCapability;
+import org.newsclub.net.unix.AFSocketCapabilityRequirement;
 
 public class KernelControlNamesTest {
   @Test
-  // @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_DARWIN)
+  @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_DARWIN)
   public void testStandardKernelControlNames() throws Exception {
     try (AFSYSTEMDatagramSocket socket = AFSYSTEMDatagramSocket.newInstance()) {
       assertThrows(IOException.class, () -> socket.getNodeIdentity("definitely.missing"));
@@ -43,16 +45,30 @@ public class KernelControlNamesTest {
           id = socket.getNodeIdentity(n.getControlName());
           assertTrue(id > 0, "id should be a positive integer");
           ids.add(id);
+          // System.out.println(id + " " + n.getControlName());
         } catch (SocketException e) {
           errors++;
           continue;
         }
       }
 
-      System.out.println("Resolved control names " + ids.size() + "/" + WellKnownKernelControlNames
-          .values().length);
+      System.out.println("Resolved control names " + ids.size() + " out of "
+          + WellKnownKernelControlNames.values().length + " well-known names");
 
       assertEquals(WellKnownKernelControlNames.values().length - errors, ids.size());
+
+      int kcid = socket.getKernelControlIdCount();
+
+      if (kcid > ids.size()) {
+        System.out.println("WARNING: Additional, not yet well-known kernel control IDs registered: "
+            + kcid + " instead of " + ids.size());
+      } else if (kcid < ids.size()) {
+        System.out.println("WARNING: Value returned from getKernelControlIdCount is too low: "
+            + kcid + " instead of " + ids.size());
+      } else {
+        // System.out.println("Number of registered kernel control IDs: " + kcid
+        // + " (matching our expected set of well-known names)");
+      }
     }
   }
 }
