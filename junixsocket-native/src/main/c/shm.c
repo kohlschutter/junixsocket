@@ -289,6 +289,9 @@ static inline int try_memfd_create(jint juxOpts) {
  */
 JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_shmOpen
 (JNIEnv *env, CK_UNUSED jclass klazz, jobject targetFd, jstring nameStr, jlong truncateLen, jint mode, jint juxOpts) {
+#ifdef _WIN32
+    CK_ARGUMENT_POTENTIALLY_UNUSED(mode); // FIXME
+#endif
     char name[SHM_NAME_MAXLEN] = {0};
     if(nameStr == NULL) {
         // keep empty
@@ -623,6 +626,8 @@ static int mmodeToFlags(jint mmode) {
  */
 JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
  (JNIEnv *env, CK_UNUSED jclass klazz, jlong address, jobject fd, jlong offset, jlong length, jint mmode, jobject extraFd) {
+    CK_ARGUMENT_POTENTIALLY_UNUSED(extraFd);
+
     if(length > jux_SIZE_MAX || length < 0) {
         _throwException(env, kExceptionIOException, "length");
         return -1;
@@ -694,11 +699,11 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
     }
 
     if(extraFd) {
-        _initHandle(env, extraFd, mappingHandle);
+        _initHandle(env, extraFd, (jlong)mappingHandle);
     }
 
     if(address) {
-        VirtualFree(address + offset, length, MEM_RELEASE | MEM_PRESERVE_PLACEHOLDER);
+        VirtualFree((void*)(address + offset), length, MEM_RELEASE | MEM_PRESERVE_PLACEHOLDER);
     }
 
     void* actualAddr = f_MapViewOfFile3
@@ -1039,7 +1044,6 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_sharedMemory
 JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_madvise
 (JNIEnv *env, CK_UNUSED jclass klazz, jlong addr, jlong length, jint jmadv, jboolean ignoreError) {
 #if defined(_WIN32)
-    int advice;
     switch(jmadv) {
         case org_newsclub_net_unix_NativeUnixSocket_MADV_FREE:
         case org_newsclub_net_unix_NativeUnixSocket_MADV_FREE_NOW:
