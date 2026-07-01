@@ -109,6 +109,14 @@ public final class AFSYSTEMDatagramSocket extends AFDatagramSocket<AFSYSTEMSocke
     return getNodeIdentity(name.getControlName());
   }
 
+  /**
+   * Retrieves the number of kernel control names registered with the kernel.
+   * 
+   * An {@link IOException} is thrown if the count not be retrieved.
+   * 
+   * @return The count.
+   * @throws IOException on error.
+   */
   public int getKernelControlIdCount() throws IOException {
     return getImplExtensions().getKernelControlIdCount(getFileDescriptor());
   }
