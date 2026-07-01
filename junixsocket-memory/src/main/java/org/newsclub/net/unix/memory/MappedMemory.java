@@ -142,7 +142,9 @@ public final class MappedMemory implements Closeable {
   }
 
   /**
-   * Maps some memory to a region of this {@link MappedMemory} object.
+   * Maps some memory to a region of this {@link MappedMemory} object. This may fail to work on
+   * Windows, unless {@link #placeholderSegment(Arena, long)} was used to create this
+   * {@link MappedMemory} instance.
    *
    * @param msOffset The target offset in this object.
    * @param length The number of bytes to map.
@@ -151,6 +153,7 @@ public final class MappedMemory implements Closeable {
    * @return A new {@link MappedMemory} object, whose {@link MemorySegment} is a subrange of this
    *         object's {@link MemorySegment}.
    * @throws IOException on error.
+   * @see #placeholderSegment(Arena, long)
    */
   public MappedMemory mapRegion(long msOffset, long length, FileDescriptor fd, long fdOffset)
       throws IOException {
