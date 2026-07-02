@@ -125,6 +125,7 @@ echo Running native-image...
 (
   set -x
   native-image -cp "$tmpDir" --initialize-at-build-time=sun.rmi.transport.GC --report-unsupported-elements-at-runtime --no-fallback \
+	  -H:+UnlockExperimentalVMOptions -H:+ForeignAPISupport -H:+SharedArenaSupport \
 	  ${selftestArgs[@]} org.newsclub.net.unix.selftest.Selftest
 )
 if [[ $? -ne 0 ]]; then

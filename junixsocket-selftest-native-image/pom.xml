@@ -55,6 +55,11 @@
                             <useArgFile>false</useArgFile>
                             <imageName>${project.name}-${project.version}</imageName>
                             <fallback>false</fallback>
+                            <buildArgs>
+                                <buildArg>-H:+UnlockExperimentalVMOptions</buildArg>
+                                <buildArg>-H:+ForeignAPISupport</buildArg>
+                                <buildArg>-H:+SharedArenaSupport</buildArg>
+                            </buildArgs>
                         </configuration>
                     </plugin>
                 </plugins>
