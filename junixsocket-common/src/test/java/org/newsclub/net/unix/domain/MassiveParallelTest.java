@@ -60,7 +60,8 @@ import com.kohlschutter.util.SystemPropertyUtil;
 @SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
 public class MassiveParallelTest extends
     org.newsclub.net.unix.MassiveParallelTest<AFUNIXSocketAddress> {
-  private static final int MAX_SERVER_THREADS = 32;
+  private static final int MAX_SERVER_THREADS = SystemPropertyUtil.getIntSystemProperty(
+      "selftest.MassiveParallelTest.maxThreads", 32);
 
   protected MassiveParallelTest() {
     super(AFUNIXAddressSpecifics.INSTANCE);
@@ -84,10 +85,13 @@ public class MassiveParallelTest extends
           + numConnections);
     }
 
+    final int maxClients = SystemPropertyUtil.getIntSystemProperty(
+        "selftest.MassiveParallelTest.maxClients", 100);
+
     // limit the number of concurrently active servers/clients
     // so we don't run out of file descriptors (the limit could be as low as 256)
     final int nProc = Math.min(MAX_SERVER_THREADS, Runtime.getRuntime().availableProcessors());
-    final Semaphore concurrentClientPermits = new Semaphore(Math.min(100, nProc));
+    final Semaphore concurrentClientPermits = new Semaphore(Math.min(maxClients, nProc));
 
     AFUNIXSocketAddress listenAddr = AFUNIXSocketAddress.ofNewTempFile();
 
