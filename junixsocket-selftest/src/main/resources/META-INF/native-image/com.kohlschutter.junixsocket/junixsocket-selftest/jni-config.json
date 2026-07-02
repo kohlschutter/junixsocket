@@ -8,19 +8,29 @@
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
-  "name":"sun.rmi.transport.tcp.TCPTransport",
-  "fields":[{"name":"threadConnectionHandler"}]
-},
-{
-  "name":"sun.rmi.transport.tcp.TCPTransport$ConnectionHandler",
-  "fields":[{"name":"socket"}]
-},
-{
   "name":"org.newsclub.net.unix.domain.VirtualThreadPollerNaiveDeadlockTest",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
 },
 {
   "name":"org.newsclub.net.unix.memory.FutexTestApp",
   "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
+  "name":"sun.management.VMManagementImpl",
+  "fields":[{"name":"compTimeMonitoringSupport"}, {"name":"currentThreadCpuTimeSupport"}, {"name":"objectMonitorUsageSupport"}, {"name":"otherThreadCpuTimeSupport"}, {"name":"remoteDiagnosticCommandsSupport"}, {"name":"synchronizerUsageSupport"}, {"name":"threadAllocatedMemorySupport"}, {"name":"threadContentionMonitoringSupport"}]
+},
+{ 
+  "name":"com.sun.management.internal.DiagnosticCommandArgumentInfo",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String","java.lang.String","java.lang.String","boolean","boolean","boolean","int"] }]
+},
+{
+  "name":"com.sun.management.internal.DiagnosticCommandInfo",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String","java.lang.String","java.lang.String","java.lang.String","java.lang.String","boolean","java.util.List"] }]
+},
+{ 
+  "name":"[Lcom.sun.management.internal.DiagnosticCommandArgumentInfo;"
+},
+{
+  "name":"[Lcom.sun.management.internal.DiagnosticCommandInfo;"
 }
 ]

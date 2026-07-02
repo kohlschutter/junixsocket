@@ -198,7 +198,7 @@
 },
 {
   "name":"org.newsclub.net.unix.ConnectionRefusedSocketException",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }, {"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.newsclub.net.unix.NetworkUnreachableSocketException",
