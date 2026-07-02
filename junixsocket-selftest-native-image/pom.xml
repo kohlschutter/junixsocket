@@ -134,6 +134,10 @@
             <groupId>com.kohlschutter.junixsocket</groupId>
             <artifactId>junixsocket-server</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.kohlschutter.junixsocket</groupId>
+            <artifactId>junixsocket-memory</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.kohlschutter</groupId>
