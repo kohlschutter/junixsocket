@@ -34,4 +34,13 @@ public final class ConnectionRefusedSocketException extends SocketException {
   public ConnectionRefusedSocketException() {
     super();
   }
+
+  /**
+   * Constructs a new {@link ConnectionRefusedSocketException}.
+   *
+   * @param msg The error message.
+   */
+  public ConnectionRefusedSocketException(String msg) {
+    super(msg);
+  }
 }
