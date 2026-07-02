@@ -3,7 +3,7 @@
 # Script to generate GraalVM native-image metadata and a native binary for junixsocket-selftest.
 #
 # junixsocket
-# Copyright 2009-2022 Christian Kohlschütter
+# Copyright 2009-2026 Christian Kohlschütter
 # SPDX-License-Identifier: Apache-2.0
 #
 cd "$(dirname $0)/../"

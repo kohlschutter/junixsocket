@@ -1,7 +1,7 @@
 /*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public enum WellKnownKernelControlNames {
    *
    * See {@code http://newosxbook.com/src.jl?tree=listings&file=lsock.c} as well as
    * https://github.com/packetzero/libntstat
-   * 
+   *
    * @see "xnu/bsd/net/ntstat.c"
    */
   NETWORK_STATISTICS("com.apple.network.statistics"), //
@@ -65,49 +65,49 @@ public enum WellKnownKernelControlNames {
 
   /**
    * {@code com.apple.net.netagent}.
-   * 
+   *
    * @see "xnu/bsd/net/network_agent.c"
    */
   NET_NETAGENT("com.apple.net.netagent"), //
 
   /**
    * {@code com.apple.content-filter}.
-   * 
+   *
    * @see "xnu/bsd/net/content_filter.c"
    */
   CONTENT_FILTER("com.apple.content-filter"), //
 
   /**
    * {@code com.apple.net.utun_control}. User-mode tunneling (VPN).
-   * 
+   *
    * @see "xnu/bsd/net/if_utun.h"
    */
   UTUN_CONTROL("com.apple.net.utun_control"), //
 
   /**
    * {@code com.apple.net.ipsec_control}.
-   * 
+   *
    * @see "xnu/bsd/net/if_ipsec.c"
    */
   IPSEC_CONTROL("com.apple.net.ipsec_control"), //
 
   /**
    * {@code com.apple.network.tcp_ccdebug}. Requires SOCK_STREAM.
-   * 
+   *
    * @see "xnu/bsd/netinet/tcp_cc.c"
    */
   NETWORK_TCP_CCDEBUG("com.apple.network.tcp_ccdebug"), //
 
   /**
    * {@code com.apple.network.advisory}. MPTCP-related.
-   * 
+   *
    * @see "xnu/bsd/netinet/mptcp_subr.c"
    */
   NETWORK_ADVISORY("com.apple.network.advisory"), //
 
   /**
    * {@code com.apple.net.rvi_control}.
-   * 
+   *
    * @see "xnu/bsd/net/remote_vif.c"
    */
   NET_RVI_CONTROL("com.apple.net.rvi_control"), //
@@ -179,14 +179,14 @@ public enum WellKnownKernelControlNames {
 
   /**
    * {@code com.apple.net.kctl_test}.
-   * 
+   *
    * @see "xnu/bsd/net/kctl_test.c"
    */
   NET_KCTL_TEST("com.apple.net.kctl_test"), //
 
   /**
    * {@code com.apple.net.necp_control}.
-   * 
+   *
    * @see "xnu/bsd/net/necp.h"
    */
   NET_NECP_CONTROL("com.apple.net.necp_control"),

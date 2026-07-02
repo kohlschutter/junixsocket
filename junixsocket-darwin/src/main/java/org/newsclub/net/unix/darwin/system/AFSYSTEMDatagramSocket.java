@@ -1,7 +1,7 @@
 /*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,9 +111,9 @@ public final class AFSYSTEMDatagramSocket extends AFDatagramSocket<AFSYSTEMSocke
 
   /**
    * Retrieves the number of kernel control names registered with the kernel.
-   * 
+   *
    * An {@link IOException} is thrown if the count not be retrieved.
-   * 
+   *
    * @return The count.
    * @throws IOException on error.
    */
