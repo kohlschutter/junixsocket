@@ -110,8 +110,11 @@ JNIEXPORT jboolean JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_futexWait
         return true;
     } else if(ret == -ETIMEDOUT || errno == ETIMEDOUT) {
         // timeout
-    } else if(errno == EAGAIN) { // not observed on macOS; just in case
-        return true; // ifValue did not match
+        return false;
+    } else if(errno == EAGAIN  // not observed on macOS; just in case
+              || errno == EFAULT // observed on macOS with GraalVM native-image only
+              ) {
+        return false;
     } else {
         throwIOErrnumException(env, errno, NULL);
     }
