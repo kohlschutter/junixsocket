@@ -1,0 +1,10 @@
+[
+{
+  "name":"sun.rmi.transport.tcp.TCPTransport",
+  "fields":[{"name":"threadConnectionHandler"}]
+},
+{
+  "name":"sun.rmi.transport.tcp.TCPTransport$ConnectionHandler",
+  "fields":[{"name":"socket"}]
+}
+]
