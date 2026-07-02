@@ -1,0 +1,12 @@
+[
+    {
+      "name":"org.newsclub.net.unix.memory.SharedMemory",
+      "methods":[{"name":"init","parameterTypes":["org.newsclub.net.unix.MemoryImplUtilInternal"] }]
+    },
+    {
+      "name":"org.newsclub.net.unix.memory.SharedMemoryOption"
+    },
+    {
+      "name":"org.newsclub.net.unix.memory.MappedMemory"
+    }
+]
