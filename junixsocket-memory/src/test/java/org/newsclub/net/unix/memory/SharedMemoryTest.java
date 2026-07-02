@@ -503,7 +503,7 @@ public class SharedMemoryTest {
   }
 
   @Test
-  public void testreateOrOpen() throws Exception {
+  public void testCreateOrOpen() throws Exception {
     String name = "juxco";
     SharedMemory.unlinkShared(name);
     try (SharedMemory mem1 = SharedMemory.createExclusively(name, 64)) {
