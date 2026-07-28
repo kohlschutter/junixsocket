@@ -748,8 +748,8 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mappedBuff
     if(dbb == NULL) {
         if(!((*env)->ExceptionCheck(env))) {
             _throwException(env, kExceptionIOException, "NewDirectByteBuffer");
-            return NULL;
         }
+        return NULL;
     }
 
     // enable mmap-specific operations on MemorySegment (isMapped=true -> force(), load(), isLoaded(), unload())
@@ -951,8 +951,9 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmapShm
     if(dbb == NULL) {
         if(!((*env)->ExceptionCheck(env))) {
             _throwException(env, kExceptionIOException, "NewDirectByteBuffer");
-            return NULL;
         }
+        Java_org_newsclub_net_unix_NativeUnixSocket_unmap(env, NULL, (jlong)addr, length, duplicates, JNI_TRUE);
+        return NULL;
     }
 
     // enable mmap-specific operations on MemorySegment (isMapped=true -> force(), load(), isLoaded(), unload())
