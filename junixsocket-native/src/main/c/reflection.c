@@ -109,6 +109,7 @@ JNIEXPORT void JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_setPort(
         jclass holderClass = (*env)->GetObjectClass(env, fieldObject);
         portField = (*env)->GetFieldID(env, holderClass, "port", "I");
     } else {
+        (*env)->ExceptionClear(env);
         portField = (*env)->GetFieldID(env, clsInetSocketAddress, "port", "I");
     }
     if(portField == NULL) {
@@ -142,6 +143,7 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_currentRMI
     jclass tcpTransport = (*env)->FindClass(env,
                                             "sun/rmi/transport/tcp/TCPTransport");
     if(tcpTransport == NULL) {
+        (*env)->ExceptionClear(env);
         return NULL;
     }
     jfieldID threadConnectionHandler = (*env)->GetStaticFieldID(env, tcpTransport,
@@ -174,6 +176,7 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_currentRMI
     jfieldID socketField = (*env)->GetFieldID(env, connHandlerClass,
                                               "socket", "Ljava/net/Socket;");
     if(socketField == NULL) {
+        (*env)->ExceptionClear(env);
         return NULL;
     }
     jobject socket = (*env)->GetObjectField(env, connHandler, socketField);

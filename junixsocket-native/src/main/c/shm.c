@@ -551,7 +551,9 @@ void init_shm(JNIEnv *env) {
         kBufferFieldSegment = (*env)->GetFieldID(env, kBufferClass, "segment", "Ljava/lang/foreign/MemorySegment;");
         if(kBufferFieldSegment == NULL) {
             // older type (JEP-370, Java 14+)
+            (*env)->ExceptionClear(env);
             kBufferFieldSegment = (*env)->GetFieldID(env, kBufferClass, "segment", "Ljdk/internal/access/foreign/MemorySegmentProxy;");
+            (*env)->ExceptionClear(env);
         }
     }
 
