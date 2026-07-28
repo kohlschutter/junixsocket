@@ -343,6 +343,8 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available
  */
 JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
 (JNIEnv *env, jclass clazz CK_UNUSED, jobject pollFdObj, jint timeout) {
+    int ret;
+
     if(pollFdObj == NULL) {
         return 0;
     }
@@ -374,13 +376,21 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
         struct pollfd *pfd = &pollFd[i];
         if(fdObj) {
             int fd = _getFD(env, fdObj);
+            (*env)->DeleteLocalRef(env, fdObj);
+
             pfd->fd = fd;
             pfd->events = opToEvent(buf[i]);
         } else {
+            if(((*env)->ExceptionCheck(env))) {
+                ret = 0;
+                goto end;
+            }
+
             pfd->fd = 0;
             pfd->events = 0;
         }
-}
+
+    }
 
 #if __TOS_MVS__
     if(timeout == -1) {
@@ -397,9 +407,9 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
 #endif
 
 #if defined(_WIN32)
-    int ret = WSAPoll(pollFd, nfds, timeout);
+    ret = WSAPoll(pollFd, nfds, timeout);
 #else
-    int ret = poll(pollFd, nfds, timeout);
+    ret = poll(pollFd, nfds, timeout);
 #endif
     if(ret == -1) {
         ret = 0;
