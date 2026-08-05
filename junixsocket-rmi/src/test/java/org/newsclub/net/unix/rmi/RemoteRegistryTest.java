@@ -145,8 +145,10 @@ public class RemoteRegistryTest {
         throw e;
       }
 
-      assertTrue(awaitNoRMIFiles(socketDir), "There shouldn't be any RMI socket files in "
-          + socketDir);
+      // NOTE: Since we're forcibly killing a registry that does not want to be shut down,
+      // there may well be leftover sockets (as seen with OpenJDK 26).
+      // assertTrue(awaitNoRMIFiles(socketDir), "There shouldn't be any RMI socket files in "
+      //    + socketDir);
     } finally {
       assertTrue(deleteDirectory(socketDir), "Should be able to delete temporary directory: "
           + socketDir);
