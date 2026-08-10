@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2024 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2026 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> * you may not use this file except in compliance with the License.</em>
@@ -35,37 +35,53 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="KernelControlNamesTest" href="../../../../../../org/newsclub/net/unix/darwin/system/KernelControlNamesTest.html#KernelControlNamesTest">KernelControlNamesTest</a> {
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>    @Test
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>    <em class="jxr_comment">// @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_DARWIN)</em>
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testStandardKernelControlNames() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">try</strong> (AFSYSTEMDatagramSocket socket = AFSYSTEMDatagramSocket.newInstance()) {
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>        assertThrows(IOException.<strong class="jxr_keyword">class</strong>, () -&gt; socket.getNodeIdentity(<span class="jxr_string">"definitely.missing"</span>));
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>        <strong class="jxr_keyword">int</strong> errors = 0;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>        Set&lt;Integer&gt; ids = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;&gt;();
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>        <strong class="jxr_keyword">for</strong> (WellKnownKernelControlNames n : WellKnownKernelControlNames.values()) {
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>          <strong class="jxr_keyword">int</strong> id;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>          <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>            id = socket.getNodeIdentity(n.getControlName());
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>            assertTrue(id &gt; 0, <span class="jxr_string">"id should be a positive integer"</span>);
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>            ids.add(id);
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          } <strong class="jxr_keyword">catch</strong> (SocketException e) {
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>            errors++;
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>            <strong class="jxr_keyword">continue</strong>;
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>          }
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>        }
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>        System.out.println(<span class="jxr_string">"Resolved control names "</span> + ids.size() + <span class="jxr_string">"/"</span> + WellKnownKernelControlNames
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>            .values().length);
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketCapability;
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">import</strong> org.newsclub.net.unix.AFSocketCapabilityRequirement;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="KernelControlNamesTest" href="../../../../../../org/newsclub/net/unix/darwin/system/KernelControlNamesTest.html#KernelControlNamesTest">KernelControlNamesTest</a> {
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>    @Test
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>    @AFSocketCapabilityRequirement(AFSocketCapability.CAPABILITY_DARWIN)
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>    <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testStandardKernelControlNames() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      <strong class="jxr_keyword">try</strong> (AFSYSTEMDatagramSocket socket = AFSYSTEMDatagramSocket.newInstance()) {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>        assertThrows(IOException.<strong class="jxr_keyword">class</strong>, () -&gt; socket.getNodeIdentity(<span class="jxr_string">"definitely.missing"</span>));
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>        <strong class="jxr_keyword">int</strong> errors = 0;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>        Set&lt;Integer&gt; ids = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;&gt;();
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>        <strong class="jxr_keyword">for</strong> (WellKnownKernelControlNames n : WellKnownKernelControlNames.values()) {
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>          <strong class="jxr_keyword">int</strong> id;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>            id = socket.getNodeIdentity(n.getControlName());
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>            assertTrue(id &gt; 0, <span class="jxr_string">"id should be a positive integer"</span>);
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>            ids.add(id);
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>            <em class="jxr_comment">// System.out.println(id + " " + n.getControlName());</em>
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>          } <strong class="jxr_keyword">catch</strong> (SocketException e) {
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>            errors++;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>            <strong class="jxr_keyword">continue</strong>;
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          }
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>        }
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>        assertEquals(WellKnownKernelControlNames.values().length - errors, ids.size());
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      }
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>    }
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  }
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>        System.out.println(<span class="jxr_string">"Resolved control names "</span> + ids.size() + <span class="jxr_string">" out of "</span>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>            + WellKnownKernelControlNames.values().length + <span class="jxr_string">" well-known names"</span>);
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>        assertEquals(WellKnownKernelControlNames.values().length - errors, ids.size());
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>        <strong class="jxr_keyword">int</strong> kcid = socket.getKernelControlIdCount();
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>        <strong class="jxr_keyword">if</strong> (kcid &gt; ids.size()) {
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          System.out.println(<span class="jxr_string">"WARNING: Additional, not yet well-known kernel control IDs registered: "</span>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>              + kcid + <span class="jxr_string">" instead of "</span> + ids.size());
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>        } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (kcid &lt; ids.size()) {
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          System.out.println(<span class="jxr_string">"WARNING: Value returned from getKernelControlIdCount is too low: "</span>
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>              + kcid + <span class="jxr_string">" instead of "</span> + ids.size());
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>        } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <em class="jxr_comment">// System.out.println("Number of registered kernel control IDs: " + kcid</em>
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          <em class="jxr_comment">// + " (matching our expected set of well-known names)");</em>
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>        }
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      }
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>    }
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2024 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">© 2009–2026 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a></div>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFUNIXSocketFactory.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFUNIXSocketFactory.java</span></div><h1>AFUNIXSocketFactory.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import java.util.Objects;
 
 import javax.net.SocketFactory;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * The base for a SocketFactory that connects to UNIX sockets.
  *
@@ -41,17 +43,17 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
    * Creates a {@link AFUNIXSocketFactory}.
    */
   protected AFUNIXSocketFactory() {
-<span class="fc" id="L44">    super(AFUNIXSocketAddress.class);</span>
-<span class="fc" id="L45">  }</span>
+<span class="fc" id="L46">    super(AFUNIXSocketAddress.class);</span>
+<span class="fc" id="L47">  }</span>
 
   @Override
   public Socket createSocket() throws SocketException {
-<span class="fc" id="L49">    return AFUNIXSocket.newInstance(this);</span>
+<span class="fc" id="L51">    return AFUNIXSocket.newInstance(this);</span>
   }
 
   @Override
   protected AFUNIXSocket connectTo(AFUNIXSocketAddress addr) throws IOException {
-<span class="nc" id="L54">    return AFUNIXSocket.connectTo(addr);</span>
+<span class="nc" id="L56">    return AFUNIXSocket.connectTo(addr);</span>
   }
 
   /**
@@ -66,16 +68,16 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
      * Creates a {@link DefaultSocketHostnameSocketFactory}.
      */
     public DefaultSocketHostnameSocketFactory() {
-<span class="fc" id="L69">      super();</span>
-<span class="fc" id="L70">    }</span>
+<span class="fc" id="L71">      super();</span>
+<span class="fc" id="L72">    }</span>
 
     @Override
     public final boolean isHostnameSupported(String host) {
-<span class="fc" id="L74">      return getDefaultSocketHostname().equals(host);</span>
+<span class="fc" id="L76">      return getDefaultSocketHostname().equals(host);</span>
     }
 
     private static String getDefaultSocketHostname() {
-<span class="fc" id="L78">      return System.getProperty(PROP_SOCKET_HOSTNAME, &quot;localhost&quot;);</span>
+<span class="fc" id="L80">      return System.getProperty(PROP_SOCKET_HOSTNAME, &quot;localhost&quot;);</span>
     }
   }
 
@@ -89,6 +91,7 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
    * This is particularly useful for JDBC drivers that take a &quot;socketFactory&quot; and a
    * &quot;socketFactoryArg&quot;. The latter will be passed as a constructor argument.
    */
+  @SuppressFBWarnings(&quot;PATH_TRAVERSAL_IN&quot;)
   public static final class FactoryArg extends DefaultSocketHostnameSocketFactory {
     private final File socketFile;
 
@@ -98,11 +101,11 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
      * @param socketPath The path to the socket.
      */
     public FactoryArg(String socketPath) {
-<span class="fc" id="L101">      super();</span>
-<span class="fc" id="L102">      Objects.requireNonNull(socketPath, &quot;Socket path was null&quot;);</span>
+<span class="fc" id="L104">      super();</span>
+<span class="fc" id="L105">      Objects.requireNonNull(socketPath, &quot;Socket path was null&quot;);</span>
 
-<span class="fc" id="L104">      this.socketFile = new File(socketPath);</span>
-<span class="fc" id="L105">    }</span>
+<span class="fc" id="L107">      this.socketFile = new File(socketPath);</span>
+<span class="fc" id="L108">    }</span>
 
     /**
      * Constructs a new {@link FactoryArg} factory using the given socket path.
@@ -110,15 +113,15 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
      * @param file The path to the socket.
      */
     public FactoryArg(File file) {
-<span class="fc" id="L113">      super();</span>
-<span class="fc" id="L114">      Objects.requireNonNull(file, &quot;File was null&quot;);</span>
+<span class="fc" id="L116">      super();</span>
+<span class="fc" id="L117">      Objects.requireNonNull(file, &quot;File was null&quot;);</span>
 
-<span class="fc" id="L116">      this.socketFile = file;</span>
-<span class="fc" id="L117">    }</span>
+<span class="fc" id="L119">      this.socketFile = file;</span>
+<span class="fc" id="L120">    }</span>
 
     @Override
     public AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
-<span class="fc" id="L121">      return AFUNIXSocketAddress.of(socketFile, port);</span>
+<span class="fc" id="L124">      return AFUNIXSocketAddress.of(socketFile, port);</span>
     }
   }
 
@@ -140,18 +143,18 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
      * Creates a {@link SystemProperty} socket factory.
      */
     public SystemProperty() {
-<span class="fc" id="L143">      super();</span>
-<span class="fc" id="L144">    }</span>
+<span class="fc" id="L146">      super();</span>
+<span class="fc" id="L147">    }</span>
 
     @Override
     public AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
-<span class="fc" id="L148">      String path = System.getProperty(PROP_SOCKET_DEFAULT);</span>
-<span class="fc bfc" id="L149" title="All 4 branches covered.">      if (path == null || path.isEmpty()) {</span>
-<span class="fc" id="L150">        throw new IllegalStateException(&quot;Property not configured: &quot; + PROP_SOCKET_DEFAULT);</span>
+<span class="fc" id="L151">      String path = System.getProperty(PROP_SOCKET_DEFAULT);</span>
+<span class="fc bfc" id="L152" title="All 4 branches covered.">      if (path == null || path.isEmpty()) {</span>
+<span class="fc" id="L153">        throw new IllegalStateException(&quot;Property not configured: &quot; + PROP_SOCKET_DEFAULT);</span>
       }
-<span class="fc" id="L152">      File socketFile = new File(path);</span>
+<span class="fc" id="L155">      File socketFile = new File(path);</span>
 
-<span class="fc" id="L154">      return AFUNIXSocketAddress.of(socketFile, port);</span>
+<span class="fc" id="L157">      return AFUNIXSocketAddress.of(socketFile, port);</span>
     }
   }
 
@@ -167,6 +170,7 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
    * encoded and without the closing bracket. Since this is an invalid hostname, it will not trigger
    * a DNS lookup, but can still be used within a JDBC Connection URL.
    */
+  @SuppressFBWarnings(&quot;PATH_TRAVERSAL_IN&quot;)
   public static final class URIScheme extends AFUNIXSocketFactory {
     private static final String FILE_SCHEME_PREFIX = &quot;file://&quot;;
     private static final String FILE_SCHEME_PREFIX_ENCODED = &quot;file%&quot;;
@@ -176,54 +180,55 @@ public abstract class AFUNIXSocketFactory extends AFSocketFactory&lt;AFUNIXSocke
      * Creates a {@link URIScheme} socket factory.
      */
     public URIScheme() {
-<span class="fc" id="L179">      super();</span>
-<span class="fc" id="L180">    }</span>
+<span class="fc" id="L183">      super();</span>
+<span class="fc" id="L184">    }</span>
 
     private static String stripBrackets(String host) {
-<span class="fc bfc" id="L183" title="All 2 branches covered.">      if (host.startsWith(&quot;[&quot;)) {</span>
-<span class="fc bfc" id="L184" title="All 2 branches covered.">        if (host.endsWith(&quot;]&quot;)) {</span>
-<span class="fc" id="L185">          host = host.substring(1, host.length() - 1);</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">      if (host.startsWith(&quot;[&quot;)) {</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        if (host.endsWith(&quot;]&quot;)) {</span>
+<span class="fc" id="L189">          host = host.substring(1, host.length() - 1);</span>
         } else {
-<span class="fc" id="L187">          host = host.substring(1);</span>
+<span class="fc" id="L191">          host = host.substring(1);</span>
         }
       }
-<span class="fc" id="L190">      return host;</span>
+<span class="fc" id="L194">      return host;</span>
     }
 
     @Override
     public boolean isHostnameSupported(String host) {
-<span class="fc" id="L195">      host = stripBrackets(host);</span>
-<span class="fc bfc" id="L196" title="All 4 branches covered.">      return host.startsWith(FILE_SCHEME_PREFIX) || host.startsWith(FILE_SCHEME_PREFIX_ENCODED);</span>
+<span class="fc" id="L199">      host = stripBrackets(host);</span>
+<span class="fc bfc" id="L200" title="All 4 branches covered.">      return host.startsWith(FILE_SCHEME_PREFIX) || host.startsWith(FILE_SCHEME_PREFIX_ENCODED);</span>
     }
 
     @Override
+    @SuppressWarnings(&quot;PMD.UseStandardCharsets&quot;)
     public AFUNIXSocketAddress addressFromHost(String host, int port) throws SocketException {
-<span class="fc" id="L201">      host = stripBrackets(host);</span>
-<span class="fc bfc" id="L202" title="All 2 branches covered.">      if (host.startsWith(FILE_SCHEME_PREFIX_ENCODED)) {</span>
+<span class="fc" id="L206">      host = stripBrackets(host);</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">      if (host.startsWith(FILE_SCHEME_PREFIX_ENCODED)) {</span>
         try {
-<span class="fc" id="L204">          host = URLDecoder.decode(host, &quot;UTF-8&quot;);</span>
-<span class="fc" id="L205">        } catch (Exception e) {</span>
-<span class="fc" id="L206">          throw (SocketException) new SocketException().initCause(e);</span>
-<span class="fc" id="L207">        }</span>
+<span class="fc" id="L209">          host = URLDecoder.decode(host, &quot;UTF-8&quot;);</span>
+<span class="fc" id="L210">        } catch (Exception e) {</span>
+<span class="fc" id="L211">          throw (SocketException) new SocketException().initCause(e);</span>
+<span class="fc" id="L212">        }</span>
       }
-<span class="pc bpc" id="L209" title="1 of 2 branches missed.">      if (!host.startsWith(FILE_SCHEME_PREFIX)) {</span>
-<span class="nc" id="L210">        throw new SocketException(&quot;Unsupported scheme&quot;);</span>
-      }
-
-<span class="fc" id="L213">      String path = host.substring(FILE_SCHEME_PREFIX.length());</span>
-<span class="fc bfc" id="L214" title="All 2 branches covered.">      if (path.startsWith(FILE_SCHEME_LOCALHOST)) {</span>
-<span class="fc" id="L215">        path = path.substring(FILE_SCHEME_LOCALHOST.length());</span>
-      }
-<span class="fc bfc" id="L217" title="All 2 branches covered.">      if (path.isEmpty()) {</span>
-<span class="fc" id="L218">        throw new SocketException(&quot;Path is empty&quot;);</span>
-      }
-<span class="fc bfc" id="L220" title="All 2 branches covered.">      if (!path.startsWith(&quot;/&quot;)) {</span>
-<span class="fc" id="L221">        throw new SocketException(&quot;Path must be absolute&quot;);</span>
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">      if (!host.startsWith(FILE_SCHEME_PREFIX)) {</span>
+<span class="nc" id="L215">        throw new SocketException(&quot;Unsupported scheme&quot;);</span>
       }
 
-<span class="fc" id="L224">      File socketFile = new File(path);</span>
-<span class="fc" id="L225">      return AFUNIXSocketAddress.of(socketFile, port);</span>
+<span class="fc" id="L218">      String path = host.substring(FILE_SCHEME_PREFIX.length());</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">      if (path.startsWith(FILE_SCHEME_LOCALHOST)) {</span>
+<span class="fc" id="L220">        path = path.substring(FILE_SCHEME_LOCALHOST.length());</span>
+      }
+<span class="fc bfc" id="L222" title="All 2 branches covered.">      if (path.isEmpty()) {</span>
+<span class="fc" id="L223">        throw new SocketException(&quot;Path is empty&quot;);</span>
+      }
+<span class="fc bfc" id="L225" title="All 2 branches covered.">      if (!path.startsWith(&quot;/&quot;)) {</span>
+<span class="fc" id="L226">        throw new SocketException(&quot;Path must be absolute&quot;);</span>
+      }
+
+<span class="fc" id="L229">      File socketFile = new File(path);</span>
+<span class="fc" id="L230">      return AFUNIXSocketAddress.of(socketFile, port);</span>
     }
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

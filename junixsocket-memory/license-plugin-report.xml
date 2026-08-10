@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licensePluginReport goal="CHECK" timestamp="1786368783683">
+    <module artifactId="junixsocket-memory" groupId="com.kohlschutter.junixsocket" version="2.11.0"/>
+    <files>
+        <file path="src/main/java/org/newsclub/net/unix/memory/Futex.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/memory/Futex32.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/memory/MappedMemory.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/memory/MemorySeal.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/memory/SharedMemory.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/memory/SharedMemoryCleaner.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/memory/SharedMemoryOption.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/memory/SharedMutex.java" result="PRESENT"/>
+        <file path="src/main/java21/org/newsclub/net/unix/memory/Futex32.java" result="PRESENT"/>
+        <file path="src/main/java21/org/newsclub/net/unix/memory/SharedMemory.java" result="PRESENT"/>
+        <file path="src/main/java21/org/newsclub/net/unix/memory/SharedMemoryCleaner.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/memory/FutexTestApp.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/memory/MappedMemoryTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/memory/SelftestProvider.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/memory/SharedMemoryTest.java" result="PRESENT"/>
+        <file path="src/test/java21/org/newsclub/net/unix/memory/FutexTestApp.java" result="PRESENT"/>
+        <file path="src/test/java21/org/newsclub/net/unix/memory/MappedMemoryTest.java" result="PRESENT"/>
+        <file path="src/test/java21/org/newsclub/net/unix/memory/SelftestProvider.java" result="PRESENT"/>
+        <file path="src/test/java21/org/newsclub/net/unix/memory/SharedMemoryTest.java" result="PRESENT"/>
+    </files>
+</licensePluginReport>

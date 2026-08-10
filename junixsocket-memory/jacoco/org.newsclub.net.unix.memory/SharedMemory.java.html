@@ -1,0 +1,680 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SharedMemory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-memory</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.memory</a> &gt; <span class="el_source">SharedMemory.java</span></div><h1>SharedMemory.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2026 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.memory;
+
+import java.io.Closeable;
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.lang.foreign.Arena;
+import java.lang.foreign.MemorySegment;
+import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.WeakHashMap;
+
+import org.newsclub.net.unix.AFSocket;
+import org.newsclub.net.unix.FileChannelSupplier;
+import org.newsclub.net.unix.FileDescriptorCast;
+import org.newsclub.net.unix.MemoryImplUtilInternal;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+/**
+ * Some shared memory.
+ *
+ * @author Christian Kohlschütter
+ */
+@SuppressFBWarnings(&quot;OVERLY_PERMISSIVE_FILE_PERMISSION&quot;)
+public final class SharedMemory implements Closeable {
+<span class="fc" id="L51">  private static final Set&lt;PosixFilePermission&gt; DEFAULT_PERMISSIONS = PosixFilePermissions</span>
+<span class="fc" id="L52">      .fromString(&quot;rw-rw-rw-&quot;);</span>
+
+  /**
+   * Keep track of known shared memory sizes, but only if useful (currently: Windows only).
+   */
+  static Map&lt;FileDescriptor, Long&gt; FD_MEMORY; // NOPMD
+
+  /**
+   * The exact size (in bytes) required for a {@link MemorySegment} used in
+   * {@link #mutex(MemorySegment)}.
+   */
+  public static final int MUTEX_SEGMENT_SIZE = 8;
+
+  /**
+   * The exact size (in bytes) required for a {@link MemorySegment} used in
+   * {@link #futex(MemorySegment)}.
+   */
+  static final int FUTEX32_SEGMENT_SIZE = 4;
+
+<span class="fc" id="L71">  private static final Map&lt;String, Integer&gt; MAP_MODES = Map.of(//</span>
+<span class="fc" id="L72">      &quot;READ_ONLY&quot;, MemoryImplUtilInternal.MMODE_READ, //</span>
+<span class="fc" id="L73">      &quot;READ_WRITE&quot;, (MemoryImplUtilInternal.MMODE_READ | MemoryImplUtilInternal.MMODE_WRITE), //</span>
+<span class="fc" id="L74">      &quot;PRIVATE&quot;, (MemoryImplUtilInternal.MMODE_READ | MemoryImplUtilInternal.MMODE_WRITE</span>
+          | MemoryImplUtilInternal.MMODE_COPY_ON_WRITE), //
+      // from ExtendedMapMode:
+<span class="fc" id="L77">      &quot;READ_ONLY_SYNC&quot;, (MemoryImplUtilInternal.MMODE_READ | MemoryImplUtilInternal.MMODE_SYNC), //</span>
+<span class="fc" id="L78">      &quot;READ_WRITE_SYNC&quot;, (MemoryImplUtilInternal.MMODE_READ | MemoryImplUtilInternal.MMODE_WRITE</span>
+          | MemoryImplUtilInternal.MMODE_SYNC) //
+  );
+
+  private final String name;
+
+  private final boolean knownReadOnly;
+  private final boolean unlinkUponClose;
+
+<span class="fc" id="L87">  static MemoryImplUtilInternal UTIL = null; // NOPMD</span>
+
+  private final SharedMemoryCleaner cleaner;
+
+  private final long size;
+
+  private SharedMemory(FileDescriptor fd) throws IOException {
+<span class="fc" id="L94">    this(fd, -1, null, 0);</span>
+<span class="fc" id="L95">  }</span>
+
+  private SharedMemory(FileDescriptor fd, long size, String name, int mopts) throws IOException {
+<span class="fc" id="L98">    super();</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">    if (size == -1) {</span>
+<span class="fc" id="L100">      this.size = determineSize(fd);</span>
+    } else {
+<span class="fc" id="L102">      this.size = size;</span>
+    }
+<span class="fc" id="L104">    Objects.requireNonNull(fd);</span>
+<span class="fc" id="L105">    this.cleaner = new SharedMemoryCleaner(null, this, fd);</span>
+<span class="fc" id="L106">    this.name = name;</span>
+<span class="fc" id="L107">    this.knownReadOnly = isReadOnly(mopts);</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">    this.unlinkUponClose = (mopts &amp; MemoryImplUtilInternal.MOPT_UNLINK_UPON_CLOSE) != 0;</span>
+<span class="fc" id="L109">  }</span>
+
+  private static long determineSize(FileDescriptor fd) throws IOException {
+<span class="fc" id="L112">    Map&lt;FileDescriptor, Long&gt; map = FD_MEMORY;</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">    if (map != null) {</span>
+<span class="nc" id="L114">      synchronized (map) {</span>
+<span class="nc" id="L115">        Long knownSize = map.get(fd);</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (knownSize != null) {</span>
+<span class="nc" id="L117">          return knownSize;</span>
+        }
+<span class="nc" id="L119">      }</span>
+    }
+<span class="fc" id="L121">    return getUtil().sizeOfSharedMemory(fd);</span>
+    // ; return FileDescriptorCast.using(fd).as(FileChannel.class).size();
+  }
+
+  static boolean isUtilLoaded() {
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">    return UTIL != null;</span>
+  }
+
+  static MemoryImplUtilInternal getUtil() {
+<span class="fc" id="L130">    AFSocket.isSupported(); // trigger init</span>
+
+<span class="fc" id="L132">    MemoryImplUtilInternal util = UTIL;</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">    if (util == null) {</span>
+<span class="nc" id="L134">      throw new IllegalStateException(&quot;MemoryImplUtilInternal not initialized&quot;);</span>
+    }
+<span class="fc" id="L136">    return util;</span>
+  }
+
+  /**
+   * Internal initializer used by junixsocket-common; do not use.
+   *
+   * @param util The MemoryImplUtil instance.
+   */
+  public static synchronized void init(MemoryImplUtilInternal util) {
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">    if (util != null) {</span>
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">      if (UTIL == null) {</span>
+<span class="fc" id="L147">        UTIL = util;</span>
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">        if (util.needToTrackSharedMemory()) {</span>
+<span class="nc" id="L149">          FD_MEMORY = new WeakHashMap&lt;&gt;();</span>
+        } else {
+<span class="fc" id="L151">          FD_MEMORY = null;</span>
+        }
+      } else {
+<span class="nc" id="L154">        throw new IllegalStateException();</span>
+      }
+    }
+<span class="fc" id="L157">  }</span>
+
+  /**
+   * Creates a new {@link SharedMemory} instance using the given file descriptor, which can be
+   * associated with a regular file that is to be memory-mapped, or a shared memory region.
+   *
+   * @param fd The file descriptor.
+   * @return The new instance.
+   * @throws IOException on error.
+   */
+  public static SharedMemory using(FileDescriptor fd) throws IOException {
+<span class="fc" id="L168">    return new SharedMemory(fd);</span>
+  }
+
+  /**
+   * Creates a new {@link SharedMemory} instance under the given name, using default permissions
+   * (read-write for all users, where applicable). If there already exists an object under that
+   * name, this call fails with an error.
+   *
+   * @param name The name.
+   * @param minimumLength The requested length (the actual object can be larger).
+   * @param options Instantiation options.
+   * @return The new instance.
+   * @throws IOException on error.
+   */
+  public static SharedMemory createExclusively(String name, long minimumLength,
+      SharedMemoryOption... options) throws IOException {
+<span class="fc" id="L184">    return createExclusively(name, minimumLength, DEFAULT_PERMISSIONS, options);</span>
+  }
+
+  /**
+   * Creates a new {@link SharedMemory} instance under the given name. If there already exists an
+   * instance under that name, this call fails with an error.
+   *
+   * @param name The name.
+   * @param minimumLength The requested length (the actual object can be larger).
+   * @param perms The file system permissions, where applicable.
+   * @param options Instantiation options.
+   * @return The new instance.
+   * @throws IOException on error.
+   */
+  public static SharedMemory createExclusively(String name, long minimumLength,
+      Set&lt;PosixFilePermission&gt; perms, SharedMemoryOption... options) throws IOException {
+<span class="fc" id="L200">    return shmOpen(name, perms, toOptions(options) | MemoryImplUtilInternal.MOPT_CREAT</span>
+        | MemoryImplUtilInternal.MOPT_EXCL, minimumLength);
+  }
+
+  /**
+   * Creates a new {@link SharedMemory} instance under the given name, using default permissions
+   * (read-write for all users, where applicable). If there already exists an object under that
+   * name, that object is opened instead.
+   *
+   * @param name The name.
+   * @param minimumLength The requested length (the actual object can be larger).
+   * @param options Instantiation options.
+   * @return The new instance.
+   * @throws IOException on error.
+   */
+  public static SharedMemory createOrOpenExisting(String name, long minimumLength,
+      SharedMemoryOption... options) throws IOException {
+<span class="fc" id="L217">    return createOrOpenExisting(name, minimumLength, DEFAULT_PERMISSIONS, options);</span>
+  }
+
+  /**
+   * Creates a new {@link SharedMemory} instance under the given namex. If there already exists an
+   * object under that name, that object is opened instead.
+   *
+   * @param name The name.
+   * @param minimumLength The requested length (the actual object can be larger).
+   * @param perms The file system permissions, where applicable.
+   * @param options Instantiation options.
+   * @return The new instance.
+   * @throws IOException on error.
+   */
+  public static SharedMemory createOrOpenExisting(String name, long minimumLength,
+      Set&lt;PosixFilePermission&gt; perms, SharedMemoryOption... options) throws IOException {
+<span class="fc" id="L233">    return shmOpen(name, perms, toOptions(options) | MemoryImplUtilInternal.MOPT_CREAT,</span>
+        minimumLength);
+  }
+
+  /**
+   * Creates a new {@link SharedMemory} instance under the given name, using default permissions
+   * (read-write for all users, where applicable). If there already exists an object under that
+   * name, that object is reused (truncated to zero or deleted prior to allocation).
+   *
+   * @param name The name.
+   * @param minimumLength The requested length (the actual object can be larger).
+   * @param options Instantiation options.
+   * @return The new instance.
+   * @throws IOException on error.
+   */
+  public static SharedMemory createOrReuseExisting(String name, long minimumLength,
+      SharedMemoryOption... options) throws IOException {
+<span class="fc" id="L250">    return createOrReuseExisting(name, minimumLength, DEFAULT_PERMISSIONS, options);</span>
+  }
+
+  /**
+   * Creates a new {@link SharedMemory} instance under the given name. If there already exists an
+   * object under that name, that object is reused (truncated to zero or deleted prior to
+   * allocation).
+   *
+   * @param name The name.
+   * @param minimumLength The requested length (the actual object can be larger).
+   * @param perms The file system permissions, where applicable.
+   * @param options Instantiation options.
+   * @return The new instance.
+   * @throws IOException on error.
+   */
+  public static SharedMemory createOrReuseExisting(String name, long minimumLength,
+      Set&lt;PosixFilePermission&gt; perms, SharedMemoryOption... options) throws IOException {
+<span class="fc" id="L267">    return shmOpen(name, perms, toOptions(options) | MemoryImplUtilInternal.MOPT_CREAT</span>
+        | MemoryImplUtilInternal.MOPT_TRUNC, minimumLength);
+  }
+
+  /**
+   * Creates a new {@link SharedMemory} instance under the given name, using the object under the
+   * given name. This call fails with an exception if no such object exists.
+   *
+   * @param name The name.
+   * @param options Instantiation options.
+   * @return The new instance.
+   * @throws IOException on error.
+   */
+  public static SharedMemory openExisting(String name, SharedMemoryOption... options)
+      throws IOException {
+<span class="fc" id="L282">    return shmOpen(name, DEFAULT_PERMISSIONS, toOptions(options), 0);</span>
+  }
+
+  /**
+   * Creates a new {@link SharedMemory} instance using an anonymous identifier.
+   *
+   * @param minimumLength The requested length (the actual object can be larger).
+   * @return The new instance.
+   * @throws IOException on error.
+   */
+  public static SharedMemory createAnonymous(long minimumLength) throws IOException {
+<span class="fc" id="L293">    return createAnonymous(minimumLength, (SharedMemoryOption[]) null);</span>
+  }
+
+  /**
+   * Creates a new {@link SharedMemory} instance using an anonymous identifier.
+   *
+   * @param minimumLength The requested length (the actual object can be larger).
+   * @param options Instantiation options.
+   * @return The new instance.
+   * @throws IOException on error.
+   */
+  public static SharedMemory createAnonymous(long minimumLength, SharedMemoryOption... options)
+      throws IOException {
+<span class="fc" id="L306">    int mopts = toOptions(options) | MemoryImplUtilInternal.MOPT_CREAT</span>
+        | MemoryImplUtilInternal.MOPT_TRUNC;
+<span class="fc" id="L308">    return shmOpen0(null, Collections.emptySet(), mopts, minimumLength);</span>
+  }
+
+  private static SharedMemory shmOpen(String name, Set&lt;PosixFilePermission&gt; perms, int mopts,
+      long minimumLength) throws IOException {
+<span class="fc" id="L313">    name = checkShmName(name);</span>
+<span class="fc" id="L314">    return shmOpen0(name, perms, mopts, minimumLength);</span>
+  }
+
+  @SuppressFBWarnings(&quot;USO_UNSAFE_ACCESSIBLE_OBJECT_SYNCHRONIZATION&quot;)
+  private static SharedMemory shmOpen0(String name, Set&lt;PosixFilePermission&gt; perms, int mopts,
+      long minimumLength) throws IOException {
+<span class="fc" id="L320">    MemoryImplUtilInternal util = getUtil();</span>
+
+<span class="fc" id="L322">    FileDescriptor fd = new FileDescriptor();</span>
+<span class="fc" id="L323">    long size = util.shmOpen(fd, name, minimumLength, toMode(perms), mopts);</span>
+<span class="fc" id="L324">    SharedMemory sm = new SharedMemory(fd, size, name, mopts);</span>
+
+<span class="fc" id="L326">    Map&lt;FileDescriptor, Long&gt; map = FD_MEMORY;</span>
+<span class="pc bpc" id="L327" title="1 of 2 branches missed.">    if (map != null) {</span>
+<span class="nc" id="L328">      synchronized (map) {</span>
+<span class="nc" id="L329">        map.put(fd, size);</span>
+<span class="nc" id="L330">      }</span>
+    }
+<span class="fc" id="L332">    return sm;</span>
+  }
+
+  private static boolean isReadOnly(int mopts) {
+<span class="fc bfc" id="L336" title="All 2 branches covered.">    return (mopts &amp; MemoryImplUtilInternal.MOPT_RDONLY) != 0;</span>
+  }
+
+  /**
+   * Asks to explicitly unlink/remove a shared memory object identified by the given name.
+   * &lt;p&gt;
+   * This call may silently fail (some platforms do not support explicit unlinking -- they cleanup
+   * the objects automatically).
+   *
+   * @param name The name of the object that should be unlinked.
+   * @throws IOException on error.
+   */
+  public static void unlinkShared(String name) throws IOException {
+<span class="fc" id="L349">    getUtil().shmUnlink(checkShmName(name));</span>
+<span class="fc" id="L350">  }</span>
+
+  /**
+   * Returns the file descriptor associated with this instance.
+   *
+   * @return The file descriptor.
+   */
+  public FileDescriptor getFileDescriptor() {
+<span class="fc" id="L358">    return cleaner.fd;</span>
+  }
+
+  /**
+   * Returns a {@link FileChannel} instance that can be used for memory-mapping via {code
+   * FileChannel#map}. There are no guarantees that writing/truncating/mapping works, however
+   * getting the current allocation size via {@link FileChannel#size()} should work.
+   *
+   * @return The {@link FileChannel}.
+   * @throws IOException on error.
+   * @throws ClosedChannelException if the file descriptor is closed.
+   * @throws UnsupportedOperationException if this operation is not supported on this platform.
+   */
+  FileChannel asMappableFileChannel() throws IOException {
+<span class="pc bpc" id="L372" title="1 of 2 branches missed.">    if (!cleaner.fd.valid()) {</span>
+<span class="nc" id="L373">      throw new ClosedChannelException();</span>
+    }
+<span class="pc bpc" id="L375" title="1 of 2 branches missed.">    if (FD_MEMORY != null) {</span>
+<span class="nc" id="L376">      throw new UnsupportedOperationException();</span>
+    }
+<span class="fc bfc" id="L378" title="All 2 branches covered.">    if (knownReadOnly) {</span>
+<span class="fc" id="L379">      return FileDescriptorCast.using(cleaner.fd).as(FileChannelSupplier.ReadOnly.class).get();</span>
+    } else {
+<span class="fc" id="L381">      return FileDescriptorCast.using(cleaner.fd).as(FileChannel.class);</span>
+    }
+  }
+
+  /**
+   * Return a {@link MemorySegment} instance corresponding to this shared memory object, using the
+   * given {@link MapMode}, and a custom shared {@link Arena} that will be closed upon
+   * {@link SharedMemory#close()}.
+   *
+   * @param mapMode The map mode.
+   * @return The memory segment.
+   * @throws IOException on error.
+   */
+  public MemorySegment asMappedMemorySegment(MapMode mapMode) throws IOException {
+<span class="fc" id="L395">    return asMappedMemorySegment(mapMode, null, 0);</span>
+  }
+
+  /**
+   * Return a {@link MemorySegment} instance corresponding to this shared memory object, using the
+   * given {@link MapMode}, and the given arena.
+   * &lt;p&gt;
+   * If the given arena is {@code null}, a custom shared {@link Arena} is used that will be closed
+   * upon {@link SharedMemory#close()}.
+   *
+   * @param mapMode The map mode.
+   * @param arena The arena to use, or {@code null}.
+   * @return The memory segment.
+   * @throws IOException on error.
+   */
+  public MemorySegment asMappedMemorySegment(MapMode mapMode, Arena arena) throws IOException {
+<span class="fc" id="L411">    return asMappedMemorySegment(mapMode, arena, 0);</span>
+  }
+
+  /**
+   * Return a {@link MemorySegment} instance corresponding to this shared memory object -- repeated
+   * multiple times after each other (aligned with page size) -- using the given {@link MapMode},
+   * and the given arena, as well as the duplication count.
+   * &lt;p&gt;
+   * This method is particularly useful to simplify building circular buffers (&quot;magic RingBuffer&quot;).
+   * &lt;p&gt;
+   * If the given arena is {@code null}, a custom shared {@link Arena} is used that will be closed
+   * upon {@link SharedMemory#close()}.
+   *
+   * @param mapMode The map mode.
+   * @param arena The arena to use, or {@code null}.
+   * @param duplicates The number of times the shared memory should be repeated (0 = no repetitions,
+   *          just 1 copy).
+   * @return The memory segment.
+   * @throws IOException on error.
+   */
+  public MemorySegment asMappedMemorySegment(MapMode mapMode, Arena arena, int duplicates)
+      throws IOException {
+<span class="fc" id="L433">    return asMappedMemorySegment(mapMode, arena, 0, -1, duplicates);</span>
+  }
+
+  /**
+   * Return a {@link MemorySegment} instance corresponding to a range of this shared memory object
+   * -- repeated multiple times after each other (aligned with page size) -- using the given
+   * {@link MapMode}, and the given arena, as well as the duplication count.
+   * &lt;p&gt;
+   * This method is particularly useful to simplify building circular buffers (&quot;magic RingBuffer&quot;).
+   * &lt;p&gt;
+   * If the given arena is {@code null}, a custom shared {@link Arena} is used that will be closed
+   * upon {@link SharedMemory#close()}.
+   *
+   * @param mapMode The map mode.
+   * @param arena The arena to use, or {@code null}.
+   * @param offset The offset from the beginning of this segment, in bytes.
+   * @param length The length of the mapped region, in bytes.
+   * @param duplicates The number of times the shared memory should be repeated (0 = no repetitions,
+   *          just 1 copy).
+   * @return The memory segment.
+   * @throws IOException on error.
+   */
+  public MemorySegment asMappedMemorySegment(MapMode mapMode, Arena arena, long offset, long length,
+      int duplicates) throws IOException {
+<span class="pc bpc" id="L457" title="1 of 2 branches missed.">    if (offset &lt; 0) {</span>
+<span class="nc" id="L458">      throw new IllegalArgumentException(&quot;startOffset&quot;);</span>
+<span class="pc bpc" id="L459" title="1 of 2 branches missed.">    } else if (length &lt; -1) {</span>
+<span class="nc" id="L460">      throw new IllegalArgumentException(&quot;length&quot;);</span>
+    }
+
+    // use a zero-length, 0-address segment for lifecycle management, preventing chicken-egg problem
+    MemorySegment arenaSegment;
+<span class="fc bfc" id="L465" title="All 2 branches covered.">    if (arena == null) {</span>
+<span class="fc" id="L466">      arenaSegment = cleaner.getArenaSegment();</span>
+    } else {
+<span class="fc" id="L468">      arenaSegment = arena.allocate(0);</span>
+    }
+
+<span class="fc" id="L471">    int mmode = resolveMmode(mapMode);</span>
+<span class="pc bpc" id="L472" title="1 of 2 branches missed.">    if (length == -1) {</span>
+      // FileChannel fc = asMappableFileChannel();
+      // long size = fc.size();
+
+<span class="fc" id="L476">      length = size;</span>
+    }
+
+<span class="fc" id="L479">    ByteBuffer buf = getUtil().mmapShm(arenaSegment, cleaner.fd, offset, length, mmode, duplicates);</span>
+<span class="fc bfc" id="L480" title="All 2 branches covered.">    return asRegisteredMemorySegment(cleaner, buf, (mmode</span>
+        &amp; MemoryImplUtilInternal.MMODE_WRITE) != 0, duplicates);
+  }
+
+  static MemorySegment asRegisteredMemorySegment(SharedMemoryCleaner cleaner, ByteBuffer buf,
+      boolean rw) {
+<span class="fc" id="L486">    return asRegisteredMemorySegment(cleaner, buf, rw, 0);</span>
+  }
+
+  private static MemorySegment asRegisteredMemorySegment(SharedMemoryCleaner cleaner,
+      ByteBuffer buf, boolean rw, int duplicates) {
+<span class="fc bfc" id="L491" title="All 2 branches covered.">    if (!rw) {</span>
+      // The MapMode is read-only.
+      // If we don't ask for a read-only buffer here, write accesses will fail with a page fault
+      // (&quot;java.lang.InternalError: a fault occurred in an unsafe memory access operation&quot;)
+<span class="fc" id="L495">      buf = buf.asReadOnlyBuffer();</span>
+    }
+<span class="fc" id="L497">    MemorySegment ms = MemorySegment.ofBuffer(buf);</span>
+<span class="fc" id="L498">    cleaner.registerMemorySegment(ms, duplicates);</span>
+<span class="fc" id="L499">    return ms;</span>
+  }
+
+  /**
+   * Adds the given {@link MemorySeal}s, preventing certain operations on shared memory.
+   *
+   * @param seals The seals.
+   * @throws IOException on error (e.g., if unsupported).
+   */
+  @SuppressWarnings(&quot;DoNotCallSuggester&quot;) // ErrorProne
+  public void addSeals(Set&lt;MemorySeal&gt; seals) throws IOException {
+<span class="nc" id="L510">    throw new IOException(&quot;Unsupported&quot;); // FIXME</span>
+  }
+
+  /**
+   * Returns the current {@link MemorySeal}s for this shared memory instance.
+   *
+   * @return The seals, or empty if none or unsupported.
+   * @throws IOException on error (e.g., if a system call fails unexpectedly).
+   */
+  public Set&lt;MemorySeal&gt; getSeals() throws IOException {
+<span class="nc" id="L520">    return Collections.emptySet(); // FIXME</span>
+  }
+
+  private static String checkShmName(String name) {
+<span class="fc" id="L524">    Objects.requireNonNull(name);</span>
+<span class="fc bfc" id="L525" title="All 2 branches covered.">    if (name.length() == 0) {</span>
+<span class="fc" id="L526">      throw new IllegalArgumentException(&quot;Name cannot be empty&quot;);</span>
+    }
+<span class="fc bfc" id="L528" title="All 2 branches covered.">    if (name.indexOf('/', 1) != -1) {</span>
+<span class="fc" id="L529">      throw new IllegalArgumentException(&quot;Name must not contain extra slashes&quot;);</span>
+    }
+<span class="fc bfc" id="L531" title="All 2 branches covered.">    if (name.charAt(0) == '/') {</span>
+<span class="fc" id="L532">      return name;</span>
+    } else {
+<span class="fc" id="L534">      return &quot;/&quot; + name;</span>
+    }
+  }
+
+  private static int toMode(Set&lt;PosixFilePermission&gt; perms) {
+<span class="fc" id="L539">    int mode = 0;</span>
+<span class="pc bpc" id="L540" title="1 of 2 branches missed.">    if (perms == null) {</span>
+<span class="nc" id="L541">      perms = DEFAULT_PERMISSIONS;</span>
+    }
+<span class="fc bfc" id="L543" title="All 2 branches covered.">    for (PosixFilePermission perm : perms) {</span>
+<span class="pc bpc" id="L544" title="1 of 7 branches missed.">      switch (perm) {</span>
+        case OWNER_READ:
+<span class="fc" id="L546">          mode |= MemoryImplUtilInternal.S_IRUSR;</span>
+<span class="fc" id="L547">          break;</span>
+        case OWNER_WRITE:
+<span class="fc" id="L549">          mode |= MemoryImplUtilInternal.S_IWUSR;</span>
+<span class="fc" id="L550">          break;</span>
+        case GROUP_READ:
+<span class="fc" id="L552">          mode |= MemoryImplUtilInternal.S_IRGRP;</span>
+<span class="fc" id="L553">          break;</span>
+        case GROUP_WRITE:
+<span class="fc" id="L555">          mode |= MemoryImplUtilInternal.S_IWGRP;</span>
+<span class="fc" id="L556">          break;</span>
+        case OTHERS_READ:
+<span class="fc" id="L558">          mode |= MemoryImplUtilInternal.S_IROTH;</span>
+<span class="fc" id="L559">          break;</span>
+        case OTHERS_WRITE:
+<span class="fc" id="L561">          mode |= MemoryImplUtilInternal.S_IWOTH;</span>
+<span class="fc" id="L562">          break;</span>
+        default:
+<span class="nc" id="L564">          throw new IllegalArgumentException(&quot;Unsupported permission: &quot; + perm);</span>
+      }
+<span class="fc" id="L566">    }</span>
+<span class="fc" id="L567">    return mode;</span>
+  }
+
+  private static int toOptions(SharedMemoryOption[] options) {
+<span class="fc" id="L571">    int opt = 0;</span>
+<span class="fc bfc" id="L572" title="All 2 branches covered.">    if (options != null) {</span>
+<span class="fc bfc" id="L573" title="All 2 branches covered.">      for (SharedMemoryOption option : options) {</span>
+<span class="fc" id="L574">        opt |= option.getOpt();</span>
+      }
+    }
+<span class="fc" id="L577">    return opt;</span>
+  }
+
+  /**
+   * Closes this {@link SharedMemory} resource, potentially unlinking the corresponding underlying
+   * resource from the kernel if the object has been instantiated with
+   * {@link SharedMemoryOption#UNLINK_UPON_CLOSE}.
+   */
+  @Override
+  public void close() throws IOException {
+<span class="fc" id="L587">    boolean valid = cleaner.fd.valid();</span>
+
+<span class="fc" id="L589">    cleaner.close();</span>
+<span class="pc bpc" id="L590" title="2 of 6 branches missed.">    if (unlinkUponClose &amp;&amp; valid &amp;&amp; name != null) {</span>
+<span class="fc" id="L591">      MemoryImplUtilInternal util = getUtil();</span>
+<span class="fc" id="L592">      util.shmUnlink(name);</span>
+    }
+<span class="fc" id="L594">  }</span>
+
+  String getName() {
+<span class="fc" id="L597">    return name;</span>
+  }
+
+  private static int resolveMmode(MapMode mapMode) {
+<span class="fc" id="L601">    String modeString = mapMode.toString();</span>
+<span class="fc" id="L602">    Integer mmode = MAP_MODES.get(modeString);</span>
+<span class="pc bpc" id="L603" title="1 of 2 branches missed.">    if (mmode == null) {</span>
+<span class="nc" id="L604">      throw new UnsupportedOperationException(&quot;MapMode&quot;);</span>
+    }
+<span class="fc" id="L606">    return mmode;</span>
+  }
+
+  /**
+   * Returns the system's default memory page allocation size for shared memory.
+   * &lt;p&gt;
+   * This may be larger than the system's regular page size (e.g., on Windows it's 64k).
+   *
+   * @return The page size.
+   */
+  public static long defaultAllocationSize() {
+<span class="fc" id="L617">    return getUtil().getSharedMemoryAllocationSize();</span>
+  }
+
+  Futex futex(MemorySegment addr) throws IOException {
+<span class="fc" id="L621">    return futex(addr, false, false);</span>
+  }
+
+  Futex futex(MemorySegment addr, boolean wakeUpOnClose) throws IOException {
+<span class="fc" id="L625">    return futex(addr, wakeUpOnClose, false);</span>
+  }
+
+  Futex futex(MemorySegment addr, boolean wakeUpOnClose, boolean zeroValueOnClose)
+      throws IOException {
+<span class="fc bfc" id="L630" title="All 2 branches covered.">    if (addr.isReadOnly()) {</span>
+<span class="fc" id="L631">      throw new IOException(&quot;MemorySegment is read-only&quot;);</span>
+    }
+<span class="fc" id="L633">    cleaner.checkCovered(addr);</span>
+<span class="fc" id="L634">    Futex futex = new Futex32(addr, zeroValueOnClose);</span>
+<span class="fc bfc" id="L635" title="All 2 branches covered.">    if (wakeUpOnClose) {</span>
+<span class="fc" id="L636">      cleaner.registerFutex(futex);</span>
+    }
+<span class="fc" id="L638">    return futex;</span>
+  }
+
+  /**
+   * Returns a {@link SharedMutex} instance working with the given {@link MemorySegment}, which has
+   * to be exactly {@link #MUTEX_SEGMENT_SIZE} bytes long.
+   *
+   * @param addr The address.
+   * @return The instance.
+   * @throws IOException on error.
+   */
+  public SharedMutex mutex(MemorySegment addr) throws IOException {
+<span class="fc" id="L650">    return mutex(addr, false);</span>
+  }
+
+  private SharedMutex mutex(MemorySegment addr, boolean unlockOnClose) throws IOException {
+<span class="pc bpc" id="L654" title="1 of 2 branches missed.">    if (addr.isReadOnly()) {</span>
+<span class="nc" id="L655">      throw new IOException(&quot;MemorySegment is read-only&quot;);</span>
+    }
+<span class="pc bpc" id="L657" title="1 of 2 branches missed.">    if (addr.byteSize() != 8) {</span>
+<span class="nc" id="L658">      throw new IOException(&quot;MemorySegment must be exactly 8 bytes long&quot;);</span>
+    }
+
+<span class="fc" id="L661">    cleaner.checkCovered(addr);</span>
+
+<span class="fc" id="L663">    Futex32 futex = new Futex32(addr.asSlice(0, 4), unlockOnClose);</span>
+<span class="pc bpc" id="L664" title="1 of 2 branches missed.">    if (unlockOnClose) {</span>
+<span class="nc" id="L665">      cleaner.registerFutex(futex);</span>
+    }
+
+<span class="fc" id="L668">    return futex.mutex();</span>
+  }
+
+  /**
+   * Returns the aligned size of this shared memory instance.
+   *
+   * @return The aligned size, in bytes.
+   */
+  public long byteSize() {
+<span class="fc" id="L677">    return size;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

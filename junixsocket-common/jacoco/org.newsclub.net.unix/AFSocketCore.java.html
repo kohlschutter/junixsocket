@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFSocketCore.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSocketCore.java</span></div><h1>AFSocketCore.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -33,142 +34,142 @@ import org.newsclub.net.unix.pool.ObjectPool.Lease;
  * @author Christian Kohlschütter
  */
 class AFSocketCore extends AFCore {
-<span class="fc" id="L36">  private final AtomicInteger pendingAccepts = new AtomicInteger(0);</span>
+<span class="fc" id="L37">  private final AtomicInteger pendingAccepts = new AtomicInteger(0);</span>
   private static final int SHUT_RD_WR = 2;
 
   /**
    * We keep track of the server's inode to detect when another server connects to our address.
    */
-<span class="fc" id="L42">  final AtomicLong inode = new AtomicLong(-1);</span>
+<span class="fc" id="L43">  final AtomicLong inode = new AtomicLong(-1);</span>
 
   AFSocketAddress socketAddress;
 
   private final AFAddressFamily&lt;?&gt; af;
-<span class="fc" id="L47">  private boolean shutdownOnClose = true;</span>
+<span class="fc" id="L48">  private final AtomicBoolean shutdownOnClose = new AtomicBoolean(true);</span>
 
   protected AFSocketCore(Object observed, FileDescriptor fd,
       AncillaryDataSupport ancillaryDataSupport, AFAddressFamily&lt;?&gt; af, boolean datagramMode) {
-<span class="fc" id="L51">    super(observed, fd, ancillaryDataSupport, datagramMode);</span>
-<span class="fc" id="L52">    this.af = af;</span>
-<span class="fc" id="L53">  }</span>
+<span class="fc" id="L52">    super(observed, fd, ancillaryDataSupport, datagramMode);</span>
+<span class="fc" id="L53">    this.af = af;</span>
+<span class="fc" id="L54">  }</span>
 
   protected AFAddressFamily&lt;?&gt; addressFamily() {
-<span class="fc" id="L56">    return af;</span>
+<span class="fc" id="L57">    return af;</span>
   }
 
   @Override
   @SuppressWarnings(&quot;UnsafeFinalization&quot; /* errorprone */)
   protected void doClose() throws IOException {
-<span class="pc bpc" id="L62" title="1 of 2 branches missed.">    if (isShutdownOnClose()) {</span>
-<span class="fc" id="L63">      NativeUnixSocket.shutdown(fd, SHUT_RD_WR);</span>
-<span class="fc" id="L64">      unblockAccepts();</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">    if (isShutdownOnClose()) {</span>
+<span class="fc" id="L64">      NativeUnixSocket.shutdown(fd, SHUT_RD_WR);</span>
+<span class="fc" id="L65">      unblockAccepts();</span>
     }
 
-<span class="fc" id="L67">    super.doClose();</span>
-<span class="fc" id="L68">  }</span>
+<span class="fc" id="L68">    super.doClose();</span>
+<span class="fc" id="L69">  }</span>
 
   protected void unblockAccepts() {
     // see AFSocketImpl
-<span class="fc" id="L72">  }</span>
+<span class="fc" id="L73">  }</span>
 
   AFSocketAddress receive(ByteBuffer dst, AFSupplier&lt;Integer&gt; socketTimeout) throws IOException {
-<span class="fc" id="L75">    try (Lease&lt;ByteBuffer&gt; socketAddressBufferLease = AFSocketAddress.SOCKETADDRESS_BUFFER_TL</span>
-<span class="fc" id="L76">        .take()) {</span>
-<span class="fc" id="L77">      ByteBuffer socketAddressBuffer = socketAddressBufferLease.get();</span>
+<span class="fc" id="L76">    try (Lease&lt;ByteBuffer&gt; socketAddressBufferLease = AFSocketAddress.SOCKETADDRESS_BUFFER_TL</span>
+<span class="fc" id="L77">        .take()) {</span>
+<span class="fc" id="L78">      ByteBuffer socketAddressBuffer = socketAddressBufferLease.get();</span>
 
-<span class="fc" id="L79">      int read = read(dst, socketTimeout, socketAddressBuffer, 0);</span>
-<span class="pc bpc" id="L80" title="1 of 2 branches missed.">      if (read &gt; 0) {</span>
-<span class="fc" id="L81">        return AFSocketAddress.ofInternal(socketAddressBuffer, af);</span>
+<span class="fc" id="L80">      int read = read(dst, socketTimeout, socketAddressBuffer, 0);</span>
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">      if (read &gt; 0) {</span>
+<span class="fc" id="L82">        return AFSocketAddress.ofInternal(socketAddressBuffer, af);</span>
       } else {
-<span class="nc" id="L83">        return null;</span>
+<span class="nc" id="L84">        return null;</span>
       }
-<span class="pc bpc" id="L85" title="1 of 2 branches missed.">    }</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">    }</span>
   }
 
   boolean isConnected(boolean boundOk) {
     try {
-<span class="fc bfc" id="L90" title="All 2 branches covered.">      if (fd.valid()) {</span>
-<span class="fc bfc" id="L91" title="All 3 branches covered.">        switch (NativeUnixSocket.socketStatus(fd)) {</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">      if (fd.valid()) {</span>
+<span class="fc bfc" id="L92" title="All 3 branches covered.">        switch (NativeUnixSocket.socketStatus(fd)) {</span>
           case NativeUnixSocket.SOCKETSTATUS_CONNECTED:
-<span class="fc" id="L93">            return true;</span>
+<span class="fc" id="L94">            return true;</span>
           case NativeUnixSocket.SOCKETSTATUS_BOUND:
-<span class="fc bfc" id="L95" title="All 2 branches covered.">            if (boundOk) {</span>
-<span class="fc" id="L96">              return true;</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">            if (boundOk) {</span>
+<span class="fc" id="L97">              return true;</span>
             }
             break;
           default:
         }
       }
-<span class="nc" id="L102">    } catch (IOException e) {</span>
-<span class="nc" id="L103">      throw new IllegalStateException(e);</span>
-<span class="fc" id="L104">    }</span>
-<span class="fc" id="L105">    return false;</span>
+<span class="nc" id="L103">    } catch (IOException e) {</span>
+<span class="nc" id="L104">      throw new IllegalStateException(e);</span>
+<span class="fc" id="L105">    }</span>
+<span class="fc" id="L106">    return false;</span>
   }
 
   @SuppressWarnings({&quot;unchecked&quot;})
   &lt;T&gt; T getOption(AFSocketOption&lt;T&gt; name) throws IOException {
-<span class="nc" id="L110">    Class&lt;T&gt; type = name.type();</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (Boolean.class.isAssignableFrom(type)) {</span>
-<span class="nc bnc" id="L112" title="All 2 branches missed.">      return (T) (Object) (NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(),</span>
+<span class="nc" id="L111">    Class&lt;T&gt; type = name.type();</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">    if (Boolean.class.isAssignableFrom(type)) {</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">      return (T) (Object) (NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(),</span>
           Integer.class) != 0);
-<span class="nc bnc" id="L114" title="All 2 branches missed.">    } else if (NamedInteger.HasOfValue.class.isAssignableFrom(type)) {</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">    } else if (NamedInteger.HasOfValue.class.isAssignableFrom(type)) {</span>
       @SuppressWarnings(&quot;all&quot;) // &quot;null&quot; creates another warning
-<span class="nc" id="L116">      int v = NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), Integer.class);</span>
+<span class="nc" id="L117">      int v = NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), Integer.class);</span>
       try {
-<span class="nc" id="L118">        return (T) type.getMethod(&quot;ofValue&quot;, int.class).invoke(null, v);</span>
-<span class="nc" id="L119">      } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException</span>
+<span class="nc" id="L119">        return (T) type.getMethod(&quot;ofValue&quot;, int.class).invoke(null, v);</span>
+<span class="nc" id="L120">      } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException</span>
           | NoSuchMethodException | SecurityException e) {
-<span class="nc" id="L121">        throw new IOException(&quot;Value casting problem&quot;, e);</span>
+<span class="nc" id="L122">        throw new IOException(&quot;Value casting problem&quot;, e);</span>
       }
     } else {
-<span class="nc" id="L124">      return NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), type);</span>
+<span class="nc" id="L125">      return NativeUnixSocket.getSocketOption(fd, name.level(), name.optionName(), type);</span>
     }
   }
 
   &lt;T&gt; void setOption(AFSocketOption&lt;T&gt; name, T value) throws IOException {
     final Object val;
-<span class="nc bnc" id="L130" title="All 2 branches missed.">    if (value instanceof Boolean) {</span>
-<span class="nc bnc" id="L131" title="All 2 branches missed.">      val = (((Boolean) value) ? 1 : 0);</span>
-<span class="nc bnc" id="L132" title="All 2 branches missed.">    } else if (value instanceof NamedInteger) {</span>
-<span class="nc" id="L133">      val = ((NamedInteger) value).value();</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">    if (value instanceof Boolean) {</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">      val = (((Boolean) value) ? 1 : 0);</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">    } else if (value instanceof NamedInteger) {</span>
+<span class="nc" id="L134">      val = ((NamedInteger) value).value();</span>
     } else {
-<span class="nc" id="L135">      val = value;</span>
+<span class="nc" id="L136">      val = value;</span>
     }
-<span class="nc" id="L137">    int level = name.level();</span>
-<span class="nc" id="L138">    int optionName = name.optionName();</span>
-<span class="nc" id="L139">    NativeUnixSocket.setSocketOption(fd, level, optionName, val);</span>
-<span class="nc bnc" id="L140" title="All 4 branches missed.">    if (level == 271 &amp;&amp; optionName == 135) {</span>
+<span class="nc" id="L138">    int level = name.level();</span>
+<span class="nc" id="L139">    int optionName = name.optionName();</span>
+<span class="nc" id="L140">    NativeUnixSocket.setSocketOption(fd, level, optionName, val);</span>
+<span class="nc bnc" id="L141" title="All 4 branches missed.">    if (level == 271 &amp;&amp; optionName == 135) {</span>
       // AFTIPCSocketOptions.TIPC_GROUP_JOIN
       // unclear why, but sleeping for at least 1ms prevents issues with GROUP_JOIN
       try {
-<span class="nc" id="L144">        Thread.sleep(1);</span>
-<span class="nc" id="L145">      } catch (InterruptedException e) {</span>
+<span class="nc" id="L145">        Thread.sleep(1);</span>
+<span class="nc" id="L146">      } catch (InterruptedException e) {</span>
         // ignore
-<span class="nc" id="L147">      }</span>
+<span class="nc" id="L148">      }</span>
     }
-<span class="nc" id="L149">  }</span>
+<span class="nc" id="L150">  }</span>
 
   protected void incPendingAccepts() throws SocketException {
-<span class="pc bpc" id="L152" title="1 of 2 branches missed.">    if (pendingAccepts.incrementAndGet() &gt;= Integer.MAX_VALUE) {</span>
-<span class="nc" id="L153">      pendingAccepts.decrementAndGet();</span>
-<span class="nc" id="L154">      throw new SocketException(&quot;Too many pending accepts&quot;);</span>
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">    if (pendingAccepts.incrementAndGet() &gt;= Integer.MAX_VALUE) {</span>
+<span class="nc" id="L154">      pendingAccepts.decrementAndGet();</span>
+<span class="nc" id="L155">      throw new SocketException(&quot;Too many pending accepts&quot;);</span>
     }
-<span class="fc" id="L156">  }</span>
+<span class="fc" id="L157">  }</span>
 
   protected void decPendingAccepts() {
-<span class="fc" id="L159">    pendingAccepts.decrementAndGet();</span>
-<span class="fc" id="L160">  }</span>
+<span class="fc" id="L160">    pendingAccepts.decrementAndGet();</span>
+<span class="fc" id="L161">  }</span>
 
   protected boolean hasPendingAccepts() {
-<span class="fc bfc" id="L163" title="All 2 branches covered.">    return pendingAccepts.get() &gt; 0;</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">    return pendingAccepts.get() &gt; 0;</span>
   }
 
   boolean isShutdownOnClose() {
-<span class="fc" id="L167">    return shutdownOnClose;</span>
+<span class="fc" id="L168">    return shutdownOnClose.get();</span>
   }
 
   void setShutdownOnClose(boolean enabled) {
-<span class="nc" id="L171">    this.shutdownOnClose = enabled;</span>
-<span class="nc" id="L172">  }</span>
+<span class="nc" id="L172">    this.shutdownOnClose.set(enabled);</span>
+<span class="nc" id="L173">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

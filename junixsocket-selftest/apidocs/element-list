@@ -6,6 +6,7 @@ org.newsclub.net.unix.darwin.system
 org.newsclub.net.unix.domain
 org.newsclub.net.unix.java
 org.newsclub.net.unix.jep380
+org.newsclub.net.unix.memory
 org.newsclub.net.unix.rmi
 org.newsclub.net.unix.selftest
 org.newsclub.net.unix.selftest.apps

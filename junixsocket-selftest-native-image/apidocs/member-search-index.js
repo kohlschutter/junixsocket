@@ -1,1 +1,1 @@
-memberSearchIndex = [{"p":"org.newsclub.net.unix.selftest.nativeimage","c":"Main","l":"main(String[])","u":"main(java.lang.String[])"}];updateSearchResults();
+memberSearchIndex = [{"p":"org.newsclub.net.unix.selftest.nativeimage","c":"Main","l":"main(String[])","u":"main(java.lang.String[])","k":"6"}];updateSearchResults();

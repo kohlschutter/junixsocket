@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.newsclub.net.unix.demo.jpackagejlink","l":"DemoMainClass"}];updateSearchResults();
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html","k":"18"},{"p":"org.newsclub.net.unix.demo.jpackagejlink","l":"DemoMainClass"}];updateSearchResults();

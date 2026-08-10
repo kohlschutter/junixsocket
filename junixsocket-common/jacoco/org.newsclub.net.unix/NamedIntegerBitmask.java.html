@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NamedIntegerBitmask.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">NamedIntegerBitmask.java</span></div><h1>NamedIntegerBitmask.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -103,7 +103,7 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
    * @param other The other flag / flag set to merge.
    * @return An instance combining both.
    */
-  @SuppressWarnings({&quot;PMD.ShortMethodName&quot;, &quot;null&quot;})
+  @SuppressWarnings({&quot;null&quot;})
   protected final T combineWith(T[] allFlags, T flagsNone, Constructor&lt;@NonNull T&gt; constr,
       T other) {
 <span class="nc" id="L109">    return resolve(allFlags, flagsNone, constr, value() | other.value());</span>
@@ -115,7 +115,6 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
    * @param other The other flag / flag set.
    * @return An instance combining both.
    */
-  @SuppressWarnings(&quot;PMD.ShortMethodName&quot;)
   public abstract T combineWith(T other);
 
   /**
@@ -148,23 +147,23 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
   @SuppressWarnings({&quot;null&quot;, &quot;unchecked&quot;})
   protected static final &lt;T extends NamedIntegerBitmask&lt;T&gt;&gt; T resolve(T[] allFlags, T flagsNone,
       Constructor&lt;T&gt; constr, int v) {
-<span class="nc bnc" id="L151" title="All 2 branches missed.">    if (v == 0) {</span>
-<span class="nc" id="L152">      return flagsNone;</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">    if (v == 0) {</span>
+<span class="nc" id="L151">      return flagsNone;</span>
     }
 
-<span class="nc" id="L155">    List&lt;T&gt; flags = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L156" title="All 2 branches missed.">    for (T flag : allFlags) {</span>
-<span class="nc" id="L157">      int val = flag.value();</span>
-<span class="nc bnc" id="L158" title="All 2 branches missed.">      if (val == v) {</span>
-<span class="nc" id="L159">        return flag;</span>
+<span class="nc" id="L154">    List&lt;T&gt; flags = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">    for (T flag : allFlags) {</span>
+<span class="nc" id="L156">      int val = flag.value();</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">      if (val == v) {</span>
+<span class="nc" id="L158">        return flag;</span>
       }
-<span class="nc bnc" id="L161" title="All 2 branches missed.">      if ((v &amp; val) == val) {</span>
-<span class="nc" id="L162">        flags.add(flag);</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">      if ((v &amp; val) == val) {</span>
+<span class="nc" id="L161">        flags.add(flag);</span>
       }
     }
 
-<span class="nc" id="L166">    return resolve(allFlags, flagsNone, constr, flags.toArray((T[]) Array.newInstance(flagsNone</span>
-<span class="nc" id="L167">        .getClass(), flags.size())));</span>
+<span class="nc" id="L165">    return resolve(allFlags, flagsNone, constr, flags.toArray((T[]) Array.newInstance(flagsNone</span>
+<span class="nc" id="L166">        .getClass(), flags.size())));</span>
   }
 
   /**
@@ -179,31 +178,31 @@ public abstract class NamedIntegerBitmask&lt;T extends NamedIntegerBitmask&lt;T&
    */
   protected static final &lt;T extends NamedIntegerBitmask&lt;T&gt;&gt; T resolve(T[] allFlags, T flagsNone,
       Constructor&lt;T&gt; constr, @NonNull T[] setFlags) {
-<span class="nc" id="L182">    int flags = 0;</span>
-<span class="nc" id="L183">    int numFlagsSet = 0;</span>
+<span class="nc" id="L181">    int flags = 0;</span>
+<span class="nc" id="L182">    int numFlagsSet = 0;</span>
     @Nullable
-<span class="nc" id="L185">    T lastFlagSet = null;</span>
-<span class="nc bnc" id="L186" title="All 2 branches missed.">    if (setFlags != null) {</span>
-<span class="nc bnc" id="L187" title="All 2 branches missed.">      for (T flag : setFlags) {</span>
-<span class="nc" id="L188">        flags |= flag.value();</span>
-<span class="nc" id="L189">        lastFlagSet = flag;</span>
-<span class="nc" id="L190">        numFlagsSet++;</span>
+<span class="nc" id="L184">    T lastFlagSet = null;</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">    if (setFlags != null) {</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">      for (T flag : setFlags) {</span>
+<span class="nc" id="L187">        flags |= flag.value();</span>
+<span class="nc" id="L188">        lastFlagSet = flag;</span>
+<span class="nc" id="L189">        numFlagsSet++;</span>
       }
     }
-<span class="nc bnc" id="L193" title="All 2 branches missed.">    if (flags == 0) {</span>
-<span class="nc" id="L194">      return flagsNone;</span>
-<span class="nc bnc" id="L195" title="All 4 branches missed.">    } else if (numFlagsSet == 1 &amp;&amp; lastFlagSet != null) {</span>
-<span class="nc" id="L196">      return lastFlagSet;</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">    if (flags == 0) {</span>
+<span class="nc" id="L193">      return flagsNone;</span>
+<span class="nc bnc" id="L194" title="All 4 branches missed.">    } else if (numFlagsSet == 1 &amp;&amp; lastFlagSet != null) {</span>
+<span class="nc" id="L195">      return lastFlagSet;</span>
     }
 
-<span class="nc" id="L199">    StringBuilder sb = new StringBuilder();</span>
-<span class="nc bnc" id="L200" title="All 2 branches missed.">    for (T flag : setFlags) {</span>
-<span class="nc" id="L201">      sb.append(flag.name());</span>
-<span class="nc" id="L202">      sb.append(',');</span>
+<span class="nc" id="L198">    StringBuilder sb = new StringBuilder();</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">    for (T flag : setFlags) {</span>
+<span class="nc" id="L200">      sb.append(flag.name());</span>
+<span class="nc" id="L201">      sb.append(',');</span>
     }
-<span class="nc" id="L204">    sb.setLength(sb.length() - 1);</span>
+<span class="nc" id="L203">    sb.setLength(sb.length() - 1);</span>
 
-<span class="nc" id="L206">    return constr.newInstance(sb.toString(), flags);</span>
+<span class="nc" id="L205">    return constr.newInstance(sb.toString(), flags);</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

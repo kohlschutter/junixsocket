@@ -1,3 +1,14 @@
 module:org.newsclub.net.unix.demo
+org.newsclub.net.mysql.demo
+org.newsclub.net.unix.demo
+org.newsclub.net.unix.demo.client
+org.newsclub.net.unix.demo.jdbc
+org.newsclub.net.unix.demo.mina
+org.newsclub.net.unix.demo.nanohttpd
+org.newsclub.net.unix.demo.netty
+org.newsclub.net.unix.demo.okhttp
+org.newsclub.net.unix.demo.rmi
 org.newsclub.net.unix.demo.rmi.fd
 org.newsclub.net.unix.demo.rmi.services
+org.newsclub.net.unix.demo.server
+org.newsclub.net.unix.demo.ssl

@@ -1,1 +1,1 @@
-typeSearchIndex = [{"p":"org.newsclub.net.mysql","l":"AFUNIXDatabaseSocketFactory"},{"p":"org.newsclub.net.mysql","l":"AFUNIXDatabaseSocketFactoryCJ"},{"l":"All Classes and Interfaces","u":"allclasses-index.html"}];updateSearchResults();
+typeSearchIndex = [{"p":"org.newsclub.net.mysql","l":"AFUNIXDatabaseSocketFactory"},{"p":"org.newsclub.net.mysql","l":"AFUNIXDatabaseSocketFactoryCJ"},{"l":"All Classes and Interfaces","u":"allclasses-index.html","k":"18"}];updateSearchResults();

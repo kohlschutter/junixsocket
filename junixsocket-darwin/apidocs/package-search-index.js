@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"org.newsclub.net.unix.darwin","l":"org.newsclub.net.unix.darwin.system"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"m":"org.newsclub.net.unix.darwin","l":"org.newsclub.net.unix.darwin.system"}];updateSearchResults();

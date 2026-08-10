@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RemoteFileInput.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-rmi</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.rmi</a> &gt; <span class="el_source">RemoteFileInput.java</span></div><h1>RemoteFileInput.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * A specialized subclass of {@link RemoteFileDescriptorBase}, specifically for
  * {@link FileInputStream}s.
@@ -38,8 +40,8 @@ public final class RemoteFileInput extends RemoteFileDescriptorBase&lt;FileInput
    * @see #readExternal(ObjectInput)
    */
   public RemoteFileInput() {
-<span class="fc" id="L41">    super();</span>
-<span class="fc" id="L42">  }</span>
+<span class="fc" id="L43">    super();</span>
+<span class="fc" id="L44">  }</span>
 
   /**
    * Creates a new {@link RemoteFileInput} instance, encapsulating a {@link FileInputStream} so that
@@ -51,9 +53,9 @@ public final class RemoteFileInput extends RemoteFileDescriptorBase&lt;FileInput
    */
   public RemoteFileInput(AFUNIXRMISocketFactory socketFactory, FileInputStream fin)
       throws IOException {
-<span class="fc" id="L54">    super(socketFactory, fin, fin.getFD(), RemoteFileDescriptorBase.MAGIC_VALUE_MASK</span>
+<span class="fc" id="L56">    super(socketFactory, fin, fin.getFD(), RemoteFileDescriptorBase.MAGIC_VALUE_MASK</span>
         | RemoteFileDescriptorBase.BIT_READABLE);
-<span class="fc" id="L56">  }</span>
+<span class="fc" id="L58">  }</span>
 
   /**
    * Returns a FileInputStream for the given instance. This either is the actual instance provided
@@ -63,25 +65,26 @@ public final class RemoteFileInput extends RemoteFileDescriptorBase&lt;FileInput
    * @throws IOException if the operation fails.
    */
   public FileInputStream asFileInputStream() throws IOException {
-<span class="pc bpc" id="L66" title="1 of 2 branches missed.">    if ((getMagicValue() &amp; RemoteFileDescriptorBase.BIT_READABLE) == 0) {</span>
-<span class="nc" id="L67">      throw new IOException(&quot;FileDescriptor is not readable&quot;);</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">    if ((getMagicValue() &amp; RemoteFileDescriptorBase.BIT_READABLE) == 0) {</span>
+<span class="nc" id="L69">      throw new IOException(&quot;FileDescriptor is not readable&quot;);</span>
     }
 
-<span class="fc" id="L70">    return resource.accumulateAndGet(null, (prev, x) -&gt; {</span>
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">      if (prev != null) {</span>
-<span class="nc" id="L72">        return prev;</span>
+<span class="fc" id="L72">    return resource.accumulateAndGet(null, (prev, x) -&gt; {</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">      if (prev != null) {</span>
+<span class="nc" id="L74">        return prev;</span>
       }
-<span class="fc" id="L74">      return new FileInputStream(getFileDescriptor()) {</span>
+<span class="fc" id="L76">      return new FileInputStream(getFileDescriptor()) {</span>
         @Override
+        @SuppressFBWarnings(&quot;USO_UNSAFE_OBJECT_SYNCHRONIZATION&quot;)
         public void close() throws IOException {
-<span class="fc" id="L77">          super.close();</span>
+<span class="fc" id="L80">          super.close();</span>
 
-<span class="fc" id="L79">          synchronized (RemoteFileInput.this) {</span>
-<span class="fc" id="L80">            RemoteFileInput.this.close();</span>
-<span class="fc" id="L81">          }</span>
-<span class="fc" id="L82">        }</span>
+<span class="fc" id="L82">          synchronized (RemoteFileInput.this) {</span>
+<span class="fc" id="L83">            RemoteFileInput.this.close();</span>
+<span class="fc" id="L84">          }</span>
+<span class="fc" id="L85">        }</span>
       };
     });
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

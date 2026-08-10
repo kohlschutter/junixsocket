@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"com.kohlschutter.junixsocket.nativecustom","l":"org.newsclub.lib.junixsocket.custom"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"m":"com.kohlschutter.junixsocket.nativecustom","l":"org.newsclub.lib.junixsocket.custom"}];updateSearchResults();

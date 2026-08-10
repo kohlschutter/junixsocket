@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFSYSTEMSocketAddress.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSYSTEMSocketAddress.java</span></div><h1>AFSYSTEMSocketAddress.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -330,80 +330,77 @@ public final class AFSYSTEMSocketAddress extends AFSocketAddress {
    * @return The address.
    * @throws SocketException if the operation fails.
    */
-  @SuppressWarnings({
-      &quot;PMD.CognitiveComplexity&quot;, &quot;PMD.CyclomaticComplexity&quot;, &quot;PMD.ExcessiveMethodLength&quot;,
-      &quot;PMD.NcssCount&quot;, &quot;PMD.NPathComplexity&quot;, &quot;PMD.ShortMethodName&quot;})
+  @SuppressWarnings({&quot;PMD.ShortMethodName&quot;})
   public static AFSYSTEMSocketAddress of(URI uri, int overridePort) throws SocketException {
-<span class="pc bpc" id="L337" title="1 of 2 branches missed.">    switch (uri.getScheme()) {</span>
+<span class="pc bpc" id="L335" title="1 of 2 branches missed.">    switch (uri.getScheme()) {</span>
       case &quot;afsystem&quot;:
-<span class="fc" id="L339">        break;</span>
+<span class="fc" id="L337">        break;</span>
       default:
-<span class="nc" id="L341">        throw new SocketException(&quot;Unsupported URI scheme: &quot; + uri.getScheme());</span>
+<span class="nc" id="L339">        throw new SocketException(&quot;Unsupported URI scheme: &quot; + uri.getScheme());</span>
     }
 
     String host;
-<span class="pc bpc" id="L345" title="1 of 4 branches missed.">    if ((host = uri.getHost()) == null || host.isEmpty()) {</span>
-<span class="fc" id="L346">      String ssp = uri.getSchemeSpecificPart();</span>
-<span class="pc bpc" id="L347" title="2 of 4 branches missed.">      if (ssp == null || !ssp.startsWith(&quot;//&quot;)) {</span>
-<span class="nc" id="L348">        throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
+<span class="pc bpc" id="L343" title="1 of 4 branches missed.">    if ((host = uri.getHost()) == null || host.isEmpty()) {</span>
+<span class="fc" id="L344">      String ssp = uri.getSchemeSpecificPart();</span>
+<span class="pc bpc" id="L345" title="2 of 4 branches missed.">      if (ssp == null || !ssp.startsWith(&quot;//&quot;)) {</span>
+<span class="nc" id="L346">        throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
       }
-<span class="fc" id="L350">      ssp = ssp.substring(2);</span>
-<span class="fc" id="L351">      int i = ssp.indexOf('/');</span>
-<span class="fc bfc" id="L352" title="All 2 branches covered.">      host = i == -1 ? ssp : ssp.substring(0, i);</span>
-<span class="pc bpc" id="L353" title="1 of 2 branches missed.">      if (host.isEmpty()) {</span>
-<span class="nc" id="L354">        throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
+<span class="fc" id="L348">      ssp = ssp.substring(2);</span>
+<span class="fc" id="L349">      int i = ssp.indexOf('/');</span>
+<span class="fc bfc" id="L350" title="All 2 branches covered.">      host = i == -1 ? ssp : ssp.substring(0, i);</span>
+<span class="pc bpc" id="L351" title="1 of 2 branches missed.">      if (host.isEmpty()) {</span>
+<span class="nc" id="L352">        throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
       }
     }
 
-<span class="fc" id="L358">    ByteBuffer bb = ByteBuffer.allocate(8 * 4);</span>
-<span class="fc bfc" id="L359" title="All 2 branches covered.">    for (String p : host.split(&quot;\\.&quot;)) {</span>
+<span class="fc" id="L356">    ByteBuffer bb = ByteBuffer.allocate(8 * 4);</span>
+<span class="fc bfc" id="L357" title="All 2 branches covered.">    for (String p : host.split(&quot;\\.&quot;)) {</span>
       int v;
       try {
-<span class="fc" id="L362">        v = parseUnsignedInt(p, 10);</span>
-<span class="fc" id="L363">      } catch (NumberFormatException e) {</span>
-<span class="fc" id="L364">        throw (SocketException) new SocketException(&quot;Unsupported URI: &quot; + uri).initCause(e);</span>
-<span class="fc" id="L365">      }</span>
-<span class="fc" id="L366">      bb.putInt(v);</span>
+<span class="fc" id="L360">        v = parseUnsignedInt(p, 10);</span>
+<span class="fc" id="L361">      } catch (NumberFormatException e) {</span>
+<span class="fc" id="L362">        throw (SocketException) new SocketException(&quot;Unsupported URI: &quot; + uri).initCause(e);</span>
+<span class="fc" id="L363">      }</span>
+<span class="fc" id="L364">      bb.putInt(v);</span>
     }
-<span class="fc" id="L368">    bb.flip();</span>
-<span class="pc bpc" id="L369" title="1 of 2 branches missed.">    if (bb.remaining() &gt; 8 * 4) {</span>
-<span class="nc" id="L370">      throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
+<span class="fc" id="L366">    bb.flip();</span>
+<span class="pc bpc" id="L367" title="1 of 2 branches missed.">    if (bb.remaining() &gt; 8 * 4) {</span>
+<span class="nc" id="L368">      throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
     }
-<span class="fc" id="L372">    /* SysAddr sa = */ SysAddr.ofValue(bb.getInt());</span>
-<span class="fc" id="L373">    /* int id = */ bb.getInt();</span>
-<span class="fc" id="L374">    /* int unit = */ bb.getInt();</span>
+<span class="fc" id="L370">    /* SysAddr sa = */ SysAddr.ofValue(bb.getInt());</span>
+<span class="fc" id="L371">    /* int id = */ bb.getInt();</span>
+<span class="fc" id="L372">    /* int unit = */ bb.getInt();</span>
 
-<span class="fc bfc" id="L376" title="All 2 branches covered.">    while (bb.remaining() &gt; 0) {</span>
-<span class="pc bpc" id="L377" title="1 of 2 branches missed.">      if (bb.getInt() != 0) {</span>
-<span class="nc" id="L378">        throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
+<span class="fc bfc" id="L374" title="All 2 branches covered.">    while (bb.remaining() &gt; 0) {</span>
+<span class="pc bpc" id="L375" title="1 of 2 branches missed.">      if (bb.getInt() != 0) {</span>
+<span class="nc" id="L376">        throw new SocketException(&quot;Unsupported URI: &quot; + uri);</span>
       }
     }
 
-<span class="fc" id="L382">    return</span>
+<span class="fc" id="L380">    return</span>
 
-<span class="fc" id="L384">    resolveAddress(bb.array(), uri.getPort(), addressFamily());</span>
+<span class="fc" id="L382">    resolveAddress(bb.array(), uri.getPort(), addressFamily());</span>
   }
 
   @Override
-  @SuppressWarnings({&quot;PMD.CognitiveComplexity&quot;, &quot;PMD.CompareObjectsWithEquals&quot;})
   public URI toURI(String scheme, URI template) throws IOException {
-<span class="pc bpc" id="L390" title="1 of 2 branches missed.">    switch (scheme) {</span>
+<span class="pc bpc" id="L387" title="1 of 2 branches missed.">    switch (scheme) {</span>
       case &quot;afsystem&quot;:
-<span class="fc" id="L392">        break;</span>
+<span class="fc" id="L389">        break;</span>
       default:
-<span class="nc" id="L394">        return super.toURI(scheme, template);</span>
+<span class="nc" id="L391">        return super.toURI(scheme, template);</span>
     }
 
-<span class="fc" id="L397">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
-<span class="fc" id="L398">    StringBuilder sb = new StringBuilder();</span>
-<span class="fc bfc" id="L399" title="All 2 branches covered.">    while (bb.remaining() &gt; 0) {</span>
-<span class="fc" id="L400">      sb.append(toUnsignedString(bb.getInt()));</span>
-<span class="fc bfc" id="L401" title="All 2 branches covered.">      if (bb.remaining() &gt; 0) {</span>
-<span class="fc" id="L402">        sb.append('.');</span>
+<span class="fc" id="L394">    ByteBuffer bb = ByteBuffer.wrap(getBytes());</span>
+<span class="fc" id="L395">    StringBuilder sb = new StringBuilder();</span>
+<span class="fc bfc" id="L396" title="All 2 branches covered.">    while (bb.remaining() &gt; 0) {</span>
+<span class="fc" id="L397">      sb.append(toUnsignedString(bb.getInt()));</span>
+<span class="fc bfc" id="L398" title="All 2 branches covered.">      if (bb.remaining() &gt; 0) {</span>
+<span class="fc" id="L399">        sb.append('.');</span>
       }
     }
 
-<span class="fc" id="L406">    return new HostAndPort(sb.toString(), getPort()).toURI(scheme, template);</span>
+<span class="fc" id="L403">    return new HostAndPort(sb.toString(), getPort()).toURI(scheme, template);</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

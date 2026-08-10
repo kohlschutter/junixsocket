@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1727101320413">
-    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.10.1"/>
+<licensePluginReport goal="CHECK" timestamp="1786368716291">
+    <module artifactId="junixsocket-common" groupId="com.kohlschutter.junixsocket" version="2.11.0"/>
     <files>
         <file path="src/main/java-unresolved-properties/org/newsclub/net/unix/BuildProperties.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamily.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFAddressFamilyConfig.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/AFConsumer.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFCore.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFDatagramChannel.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFDatagramSocket.java" result="PRESENT"/>
@@ -81,15 +82,18 @@
         <file path="src/main/java/org/newsclub/net/unix/AFUNIXSocketPair.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFVSOCKSocketAddress.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AFVSOCKSocketImplExtensions.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/AddressAlreadyInUseSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AddressUnavailableSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/AncillaryDataSupport.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/BrokenPipeSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/CleanableState.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/CloseablePair.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/Closeables.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/ConnectionRefusedSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/ConnectionResetSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/DatagramSocketImplShim.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/DatagramSocketShim.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/FileChannelSupplier.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/FileDescriptorAccess.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/FileDescriptorCast.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/HostAndPort.java" result="PRESENT"/>
@@ -99,13 +103,17 @@
         <file path="src/main/java/org/newsclub/net/unix/Java7Util.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/KnownJavaBugIOException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/MapValueSet.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/MemoryImplUtilInternal.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NamedInteger.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NamedIntegerBitmask.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NativeLibraryLoader.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/NativeLogging.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NativeUnixSocket.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/NetworkUnreachableSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NoSuchDeviceSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NotBoundSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/NotConnectedSocketException.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/OperationNotSupportedIOException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/OperationNotSupportedSocketException.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/PathUtil.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/RAFChannelProvider.java" result="PRESENT"/>
@@ -118,6 +126,7 @@
         <file path="src/main/java/org/newsclub/net/unix/SocketImplShim.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/SocketOptionsMapper.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/StackTraceUtil.java" result="PRESENT"/>
+        <file path="src/main/java/org/newsclub/net/unix/TempFileUtil.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/ThreadUtil.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/UngrowableSet.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/Unsafe.java" result="PRESENT"/>
@@ -162,7 +171,9 @@
         <file path="src/test/java/org/newsclub/net/unix/InetAddressTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/InterruptIssue158Test.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/InterruptTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/Issue171TestServer.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/MassiveParallelTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/MulticastThroughputTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/PipeTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/ReadWriteTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/SelectorTest.java" result="PRESENT"/>
@@ -211,6 +222,8 @@
         <file path="src/test/java/org/newsclub/net/unix/domain/ThroughputTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/domain/ThroughputTestShim.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/domain/UnixDomainSocketAddressTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/domain/VirtualThreadConnectTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/domain/VirtualThreadPollerNaiveDeadlockTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/AcceptTimeoutTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/EndOfFileJavaTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/InterruptIssue158Test.java" result="PRESENT"/>
@@ -218,6 +231,7 @@
         <file path="src/test/java/org/newsclub/net/unix/java/JavaAddressSpecifics.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/JavaInetStackCondition.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/JavaInetStackRequirement.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/java/MulticastThroughputTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/SelectorTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/SoTimeoutTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/java/SocketChannelTest.java" result="PRESENT"/>
@@ -227,6 +241,7 @@
         <file path="src/test/java/org/newsclub/net/unix/jep380/SocketChannelTest.java" result="PRESENT"/>
         <file path="src/test/java15/org/newsclub/net/unix/domain/ThroughputTestShim.java" result="PRESENT"/>
         <file path="src/test/java15/org/newsclub/net/unix/domain/UnixDomainSocketAddressTest.java" result="PRESENT"/>
+        <file path="src/test/java20/org/newsclub/net/unix/domain/VirtualThreadConnectTest.java" result="PRESENT"/>
         <file path="src/test/java8/org/newsclub/net/unix/FinalizeTest.java" result="PRESENT"/>
         <file path="src/test/java8/org/newsclub/net/unix/StandardSocketOptionsTest.java" result="PRESENT"/>
         <file path="src/test/java8/org/newsclub/net/unix/domain/FinalizeTest.java" result="PRESENT"/>

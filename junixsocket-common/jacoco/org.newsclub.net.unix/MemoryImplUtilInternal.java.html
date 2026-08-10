@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MemoryImplUtilInternal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">MemoryImplUtilInternal.java</span></div><h1>MemoryImplUtilInternal.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2026 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+
+/**
+ * Internal class, to be used by junixsocket-memory only.
+ *
+ * @author Christian Kohlschütter
+ */
+@SuppressWarnings(&quot;doclint&quot;)
+public final class MemoryImplUtilInternal {
+  public static final int S_IRUSR = NativeUnixSocket.S_IRUSR;
+  public static final int S_IWUSR = NativeUnixSocket.S_IWUSR;
+  public static final int S_IRGRP = NativeUnixSocket.S_IRGRP;
+  public static final int S_IWGRP = NativeUnixSocket.S_IWGRP;
+  public static final int S_IROTH = NativeUnixSocket.S_IROTH;
+  public static final int S_IWOTH = NativeUnixSocket.S_IWOTH;
+
+  public static final int MOPT_RDONLY = NativeUnixSocket.MOPT_RDONLY;
+  public static final int MOPT_CREAT = NativeUnixSocket.MOPT_CREAT;
+  public static final int MOPT_EXCL = NativeUnixSocket.MOPT_EXCL;
+
+<span class="nc" id="L42">  private static final long SHM_ALLOC_SIZE = NativeUnixSocket.sharedMemoryAllocationSize();</span>
+
+  // FIXME: POSIX leaves the behavior of the combination of O_RDONLY and
+  // O_TRUNC unspecified. On Linux, this will successfully truncate
+  // an existing shared memory object—this may not be so on other UNIX
+  // systems.
+  public static final int MOPT_TRUNC = NativeUnixSocket.MOPT_TRUNC;
+  public static final int MOPT_SEALABLE = NativeUnixSocket.MOPT_SEALABLE;
+  public static final int MOPT_SECRET = NativeUnixSocket.MOPT_SECRET;
+  public static final int MOPT_UNLINK_UPON_CLOSE = NativeUnixSocket.MOPT_UNLINK_UPON_CLOSE;
+
+  public static final int MMODE_READ = NativeUnixSocket.MMODE_READ;
+  public static final int MMODE_WRITE = NativeUnixSocket.MMODE_WRITE;
+  public static final int MMODE_READ_WRITE = NativeUnixSocket.MMODE_READ
+      | NativeUnixSocket.MMODE_WRITE;
+  public static final int MMODE_COPY_ON_WRITE = NativeUnixSocket.MMODE_COPY_ON_WRITE;
+  public static final int MMODE_SYNC = NativeUnixSocket.MMODE_SYNC;
+  public static final int MMODE_FIXED = NativeUnixSocket.MMODE_FIXED;
+  public static final int MMODE_ANONYMOUS = NativeUnixSocket.MMODE_ANONYMOUS;
+  public static final int MMODE_PLACEHOLDER = NativeUnixSocket.MMODE_PLACEHOLDER;
+
+  public static final int MADV_NORMAL = NativeUnixSocket.MADV_NORMAL;
+  public static final int MADV_FREE = NativeUnixSocket.MADV_FREE;
+  public static final int MADV_FREE_NOW = NativeUnixSocket.MADV_FREE_NOW;
+  public static final int MADV_WILLNEED = NativeUnixSocket.MADV_WILLNEED;
+  public static final int MADV_DONTNEED = NativeUnixSocket.MADV_DONTNEED;
+
+<span class="nc" id="L69">  private static final boolean NEED_TO_TRACK_SHM = NativeUnixSocket.needToTrackSharedMemory();</span>
+<span class="nc" id="L70">  private static final boolean FUTEX_INTER_PROCESS = NativeUnixSocket.futexIsInterProcess();</span>
+
+<span class="nc" id="L72">  MemoryImplUtilInternal() {</span>
+<span class="nc" id="L73">  }</span>
+
+  public void shmUnlink(String name) throws IOException {
+<span class="nc bnc" id="L76" title="All 2 branches missed.">    if (name != null) {</span>
+<span class="nc" id="L77">      NativeUnixSocket.shmUnlink(name);</span>
+    }
+<span class="nc" id="L79">  }</span>
+
+  public long shmOpen(FileDescriptor fdOut, String name, long truncateLength, int mode, int options)
+      throws IOException {
+<span class="nc" id="L83">    return NativeUnixSocket.shmOpen(fdOut, name, truncateLength, mode, options);</span>
+  }
+
+  public void close(FileDescriptor fd) throws IOException {
+<span class="nc" id="L87">    NativeUnixSocket.close(fd);</span>
+<span class="nc" id="L88">  }</span>
+
+  public long getSharedMemoryAllocationSize() {
+<span class="nc" id="L91">    return SHM_ALLOC_SIZE;</span>
+  }
+
+  public ByteBuffer mmapShm(Object arenaSegment, FileDescriptor fd, long offset, long length,
+      int mmode, int duplicates) throws IOException {
+<span class="nc bnc" id="L96" title="All 2 branches missed.">    if (offset &lt; 0) {</span>
+<span class="nc" id="L97">      throw new IllegalArgumentException(&quot;offset&quot;);</span>
+    }
+<span class="nc bnc" id="L99" title="All 2 branches missed.">    if (length &lt; 0) {</span>
+<span class="nc" id="L100">      throw new IllegalArgumentException(&quot;length&quot;);</span>
+    }
+<span class="nc bnc" id="L102" title="All 2 branches missed.">    if (duplicates &lt; 0) {</span>
+<span class="nc" id="L103">      throw new IllegalArgumentException(&quot;duplicates&quot;);</span>
+    }
+
+<span class="nc" id="L106">    return NativeUnixSocket.mmapShm(arenaSegment, fd, offset, length, mmode, duplicates);</span>
+  }
+
+  public ByteBuffer mappedBuffer(long address, long length, FileDescriptor fdRef, int mmode,
+      Object arenaSegment) throws IOException {
+<span class="nc" id="L111">    return NativeUnixSocket.mappedBuffer(address, length, fdRef, mmode, arenaSegment);</span>
+  }
+
+  public long mmap(long address, FileDescriptor fdObj, long offset, long length, int mmode,
+      FileDescriptor extraFd) throws IOException {
+<span class="nc" id="L116">    return NativeUnixSocket.mmap(address, fdObj, offset, length, mmode, extraFd);</span>
+  }
+
+  public void unmap(long address, long byteSize, int duplicates, boolean ignoreError)
+      throws IOException {
+<span class="nc" id="L121">    NativeUnixSocket.unmap(address, byteSize, duplicates, ignoreError);</span>
+<span class="nc" id="L122">  }</span>
+
+  public void madvise(long address, long byteSize, int madv, boolean ignoreError)
+      throws IOException {
+<span class="nc" id="L126">    NativeUnixSocket.madvise(address, byteSize, madv, ignoreError);</span>
+<span class="nc" id="L127">  }</span>
+
+  public boolean futexWait(long address, int ifValue, int timeoutMillis) throws IOException {
+    try {
+<span class="nc" id="L131">      return NativeUnixSocket.futexWait(address, ifValue, timeoutMillis);</span>
+<span class="nc" id="L132">    } catch (OperationNotSupportedIOException e) {</span>
+<span class="nc" id="L133">      throw new UnsupportedOperationException(&quot;futexWait&quot;, e);</span>
+    }
+  }
+
+  public boolean futexWake(long address, boolean wakeAll) throws IOException {
+    try {
+<span class="nc" id="L139">      return NativeUnixSocket.futexWake(address, wakeAll);</span>
+<span class="nc" id="L140">    } catch (OperationNotSupportedIOException e) {</span>
+<span class="nc" id="L141">      throw new UnsupportedOperationException(&quot;futexWake&quot;, e);</span>
+    }
+  }
+
+  public boolean needToTrackSharedMemory() {
+<span class="nc" id="L146">    return NEED_TO_TRACK_SHM;</span>
+  }
+
+  public long sizeOfSharedMemory(FileDescriptor fd) throws IOException {
+<span class="nc" id="L150">    return NativeUnixSocket.sizeOfSharedMemory(fd);</span>
+  }
+
+  public boolean futexIsInterProcess() {
+<span class="nc" id="L154">    return FUTEX_INTER_PROCESS;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

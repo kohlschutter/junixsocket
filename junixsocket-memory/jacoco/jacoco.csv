@@ -1,0 +1,9 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+junixsocket-memory,org.newsclub.net.unix.memory,SharedMemoryCleaner,46,270,12,30,17,71,10,19,0,8
+junixsocket-memory,org.newsclub.net.unix.memory,Futex,10,16,4,2,3,3,3,1,0,1
+junixsocket-memory,org.newsclub.net.unix.memory,SharedMemory,100,585,22,57,23,143,23,63,2,42
+junixsocket-memory,org.newsclub.net.unix.memory,SharedMemoryOption,0,42,0,0,0,9,0,3,0,3
+junixsocket-memory,org.newsclub.net.unix.memory,Futex32.Mutex32,10,101,8,12,5,26,9,7,1,5
+junixsocket-memory,org.newsclub.net.unix.memory,MemorySeal,33,0,0,0,6,0,1,0,1,0
+junixsocket-memory,org.newsclub.net.unix.memory,MappedMemory,46,168,7,9,8,33,9,11,2,10
+junixsocket-memory,org.newsclub.net.unix.memory,Futex32,17,88,4,8,3,20,4,11,1,8

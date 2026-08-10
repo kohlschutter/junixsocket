@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SNIHostnameCapture.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-ssl</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.ssl</a> &gt; <span class="el_source">SNIHostnameCapture.java</span></div><h1>SNIHostnameCapture.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,6 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.StandardConstants;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * Helper class to simplify retrieving the requested SNI hostname sent from an SSL client to an SSL
  * server.
@@ -45,22 +43,22 @@ public final class SNIHostnameCapture {
   /**
    * {@link SNIMatcher} that accepts and matches &quot;any hostname&quot;.
    */
-<span class="fc" id="L48">  public static final SNIMatcher ACCEPT_ANY_HOSTNAME = new SNIMatcher(</span>
-<span class="fc" id="L49">      StandardConstants.SNI_HOST_NAME) {</span>
+<span class="fc" id="L46">  public static final SNIMatcher ACCEPT_ANY_HOSTNAME = new SNIMatcher(</span>
+<span class="fc" id="L47">      StandardConstants.SNI_HOST_NAME) {</span>
 
     @Override
     public boolean matches(SNIServerName serverName) {
-<span class="pc bpc" id="L53" title="1 of 2 branches missed.">      return serverName.getType() == StandardConstants.SNI_HOST_NAME;</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">      return serverName.getType() == StandardConstants.SNI_HOST_NAME;</span>
     }
   };
 
-<span class="fc" id="L57">  private final CompletableFuture&lt;String&gt; hostnameFuture = new CompletableFuture&lt;&gt;();</span>
+<span class="fc" id="L55">  private final CompletableFuture&lt;String&gt; hostnameFuture = new CompletableFuture&lt;&gt;();</span>
 
   private final Supplier&lt;String&gt; defaultHostnameSupplier;
 
-<span class="fc" id="L61">  private SNIHostnameCapture(Supplier&lt;String&gt; defaultHostnameSupplier) {</span>
-<span class="fc" id="L62">    this.defaultHostnameSupplier = defaultHostnameSupplier;</span>
-<span class="fc" id="L63">  }</span>
+<span class="fc" id="L59">  private SNIHostnameCapture(Supplier&lt;String&gt; defaultHostnameSupplier) {</span>
+<span class="fc" id="L60">    this.defaultHostnameSupplier = defaultHostnameSupplier;</span>
+<span class="fc" id="L61">  }</span>
 
   /**
    * Configures the given server {@link SSLSocket} to match the given hostname pattern.
@@ -74,7 +72,7 @@ public final class SNIHostnameCapture {
    * @see #ACCEPT_ANY_HOSTNAME
    */
   public static SNIHostnameCapture configure(SSLSocket sslSocket, SNIMatcher hostnameMatcher) {
-<span class="fc" id="L77">    return configure(sslSocket, hostnameMatcher, null);</span>
+<span class="fc" id="L75">    return configure(sslSocket, hostnameMatcher, null);</span>
   }
 
   /**
@@ -92,27 +90,27 @@ public final class SNIHostnameCapture {
    */
   public static SNIHostnameCapture configure(SSLSocket sslSocket, SNIMatcher hostnameMatcher,
       Supplier&lt;String&gt; defaultHostnameSupplier) {
-<span class="fc bfc" id="L95" title="All 2 branches covered.">    SNIHostnameCapture capture = new SNIHostnameCapture(defaultHostnameSupplier == null ? () -&gt; null</span>
-<span class="fc" id="L96">        : defaultHostnameSupplier);</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">    SNIHostnameCapture capture = new SNIHostnameCapture(defaultHostnameSupplier == null ? () -&gt; null</span>
+<span class="fc" id="L94">        : defaultHostnameSupplier);</span>
 
-<span class="fc" id="L98">    sslSocket.addHandshakeCompletedListener((e) -&gt; {</span>
-<span class="fc" id="L99">      capture.set(null);</span>
-<span class="fc" id="L100">    });</span>
+<span class="fc" id="L96">    sslSocket.addHandshakeCompletedListener((e) -&gt; {</span>
+<span class="fc" id="L97">      capture.set(null);</span>
+<span class="fc" id="L98">    });</span>
 
-<span class="fc" id="L102">    SSLParametersUtil.setSNIMatcher(sslSocket, new CallbackSNIMatcher(hostnameMatcher, (name,</span>
+<span class="fc" id="L100">    SSLParametersUtil.setSNIMatcher(sslSocket, new CallbackSNIMatcher(hostnameMatcher, (name,</span>
         matches) -&gt; {
-<span class="fc bfc" id="L104" title="All 4 branches covered.">      if (matches &amp;&amp; name instanceof SNIHostName) {</span>
-<span class="fc" id="L105">        capture.set(((SNIHostName) name).getAsciiName());</span>
+<span class="fc bfc" id="L102" title="All 4 branches covered.">      if (matches &amp;&amp; name instanceof SNIHostName) {</span>
+<span class="fc" id="L103">        capture.set(((SNIHostName) name).getAsciiName());</span>
       }
-<span class="fc" id="L107">    }));</span>
+<span class="fc" id="L105">    }));</span>
 
-<span class="fc" id="L109">    return capture;</span>
+<span class="fc" id="L107">    return capture;</span>
   }
 
   // @ExcludeFromCodeCoverageGeneratedReport(reason = &quot;if-statement is just a precaution&quot;)
   private void set(String hostname) {
-<span class="fc" id="L114">    hostnameFuture.complete(hostname);</span>
-<span class="fc" id="L115">  }</span>
+<span class="fc" id="L112">    hostnameFuture.complete(hostname);</span>
+<span class="fc" id="L113">  }</span>
 
   /**
    * Checks if a hostname can be returned by calling {@link #getHostname()} (which most likely means
@@ -126,10 +124,10 @@ public final class SNIHostnameCapture {
    */
   public boolean isComplete(long timeout, TimeUnit unit) throws InterruptedException {
     try {
-<span class="fc" id="L129">      hostnameFuture.get(timeout, unit);</span>
-<span class="fc" id="L130">      return hostnameFuture.isDone();</span>
-<span class="nc" id="L131">    } catch (ExecutionException | TimeoutException e) {</span>
-<span class="nc" id="L132">      return false;</span>
+<span class="fc" id="L127">      hostnameFuture.get(timeout, unit);</span>
+<span class="fc" id="L128">      return hostnameFuture.isDone();</span>
+<span class="nc" id="L129">    } catch (ExecutionException | TimeoutException e) {</span>
+<span class="nc" id="L130">      return false;</span>
     }
   }
 
@@ -140,7 +138,7 @@ public final class SNIHostnameCapture {
    * @return {@code true} if {@link #getHostname()} will not throw an {@link IllegalStateException}.
    */
   public boolean isComplete() {
-<span class="fc" id="L143">    return hostnameFuture.isDone();</span>
+<span class="fc" id="L141">    return hostnameFuture.isDone();</span>
   }
 
   /**
@@ -154,16 +152,15 @@ public final class SNIHostnameCapture {
    * @return The hostname, or {@code null}.
    * @throws IllegalStateException if the method was called before a hostname could be retrieved.
    */
-  @SuppressFBWarnings(&quot;NP_NONNULL_PARAM_VIOLATION&quot;)
   public String getHostname() {
-<span class="fc bfc" id="L159" title="All 2 branches covered.">    if (!isComplete()) {</span>
-<span class="fc" id="L160">      throw new IllegalStateException(&quot;Handshake not yet complete&quot;);</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">    if (!isComplete()) {</span>
+<span class="fc" id="L157">      throw new IllegalStateException(&quot;Handshake not yet complete&quot;);</span>
     }
-<span class="fc" id="L162">    String hn = hostnameFuture.getNow(null);</span>
-<span class="fc bfc" id="L163" title="All 2 branches covered.">    if (hn == null) {</span>
-<span class="fc" id="L164">      return defaultHostnameSupplier.get();</span>
+<span class="fc" id="L159">    String hn = hostnameFuture.getNow(null);</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">    if (hn == null) {</span>
+<span class="fc" id="L161">      return defaultHostnameSupplier.get();</span>
     } else {
-<span class="fc" id="L166">      return hn;</span>
+<span class="fc" id="L163">      return hn;</span>
     }
   }
 
@@ -176,30 +173,31 @@ public final class SNIHostnameCapture {
    * @param socket The socket.
    * @return The hostname (retrieved or fallback).
    */
+  @SuppressWarnings(&quot;PatternMatchingInstanceof&quot;) // ErrorProne
   String getHostnameFromSSLSession(SSLSocket socket,
       Consumer&lt;UnsupportedOperationException&gt; usoCallback) {
-<span class="fc" id="L181">    SSLSession session = socket.getSession();</span>
-<span class="pc bpc" id="L182" title="1 of 2 branches missed.">    if (session instanceof ExtendedSSLSession) {</span>
-<span class="fc" id="L183">      ExtendedSSLSession extSession = (ExtendedSSLSession) session;</span>
+<span class="fc" id="L179">    SSLSession session = socket.getSession();</span>
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">    if (session instanceof ExtendedSSLSession) {</span>
+<span class="fc" id="L181">      ExtendedSSLSession extSession = (ExtendedSSLSession) session;</span>
       try {
-<span class="fc" id="L185">        List&lt;SNIServerName&gt; list = extSession.getRequestedServerNames();</span>
-<span class="pc bpc" id="L186" title="1 of 2 branches missed.">        if (list != null) {</span>
-<span class="fc bfc" id="L187" title="All 2 branches covered.">          for (SNIServerName sn : list) {</span>
-<span class="pc bpc" id="L188" title="1 of 2 branches missed.">            if (sn instanceof SNIHostName) {</span>
-<span class="fc" id="L189">              return ((SNIHostName) sn).getAsciiName();</span>
-<span class="nc bnc" id="L190" title="All 2 branches missed.">            } else if (sn.getType() == StandardConstants.SNI_HOST_NAME) {</span>
-<span class="nc" id="L191">              return new SNIHostName(sn.getEncoded()).getAsciiName();</span>
+<span class="fc" id="L183">        List&lt;SNIServerName&gt; list = extSession.getRequestedServerNames();</span>
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">        if (list != null) {</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">          for (SNIServerName sn : list) {</span>
+<span class="pc bpc" id="L186" title="1 of 2 branches missed.">            if (sn instanceof SNIHostName) {</span>
+<span class="fc" id="L187">              return ((SNIHostName) sn).getAsciiName();</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">            } else if (sn.getType() == StandardConstants.SNI_HOST_NAME) {</span>
+<span class="nc" id="L189">              return new SNIHostName(sn.getEncoded()).getAsciiName();</span>
             }
-<span class="nc" id="L193">          }</span>
+<span class="nc" id="L191">          }</span>
         }
-<span class="fc" id="L195">      } catch (UnsupportedOperationException e) {</span>
+<span class="nc" id="L193">      } catch (UnsupportedOperationException e) {</span>
         // fall through
-<span class="pc bpc" id="L197" title="1 of 2 branches missed.">        if (usoCallback != null) {</span>
-<span class="fc" id="L198">          usoCallback.accept(e);</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        if (usoCallback != null) {</span>
+<span class="nc" id="L196">          usoCallback.accept(e);</span>
         }
-<span class="fc" id="L200">      }</span>
+<span class="fc" id="L198">      }</span>
     }
-<span class="fc" id="L202">    return defaultHostnameSupplier.get();</span>
+<span class="fc" id="L200">    return defaultHostnameSupplier.get();</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

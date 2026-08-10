@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCTopologyEvent.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCTopologyEvent.java</span></div><h1>AFTIPCTopologyEvent.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -192,9 +192,8 @@ public final class AFTIPCTopologyEvent {
    *
    * @return The socket address.
    */
-  @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   public AFTIPCSocketAddress getAddress() {
-<span class="nc" id="L197">    return address;</span>
+<span class="nc" id="L196">    return address;</span>
   }
 
   /**
@@ -204,7 +203,7 @@ public final class AFTIPCTopologyEvent {
    */
   @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
   public AFTIPCTopologySubscription getSubscription() {
-<span class="nc" id="L207">    return subscription;</span>
+<span class="nc" id="L206">    return subscription;</span>
   }
 
   /**
@@ -213,7 +212,7 @@ public final class AFTIPCTopologyEvent {
    * @return {@code true} if this a &quot;published&quot; event.
    */
   public boolean isPublished() {
-<span class="nc bnc" id="L216" title="All 2 branches missed.">    return type == Type.TIPC_PUBLISHED; // NOPMD.CompareObjectsWithEquals</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">    return type == Type.TIPC_PUBLISHED; // NOPMD.CompareObjectsWithEquals</span>
   }
 
   /**
@@ -222,7 +221,7 @@ public final class AFTIPCTopologyEvent {
    * @return {@code true} if this a &quot;withdrawn&quot; event.
    */
   public boolean isWithdrawn() {
-<span class="nc bnc" id="L225" title="All 2 branches missed.">    return type == Type.TIPC_WITHDRAWN; // NOPMD.CompareObjectsWithEquals</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">    return type == Type.TIPC_WITHDRAWN; // NOPMD.CompareObjectsWithEquals</span>
   }
 
   /**
@@ -231,7 +230,7 @@ public final class AFTIPCTopologyEvent {
    * @return {@code true} if this a &quot;timeout&quot; event.
    */
   public boolean isTimeout() {
-<span class="nc bnc" id="L234" title="All 2 branches missed.">    return type == Type.TIPC_SUBSCR_TIMEOUT; // NOPMD.CompareObjectsWithEquals</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">    return type == Type.TIPC_SUBSCR_TIMEOUT; // NOPMD.CompareObjectsWithEquals</span>
   }
 
   /**
@@ -241,7 +240,7 @@ public final class AFTIPCTopologyEvent {
    * @return {@code true} if this a event referring to a &quot;port&quot; subscription.
    */
   public boolean isPort() {
-<span class="nc" id="L244">    return subscription.isPort();</span>
+<span class="nc" id="L243">    return subscription.isPort();</span>
   }
 
   /**
@@ -251,7 +250,7 @@ public final class AFTIPCTopologyEvent {
    * @return {@code true} if this a event referring to a &quot;service&quot; subscription.
    */
   public boolean isService() {
-<span class="nc" id="L254">    return subscription.isService();</span>
+<span class="nc" id="L253">    return subscription.isService();</span>
   }
 
   /**
@@ -261,26 +260,26 @@ public final class AFTIPCTopologyEvent {
    * @return {@code true} if this a event referring to a &quot;cancellation&quot; subscription request.
    */
   public boolean isCancellationRequest() {
-<span class="nc" id="L264">    return subscription.isCancellation();</span>
+<span class="nc" id="L263">    return subscription.isCancellation();</span>
   }
 
   @Override
   public int hashCode() {
-<span class="nc" id="L269">    return Objects.hash(address, foundLower, foundUpper, subscription, type);</span>
+<span class="nc" id="L268">    return Objects.hash(address, foundLower, foundUpper, subscription, type);</span>
   }
 
   @Override
   public boolean equals(@Nullable Object obj) {
-<span class="nc bnc" id="L274" title="All 2 branches missed.">    if (this == obj) {</span>
-<span class="nc" id="L275">      return true;</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">    if (this == obj) {</span>
+<span class="nc" id="L274">      return true;</span>
     }
-<span class="nc bnc" id="L277" title="All 2 branches missed.">    if (!(obj instanceof AFTIPCTopologyEvent)) {</span>
-<span class="nc" id="L278">      return false;</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">    if (!(obj instanceof AFTIPCTopologyEvent)) {</span>
+<span class="nc" id="L277">      return false;</span>
     }
-<span class="nc" id="L280">    AFTIPCTopologyEvent other = (AFTIPCTopologyEvent) obj;</span>
-<span class="nc bnc" id="L281" title="All 6 branches missed.">    return Objects.equals(address, other.address) &amp;&amp; foundLower == other.foundLower</span>
-<span class="nc bnc" id="L282" title="All 2 branches missed.">        &amp;&amp; foundUpper == other.foundUpper &amp;&amp; Objects.equals(subscription, other.subscription)</span>
-<span class="nc bnc" id="L283" title="All 2 branches missed.">        &amp;&amp; Objects.equals(type, other.type);</span>
+<span class="nc" id="L279">    AFTIPCTopologyEvent other = (AFTIPCTopologyEvent) obj;</span>
+<span class="nc bnc" id="L280" title="All 6 branches missed.">    return Objects.equals(address, other.address) &amp;&amp; foundLower == other.foundLower</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">        &amp;&amp; foundUpper == other.foundUpper &amp;&amp; Objects.equals(subscription, other.subscription)</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">        &amp;&amp; Objects.equals(type, other.type);</span>
   }
 
   /**
@@ -295,9 +294,9 @@ public final class AFTIPCTopologyEvent {
    */
   public @Nullable String getLinkName() throws IOException {
     // this only works if getSubscription().getType() == AFTIPCSubscription.TIPC_LINK_STATE
-<span class="nc" id="L298">    int node = getFoundLower();</span>
-<span class="nc" id="L299">    int ref = getAddress().getTIPCRef();</span>
-<span class="nc" id="L300">    return AFTIPCSocket.getLinkName(node, ref &amp; 0xFFFF);</span>
+<span class="nc" id="L297">    int node = getFoundLower();</span>
+<span class="nc" id="L298">    int ref = getAddress().getTIPCRef();</span>
+<span class="nc" id="L299">    return AFTIPCSocket.getLinkName(node, ref &amp; 0xFFFF);</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

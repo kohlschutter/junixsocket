@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MappedMemory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-memory</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.memory</a> &gt; <span class="el_source">MappedMemory.java</span></div><h1>MappedMemory.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2026 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.memory;
+
+import java.io.Closeable;
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.lang.foreign.Arena;
+import java.lang.foreign.MemorySegment;
+import java.nio.ByteBuffer;
+
+import org.newsclub.net.unix.MemoryImplUtilInternal;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+/**
+ * Some mapped memory.
+ *
+ * @author Christian Kohlschütter
+ */
+public final class MappedMemory implements Closeable {
+  private final MemorySegment ms;
+  private final SharedMemoryCleaner cleaner;
+  private final boolean rw;
+<span class="fc" id="L40">  private static final boolean IS_WINDOWS = &quot;;&quot;.equals(System.getProperty(&quot;path.separator&quot;, &quot;&quot;));</span>
+
+<span class="fc" id="L42">  private MappedMemory(Arena arena, ByteBuffer mappedBuffer, boolean rw, FileDescriptor extraFd) {</span>
+<span class="fc" id="L43">    this.rw = rw;</span>
+<span class="fc" id="L44">    this.cleaner = new SharedMemoryCleaner(arena, this, extraFd);</span>
+<span class="fc" id="L45">    this.ms = SharedMemory.asRegisteredMemorySegment(cleaner, mappedBuffer, rw);</span>
+<span class="fc" id="L46">  }</span>
+
+  /**
+   * Returns the {@link MemorySegment} backed by this instance.
+   *
+   * @return The {@link MemorySegment}.
+   */
+  @SuppressFBWarnings(&quot;EI_EXPOSE_REP&quot;)
+  public MemorySegment getMemorySegment() {
+<span class="fc" id="L55">    return ms;</span>
+  }
+
+  /**
+   * Returns the minimum sub-allocation size.
+   *
+   * @return The minimum sub-allocation size.
+   */
+  public long getMinimumSubAllocationSize() {
+<span class="nc" id="L64">    return defaultAllocationSize();</span>
+  }
+
+  /**
+   * Returns the system's default memory page allocation size for shared memory.
+   * &lt;p&gt;
+   * This may be larger than the system's regular page size (e.g., on Windows it's 64k).
+   *
+   * @return The page size.
+   */
+  public static long defaultAllocationSize() {
+<span class="fc" id="L75">    return SharedMemory.getUtil().getSharedMemoryAllocationSize();</span>
+  }
+
+  /**
+   * Returns an anonymous read-only memory segment of the given length.
+   *
+   * @param arena The arena to associate the {@link MappedMemory} instance with.
+   * @param length The length of the segment.
+   * @return The {@link MappedMemory} segment.
+   * @throws IOException on error.
+   */
+  public static MappedMemory anonymousReadOnlySegment(Arena arena, long length) throws IOException {
+<span class="fc" id="L87">    return anonymousSegment(arena, MemoryImplUtilInternal.MMODE_READ, length);</span>
+  }
+
+  /**
+   * Returns an anonymous read/write memory segment of the given length.
+   *
+   * @param arena The arena to associate the {@link MappedMemory} instance with.
+   * @param length The length of the segment.
+   * @return The {@link MappedMemory} segment.
+   * @throws IOException on error.
+   */
+  public static MappedMemory anonymousSegment(Arena arena, long length) throws IOException {
+<span class="fc" id="L99">    return anonymousSegment(arena, MemoryImplUtilInternal.MMODE_READ_WRITE, length);</span>
+  }
+
+  /**
+   * Returns an anonymous memory segment of the given length that acts as a placeholder for later,
+   * memory-mapped segments in this area.
+   *
+   * @param arena The arena to associate the {@link MappedMemory} instance with.
+   * @param length The length of the segment.
+   * @return The {@link MappedMemory} segment.
+   * @throws IOException on error.
+   */
+  public static MappedMemory placeholderSegment(Arena arena, long length) throws IOException {
+<span class="fc" id="L112">    return anonymousSegment(arena, MemoryImplUtilInternal.MMODE_PLACEHOLDER</span>
+        | MemoryImplUtilInternal.MMODE_READ_WRITE, length);
+  }
+
+  /**
+   * Returns an anonymous copy-on-write (changes are local to the process running this JVM) memory
+   * segment of the given length.
+   *
+   * @param arena The arena to associate the {@link MappedMemory} instance with.
+   * @param length The length of the segment.
+   * @return The {@link MappedMemory} segment.
+   * @throws IOException on error.
+   */
+  public static MappedMemory anonymousCopyOnWriteSegment(Arena arena, long length)
+      throws IOException {
+<span class="nc" id="L127">    return anonymousSegment(arena, MemoryImplUtilInternal.MMODE_READ_WRITE</span>
+        | MemoryImplUtilInternal.MMODE_COPY_ON_WRITE, length);
+  }
+
+  private static MappedMemory anonymousSegment(Arena arena, int mode, long length)
+      throws IOException {
+<span class="fc" id="L133">    MemoryImplUtilInternal util = SharedMemory.getUtil();</span>
+
+<span class="fc" id="L135">    mode |= MemoryImplUtilInternal.MMODE_ANONYMOUS;</span>
+
+<span class="fc" id="L137">    long addr = util.mmap(0, null, 0, length, mode, null);</span>
+<span class="fc" id="L138">    ByteBuffer mappedBuffer = util.mappedBuffer(addr, length, null, 0, arena.allocate(0));</span>
+
+<span class="fc bfc" id="L140" title="All 2 branches covered.">    return new MappedMemory(arena, mappedBuffer, (mode &amp; MemoryImplUtilInternal.MMODE_WRITE) != 0,</span>
+        null);
+  }
+
+  /**
+   * Maps some memory to a region of this {@link MappedMemory} object. This may fail to work on
+   * Windows, unless {@link #placeholderSegment(Arena, long)} was used to create this
+   * {@link MappedMemory} instance.
+   *
+   * @param msOffset The target offset in this object.
+   * @param length The number of bytes to map.
+   * @param fd The file descriptor to map from.
+   * @param fdOffset The file descriptor-specific content offset
+   * @return A new {@link MappedMemory} object, whose {@link MemorySegment} is a subrange of this
+   *         object's {@link MemorySegment}.
+   * @throws IOException on error.
+   * @see #placeholderSegment(Arena, long)
+   */
+  public MappedMemory mapRegion(long msOffset, long length, FileDescriptor fd, long fdOffset)
+      throws IOException {
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">    if (msOffset &lt; 0) {</span>
+<span class="nc" id="L161">      throw new IllegalArgumentException(&quot;msOffset&quot;);</span>
+    }
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">    if (length &lt;= 0) {</span>
+<span class="nc" id="L164">      throw new IllegalArgumentException(&quot;length&quot;);</span>
+    }
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">    if ((msOffset + length) &gt; ms.byteSize()) {</span>
+<span class="nc" id="L167">      throw new IllegalArgumentException(&quot;capacity&quot;);</span>
+    }
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">    if (fdOffset &lt; 0) {</span>
+<span class="nc" id="L170">      throw new IllegalArgumentException(&quot;fileOffset&quot;);</span>
+    }
+
+<span class="fc" id="L173">    MemoryImplUtilInternal util = SharedMemory.getUtil();</span>
+
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">    int mmode = ms.isReadOnly() ? MemoryImplUtilInternal.MMODE_READ</span>
+<span class="fc" id="L176">        : MemoryImplUtilInternal.MMODE_READ_WRITE;</span>
+<span class="fc" id="L177">    mmode |= MemoryImplUtilInternal.MMODE_FIXED;</span>
+    // FIXME cow
+
+<span class="fc" id="L180">    long targetAddr = ms.address() + msOffset;</span>
+
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">    FileDescriptor extraFd = IS_WINDOWS ? new FileDescriptor() : null;</span>
+<span class="fc" id="L183">    long actualAddr = util.mmap(targetAddr, fd, fdOffset, length, mmode, extraFd);</span>
+
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">    if (actualAddr != targetAddr) {</span>
+      // unexpected
+<span class="nc" id="L187">      util.unmap(targetAddr, length, 0, true);</span>
+<span class="nc" id="L188">      throw new IllegalStateException(&quot;targetAddr &quot; + actualAddr + &quot; vs expected &quot; + targetAddr);</span>
+    }
+
+<span class="fc" id="L191">    ByteBuffer mappedBuffer = util.mappedBuffer(actualAddr, length, null, 0, cleaner</span>
+<span class="fc" id="L192">        .getArenaSegment());</span>
+
+<span class="fc" id="L194">    return new MappedMemory(cleaner.getArena(), mappedBuffer, rw, extraFd);</span>
+  }
+
+  @Override
+  public void close() throws IOException {
+<span class="fc" id="L199">    cleaner.close();</span>
+<span class="fc" id="L200">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

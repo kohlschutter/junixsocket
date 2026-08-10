@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ThreadUtil.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">ThreadUtil.java</span></div><h1>ThreadUtil.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.locks.LockSupport;
 
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
@@ -33,10 +34,16 @@ import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
  */
 @IgnoreJRERequirement // see src/main/java20
 public final class ThreadUtil {
-<span class="fc" id="L36">  private static final ThreadLocal&lt;Boolean&gt; TREAT_AS_VIRTUAL_THREAD = new ThreadLocal&lt;&gt;();</span>
+<span class="fc" id="L37">  private static final ThreadLocal&lt;Boolean&gt; TREAT_AS_VIRTUAL_THREAD = new ThreadLocal&lt;&gt;();</span>
 
-<span class="nc" id="L38">  private ThreadUtil() {</span>
-<span class="nc" id="L39">    throw new IllegalStateException(&quot;No instances&quot;);</span>
+  private static final String PROP_VIRTUAL_THREADS_SUPPORTED =
+      &quot;org.newsclub.net.unix.virtual-threads&quot;;
+
+<span class="fc" id="L42">  private static final boolean VIRTUAL_THREADS_SUPPORTED = Boolean.parseBoolean(System.getProperty(</span>
+      PROP_VIRTUAL_THREADS_SUPPORTED, &quot;true&quot;));
+
+<span class="nc" id="L45">  private ThreadUtil() {</span>
+<span class="nc" id="L46">    throw new IllegalStateException(&quot;No instances&quot;);</span>
   }
 
   /**
@@ -45,7 +52,7 @@ public final class ThreadUtil {
    * @return {@code true} if so.
    */
   private static boolean isTreatAsVirtualThread() {
-<span class="fc" id="L48">    return Boolean.TRUE.equals(TREAT_AS_VIRTUAL_THREAD.get());</span>
+<span class="fc" id="L55">    return Boolean.TRUE.equals(TREAT_AS_VIRTUAL_THREAD.get());</span>
   }
 
   /**
@@ -55,11 +62,11 @@ public final class ThreadUtil {
    * @param b {@code true} to enable treatment of a platform thread as a virtual thread.
    */
   public static void setTreatAsVirtualThread(boolean b) {
-<span class="nc bnc" id="L58" title="All 2 branches missed.">    if (isVirtualThread()) {</span>
-<span class="nc" id="L59">      return;</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">    if (isVirtualThread()) {</span>
+<span class="nc" id="L66">      return;</span>
     }
-<span class="nc" id="L61">    TREAT_AS_VIRTUAL_THREAD.set(b);</span>
-<span class="nc" id="L62">  }</span>
+<span class="nc" id="L68">    TREAT_AS_VIRTUAL_THREAD.set(b);</span>
+<span class="nc" id="L69">  }</span>
 
   /**
    * Checks if the current {@link Thread} is to be considered a virtual thread.
@@ -67,7 +74,18 @@ public final class ThreadUtil {
    * @return {@code true} if so.
    */
   public static boolean isVirtualThread() {
-<span class="pc bpc" id="L70" title="1 of 4 branches missed.">    return Thread.currentThread().isVirtual() || isTreatAsVirtualThread();</span>
+<span class="pc bpc" id="L77" title="1 of 4 branches missed.">    return Thread.currentThread().isVirtual() || isTreatAsVirtualThread();</span>
+  }
+
+  /**
+   * Checks if the given {@link Thread} is a virtual thread, regardless of
+   * {@link #setTreatAsVirtualThread(boolean)}.
+   *
+   * @param t The thread to check.
+   * @return {@code true} if so.
+   */
+  public static boolean isTrulyAVirtualThread(Thread t) {
+<span class="fc" id="L88">    return t.isVirtual();</span>
   }
 
   /**
@@ -77,7 +95,7 @@ public final class ThreadUtil {
    * @return {@code true} if so.
    */
   public static boolean isVirtualThreadSupported() {
-<span class="fc" id="L80">    return true;</span>
+<span class="fc" id="L98">    return VIRTUAL_THREADS_SUPPORTED;</span>
   }
 
   /**
@@ -88,7 +106,7 @@ public final class ThreadUtil {
    * @return The new executor service.
    */
   public static ExecutorService newVirtualThreadPerTaskExecutor() {
-<span class="fc" id="L91">    return Executors.newVirtualThreadPerTaskExecutor();</span>
+<span class="fc" id="L109">    return Executors.newVirtualThreadPerTaskExecutor();</span>
   }
 
   /**
@@ -99,10 +117,10 @@ public final class ThreadUtil {
    * @throws InterruptedIOException if interrupted.
    */
   public static boolean checkNotInterruptedOrThrow() throws InterruptedIOException {
-<span class="nc bnc" id="L102" title="All 2 branches missed.">    if (Thread.currentThread().isInterrupted()) {</span>
-<span class="nc" id="L103">      throw new InterruptedIOException();</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">    if (Thread.currentThread().isInterrupted()) {</span>
+<span class="nc" id="L121">      throw new InterruptedIOException();</span>
     }
-<span class="nc" id="L105">    return true;</span>
+<span class="nc" id="L123">    return true;</span>
   }
 
   /**
@@ -115,10 +133,10 @@ public final class ThreadUtil {
    * @return The thread.
    */
   public static Thread startNewDaemonThread(boolean virtual, Runnable run) {
-<span class="fc bfc" id="L118" title="All 2 branches covered.">    if (virtual) {</span>
-<span class="fc" id="L119">      return Thread.ofVirtual().start(run);</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">    if (virtual) {</span>
+<span class="fc" id="L137">      return Thread.ofVirtual().start(run);</span>
     } else {
-<span class="fc" id="L121">      return Thread.ofPlatform().daemon(true).start(run);</span>
+<span class="fc" id="L139">      return Thread.ofPlatform().daemon(true).start(run);</span>
     }
   }
 
@@ -132,43 +150,61 @@ public final class ThreadUtil {
    * @throws InterruptedException on interrupt.
    */
   public static void runOnSystemThread(Runnable op) throws InterruptedException {
-<span class="pc bpc" id="L135" title="1 of 2 branches missed.">    if (isVirtualThread()) {</span>
-<span class="nc" id="L136">      Thread vt = Thread.currentThread();</span>
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">    if (isVirtualThread()) {</span>
+<span class="nc" id="L154">      Thread vt = Thread.currentThread();</span>
 
-<span class="nc" id="L138">      CompletableFuture&lt;Void&gt; cf = CompletableFuture.runAsync(() -&gt; {</span>
+<span class="nc" id="L156">      CompletableFuture&lt;Void&gt; cf = CompletableFuture.runAsync(() -&gt; {</span>
         try {
-<span class="nc" id="L140">          op.run();</span>
+<span class="nc" id="L158">          op.run();</span>
         } finally {
-<span class="nc" id="L142">          LockSupport.unpark(vt);</span>
+<span class="nc" id="L160">          LockSupport.unpark(vt);</span>
         }
-<span class="nc" id="L144">      });</span>
+<span class="nc" id="L162">      });</span>
 
-<span class="nc" id="L146">      LockSupport.park();</span>
+<span class="nc" id="L164">      LockSupport.park();</span>
       try {
-<span class="nc" id="L148">        cf.get();</span>
-<span class="nc" id="L149">      } catch (ExecutionException e) {</span>
-<span class="nc" id="L150">        Throwable t = e.getCause();</span>
-<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (t instanceof Error) {</span>
-<span class="nc" id="L152">          throw (Error) t; // NOPMD.PreserveStackTrace</span>
-<span class="nc bnc" id="L153" title="All 2 branches missed.">        } else if (t instanceof RuntimeException) {</span>
-<span class="nc" id="L154">          throw (RuntimeException) t; // NOPMD.PreserveStackTrace</span>
+<span class="nc" id="L166">        cf.get();</span>
+<span class="nc" id="L167">      } catch (ExecutionException e) {</span>
+<span class="nc" id="L168">        Throwable t = e.getCause();</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        if (t instanceof Error) {</span>
+<span class="nc" id="L170">          throw (Error) t; // NOPMD.PreserveStackTrace</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        } else if (t instanceof RuntimeException) {</span>
+<span class="nc" id="L172">          throw (RuntimeException) t; // NOPMD.PreserveStackTrace</span>
         } else {
-<span class="nc" id="L156">          throw new IllegalStateException(e);</span>
+<span class="nc" id="L174">          throw new IllegalStateException(e);</span>
         }
-<span class="nc" id="L158">      }</span>
-<span class="nc" id="L159">    } else {</span>
-<span class="fc" id="L160">      boolean treatAsVirtual = isTreatAsVirtualThread();</span>
-<span class="pc bpc" id="L161" title="1 of 2 branches missed.">      if (treatAsVirtual) {</span>
-<span class="nc" id="L162">        setTreatAsVirtualThread(false);</span>
+<span class="nc" id="L176">      }</span>
+<span class="nc" id="L177">    } else {</span>
+<span class="fc" id="L178">      boolean treatAsVirtual = isTreatAsVirtualThread();</span>
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">      if (treatAsVirtual) {</span>
+<span class="nc" id="L180">        setTreatAsVirtualThread(false);</span>
       }
       try {
-<span class="fc" id="L165">        op.run();</span>
+<span class="fc" id="L183">        op.run();</span>
       } finally {
-<span class="pc bpc" id="L167" title="1 of 2 branches missed.">        if (treatAsVirtual) {</span>
-<span class="nc" id="L168">          setTreatAsVirtualThread(treatAsVirtual);</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">        if (treatAsVirtual) {</span>
+<span class="nc" id="L186">          setTreatAsVirtualThread(treatAsVirtual);</span>
         }
       }
     }
-<span class="fc" id="L172">  }</span>
+<span class="fc" id="L190">  }</span>
+
+  /**
+   * Java 7-compatible wrapper for {@link ForkJoinPool#commonPool()}.
+   *
+   * @return The common pool.
+   */
+  public static ForkJoinPool commonPool() {
+<span class="fc" id="L198">    return Java7Util.commonPool();</span>
+  }
+
+  /**
+   * Java 7-compatible wrapper for {@link Executors#newWorkStealingPool()}.
+   *
+   * @return A new pool.
+   */
+  public static ExecutorService newWorkStealingPool() {
+<span class="fc" id="L207">    return Java7Util.newWorkStealingPool();</span>
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

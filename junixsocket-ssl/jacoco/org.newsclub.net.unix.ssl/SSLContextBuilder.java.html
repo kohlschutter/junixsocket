@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SSLContextBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-ssl</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.ssl</a> &gt; <span class="el_source">SSLContextBuilder.java</span></div><h1>SSLContextBuilder.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -361,26 +361,27 @@ public final class SSLContextBuilder {
 <span class="fc" id="L361">    return TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());</span>
   }
 
+  @SuppressFBWarnings(&quot;URLCONNECTION_SSRF_FD&quot;)
   private KeyManager[] buildKeyManagers(KeyManagerFactory kmf) throws GeneralSecurityException,
       IOException, UnrecoverableKeyException {
-<span class="fc bfc" id="L366" title="All 2 branches covered.">    if (keyStoreUrl == null) {</span>
+<span class="fc bfc" id="L367" title="All 2 branches covered.">    if (keyStoreUrl == null) {</span>
       // use default
-<span class="fc" id="L368">      return null; // NOPMD.ReturnEmptyCollectionRatherThanNull</span>
+<span class="fc" id="L369">      return null; // NOPMD.ReturnEmptyCollectionRatherThanNull</span>
     }
 
-<span class="fc" id="L371">    KeyStore ks = keyStoreSupplier.get();</span>
+<span class="fc" id="L372">    KeyStore ks = keyStoreSupplier.get();</span>
 
-<span class="fc bfc" id="L373" title="All 2 branches covered.">    char[] password = keyStorePassword == null ? null : keyStorePassword.get();</span>
-<span class="fc" id="L374">    try (InputStream in = keyStoreUrl.openStream()) {</span>
-<span class="fc" id="L375">      ks.load(in, password);</span>
-<span class="fc" id="L376">      kmf.init(ks, password);</span>
-<span class="fc" id="L377">    } catch (IOException e) {</span>
-<span class="fc" id="L378">      throw wrapIOExceptionIfJDKBug(e);</span>
+<span class="fc bfc" id="L374" title="All 2 branches covered.">    char[] password = keyStorePassword == null ? null : keyStorePassword.get();</span>
+<span class="fc" id="L375">    try (InputStream in = keyStoreUrl.openStream()) {</span>
+<span class="fc" id="L376">      ks.load(in, password);</span>
+<span class="fc" id="L377">      kmf.init(ks, password);</span>
+<span class="fc" id="L378">    } catch (IOException e) {</span>
+<span class="fc" id="L379">      throw wrapIOExceptionIfJDKBug(e);</span>
     } finally {
-<span class="fc" id="L380">      clear(password);</span>
+<span class="fc" id="L381">      clear(password);</span>
     }
 
-<span class="fc" id="L383">    return kmf.getKeyManagers();</span>
+<span class="fc" id="L384">    return kmf.getKeyManagers();</span>
   }
 
   /**
@@ -392,87 +393,88 @@ public final class SSLContextBuilder {
    * @return The exception, or a {@link KnownJavaBugIOException}.
    */
   public static IOException wrapIOExceptionIfJDKBug(IOException e) {
-<span class="fc" id="L395">    String msg = e.getMessage();</span>
-<span class="pc bpc" id="L396" title="1 of 2 branches missed.">    if (msg == null) {</span>
-<span class="nc" id="L397">      return e;</span>
+<span class="fc" id="L396">    String msg = e.getMessage();</span>
+<span class="pc bpc" id="L397" title="1 of 2 branches missed.">    if (msg == null) {</span>
+<span class="nc" id="L398">      return e;</span>
     }
-<span class="pc bpc" id="L399" title="1 of 2 branches missed.">    if (msg.contains(&quot;data isn't an object ID (tag = 48)&quot;)) {</span>
-<span class="nc" id="L400">      return knownJDKBug(e, &quot;JDK-8202837&quot;, &quot;8u312&quot;, &quot;11.0.3&quot;);</span>
-<span class="pc bpc" id="L401" title="1 of 2 branches missed.">    } else if (msg.contains(&quot;HmacPBESHA256 not available&quot;)) {</span>
-<span class="nc" id="L402">      return knownJDKBug(e, &quot;JDK-8267701&quot;, &quot;8u301&quot;, &quot;11.0.12&quot;,</span>
+<span class="pc bpc" id="L400" title="1 of 2 branches missed.">    if (msg.contains(&quot;data isn't an object ID (tag = 48)&quot;)) {</span>
+<span class="nc" id="L401">      return knownJDKBug(e, &quot;JDK-8202837&quot;, &quot;8u312&quot;, &quot;11.0.3&quot;);</span>
+<span class="pc bpc" id="L402" title="1 of 2 branches missed.">    } else if (msg.contains(&quot;HmacPBESHA256 not available&quot;)) {</span>
+<span class="nc" id="L403">      return knownJDKBug(e, &quot;JDK-8267701&quot;, &quot;8u301&quot;, &quot;11.0.12&quot;,</span>
           &quot;alternatively try running Java with -Dkeystore.pkcs12.legacy&quot;);
-<span class="pc bpc" id="L404" title="1 of 2 branches missed.">    } else if (msg.contains(&quot;HmacPBESHA256&quot;)) {</span>
-<span class="nc bnc" id="L405" title="All 2 branches missed.">      if (&quot;IBM J9 VM&quot;.equals(System.getProperty(&quot;java.vm.name&quot;))) {</span>
-<span class="nc" id="L406">        String vmVersion = System.getProperty(&quot;java.runtime.version&quot;, &quot;&quot;);</span>
-<span class="nc bnc" id="L407" title="All 4 branches missed.">        if (vmVersion.startsWith(&quot;8.0.&quot;) &amp;&amp; vmVersion.compareTo(&quot;8.0.8.&quot;) &lt; 0) { // NOPMD</span>
-<span class="nc" id="L408">          return new KnownJavaBugIOException(</span>
+<span class="pc bpc" id="L405" title="1 of 2 branches missed.">    } else if (msg.contains(&quot;HmacPBESHA256&quot;)) {</span>
+<span class="nc bnc" id="L406" title="All 2 branches missed.">      if (&quot;IBM J9 VM&quot;.equals(System.getProperty(&quot;java.vm.name&quot;))) {</span>
+<span class="nc" id="L407">        String vmVersion = System.getProperty(&quot;java.runtime.version&quot;, &quot;&quot;);</span>
+<span class="nc bnc" id="L408" title="All 4 branches missed.">        if (vmVersion.startsWith(&quot;8.0.&quot;) &amp;&amp; vmVersion.compareTo(&quot;8.0.8.&quot;) &lt; 0) { // NOPMD</span>
+<span class="nc" id="L409">          return new KnownJavaBugIOException(</span>
               &quot;Bug JDK-8267701 detected -- please upgrade your Java release to at least IBM SDK 8.0.8.0; &quot;
                   + &quot;details here: https://www.ibm.com/support/pages/troubleshooting-unable-open-pkcs12-keystores-due-unrecoverablekeyexception&quot;,
               e);
         }
       }
-<span class="nc" id="L414">      return new KnownJavaBugIOException(</span>
+<span class="nc" id="L415">      return new KnownJavaBugIOException(</span>
           &quot;Bug JDK-8267701 detected -- please upgrade your Java release; &quot;
               + &quot;alternatively try running Java with -Dkeystore.pkcs12.legacy&quot;, e);
     }
-<span class="fc" id="L418">    return e;</span>
+<span class="fc" id="L419">    return e;</span>
   }
 
   private static KnownJavaBugIOException knownJDKBug(Exception e, String bugId, String java8Version,
       String java11Version) {
-<span class="nc" id="L423">    return knownJDKBug(e, bugId, java8Version, java11Version, null);</span>
+<span class="nc" id="L424">    return knownJDKBug(e, bugId, java8Version, java11Version, null);</span>
   }
 
   private static KnownJavaBugIOException knownJDKBug(Exception e, String bugId, String java8Version,
       String java11Version, String hint) {
-<span class="nc bnc" id="L428" title="All 2 branches missed.">    if (hint == null) {</span>
-<span class="nc" id="L429">      hint = &quot;&quot;;</span>
+<span class="nc bnc" id="L429" title="All 2 branches missed.">    if (hint == null) {</span>
+<span class="nc" id="L430">      hint = &quot;&quot;;</span>
     } else {
-<span class="nc" id="L431">      hint = &quot;; &quot; + hint;</span>
+<span class="nc" id="L432">      hint = &quot;; &quot; + hint;</span>
     }
-<span class="nc" id="L433">    String specVersion = System.getProperty(&quot;java.specification.version&quot;, &quot;&quot;);</span>
-<span class="nc bnc" id="L434" title="All 2 branches missed.">    if (specVersion.startsWith(&quot;1.&quot;)) {</span>
-<span class="nc" id="L435">      return new KnownJavaBugIOException(&quot;Bug &quot; + bugId + &quot; detected -- please upgrade to Java &quot;</span>
+<span class="nc" id="L434">    String specVersion = System.getProperty(&quot;java.specification.version&quot;, &quot;&quot;);</span>
+<span class="nc bnc" id="L435" title="All 2 branches missed.">    if (specVersion.startsWith(&quot;1.&quot;)) {</span>
+<span class="nc" id="L436">      return new KnownJavaBugIOException(&quot;Bug &quot; + bugId + &quot; detected -- please upgrade to Java &quot;</span>
           + java8Version + &quot; or newer&quot; + hint, e);
-<span class="nc bnc" id="L437" title="All 6 branches missed.">    } else if (&quot;9&quot;.equals(specVersion) || &quot;10&quot;.equals(specVersion) || &quot;11&quot;.equals(specVersion)) {</span>
-<span class="nc" id="L438">      return new KnownJavaBugIOException(&quot;Bug &quot; + bugId + &quot; detected -- please upgrade to Java &quot;</span>
+<span class="nc bnc" id="L438" title="All 6 branches missed.">    } else if (&quot;9&quot;.equals(specVersion) || &quot;10&quot;.equals(specVersion) || &quot;11&quot;.equals(specVersion)) {</span>
+<span class="nc" id="L439">      return new KnownJavaBugIOException(&quot;Bug &quot; + bugId + &quot; detected -- please upgrade to Java &quot;</span>
           + java11Version + &quot; or newer&quot; + hint, e);
     } else {
-<span class="nc" id="L441">      return new KnownJavaBugIOException(&quot;Bug &quot; + bugId</span>
+<span class="nc" id="L442">      return new KnownJavaBugIOException(&quot;Bug &quot; + bugId</span>
           + &quot; detected -- please upgrade your Java release&quot; + hint, e);
     }
   }
 
+  @SuppressFBWarnings(&quot;URLCONNECTION_SSRF_FD&quot;)
   private TrustManager[] buildTrustManagers(TrustManagerFactory tmf) throws IOException,
       GeneralSecurityException {
 
-<span class="fc bfc" id="L449" title="All 2 branches covered.">    if (trustManagerUrl == null) {</span>
+<span class="fc bfc" id="L451" title="All 2 branches covered.">    if (trustManagerUrl == null) {</span>
       // use default
-<span class="fc" id="L451">      return null; // NOPMD.ReturnEmptyCollectionRatherThanNull</span>
+<span class="fc" id="L453">      return null; // NOPMD.ReturnEmptyCollectionRatherThanNull</span>
     }
 
-<span class="fc" id="L454">    KeyStore ks = keyStoreSupplier.get();</span>
+<span class="fc" id="L456">    KeyStore ks = keyStoreSupplier.get();</span>
 
-<span class="fc bfc" id="L456" title="All 2 branches covered.">    char[] password = trustManagerPassword == null ? null : trustManagerPassword.get();</span>
-<span class="fc" id="L457">    try (InputStream in = trustManagerUrl.openStream()) {</span>
-<span class="fc" id="L458">      ks.load(in, password);</span>
-<span class="fc" id="L459">    } catch (IOException e) {</span>
-<span class="fc" id="L460">      throw wrapIOExceptionIfJDKBug(e);</span>
+<span class="fc bfc" id="L458" title="All 2 branches covered.">    char[] password = trustManagerPassword == null ? null : trustManagerPassword.get();</span>
+<span class="fc" id="L459">    try (InputStream in = trustManagerUrl.openStream()) {</span>
+<span class="fc" id="L460">      ks.load(in, password);</span>
+<span class="fc" id="L461">    } catch (IOException e) {</span>
+<span class="fc" id="L462">      throw wrapIOExceptionIfJDKBug(e);</span>
     } finally {
-<span class="fc" id="L462">      clear(password);</span>
+<span class="fc" id="L464">      clear(password);</span>
     }
 
-<span class="fc" id="L465">    tmf.init(ks);</span>
+<span class="fc" id="L467">    tmf.init(ks);</span>
 
-<span class="fc" id="L467">    return tmf.getTrustManagers();</span>
+<span class="fc" id="L469">    return tmf.getTrustManagers();</span>
   }
 
   private static void clear(char[] password) {
-<span class="fc bfc" id="L471" title="All 2 branches covered.">    if (password == null) {</span>
-<span class="fc" id="L472">      return;</span>
+<span class="fc bfc" id="L473" title="All 2 branches covered.">    if (password == null) {</span>
+<span class="fc" id="L474">      return;</span>
     }
-<span class="fc" id="L474">    Arrays.fill(password, ' ');</span>
-<span class="fc" id="L475">  }</span>
+<span class="fc" id="L476">    Arrays.fill(password, ' ');</span>
+<span class="fc" id="L477">  }</span>
 
   /**
    * Try to initialize the SSLContext with a provider specified by classname.
@@ -491,35 +493,35 @@ public final class SSLContextBuilder {
   private static SSLContext tryInitContextFallback(NoSuchProviderException e, String protocol,
       String providerString) throws NoSuchAlgorithmException, NoSuchProviderException {
     try {
-<span class="nc" id="L494">      List&lt;Provider&gt; providers = new ArrayList&lt;&gt;();</span>
-<span class="nc bnc" id="L495" title="All 2 branches missed.">      for (String pn : providerString.split(&quot;,&quot;)) {</span>
-<span class="nc" id="L496">        pn = pn.trim(); // NOPMD.AvoidReassigningLoopVariables</span>
-<span class="nc bnc" id="L497" title="All 2 branches missed.">        if (pn.isEmpty()) {</span>
-<span class="nc" id="L498">          continue;</span>
+<span class="nc" id="L496">      List&lt;Provider&gt; providers = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L497" title="All 2 branches missed.">      for (String pn : providerString.split(&quot;,&quot;)) {</span>
+<span class="nc" id="L498">        pn = pn.trim(); // NOPMD.AvoidReassigningLoopVariables</span>
+<span class="nc bnc" id="L499" title="All 2 branches missed.">        if (pn.isEmpty()) {</span>
+<span class="nc" id="L500">          continue;</span>
         }
-<span class="nc" id="L500">        Class&lt;?&gt; klazz = Class.forName(pn);</span>
-<span class="nc bnc" id="L501" title="All 2 branches missed.">        if (!Provider.class.isAssignableFrom(klazz)) {</span>
-<span class="nc" id="L502">          continue;</span>
+<span class="nc" id="L502">        Class&lt;?&gt; klazz = Class.forName(pn);</span>
+<span class="nc bnc" id="L503" title="All 2 branches missed.">        if (!Provider.class.isAssignableFrom(klazz)) {</span>
+<span class="nc" id="L504">          continue;</span>
         }
-<span class="nc" id="L504">        Provider p = (Provider) klazz.getConstructor().newInstance();</span>
-<span class="nc" id="L505">        providers.add(p);</span>
+<span class="nc" id="L506">        Provider p = (Provider) klazz.getConstructor().newInstance();</span>
+<span class="nc" id="L507">        providers.add(p);</span>
 
         try {
-<span class="nc" id="L508">          Security.addProvider(p);</span>
-<span class="nc" id="L509">        } catch (SecurityException | NullPointerException e1) {</span>
-<span class="nc" id="L510">          e.addSuppressed(e1);</span>
-<span class="nc" id="L511">        }</span>
+<span class="nc" id="L510">          Security.addProvider(p);</span>
+<span class="nc" id="L511">        } catch (SecurityException | NullPointerException e1) {</span>
+<span class="nc" id="L512">          e.addSuppressed(e1);</span>
+<span class="nc" id="L513">        }</span>
       }
-<span class="nc bnc" id="L513" title="All 2 branches missed.">      if (providers.isEmpty()) {</span>
-<span class="nc" id="L514">        throw e;</span>
+<span class="nc bnc" id="L515" title="All 2 branches missed.">      if (providers.isEmpty()) {</span>
+<span class="nc" id="L516">        throw e;</span>
       } else {
-<span class="nc" id="L516">        return SSLContext.getInstance(protocol, Objects.requireNonNull(providers.get(0)).getName());</span>
+<span class="nc" id="L518">        return SSLContext.getInstance(protocol, Objects.requireNonNull(providers.get(0)).getName());</span>
       }
-<span class="nc" id="L518">    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException</span>
+<span class="nc" id="L520">    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException</span>
         | InvocationTargetException | NoSuchMethodException | SecurityException
         | ClassNotFoundException | NullPointerException e1) {
-<span class="nc" id="L521">      e.addSuppressed(e1);</span>
-<span class="nc" id="L522">      throw e; // NOPMD.PreserveStackTrace</span>
+<span class="nc" id="L523">      e.addSuppressed(e1);</span>
+<span class="nc" id="L524">      throw e; // NOPMD.PreserveStackTrace</span>
     }
   }
 
@@ -534,37 +536,38 @@ public final class SSLContextBuilder {
    * @throws IOException on error.
    * @see #buildAndDestroyBuilder()
    */
+  @SuppressWarnings(&quot;PatternMatchingInstanceof&quot;) // ErrorProne
   public SSLContext build() throws GeneralSecurityException, IOException {
     SSLContext sslContext;
-<span class="fc bfc" id="L539" title="All 2 branches covered.">    if (provider == null) {</span>
-<span class="fc" id="L540">      sslContext = SSLContext.getInstance(protocol);</span>
-<span class="pc bpc" id="L541" title="1 of 2 branches missed.">    } else if (provider instanceof String) {</span>
-<span class="nc" id="L542">      String providerString = (String) provider;</span>
+<span class="fc bfc" id="L542" title="All 2 branches covered.">    if (provider == null) {</span>
+<span class="fc" id="L543">      sslContext = SSLContext.getInstance(protocol);</span>
+<span class="pc bpc" id="L544" title="1 of 2 branches missed.">    } else if (provider instanceof String) {</span>
+<span class="nc" id="L545">      String providerString = (String) provider;</span>
       try {
-<span class="nc" id="L544">        sslContext = SSLContext.getInstance(protocol, providerString);</span>
-<span class="nc" id="L545">      } catch (NoSuchProviderException e) {</span>
-<span class="nc" id="L546">        sslContext = tryInitContextFallback(e, protocol, providerString);</span>
-<span class="nc" id="L547">      }</span>
-<span class="nc" id="L548">    } else {</span>
-<span class="fc" id="L549">      sslContext = SSLContext.getInstance(protocol, (Provider) provider);</span>
+<span class="nc" id="L547">        sslContext = SSLContext.getInstance(protocol, providerString);</span>
+<span class="nc" id="L548">      } catch (NoSuchProviderException e) {</span>
+<span class="nc" id="L549">        sslContext = tryInitContextFallback(e, protocol, providerString);</span>
+<span class="nc" id="L550">      }</span>
+<span class="nc" id="L551">    } else {</span>
+<span class="fc" id="L552">      sslContext = SSLContext.getInstance(protocol, (Provider) provider);</span>
     }
 
-<span class="fc" id="L552">    SSLFunction&lt;KeyManagerFactory, KeyManager[]&gt; km = this.keyManager;</span>
-<span class="fc bfc" id="L553" title="All 2 branches covered.">    if (km == null) {</span>
-<span class="fc" id="L554">      km = this::buildKeyManagers;</span>
+<span class="fc" id="L555">    SSLFunction&lt;KeyManagerFactory, KeyManager[]&gt; km = this.keyManager;</span>
+<span class="fc bfc" id="L556" title="All 2 branches covered.">    if (km == null) {</span>
+<span class="fc" id="L557">      km = this::buildKeyManagers;</span>
     }
 
-<span class="fc" id="L557">    SSLFunction&lt;TrustManagerFactory, TrustManager[]&gt; tm = this.trustManager;</span>
-<span class="fc bfc" id="L558" title="All 2 branches covered.">    if (tm == null) {</span>
-<span class="fc" id="L559">      tm = this::buildTrustManagers;</span>
+<span class="fc" id="L560">    SSLFunction&lt;TrustManagerFactory, TrustManager[]&gt; tm = this.trustManager;</span>
+<span class="fc bfc" id="L561" title="All 2 branches covered.">    if (tm == null) {</span>
+<span class="fc" id="L562">      tm = this::buildTrustManagers;</span>
     }
 
-<span class="fc" id="L562">    KeyManager[] kms = km.apply(buildKeyManagerFactory());</span>
-<span class="fc" id="L563">    TrustManager[] tms = tm.apply(buildTrustManagerFactory());</span>
+<span class="fc" id="L565">    KeyManager[] kms = km.apply(buildKeyManagerFactory());</span>
+<span class="fc" id="L566">    TrustManager[] tms = tm.apply(buildTrustManagerFactory());</span>
 
-<span class="fc" id="L565">    BuilderSSLContext.initContext(sslContext, kms, tms, secureRandom);</span>
+<span class="fc" id="L568">    BuilderSSLContext.initContext(sslContext, kms, tms, secureRandom);</span>
 
-<span class="fc" id="L567">    return new BuilderSSLContext(clientMode, sslContext, parametersFunction, socketFactory);</span>
+<span class="fc" id="L570">    return new BuilderSSLContext(clientMode, sslContext, parametersFunction, socketFactory);</span>
   }
 
   /**
@@ -580,11 +583,11 @@ public final class SSLContextBuilder {
   public SSLContext buildAndDestroyBuilder() throws GeneralSecurityException, IOException,
       DestroyFailedException {
     try {
-<span class="fc" id="L583">      SSLContext context = build();</span>
-<span class="fc" id="L584">      destroy();</span>
-<span class="fc" id="L585">      return context;</span>
-<span class="nc" id="L586">    } catch (IOException e) {</span>
-<span class="nc" id="L587">      throw wrapIOExceptionIfJDKBug(e);</span>
+<span class="fc" id="L586">      SSLContext context = build();</span>
+<span class="fc" id="L587">      destroy();</span>
+<span class="fc" id="L588">      return context;</span>
+<span class="nc" id="L589">    } catch (IOException e) {</span>
+<span class="nc" id="L590">      throw wrapIOExceptionIfJDKBug(e);</span>
     }
   }
 
@@ -593,66 +596,67 @@ public final class SSLContextBuilder {
    *
    * @throws DestroyFailedException on error (thrown at the end, to increase level of destruction).
    */
+  @SuppressWarnings(&quot;PatternMatchingInstanceof&quot;) // ErrorProne
   public void destroy() throws DestroyFailedException {
-<span class="fc" id="L597">    DestroyFailedException dfe = null;</span>
+<span class="fc" id="L601">    DestroyFailedException dfe = null;</span>
 
-<span class="fc bfc" id="L599" title="All 2 branches covered.">    for (Object o : new Object[] {</span>
+<span class="fc bfc" id="L603" title="All 2 branches covered.">    for (Object o : new Object[] {</span>
         keyStorePassword, trustManagerPassword, keyManager, trustManager}) {
-<span class="fc bfc" id="L601" title="All 2 branches covered.">      if (o instanceof Destroyable) {</span>
-<span class="fc" id="L602">        Destroyable d = (Destroyable) o;</span>
-<span class="fc bfc" id="L603" title="All 2 branches covered.">        if (!d.isDestroyed()) {</span>
+<span class="fc bfc" id="L605" title="All 2 branches covered.">      if (o instanceof Destroyable) {</span>
+<span class="fc" id="L606">        Destroyable d = (Destroyable) o;</span>
+<span class="fc bfc" id="L607" title="All 2 branches covered.">        if (!d.isDestroyed()) {</span>
           try {
-<span class="fc" id="L605">            d.destroy();</span>
-<span class="fc" id="L606">          } catch (DestroyFailedException e) {</span>
-<span class="fc bfc" id="L607" title="All 2 branches covered.">            if (dfe == null) {</span>
-<span class="fc" id="L608">              dfe = e;</span>
+<span class="fc" id="L609">            d.destroy();</span>
+<span class="fc" id="L610">          } catch (DestroyFailedException e) {</span>
+<span class="fc bfc" id="L611" title="All 2 branches covered.">            if (dfe == null) {</span>
+<span class="fc" id="L612">              dfe = e;</span>
             } else {
-<span class="fc" id="L610">              dfe.addSuppressed(e);</span>
+<span class="fc" id="L614">              dfe.addSuppressed(e);</span>
             }
-<span class="fc" id="L612">          }</span>
+<span class="fc" id="L616">          }</span>
         }
       }
     }
 
-<span class="fc" id="L617">    this.keyStoreUrl = null;</span>
-<span class="fc" id="L618">    this.keyStorePassword = null;</span>
-<span class="fc" id="L619">    this.keyManager = null;</span>
+<span class="fc" id="L621">    this.keyStoreUrl = null;</span>
+<span class="fc" id="L622">    this.keyStorePassword = null;</span>
+<span class="fc" id="L623">    this.keyManager = null;</span>
 
-<span class="fc" id="L621">    this.trustManagerUrl = null;</span>
-<span class="fc" id="L622">    this.trustManagerPassword = null;</span>
-<span class="fc" id="L623">    this.trustManager = null;</span>
+<span class="fc" id="L625">    this.trustManagerUrl = null;</span>
+<span class="fc" id="L626">    this.trustManagerPassword = null;</span>
+<span class="fc" id="L627">    this.trustManager = null;</span>
 
-<span class="fc" id="L625">    this.parametersFunction = null;</span>
-<span class="fc" id="L626">    this.secureRandom = null;</span>
+<span class="fc" id="L629">    this.parametersFunction = null;</span>
+<span class="fc" id="L630">    this.secureRandom = null;</span>
 
-<span class="fc bfc" id="L628" title="All 2 branches covered.">    if (dfe != null) {</span>
-<span class="fc" id="L629">      throw dfe;</span>
+<span class="fc bfc" id="L632" title="All 2 branches covered.">    if (dfe != null) {</span>
+<span class="fc" id="L633">      throw dfe;</span>
     }
-<span class="fc" id="L631">  }</span>
+<span class="fc" id="L635">  }</span>
 
   private static Provider resolveProviderIfPossible(String className) {
     Class&lt;?&gt; klazz;
     try {
-<span class="nc" id="L636">      klazz = Class.forName(className);</span>
-<span class="nc" id="L637">    } catch (ClassNotFoundException e) {</span>
-<span class="nc" id="L638">      return null; // NOPMD</span>
-<span class="nc" id="L639">    }</span>
+<span class="nc" id="L640">      klazz = Class.forName(className);</span>
+<span class="nc" id="L641">    } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L642">      return null; // NOPMD</span>
+<span class="nc" id="L643">    }</span>
     try {
-<span class="nc" id="L641">      return (Provider) klazz.getConstructor().newInstance();</span>
-<span class="nc" id="L642">    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException</span>
+<span class="nc" id="L645">      return (Provider) klazz.getConstructor().newInstance();</span>
+<span class="nc" id="L646">    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException</span>
         | InvocationTargetException | NoSuchMethodException | SecurityException
         | ClassCastException e) {
-<span class="nc" id="L645">      throw new IllegalStateException(&quot;Cannot instantiate provider '&quot; + className</span>
+<span class="nc" id="L649">      throw new IllegalStateException(&quot;Cannot instantiate provider '&quot; + className</span>
           + &quot;', despite being on the classpath&quot;, e);
     }
   }
 
   private static Provider bouncyCastleInstanceIfPossible() {
-<span class="nc" id="L651">    return resolveProviderIfPossible(&quot;org.bouncycastle.jce.provider.BouncyCastleProvider&quot;);</span>
+<span class="nc" id="L655">    return resolveProviderIfPossible(&quot;org.bouncycastle.jce.provider.BouncyCastleProvider&quot;);</span>
   }
 
   private static Provider bouncyCastleJSSEInstanceIfPossible() {
-<span class="nc" id="L655">    return resolveProviderIfPossible(&quot;org.bouncycastle.jsse.provider.BouncyCastleJsseProvider&quot;);</span>
+<span class="nc" id="L659">    return resolveProviderIfPossible(&quot;org.bouncycastle.jsse.provider.BouncyCastleJsseProvider&quot;);</span>
   }
 
   /**
@@ -662,11 +666,11 @@ public final class SSLContextBuilder {
    * @throws KeyStoreException on error.
    */
   public static KeyStore newKeyStorePKCS12() throws KeyStoreException {
-<span class="pc bpc" id="L665" title="1 of 2 branches missed.">    if (PROVIDER_PKCS12 == null) {</span>
-<span class="fc" id="L666">      return KeyStore.getInstance(&quot;PKCS12&quot;);</span>
+<span class="pc bpc" id="L669" title="1 of 2 branches missed.">    if (PROVIDER_PKCS12 == null) {</span>
+<span class="fc" id="L670">      return KeyStore.getInstance(&quot;PKCS12&quot;);</span>
     } else {
-<span class="nc" id="L668">      return KeyStore.getInstance(&quot;PKCS12&quot;, PROVIDER_PKCS12);</span>
+<span class="nc" id="L672">      return KeyStore.getInstance(&quot;PKCS12&quot;, PROVIDER_PKCS12);</span>
     }
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

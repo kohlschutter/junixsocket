@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFTIPCTopologyWatcher.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-tipc</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.tipc</a> &gt; <span class="el_source">AFTIPCTopologyWatcher.java</span></div><h1>AFTIPCTopologyWatcher.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -27,20 +27,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.newsclub.net.unix.AFSocketType;
 import org.newsclub.net.unix.AFTIPCSocketAddress;
 
-import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
-
 /**
  * Provides access to the TIPC topology service.
  *
  * @author Christian Kohlschütter
  */
-@SuppressFBWarnings(&quot;CT_CONSTRUCTOR_THROW&quot;)
 public class AFTIPCTopologyWatcher implements Closeable {
   private final int defaultTimeout;
   private final AFTIPCDatagramChannel channel;
   private final Selector selector;
-<span class="nc" id="L42">  private final AtomicBoolean doLoop = new AtomicBoolean(false);</span>
-<span class="nc" id="L43">  private final AtomicBoolean running = new AtomicBoolean(false);</span>
+<span class="nc" id="L39">  private final AtomicBoolean doLoop = new AtomicBoolean(false);</span>
+<span class="nc" id="L40">  private final AtomicBoolean running = new AtomicBoolean(false);</span>
 
   /**
    * Creates an {@link AFTIPCTopologyWatcher} whose subscription requests do not time out by
@@ -49,8 +46,8 @@ public class AFTIPCTopologyWatcher implements Closeable {
    * @throws IOException on error.
    */
   public AFTIPCTopologyWatcher() throws IOException {
-<span class="nc" id="L52">    this(AFTIPCTopologySubscription.TIPC_WAIT_FOREVER);</span>
-<span class="nc" id="L53">  }</span>
+<span class="nc" id="L49">    this(AFTIPCTopologySubscription.TIPC_WAIT_FOREVER);</span>
+<span class="nc" id="L50">  }</span>
 
   /**
    * Creates an {@link AFTIPCTopologyWatcher} whose subscription requests use the given default
@@ -60,18 +57,18 @@ public class AFTIPCTopologyWatcher implements Closeable {
    *          {@link AFTIPCTopologySubscription#TIPC_WAIT_FOREVER};
    * @throws IOException on error.
    */
-<span class="nc" id="L63">  public AFTIPCTopologyWatcher(int defaultTimeoutSeconds) throws IOException {</span>
-<span class="nc" id="L64">    this.defaultTimeout = defaultTimeoutSeconds;</span>
-<span class="nc" id="L65">    this.channel = AFTIPCDatagramSocket.newInstance(AFSocketType.SOCK_SEQPACKET).getChannel();</span>
-<span class="nc" id="L66">    this.selector = channel.provider().openSelector();</span>
-<span class="nc" id="L67">    channel.connect(AFTIPCSocketAddress.ofTopologyService());</span>
-<span class="nc" id="L68">    channel.configureBlocking(false);</span>
-<span class="nc" id="L69">  }</span>
+<span class="nc" id="L60">  public AFTIPCTopologyWatcher(int defaultTimeoutSeconds) throws IOException {</span>
+<span class="nc" id="L61">    this.defaultTimeout = defaultTimeoutSeconds;</span>
+<span class="nc" id="L62">    this.channel = AFTIPCDatagramSocket.newInstance(AFSocketType.SOCK_SEQPACKET).getChannel();</span>
+<span class="nc" id="L63">    this.selector = channel.provider().openSelector();</span>
+<span class="nc" id="L64">    channel.connect(AFTIPCSocketAddress.ofTopologyService());</span>
+<span class="nc" id="L65">    channel.configureBlocking(false);</span>
+<span class="nc" id="L66">  }</span>
 
   @SuppressWarnings(&quot;all&quot;)
   @Deprecated
   protected final void finalize() {
-<span class="nc" id="L74">  }</span>
+<span class="nc" id="L71">  }</span>
 
   /**
    * Watches for all port changes.
@@ -81,7 +78,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
    * @see #cancelSubscription(AFTIPCTopologySubscription)
    */
   public final AFTIPCTopologySubscription addPortSubscription() throws IOException {
-<span class="nc" id="L84">    return addPortSubscription(0, ~0);</span>
+<span class="nc" id="L81">    return addPortSubscription(0, ~0);</span>
   }
 
   /**
@@ -93,7 +90,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
    * @see #cancelSubscription(AFTIPCTopologySubscription)
    */
   public final AFTIPCTopologySubscription addPortSubscription(int port) throws IOException {
-<span class="nc" id="L96">    return addPortSubscription(port, port);</span>
+<span class="nc" id="L93">    return addPortSubscription(port, port);</span>
   }
 
   /**
@@ -107,7 +104,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
    */
   public final AFTIPCTopologySubscription addPortSubscription(int lower, int upper)
       throws IOException {
-<span class="nc" id="L110">    return sendMessage(new AFTIPCTopologySubscription(AFTIPCTopologySubscription.TIPC_NODE_STATE,</span>
+<span class="nc" id="L107">    return sendMessage(new AFTIPCTopologySubscription(AFTIPCTopologySubscription.TIPC_NODE_STATE,</span>
         lower, upper, AFTIPCTopologySubscription.Flags.TIPC_SUB_PORTS, defaultTimeout,
         AFTIPCTopologySubscription.USR_EMPTY));
   }
@@ -120,7 +117,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
    * @see #cancelSubscription(AFTIPCTopologySubscription)
    */
   public final AFTIPCTopologySubscription addLinkStateSubscription() throws IOException {
-<span class="nc" id="L123">    return sendMessage(new AFTIPCTopologySubscription(AFTIPCTopologySubscription.TIPC_LINK_STATE, 0,</span>
+<span class="nc" id="L120">    return sendMessage(new AFTIPCTopologySubscription(AFTIPCTopologySubscription.TIPC_LINK_STATE, 0,</span>
         ~0, AFTIPCTopologySubscription.Flags.NONE, defaultTimeout,
         AFTIPCTopologySubscription.USR_EMPTY));
   }
@@ -134,7 +131,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
    * @see #cancelSubscription(AFTIPCTopologySubscription)
    */
   public final AFTIPCTopologySubscription addServiceSubscription(int type) throws IOException {
-<span class="nc" id="L137">    return addServiceSubscription(type, 0, ~0);</span>
+<span class="nc" id="L134">    return addServiceSubscription(type, 0, ~0);</span>
   }
 
   /**
@@ -148,7 +145,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
    */
   public final AFTIPCTopologySubscription addServiceSubscription(int type, int instance)
       throws IOException {
-<span class="nc" id="L151">    return addServiceSubscription(type, instance, instance);</span>
+<span class="nc" id="L148">    return addServiceSubscription(type, instance, instance);</span>
   }
 
   /**
@@ -163,7 +160,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
    */
   public final AFTIPCTopologySubscription addServiceSubscription(int type, int lower, int upper)
       throws IOException {
-<span class="nc" id="L166">    return sendMessage(new AFTIPCTopologySubscription(type, lower, upper,</span>
+<span class="nc" id="L163">    return sendMessage(new AFTIPCTopologySubscription(type, lower, upper,</span>
         AFTIPCTopologySubscription.Flags.TIPC_SUB_SERVICE, defaultTimeout,
         AFTIPCTopologySubscription.USR_EMPTY));
   }
@@ -175,8 +172,8 @@ public class AFTIPCTopologyWatcher implements Closeable {
    * @throws IOException on error.
    */
   public final void cancelSubscription(AFTIPCTopologySubscription sub) throws IOException {
-<span class="nc" id="L178">    sendMessage(sub.toCancellation());</span>
-<span class="nc" id="L179">  }</span>
+<span class="nc" id="L175">    sendMessage(sub.toCancellation());</span>
+<span class="nc" id="L176">  }</span>
 
   /**
    * Sends a manually crafted subscription message to the TIPC topology server. You usually don't
@@ -190,8 +187,8 @@ public class AFTIPCTopologyWatcher implements Closeable {
    */
   public final AFTIPCTopologySubscription sendMessage(AFTIPCTopologySubscription sub)
       throws IOException {
-<span class="nc" id="L193">    channel.write(sub.toBuffer());</span>
-<span class="nc" id="L194">    return sub;</span>
+<span class="nc" id="L190">    channel.write(sub.toBuffer());</span>
+<span class="nc" id="L191">    return sub;</span>
   }
 
   /**
@@ -203,33 +200,33 @@ public class AFTIPCTopologyWatcher implements Closeable {
    */
   @SuppressWarnings(&quot;null&quot;)
   public final void runLoop() throws IOException {
-<span class="nc bnc" id="L206" title="All 2 branches missed.">    if (!running.compareAndSet(false, true)) {</span>
-<span class="nc" id="L207">      throw new IllegalStateException(&quot;Already running&quot;);</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">    if (!running.compareAndSet(false, true)) {</span>
+<span class="nc" id="L204">      throw new IllegalStateException(&quot;Already running&quot;);</span>
     }
 
-<span class="nc" id="L210">    ByteBuffer buf = ByteBuffer.allocate(64);</span>
-<span class="nc" id="L211">    SelectionKey key = channel.register(selector, SelectionKey.OP_READ);</span>
+<span class="nc" id="L207">    ByteBuffer buf = ByteBuffer.allocate(64);</span>
+<span class="nc" id="L208">    SelectionKey key = channel.register(selector, SelectionKey.OP_READ);</span>
 
     try {
-<span class="nc" id="L214">      doLoop.set(true);</span>
-<span class="nc bnc" id="L215" title="All 4 branches missed.">      while (!Thread.interrupted() &amp;&amp; doLoop.get()) {</span>
-<span class="nc" id="L216">        int n = selector.select();</span>
-<span class="nc bnc" id="L217" title="All 4 branches missed.">        if (!key.isValid() || !doLoop.get()) {</span>
-<span class="nc" id="L218">          break;</span>
+<span class="nc" id="L211">      doLoop.set(true);</span>
+<span class="nc bnc" id="L212" title="All 4 branches missed.">      while (!Thread.interrupted() &amp;&amp; doLoop.get()) {</span>
+<span class="nc" id="L213">        int n = selector.select();</span>
+<span class="nc bnc" id="L214" title="All 4 branches missed.">        if (!key.isValid() || !doLoop.get()) {</span>
+<span class="nc" id="L215">          break;</span>
         }
-<span class="nc bnc" id="L220" title="All 2 branches missed.">        if (n &gt; 0) {</span>
-<span class="nc" id="L221">          channel.receive(buf);</span>
+<span class="nc bnc" id="L217" title="All 2 branches missed.">        if (n &gt; 0) {</span>
+<span class="nc" id="L218">          channel.receive(buf);</span>
           @SuppressWarnings(&quot;cast&quot;)
-<span class="nc" id="L223">          AFTIPCTopologyEvent event = AFTIPCTopologyEvent.readFromBuffer((ByteBuffer) buf.flip());</span>
-<span class="nc" id="L224">          onEvent(event);</span>
-<span class="nc" id="L225">          buf.clear();</span>
+<span class="nc" id="L220">          AFTIPCTopologyEvent event = AFTIPCTopologyEvent.readFromBuffer((ByteBuffer) buf.flip());</span>
+<span class="nc" id="L221">          onEvent(event);</span>
+<span class="nc" id="L222">          buf.clear();</span>
         }
-<span class="nc" id="L227">      }</span>
+<span class="nc" id="L224">      }</span>
     } finally {
-<span class="nc" id="L229">      key.cancel();</span>
-<span class="nc" id="L230">      running.set(false);</span>
+<span class="nc" id="L226">      key.cancel();</span>
+<span class="nc" id="L227">      running.set(false);</span>
     }
-<span class="nc" id="L232">  }</span>
+<span class="nc" id="L229">  }</span>
 
   /**
    * Called for every event encountered by the run loop.
@@ -239,7 +236,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
    * @see #runLoop()
    */
   protected void onEvent(AFTIPCTopologyEvent event) throws IOException {
-<span class="nc" id="L242">  }</span>
+<span class="nc" id="L239">  }</span>
 
   /**
    * Called upon {@link #close()}.
@@ -247,7 +244,7 @@ public class AFTIPCTopologyWatcher implements Closeable {
    * @throws IOException on error.
    */
   protected void onClose() throws IOException {
-<span class="nc" id="L250">  }</span>
+<span class="nc" id="L247">  }</span>
 
   /**
    * Checks if the watcher run loop is running.
@@ -256,25 +253,25 @@ public class AFTIPCTopologyWatcher implements Closeable {
    * @see #runLoop()
    */
   public boolean isRunning() {
-<span class="nc" id="L259">    return running.get();</span>
+<span class="nc" id="L256">    return running.get();</span>
   }
 
   /**
    * Stops the run loop.
    */
   public final void stopLoop() {
-<span class="nc" id="L266">    doLoop.set(false);</span>
-<span class="nc" id="L267">    selector.wakeup();</span>
-<span class="nc" id="L268">  }</span>
+<span class="nc" id="L263">    doLoop.set(false);</span>
+<span class="nc" id="L264">    selector.wakeup();</span>
+<span class="nc" id="L265">  }</span>
 
   /**
    * Closes this instance.
    */
   @Override
   public final void close() throws IOException {
-<span class="nc" id="L275">    channel.close();</span>
-<span class="nc" id="L276">    stopLoop();</span>
-<span class="nc" id="L277">    onClose();</span>
-<span class="nc" id="L278">  }</span>
+<span class="nc" id="L272">    channel.close();</span>
+<span class="nc" id="L273">    stopLoop();</span>
+<span class="nc" id="L274">    onClose();</span>
+<span class="nc" id="L275">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

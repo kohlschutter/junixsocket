@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AFGenericSocket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFGenericSocket.java</span></div><h1>AFGenericSocket.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Implementation of an unknown-type socket.
  *
@@ -29,22 +31,22 @@ import java.net.SocketException;
  */
 final class AFGenericSocket extends AFSocket&lt;AFGenericSocketAddress&gt; implements
     AFGenericSocketExtensions {
-<span class="fc" id="L32">  private static AFGenericSocketImplExtensions staticExtensions = null;</span>
+<span class="fc" id="L34">  private static AFGenericSocketImplExtensions staticExtensions = null;</span>
 
   AFGenericSocket(FileDescriptor fdObj, AFSocketFactory&lt;AFGenericSocketAddress&gt; factory)
       throws SocketException {
-<span class="fc" id="L36">    super(new AFGenericSocketImpl(fdObj), factory);</span>
-<span class="fc" id="L37">  }</span>
+<span class="fc" id="L38">    super(new AFGenericSocketImpl(fdObj), factory);</span>
+<span class="fc" id="L39">  }</span>
 
   @SuppressWarnings(&quot;unused&quot;)
   private static synchronized AFGenericSocketImplExtensions getStaticImplExtensions()
       throws IOException {
-<span class="nc bnc" id="L42" title="All 2 branches missed.">    if (staticExtensions == null) {</span>
-<span class="nc" id="L43">      try (AFGenericSocket socket = new AFGenericSocket(null, null)) {</span>
-<span class="nc" id="L44">        staticExtensions = (AFGenericSocketImplExtensions) socket.getImplExtensions();</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">    if (staticExtensions == null) {</span>
+<span class="nc" id="L45">      try (AFGenericSocket socket = new AFGenericSocket(null, null)) {</span>
+<span class="nc" id="L46">        staticExtensions = (AFGenericSocketImplExtensions) socket.getImplExtensions();</span>
       }
     }
-<span class="nc" id="L47">    return staticExtensions;</span>
+<span class="nc" id="L49">    return staticExtensions;</span>
   }
 
   /**
@@ -58,13 +60,14 @@ final class AFGenericSocket extends AFSocket&lt;AFGenericSocketAddress&gt; imple
    *
    * @return {@code true} iff supported.
    */
+  @SuppressFBWarnings(&quot;HSM_HIDING_METHOD&quot;)
   public static boolean isSupported() {
-<span class="nc" id="L62">    return AFSocket.isSupported();</span>
+<span class="nc" id="L65">    return AFSocket.isSupported();</span>
   }
 
   @Override
   protected AFGenericSocketChannel newChannel() {
-<span class="fc" id="L67">    return new AFGenericSocketChannel(this);</span>
+<span class="fc" id="L70">    return new AFGenericSocketChannel(this);</span>
   }
 
   /**
@@ -79,12 +82,12 @@ final class AFGenericSocket extends AFSocket&lt;AFGenericSocketAddress&gt; imple
    * @throws IOException if the operation fails.
    */
   public static AFGenericSocket newInstance() throws IOException {
-<span class="fc" id="L82">    return (AFGenericSocket) AFSocket.newInstance(AFGenericSocket::new,</span>
+<span class="fc" id="L85">    return (AFGenericSocket) AFSocket.newInstance(AFGenericSocket::new,</span>
         (AFGenericSocketFactory) null);
   }
 
   static AFGenericSocket newInstance(AFGenericSocketFactory factory) throws SocketException {
-<span class="nc" id="L87">    return (AFGenericSocket) AFSocket.newInstance(AFGenericSocket::new, factory);</span>
+<span class="nc" id="L90">    return (AFGenericSocket) AFSocket.newInstance(AFGenericSocket::new, factory);</span>
   }
 
   /**
@@ -97,7 +100,7 @@ final class AFGenericSocket extends AFSocket&lt;AFGenericSocketAddress&gt; imple
    * @throws IOException if the operation fails.
    */
   public static AFGenericSocket newStrictInstance() throws IOException {
-<span class="nc" id="L100">    return (AFGenericSocket) AFSocket.newInstance(AFGenericSocket::new,</span>
+<span class="nc" id="L103">    return (AFGenericSocket) AFSocket.newInstance(AFGenericSocket::new,</span>
         (AFGenericSocketFactory) null);
   }
 
@@ -109,12 +112,12 @@ final class AFGenericSocket extends AFSocket&lt;AFGenericSocketAddress&gt; imple
    * @throws IOException if the operation fails.
    */
   public static AFGenericSocket connectTo(AFGenericSocketAddress addr) throws IOException {
-<span class="nc" id="L112">    return (AFGenericSocket) AFSocket.connectTo(AFGenericSocket::new, addr);</span>
+<span class="nc" id="L115">    return (AFGenericSocket) AFSocket.connectTo(AFGenericSocket::new, addr);</span>
   }
 
   @Override
   public AFGenericSocketChannel getChannel() {
-<span class="fc" id="L117">    return (AFGenericSocketChannel) super.getChannel();</span>
+<span class="fc" id="L120">    return (AFGenericSocketChannel) super.getChannel();</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

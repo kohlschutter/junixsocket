@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>NativeLibraryLoader.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">NativeLibraryLoader.java</span></div><h1>NativeLibraryLoader.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
-@SuppressFBWarnings(&quot;RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE&quot;)
+@SuppressFBWarnings({&quot;RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE&quot;, &quot;PATH_TRAVERSAL_IN&quot;})
 final class NativeLibraryLoader implements Closeable {
   private static final String PROP_LIBRARY_DISABLE = &quot;org.newsclub.net.unix.library.disable&quot;;
   private static final String PROP_LIBRARY_OVERRIDE = &quot;org.newsclub.net.unix.library.override&quot;;
@@ -137,22 +137,21 @@ final class NativeLibraryLoader implements Closeable {
 <span class="fc" id="L137">    }</span>
 
     @Override
-    @SuppressFBWarnings(&quot;THROWS_METHOD_THROWS_CLAUSE_BASIC_EXCEPTION&quot;)
     String load() throws Exception, LinkageError {
-<span class="pc bpc" id="L142" title="1 of 2 branches missed.">      if (libraryNameAndVersion != null) {</span>
-<span class="nc" id="L143">        System.loadLibrary(libraryNameAndVersion);</span>
-<span class="nc" id="L144">        return libraryNameAndVersion;</span>
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">      if (libraryNameAndVersion != null) {</span>
+<span class="nc" id="L142">        System.loadLibrary(libraryNameAndVersion);</span>
+<span class="nc" id="L143">        return libraryNameAndVersion;</span>
       }
-<span class="nc" id="L146">      return null;</span>
+<span class="nc" id="L145">      return null;</span>
     }
 
     @Override
     public void close() {
-<span class="fc" id="L151">    }</span>
+<span class="fc" id="L150">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L155">      return super.toString() + &quot;(standard library path)&quot;;</span>
+<span class="nc" id="L154">      return super.toString() + &quot;(standard library path)&quot;;</span>
     }
   }
 
@@ -163,11 +162,11 @@ final class NativeLibraryLoader implements Closeable {
 
     ClasspathLibraryCandidate(String artifactName, String libraryNameAndVersion, String path,
         URL library) {
-<span class="fc" id="L166">      super(libraryNameAndVersion);</span>
-<span class="fc" id="L167">      this.artifactName = artifactName;</span>
-<span class="fc" id="L168">      this.path = path;</span>
-<span class="fc" id="L169">      this.library = library;</span>
-<span class="fc" id="L170">    }</span>
+<span class="fc" id="L165">      super(libraryNameAndVersion);</span>
+<span class="fc" id="L166">      this.artifactName = artifactName;</span>
+<span class="fc" id="L167">      this.path = path;</span>
+<span class="fc" id="L168">      this.library = library;</span>
+<span class="fc" id="L169">    }</span>
 
     /**
      * Even though we ask the JVM to delete the library file upon VM exit, this may not be honored
@@ -179,37 +178,38 @@ final class NativeLibraryLoader implements Closeable {
      * @param libDir The directory to check.
      */
     private void deleteLibTmpDelFiles(File libDir) {
-<span class="pc bpc" id="L182" title="1 of 2 branches missed.">      if (libDir == null) {</span>
+<span class="pc bpc" id="L181" title="1 of 2 branches missed.">      if (libDir == null) {</span>
         try {
-<span class="nc" id="L184">          File tempFile = File.createTempFile(&quot;libtmp&quot;, &quot;.del&quot;);</span>
-<span class="nc" id="L185">          libDir = tempFile.getParentFile();</span>
-<span class="nc" id="L186">          tryDelete(tempFile);</span>
-<span class="nc" id="L187">        } catch (IOException e) {</span>
-<span class="nc" id="L188">          return;</span>
-<span class="nc" id="L189">        }</span>
+<span class="nc" id="L183">          File tempFile = File.createTempFile(&quot;libtmp&quot;, &quot;.del&quot;);</span>
+<span class="nc" id="L184">          libDir = tempFile.getParentFile();</span>
+<span class="nc" id="L185">          tryDelete(tempFile);</span>
+<span class="nc" id="L186">        } catch (IOException e) {</span>
+<span class="nc" id="L187">          return;</span>
+<span class="nc" id="L188">        }</span>
       }
-<span class="fc" id="L191">      File[] filesToDelete = libDir.listFiles((File f) -&gt; {</span>
-<span class="fc bfc" id="L192" title="All 2 branches covered.">        if (!f.isFile()) {</span>
-<span class="fc" id="L193">          return false;</span>
+<span class="fc" id="L190">      File[] filesToDelete = libDir.listFiles((File f) -&gt; {</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        if (!f.isFile()) {</span>
+<span class="fc" id="L192">          return false;</span>
         }
-<span class="fc" id="L195">        String name = f.getName();</span>
-<span class="pc bpc" id="L196" title="3 of 4 branches missed.">        return name.startsWith(&quot;libtmp&quot;) &amp;&amp; name.endsWith(&quot;.del&quot;);</span>
+<span class="fc" id="L194">        String name = f.getName();</span>
+<span class="pc bpc" id="L195" title="3 of 4 branches missed.">        return name.startsWith(&quot;libtmp&quot;) &amp;&amp; name.endsWith(&quot;.del&quot;);</span>
       });
-<span class="pc bpc" id="L198" title="2 of 4 branches missed.">      if (filesToDelete == null || filesToDelete.length == 0) {</span>
-<span class="fc" id="L199">        return;</span>
+<span class="pc bpc" id="L197" title="2 of 4 branches missed.">      if (filesToDelete == null || filesToDelete.length == 0) {</span>
+<span class="fc" id="L198">        return;</span>
       }
 
-<span class="nc bnc" id="L202" title="All 2 branches missed.">      for (File f : filesToDelete) {</span>
-<span class="nc" id="L203">        tryDelete(f);</span>
-<span class="nc" id="L204">        String n = f.getName();</span>
-<span class="nc" id="L205">        n = n.substring(0, n.length() - &quot;.del&quot;.length());</span>
-<span class="nc" id="L206">        File libFile = new File(f.getParentFile(), n);</span>
-<span class="nc" id="L207">        tryDelete(libFile);</span>
+<span class="nc bnc" id="L201" title="All 2 branches missed.">      for (File f : filesToDelete) {</span>
+<span class="nc" id="L202">        tryDelete(f);</span>
+<span class="nc" id="L203">        String n = f.getName();</span>
+<span class="nc" id="L204">        n = n.substring(0, n.length() - &quot;.del&quot;.length());</span>
+<span class="nc" id="L205">        File libFile = new File(f.getParentFile(), n);</span>
+<span class="nc" id="L206">        tryDelete(libFile);</span>
       }
-<span class="nc" id="L209">    }</span>
+<span class="nc" id="L208">    }</span>
 
     @Override
     @SuppressWarnings(&quot;PMD.CognitiveComplexity&quot;)
+    @SuppressFBWarnings(&quot;URLCONNECTION_SSRF_FD&quot;)
     synchronized String load() throws IOException, LinkageError {
 <span class="pc bpc" id="L214" title="1 of 2 branches missed.">      if (libraryNameAndVersion == null) {</span>
 <span class="nc" id="L215">        return null;</span>
@@ -234,7 +234,7 @@ final class NativeLibraryLoader implements Closeable {
 <span class="fc" id="L234">          libFile = File.createTempFile(&quot;libtmp&quot;, System.mapLibraryName(libraryNameAndVersion),</span>
               libDir);
 <span class="fc" id="L236">          try (InputStream libraryIn = library.openStream();</span>
-<span class="fc" id="L237">              OutputStream out = new FileOutputStream(libFile)) { // NOPMD UseTryWithResources</span>
+<span class="fc" id="L237">              OutputStream out = new FileOutputStream(libFile)) {</span>
 <span class="fc" id="L238">            byte[] buf = new byte[4096];</span>
             int read;
 <span class="fc bfc" id="L240" title="All 2 branches covered.">            while ((read = libraryIn.read(buf)) &gt;= 0) {</span>
@@ -292,7 +292,7 @@ final class NativeLibraryLoader implements Closeable {
 
     @SuppressFBWarnings(&quot;RV_RETURN_VALUE_IGNORED_BAD_PRACTICE&quot;)
     private static void tryDelete(File f) {
-<span class="nc" id="L295">      f.delete(); // NOPMD</span>
+<span class="nc" id="L295">      f.delete();</span>
 <span class="nc" id="L296">    }</span>
 
     @Override
@@ -372,7 +372,7 @@ final class NativeLibraryLoader implements Closeable {
 
   @SuppressWarnings(&quot;null&quot;)
   public synchronized void loadLibrary() {
-<span class="fc" id="L375">    synchronized (loadLibrarySyncMonitor()) { // NOPMD We want to lock this class' classloader.</span>
+<span class="fc" id="L375">    synchronized (loadLibrarySyncMonitor()) {</span>
 <span class="pc bpc" id="L376" title="1 of 2 branches missed.">      if (LOADED.get()) {</span>
         // Already loaded
 <span class="nc" id="L378">        return;</span>
@@ -609,4 +609,4 @@ final class NativeLibraryLoader implements Closeable {
   public void close() {
 <span class="fc" id="L610">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

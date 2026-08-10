@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HostAndPort.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">HostAndPort.java</span></div><h1>HostAndPort.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,16 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
 /**
  * Hostname and port.
  *
  * @author Christian Kohlschütter
  */
+@SuppressFBWarnings(&quot;REDOS&quot;)
 public final class HostAndPort {
-<span class="fc" id="L35">  private static final Pattern PAT_HOST_AND_PORT = Pattern.compile(</span>
+<span class="fc" id="L38">  private static final Pattern PAT_HOST_AND_PORT = Pattern.compile(</span>
       &quot;^//((?&lt;userinfo&gt;[^/\\@]*)\\@)?(?&lt;host&gt;[^/\\:]+)(?:\\:(?&lt;port&gt;[0-9]+))?&quot;);
   private final String hostname;
   private final int port;
@@ -43,46 +46,46 @@ public final class HostAndPort {
    * @param hostname The hostname.
    * @param port The port, or {@code -1} for &quot;no port&quot;.
    */
-<span class="fc" id="L46">  public HostAndPort(String hostname, int port) {</span>
-<span class="fc" id="L47">    this.hostname = hostname;</span>
-<span class="fc" id="L48">    this.port = port;</span>
-<span class="fc" id="L49">  }</span>
+<span class="fc" id="L49">  public HostAndPort(String hostname, int port) {</span>
+<span class="fc" id="L50">    this.hostname = hostname;</span>
+<span class="fc" id="L51">    this.port = port;</span>
+<span class="fc" id="L52">  }</span>
 
   @Override
   public int hashCode() {
-<span class="fc" id="L53">    final int prime = 31;</span>
-<span class="fc" id="L54">    int result = 1;</span>
-<span class="pc bpc" id="L55" title="1 of 2 branches missed.">    result = prime * result + ((getHostname() == null) ? 0 : getHostname().hashCode());</span>
-<span class="fc" id="L56">    result = prime * result + getPort();</span>
-<span class="fc" id="L57">    return result;</span>
+<span class="fc" id="L56">    final int prime = 31;</span>
+<span class="fc" id="L57">    int result = 1;</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">    result = prime * result + ((getHostname() == null) ? 0 : getHostname().hashCode());</span>
+<span class="fc" id="L59">    result = prime * result + getPort();</span>
+<span class="fc" id="L60">    return result;</span>
   }
 
   @Override
   public boolean equals(Object obj) {
-<span class="nc bnc" id="L62" title="All 2 branches missed.">    if (this == obj) {</span>
-<span class="nc" id="L63">      return true;</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">    if (this == obj) {</span>
+<span class="nc" id="L66">      return true;</span>
     }
-<span class="nc bnc" id="L65" title="All 2 branches missed.">    if (!(obj instanceof HostAndPort)) {</span>
-<span class="nc" id="L66">      return false;</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">    if (!(obj instanceof HostAndPort)) {</span>
+<span class="nc" id="L69">      return false;</span>
     }
-<span class="nc" id="L68">    HostAndPort other = (HostAndPort) obj;</span>
-<span class="nc bnc" id="L69" title="All 2 branches missed.">    if (getHostname() == null) {</span>
-<span class="nc bnc" id="L70" title="All 2 branches missed.">      if (other.getHostname() != null) {</span>
-<span class="nc" id="L71">        return false;</span>
+<span class="nc" id="L71">    HostAndPort other = (HostAndPort) obj;</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">    if (getHostname() == null) {</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">      if (other.getHostname() != null) {</span>
+<span class="nc" id="L74">        return false;</span>
       }
-<span class="nc bnc" id="L73" title="All 2 branches missed.">    } else if (!getHostname().equals(other.getHostname())) {</span>
-<span class="nc" id="L74">      return false;</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">    } else if (!getHostname().equals(other.getHostname())) {</span>
+<span class="nc" id="L77">      return false;</span>
     }
 
-<span class="nc bnc" id="L77" title="All 2 branches missed.">    return getPort() == other.getPort();</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    return getPort() == other.getPort();</span>
   }
 
   @Override
   public String toString() {
-<span class="nc bnc" id="L82" title="All 2 branches missed.">    if (getPort() == -1) {</span>
-<span class="nc" id="L83">      return getHostname();</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">    if (getPort() == -1) {</span>
+<span class="nc" id="L86">      return getHostname();</span>
     } else {
-<span class="nc" id="L85">      return getHostname() + &quot;:&quot; + getPort();</span>
+<span class="nc" id="L88">      return getHostname() + &quot;:&quot; + getPort();</span>
     }
   }
 
@@ -94,37 +97,43 @@ public final class HostAndPort {
    * @throws SocketException on error.
    */
   public static HostAndPort parseFrom(URI u) throws SocketException {
-<span class="fc" id="L97">    String host = u.getHost();</span>
-<span class="fc bfc" id="L98" title="All 2 branches covered.">    if (host != null) {</span>
-<span class="fc" id="L99">      return new HostAndPort(host, u.getPort());</span>
+<span class="fc" id="L100">    String host = u.getHost();</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (host != null) {</span>
+<span class="fc" id="L102">      return new HostAndPort(host, u.getPort());</span>
     }
-<span class="fc" id="L101">    String raw = u.getRawSchemeSpecificPart();</span>
-<span class="fc" id="L102">    Matcher m = PAT_HOST_AND_PORT.matcher(raw);</span>
-<span class="pc bpc" id="L103" title="1 of 2 branches missed.">    if (!m.find()) {</span>
-<span class="nc" id="L104">      throw new SocketException(&quot;Cannot parse URI: &quot; + u);</span>
+<span class="fc" id="L104">    String raw = u.getRawSchemeSpecificPart();</span>
+<span class="fc" id="L105">    Matcher m = PAT_HOST_AND_PORT.matcher(raw);</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">    if (!m.find()) {</span>
+<span class="nc" id="L107">      throw new SocketException(&quot;Cannot parse URI: &quot; + u);</span>
     }
-    try {
-<span class="fc" id="L107">      host = URLDecoder.decode(m.group(&quot;host&quot;), &quot;UTF-8&quot;);</span>
-<span class="nc" id="L108">    } catch (UnsupportedEncodingException e) {</span>
-<span class="nc" id="L109">      throw new IllegalStateException(e);</span>
-<span class="fc" id="L110">    }</span>
+<span class="fc" id="L109">    host = urlDecode(m.group(&quot;host&quot;));</span>
 
-<span class="fc" id="L112">    String portStr = m.group(&quot;port&quot;);</span>
+<span class="fc" id="L111">    String portStr = m.group(&quot;port&quot;);</span>
     int port;
-<span class="fc bfc" id="L114" title="All 2 branches covered.">    if (portStr == null) {</span>
-<span class="fc" id="L115">      port = -1;</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">    if (portStr == null) {</span>
+<span class="fc" id="L114">      port = -1;</span>
     } else {
-<span class="fc" id="L117">      port = Integer.parseInt(portStr);</span>
+<span class="fc" id="L116">      port = Integer.parseInt(portStr);</span>
     }
 
-<span class="fc" id="L120">    return new HostAndPort(host, port);</span>
+<span class="fc" id="L119">    return new HostAndPort(host, port);</span>
   }
 
-  private static String urlEncode(String s) {
+  @SuppressWarnings(&quot;PMD.UseStandardCharsets&quot;)
+  private static String urlDecode(String s) {
     try {
-<span class="fc" id="L125">      return URLEncoder.encode(s, &quot;UTF-8&quot;);</span>
+<span class="fc" id="L125">      return URLDecoder.decode(s, &quot;UTF-8&quot;);</span>
 <span class="nc" id="L126">    } catch (UnsupportedEncodingException e) {</span>
 <span class="nc" id="L127">      throw new IllegalStateException(e);</span>
+    }
+  }
+
+  @SuppressWarnings(&quot;PMD.UseStandardCharsets&quot;)
+  private static String urlEncode(String s) {
+    try {
+<span class="fc" id="L134">      return URLEncoder.encode(s, &quot;UTF-8&quot;);</span>
+<span class="nc" id="L135">    } catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L136">      throw new IllegalStateException(e);</span>
     }
   }
 
@@ -134,7 +143,7 @@ public final class HostAndPort {
    * @return The hostname.
    */
   public String getHostname() {
-<span class="fc" id="L137">    return hostname;</span>
+<span class="fc" id="L146">    return hostname;</span>
   }
 
   /**
@@ -143,7 +152,7 @@ public final class HostAndPort {
    * @return The port.
    */
   public int getPort() {
-<span class="fc" id="L146">    return port;</span>
+<span class="fc" id="L155">    return port;</span>
   }
 
   /**
@@ -153,7 +162,7 @@ public final class HostAndPort {
    * @return The URI.
    */
   public URI toURI(String scheme) {
-<span class="nc" id="L156">    return toURI(scheme, null, null, null, null);</span>
+<span class="nc" id="L165">    return toURI(scheme, null, null, null, null);</span>
   }
 
   /**
@@ -165,28 +174,28 @@ public final class HostAndPort {
    * @return The URI.
    */
   public URI toURI(String scheme, URI template) {
-<span class="fc bfc" id="L168" title="All 2 branches covered.">    if (template == null) {</span>
-<span class="fc" id="L169">      return toURI(scheme, null, null, null, null);</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">    if (template == null) {</span>
+<span class="fc" id="L178">      return toURI(scheme, null, null, null, null);</span>
     }
 
-<span class="fc" id="L172">    String rawAuthority = template.getRawAuthority();</span>
-<span class="fc" id="L173">    int at = rawAuthority.indexOf('@');</span>
-<span class="fc bfc" id="L174" title="All 2 branches covered.">    if (at &gt;= 0) {</span>
-<span class="fc" id="L175">      rawAuthority = rawAuthority.substring(0, at);</span>
-<span class="pc bpc" id="L176" title="1 of 4 branches missed.">    } else if (rawAuthority.length() &gt; 0 &amp;&amp; template.getHost() == null) {</span>
+<span class="fc" id="L181">    String rawAuthority = template.getRawAuthority();</span>
+<span class="fc" id="L182">    int at = rawAuthority.indexOf('@');</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">    if (at &gt;= 0) {</span>
+<span class="fc" id="L184">      rawAuthority = rawAuthority.substring(0, at);</span>
+<span class="pc bpc" id="L185" title="1 of 4 branches missed.">    } else if (rawAuthority.length() &gt; 0 &amp;&amp; template.getHost() == null) {</span>
       // encoded hostname was parsed as authority
-<span class="fc" id="L178">      rawAuthority = null;</span>
-<span class="pc bpc" id="L179" title="1 of 4 branches missed.">    } else if (rawAuthority.length() &gt; 0 &amp;&amp; template.getAuthority().equals(template.getHost())) {</span>
+<span class="fc" id="L187">      rawAuthority = null;</span>
+<span class="pc bpc" id="L188" title="1 of 4 branches missed.">    } else if (rawAuthority.length() &gt; 0 &amp;&amp; template.getAuthority().equals(template.getHost())) {</span>
       // hostname was duplicated as authority
-<span class="fc" id="L181">      rawAuthority = null;</span>
-<span class="pc bpc" id="L182" title="2 of 4 branches missed.">    } else if (rawAuthority.length() &gt; 0 &amp;&amp; template.getAuthority().equals(template.getHost() + &quot;:&quot;</span>
-<span class="fc" id="L183">        + template.getPort())) {</span>
+<span class="fc" id="L190">      rawAuthority = null;</span>
+<span class="pc bpc" id="L191" title="2 of 4 branches missed.">    } else if (rawAuthority.length() &gt; 0 &amp;&amp; template.getAuthority().equals(template.getHost() + &quot;:&quot;</span>
+<span class="fc" id="L192">        + template.getPort())) {</span>
       // hostname:port was duplicated as authority
-<span class="fc" id="L185">      rawAuthority = null;</span>
+<span class="fc" id="L194">      rawAuthority = null;</span>
     }
 
-<span class="fc" id="L188">    return toURI(scheme, rawAuthority, template.getRawPath(), template.getRawQuery(), template</span>
-<span class="fc" id="L189">        .getRawFragment());</span>
+<span class="fc" id="L197">    return toURI(scheme, rawAuthority, template.getRawPath(), template.getRawQuery(), template</span>
+<span class="fc" id="L198">        .getRawFragment());</span>
   }
 
   /**
@@ -202,17 +211,17 @@ public final class HostAndPort {
    */
   public URI toURI(String scheme, String rawAuthority, String rawPath, String rawQuery,
       String rawFragment) {
-<span class="fc" id="L205">    Objects.requireNonNull(scheme);</span>
-<span class="fc bfc" id="L206" title="All 4 branches covered.">    if (rawPath != null &amp;&amp; !rawPath.isEmpty()) {</span>
-<span class="pc bpc" id="L207" title="1 of 2 branches missed.">      if (!rawPath.startsWith(&quot;/&quot;)) {</span>
-<span class="nc" id="L208">        throw new IllegalArgumentException(&quot;Path must be absolute: &quot; + rawPath);</span>
+<span class="fc" id="L214">    Objects.requireNonNull(scheme);</span>
+<span class="fc bfc" id="L215" title="All 4 branches covered.">    if (rawPath != null &amp;&amp; !rawPath.isEmpty()) {</span>
+<span class="pc bpc" id="L216" title="1 of 2 branches missed.">      if (!rawPath.startsWith(&quot;/&quot;)) {</span>
+<span class="nc" id="L217">        throw new IllegalArgumentException(&quot;Path must be absolute: &quot; + rawPath);</span>
       }
     }
 
-<span class="fc bfc" id="L212" title="All 2 branches covered.">    return URI.create(scheme + &quot;://&quot; + (rawAuthority == null ? &quot;&quot; : rawAuthority + &quot;@&quot;) + urlEncode(</span>
-<span class="fc bfc" id="L213" title="All 4 branches covered.">        getHostname()).replace(&quot;%2C&quot;, &quot;,&quot;) + (port &lt;= 0 ? &quot;&quot; : (&quot;:&quot; + port)) + (rawPath == null ? &quot;&quot;</span>
-<span class="fc bfc" id="L214" title="All 4 branches covered.">            : rawPath) + (rawQuery == null ? &quot;&quot; : &quot;?&quot; + rawQuery) + (rawFragment == null ? &quot;&quot; : &quot;#&quot;</span>
-<span class="fc" id="L215">                + rawFragment));</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">    return URI.create(scheme + &quot;://&quot; + (rawAuthority == null ? &quot;&quot; : rawAuthority + &quot;@&quot;) + urlEncode(</span>
+<span class="fc bfc" id="L222" title="All 4 branches covered.">        getHostname()).replace(&quot;%2C&quot;, &quot;,&quot;) + (port &lt;= 0 ? &quot;&quot; : (&quot;:&quot; + port)) + (rawPath == null ? &quot;&quot;</span>
+<span class="fc bfc" id="L223" title="All 4 branches covered.">            : rawPath) + (rawQuery == null ? &quot;&quot; : &quot;?&quot; + rawQuery) + (rawFragment == null ? &quot;&quot; : &quot;#&quot;</span>
+<span class="fc" id="L224">                + rawFragment));</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

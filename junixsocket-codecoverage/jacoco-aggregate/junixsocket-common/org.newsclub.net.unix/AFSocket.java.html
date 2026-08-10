@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AFSocket.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">junixsocket-codecoverage</a> &gt; <a href="../index.html" class="el_bundle">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">AFSocket.java</span></div><h1>AFSocket.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -38,26 +38,27 @@ import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
  * @author Christian Kohlschütter
  */
 @SuppressWarnings({&quot;PMD.CouplingBetweenObjects&quot;, &quot;PMD.CyclomaticComplexity&quot;})
+@SuppressFBWarnings({&quot;USO_UNSAFE_STATIC_METHOD_SYNCHRONIZATION&quot;})
 public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket implements AFSomeSocket,
     AFSocketExtensions {
   static final String PROP_LIBRARY_DISABLE_CAPABILITY_PREFIX =
       &quot;org.newsclub.net.unix.library.disable.&quot;;
 
-<span class="fc" id="L46">  private static final byte[] ZERO_BYTES = new byte[0];</span>
+<span class="fc" id="L47">  private static final byte[] ZERO_BYTES = new byte[0];</span>
 
   @SuppressWarnings(&quot;PMD.MutableStaticState&quot;)
   static String loadedLibrary; // set by NativeLibraryLoader
 
-<span class="fc" id="L51">  private static Integer capabilitiesValue = null;</span>
+<span class="fc" id="L52">  private static Integer capabilitiesValue = null;</span>
 
   private final AFSocketImpl&lt;A&gt; impl;
 
   private final AFSocketAddressFromHostname&lt;A&gt; afh;
-<span class="fc" id="L56">  private final Closeables closeables = new Closeables();</span>
-<span class="fc" id="L57">  private final AtomicBoolean created = new AtomicBoolean(false);</span>
+<span class="fc" id="L57">  private final Closeables closeables = new Closeables();</span>
+<span class="fc" id="L58">  private final AtomicBoolean created = new AtomicBoolean(false);</span>
 
-<span class="fc" id="L59">  @SuppressWarnings(&quot;this-escape&quot;)</span>
-<span class="fc" id="L60">  private final AFSocketChannel&lt;A&gt; channel = newChannel();</span>
+<span class="fc" id="L60">  @SuppressWarnings(&quot;this-escape&quot;)</span>
+<span class="fc" id="L61">  private final AFSocketChannel&lt;A&gt; channel = newChannel();</span>
 
   private @Nullable SocketAddressFilter connectFilter;
 
@@ -68,13 +69,13 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
    * @param afh The conversion helper to get a socket address from an encoded hostname.
    * @throws SocketException on error.
    */
-  @SuppressFBWarnings(&quot;CT_CONSTRUCTOR_THROW&quot;)
+  @SuppressFBWarnings({&quot;UNENCRYPTED_SOCKET&quot;})
   protected AFSocket(final AFSocketImpl&lt;A&gt; impl, AFSocketAddressFromHostname&lt;A&gt; afh)
       throws SocketException {
-<span class="fc" id="L74">    super(impl);</span>
-<span class="fc" id="L75">    this.afh = afh;</span>
-<span class="fc" id="L76">    this.impl = impl;</span>
-<span class="fc" id="L77">  }</span>
+<span class="fc" id="L75">    super(impl);</span>
+<span class="fc" id="L76">    this.afh = afh;</span>
+<span class="fc" id="L77">    this.impl = impl;</span>
+<span class="fc" id="L78">  }</span>
 
   /**
    * Returns the {@link AFSocketAddress} type supported by this socket.
@@ -82,7 +83,7 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
    * @return The supported {@link AFSocketAddress}.
    */
   protected final Class&lt;? extends AFSocketAddress&gt; socketAddressClass() {
-<span class="fc" id="L85">    return getAFImpl(false).getAddressFamily().getSocketAddressClass();</span>
+<span class="fc" id="L86">    return getAFImpl(false).getAddressFamily().getSocketAddressClass();</span>
   }
 
   /**
@@ -115,32 +116,32 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
   static &lt;A extends AFSocketAddress&gt; AFSocket&lt;A&gt; newInstance(Constructor&lt;A&gt; constr,
       AFSocketFactory&lt;A&gt; sf, FileDescriptor fdObj, int localPort, int remotePort)
       throws IOException {
-<span class="pc bpc" id="L118" title="1 of 2 branches missed.">    if (!fdObj.valid()) {</span>
-<span class="nc" id="L119">      throw new SocketException(&quot;Invalid file descriptor&quot;);</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">    if (!fdObj.valid()) {</span>
+<span class="nc" id="L120">      throw new SocketException(&quot;Invalid file descriptor&quot;);</span>
     }
-<span class="fc" id="L121">    int status = NativeUnixSocket.socketStatus(fdObj);</span>
-<span class="pc bpc" id="L122" title="1 of 2 branches missed.">    if (status == NativeUnixSocket.SOCKETSTATUS_INVALID) {</span>
-<span class="nc" id="L123">      throw new SocketException(&quot;Not a valid socket&quot;);</span>
+<span class="fc" id="L122">    int status = NativeUnixSocket.socketStatus(fdObj);</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">    if (status == NativeUnixSocket.SOCKETSTATUS_INVALID) {</span>
+<span class="nc" id="L124">      throw new SocketException(&quot;Not a valid socket&quot;);</span>
     }
 
-<span class="fc" id="L126">    AFSocket&lt;A&gt; socket = newInstance0(constr, fdObj, sf);</span>
-<span class="fc" id="L127">    socket.getAFImpl().updatePorts(localPort, remotePort);</span>
+<span class="fc" id="L127">    AFSocket&lt;A&gt; socket = newInstance0(constr, fdObj, sf);</span>
+<span class="fc" id="L128">    socket.getAFImpl().updatePorts(localPort, remotePort);</span>
 
-<span class="pc bpc" id="L129" title="2 of 4 branches missed.">    switch (status) {</span>
+<span class="pc bpc" id="L130" title="2 of 4 branches missed.">    switch (status) {</span>
       case NativeUnixSocket.SOCKETSTATUS_CONNECTED:
-<span class="fc" id="L131">        socket.internalDummyConnect();</span>
-<span class="fc" id="L132">        break;</span>
+<span class="fc" id="L132">        socket.internalDummyConnect();</span>
+<span class="fc" id="L133">        break;</span>
       case NativeUnixSocket.SOCKETSTATUS_BOUND:
-<span class="fc" id="L134">        socket.internalDummyBind();</span>
-<span class="fc" id="L135">        break;</span>
+<span class="fc" id="L135">        socket.internalDummyBind();</span>
+<span class="fc" id="L136">        break;</span>
       case NativeUnixSocket.SOCKETSTATUS_UNKNOWN:
-<span class="nc" id="L137">        break;</span>
+<span class="nc" id="L138">        break;</span>
       default:
-<span class="nc" id="L139">        throw new IllegalStateException(&quot;Invalid socketStatus response: &quot; + status);</span>
+<span class="nc" id="L140">        throw new IllegalStateException(&quot;Invalid socketStatus response: &quot; + status);</span>
     }
-<span class="fc" id="L141">    socket.getAFImpl().setSocketAddress(socket.getLocalSocketAddress());</span>
+<span class="fc" id="L142">    socket.getAFImpl().setSocketAddress(socket.getLocalSocketAddress());</span>
 
-<span class="fc" id="L143">    return socket;</span>
+<span class="fc" id="L144">    return socket;</span>
   }
 
   /**
@@ -159,13 +160,13 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
    */
   protected static final &lt;A extends AFSocketAddress&gt; AFSocket&lt;A&gt; newInstance(Constructor&lt;A&gt; constr,
       AFSocketFactory&lt;A&gt; factory) throws SocketException {
-<span class="fc" id="L162">    return newInstance0(constr, null, factory);</span>
+<span class="fc" id="L163">    return newInstance0(constr, null, factory);</span>
   }
 
   private static &lt;A extends AFSocketAddress&gt; @NonNull AFSocket&lt;A&gt; newInstance0(
       Constructor&lt;A&gt; constr, FileDescriptor fdObj, AFSocketFactory&lt;A&gt; factory)
       throws SocketException {
-<span class="fc" id="L168">    return constr.newInstance(fdObj, factory);</span>
+<span class="fc" id="L169">    return constr.newInstance(fdObj, factory);</span>
   }
 
   /**
@@ -179,9 +180,9 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
    */
   protected static final &lt;A extends AFSocketAddress&gt; @NonNull AFSocket&lt;A&gt; connectTo(
       Constructor&lt;A&gt; constr, A addr) throws IOException {
-<span class="fc" id="L182">    AFSocket&lt;A&gt; socket = constr.newInstance(null, null);</span>
-<span class="fc" id="L183">    socket.connect(addr);</span>
-<span class="fc" id="L184">    return socket;</span>
+<span class="fc" id="L183">    AFSocket&lt;A&gt; socket = constr.newInstance(null, null);</span>
+<span class="fc" id="L184">    socket.connect(addr);</span>
+<span class="fc" id="L185">    return socket;</span>
   }
 
   /**
@@ -195,30 +196,29 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
    */
   public static final &lt;A extends AFSocketAddress&gt; AFSocket&lt;?&gt; connectTo(@NonNull A addr)
       throws IOException {
-<span class="fc" id="L198">    AFSocket&lt;?&gt; socket = addr.getAddressFamily().getSocketConstructor().newInstance(null, null);</span>
-<span class="fc" id="L199">    socket.connect(addr);</span>
-<span class="fc" id="L200">    return socket;</span>
+<span class="fc" id="L199">    AFSocket&lt;?&gt; socket = addr.getAddressFamily().getSocketConstructor().newInstance(null, null);</span>
+<span class="fc" id="L200">    socket.connect(addr);</span>
+<span class="fc" id="L201">    return socket;</span>
   }
 
   /**
-   * Not supported, since it's not necessary for client sockets.
+   * Not fully supported, since it's not necessary for client sockets.
    *
    * @see AFServerSocket
    */
   @Override
   public final void bind(SocketAddress bindpoint) throws IOException {
-<span class="pc bpc" id="L210" title="1 of 2 branches missed.">    if (bindpoint == null) {</span>
-<span class="fc" id="L211">      throw new IllegalArgumentException();</span>
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">    if (bindpoint == null) {</span>
+<span class="fc" id="L212">      throw new IllegalArgumentException();</span>
     }
-<span class="nc bnc" id="L213" title="All 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L214">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L215">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
-<span class="nc bnc" id="L216" title="All 2 branches missed.">    if (isBound()) {</span>
-<span class="nc" id="L217">      throw new SocketException(&quot;Already bound&quot;);</span>
+<span class="nc bnc" id="L217" title="All 2 branches missed.">    if (isBound()) {</span>
+<span class="nc" id="L218">      throw new SocketException(&quot;Already bound&quot;);</span>
     }
-<span class="nc" id="L219">    preprocessSocketAddress(bindpoint);</span>
-<span class="nc" id="L220">    throw new SocketException(&quot;Use AF*ServerSocket#bind or #bindOn&quot;);</span>
-  }
+<span class="nc" id="L220">    preprocessSocketAddress(bindpoint);</span>
+<span class="nc" id="L221">  }</span>
 
   @Override
   public final boolean isBound() {
@@ -254,8 +254,8 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
 <span class="fc bfc" id="L254" title="All 2 branches covered.">    if (timeout &lt; 0) {</span>
 <span class="fc" id="L255">      throw new IllegalArgumentException(&quot;connect: timeout can't be negative&quot;);</span>
     }
-<span class="pc bpc" id="L257" title="1 of 2 branches missed.">    if (isClosed()) {</span>
-<span class="nc" id="L258">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="fc bfc" id="L257" title="All 2 branches covered.">    if (isClosed()) {</span>
+<span class="fc" id="L258">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
 
 <span class="fc bfc" id="L261" title="All 2 branches covered.">    if (connectFilter != null) {</span>
@@ -362,7 +362,7 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
 
   @Override
   public final boolean isClosed() {
-<span class="pc bpc" id="L365" title="2 of 8 branches missed.">    return super.isClosed() || (isConnected() &amp;&amp; !impl.getFD().valid()) || impl.isClosed();</span>
+<span class="pc bpc" id="L365" title="1 of 8 branches missed.">    return super.isClosed() || (isConnected() &amp;&amp; !impl.getFD().valid()) || impl.isClosed();</span>
   }
 
   @Override
@@ -626,4 +626,4 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
 <span class="nc" id="L626">    getAFImpl().getCore().setShutdownOnClose(enabled);</span>
 <span class="nc" id="L627">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

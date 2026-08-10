@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CleanableState.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-common</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix</a> &gt; <span class="el_source">CleanableState.java</span></div><h1>CleanableState.java</h1><pre class="source lang-java linenums">/*
  * junixsocket
  *
- * Copyright 2009-2024 Christian Kohlschütter
+ * Copyright 2009-2026 Christian Kohlschütter
  *
  * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,11 @@ package org.newsclub.net.unix;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.ref.Cleaner;
+import java.util.Objects;
 
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
 
 /**
  * This wrapper (along with the Java 8-specific counterpart in src/main/java8) allows us to
@@ -40,50 +43,115 @@ import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
  * &lt;li&gt;If the observed class implements {@code close()}, it's a good practice to have it just call
  * {@code cleanableState.runCleaner()}.&lt;/li&gt;
  * &lt;/ol&gt;
- * &lt;/p&gt;
+ * &lt;p&gt;
+ * Exceptions thrown upon doClean() are either thrown via {@link #close()} when invoked directly,
+ * or, if cleaned during Garbage collection, to the exception handler specified in the constructor
+ * or (if none specified) to the default uncaught exception handler.
  * &lt;p&gt;
  * Implementation details:
  * &lt;ul&gt;
  * &lt;li&gt;In Java 9 or later, {@link Cleaner} is used under the hood.&lt;/li&gt;
  * &lt;li&gt;In Java 8 or earlier, {@link #finalize()} calls {@link #doClean()} directly.&lt;/li&gt;
  * &lt;/ul&gt;
- * &lt;/p&gt;
  *
  * @author Christian Kohlschütter
  */
 @IgnoreJRERequirement // see src/main/java8
-abstract class CleanableState implements Closeable {
-<span class="fc" id="L56">  private static final Cleaner CLEANER = Cleaner.create();</span>
+public abstract class CleanableState implements Closeable {
+  /**
+   * A default exception handler: Calls {@link Thread#getDefaultUncaughtExceptionHandler()} with the
+   * stacktrace and information about the current thread.
+   */
+<span class="pc" id="L65">  public static final AFConsumer&lt;Throwable&gt; DEFAULT_EXCEPTION_HANDLER = (t) -&gt; Thread</span>
+<span class="nc" id="L66">      .getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), t);</span>
+
+<span class="fc" id="L68">  private static final Cleaner CLEANER = Cleaner.create();</span>
   private final Cleaner.Cleanable cleanable;
+  private AFConsumer&lt;Throwable&gt; exceptionHandler;
+  private AFConsumer&lt;Throwable&gt; exceptionHandlerCurrent;
+<span class="fc" id="L72">  private IOException exceptionUponClose = null;</span>
 
   /**
    * Creates a state object to be used as an implementation detail of the specified observed
-   * instance.
+   * instance, using the {@link #DEFAULT_EXCEPTION_HANDLER}.
    *
    * @param observed The observed instance (the outer class referencing this
    *          {@link CleanableState}).
    */
-<span class="fc" id="L66">  protected CleanableState(Object observed) {</span>
-<span class="fc" id="L67">    this.cleanable = CLEANER.register(observed, () -&gt; doClean()); // NOPMD.LambdaCanBeMethodReference</span>
-                                                                  // (Retrolambda)
-<span class="fc" id="L69">  }</span>
+  @SuppressFBWarnings(&quot;CT_CONSTRUCTOR_THROW&quot;)
+  protected CleanableState(Object observed) {
+<span class="fc" id="L83">    this(observed, DEFAULT_EXCEPTION_HANDLER);</span>
+<span class="fc" id="L84">  }</span>
+
+  /**
+   * Creates a state object to be used as an implementation detail of the specified observed
+   * instance, using a custom exception handler.
+   *
+   * @param observed The observed instance (the outer class referencing this
+   *          {@link CleanableState}).
+   * @param exceptionHandler The exception handler.
+   */
+  @SuppressFBWarnings(&quot;CT_CONSTRUCTOR_THROW&quot;)
+<span class="fc" id="L95">  protected CleanableState(Object observed, AFConsumer&lt;Throwable&gt; exceptionHandler) {</span>
+<span class="fc" id="L96">    Objects.requireNonNull(exceptionHandler);</span>
+
+<span class="fc" id="L98">    this.exceptionHandler = exceptionHandler;</span>
+<span class="fc" id="L99">    this.exceptionHandlerCurrent = exceptionHandler;</span>
+<span class="fc" id="L100">    this.cleanable = CLEANER.register(observed, () -&gt; doClean1());</span>
+<span class="fc" id="L101">  }</span>
 
   /**
    * Explicitly the cleanup code defined in {@link #doClean()}. This is best be called from a
    * {@code close()} method in the observed class.
    */
   public final void runCleaner() {
-<span class="fc" id="L76">    cleanable.clean();</span>
-<span class="fc" id="L77">  }</span>
+<span class="fc" id="L108">    cleanable.clean();</span>
+<span class="fc" id="L109">  }</span>
+
+  private void doClean1() {
+    try {
+<span class="fc" id="L113">      doClean();</span>
+<span class="nc" id="L114">    } catch (Throwable t) { // NOPMD</span>
+<span class="nc" id="L115">      exceptionHandlerCurrent.accept(t);</span>
+<span class="fc" id="L116">    }</span>
+<span class="fc" id="L117">  }</span>
 
   /**
-   * Performs the actual cleanup.
+   * Performs the actual cleanup. Be sure to always clean up whenever possible, either by tracking
+   * potential exceptions or by using try-finally to ensure proper cleanup.
+   *
+   * @throws IOException on error.
    */
-  protected abstract void doClean();
+  protected abstract void doClean() throws IOException;
+
+  /**
+   * Checks if we're being called from within {@link #close()}.
+   *
+   * @return {@code true} if being called from within {@link #close()}.
+   */
+  protected boolean inClose() {
+<span class="nc bnc" id="L133" title="All 2 branches missed.">    return exceptionHandlerCurrent != exceptionHandler; // NOPMD</span>
+  }
 
   @Override
   public final void close() throws IOException {
-<span class="fc" id="L86">    runCleaner();</span>
-<span class="fc" id="L87">  }</span>
+<span class="fc" id="L138">    this.exceptionHandlerCurrent = (t) -&gt; {</span>
+<span class="nc" id="L139">      IOException exc = exceptionUponClose;</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">      if (exc != null) {</span>
+<span class="nc" id="L141">        exc.addSuppressed(t);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">      } else if (t instanceof IOException) {</span>
+<span class="nc" id="L143">        exceptionUponClose = (IOException) t;</span>
+      } else {
+<span class="nc" id="L145">        exceptionUponClose = new IOException();</span>
+<span class="nc" id="L146">        exceptionUponClose.addSuppressed(t);</span>
+      }
+<span class="nc" id="L148">    };</span>
+<span class="fc" id="L149">    runCleaner();</span>
+<span class="fc" id="L150">    this.exceptionHandlerCurrent = exceptionHandler;</span>
+
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">    if (exceptionUponClose != null) {</span>
+<span class="nc" id="L153">      throw exceptionUponClose;</span>
+    }
+<span class="fc" id="L155">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

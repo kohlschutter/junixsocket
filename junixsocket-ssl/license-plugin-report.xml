@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1727101442308">
-    <module artifactId="junixsocket-ssl" groupId="com.kohlschutter.junixsocket" version="2.10.1"/>
+<licensePluginReport goal="CHECK" timestamp="1786368819325">
+    <module artifactId="junixsocket-ssl" groupId="com.kohlschutter.junixsocket" version="2.11.0"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/ssl/BuilderSSLContext.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/ssl/BuilderSSLServerSocketFactory.java" result="PRESENT"/>
@@ -22,6 +22,7 @@
         <file path="src/test/java/org/newsclub/net/unix/ssl/SSLContextBuilderTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/ssl/SSLTestBase.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/ssl/SelftestProvider.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/ssl/TestCredentials.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/ssl/TestUtil.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/ssl/TestingAFSocketServer.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/ssl/ValidatingX509TrustManagerTest.java" result="PRESENT"/>

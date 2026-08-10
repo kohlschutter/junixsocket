@@ -9,7 +9,7 @@
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * junixsocket</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
-<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2024 Christian Kohlschütter</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * Copyright 2009-2026 Christian Kohlschütter</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> * Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> * you may not use this file except in compliance with the License.</em>
@@ -117,13 +117,25 @@
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>     <strong class="jxr_keyword">return</strong> getNodeIdentity(name.getControlName());
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>   }
 <a class="jxr_linenumber" name="L111" href="#L111">111</a> 
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>   @Override
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>   <strong class="jxr_keyword">protected</strong> AFDatagramSocket&lt;AFSYSTEMSocketAddress&gt; newDatagramSocketInstance() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="AFSYSTEMDatagramSocket" href="../../../../../../org/newsclub/net/unix/darwin/system/AFSYSTEMDatagramSocket.html#AFSYSTEMDatagramSocket">AFSYSTEMDatagramSocket</a>(<strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>   }
-<a class="jxr_linenumber" name="L116" href="#L116">116</a> }
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">   * Retrieves the number of kernel control names registered with the kernel.</em>
+<a class="jxr_linenumber" name="L114" href="#L114">114</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">   * An {@link IOException} is thrown if the count not be retrieved.</em>
+<a class="jxr_linenumber" name="L116" href="#L116">116</a> <em class="jxr_javadoccomment">   *</em>
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">   * @return The count.</em>
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_javadoccomment">   * @throws IOException on error.</em>
+<a class="jxr_linenumber" name="L119" href="#L119">119</a> <em class="jxr_javadoccomment">   */</em>
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>   <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> getKernelControlIdCount() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>     <strong class="jxr_keyword">return</strong> getImplExtensions().getKernelControlIdCount(getFileDescriptor());
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>   }
+<a class="jxr_linenumber" name="L123" href="#L123">123</a> 
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>   @Override
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>   <strong class="jxr_keyword">protected</strong> AFDatagramSocket&lt;AFSYSTEMSocketAddress&gt; newDatagramSocketInstance() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="AFSYSTEMDatagramSocket" href="../../../../../../org/newsclub/net/unix/darwin/system/AFSYSTEMDatagramSocket.html#AFSYSTEMDatagramSocket">AFSYSTEMDatagramSocket</a>(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>   }
+<a class="jxr_linenumber" name="L128" href="#L128">128</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2009&#x2013;2024 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a>. All rights reserved.</div>
+<div id="footer">© 2009–2026 <a href="https://www.kohlschutter.com/">Kohlschütter Search Intelligence</a></div>
 </body>
 </html>

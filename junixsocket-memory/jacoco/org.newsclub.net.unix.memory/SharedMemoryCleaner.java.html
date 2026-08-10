@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SharedMemoryCleaner.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junixsocket-memory</a> &gt; <a href="index.source.html" class="el_package">org.newsclub.net.unix.memory</a> &gt; <span class="el_source">SharedMemoryCleaner.java</span></div><h1>SharedMemoryCleaner.java</h1><pre class="source lang-java linenums">/*
+ * junixsocket
+ *
+ * Copyright 2009-2026 Christian Kohlschütter
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.newsclub.net.unix.memory;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.lang.foreign.Arena;
+import java.lang.foreign.MemorySegment;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.WeakHashMap;
+
+import org.newsclub.net.unix.CleanableState;
+import org.newsclub.net.unix.MemoryImplUtilInternal;
+
+import com.kohlschutter.annotations.compiletime.SuppressFBWarnings;
+
+class SharedMemoryCleaner extends CleanableState {
+<span class="fc" id="L38">  private final Map&lt;MemorySegment, Integer&gt; segments = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L39">  private final Map&lt;Futex, Futex&gt; futexes = new WeakHashMap&lt;&gt;();</span>
+  private Arena arena;
+  private final boolean closeArena;
+  private MemorySegment arenaSegment;
+  final FileDescriptor fd;
+
+  SharedMemoryCleaner(Arena arena, Object observed, FileDescriptor fd) {
+<span class="fc" id="L46">    super(observed);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">    if (arena == null) {</span>
+<span class="fc" id="L48">      this.arena = null;</span>
+<span class="fc" id="L49">      this.closeArena = true;</span>
+    } else {
+<span class="fc" id="L51">      this.arena = arena;</span>
+<span class="fc" id="L52">      this.closeArena = false;</span>
+    }
+<span class="fc" id="L54">    this.fd = fd;</span>
+<span class="fc" id="L55">  }</span>
+
+  void registerMemorySegment(MemorySegment ms, int duplicates) {
+<span class="fc" id="L58">    synchronized (segments) {</span>
+<span class="fc" id="L59">      segments.put(ms, duplicates);</span>
+<span class="fc" id="L60">    }</span>
+<span class="fc" id="L61">  }</span>
+
+  @Override
+  @SuppressWarnings(&quot;PMD.CognitiveComplexity&quot;)
+  @SuppressFBWarnings(&quot;USO_UNSAFE_OBJECT_SYNCHRONIZATION&quot;)
+  protected synchronized void doClean() throws IOException {
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">    if (!SharedMemory.isUtilLoaded()) {</span>
+      // Nothing to do
+<span class="nc" id="L69">      return;</span>
+    }
+
+<span class="fc" id="L72">    Map&lt;FileDescriptor, Long&gt; map = SharedMemory.FD_MEMORY;</span>
+<span class="pc bpc" id="L73" title="3 of 4 branches missed.">    if (map != null &amp;&amp; fd != null) {</span>
+<span class="nc" id="L74">      synchronized (map) {</span>
+<span class="nc" id="L75">        map.remove(fd);</span>
+<span class="nc" id="L76">      }</span>
+    }
+
+<span class="fc" id="L79">    synchronized (futexes) {</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">      if (!futexes.isEmpty()) {</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        for (Futex f : futexes.keySet()) {</span>
+          try {
+<span class="fc" id="L83">            f.tryWake(true); // unblock waiting threads</span>
+<span class="fc" id="L84">            f.close();</span>
+<span class="nc" id="L85">          } catch (Exception e) { // NOPMD</span>
+            // ignore
+<span class="fc" id="L87">          }</span>
+<span class="fc" id="L88">        }</span>
+<span class="fc" id="L89">        futexes.clear();</span>
+      }
+<span class="fc" id="L91">    }</span>
+
+<span class="fc bfc" id="L93" title="All 4 branches covered.">    if (closeArena &amp;&amp; arena != null) {</span>
+<span class="fc" id="L94">      arena.close();</span>
+    }
+
+<span class="fc" id="L97">    MemoryImplUtilInternal util = SharedMemory.getUtil();</span>
+
+<span class="fc" id="L99">    IOException exc = null;</span>
+<span class="fc bfc" id="L100" title="All 4 branches covered.">    if (fd != null &amp;&amp; fd.valid()) {</span>
+      try {
+<span class="fc" id="L102">        util.close(fd);</span>
+<span class="nc" id="L103">      } catch (IOException e) {</span>
+<span class="nc" id="L104">        exc = e;</span>
+<span class="fc" id="L105">      }</span>
+    }
+
+    List&lt;Entry&lt;MemorySegment, Integer&gt;&gt; list;
+<span class="fc" id="L109">    synchronized (segments) {</span>
+<span class="fc" id="L110">      list = new ArrayList&lt;&gt;(segments.entrySet()).reversed();</span>
+<span class="fc" id="L111">      segments.clear();</span>
+<span class="fc" id="L112">    }</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">    for (Map.Entry&lt;MemorySegment, Integer&gt; en : list) {</span>
+<span class="fc" id="L114">      MemorySegment ms = en.getKey();</span>
+<span class="fc" id="L115">      int duplicates = en.getValue();</span>
+
+<span class="fc" id="L117">      long addr = ms.address();</span>
+<span class="fc" id="L118">      long length = ms.byteSize();</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">      if (ms.scope().isAlive()) {</span>
+<span class="fc" id="L120">        util.madvise(addr, length, MemoryImplUtilInternal.MADV_FREE_NOW, true);</span>
+<span class="fc" id="L121">        continue;</span>
+      }
+
+      try {
+<span class="fc" id="L125">        util.unmap(addr, length, duplicates, false);</span>
+<span class="nc" id="L126">      } catch (IOException e) {</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (exc == null) {</span>
+<span class="nc" id="L128">          exc = e;</span>
+        } else {
+<span class="nc" id="L130">          exc.addSuppressed(e);</span>
+        }
+<span class="fc" id="L132">      }</span>
+<span class="fc" id="L133">    }</span>
+
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">    if (exc != null) {</span>
+<span class="nc" id="L136">      throw exc;</span>
+    }
+<span class="fc" id="L138">  }</span>
+
+  public boolean isCovered(MemorySegment segment) {
+<span class="fc" id="L141">    Objects.requireNonNull(segment);</span>
+<span class="fc" id="L142">    long start = segment.address();</span>
+<span class="fc" id="L143">    long end = start + segment.byteSize();</span>
+<span class="fc" id="L144">    synchronized (segments) {</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">      for (MemorySegment ms : segments.keySet()) {</span>
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">        if (ms == segment) { // NOPMD</span>
+<span class="nc" id="L147">          return true;</span>
+        }
+<span class="fc" id="L149">        long addr = ms.address();</span>
+<span class="pc bpc" id="L150" title="2 of 4 branches missed.">        if (start &gt;= addr &amp;&amp; end &lt;= addr + ms.byteSize()) {</span>
+<span class="fc" id="L151">          return true;</span>
+        }
+<span class="nc" id="L153">      }</span>
+<span class="nc" id="L154">    }</span>
+<span class="nc" id="L155">    return false;</span>
+  }
+
+  public synchronized MemorySegment getArenaSegment() {
+<span class="fc bfc" id="L159" title="All 2 branches covered.">    if (this.arenaSegment == null) {</span>
+<span class="fc" id="L160">      this.arenaSegment = getArena().allocate(0);</span>
+    }
+<span class="fc" id="L162">    return arenaSegment;</span>
+  }
+
+  public void registerFutex(Futex futex) {
+<span class="fc" id="L166">    synchronized (futexes) {</span>
+<span class="fc" id="L167">      futexes.put(futex, futex);</span>
+<span class="fc" id="L168">    }</span>
+<span class="fc" id="L169">  }</span>
+
+  public void checkCovered(MemorySegment addr) throws IOException {
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">    if (!isCovered(addr)) {</span>
+<span class="nc" id="L173">      throw new IOException(&quot;Not a MemorySegment of ours&quot;);</span>
+    }
+<span class="fc" id="L175">  }</span>
+
+  public synchronized Arena getArena() {
+<span class="fc bfc" id="L178" title="All 2 branches covered.">    if (this.arena == null) {</span>
+<span class="fc" id="L179">      this.arena = Arena.ofShared();</span>
+    }
+<span class="fc" id="L181">    return this.arena;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

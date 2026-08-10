@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1727101576348">
-    <module artifactId="junixsocket-jetty" groupId="com.kohlschutter.junixsocket" version="2.10.1"/>
+<licensePluginReport goal="CHECK" timestamp="1786368940838">
+    <module artifactId="junixsocket-jetty" groupId="com.kohlschutter.junixsocket" version="2.11.0"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/jetty/AFSocketClientConnector.java" result="PRESENT"/>
-        <file path="src/main/java/org/newsclub/net/unix/jetty/AFSocketConfigurator.java" result="PRESENT"/>
-        <file path="src/main/java/org/newsclub/net/unix/jetty/AFSocketConfiguratorWithTransport.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/jetty/AFSocketServerConnector.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/jetty/AFSocketTransport.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/jetty/JettyCompat.java" result="PRESENT"/>

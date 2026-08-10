@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1727101364839">
-    <module artifactId="junixsocket-tipc" groupId="com.kohlschutter.junixsocket" version="2.10.1"/>
+<licensePluginReport goal="CHECK" timestamp="1786368748679">
+    <module artifactId="junixsocket-tipc" groupId="com.kohlschutter.junixsocket" version="2.11.0"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCDatagramChannel.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/tipc/AFTIPCDatagramSocket.java" result="PRESENT"/>
@@ -32,6 +32,7 @@
         <file path="src/test/java/org/newsclub/net/unix/tipc/DatagramSocketTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/tipc/EndOfFileTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/tipc/FinalizeTest.java" result="PRESENT"/>
+        <file path="src/test/java/org/newsclub/net/unix/tipc/MulticastThroughputTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/tipc/ReadWriteTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/tipc/SelectorTest.java" result="PRESENT"/>
         <file path="src/test/java/org/newsclub/net/unix/tipc/SelftestProvider.java" result="PRESENT"/>
