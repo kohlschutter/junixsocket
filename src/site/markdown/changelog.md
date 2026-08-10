@@ -10,16 +10,29 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ## Noteworthy changes
 
-**Users of junixsocket are strongly advised to upgrade to version 2.10.1 or newer**
+**Users of junixsocket are strongly advised to upgrade to version 2.11.0 or newer**
 
-### _(XXXX-XX-XX)_ **junixsocket 2.11.0**
+### _(2026-08-19)_ **junixsocket 2.11.0**
 
-- Add junixsocket-memory, a new Java 22+ module to support Shared Memory in a platform-agnostic way via MemorySegment, including
-support for Linux memfd_secret, Futex-based Mutexes, and even Windows.
-- Fix an unecessary exception being thrown for `TIPC_GROUP_LEAVE` (AFTIPCSocket)
-- Improve support for casting FileDescriptor to FileChannel; allow specifying open mode.
-- Building now requires Java 22 or newer
-- Code cleanup
+- New module: junixsocket-memory (Java 22+): SharedMemory/mmap, POSIX shm, futex-based Mutexes, memfd, etc.
+- Remove junixsocket-jetty support for Jetty 12.0.x and older (breaking change)
+- Add several new exceptions (subclasses of IOException / SocketException)
+- Add FileChannelSupplier for FileDescriptorCast
+- Add support for Astral OS; native binary not included yet
+- Add AFSocketCapability for send/receive timeout
+- Add support for AF_SYSTEM CTLIOCGINFO (number of registered kernel control names)
+- Improve/simplify check for AFServerSocket.isLocalSocketAddressValid
+- Improve exception reporting upon "accept"
+- Reduce possible local JNI refernce accumulation in poll
+- Fix NullPointerException in AFSelector
+- Fix spurious Connection-Refused in AFSocketImpl.connect
+- Fix AFSocketChannel.read returning 0 on EOF
+- Fix VirtualThread issue on machines with 1 or 2 CPUs
+- Fix spurious connect timeouts on Windows
+- Fix for TIPC: Ignore EINVAL upon setsocketopt SOL_TIPC/TIPC_GROUP_LEAVE
+- Improve selftest
+- Code cleanup and other optimizations
+- Update documentation
 
 ### _(2024-09-23)_ **junixsocket 2.10.1**
 
