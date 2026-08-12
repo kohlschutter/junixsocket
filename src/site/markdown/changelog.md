@@ -23,7 +23,7 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 - Add support for AF_SYSTEM CTLIOCGINFO (number of registered kernel control names)
 - Improve/simplify check for AFServerSocket.isLocalSocketAddressValid
 - Improve exception reporting upon "accept"
-- Reduce possible local JNI refernce accumulation in poll
+- Reduce possible local JNI reference accumulation in poll
 - Fix NullPointerException in AFSelector
 - Fix spurious Connection-Refused in AFSocketImpl.connect
 - Fix AFSocketChannel.read returning 0 on EOF
