@@ -10,7 +10,12 @@ artifact (`<type>pom</type>`); see [Add junixsocket to your project](dependency.
 
 ## Noteworthy changes
 
-**Users of junixsocket are strongly advised to upgrade to version 2.11.0 or newer**
+**Users of junixsocket are strongly advised to upgrade to version 2.11.1 or newer**
+
+### _(2026-08-30)_ **junixsocket 2.11.1**
+
+- Fix invalid pointer cast in native code when checking `SocketInputStream#available()`
+  (credit: Tsvi Cherny-Shahar, found during research on deterministic cross-language interface checking)
 
 ### _(2026-08-19)_ **junixsocket 2.11.0**
 
