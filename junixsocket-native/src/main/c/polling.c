@@ -307,22 +307,31 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_available
             }
 
             struct jni_direct_byte_buffer_ref dataBufferRef =
-            getDirectByteBufferRef (env, buffer, 0, 0);
-            if(dataBufferRef.size == -1) {
-                // ignore subsequent errors
-                return 0;
-            } else if(dataBufferRef.buf == NULL) {
+            getDirectByteBufferRef(env, buffer, 0, 0);
+
+            ssize_t size = dataBufferRef.size;
+            if(size == -1) {
                 // ignore subsequent errors
                 return 0;
             }
 
-            ssize_t count = recv(handle, (char*)&dataBufferRef.buf, dataBufferRef.size, MSG_PEEK
+            void *buf = dataBufferRef.buf;
+            if(buf == NULL) {
+                // ignore subsequent errors
+                return 0;
+            }
+
+            ssize_t count = recv(handle, buf, size, MSG_PEEK
 #if defined(MSG_TRUNC)
                                  | MSG_TRUNC // ask for the correct amount in case our buffer is too small
 #endif
                                  );
             if(count > 0) {
-                return (jint)count;
+                if(count > INT_MAX) {
+                    return INT_MAX;
+                } else {
+                    return (jint)count;
+                }
             }
             return 0;
         } else if(myerr == ESPIPE) {
