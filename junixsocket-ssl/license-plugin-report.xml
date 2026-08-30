@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1786368819325">
-    <module artifactId="junixsocket-ssl" groupId="com.kohlschutter.junixsocket" version="2.11.0"/>
+<licensePluginReport goal="CHECK" timestamp="1788088982775">
+    <module artifactId="junixsocket-ssl" groupId="com.kohlschutter.junixsocket" version="2.11.1"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/ssl/BuilderSSLContext.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/ssl/BuilderSSLServerSocketFactory.java" result="PRESENT"/>

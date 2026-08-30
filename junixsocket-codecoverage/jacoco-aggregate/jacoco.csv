@@ -81,7 +81,7 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,NamedInteger,5
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,InvalidSocketException,3,4,0,0,2,2,1,1,1,1
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXSocketChannel,20,33,3,3,5,8,6,5,3,5
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFTIPCSocketAddress,261,505,23,67,58,127,36,48,18,18
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocket,108,474,27,65,35,127,26,72,3,48
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocket,112,470,28,64,35,127,27,71,3,48
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericSocketAddress.new AFSocketAddressConfig() {...},6,15,1,1,1,7,2,4,1,4
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,NoSuchDeviceSocketException,7,0,0,0,4,0,2,0,2,0
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,FileChannelSupplier,9,0,0,0,4,0,2,0,2,0
@@ -112,7 +112,7 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,OperationNotSu
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXSocket,58,269,11,19,15,67,12,23,1,19
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,ConnectionResetSocketException,7,0,0,0,4,0,2,0,2,0
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFVSOCKSocketImplExtensions,0,8,0,0,0,4,0,2,0,2
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFDatagramSocket,202,305,36,46,57,97,36,43,10,27
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFDatagramSocket,202,305,37,45,57,97,37,42,10,27
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericSocket,32,26,2,0,8,6,6,5,5,5
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,SocketAddressUtil,12,18,0,2,5,6,1,4,1,3
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSelectionKey,29,141,5,17,4,34,7,20,3,13
@@ -123,7 +123,7 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,SocketClosedBy
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocketFactory,24,107,5,17,6,25,5,13,0,7
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,NativeLibraryLoader.LibraryCandidate,6,6,0,0,1,3,1,1,1,1
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,Closeables.HardReference,0,10,0,0,0,4,0,2,0,2
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocketImpl,445,1057,88,146,122,306,79,109,13,52
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFSocketImpl,440,1062,87,147,119,309,79,109,13,52
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFUNIXSocketCapability,58,0,0,0,11,0,3,0,3,0
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericSelectorProvider,56,14,0,0,15,4,15,2,15,2
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericServerSocket,31,20,0,0,6,6,6,5,6,5
@@ -139,7 +139,7 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericProto
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,NotConnectedSocketException,3,4,0,0,2,2,1,1,1,1
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFFuture,0,4,0,0,0,1,0,1,0,1
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,SocketOptionsMapper,3,86,0,6,1,21,1,6,1,3
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,InterruptibleChannelUtil,47,122,14,28,12,34,11,15,1,4
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,InterruptibleChannelUtil,49,120,15,27,13,33,12,14,1,4
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericSelectorProvider.new AFAddressFamilyConfig() {...},2,19,0,0,1,9,1,9,1,9
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,KnownJavaBugIOException,16,0,0,0,8,0,4,0,4,0
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,DatagramSocketShim,26,4,4,0,6,2,4,1,2,1
@@ -171,7 +171,7 @@ junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,FileDescriptor
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFPipe,9,74,1,1,1,18,3,8,2,8
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,FileDescriptorCast.new FileDescriptorCast.CastingProviderMap() {...},0,11,0,0,0,3,0,2,0,2
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,FileDescriptorCast.1.new FileDescriptorCast.CastingProvider() {...},0,6,0,0,0,2,0,2,0,2
-junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,ConnectionRefusedSocketException,7,0,0,0,4,0,2,0,2,0
+junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,ConnectionRefusedSocketException,3,4,0,0,2,2,1,1,1,1
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericDatagramSocketImpl,6,0,0,0,2,0,1,0,1,0
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFGenericSocketImpl,0,14,0,0,0,5,0,3,0,3
 junixsocket-codecoverage/junixsocket-common,org.newsclub.net.unix,AFPipe.SinkChannel,24,28,2,0,6,7,4,4,3,4
@@ -206,7 +206,7 @@ junixsocket-codecoverage/junixsocket-rmi,org.newsclub.net.unix.rmi,AFNaming.new 
 junixsocket-codecoverage/junixsocket-rmi,org.newsclub.net.unix.rmi,DefaultRMIServerSocketFactory,22,0,0,0,8,0,6,0,6,0
 junixsocket-codecoverage/junixsocket-rmi,org.newsclub.net.unix.rmi,AFRMISocketFactory.new ShutdownHookSupport.ShutdownHook() {...},1,11,0,0,1,4,0,2,0,2
 junixsocket-codecoverage/junixsocket-rmi,org.newsclub.net.unix.rmi,AFRegistry,34,296,5,21,17,82,5,21,1,12
-junixsocket-codecoverage/junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXNaming,25,214,6,16,6,52,8,26,2,21
+junixsocket-codecoverage/junixsocket-rmi,org.newsclub.net.unix.rmi,AFUNIXNaming,21,218,6,16,5,53,7,27,1,22
 junixsocket-codecoverage/junixsocket-ssl,org.newsclub.net.unix.ssl,BuilderSSLServerSocketFactory,27,30,0,0,3,9,3,5,3,5
 junixsocket-codecoverage/junixsocket-ssl,org.newsclub.net.unix.ssl,BuilderSSLSocketFactory,3,135,0,0,1,23,1,11,1,11
 junixsocket-codecoverage/junixsocket-ssl,org.newsclub.net.unix.ssl,CallbackSNIMatcher,0,23,0,0,0,7,0,2,0,2

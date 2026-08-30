@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="CHECK" timestamp="1786368783683">
-    <module artifactId="junixsocket-memory" groupId="com.kohlschutter.junixsocket" version="2.11.0"/>
+<licensePluginReport goal="CHECK" timestamp="1788088948481">
+    <module artifactId="junixsocket-memory" groupId="com.kohlschutter.junixsocket" version="2.11.1"/>
     <files>
         <file path="src/main/java/org/newsclub/net/unix/memory/Futex.java" result="PRESENT"/>
         <file path="src/main/java/org/newsclub/net/unix/memory/Futex32.java" result="PRESENT"/>

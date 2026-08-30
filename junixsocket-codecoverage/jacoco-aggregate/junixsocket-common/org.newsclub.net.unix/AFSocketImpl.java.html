@@ -554,15 +554,15 @@ public abstract class AFSocketImpl&lt;A extends AFSocketAddress&gt; extends Sock
                 }
               }
 <span class="nc" id="L556">              throw e;</span>
-<span class="nc" id="L557">            } catch (ConnectionRefusedSocketException e) {</span>
-<span class="nc bnc" id="L558" title="All 2 branches missed.">              if (virtualBlocking) {</span>
+<span class="fc" id="L557">            } catch (ConnectionRefusedSocketException e) {</span>
+<span class="pc bpc" id="L558" title="1 of 2 branches missed.">              if (virtualBlocking) {</span>
                 // https://github.com/kohlschutter/junixsocket/issues/172
 <span class="nc bnc" id="L560" title="All 4 branches missed.">                if (connectTimeout == 0 || ((System.currentTimeMillis() - now) &lt; connectTimeout)) {</span>
 <span class="nc" id="L561">                  Thread.yield();</span>
                   continue;
                 }
               }
-<span class="nc" id="L565">              throw e;</span>
+<span class="fc" id="L565">              throw e;</span>
 <span class="nc" id="L566">            } catch (NotConnectedSocketException | SocketClosedException</span>
                 | BrokenPipeSocketException e) {
               try {

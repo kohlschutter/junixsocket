@@ -254,8 +254,8 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
 <span class="fc bfc" id="L254" title="All 2 branches covered.">    if (timeout &lt; 0) {</span>
 <span class="fc" id="L255">      throw new IllegalArgumentException(&quot;connect: timeout can't be negative&quot;);</span>
     }
-<span class="fc bfc" id="L257" title="All 2 branches covered.">    if (isClosed()) {</span>
-<span class="fc" id="L258">      throw new SocketException(&quot;Socket is closed&quot;);</span>
+<span class="pc bpc" id="L257" title="1 of 2 branches missed.">    if (isClosed()) {</span>
+<span class="nc" id="L258">      throw new SocketException(&quot;Socket is closed&quot;);</span>
     }
 
 <span class="pc bpc" id="L261" title="1 of 2 branches missed.">    if (connectFilter != null) {</span>
@@ -497,7 +497,7 @@ public abstract class AFSocket&lt;A extends AFSocketAddress&gt; extends Socket i
 <span class="fc bfc" id="L497" title="All 4 branches covered.">    if (createSocket &amp;&amp; created.compareAndSet(false, true)) {</span>
       try {
 <span class="fc" id="L499">        getSoTimeout(); // trigger create via java.net.Socket</span>
-<span class="nc" id="L500">      } catch (SocketException e) {</span>
+<span class="fc" id="L500">      } catch (SocketException e) {</span>
         // ignore
 <span class="fc" id="L502">      }</span>
     }
