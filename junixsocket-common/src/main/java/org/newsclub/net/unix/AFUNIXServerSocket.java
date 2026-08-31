@@ -31,15 +31,6 @@ import java.nio.file.Path;
  */
 public final class AFUNIXServerSocket extends AFServerSocket<AFUNIXSocketAddress> {
   /**
-   * Constructs a new, unconnected instance.
-   *
-   * @throws IOException if the operation fails.
-   */
-  protected AFUNIXServerSocket() throws IOException {
-    super();
-  }
-
-  /**
    * Constructs a new instance, optionally associated with the given file descriptor.
    *
    * @param fdObj The file descriptor, or {@code null}.
