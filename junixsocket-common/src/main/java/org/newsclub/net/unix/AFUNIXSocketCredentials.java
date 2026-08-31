@@ -96,6 +96,7 @@ public final class AFUNIXSocketCredentials implements Serializable {
    *
    * @return The gids, or null.
    */
+  @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
   public long[] getGids() {
     return gids == null ? null : gids.clone();
   }
