@@ -128,6 +128,7 @@ public class SelftestProvider {
 
     registerTest(COMMON, org.newsclub.net.unix.domain.VirtualThreadConnectTest.class);
     registerTest(COMMON, org.newsclub.net.unix.domain.VirtualThreadPollerNaiveDeadlockTest.class);
+    registerTest(COMMON, org.newsclub.net.unix.domain.VirtualThreadPollerTest.class);
   }
 
   public Set<String> modulesDisabledByDefault() {
