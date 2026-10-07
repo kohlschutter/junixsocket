@@ -33,7 +33,7 @@ interface VirtualThreadPoller {
   /**
    * Returns the default instance best suited for the current system.
    */
-  VirtualThreadPoller INSTANCE = new VirtualThreadPollerNaive();
+  VirtualThreadPoller INSTANCE = VirtualThreadPollerShared.newDefaultInstance();
 
   /**
    * Parks the current thread until the given file descriptor is ready, with respect to the given
