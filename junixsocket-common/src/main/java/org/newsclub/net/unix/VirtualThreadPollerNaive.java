@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.locks.LockSupport;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -70,39 +71,76 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
       this.timeout = timeout;
     }
 
-    @SuppressWarnings("PMD.CognitiveComplexity")
+    private final class PollBlocker implements ForkJoinPool.ManagedBlocker {
+      private @Nullable IOException result;
+      private boolean done;
+
+      @Override
+      public boolean block() {
+        result = pollUntilReady();
+        done = true;
+        return true;
+      }
+
+      @Override
+      public boolean isReleasable() {
+        return done;
+      }
+    }
+
+    /**
+     * Polls until the file descriptor is ready, the timeout has elapsed, or the thread is
+     * interrupted.
+     *
+     * @return {@code null} if ready or timed out, or an exception.
+     */
+    private @Nullable IOException pollUntilReady() {
+      Thread thread = Thread.currentThread();
+      PollFd pfd = new PollFd(new FileDescriptor[] {fd}, new int[] {mode});
+      do {
+        if (thread.isInterrupted() || !fd.valid()) {
+          return POLL_INTERRUPTED_SENTINEL;
+        }
+        try {
+          NativeUnixSocket.poll(pfd, POLL_INTERVAL_MILLIS);
+        } catch (IOException e) {
+          return e;
+        }
+        if (thread.isInterrupted() || !fd.valid()) {
+          return POLL_INTERRUPTED_SENTINEL;
+        }
+        if (pfd.rops[0] != 0) {
+          return null;
+        }
+
+        int timeoutMillis = timeout.get();
+        if (timeoutMillis > 0) {
+          if ((System.currentTimeMillis() - now) >= timeoutMillis) {
+            // handle in calling thread
+            return null;
+          }
+        }
+      } while (true); // NOPMD.WhileLoopWithLiteralBoolean
+    }
+
     AFFuture<@Nullable IOException> trigger(Thread waitingThread) {
       synchronized (fd) {
         waitingThreads.add(waitingThread);
       }
       return AFFuture.supplyAsync(() -> {
         try {
-          Thread thread = Thread.currentThread();
-          PollFd pfd = new PollFd(new FileDescriptor[] {fd}, new int[] {mode});
-          do {
-            if (thread.isInterrupted() || !fd.valid()) {
-              return POLL_INTERRUPTED_SENTINEL;
-            }
-            try {
-              NativeUnixSocket.poll(pfd, POLL_INTERVAL_MILLIS);
-            } catch (IOException e) {
-              return e;
-            }
-            if (thread.isInterrupted() || !fd.valid()) {
-              return POLL_INTERRUPTED_SENTINEL;
-            }
-            if (pfd.rops[0] != 0) {
-              break;
-            }
-
-            int timeoutMillis = timeout.get();
-            if (timeoutMillis > 0) {
-              if ((System.currentTimeMillis() - now) >= timeoutMillis) {
-                // handle in calling thread
-                break;
-              }
-            }
-          } while (true); // NOPMD.WhileLoopWithLiteralBoolean
+          // poll() may block this worker for a long time; let the pool compensate, otherwise
+          // as few as parallelism waiting threads can starve the one we're waiting for
+          // see https://github.com/kohlschutter/junixsocket/issues/172
+          PollBlocker blocker = new PollBlocker();
+          try {
+            ForkJoinPool.managedBlock(blocker);
+          } catch (InterruptedException e) {
+            return POLL_INTERRUPTED_SENTINEL;
+          }
+          if (blocker.result != null) {
+            return blocker.result;
+          }
         } finally {
           Thread threadToWake = null;
           try {
