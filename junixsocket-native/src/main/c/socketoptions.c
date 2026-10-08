@@ -41,6 +41,8 @@ static jmethodID kAFTIPCGroupRequestGetScopeId;
 static jmethodID kAFTIPCGroupRequestGetFlagsValue;
 
 void init_socketoptions(JNIEnv *env) {
+    CK_ARGUMENT_POTENTIALLY_UNUSED(kAFTIPCGroupRequestFromNative);
+
     kIntegerClass = findClassAndGlobalRef(env, "java/lang/Integer");
     kIntegerConstructor = kIntegerClass == NULL ? NULL : (*env)->GetMethodID(env, kIntegerClass, "<init>", "(I)V");
     kIntegerIntValue = kIntegerClass == NULL ? NULL : (*env)->GetMethodID(env, kIntegerClass, "intValue", "()I");
