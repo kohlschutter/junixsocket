@@ -52,6 +52,12 @@ CK_IGNORE_RESERVED_IDENTIFIER_END
 #  undef __linux__
 #endif
 
+#if defined(__sun) || defined(__sun__)
+// for msg_control/msg_controllen support in sys/socket.h
+// also see https://openindiana.org/pipermail/openindiana-discuss/2016-May/019024.html
+#  define _XPG4_2
+#endif
+
 #include <stddef.h>
 #include <errno.h>
 #if __TOS_MVS__
