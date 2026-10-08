@@ -138,7 +138,7 @@ while [ $# -gt 0 ]; do
       -filelist ) fileList="$1" ; shift; skipArg=1 ;;
       -current_version ) shift ; skipArg=1 ;;
       -compatibility_version ) shift ; skipArg=1 ;;
-      -o ) hasO=1; skipArg=1 ;;
+      -o ) hasO=1; hasFiles=1; skipArg=1 ;;
       -Weverything ) skipGccArg=1 ;;
       -Wcomma ) skipGccArg=1 ;;
       -Wblock-capture-autoreleasing ) skipGccArg=1 ;;
@@ -181,7 +181,10 @@ while [ $# -gt 0 ]; do
             elif [[ "$1" == "-reproducible" ]]; then
                 hasReproducible=1
             elif [[ "$1" == "-dead_strip" ]]; then
-		hasDeadStrip=1
+                hasDeadStrip=1
+            elif [[ "$1" == "-no_warn_duplicate_libraries" ]]; then
+                # ignore
+                skipArg=1
             elif [[ "$1" == "-no_adhoc_codesign" ]]; then
                 # ignore
                 skipArg=1
