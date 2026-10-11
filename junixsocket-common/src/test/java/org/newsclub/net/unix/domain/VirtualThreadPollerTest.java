@@ -43,6 +43,7 @@ import org.newsclub.net.unix.TestUtil;
 import org.newsclub.net.unix.ThreadUtil;
 
 import com.kohlschutter.testutil.TestAbortedNotAnIssueException;
+import com.kohlschutter.testutil.TestStackTraceUtil;
 
 /**
  * Tests blocking socket operations on virtual threads, which are handled by the
@@ -105,7 +106,8 @@ public class VirtualThreadPollerTest {
               s.getOutputStream().write(REPLY);
               s.getInputStream().read(); // wait for client to close
             } catch (Exception e) { // NOPMD
-              // ignore
+              TestStackTraceUtil.printStackTrace(e);
+              failures.incrementAndGet();
             }
           });
         }
@@ -231,6 +233,7 @@ public class VirtualThreadPollerTest {
         onReply.countDown();
       }
     } catch (Exception e) { // NOPMD
+      TestStackTraceUtil.printStackTrace(e);
       failures.incrementAndGet();
     } finally {
       done.countDown();
