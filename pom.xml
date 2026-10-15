@@ -82,7 +82,7 @@ In contrast to other implementations, junixsocket extends the Java Sockets API (
         <kohlschutter.surefire.access.args>--enable-native-access=org.newsclub.net.unix</kohlschutter.surefire.access.args>
 
         <bouncycastle.version>1.85</bouncycastle.version>
-        <jetty.version>12.1.12</jetty.version>
+        <jetty.version>12.1.14</jetty.version>
 
         <junixsocket.repo.use-staging>https://oss.sonatype.org/content/groups/staging/</junixsocket.repo.use-staging>
 
