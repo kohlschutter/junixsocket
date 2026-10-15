@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -73,18 +74,18 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
 
     private final class PollBlocker implements ForkJoinPool.ManagedBlocker {
       private @Nullable IOException result;
-      private boolean done;
+      private final AtomicBoolean done = new AtomicBoolean(false);
 
       @Override
       public boolean block() {
         result = pollUntilReady();
-        done = true;
+        done.set(true);
         return true;
       }
 
       @Override
       public boolean isReleasable() {
-        return done;
+        return done.get();
       }
     }
 
@@ -138,9 +139,7 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
           } catch (InterruptedException e) {
             return POLL_INTERRUPTED_SENTINEL;
           }
-          if (blocker.result != null) {
-            return blocker.result;
-          }
+          return blocker.result;
         } finally {
           Thread threadToWake = null;
           try {
@@ -156,8 +155,6 @@ final class VirtualThreadPollerNaive implements VirtualThreadPoller {
             }
           }
         }
-
-        return null;
       }, POLLJOB_EXECUTOR)::get;
     }
   }
