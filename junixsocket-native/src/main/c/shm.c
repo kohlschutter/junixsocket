@@ -640,9 +640,8 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
         return -1;
     }
 
-    CK_IGNORE_UNUSED_VARIABLE_BEGIN
     jboolean haveFd = true;
-    CK_IGNORE_UNUSED_VARIABLE_END
+    CK_ARGUMENT_POTENTIALLY_UNUSED(haveFd);
 
 #if defined(_WIN32)
     if(f_MapViewOfFile3 == NULL) {
@@ -686,7 +685,6 @@ JNIEXPORT jlong JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mmap
         handle = (HANDLE)_get_osfhandle(fdHandle);
     } else {
         haveFd = false;
-        CK_ARGUMENT_POTENTIALLY_UNUSED(haveFd);
     }
 
     if(handle == NULL || handle == INVALID_HANDLE_VALUE) {
@@ -761,6 +759,7 @@ JNIEXPORT jobject JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_mappedBuff
     }
 
 #if defined(_WIN32)
+    CK_ARGUMENT_POTENTIALLY_UNUSED(mmode);
 #else
     int flags = mmodeToFlags(mmode);
 
