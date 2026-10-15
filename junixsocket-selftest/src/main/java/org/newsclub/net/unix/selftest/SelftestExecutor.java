@@ -83,13 +83,14 @@ class SelftestExecutor {
     try {
       LauncherConfig launcherConfig = LauncherConfig.builder() //
           .enableTestEngineAutoRegistration(false) //
-          .addTestEngines(new JupiterTestEngine()) //
+          .addTestEngines(new JupiterTestEngine()) // NOPMD.InternalApiUsage
           .build();
       Launcher launcher = LauncherFactory.create(launcherConfig);
 
       SummaryGeneratingListener summaryListener = new SummaryGeneratingListener();
       launcher.registerTestExecutionListeners(summaryListener, JuxPackageAccess
-          .newTreePrintingListener(out, true, Theme.ASCII));
+          .newTreePrintingListener(out, true, //
+              Theme.ASCII)); // NOPMD.InternalApiUsage
 
       LauncherDiscoveryRequestBuilder requestBuilder = request();
 
