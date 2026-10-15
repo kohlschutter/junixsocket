@@ -63,7 +63,7 @@ final class AncillaryDataSupport implements Closeable {
   int[] getTIPCErrorInfo() {
     int[] info = tipcErrorInfo;
     tipcErrorInfo = null;
-    return info;
+    return info; // NOPMD.MethodReturnsInternalArray
   }
 
   void setTipcDestName(int a, int b, int c) {
@@ -77,7 +77,7 @@ final class AncillaryDataSupport implements Closeable {
   int[] getTIPCDestName() {
     int[] addr = tipcDestName;
     tipcDestName = null;
-    return addr;
+    return addr; // NOPMD.MethodReturnsInternalArray
   }
 
   int getAncillaryReceiveBufferSize() {
