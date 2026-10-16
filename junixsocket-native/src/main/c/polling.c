@@ -418,7 +418,9 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
 #if defined(_WIN32)
     ret = WSAPoll(pollFd, nfds, timeout);
 #else
-    ret = poll(pollFd, nfds, timeout);
+    do {
+        ret = poll(pollFd, nfds, timeout);
+    } while(ret == -1 && socket_errno == EINTR);
 #endif
     if(ret == -1) {
         ret = 0;
