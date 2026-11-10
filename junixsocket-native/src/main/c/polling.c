@@ -18,6 +18,7 @@
 
 #include "config.h"
 #include "polling.h"
+#include "polling_with_deadline.h"
 
 #include "exceptions.h"
 #include "filedescriptors.h"
@@ -28,11 +29,6 @@ CK_IGNORE_CPP_WARNINGS_BEGIN
 #if __TOS_MVS__
 #  include <sys/time.h>
 #  include <sys/select.h>
-#  include "gettod_zos.h"
-static int clock_gettime(int mode, struct timespec* out) {
-  return gettimeofdayMonotonic(out);
-}
-#  define CLOCK_MONOTONIC 1
 #endif
 
 static jclass class_PollFd = NULL;
@@ -86,10 +82,6 @@ static int eventToOp(int event) {
 }
 
 #if defined(junixsocket_use_poll_for_accept) || defined(junixsocket_use_poll_for_read)
-
-static uint64_t timespecToMillis(struct timespec* ts) {
-    return (uint64_t)ts->tv_sec * 1000 + (uint64_t)ts->tv_nsec / 1000000;
-}
 
 /*
  * Waits until the connection is ready to read/accept.
@@ -187,7 +179,7 @@ jint pollWithMillis(int handle, uint64_t millis) {
     struct timespec timeStart;
     struct timespec timeEnd;
 
-    if(clock_gettime(CLOCK_MONOTONIC, &timeEnd) == -1) {
+    if(pollMonotonicTime(&timeEnd) == -1) {
         return -1;
     }
     int ret;
@@ -220,10 +212,10 @@ jint pollWithMillis(int handle, uint64_t millis) {
             }
         }
         int errnum = socket_errno;
-        if(clock_gettime(CLOCK_MONOTONIC, &timeEnd) == -1) {
+        if(pollMonotonicTime(&timeEnd) == -1) {
             return -1;
         }
-        int elapsed = (int)(timespecToMillis(&timeEnd) - timespecToMillis(&timeStart));
+        int elapsed = (int)(pollTimespecToMillis(&timeEnd) - pollTimespecToMillis(&timeStart));
         if(elapsed <= 0) {
             elapsed = 1;
         }
@@ -418,7 +410,7 @@ JNIEXPORT jint JNICALL Java_org_newsclub_net_unix_NativeUnixSocket_poll
 #if defined(_WIN32)
     ret = WSAPoll(pollFd, nfds, timeout);
 #else
-    ret = poll(pollFd, nfds, timeout);
+    ret = pollWithDeadline(pollFd, nfds, timeout);
 #endif
     if(ret == -1) {
         ret = 0;

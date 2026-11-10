@@ -36,6 +36,52 @@
     </properties>
     <profiles>
         <profile>
+            <id>polling-eintr-test</id>
+            <activation>
+                <property>
+                    <name>polling-eintr-test</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.maven-nar</groupId>
+                        <artifactId>nar-maven-plugin</artifactId>
+                        <configuration>
+                            <c>
+                                <toolPath>${junixsocket.native.default.toolPath}</toolPath>
+                                <testIncludes>
+                                    <testInclude>**/*.c</testInclude>
+                                </testIncludes>
+                            </c>
+                            <linker>
+                                <prefix>${junixsocket.native.default.toolPath}</prefix>
+                                <toolPath></toolPath>
+                                <name>${junixsocket.native.default.linkerName}</name>
+                            </linker>
+                            <tests>
+                                <test>
+                                    <name>polling-eintr-test</name>
+                                    <link>shared</link>
+                                </test>
+                            </tests>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <!-- Native tests are executables, not JNI shared libraries. -->
+                                <id>default-nar-testCompile</id>
+                                <configuration>
+                                    <linker>
+                                        <clearDefaultOptions>true</clearDefaultOptions>
+                                    </linker>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>current-arch</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
