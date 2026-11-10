@@ -31,7 +31,7 @@
 # set -x
 
 # Make sure to include all paths that may contain custom linkers etc.
-PATH=/opt/crossclang/local/bin:/opt/homebrew/bin:"$PATH":/usr/bin:/usr/local/bin
+PATH=/opt/crossclang/local/bin:/opt/homebrew/bin:"$PATH":/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:/usr/bin:/usr/local/bin
 export PATH
 
 currentDir=$(cd "$(dirname $0)"; pwd)
@@ -296,9 +296,9 @@ if [[ -z "$(which llvm-ar | grep -v swiftly 2>/dev/null)" || $findOtherClang -gt
 fi
 
 if [ -n "$llvmPath" ]; then
-    export PATH="$llvmPath:/usr/bin:/usr/local/bin:$PATH"
+    export PATH="$llvmPath:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:/usr/bin:/usr/local/bin:$PATH"
 else
-    export PATH="/usr/bin:/usr/local/bin:$PATH"
+    export PATH="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:/usr/bin:/usr/local/bin:$PATH"
 fi
 
 if [[ $gccMode -gt 0 ]]; then
@@ -355,7 +355,7 @@ if [[ "$target" != "unspecified" ]]; then
     currentTarget=
     if [[ -z "$target" ]]; then
         if [ $defaultFallback -eq 0 ]; then
-            PATH=/usr/bin:$PATH
+            PATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:/usr/bin:$PATH
         fi
 
         target=$($(which $compiler) --version ${extraVersionArgs[@]} | grep "^Target: " | head -n 1)
@@ -434,7 +434,7 @@ if [[ "$target" != "unspecified" ]]; then
             esac
 
             if [[ $tryPlatformClang -eq 1 ]]; then
-                export PATH=/usr/bin:$PATH
+                export PATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:/usr/bin:$PATH
                 if [[ -n "$fileList" ]]; then
                         clangArgs+=("-filelist" "$fileList")
                 fi
@@ -446,7 +446,7 @@ if [[ "$target" != "unspecified" ]]; then
 
             echo "Error: crossclang not configured for target \"$target\" -- you need to run prepare-target-sdk first!" >&2
         elif [[ "$defaultFallback" -eq 2 ]]; then
-            export PATH=/usr/bin:$PATH
+            export PATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:/usr/bin:$PATH
             if [[ -n "$fileList" ]]; then
                     clangArgs+=("-filelist" "$fileList")
             fi
